@@ -9,6 +9,7 @@
     .job a { font-weight: bold; }
     .meta { font-size: 0.85em; color: #555; margin-top: 4px; }
     .time { position: absolute; right: 0; top: 10px; font-size: 0.8em; color: #999; }
+    .divider { margin: 30px 0 10px; border-top: 2px solid #999; padding-top: 10px; font-size: 0.9em; color: #666; }
   </style>
 </head>
 <body>
@@ -20,15 +21,24 @@
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('jobs');
+        let lastDate = '';
+
         data.forEach(job => {
+          const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
+          if (jobDate !== lastDate) {
+            const divider = document.createElement('div');
+            divider.className = 'divider';
+            divider.textContent = jobDate;
+            container.appendChild(divider);
+            lastDate = jobDate;
+          }
+
           const div = document.createElement('div');
           div.className = 'job';
-          const friendlyDate = new Date(job.pushTime).toLocaleDateString('en-GB');
-
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
-            <div class="time">${friendlyDate}</div>
+            <div class="time">${jobDate}</div>
           `;
           container.appendChild(div);
         });
