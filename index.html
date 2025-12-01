@@ -11,10 +11,10 @@
     .job { border-bottom: 1px solid #e5e7eb; padding: 14px 16px; margin-bottom: 8px; border-radius: 8px; position: relative; transition: box-shadow 0.2s; }
     .job:hover { box-shadow: 0 4px 12px rgba(0,0,0,.05); }
 
-    .cn { background: #e6f7f0; }   /* 淡薄荷绿 */
-    .hk { background: #e6f2ff; }   /* 淡天蓝 */
-    .sg { background: #f5f0ff; }   /* 淡薰衣草紫 */
-    .other { background: #fff9e6; }/* 淡鹅黄 */
+    .cn { background: #f3f4f6; }   /* 淡灰色 */
+    .hk { background: #fde0dc; }   /* 淡棕黄色 */
+    .sg { background: #dcfce7; }   /* 淡绿色 */
+    .other { background: #e0f2fe; }/* 淡蓝色 */
 
     .job a { font-weight: 600; color: #1d4ed8; text-decoration: none; }
     .job a:hover { text-decoration: underline; }
@@ -25,7 +25,8 @@
   </style>
 </head>
 <body>
-  <h1>Latest LinkedIn Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer</h1>
+  <h1>Latest LinkedIn Jobs
+      以金融类职位为主，包括CN/HK/SG - 祝我们都能拿到dream offer👏</h1>
   <div id="jobs"></div>
 
   <script>
@@ -50,11 +51,4 @@
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
-            <div class="time">${jobDate}</div>
-          `;
-          container.appendChild(div);
-        });
-      });
-  </script>
-</body>
-</html>
+            <div class
