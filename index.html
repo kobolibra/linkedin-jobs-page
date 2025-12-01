@@ -27,7 +27,7 @@
 
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
-            <div class="meta">${job.company}</div>
+            <div class="meta">${job.company} · ${job.location}</div>
             <div class="time">${friendlyTime}</div>
           `;
           container.appendChild(div);
