@@ -23,12 +23,12 @@
         data.forEach(job => {
           const div = document.createElement('div');
           div.className = 'job';
-          const friendlyTime = new Date(job.pushTime).toLocaleString('en-GB', { hour12: false });
+          const friendlyDate = new Date(job.pushTime).toLocaleDateString('en-GB');
 
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
-            <div class="time">${friendlyTime}</div>
+            <div class="time">${friendlyDate}</div>
           `;
           container.appendChild(div);
         });
