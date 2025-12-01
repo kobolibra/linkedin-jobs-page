@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinkedIn Jobs</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .job { border-bottom: 1px solid #ccc; padding: 10px 0; }
+    .job a { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Latest LinkedIn Jobs</h1>
+  <div id="jobs"></div>
+
+  <script>
+    fetch('jobs.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('jobs');
+        data.forEach(job => {
+          const div = document.createElement('div');
+          div.className = 'job';
+          div.innerHTML = `<a href="${job.Link}" target="_blank">${job.Title}</a><br/><small>${job.SourceFeed}</small>`;
+          container.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>
