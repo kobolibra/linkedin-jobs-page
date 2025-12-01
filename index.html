@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinkedIn Jobs</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
+    h1 { margin-bottom: 12px; font-weight: 600; }
+
+    /* 筛选栏 */
+    .filter-bar { margin: 20px 0; display: flex; align-items: center; gap: 12px; }
+    .filter-bar label { font-size: 0.9em; color: #4b5563; }
+    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; }
+
+    /* 专业配色 - WCAG > 4.5 */
+    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; }
+    .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
+
+    .cn { background: #f3f4f6; }   /* 冷灰 */
+    .hk { background: #fff3d9; }   /* 淡卡其 */
+    .sg { background: #dcfce7; }   /* 薄荷灰 */
+    .other { background: #e0f2fe; }/* 淡蓝 */
+
+    .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
+    .job a:hover { text-decoration: underline; }
+
+    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
+    .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
+    .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <h1>Latest LinkedIn Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer👏
+      https://kobolibra.github.io/linkedin-jobs-page/ </h1>
+  <div class="filter-bar">
+    <label for="compFilter">筛选公司：</label>
+    <select id="compFilter">
+      <option value="all">全部</option>
+    </select>
+  </div>
+  <div id="jobs"></div>
+
+  <script>
+    fetch('jobs.json?_=' + new Date().getTime())
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('jobs');
+        const filter = document.getElementById('compFilter');
+        let lastDate = '';
+
+        // 生成公司下拉（不重复）
+        [...new Set(data.map(j => j.company))].sort().forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c;
+          opt.textContent = c;
+          filter.appendChild(opt);
+        });
+
+        // 筛选事件
+        filter.addEventListener('change', () => {
+          const val = filter.value;
+          container.querySelectorAll('.job').forEach(card => {
+            const comp = card.dataset.comp;
+            card.classList.toggle('hidden', val !== 'all' && comp !== val);
+          });
+        });
+
+        // 渲染
+        data.forEach(job => {
+          const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
+          if (jobDate !== lastDate) {
+            const divider = document.createElement('div');
+            divider.className = 'divider';
+            divider.textContent = jobDate;
+            container.appendChild(divider);
+            lastDate = jobDate;
+          }
+
+          const div = document.createElement('div');
+          div.className = 'job ' + (job.location || 'other').toLowerCase();
+          div.dataset.comp = job.company;   // 只加这一行
+          div.innerHTML = `
+            <a href="${job.link}" target="_blank">${job.title}</a>
+            <div class="meta">${job.company} · ${job.location}</div>
+            <div class="time">${jobDate}</div>
+          `;
+          container.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>
