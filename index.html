@@ -21,7 +21,7 @@
         data.forEach(job => {
           const div = document.createElement('div');
           div.className = 'job';
-          div.innerHTML = `<a href="${job.Link}" target="_blank">${job.Title}</a><br/><small>${job.SourceFeed}</small>`;
+          div.innerHTML = `<a href="${job.link}" target="_blank">${job.title}</a><br/><small>${job.company}</small>`;
           container.appendChild(div);
         });
       });
