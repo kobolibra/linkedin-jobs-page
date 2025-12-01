@@ -17,7 +17,7 @@
   <div id="jobs"></div>
 
   <script>
-    fetch('jobs.json')
+    fetch('jobs.json?_=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('jobs');
