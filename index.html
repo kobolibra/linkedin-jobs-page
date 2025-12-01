@@ -4,20 +4,32 @@
   <meta charset="UTF-8">
   <title>LinkedIn Jobs</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; }
-    .job { border-bottom: 1px solid #ccc; padding: 10px 0; position: relative; }
-    .job a { font-weight: bold; }
-    .meta { font-size: 0.85em; color: #555; margin-top: 4px; }
-    .time { position: absolute; right: 0; top: 10px; font-size: 0.8em; color: #999; }
-    .divider { margin: 30px 0 10px; border-top: 2px solid #999; padding-top: 10px; font-size: 0.9em; color: #666; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
+    h1 { margin-bottom: 24px; font-weight: 600; }
+
+    /* 专业配色 - WCAG 对比度 > 4.5 */
+    .job { border-bottom: 1px solid #e5e7eb; padding: 14px 16px; margin-bottom: 8px; border-radius: 8px; position: relative; transition: box-shadow 0.2s; }
+    .job:hover { box-shadow: 0 4px 12px rgba(0,0,0,.05); }
+
+    .cn { background: #e6f7f0; }   /* 淡薄荷绿 */
+    .hk { background: #e6f2ff; }   /* 淡天蓝 */
+    .sg { background: #f5f0ff; }   /* 淡薰衣草紫 */
+    .other { background: #fff9e6; }/* 淡鹅黄 */
+
+    .job a { font-weight: 600; color: #1d4ed8; text-decoration: none; }
+    .job a:hover { text-decoration: underline; }
+
+    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
+    .time { position: absolute; right: 16px; top: 14px; font-size: 0.8em; color: #6b7280; }
+    .divider { margin: 30px 0 10px; border-top: 2px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
 <body>
-  <h1>Latest LinkedIn Jobs（以金融类职位为主，包括CN/HK/SG）</h1>
+  <h1>Latest LinkedIn Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer</h1>
   <div id="jobs"></div>
 
   <script>
-    fetch('jobs.json?_=' + new Date().getTime())
+    fetch('jobs.json?_=' + new Date().getTime())   // 防缓存
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('jobs');
@@ -34,7 +46,7 @@
           }
 
           const div = document.createElement('div');
-          div.className = 'job';
+          div.className = 'job ' + (job.location || 'other').toLowerCase();
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
