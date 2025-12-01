@@ -5,8 +5,10 @@
   <title>LinkedIn Jobs</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 40px; }
-    .job { border-bottom: 1px solid #ccc; padding: 10px 0; }
+    .job { border-bottom: 1px solid #ccc; padding: 10px 0; position: relative; }
     .job a { font-weight: bold; }
+    .meta { font-size: 0.85em; color: #555; margin-top: 4px; }
+    .time { position: absolute; right: 0; top: 10px; font-size: 0.8em; color: #999; }
   </style>
 </head>
 <body>
@@ -21,7 +23,13 @@
         data.forEach(job => {
           const div = document.createElement('div');
           div.className = 'job';
-          div.innerHTML = `<a href="${job.link}" target="_blank">${job.title}</a><br/><small>${job.company}</small>`;
+          const friendlyTime = new Date(job.pushTime).toLocaleString('en-GB', { hour12: false });
+
+          div.innerHTML = `
+            <a href="${job.link}" target="_blank">${job.title}</a>
+            <div class="meta">${job.company}</div>
+            <div class="time">${friendlyTime}</div>
+          `;
           container.appendChild(div);
         });
       });
