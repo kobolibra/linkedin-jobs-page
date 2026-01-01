@@ -1,80 +1,1375 @@
 [
   {
+    "title": "Ir融资经理 高级经理",
+    "link": "https://cn.linkedin.com/jobs/view/ir%E8%9E%8D%E8%B5%84%E7%BB%8F%E7%90%86-%E9%AB%98%E7%BA%A7%E7%BB%8F%E7%90%86-at-%E9%AB%98%E6%B5%8E%E5%8C%BB%E8%8D%AF-%E5%9B%9B%E5%B7%9D-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4351010496?position=7&pageNum=0&refId=C9r1UIaObhSrz6dVg4ptEw%3D%3D&trackingId=i92u7YJ0V4RyfYcxWEIrPg%3D%3D",
+    "company": "高济医药 四川 有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.491Z"
+  },
+  {
+    "title": "Institutional RWA Platform - Product Manager - DeFi, Yield, Risk",
+    "link": "https://cn.linkedin.com/jobs/view/institutional-rwa-platform-product-manager-defi-yield-risk-at-hyphen-connect-4326375383?position=2&pageNum=0&refId=Dpa35hrFcX3esnERo5fAKQ%3D%3D&trackingId=xkj5oCuUc%2BRXuGkJDnIpWQ%3D%3D",
+    "company": "Hyphen Connect",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "BA Lead",
+    "link": "https://cn.linkedin.com/jobs/view/ba-lead-at-%E5%8F%8B%E9%82%A6%E7%A7%91%E6%8A%80-4350900492?position=3&pageNum=0&refId=Dpa35hrFcX3esnERo5fAKQ%3D%3D&trackingId=H4BwRCYvtuXSuU%2BpuQbXWQ%3D%3D",
+    "company": "友邦科技",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Onboard Analyst - Officer",
+    "link": "https://cn.linkedin.com/jobs/view/client-onboard-analyst-officer-at-citi-4326603769?position=1&pageNum=0&refId=eJm1sSi6eLcVuZ7ZcdH2nQ%3D%3D&trackingId=yWOf1OjOEZYJY932tAaWeA%3D%3D",
+    "company": "Citi",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Onboarding Analyst - China Futures NewCo - Officer",
+    "link": "https://cn.linkedin.com/jobs/view/client-onboarding-analyst-china-futures-newco-officer-at-citi-4350779930?position=2&pageNum=0&refId=eJm1sSi6eLcVuZ7ZcdH2nQ%3D%3D&trackingId=FIeDxG9CFGZRKkt6TGSm%2Fg%3D%3D",
+    "company": "Citi",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Corporate Banking – Subsidiary Banking – Analyst",
+    "link": "https://cn.linkedin.com/jobs/view/global-corporate-banking-%E2%80%93-subsidiary-banking-%E2%80%93-analyst-at-jpmorganchase-4343203037?position=1&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=S2qel94TknpuBQCa%2BjNCDQ%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "OFFICER",
+    "link": "https://cn.linkedin.com/jobs/view/officer-at-hsbc-4346572769?position=2&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=cOZgswjJnoqGcpeYX2W8TA%3D%3D",
+    "company": "HSBC",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Corporate Banking, Innovation Economy, Banker",
+    "link": "https://cn.linkedin.com/jobs/view/global-corporate-banking-innovation-economy-banker-at-jpmorganchase-4342825268?position=3&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=xnhzckV8SnUVjSTrN9URxQ%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Associate Corporate Sales Payments",
+    "link": "https://cn.linkedin.com/jobs/view/associate-corporate-sales-payments-at-jpmorganchase-4342984645?position=4&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=KHg0ofAo%2F6RfKw2IDsDVnw%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Fund Accountant",
+    "link": "https://cn.linkedin.com/jobs/view/fund-accountant-at-hsbc-4335814070?position=5&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=GYLpTwZ5KtMo%2B0aXwgk81Q%3D%3D",
+    "company": "HSBC",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Financial Sector Ra Hsbc Qianhai Gcb 6",
+    "link": "https://cn.linkedin.com/jobs/view/financial-sector-ra-hsbc-qianhai-gcb-6-at-hsbc-4334871060?position=6&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=5chT2rq8uFH9JjreyMzVrQ%3D%3D",
+    "company": "HSBC",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Cib Markets Sales Commodities Analyst",
+    "link": "https://cn.linkedin.com/jobs/view/cib-markets-sales-commodities-analyst-at-jpmorganchase-4346819082?position=7&pageNum=0&refId=rCkwD%2Bvs3ELQRaM7yYKYjA%3D%3D&trackingId=BRAzB9TvrtlMa0RGEZmlpg%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Corporate Bank - Senior Relationship Manager(MNC) - VP",
+    "link": "https://cn.linkedin.com/jobs/view/corporate-bank-senior-relationship-manager-mnc-vp-at-deutsche-bank-4151251417?position=1&pageNum=0&refId=8uiRDi8Hud7vVvJXNk47zQ%3D%3D&trackingId=UB2v%2Fmq3AwTHvePFqN4GvA%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Investment Bank - FICC Sales Local Intern",
+    "link": "https://cn.linkedin.com/jobs/view/investment-bank-ficc-sales-local-intern-at-deutsche-bank-4336762655?position=2&pageNum=0&refId=8uiRDi8Hud7vVvJXNk47zQ%3D%3D&trackingId=%2FdP4uBbSxYGiFK9j5OzwYQ%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "CB - Transactional FX Specialist - Analyst",
+    "link": "https://cn.linkedin.com/jobs/view/cb-transactional-fx-specialist-analyst-at-deutsche-bank-4300916264?position=3&pageNum=0&refId=8uiRDi8Hud7vVvJXNk47zQ%3D%3D&trackingId=6TE4uWmdYPrMXbLc9f7R8Q%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Corporate Bank Greater China Financial Institution Local Intern",
+    "link": "https://cn.linkedin.com/jobs/view/corporate-bank-greater-china-financial-institution-local-intern-at-deutsche-bank-4346725785?position=4&pageNum=0&refId=8uiRDi8Hud7vVvJXNk47zQ%3D%3D&trackingId=Z7%2F7Kr9yzlrk7YcM5Ucl4A%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "研究支持岗",
+    "link": "https://cn.linkedin.com/jobs/view/%E7%A0%94%E7%A9%B6%E6%94%AF%E6%8C%81%E5%B2%97-at-%E9%9D%92%E5%B2%9B%E9%95%BF%E6%B1%9F%E8%B4%A2%E5%AF%8C%E4%B8%AD%E5%BF%83%E7%89%A9%E4%B8%9A%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350714107?position=1&pageNum=0&refId=2ZANmGD8jwGfGuF%2BQa%2B04A%3D%3D&trackingId=o1x6VId5f%2BFCwRa2l2GA3w%3D%3D",
+    "company": "青岛长江财富中心物业管理有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "集中交易员",
+    "link": "https://cn.linkedin.com/jobs/view/%E9%9B%86%E4%B8%AD%E4%BA%A4%E6%98%93%E5%91%98-at-%E5%B9%B3%E5%AE%89%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4346707660?position=2&pageNum=0&refId=2ZANmGD8jwGfGuF%2BQa%2B04A%3D%3D&trackingId=OSc2l7bmElpMgifjk5VKvg%3D%3D",
+    "company": "平安健康保险股份有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "资产配置投资总监",
+    "link": "https://cn.linkedin.com/jobs/view/%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE%E6%8A%95%E8%B5%84%E6%80%BB%E7%9B%91-at-%E5%8D%8E%E5%AE%9D%E5%9F%BA%E9%87%91%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4351100187?position=3&pageNum=0&refId=2ZANmGD8jwGfGuF%2BQa%2B04A%3D%3D&trackingId=BoufWOhwAYgIPcqBb%2BJC%2Bw%3D%3D",
+    "company": "华宝基金管理有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset Management Etf Platform Project Management Vice President",
+    "link": "https://cn.linkedin.com/jobs/view/asset-management-etf-platform-project-management-vice-president-at-jpmorganchase-4264763203?position=4&pageNum=0&refId=2ZANmGD8jwGfGuF%2BQa%2B04A%3D%3D&trackingId=cGuceyPy6YqBOtBtlw8sWQ%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Cyber Defense Operations - Technical Specialist",
+    "link": "https://cn.linkedin.com/jobs/view/cyber-defense-operations-technical-specialist-at-fidelity-international-4340711080?position=1&pageNum=0&refId=TmBw2ZVndstweWYH64XesQ%3D%3D&trackingId=cZ8k9P3Bl%2FTXxSdjp185EQ%3D%3D",
+    "company": "Fidelity International",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Quantitative Researcher | Trading Team",
+    "link": "https://cn.linkedin.com/jobs/view/quantitative-researcher-trading-team-at-jump-trading-4228768667?position=1&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=rTqUDoEj%2Bn%2BlNFZVAejPmA%3D%3D",
+    "company": "Jump Trading",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking & Markets, Corporate Access, Associate, Shanghai",
+    "link": "https://cn.linkedin.com/jobs/view/global-banking-markets-corporate-access-associate-shanghai-at-goldman-sachs-4326545146?position=2&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=I9ZD5qy2GeI1yQm574NhCw%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Student Trainee",
+    "link": "https://cn.linkedin.com/jobs/view/student-trainee-at-schroders-4342898767?position=3&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=h2e5nmJQ7N0XmamMnXlTcQ%3D%3D",
+    "company": "Schroders",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Portfolio Finance Trader – Sbl Specialist",
+    "link": "https://cn.linkedin.com/jobs/view/portfolio-finance-trader-%E2%80%93-sbl-specialist-at-jump-trading-4318266297?position=4&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=cgBXX7c0JlW60TrchMg7pw%3D%3D",
+    "company": "Jump Trading",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Quant Fof Investment Manager",
+    "link": "https://cn.linkedin.com/jobs/view/quant-fof-investment-manager-at-fosun-wealth-holdings-4346369428?position=5&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=p9LB7artjfezzV%2BTJz%2BoRw%3D%3D",
+    "company": "Fosun Wealth Holdings",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Vp Head Of System Delivery Operations",
+    "link": "https://cn.linkedin.com/jobs/view/vp-head-of-system-delivery-operations-at-blackrock-4336188009?position=6&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=CIHm6LejVubP%2F2n%2B%2BG2LpA%3D%3D",
+    "company": "BlackRock",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Investment Director Emerging Technology Ai Software Growth Equity Usd Fund",
+    "link": "https://cn.linkedin.com/jobs/view/investment-director-emerging-technology-ai-software-growth-equity-usd-fund-at-king-deux-search-and-consulting-4346327815?position=7&pageNum=0&refId=gaJ%2FUo5rRdL0u18yRJVnSg%3D%3D&trackingId=cBELxYnMIONjD4odoY%2BojA%3D%3D",
+    "company": "King Deux Search And Consulting",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking & Markets, Investment Banking, Financial Institutions Group, Analyst / Associate, Hong Kong / Beijing",
+    "link": "https://cn.linkedin.com/jobs/view/global-banking-markets-investment-banking-financial-institutions-group-analyst-associate-hong-kong-beijing-at-goldman-sachs-4326724727?position=1&pageNum=0&refId=CjcKjeUOh%2Fh4ZyhdbVY0zQ%3D%3D&trackingId=hG1QdGj8dOZqZbYCkpzF4w%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking & Markets, Investment Banking, China Advisory, Analyst / Associate, Beijing / Hong Kong",
+    "link": "https://cn.linkedin.com/jobs/view/global-banking-markets-investment-banking-china-advisory-analyst-associate-beijing-hong-kong-at-goldman-sachs-4326910688?position=2&pageNum=0&refId=CjcKjeUOh%2Fh4ZyhdbVY0zQ%3D%3D&trackingId=sMIMZveqLu%2BGb59zpC6KdQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking And Markets Operations China Local Markets Analyst Shanghai",
+    "link": "https://cn.linkedin.com/jobs/view/global-banking-and-markets-operations-china-local-markets-analyst-shanghai-at-goldman-sachs-4343871481?position=4&pageNum=0&refId=CjcKjeUOh%2Fh4ZyhdbVY0zQ%3D%3D&trackingId=cvXvWjs5uzohyv%2B4VZP1sQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Risk Regional Risk Analyst Senior Analyst Beijing",
+    "link": "https://cn.linkedin.com/jobs/view/risk-regional-risk-analyst-senior-analyst-beijing-at-goldman-sachs-4322186468?position=5&pageNum=0&refId=CjcKjeUOh%2Fh4ZyhdbVY0zQ%3D%3D&trackingId=Ja6kVCxX8St0Kz8FTAgwwA%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Compliance Asset Management Compliance Associate Beijing",
+    "link": "https://cn.linkedin.com/jobs/view/compliance-asset-management-compliance-associate-beijing-at-goldman-sachs-4322165096?position=6&pageNum=0&refId=CjcKjeUOh%2Fh4ZyhdbVY0zQ%3D%3D&trackingId=fM765dD6BtNWB7q2DkONmQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Internal Audit Technology Audit Senior Analyst Shanghai",
+    "link": "https://cn.linkedin.com/jobs/view/internal-audit-technology-audit-senior-analyst-shanghai-at-goldman-sachs-4323500413?position=7&pageNum=0&refId=CjcKjeUOh%2Fh4ZyhdbVY0zQ%3D%3D&trackingId=SKn83TrRmKsBajjgkLuU3g%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "China Business Development & Marketing Manager, CMP Pad",
+    "link": "https://cn.linkedin.com/jobs/view/china-business-development-marketing-manager-cmp-pad-at-qnity-4343044643?position=1&pageNum=0&refId=Su4EBG0VySAkxXcCminxdw%3D%3D&trackingId=WI3fQtZz7NvXW%2BeDM9eBUg%3D%3D",
+    "company": "Qnity",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Sr. Manager, Sales International Sourcing",
+    "link": "https://cn.linkedin.com/jobs/view/sr-manager-sales-international-sourcing-at-royal-caribbean-group-4323012171?position=2&pageNum=0&refId=Su4EBG0VySAkxXcCminxdw%3D%3D&trackingId=8P4OoIGNXhiahDg4MF%2BYog%3D%3D",
+    "company": "Royal Caribbean Group",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Director, Head of China Business Operations",
+    "link": "https://cn.linkedin.com/jobs/view/senior-director-head-of-china-business-operations-at-blizzard-entertainment-4319223919?position=3&pageNum=0&refId=Su4EBG0VySAkxXcCminxdw%3D%3D&trackingId=eKxMxts3XxBEUXdML3gGwA%3D%3D",
+    "company": "Blizzard Entertainment",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Head Of Account Management China",
+    "link": "https://cn.linkedin.com/jobs/view/head-of-account-management-china-at-adyen-4278020957?position=4&pageNum=0&refId=Su4EBG0VySAkxXcCminxdw%3D%3D&trackingId=ZJxeAHh4DIwpQ%2B7z%2FbBHXw%3D%3D",
+    "company": "Adyen",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Vice President People Culture China",
+    "link": "https://cn.linkedin.com/jobs/view/vice-president-people-culture-china-at-lululemon-3961620886?position=5&pageNum=0&refId=Su4EBG0VySAkxXcCminxdw%3D%3D&trackingId=%2FV2S2e8ouKiKMZNjvkUn8g%3D%3D",
+    "company": "Lululemon",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Manager Sports Marketing Team China",
+    "link": "https://cn.linkedin.com/jobs/view/senior-manager-sports-marketing-team-china-at-adidas-4261691921?position=6&pageNum=0&refId=Su4EBG0VySAkxXcCminxdw%3D%3D&trackingId=4POh%2F3UPpk7WqeWxrqCLng%3D%3D",
+    "company": "Adidas",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "English Literature Teacher",
+    "link": "https://cn.linkedin.com/jobs/view/english-literature-teacher-at-elevate-4346287293?position=1&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=b7NLzZ7aYE9OCcn9d3zceQ%3D%3D",
+    "company": "elevate",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Director of Athletics",
+    "link": "https://cn.linkedin.com/jobs/view/director-of-athletics-at-elevate-4346582124?position=2&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=XDM6olxuu5knlOiysEhddA%3D%3D",
+    "company": "elevate",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "High School English Teacher",
+    "link": "https://cn.linkedin.com/jobs/view/high-school-english-teacher-at-elevate-4346500328?position=3&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=sec%2Bfu50bl7lNTJu3aT9pQ%3D%3D",
+    "company": "elevate",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "策略发展顾问部高级经理",
+    "link": "https://cn.linkedin.com/jobs/view/%E7%AD%96%E7%95%A5%E5%8F%91%E5%B1%95%E9%A1%BE%E9%97%AE%E9%83%A8%E9%AB%98%E7%BA%A7%E7%BB%8F%E7%90%86-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350633194?position=4&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=VFYgXHxOlM%2F%2FHAL6r4ny5Q%3D%3D",
+    "company": "戴德梁行",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "English Teacher",
+    "link": "https://cn.linkedin.com/jobs/view/english-teacher-at-elevate-4346426550?position=5&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=bs0JxXGNs3GOHATqd%2FF%2B5g%3D%3D",
+    "company": "elevate",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Primary School Teacher",
+    "link": "https://cn.linkedin.com/jobs/view/primary-school-teacher-at-elevate-4346400150?position=7&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=dQ5dRwC0llWqtJAOrzv2wg%3D%3D",
+    "company": "elevate",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Humanities Teacher (History/Social Studies)",
+    "link": "https://cn.linkedin.com/jobs/view/humanities-teacher-history-social-studies-at-elevate-4346188947?position=8&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=3V5lPgezq%2BFli7ExQ7SCNQ%3D%3D",
+    "company": "elevate",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Recruitment Officer supporting Deakin University",
+    "link": "https://cn.linkedin.com/jobs/view/recruitment-officer-supporting-deakin-university-at-%E5%8C%97%E4%BA%AC%E6%88%88%E6%B4%9B%E5%85%8B%E5%B8%82%E5%9C%BA%E5%92%A8%E8%AF%A2%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350970437?position=9&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=KbenbwAVFM6sX%2FLX%2BeJqkg%3D%3D",
+    "company": "北京戈洛克市场咨询有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "策略发展顾问部经理",
+    "link": "https://cn.linkedin.com/jobs/view/%E7%AD%96%E7%95%A5%E5%8F%91%E5%B1%95%E9%A1%BE%E9%97%AE%E9%83%A8%E7%BB%8F%E7%90%86-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350623290?position=10&pageNum=0&refId=4CJX7uB9zTtP9xOpgpQzOQ%3D%3D&trackingId=Z4Kk99BsUP1bWWh6K1VZXQ%3D%3D",
+    "company": "戴德梁行",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
     "title": "Specialist, Marketing",
-    "link": "https://cn.linkedin.com/jobs/view/specialist-marketing-at-mastercard-4337311994?position=1&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=At7PvXe4IVazqVfudmbJ6A%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/specialist-marketing-at-mastercard-4337311994?position=1&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=MNKqaCsSb%2Fw%2Bu6k1fyK8jA%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Manager, Business Development, Digital Partnerships, China",
-    "link": "https://cn.linkedin.com/jobs/view/manager-business-development-digital-partnerships-china-at-mastercard-4337461146?position=2&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=%2B93ho6ozvEEwaXz%2BV4aLAQ%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/manager-business-development-digital-partnerships-china-at-mastercard-4337461146?position=2&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=BNDSDNpLRc2wmncuyosAxA%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Manager, Business Development (Retail & Commerce)",
-    "link": "https://cn.linkedin.com/jobs/view/manager-business-development-retail-commerce-at-mastercard-4348130968?position=3&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=egKSy%2FhVYbCxpxbxX5Z3yQ%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/manager-business-development-retail-commerce-at-mastercard-4348130968?position=3&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=rHwtIS926NL6zRF%2B5uaBvQ%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Director Services Business Development",
-    "link": "https://cn.linkedin.com/jobs/view/director-services-business-development-at-mastercard-4347359088?position=4&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=lkOlogWRQJbA18ky3%2F5B1Q%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/director-services-business-development-at-mastercard-4347359088?position=4&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=sM1F%2FlKPD33C4SnRcp3Gnw%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Principal Director Services Business Development",
-    "link": "https://cn.linkedin.com/jobs/view/principal-director-services-business-development-at-mastercard-4350182888?position=5&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=KZGI5fcvF2faIJgqcowc%2FA%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/principal-director-services-business-development-at-mastercard-4350182888?position=5&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=xDWKaFBKkvtZOICttbd5Dg%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Director Network Partnerships China",
-    "link": "https://cn.linkedin.com/jobs/view/director-network-partnerships-china-at-mastercard-4337371702?position=6&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=OsY7Ueuk5ZWzbXggmPOuvw%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/director-network-partnerships-china-at-mastercard-4337371702?position=6&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=PpSe7ZCUS1VNBLnz32QBqg%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Vice President Transfer Solutions",
-    "link": "https://cn.linkedin.com/jobs/view/vice-president-transfer-solutions-at-mastercard-4347049100?position=7&pageNum=0&refId=FjPQceR8nxO4Okx%2Fa3z7rQ%3D%3D&trackingId=MiFf8FsWrJ%2BDPvcm7dadRA%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/vice-president-transfer-solutions-at-mastercard-4347049100?position=7&pageNum=0&refId=NI8Fu0El9HDJiJFpzt8fUA%3D%3D&trackingId=QRh6XINrLF0BcLADvQ4BkQ%3D%3D",
     "company": "Mastercard",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Trainee, Coverage, Beijing",
-    "link": "https://cn.linkedin.com/jobs/view/trainee-coverage-beijing-at-natixis-corporate-investment-banking-4302637067?position=1&pageNum=0&refId=2nTiUIaibd1YpIQiz3WxPw%3D%3D&trackingId=gftRY%2FuE9%2BU4bzA9Jnm4BQ%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/trainee-coverage-beijing-at-natixis-corporate-investment-banking-4302637067?position=1&pageNum=0&refId=0DTm%2F1XSmqXQlbBiRXNGpw%3D%3D&trackingId=D7S8BQwN59olKlCIWkyi9g%3D%3D",
     "company": "Natixis Corporate & Investment Banking",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Investment Counsellor Global Private Banking",
-    "link": "https://cn.linkedin.com/jobs/view/investment-counsellor-global-private-banking-at-hsbc-4334910488?position=1&pageNum=0&refId=tMr%2FJPSm9C00IHYt6kSdpw%3D%3D&trackingId=sxMfTlS2h7myabTrzeE7wA%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/investment-counsellor-global-private-banking-at-hsbc-4334910488?position=1&pageNum=0&refId=3UgiUOnep0dRCtxlSeafgQ%3D%3D&trackingId=nZK4yrIPgG9yhGdfp%2F%2Bq8w%3D%3D",
     "company": "HSBC",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "Relationship Manager Global Private Banking",
-    "link": "https://cn.linkedin.com/jobs/view/relationship-manager-global-private-banking-at-hsbc-4342693128?position=2&pageNum=0&refId=tMr%2FJPSm9C00IHYt6kSdpw%3D%3D&trackingId=mjQW%2FPfsjkdKVSU%2BKt14IQ%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/relationship-manager-global-private-banking-at-hsbc-4342693128?position=2&pageNum=0&refId=3UgiUOnep0dRCtxlSeafgQ%3D%3D&trackingId=HzP0xkbuqoBh%2FfEMuMhF2w%3D%3D",
     "company": "HSBC",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
   },
   {
     "title": "MD&ED of Private Equity / Pre-IPO / IPO/ SPAC / PIPE Sales Team",
-    "link": "https://cn.linkedin.com/jobs/view/md-ed-of-private-equity-pre-ipo-ipo-spac-pipe-sales-team-at-%E4%B9%9D%E4%B9%85%E8%AF%81%E5%88%B8%E9%9B%86%E5%9B%A2-4350654132?position=3&pageNum=0&refId=tMr%2FJPSm9C00IHYt6kSdpw%3D%3D&trackingId=o9fCEtznRaCI53fZnh7ruQ%3D%3D",
+    "link": "https://cn.linkedin.com/jobs/view/md-ed-of-private-equity-pre-ipo-ipo-spac-pipe-sales-team-at-%E4%B9%9D%E4%B9%85%E8%AF%81%E5%88%B8%E9%9B%86%E5%9B%A2-4350654132?position=3&pageNum=0&refId=3UgiUOnep0dRCtxlSeafgQ%3D%3D&trackingId=VELd%2BH6iqGCaQGBmNFhBjg%3D%3D",
     "company": "九久证券集团",
     "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Calling Cdo",
+    "link": "https://cn.linkedin.com/jobs/view/calling-cdo-at-hsbc-4342796050?position=5&pageNum=0&refId=3UgiUOnep0dRCtxlSeafgQ%3D%3D&trackingId=AuwQsIrbhbR3iu5ltQJF9Q%3D%3D",
+    "company": "HSBC",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Institutional Rwa Platform Gtm Bd Institutional Defi Eco Or Asset Management",
+    "link": "https://cn.linkedin.com/jobs/view/institutional-rwa-platform-gtm-bd-institutional-defi-eco-or-asset-management-at-hyphen-connect-4326483096?position=6&pageNum=0&refId=3UgiUOnep0dRCtxlSeafgQ%3D%3D&trackingId=sVkPF0Ix2pLE3qG3WKqfLw%3D%3D",
+    "company": "Hyphen Connect",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Institutional Rwa Platform Product Manager Defi Yield Risk",
+    "link": "https://cn.linkedin.com/jobs/view/institutional-rwa-platform-product-manager-defi-yield-risk-at-hyphen-connect-4326375383?position=7&pageNum=0&refId=3UgiUOnep0dRCtxlSeafgQ%3D%3D&trackingId=Shf2QRpHhoARYEopWOgHWA%3D%3D",
+    "company": "Hyphen Connect",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Guest Relationship Officer-客户关系主任-Hilton Shanghai Fengxian",
+    "link": "https://cn.linkedin.com/jobs/view/guest-relationship-officer-%E5%AE%A2%E6%88%B7%E5%85%B3%E7%B3%BB%E4%B8%BB%E4%BB%BB-hilton-shanghai-fengxian-at-hilton-3811659602?position=1&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=P7d5ItGYFLIHNlZcc6i2uA%3D%3D",
+    "company": "Hilton",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Compliance Officer (Secondary Markets Compliance)",
+    "link": "https://cn.linkedin.com/jobs/view/compliance-officer-secondary-markets-compliance-at-cicc-4256100141?position=2&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=6%2FX7aCWDC8Pnq6Rl5G6x7Q%3D%3D",
+    "company": "CICC",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Acquisition Relation Officer GZU",
+    "link": "https://cn.linkedin.com/jobs/view/senior-acquisition-relation-officer-gzu-at-hang-seng-bank-4342889369?position=3&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=%2F5IX1F6segq837dGFdC8vg%3D%3D",
+    "company": "Hang Seng Bank",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "咨询项目经理",
+    "link": "https://cn.linkedin.com/jobs/view/%E5%92%A8%E8%AF%A2%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86-at-%E4%B8%8A%E6%B5%B7%E5%85%AC%E5%8F%B8-4350930813?position=4&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=r9oaN0Bmk0gIkXv5onV9Vw%3D%3D",
+    "company": "上海公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Retail Sales Supervisor",
+    "link": "https://cn.linkedin.com/jobs/view/retail-sales-supervisor-at-procter-gamble-4350643415?position=5&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=BtCM0wloUbPrMAXgvhApcg%3D%3D",
+    "company": "Procter Gamble",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "General Call For Experts Fwc 2023 Lot 14 Migration And Forced Displacement",
+    "link": "https://cn.linkedin.com/jobs/view/general-call-for-experts-fwc-2023-lot-14-migration-and-forced-displacement-at-proman-luxembourg-4346542733?position=6&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=7dfK97cyJg7MDDxrnDoEpg%3D%3D",
+    "company": "Proman Luxembourg",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Public Area Manager",
+    "link": "https://cn.linkedin.com/jobs/view/public-area-manager-at-hilton-4192058736?position=7&pageNum=0&refId=VPb2OijHLHavgAsMBCizZw%3D%3D&trackingId=t5ipIgNfdyYekeMrGUZtcg%3D%3D",
+    "company": "Hilton",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Student trainee (Schroders Capital PFM Beijing)",
+    "link": "https://cn.linkedin.com/jobs/view/student-trainee-schroders-capital-pfm-beijing-at-%E6%9D%AD%E5%B7%9E%E6%96%BD%E7%BD%97%E5%BE%B7%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4349731360?position=2&pageNum=0&refId=rmtZqNFMfpXyCbb55mxeeg%3D%3D&trackingId=bnQG9IM%2BabaUUAdb3KEkbg%3D%3D",
+    "company": "杭州施罗德科技有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Investment Banker",
+    "link": "https://cn.linkedin.com/jobs/view/investment-banker-at-ubs-4328142676?position=1&pageNum=0&refId=CoFwouhnC1MUBAvhGmEZ9A%3D%3D&trackingId=v8SXrTYKRcnoi6cZ983Yfw%3D%3D",
+    "company": "UBS",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking - China",
+    "link": "https://cn.linkedin.com/jobs/view/global-banking-china-at-ubs-4328150325?position=2&pageNum=0&refId=CoFwouhnC1MUBAvhGmEZ9A%3D%3D&trackingId=XsTqdmhvVVY%2FKWvj41ElrA%3D%3D",
+    "company": "UBS",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Business Manager",
+    "link": "https://cn.linkedin.com/jobs/view/business-manager-at-ubs-4328108003?position=3&pageNum=0&refId=CoFwouhnC1MUBAvhGmEZ9A%3D%3D&trackingId=68rE05o4yCU%2BQVNL9Ywg2g%3D%3D",
+    "company": "UBS",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Ib Operations Apprentice",
+    "link": "https://cn.linkedin.com/jobs/view/ib-operations-apprentice-at-ubs-4329148547?position=4&pageNum=0&refId=CoFwouhnC1MUBAvhGmEZ9A%3D%3D&trackingId=12jdu%2Bbe%2FIjDkfLBoA8s7g%3D%3D",
+    "company": "UBS",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Markets Electronic Trading Risk Management",
+    "link": "https://cn.linkedin.com/jobs/view/global-markets-electronic-trading-risk-management-at-ubs-4328058808?position=7&pageNum=0&refId=CoFwouhnC1MUBAvhGmEZ9A%3D%3D&trackingId=L1J0pZGv9ckbdhsPV7zlwA%3D%3D",
+    "company": "UBS",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Sourcing Manager",
+    "link": "https://cn.linkedin.com/jobs/view/senior-sourcing-manager-at-visa-4327819552?position=1&pageNum=0&refId=yOD2kmZWfoQmqUDgZSsBpQ%3D%3D&trackingId=ohbosEw%2ByKOMy6YSnQhSEQ%3D%3D",
+    "company": "Visa",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "尽职调查经理Manager, Financial due diligence",
+    "link": "https://cn.linkedin.com/jobs/view/%E5%B0%BD%E8%81%8C%E8%B0%83%E6%9F%A5%E7%BB%8F%E7%90%86manager-financial-due-diligence-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350483319?position=1&pageNum=0&refId=7h0Gd68vgrZdW6to2%2BEjMA%3D%3D&trackingId=Ro0HZjqspsOyJl0tlPM%2FeQ%3D%3D",
+    "company": "戴德梁行",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "校招（财富管理）",
+    "link": "https://cn.linkedin.com/jobs/view/%E6%A0%A1%E6%8B%9B%EF%BC%88%E8%B4%A2%E5%AF%8C%E7%AE%A1%E7%90%86%EF%BC%89-at-citic-securities-company-limited-4350950478?position=3&pageNum=0&refId=7h0Gd68vgrZdW6to2%2BEjMA%3D%3D&trackingId=aeHTLCu4cxCq%2FfU13ZWiTA%3D%3D",
+    "company": "CITIC Securities Company Limited",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset Management Equity Portfolio Manager Technology Sector Coverage",
+    "link": "https://cn.linkedin.com/jobs/view/asset-management-equity-portfolio-manager-technology-sector-coverage-at-jpmorganchase-4342493199?position=4&pageNum=0&refId=7h0Gd68vgrZdW6to2%2BEjMA%3D%3D&trackingId=gOkizpOz%2BseN5933ONmEeg%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Compliance Officer Secondary Markets Compliance",
+    "link": "https://cn.linkedin.com/jobs/view/compliance-officer-secondary-markets-compliance-at-cicc-4256100141?position=5&pageNum=0&refId=7h0Gd68vgrZdW6to2%2BEjMA%3D%3D&trackingId=cMOKB3Jez%2FqiO6bi%2FViWCg%3D%3D",
+    "company": "Cicc",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "校招（财富管理）",
+    "link": "https://cn.linkedin.com/jobs/view/%E6%A0%A1%E6%8B%9B%EF%BC%88%E8%B4%A2%E5%AF%8C%E7%AE%A1%E7%90%86%EF%BC%89-at-citic-securities-company-limited-4350950484?position=6&pageNum=0&refId=7h0Gd68vgrZdW6to2%2BEjMA%3D%3D&trackingId=TfYEvxusJwaQpj9dMAQ1Uw%3D%3D",
+    "company": "***** ********** ******* *******",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Corporate Action Officer",
+    "link": "https://cn.linkedin.com/jobs/view/corporate-action-officer-at-hsbc-4339177955?position=1&pageNum=0&refId=%2BE5DWyiChnfBmNG0Iz32kw%3D%3D&trackingId=Zm1HfjM4EnVwxKr2oORJ0A%3D%3D",
+    "company": "HSBC",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Compliance Manager",
+    "link": "https://cn.linkedin.com/jobs/view/compliance-manager-at-susquehanna-international-group-4324947064?position=2&pageNum=0&refId=%2BE5DWyiChnfBmNG0Iz32kw%3D%3D&trackingId=GxdnLgXqTOzFHtGTqpwT3w%3D%3D",
+    "company": "Susquehanna International Group",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "投资法务BP",
+    "link": "https://cn.linkedin.com/jobs/view/%E6%8A%95%E8%B5%84%E6%B3%95%E5%8A%A1bp-at-%E4%BC%99%E4%BC%B4-4328612481?position=3&pageNum=0&refId=%2BE5DWyiChnfBmNG0Iz32kw%3D%3D&trackingId=2RlQnhYrnDmx3q43Pbq5OQ%3D%3D",
+    "company": "伙伴",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "机构客户服务岗（日语）",
+    "link": "https://cn.linkedin.com/jobs/view/%E6%9C%BA%E6%9E%84%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%B2%97%EF%BC%88%E6%97%A5%E8%AF%AD%EF%BC%89-at-daiwahouse-industry-co-ltd-4351080440?position=4&pageNum=0&refId=%2BE5DWyiChnfBmNG0Iz32kw%3D%3D&trackingId=66WgCyVmzP%2Bko5f8llBxUg%3D%3D",
+    "company": "DaiwaHouse Industry Co., ltd",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "投顾业务负责人（摩根基金）",
+    "link": "https://cn.linkedin.com/jobs/view/%E6%8A%95%E9%A1%BE%E4%B8%9A%E5%8A%A1%E8%B4%9F%E8%B4%A3%E4%BA%BA%EF%BC%88%E6%91%A9%E6%A0%B9%E5%9F%BA%E9%87%91%EF%BC%89-at-%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350473041?position=1&pageNum=0&refId=C9r1UIaObhSrz6dVg4ptEw%3D%3D&trackingId=Vl6%2FooyB%2BY7Yzcl30y4hKQ%3D%3D",
+    "company": "摩根大通亚洲咨询(北京)有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "股票量化研究实习生（股票多因子方向）",
+    "link": "https://cn.linkedin.com/jobs/view/%E8%82%A1%E7%A5%A8%E9%87%8F%E5%8C%96%E7%A0%94%E7%A9%B6%E5%AE%9E%E4%B9%A0%E7%94%9F%EF%BC%88%E8%82%A1%E7%A5%A8%E5%A4%9A%E5%9B%A0%E5%AD%90%E6%96%B9%E5%90%91%EF%BC%89-at-%E4%B8%8A%E6%B5%B7%E7%BB%B0%E7%91%9E%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350960449?position=5&pageNum=0&refId=C9r1UIaObhSrz6dVg4ptEw%3D%3D&trackingId=F6GaWJXCJmPpRc3xrJWiPg%3D%3D",
+    "company": "上海绰瑞资产管理有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "互联网运营高级经理",
+    "link": "https://cn.linkedin.com/jobs/view/%E4%BA%92%E8%81%94%E7%BD%91%E8%BF%90%E8%90%A5%E9%AB%98%E7%BA%A7%E7%BB%8F%E7%90%86-at-china-asset-management-co-ltd-4350940690?position=6&pageNum=0&refId=C9r1UIaObhSrz6dVg4ptEw%3D%3D&trackingId=h4niWwUGAMorExxD6YJxZA%3D%3D",
+    "company": "***** ***** ********** **., ***.",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Associate, ETF Markets",
+    "link": "https://hk.linkedin.com/jobs/view/associate-etf-markets-at-blackrock-4346226675?position=1&pageNum=0&refId=hiyAqlroFyscXo0jT2FLjA%3D%3D&trackingId=bPdXEhpw82GfG9OrtmI1yA%3D%3D",
+    "company": "BlackRock",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Associate, China Offshore Wealth Team",
+    "link": "https://hk.linkedin.com/jobs/view/associate-china-offshore-wealth-team-at-blackrock-4335659526?position=2&pageNum=0&refId=hiyAqlroFyscXo0jT2FLjA%3D%3D&trackingId=8bse%2FNKbnz7H%2FOoaq4xEpA%3D%3D",
+    "company": "BlackRock",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Associate, Investment Performance Analytics & Client Reporting",
+    "link": "https://hk.linkedin.com/jobs/view/associate-investment-performance-analytics-client-reporting-at-pinebridge-investments-4340522626?position=3&pageNum=0&refId=hiyAqlroFyscXo0jT2FLjA%3D%3D&trackingId=rST0AhXh721SlscmL2PUug%3D%3D",
+    "company": "PineBridge Investments",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Manager Asset Servicing Vp Markets Securities Services",
+    "link": "https://hk.linkedin.com/jobs/view/manager-asset-servicing-vp-markets-securities-services-at-hsbc-4335040012?position=4&pageNum=0&refId=hiyAqlroFyscXo0jT2FLjA%3D%3D&trackingId=0WSFNSOMPda1NMMIx17%2B1Q%3D%3D",
+    "company": "HSBC",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Institutional Rwa Platform Product Manager Defi Yield Risk",
+    "link": "https://hk.linkedin.com/jobs/view/institutional-rwa-platform-product-manager-defi-yield-risk-at-hyphen-connect-4326395607?position=5&pageNum=0&refId=hiyAqlroFyscXo0jT2FLjA%3D%3D&trackingId=amnSaZmS7j2IQ4zGK7xDHQ%3D%3D",
+    "company": "Hyphen Connect",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Team Head, Relationship Management, Wealth Management",
+    "link": "https://hk.linkedin.com/jobs/view/team-head-relationship-management-wealth-management-at-bnp-paribas-4003503827?position=1&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=Pa2OdRTfbiytkUvd3XfDbw%3D%3D",
+    "company": "BNP Paribas",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Marketing Associate, Wealth Management",
+    "link": "https://hk.linkedin.com/jobs/view/senior-marketing-associate-wealth-management-at-bnp-paribas-4165094197?position=2&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=ge0yMJldMVJm3%2BJ4zjDkeQ%3D%3D",
+    "company": "BNP Paribas",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Associate - OPC & TAC Coordination Officer",
+    "link": "https://hk.linkedin.com/jobs/view/associate-opc-tac-coordination-officer-at-bnp-paribas-4077130611?position=3&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=bBBiqjXaeRcPEFgNdEUwZQ%3D%3D",
+    "company": "BNP Paribas",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset Management Finance Finance Permanent Controller Trainee Internship Asia Pacific 6 Month Contract",
+    "link": "https://hk.linkedin.com/jobs/view/asset-management-finance-finance-permanent-controller-trainee-internship-asia-pacific-6-month-contract-at-bnp-paribas-asset-management-4314105013?position=4&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=%2FAu34f5gUC7LUp6ad39G1w%3D%3D",
+    "company": "Bnp Paribas Asset Management",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Regional It Security Risk Analyst",
+    "link": "https://hk.linkedin.com/jobs/view/regional-it-security-risk-analyst-at-bnp-paribas-4319140993?position=5&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=NOqIwqZO4kUXIk%2FaJJRxLg%3D%3D",
+    "company": "BNP Paribas",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Institutional Account Manager",
+    "link": "https://hk.linkedin.com/jobs/view/institutional-account-manager-at-usmart-securities-limited-4329518641?position=6&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=llzrO%2FuML6SM6jsM%2BKkTCA%3D%3D",
+    "company": "Usmart Securities Limited",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset Management Regional Finance Financial Analyst Management Reporting Apac 9 Month Contract",
+    "link": "https://hk.linkedin.com/jobs/view/asset-management-regional-finance-financial-analyst-management-reporting-apac-9-month-contract-at-bnp-paribas-asset-management-4342770996?position=7&pageNum=0&refId=HKg7pj7ZW5SrOyfE0E6nTg%3D%3D&trackingId=FXFHBLjeoFDUxAOuEY88PQ%3D%3D",
+    "company": "Bnp Paribas Asset Management",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Private Bank – Business Control Operations Officer - Associate",
+    "link": "https://hk.linkedin.com/jobs/view/private-bank-%E2%80%93-business-control-operations-officer-associate-at-deutsche-bank-4343019729?position=1&pageNum=0&refId=o1KrQLYLxNjpsZ1NoYKKXw%3D%3D&trackingId=14tjLmlJWgZbMXRT4Q2wKQ%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "C&AFC – Global Markets Compliance - VP",
+    "link": "https://hk.linkedin.com/jobs/view/c-afc-%E2%80%93-global-markets-compliance-vp-at-deutsche-bank-4289777318?position=2&pageNum=0&refId=o1KrQLYLxNjpsZ1NoYKKXw%3D%3D&trackingId=YCth3FbHUK8vZ%2BL5AaaNnw%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "IB - ICG Asia FX Sales - Director",
+    "link": "https://hk.linkedin.com/jobs/view/ib-icg-asia-fx-sales-director-at-deutsche-bank-4331171093?position=3&pageNum=0&refId=o1KrQLYLxNjpsZ1NoYKKXw%3D%3D&trackingId=ludl7JqyhbuWg7tOM0iY4g%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Executive Office, Office of Corporate Engagement, Analyst, Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/executive-office-office-of-corporate-engagement-analyst-hong-kong-at-goldman-sachs-4323424507?position=1&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=2yyiHQEDxFMrdHvmwfbUWg%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Risk, Operational Risk, Associate, Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/risk-operational-risk-associate-hong-kong-at-goldman-sachs-4266123975?position=2&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=pWhcUG4wOIJT7XZSA5D3EQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Risk, Market Risk, Associate, Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/risk-market-risk-associate-hong-kong-at-goldman-sachs-4308581310?position=3&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=LUer9DvwsoK1g9HxIF0OhQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking Markets Quantitative Execution Services Research Associate Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-quantitative-execution-services-research-associate-hong-kong-at-goldman-sachs-4322036681?position=4&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=Ym7KS578Uiour2DQjmn38Q%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking Markets Electronic Market Making Quant Trader Analyst Associate",
+    "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-electronic-market-making-quant-trader-analyst-associate-at-goldman-sachs-4316976384?position=5&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=sMNyyCa6ip3aLZ1SPu28Iw%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset Wealth Management Private Wealth Management Cross Markets Team Vice President Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/asset-wealth-management-private-wealth-management-cross-markets-team-vice-president-hong-kong-at-goldman-sachs-4323133553?position=6&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=komj8ZMonDSEQu5PNQBphA%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking Markets Corporate Access Workflow Solutions Associate Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-corporate-access-workflow-solutions-associate-hong-kong-at-goldman-sachs-4326620794?position=7&pageNum=0&refId=9hTjGfurFKusyrQWbHVMEQ%3D%3D&trackingId=Y0bTMiWqxWFZhGyGSrH9VQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Executive Assistant, Corporate & Investment Banking - Office of the Asia Pacific CEO",
+    "link": "https://hk.linkedin.com/jobs/view/executive-assistant-corporate-investment-banking-office-of-the-asia-pacific-ceo-at-jpmorganchase-4343024166?position=1&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=Ekc8q7WrlhfBY0GqJ2UNSg%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Sales and Marketing – Credit Sales Assistant - Analyst",
+    "link": "https://hk.linkedin.com/jobs/view/sales-and-marketing-%E2%80%93-credit-sales-assistant-analyst-at-jpmorganchase-4343183148?position=2&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=CFokFx8H0VMAWMZINGdvHw%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Corporate Banking - Subsidiary Banking - Analyst – Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/global-corporate-banking-subsidiary-banking-analyst-%E2%80%93-hong-kong-at-jpmorganchase-4342205496?position=3&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=eZxfihDXIPpO7FZWq0qd6A%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "International Private Bank Analyst China Market",
+    "link": "https://hk.linkedin.com/jobs/view/international-private-bank-analyst-china-market-at-jpmorganchase-4319015988?position=4&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=SdXLhjCDSIk4jDIIHg0iUQ%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "International Private Bank Analyst – Hong Kong Market",
+    "link": "https://hk.linkedin.com/jobs/view/international-private-bank-analyst-%E2%80%93-hong-kong-market-at-jpmorganchase-4319028547?position=5&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=WiemRZQ1L2vxsPt0BviG9Q%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Payments Corporate Sales Associate",
+    "link": "https://hk.linkedin.com/jobs/view/payments-corporate-sales-associate-at-jpmorganchase-4343232925?position=6&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=l2iT2BBOD4oM5grkx0POGA%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Executive Administrative Assistant Commercial Investment Bank",
+    "link": "https://hk.linkedin.com/jobs/view/executive-administrative-assistant-commercial-investment-bank-at-jpmorganchase-4342835302?position=7&pageNum=0&refId=yfvtnjqyLNnRWko1%2BULIQg%3D%3D&trackingId=7yky%2BKEtx1ONVpfCFigBVw%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Equity research, China Healthcare, Analyst/Associate",
+    "link": "https://hk.linkedin.com/jobs/view/equity-research-china-healthcare-analyst-associate-at-morgan-stanley-4318357668?position=1&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=ZPbZ89qCRGQXeWUKBET9Rg%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Investment Banking Healthcare Associate",
+    "link": "https://hk.linkedin.com/jobs/view/investment-banking-healthcare-associate-at-morgan-stanley-4329328512?position=2&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=bXQMtX5tprDmBWIpM3s%2Fhg%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "APAC Employment Counsel",
+    "link": "https://hk.linkedin.com/jobs/view/apac-employment-counsel-at-morgan-stanley-4318365154?position=3&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=MamUBYNKFteMI2rVWhYCaA%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Firm Risk Management Corporate Credit Officer Analyst Associate Hong Kong Singapore",
+    "link": "https://hk.linkedin.com/jobs/view/firm-risk-management-corporate-credit-officer-analyst-associate-hong-kong-singapore-at-morgan-stanley-4326259536?position=4&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=wsmPKbTxkvfZyydMzJklqQ%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Legal – M A And Capital Markets Lawyer Vice President",
+    "link": "https://hk.linkedin.com/jobs/view/legal-%E2%80%93-m-a-and-capital-markets-lawyer-vice-president-at-morgan-stanley-4322066189?position=5&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=lz%2B7BrsYPCAPoLpzdo93RQ%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Macro Research Asia Macro Strategist Vice President",
+    "link": "https://hk.linkedin.com/jobs/view/macro-research-asia-macro-strategist-vice-president-at-morgan-stanley-4307958137?position=6&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=cwFuh0y45uusqYdp3Plk2w%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asia Wealth Management Product Owner Vice President Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/asia-wealth-management-product-owner-vice-president-hong-kong-at-morgan-stanley-4326286332?position=7&pageNum=0&refId=BZ9nwi4yBw3agOFT%2FK4W5Q%3D%3D&trackingId=DsrSOu%2BkP4zf50AQBu4N%2Bw%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Marketing Executive",
+    "link": "https://hk.linkedin.com/jobs/view/marketing-executive-at-schroders-4347517626?position=1&pageNum=0&refId=oNJhxhKbu56bJmEazaLoBA%3D%3D&trackingId=PQAAewfA%2BT6rJN%2BMKl4EpA%3D%3D",
+    "company": "Schroders",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Analyst, Equities",
+    "link": "https://hk.linkedin.com/jobs/view/analyst-equities-at-schroders-4335452670?position=3&pageNum=0&refId=oNJhxhKbu56bJmEazaLoBA%3D%3D&trackingId=UtNkk4cgpFlhL9ZcfXalxw%3D%3D",
+    "company": "Schroders",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Service Executive",
+    "link": "https://hk.linkedin.com/jobs/view/client-service-executive-at-schroders-4332425000?position=4&pageNum=0&refId=oNJhxhKbu56bJmEazaLoBA%3D%3D&trackingId=nr6s8Cy5VIWzMIfaC33GYg%3D%3D",
+    "company": "Schroders",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Implementation Analyst",
+    "link": "https://hk.linkedin.com/jobs/view/implementation-analyst-at-schroders-4339349636?position=5&pageNum=0&refId=oNJhxhKbu56bJmEazaLoBA%3D%3D&trackingId=ca%2BhP7ykrISk%2Fl9BJYRATw%3D%3D",
+    "company": "Schroders",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "IB Marketing - Marketing Strategy Associate",
+    "link": "https://hk.linkedin.com/jobs/view/ib-marketing-marketing-strategy-associate-at-ubs-4329640902?position=1&pageNum=0&refId=6HCC%2Bn2%2FVF0OqXX8qbDOfw%3D%3D&trackingId=X8kIUuE2ny6FllCl5UWsHw%3D%3D",
+    "company": "UBS",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Advisor, GWM Hong Kong",
+    "link": "https://hk.linkedin.com/jobs/view/client-advisor-gwm-hong-kong-at-ubs-4350854939?position=2&pageNum=0&refId=6HCC%2Bn2%2FVF0OqXX8qbDOfw%3D%3D&trackingId=H6iZf12JH3n8aemWj7Y95Q%3D%3D",
+    "company": "UBS",
+    "location": "HK",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Junior Data Scientist",
+    "link": "https://sg.linkedin.com/jobs/view/junior-data-scientist-at-bnp-paribas-4308589389?position=1&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=2N21mf8%2B84RBAKg6vn9VZQ%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Wealth Management - Senior Relationship Manager / Relationship Manager",
+    "link": "https://sg.linkedin.com/jobs/view/wealth-management-senior-relationship-manager-relationship-manager-at-bnp-paribas-3984312593?position=2&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=wjRczLzbm724Tawxi1Gnug%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "BCM Manager",
+    "link": "https://sg.linkedin.com/jobs/view/bcm-manager-at-bnp-paribas-4253259111?position=3&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=B1lL013qnAXLQEAzoV5oGQ%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Sustainability Project Manager",
+    "link": "https://sg.linkedin.com/jobs/view/sustainability-project-manager-at-bnp-paribas-4318344478?position=4&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=aaj0590HMj50zroOeDfo8w%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Kyc Expert Transfer Agency And Investor Services",
+    "link": "https://sg.linkedin.com/jobs/view/kyc-expert-transfer-agency-and-investor-services-at-bnp-paribas-4299396315?position=5&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=AMC2jpdjWGSVTYM9RNV3cg%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Specialist Compliance Officer Regional Aml Advisory Transaction Monitoring Team Wm Cib",
+    "link": "https://sg.linkedin.com/jobs/view/specialist-compliance-officer-regional-aml-advisory-transaction-monitoring-team-wm-cib-at-bnp-paribas-4319231744?position=6&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=sdMU1IxL6KlNg0xn8InE3Q%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Risk Manager",
+    "link": "https://sg.linkedin.com/jobs/view/risk-manager-at-bnp-paribas-4309488712?position=7&pageNum=0&refId=90ut2WY2VB69F%2BugQMXG2w%3D%3D&trackingId=AMjQtNuLQhMu%2FeYzEYCNtw%3D%3D",
+    "company": "BNP Paribas",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Corporate Bank - MNC Coverage - Associate",
+    "link": "https://sg.linkedin.com/jobs/view/corporate-bank-mnc-coverage-associate-at-deutsche-bank-4311171110?position=1&pageNum=0&refId=gjk0JThrE8YDjKDzNj0ZTQ%3D%3D&trackingId=gyUXuavV5XCU4XUkQAravw%3D%3D",
+    "company": "Deutsche Bank",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset & Wealth Management, Private Wealth Advisor, Executive Director, Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-wealth-advisor-executive-director-singapore-at-goldman-sachs-4288748740?position=1&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=64bnX9sZZfqH%2BPlLNSZIwQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset & Wealth Management, Private Bank Lending, Executive Director, Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-bank-lending-executive-director-singapore-at-goldman-sachs-4323063591?position=2&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=zjHKeqoZQ5ZpaJ694zyRcw%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset & Wealth Management, Private Wealth Management, Family Office Wealth Strategist, Vice President/ Executive Director, Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-wealth-management-family-office-wealth-strategist-vice-president-executive-director-singapore-at-goldman-sachs-4307678295?position=3&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=xM6uSqTMnXb31HPFbduTnw%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Global Banking Markets Operations Securities Settlements Stocks Connect Inventory Management Analyst Associate Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/global-banking-markets-operations-securities-settlements-stocks-connect-inventory-management-analyst-associate-singapore-at-goldman-sachs-4325944230?position=4&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=iTNeeqtJFAnBqL8My%2FVhVQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Core Engineering Finops Engineering Cloud Platform Developer Analyst Associate Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/core-engineering-finops-engineering-cloud-platform-developer-analyst-associate-singapore-at-goldman-sachs-4304539704?position=5&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=Jjo%2FoGk61pmgW2nAr3e5TQ%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Core Engineering Entitlements Platform Engineering Associate Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/core-engineering-entitlements-platform-engineering-associate-singapore-at-goldman-sachs-4235496092?position=6&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=qZDF%2BOJf775j58v%2BCn%2BhcA%3D%3D",
+    "company": "Goldman Sachs",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Trading Operations Analyst",
+    "link": "https://sg.linkedin.com/jobs/view/trading-operations-analyst-at-gsr-4342150230?position=7&pageNum=0&refId=wX0y6tQbe1G8gbIsGuxMZQ%3D%3D&trackingId=Z4lPbhcI7wXgEBUioopXpA%3D%3D",
+    "company": "Gsr",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Singapore Country Business Management - Associate",
+    "link": "https://sg.linkedin.com/jobs/view/singapore-country-business-management-associate-at-jpmorganchase-4346893606?position=1&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=8vHeqAy1zhTyvJ%2Bj4n7GJA%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "APAC Marketing Strategy Manager, Vice President, Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/apac-marketing-strategy-manager-vice-president-singapore-at-jpmorganchase-4346709073?position=2&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=JLWDengHvc4LH0%2BBeBB%2Bdg%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Commercial & Investment Bank, Corporate Sales – China Client Coverage, Associate",
+    "link": "https://sg.linkedin.com/jobs/view/commercial-investment-bank-corporate-sales-%E2%80%93-china-client-coverage-associate-at-jpmorganchase-4332456844?position=3&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=lqd%2BLD8rgbcoT27gPvz3qg%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Commercial Investment Bank Corporate Sales – China Client Coverage Vice President",
+    "link": "https://sg.linkedin.com/jobs/view/commercial-investment-bank-corporate-sales-%E2%80%93-china-client-coverage-vice-president-at-jpmorganchase-4332457871?position=4&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=dpCf9QZZryseaRLh7IiOQA%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "International Private Bank – Operations Project Manager – Vice President",
+    "link": "https://sg.linkedin.com/jobs/view/international-private-bank-%E2%80%93-operations-project-manager-%E2%80%93-vice-president-at-jpmorganchase-4343271112?position=5&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=6iyN89kz3SSGb547W9peLA%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Treasury Chief Investment Office Vice President",
+    "link": "https://sg.linkedin.com/jobs/view/treasury-chief-investment-office-vice-president-at-jpmorganchase-4336902362?position=6&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=MaAJ0Sf3Paw0g6113W7MhA%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Prime Financial Services Operations Analytics Vice President",
+    "link": "https://sg.linkedin.com/jobs/view/prime-financial-services-operations-analytics-vice-president-at-jpmorganchase-4343133373?position=7&pageNum=0&refId=tENJEv3%2Bj0p6Hb0HcdPsRw%3D%3D&trackingId=nq0CeUF8FCzw6uEpWKSIPQ%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Python Developer, Associate",
+    "link": "https://sg.linkedin.com/jobs/view/python-developer-associate-at-morgan-stanley-4322632182?position=1&pageNum=0&refId=tAS6Vb5TSuGTlqYiqjEDuA%3D%3D&trackingId=cowlfl%2BSl8MhT8SQek7TJQ%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Private Wealth Management Credit Risk, Analyst",
+    "link": "https://sg.linkedin.com/jobs/view/private-wealth-management-credit-risk-analyst-at-morgan-stanley-4322795358?position=2&pageNum=0&refId=tAS6Vb5TSuGTlqYiqjEDuA%3D%3D&trackingId=7%2B%2BXxAY3K5UHZ3DdxwXuEw%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asia Wealth Management , Client Service Manager, Associate/ Director, Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/asia-wealth-management-client-service-manager-associate-director-singapore-at-morgan-stanley-4298327220?position=3&pageNum=0&refId=tAS6Vb5TSuGTlqYiqjEDuA%3D%3D&trackingId=PKCSrZY%2FXa9NnTDVRQxeaQ%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asia Wealth Management Client Service Manager Associate Director Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/asia-wealth-management-client-service-manager-associate-director-singapore-at-morgan-stanley-4298322430?position=4&pageNum=0&refId=tAS6Vb5TSuGTlqYiqjEDuA%3D%3D&trackingId=d0P9FUWI4CbPL0jZJdnl5Q%3D%3D",
+    "company": "Morgan Stanley",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Investment Analyst",
+    "link": "https://sg.linkedin.com/jobs/view/investment-analyst-at-schroders-4336240404?position=1&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=zX2CLjAzci3aMRJ20r4uBQ%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Student Trainee",
+    "link": "https://sg.linkedin.com/jobs/view/student-trainee-at-schroders-4343027918?position=2&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=6UGcThFLGSAAtWycDa3ITw%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Software Engineer",
+    "link": "https://sg.linkedin.com/jobs/view/software-engineer-at-schroders-4346078495?position=3&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=guJ7ohDLTMRFgAFW8GS1wg%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Investment Product Analyst Asia Ex Japan Equities",
+    "link": "https://sg.linkedin.com/jobs/view/investment-product-analyst-asia-ex-japan-equities-at-schroders-4335862608?position=4&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=HH0hzBD%2BWsmZ1M9oc0l8bg%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Operations Change Project Manager 12 Month Ftc",
+    "link": "https://sg.linkedin.com/jobs/view/operations-change-project-manager-12-month-ftc-at-schroders-4343552809?position=5&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=IrJA0H4S3BolaTUDM4X4rg%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Specialist It And Operations",
+    "link": "https://sg.linkedin.com/jobs/view/specialist-it-and-operations-at-schroders-4341287833?position=6&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=CZkjCW6IM0%2Fn4oFGHqYlJg%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Implementation Analyst",
+    "link": "https://sg.linkedin.com/jobs/view/implementation-analyst-at-schroders-4335910244?position=7&pageNum=0&refId=tG1n%2B1lQBpTVUGEWXjzpbw%3D%3D&trackingId=s7nB8lGnUPHFzJN68gJemg%3D%3D",
+    "company": "Schroders",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Business Analyst",
+    "link": "https://sg.linkedin.com/jobs/view/business-analyst-at-ubs-4329418134?position=1&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=ivAKXnMpHQ8bXvzp5GkePw%3D%3D",
+    "company": "UBS",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Portfolio Manager | Family Office",
+    "link": "https://sg.linkedin.com/jobs/view/portfolio-manager-family-office-at-dada-consultants-4329624388?position=2&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=XolEclHvO0D88xn3TOQZ3w%3D%3D",
+    "company": "Dada Consultants",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Data Scientist – Applied AI & Machine Learning",
+    "link": "https://sg.linkedin.com/jobs/view/data-scientist-%E2%80%93-applied-ai-machine-learning-at-ubs-4329524250?position=3&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=e7KllvS0WiJ1XQDmQm3%2BSA%3D%3D",
+    "company": "UBS",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Account Manager Southeast Asia",
+    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-southeast-asia-at-ubs-4329880930?position=4&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=cceCABy9869zmuTNWTekRg%3D%3D",
+    "company": "UBS",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Account Manager Greater China Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-greater-china-singapore-at-ubs-4329794392?position=5&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=ufRCfidQ%2BlRJyC4NKnTRPA%3D%3D",
+    "company": "UBS",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Account Manager Private Client Singapore",
+    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-private-client-singapore-at-ubs-4329758494?position=6&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=MDkoI4ER8NUbgMe3TvakAw%3D%3D",
+    "company": "UBS",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Client Account Manager Global Family And Institutional Wealth",
+    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-global-family-and-institutional-wealth-at-ubs-4329821118?position=7&pageNum=0&refId=eYgCmSPA5Elu1jgXYzKl%2Fg%3D%3D&trackingId=%2F1k%2FVQj6f5Ocee1JaaMm1A%3D%3D",
+    "company": "UBS",
+    "location": "SG",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "2026 BloombergNEF Summer Internship, Beijing",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/2026-BloombergNEF-Summer-Internship-Beijing/16036",
+    "company": "Beijing, Beijing, China",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "BNEF Hydrogen Analysis Researcher",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/BNEF-Hydrogen-Analysis-Researcher/15188",
+    "company": "Shanghai, Shanghai, China",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "BloombergNEF Relationship Manager - Beijing",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/BloombergNEF-Relationship-Manager-Beijing/13849",
+    "company": "Beijing, Beijing, China",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Localization Analyst - Taiwanese Traditional Chinese, based in Hong Kong",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Senior-Localization-Analyst-Taiwanese-Traditional-Chinese-based-in-Hong-Kong/16487",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Manager - OTC Pricing Data, Hong Kong",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Manager-OTC-Pricing-Data-Hong-Kong/16467",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Technical Account Manager, Research, Hong Kong",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Technical-Account-Manager-Research-Hong-Kong/16454",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "BloombergNEF Account Manager - Hong Kong",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/BloombergNEF-Account-Manager-Hong-Kong/16373",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Enterprise Sales - Team Leader - BVAULT & RHUB Sales, Hong Kong",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Sales-Team-Leader-BVAULT-RHUB-Sales-Hong-Kong/16394",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Enterprise Data Sales Relationship Manager - Singapore",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Data-Sales-Relationship-Manager-Singapore/16363",
+    "company": "Singapore, Singapore",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Enterprise Sales - Electronic Trading Solutions, Sell Side Relationship Manager - Singapore",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Sales-Electronic-Trading-Solutions-Sell-Side-Relationship-Manager-Singapore/16302",
+    "company": "Singapore, Singapore",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Senior Creative Content Lead - Singapore",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Senior-Creative-Content-Lead-Singapore/16339",
+    "company": "Singapore, Singapore",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Enterprise Sales - Electronic Trading Solutions Sell-side Relationship Manager - Hong Kong",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Sales-Electronic-Trading-Solutions-Sell-side-Relationship-Manager-Hong-Kong/16273",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "BNEF Energy Transition Finance and Investment Analyst",
+    "link": "https://bloomberg.avature.net/careers/JobDetail/BNEF-Energy-Transition-Finance-and-Investment-Analyst/16264",
+    "company": "Hong Kong, Hong Kong",
+    "location": "OTHER",
+    "pushTime": "2026-01-01T16:02:17.490Z"
+  },
+  {
+    "title": "Asset Management - ETF Platform Project Management - Vice President",
+    "link": "https://cn.linkedin.com/jobs/view/asset-management-etf-platform-project-management-vice-president-at-jpmorganchase-4264763203?position=2&pageNum=0&refId=qdIx5Da5Hd0oGXbIsVXVCg%3D%3D&trackingId=n9A%2B2c0MuGLYJhU9WtyiAw%3D%3D",
+    "company": "JPMorgan Chase",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "资产运营岗（电力交易方向） (MJ001686)",
+    "link": "https://cn.linkedin.com/jobs/view/%E8%B5%84%E4%BA%A7%E8%BF%90%E8%90%A5%E5%B2%97%EF%BC%88%E7%94%B5%E5%8A%9B%E4%BA%A4%E6%98%93%E6%96%B9%E5%90%91%EF%BC%89-mj001686-at-jinko-power-4329787869?position=3&pageNum=0&refId=qdIx5Da5Hd0oGXbIsVXVCg%3D%3D&trackingId=RfYBF2VnyP0no09oVQCMmw%3D%3D",
+    "company": "Jinko Power",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Assistant Vice President Investment Group Mkt China Beijing",
+    "link": "https://cn.linkedin.com/jobs/view/assistant-vice-president-investment-group-mkt-china-beijing-at-temasek-4348496113?position=4&pageNum=0&refId=qdIx5Da5Hd0oGXbIsVXVCg%3D%3D&trackingId=52GciMfuJdXq2rL9LQnNmA%3D%3D",
+    "company": "Temasek",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "经营分析总监（集团）",
+    "link": "https://cn.linkedin.com/jobs/view/%E7%BB%8F%E8%90%A5%E5%88%86%E6%9E%90%E6%80%BB%E7%9B%91%EF%BC%88%E9%9B%86%E5%9B%A2%EF%BC%89-at-semcorp-advanced-materials-group-4350446413?position=5&pageNum=0&refId=qdIx5Da5Hd0oGXbIsVXVCg%3D%3D&trackingId=IlTifukvg33fp1V621vkdQ%3D%3D",
+    "company": "******* ******** ********* *****",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Executive - Business Development, China",
+    "link": "https://cn.linkedin.com/jobs/view/executive-business-development-china-at-anantara-vacation-club-4323383975?position=1&pageNum=0&refId=iOIyL1KmmUdPj5S9HTiDEw%3D%3D&trackingId=WBnzl7IXODIzpxvWfPBt7g%3D%3D",
+    "company": "Anantara Vacation Club",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Business Development Manager",
+    "link": "https://cn.linkedin.com/jobs/view/business-development-manager-at-htx-4327872270?position=2&pageNum=0&refId=iOIyL1KmmUdPj5S9HTiDEw%3D%3D&trackingId=oNkMTuPVmqtYueHaEQMlNQ%3D%3D",
+    "company": "HTX",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Business Development Manager",
+    "link": "https://cn.linkedin.com/jobs/view/business-development-manager-at-amd-4272885343?position=3&pageNum=0&refId=iOIyL1KmmUdPj5S9HTiDEw%3D%3D&trackingId=eOfkn6SPQk01srd%2BDWbAnQ%3D%3D",
+    "company": "AMD",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Business Development Manager",
+    "link": "https://cn.linkedin.com/jobs/view/business-development-manager-at-qima-4132239301?position=4&pageNum=0&refId=iOIyL1KmmUdPj5S9HTiDEw%3D%3D&trackingId=W8pNmTNhbOGl%2B2OyxHoAyw%3D%3D",
+    "company": "Qima",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "渠道业务拓展经理 Bd Manager",
+    "link": "https://cn.linkedin.com/jobs/view/%E6%B8%A0%E9%81%93%E4%B8%9A%E5%8A%A1%E6%8B%93%E5%B1%95%E7%BB%8F%E7%90%86-bd-manager-at-%E5%8D%93%E5%B0%94%E5%8F%91%E5%B1%95%E9%9B%86%E5%9B%A2%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350516450?position=6&pageNum=0&refId=iOIyL1KmmUdPj5S9HTiDEw%3D%3D&trackingId=rr6wyfdPFEm9QCbzKz7%2B5w%3D%3D",
+    "company": "卓尔发展集团有限公司",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Business Development Senior Manager 商业地产部）",
+    "link": "https://cn.linkedin.com/jobs/view/business-development-senior-manager-%E5%95%86%E4%B8%9A%E5%9C%B0%E4%BA%A7%E9%83%A8%EF%BC%89-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350684211?position=7&pageNum=0&refId=iOIyL1KmmUdPj5S9HTiDEw%3D%3D&trackingId=%2BlgfTuSYwZ4SQzn%2FDWLU6A%3D%3D",
+    "company": "戴德梁行",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "VP, Head of System Delivery & Operations",
+    "link": "https://cn.linkedin.com/jobs/view/vp-head-of-system-delivery-operations-at-blackrock-4336188009?position=1&pageNum=0&refId=Dpa35hrFcX3esnERo5fAKQ%3D%3D&trackingId=SJbRHEbTZHLGLR0JuewDiw%3D%3D",
+    "company": "BlackRock",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.489Z"
+  },
+  {
+    "title": "Quantitative Analyst",
+    "link": "https://cn.linkedin.com/jobs/view/quantitative-analyst-at-east-west-bank-4329541144?position=1&pageNum=0&refId=qdIx5Da5Hd0oGXbIsVXVCg%3D%3D&trackingId=51yGRDZVnScAh8yRzQVpAw%3D%3D",
+    "company": "East West Bank",
+    "location": "CN",
+    "pushTime": "2026-01-01T16:02:17.487Z"
   },
   {
     "title": "Calling CDO",
@@ -91,58 +1386,9 @@
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
   {
-    "title": "Institutional RWA Platform - Product Manager - DeFi, Yield, Risk",
-    "link": "https://cn.linkedin.com/jobs/view/institutional-rwa-platform-product-manager-defi-yield-risk-at-hyphen-connect-4326375383?position=7&pageNum=0&refId=tMr%2FJPSm9C00IHYt6kSdpw%3D%3D&trackingId=1YSkcxF%2FWWyNMJMD6yFjgA%3D%3D",
-    "company": "Hyphen Connect",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
     "title": "Sr Customer Development Rep Nanjing NJX Sub-branch",
     "link": "https://cn.linkedin.com/jobs/view/sr-customer-development-rep-nanjing-njx-sub-branch-at-hsbc-4336028487?position=8&pageNum=0&refId=tMr%2FJPSm9C00IHYt6kSdpw%3D%3D&trackingId=cfQu%2Bl56sbJe%2FYrr2huNqA%3D%3D",
     "company": "HSBC",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Guest Relationship Officer-客户关系主任-Hilton Shanghai Fengxian",
-    "link": "https://cn.linkedin.com/jobs/view/guest-relationship-officer-%E5%AE%A2%E6%88%B7%E5%85%B3%E7%B3%BB%E4%B8%BB%E4%BB%BB-hilton-shanghai-fengxian-at-hilton-3811659602?position=1&pageNum=0&refId=ZE%2Fyu54Jib%2FTbcWr0mtjHg%3D%3D&trackingId=wFG4X1NPIvxMnK8r2fjdbw%3D%3D",
-    "company": "Hilton",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Compliance Officer (Secondary Markets Compliance)",
-    "link": "https://cn.linkedin.com/jobs/view/compliance-officer-secondary-markets-compliance-at-cicc-4256100141?position=2&pageNum=0&refId=ZE%2Fyu54Jib%2FTbcWr0mtjHg%3D%3D&trackingId=r4AREE7YiyTXnFFoNyX%2FsQ%3D%3D",
-    "company": "CICC",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "咨询项目经理",
-    "link": "https://cn.linkedin.com/jobs/view/%E5%92%A8%E8%AF%A2%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86-at-%E4%B8%8A%E6%B5%B7%E5%85%AC%E5%8F%B8-4350930813?position=3&pageNum=0&refId=ZE%2Fyu54Jib%2FTbcWr0mtjHg%3D%3D&trackingId=Sp4Z8o1dkPcb6WKkuGv3UA%3D%3D",
-    "company": "上海公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Retail Sales Supervisor",
-    "link": "https://cn.linkedin.com/jobs/view/retail-sales-supervisor-at-procter-gamble-4350643415?position=4&pageNum=0&refId=ZE%2Fyu54Jib%2FTbcWr0mtjHg%3D%3D&trackingId=0i6hl0On7H7cUctWh2OOLA%3D%3D",
-    "company": "Procter Gamble",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "General Call For Experts Fwc 2023 Lot 14 Migration And Forced Displacement",
-    "link": "https://cn.linkedin.com/jobs/view/general-call-for-experts-fwc-2023-lot-14-migration-and-forced-displacement-at-proman-luxembourg-4346542733?position=5&pageNum=0&refId=ZE%2Fyu54Jib%2FTbcWr0mtjHg%3D%3D&trackingId=zd%2BYQrURCyip%2FVGEabbdxA%3D%3D",
-    "company": "Proman Luxembourg",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Public Area Manager",
-    "link": "https://cn.linkedin.com/jobs/view/public-area-manager-at-hilton-4192058736?position=6&pageNum=0&refId=ZE%2Fyu54Jib%2FTbcWr0mtjHg%3D%3D&trackingId=2Abxl8CL2nq2gH0Qz98wZg%3D%3D",
-    "company": "Hilton",
     "location": "CN",
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
@@ -154,107 +1400,9 @@
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
   {
-    "title": "Student Trainee",
-    "link": "https://cn.linkedin.com/jobs/view/student-trainee-at-schroders-4342898767?position=1&pageNum=0&refId=qUI7kZllTAhKcdm6q8W6Bg%3D%3D&trackingId=l3%2FpyytsxEd7L9DGa4%2FaSg%3D%3D",
-    "company": "Schroders",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Student trainee (Schroders Capital PFM Beijing)",
-    "link": "https://cn.linkedin.com/jobs/view/student-trainee-schroders-capital-pfm-beijing-at-%E6%9D%AD%E5%B7%9E%E6%96%BD%E7%BD%97%E5%BE%B7%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4349731360?position=2&pageNum=0&refId=qUI7kZllTAhKcdm6q8W6Bg%3D%3D&trackingId=AuxBRZyWQp6BUdrJO84lSw%3D%3D",
-    "company": "杭州施罗德科技有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Investment Banker",
-    "link": "https://cn.linkedin.com/jobs/view/investment-banker-at-ubs-4328142676?position=1&pageNum=0&refId=NBzwSuxJlsRNpyE1KWNrsA%3D%3D&trackingId=SV%2FX1a7xw1kAgt7Xe0fOIw%3D%3D",
-    "company": "UBS",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Global Banking - China",
-    "link": "https://cn.linkedin.com/jobs/view/global-banking-china-at-ubs-4328150325?position=2&pageNum=0&refId=NBzwSuxJlsRNpyE1KWNrsA%3D%3D&trackingId=xQv7nv8LboniAC2%2BteruDA%3D%3D",
-    "company": "UBS",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Business Manager",
-    "link": "https://cn.linkedin.com/jobs/view/business-manager-at-ubs-4328108003?position=3&pageNum=0&refId=NBzwSuxJlsRNpyE1KWNrsA%3D%3D&trackingId=78vCAn4qofwJLCUTVWfJSg%3D%3D",
-    "company": "UBS",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Ib Operations Apprentice",
-    "link": "https://cn.linkedin.com/jobs/view/ib-operations-apprentice-at-ubs-4329148547?position=4&pageNum=0&refId=NBzwSuxJlsRNpyE1KWNrsA%3D%3D&trackingId=%2BvGnTxix3MheytuGDdIvNg%3D%3D",
-    "company": "UBS",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Global Markets Electronic Trading Risk Management",
-    "link": "https://cn.linkedin.com/jobs/view/global-markets-electronic-trading-risk-management-at-ubs-4328058808?position=7&pageNum=0&refId=NBzwSuxJlsRNpyE1KWNrsA%3D%3D&trackingId=QEQVQpmJBQiPkAiJGQl6NA%3D%3D",
-    "company": "UBS",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Senior Sourcing Manager",
-    "link": "https://cn.linkedin.com/jobs/view/senior-sourcing-manager-at-visa-4327819552?position=1&pageNum=0&refId=ludHLGytTldBN8VPE5HE3Q%3D%3D&trackingId=LxT2huLW8WzAVY%2BZ5WdfSg%3D%3D",
-    "company": "Visa",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "尽职调查经理Manager, Financial due diligence",
-    "link": "https://cn.linkedin.com/jobs/view/%E5%B0%BD%E8%81%8C%E8%B0%83%E6%9F%A5%E7%BB%8F%E7%90%86manager-financial-due-diligence-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350483319?position=1&pageNum=0&refId=1mCtg7%2FLayxrTjBTVOwIsw%3D%3D&trackingId=0bkAHIKHJtjF9PP1VvhW5w%3D%3D",
-    "company": "戴德梁行",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
     "title": "Asset Management - Equity Portfolio Manager - Technology Sector Coverage",
     "link": "https://cn.linkedin.com/jobs/view/asset-management-equity-portfolio-manager-technology-sector-coverage-at-jpmorganchase-4342493199?position=3&pageNum=0&refId=1mCtg7%2FLayxrTjBTVOwIsw%3D%3D&trackingId=4Noxe5e1QFlVNKjBfJsRRQ%3D%3D",
     "company": "JPMorgan Chase",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "校招（财富管理）",
-    "link": "https://cn.linkedin.com/jobs/view/%E6%A0%A1%E6%8B%9B%EF%BC%88%E8%B4%A2%E5%AF%8C%E7%AE%A1%E7%90%86%EF%BC%89-at-citic-securities-company-limited-4350950478?position=4&pageNum=0&refId=1mCtg7%2FLayxrTjBTVOwIsw%3D%3D&trackingId=8WVG4IujiKqoZWT2QGxR7w%3D%3D",
-    "company": "***** ********** ******* *******",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Compliance Officer Secondary Markets Compliance",
-    "link": "https://cn.linkedin.com/jobs/view/compliance-officer-secondary-markets-compliance-at-cicc-4256100141?position=5&pageNum=0&refId=1mCtg7%2FLayxrTjBTVOwIsw%3D%3D&trackingId=RYTURqaV48m1JWccgIH30g%3D%3D",
-    "company": "Cicc",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Corporate Action Officer",
-    "link": "https://cn.linkedin.com/jobs/view/corporate-action-officer-at-hsbc-4339177955?position=1&pageNum=0&refId=q%2BBPLwnzQEwc2%2FD%2BYXeChQ%3D%3D&trackingId=lrE%2B2ANwnMEvpLEXAmtRTQ%3D%3D",
-    "company": "HSBC",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Compliance Manager",
-    "link": "https://cn.linkedin.com/jobs/view/compliance-manager-at-susquehanna-international-group-4324947064?position=2&pageNum=0&refId=q%2BBPLwnzQEwc2%2FD%2BYXeChQ%3D%3D&trackingId=l8k831rteFC7F7IC%2B4u%2FyQ%3D%3D",
-    "company": "Susquehanna International Group",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "投资法务BP",
-    "link": "https://cn.linkedin.com/jobs/view/%E6%8A%95%E8%B5%84%E6%B3%95%E5%8A%A1bp-at-%E4%BC%99%E4%BC%B4-4328612481?position=3&pageNum=0&refId=q%2BBPLwnzQEwc2%2FD%2BYXeChQ%3D%3D&trackingId=3v3YOVawipGq%2BNdzN4ZNKA%3D%3D",
-    "company": "伙伴",
     "location": "CN",
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
@@ -266,41 +1414,6 @@
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
   {
-    "title": "投顾业务负责人（摩根基金）",
-    "link": "https://cn.linkedin.com/jobs/view/%E6%8A%95%E9%A1%BE%E4%B8%9A%E5%8A%A1%E8%B4%9F%E8%B4%A3%E4%BA%BA%EF%BC%88%E6%91%A9%E6%A0%B9%E5%9F%BA%E9%87%91%EF%BC%89-at-%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350473041?position=1&pageNum=0&refId=yygacwX%2BZO6ZWhMwXQis0g%3D%3D&trackingId=8vNhDJ3rcmwwar2CiRMphw%3D%3D",
-    "company": "摩根大通亚洲咨询(北京)有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "研究支持岗",
-    "link": "https://cn.linkedin.com/jobs/view/%E7%A0%94%E7%A9%B6%E6%94%AF%E6%8C%81%E5%B2%97-at-%E9%9D%92%E5%B2%9B%E9%95%BF%E6%B1%9F%E8%B4%A2%E5%AF%8C%E4%B8%AD%E5%BF%83%E7%89%A9%E4%B8%9A%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350714107?position=2&pageNum=0&refId=yygacwX%2BZO6ZWhMwXQis0g%3D%3D&trackingId=sj8poA7jFcYlzaLmCjboHA%3D%3D",
-    "company": "青岛长江财富中心物业管理有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "股票量化研究实习生（股票多因子方向）",
-    "link": "https://cn.linkedin.com/jobs/view/%E8%82%A1%E7%A5%A8%E9%87%8F%E5%8C%96%E7%A0%94%E7%A9%B6%E5%AE%9E%E4%B9%A0%E7%94%9F%EF%BC%88%E8%82%A1%E7%A5%A8%E5%A4%9A%E5%9B%A0%E5%AD%90%E6%96%B9%E5%90%91%EF%BC%89-at-%E4%B8%8A%E6%B5%B7%E7%BB%B0%E7%91%9E%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350960449?position=4&pageNum=0&refId=yygacwX%2BZO6ZWhMwXQis0g%3D%3D&trackingId=yoRsfF7iH2K6t8KzD6Pp2Q%3D%3D",
-    "company": "上海绰瑞资产管理有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "资产配置投资总监",
-    "link": "https://cn.linkedin.com/jobs/view/%E8%B5%84%E4%BA%A7%E9%85%8D%E7%BD%AE%E6%8A%95%E8%B5%84%E6%80%BB%E7%9B%91-at-%E5%8D%8E%E5%AE%9D%E5%9F%BA%E9%87%91%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4351100187?position=5&pageNum=0&refId=yygacwX%2BZO6ZWhMwXQis0g%3D%3D&trackingId=M4eAy%2FWuNSLsj4JUjlkTcw%3D%3D",
-    "company": "华宝基金管理有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "互联网运营高级经理",
-    "link": "https://cn.linkedin.com/jobs/view/%E4%BA%92%E8%81%94%E7%BD%91%E8%BF%90%E8%90%A5%E9%AB%98%E7%BA%A7%E7%BB%8F%E7%90%86-at-china-asset-management-co-ltd-4350940690?position=6&pageNum=0&refId=yygacwX%2BZO6ZWhMwXQis0g%3D%3D&trackingId=n3YMFtTfojKiZSqQevXRXA%3D%3D",
-    "company": "***** ***** ********** **., ***.",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
     "title": "房地产金融项目评估师 Reits 公募reits方向（要求有房地产估价师证）",
     "link": "https://cn.linkedin.com/jobs/view/%E6%88%BF%E5%9C%B0%E4%BA%A7%E9%87%91%E8%9E%8D%E9%A1%B9%E7%9B%AE%E8%AF%84%E4%BC%B0%E5%B8%88-reits-%E5%85%AC%E5%8B%9Freits%E6%96%B9%E5%90%91%EF%BC%88%E8%A6%81%E6%B1%82%E6%9C%89%E6%88%BF%E5%9C%B0%E4%BA%A7%E4%BC%B0%E4%BB%B7%E5%B8%88%E8%AF%81%EF%BC%89-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350674279?position=7&pageNum=0&refId=yygacwX%2BZO6ZWhMwXQis0g%3D%3D&trackingId=o%2FequJi6M6%2B7H6QI9c21AQ%3D%3D",
     "company": "戴德梁行",
@@ -308,93 +1421,9 @@
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
   {
-    "title": "Equity research, China Healthcare, Analyst/Associate",
-    "link": "https://hk.linkedin.com/jobs/view/equity-research-china-healthcare-analyst-associate-at-morgan-stanley-4318357668?position=1&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=4M9QIJa7rVtSBKQ4o6Q0VQ%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Investment Banking Healthcare Associate",
-    "link": "https://hk.linkedin.com/jobs/view/investment-banking-healthcare-associate-at-morgan-stanley-4329328512?position=2&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=DMTfI4cbcFsY7vxG%2BbHoEg%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "APAC Employment Counsel",
-    "link": "https://hk.linkedin.com/jobs/view/apac-employment-counsel-at-morgan-stanley-4318365154?position=3&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=u4J4U0HvW4iz88ATDLM7VQ%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Firm Risk Management Corporate Credit Officer Analyst Associate Hong Kong Singapore",
-    "link": "https://hk.linkedin.com/jobs/view/firm-risk-management-corporate-credit-officer-analyst-associate-hong-kong-singapore-at-morgan-stanley-4326259536?position=4&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=Qv%2BX%2FTaH99ycgKEl1GhK2Q%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
     "title": "Asia Wealth Management Client Service Manager Hong Kong",
     "link": "https://hk.linkedin.com/jobs/view/asia-wealth-management-client-service-manager-hong-kong-at-morgan-stanley-4281335221?position=5&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=ifrYpto1Gcm5A7mNVbTFKQ%3D%3D",
     "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Legal – M A And Capital Markets Lawyer Vice President",
-    "link": "https://hk.linkedin.com/jobs/view/legal-%E2%80%93-m-a-and-capital-markets-lawyer-vice-president-at-morgan-stanley-4322066189?position=6&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=2i1XRlwNSnkOnR8HZ7SH6A%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Macro Research Asia Macro Strategist Vice President",
-    "link": "https://hk.linkedin.com/jobs/view/macro-research-asia-macro-strategist-vice-president-at-morgan-stanley-4307958137?position=7&pageNum=0&refId=rDd0B8CG%2BECdeqs6baJF%2Bw%3D%3D&trackingId=WisXfoDpPVxmbRVze3peDg%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Marketing Executive",
-    "link": "https://hk.linkedin.com/jobs/view/marketing-executive-at-schroders-4347517626?position=1&pageNum=0&refId=JHSAcyGzBbdYoHjE97TCZA%3D%3D&trackingId=uBcMEql27%2BYVf3ufRiypWw%3D%3D",
-    "company": "Schroders",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Analyst, Equities",
-    "link": "https://hk.linkedin.com/jobs/view/analyst-equities-at-schroders-4335452670?position=3&pageNum=0&refId=JHSAcyGzBbdYoHjE97TCZA%3D%3D&trackingId=ppJESNpxCbwtPzKLR6EnGA%3D%3D",
-    "company": "Schroders",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Client Service Executive",
-    "link": "https://hk.linkedin.com/jobs/view/client-service-executive-at-schroders-4332425000?position=4&pageNum=0&refId=JHSAcyGzBbdYoHjE97TCZA%3D%3D&trackingId=SyqabxIF4BQGAf%2B0W6UNhg%3D%3D",
-    "company": "Schroders",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Implementation Analyst",
-    "link": "https://hk.linkedin.com/jobs/view/implementation-analyst-at-schroders-4339349636?position=5&pageNum=0&refId=JHSAcyGzBbdYoHjE97TCZA%3D%3D&trackingId=8cw37Ym7kWA3r3NoQBnN1Q%3D%3D",
-    "company": "Schroders",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "IB Marketing - Marketing Strategy Associate",
-    "link": "https://hk.linkedin.com/jobs/view/ib-marketing-marketing-strategy-associate-at-ubs-4329640902?position=1&pageNum=0&refId=8FgpTnwA%2Bna3M1f5km235A%3D%3D&trackingId=mlADHRJuXdedBOlLezctwQ%3D%3D",
-    "company": "UBS",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Client Advisor, GWM Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/client-advisor-gwm-hong-kong-at-ubs-4350854939?position=2&pageNum=0&refId=8FgpTnwA%2Bna3M1f5km235A%3D%3D&trackingId=agVErcM674Hwn%2BBf1i%2F1qQ%3D%3D",
-    "company": "UBS",
     "location": "HK",
     "pushTime": "2026-01-01T10:02:10.344Z"
   },
@@ -425,139 +1454,6 @@
     "company": "JPMorgan Chase",
     "location": "SG",
     "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Python Developer, Associate",
-    "link": "https://sg.linkedin.com/jobs/view/python-developer-associate-at-morgan-stanley-4322632182?position=1&pageNum=0&refId=izMiLHyx8ilJAVD9lzHdhg%3D%3D&trackingId=hifP81auJKkiXPKLS2HZEQ%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Private Wealth Management Credit Risk, Analyst",
-    "link": "https://sg.linkedin.com/jobs/view/private-wealth-management-credit-risk-analyst-at-morgan-stanley-4322795358?position=2&pageNum=0&refId=izMiLHyx8ilJAVD9lzHdhg%3D%3D&trackingId=CCIyPOXQc%2FIJ9r7TR%2FEJ3A%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Asia Wealth Management , Client Service Manager, Associate/ Director, Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/asia-wealth-management-client-service-manager-associate-director-singapore-at-morgan-stanley-4298327220?position=3&pageNum=0&refId=izMiLHyx8ilJAVD9lzHdhg%3D%3D&trackingId=VbDXnWR1TtzrYlgksyUXow%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Asia Wealth Management Client Service Manager Associate Director Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/asia-wealth-management-client-service-manager-associate-director-singapore-at-morgan-stanley-4298322430?position=4&pageNum=0&refId=izMiLHyx8ilJAVD9lzHdhg%3D%3D&trackingId=xfYg1A%2Fg69yzZ2A%2Fpj4d7Q%3D%3D",
-    "company": "Morgan Stanley",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Investment Analyst",
-    "link": "https://sg.linkedin.com/jobs/view/investment-analyst-at-schroders-4336240404?position=1&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=MF5ZzDDsJxWgDGq6x3yg6Q%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Student Trainee",
-    "link": "https://sg.linkedin.com/jobs/view/student-trainee-at-schroders-4343027918?position=2&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=eJcgkISr7xBSDwNLbINF%2BQ%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Software Engineer",
-    "link": "https://sg.linkedin.com/jobs/view/software-engineer-at-schroders-4346078495?position=3&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=zrR71wXx7djENUdMquJTqA%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Investment Product Analyst Asia Ex Japan Equities",
-    "link": "https://sg.linkedin.com/jobs/view/investment-product-analyst-asia-ex-japan-equities-at-schroders-4335862608?position=4&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=A74JMK0BChZMWwOx6ygThA%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Operations Change Project Manager 12 Month Ftc",
-    "link": "https://sg.linkedin.com/jobs/view/operations-change-project-manager-12-month-ftc-at-schroders-4343552809?position=5&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=ZCG%2BIFCOrMQwFc338QBWPQ%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Specialist It And Operations",
-    "link": "https://sg.linkedin.com/jobs/view/specialist-it-and-operations-at-schroders-4341287833?position=6&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=6e0jwnRJnU344GsHNITQmQ%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Implementation Analyst",
-    "link": "https://sg.linkedin.com/jobs/view/implementation-analyst-at-schroders-4335910244?position=7&pageNum=0&refId=zs6GGqoh7kDDi6w5jDux%2FQ%3D%3D&trackingId=i2yUIze2JaIaFzkv8wGiLA%3D%3D",
-    "company": "Schroders",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Business Analyst",
-    "link": "https://sg.linkedin.com/jobs/view/business-analyst-at-ubs-4329418134?position=1&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=z83c2xlV7jrojOZmonPhzg%3D%3D",
-    "company": "UBS",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Portfolio Manager | Family Office",
-    "link": "https://sg.linkedin.com/jobs/view/portfolio-manager-family-office-at-dada-consultants-4329624388?position=2&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=hdTwSQDKW3HpKHOAbkthwA%3D%3D",
-    "company": "Dada Consultants",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Data Scientist – Applied AI & Machine Learning",
-    "link": "https://sg.linkedin.com/jobs/view/data-scientist-%E2%80%93-applied-ai-machine-learning-at-ubs-4329524250?position=3&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=TSTQCwtp%2FslcqUmtSAyyFQ%3D%3D",
-    "company": "UBS",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Client Account Manager Southeast Asia",
-    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-southeast-asia-at-ubs-4329880930?position=4&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=Dsjn4L%2FJfA6Hi4i2t%2BvE3g%3D%3D",
-    "company": "UBS",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Client Account Manager Private Client Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-private-client-singapore-at-ubs-4329758494?position=5&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=ECGttNK%2Fn7ioB8WI2m3Jyw%3D%3D",
-    "company": "UBS",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Client Account Manager Greater China Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-greater-china-singapore-at-ubs-4329794392?position=6&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=2YowXOIkHAZGntn7MV%2Be7w%3D%3D",
-    "company": "UBS",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Client Account Manager Global Family And Institutional Wealth",
-    "link": "https://sg.linkedin.com/jobs/view/client-account-manager-global-family-and-institutional-wealth-at-ubs-4329821118?position=7&pageNum=0&refId=52RbzT65SukKH5i8qO6lsQ%3D%3D&trackingId=pQ9j7y2X%2FlHZ5QT8r%2FmPGQ%3D%3D",
-    "company": "UBS",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.344Z"
-  },
-  {
-    "title": "Sr. Manager, Sales International Sourcing",
-    "link": "https://cn.linkedin.com/jobs/view/sr-manager-sales-international-sourcing-at-royal-caribbean-group-4323012171?position=1&pageNum=0&refId=nE5C%2FAaksd8mxpJ19xcUdg%3D%3D&trackingId=r4ZH8iFQn2pwArnb2CCjhg%3D%3D",
-    "company": "Royal Caribbean Group",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
     "title": "Head of Account Management, China",
@@ -609,34 +1505,6 @@
     "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
-    "title": "English Literature Teacher",
-    "link": "https://cn.linkedin.com/jobs/view/english-literature-teacher-at-elevate-4346287293?position=1&pageNum=0&refId=VZ7aXM3KF577lzCwLsP9HQ%3D%3D&trackingId=uvxQMZectcNPMVxY9J8TyQ%3D%3D",
-    "company": "elevate",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "Director of Athletics",
-    "link": "https://cn.linkedin.com/jobs/view/director-of-athletics-at-elevate-4346582124?position=2&pageNum=0&refId=VZ7aXM3KF577lzCwLsP9HQ%3D%3D&trackingId=DQOBhtFfwKGD5VyLWTWunQ%3D%3D",
-    "company": "elevate",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "High School English Teacher",
-    "link": "https://cn.linkedin.com/jobs/view/high-school-english-teacher-at-elevate-4346500328?position=3&pageNum=0&refId=VZ7aXM3KF577lzCwLsP9HQ%3D%3D&trackingId=6E4AtNrLeby6Mbcp502QEQ%3D%3D",
-    "company": "elevate",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "策略发展顾问部高级经理",
-    "link": "https://cn.linkedin.com/jobs/view/%E7%AD%96%E7%95%A5%E5%8F%91%E5%B1%95%E9%A1%BE%E9%97%AE%E9%83%A8%E9%AB%98%E7%BA%A7%E7%BB%8F%E7%90%86-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350633194?position=4&pageNum=0&refId=VZ7aXM3KF577lzCwLsP9HQ%3D%3D&trackingId=Y64%2BTWXdzBF%2Fb%2BjcyNzBgQ%3D%3D",
-    "company": "戴德梁行",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
     "title": "English Teacher",
     "link": "https://cn.linkedin.com/jobs/view/english-teacher-at-elevate-4346426550?position=5&pageNum=0&refId=VZ7aXM3KF577lzCwLsP9HQ%3D%3D&trackingId=SvNd%2B%2ByqxbrBHjwy1OTEyQ%3D%3D",
     "company": "Elevate",
@@ -651,13 +1519,6 @@
     "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
-    "title": "Risk, Market Risk, Associate, Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/risk-market-risk-associate-hong-kong-at-goldman-sachs-4308581310?position=1&pageNum=0&refId=Lr3cr2gtPDOiQS8l6nHO2Q%3D%3D&trackingId=QRDUJHAMtoeM1tFVzo71dA%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
     "title": "Global Banking & Markets, Quantitative Execution Services Research, Associate, Hong Kong",
     "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-quantitative-execution-services-research-associate-hong-kong-at-goldman-sachs-4322036681?position=2&pageNum=0&refId=Lr3cr2gtPDOiQS8l6nHO2Q%3D%3D&trackingId=3%2BxDrUMXW3i8Wl9%2FmevX8w%3D%3D",
     "company": "Goldman Sachs",
@@ -667,20 +1528,6 @@
   {
     "title": "Global Banking & Markets, Electronic Market Making Quant Trader, Analyst/ Associate",
     "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-electronic-market-making-quant-trader-analyst-associate-at-goldman-sachs-4316976384?position=3&pageNum=0&refId=Lr3cr2gtPDOiQS8l6nHO2Q%3D%3D&trackingId=uhXGB5%2FPVJWAz6QCjGL0%2Bw%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "Asset Wealth Management Private Wealth Management Cross Markets Team Vice President Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/asset-wealth-management-private-wealth-management-cross-markets-team-vice-president-hong-kong-at-goldman-sachs-4323133553?position=4&pageNum=0&refId=Lr3cr2gtPDOiQS8l6nHO2Q%3D%3D&trackingId=Am%2BcP%2F5NZuFFE%2FJ8raiOGQ%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "Global Banking Markets Corporate Access Workflow Solutions Associate Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-corporate-access-workflow-solutions-associate-hong-kong-at-goldman-sachs-4326620794?position=5&pageNum=0&refId=Lr3cr2gtPDOiQS8l6nHO2Q%3D%3D&trackingId=M6DCuBKHx7xCIPqixy8FRQ%3D%3D",
     "company": "Goldman Sachs",
     "location": "HK",
     "pushTime": "2026-01-01T10:02:10.327Z"
@@ -700,20 +1547,6 @@
     "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
-    "title": "Executive Assistant, Corporate & Investment Banking - Office of the Asia Pacific CEO",
-    "link": "https://hk.linkedin.com/jobs/view/executive-assistant-corporate-investment-banking-office-of-the-asia-pacific-ceo-at-jpmorganchase-4343024166?position=1&pageNum=0&refId=4aVheUs%2FmRZF7zFHm5UWEA%3D%3D&trackingId=w2FUPEGV2jZJvRDH0%2FcK8A%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "Global Corporate Banking - Subsidiary Banking - Analyst – Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/global-corporate-banking-subsidiary-banking-analyst-%E2%80%93-hong-kong-at-jpmorganchase-4342205496?position=2&pageNum=0&refId=4aVheUs%2FmRZF7zFHm5UWEA%3D%3D&trackingId=qV2wKnwyVb0qQ50uF8fX8Q%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
     "title": "International Private Bank, Analyst - China Market",
     "link": "https://hk.linkedin.com/jobs/view/international-private-bank-analyst-china-market-at-jpmorganchase-4319015988?position=3&pageNum=0&refId=4aVheUs%2FmRZF7zFHm5UWEA%3D%3D&trackingId=dzZdfZEfEt7%2FIglbAGrbQw%3D%3D",
     "company": "JPMorgan Chase",
@@ -721,22 +1554,8 @@
     "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
-    "title": "International Private Bank Analyst – Hong Kong Market",
-    "link": "https://hk.linkedin.com/jobs/view/international-private-bank-analyst-%E2%80%93-hong-kong-market-at-jpmorganchase-4319028547?position=4&pageNum=0&refId=4aVheUs%2FmRZF7zFHm5UWEA%3D%3D&trackingId=w9UB7%2Fg3Gffqfzl%2BwjFPQg%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
     "title": "Finance And Business Management Analyst Hong Kong",
     "link": "https://hk.linkedin.com/jobs/view/finance-and-business-management-analyst-hong-kong-at-jpmorganchase-4341706242?position=5&pageNum=0&refId=4aVheUs%2FmRZF7zFHm5UWEA%3D%3D&trackingId=BGVX4KxJvvYjnK0phSMFyw%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "Executive Administrative Assistant Commercial Investment Bank",
-    "link": "https://hk.linkedin.com/jobs/view/executive-administrative-assistant-commercial-investment-bank-at-jpmorganchase-4342835302?position=6&pageNum=0&refId=4aVheUs%2FmRZF7zFHm5UWEA%3D%3D&trackingId=%2FuudqJL0ghjiHJukCYcGdA%3D%3D",
     "company": "JPMorgan Chase",
     "location": "HK",
     "pushTime": "2026-01-01T10:02:10.327Z"
@@ -763,13 +1582,6 @@
     "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
-    "title": "Asset & Wealth Management, Private Wealth Advisor, Executive Director, Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-wealth-advisor-executive-director-singapore-at-goldman-sachs-4288748740?position=3&pageNum=0&refId=hiDQBzb6640NK5aIDhrCww%3D%3D&trackingId=RjvSd9BD0HsDDSpYHbHX9A%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
     "title": "Asset Wealth Management Private Bank Lending Executive Director Singapore",
     "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-bank-lending-executive-director-singapore-at-goldman-sachs-4323063591?position=4&pageNum=0&refId=hiDQBzb6640NK5aIDhrCww%3D%3D&trackingId=ZPGepuczjTAoK7NSGNAL0w%3D%3D",
     "company": "Goldman Sachs",
@@ -784,37 +1596,9 @@
     "pushTime": "2026-01-01T10:02:10.327Z"
   },
   {
-    "title": "Global Banking Markets Operations Securities Settlements Stocks Connect Inventory Management Analyst Associate Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/global-banking-markets-operations-securities-settlements-stocks-connect-inventory-management-analyst-associate-singapore-at-goldman-sachs-4325944230?position=6&pageNum=0&refId=hiDQBzb6640NK5aIDhrCww%3D%3D&trackingId=m4jFtRDQloSprck%2BsARc3w%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "Core Engineering Finops Engineering Cloud Platform Developer Analyst Associate Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/core-engineering-finops-engineering-cloud-platform-developer-analyst-associate-singapore-at-goldman-sachs-4304539704?position=7&pageNum=0&refId=hiDQBzb6640NK5aIDhrCww%3D%3D&trackingId=kFi2hESkOTWGUFHxaj2RHQ%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
-    "title": "APAC Marketing Strategy Manager, Vice President, Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/apac-marketing-strategy-manager-vice-president-singapore-at-jpmorganchase-4346709073?position=1&pageNum=0&refId=XcbCdPxYmytpMRvYUNDeWA%3D%3D&trackingId=sqbPpKQVMfzmfdx9ZXjv8A%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.327Z"
-  },
-  {
     "title": "Analyst/Consultant - Valuation & Modelling - Guangzhou(315131)",
     "link": "https://cn.linkedin.com/jobs/view/analyst-consultant-valuation-modelling-guangzhou-315131-at-deloitte-4335526133?position=2&pageNum=0&refId=AdSS4IjZrVT832BfXckSLg%3D%3D&trackingId=4S3eswJg3Yz%2BnbgBHmt74A%3D%3D",
     "company": "Deloitte",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Asset Management - ETF Platform Project Management - Vice President",
-    "link": "https://cn.linkedin.com/jobs/view/asset-management-etf-platform-project-management-vice-president-at-jpmorganchase-4264763203?position=3&pageNum=0&refId=AdSS4IjZrVT832BfXckSLg%3D%3D&trackingId=rCYMcKpmqQJgqnn%2BHwryDg%3D%3D",
-    "company": "JPMorgan Chase",
     "location": "CN",
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
@@ -826,13 +1610,6 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "Assistant Vice President Investment Group Mkt China Beijing",
-    "link": "https://cn.linkedin.com/jobs/view/assistant-vice-president-investment-group-mkt-china-beijing-at-temasek-4348496113?position=5&pageNum=0&refId=AdSS4IjZrVT832BfXckSLg%3D%3D&trackingId=8LPmTwndwmtBsVlRUcqxsg%3D%3D",
-    "company": "Temasek",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "Analyst Consultant Valuation Modelling Chengdu Chongqing 314947",
     "link": "https://cn.linkedin.com/jobs/view/analyst-consultant-valuation-modelling-chengdu-chongqing-314947-at-deloitte-4331150213?position=6&pageNum=0&refId=AdSS4IjZrVT832BfXckSLg%3D%3D&trackingId=zjC35wHW88O7bY7%2FAEQGUA%3D%3D",
     "company": "Deloitte",
@@ -840,44 +1617,9 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "经营分析总监（集团）",
-    "link": "https://cn.linkedin.com/jobs/view/%E7%BB%8F%E8%90%A5%E5%88%86%E6%9E%90%E6%80%BB%E7%9B%91%EF%BC%88%E9%9B%86%E5%9B%A2%EF%BC%89-at-semcorp-advanced-materials-group-4350446413?position=7&pageNum=0&refId=AdSS4IjZrVT832BfXckSLg%3D%3D&trackingId=o%2BeXiB0t8ETlbMUNzEQ6%2Bw%3D%3D",
-    "company": "******* ******** ********* *****",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Business Development Manager",
-    "link": "https://cn.linkedin.com/jobs/view/business-development-manager-at-htx-4327872270?position=1&pageNum=0&refId=iaoAWJvnC1hwN4VvkLEiuw%3D%3D&trackingId=AudHY%2BN04mSU7od%2FXaZ7JA%3D%3D",
-    "company": "HTX",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "Assistant Business Development Manager - Tiktok",
     "link": "https://cn.linkedin.com/jobs/view/assistant-business-development-manager-tiktok-at-dyson-4341539553?position=2&pageNum=0&refId=iaoAWJvnC1hwN4VvkLEiuw%3D%3D&trackingId=aiV6RAWZJB8gH5bMD2ZWgQ%3D%3D",
     "company": "Dyson",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Business Development Manager",
-    "link": "https://cn.linkedin.com/jobs/view/business-development-manager-at-amd-4272885343?position=3&pageNum=0&refId=iaoAWJvnC1hwN4VvkLEiuw%3D%3D&trackingId=1gmCjz86Nk9fU%2Bu5IIa24w%3D%3D",
-    "company": "AMD",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "渠道业务拓展经理 Bd Manager",
-    "link": "https://cn.linkedin.com/jobs/view/%E6%B8%A0%E9%81%93%E4%B8%9A%E5%8A%A1%E6%8B%93%E5%B1%95%E7%BB%8F%E7%90%86-bd-manager-at-%E5%8D%93%E5%B0%94%E5%8F%91%E5%B1%95%E9%9B%86%E5%9B%A2%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4350516450?position=4&pageNum=0&refId=iaoAWJvnC1hwN4VvkLEiuw%3D%3D&trackingId=MbMuMDjfgHXQcbqJ24jfAA%3D%3D",
-    "company": "卓尔发展集团有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Business Development Senior Manager 商业地产部）",
-    "link": "https://cn.linkedin.com/jobs/view/business-development-senior-manager-%E5%95%86%E4%B8%9A%E5%9C%B0%E4%BA%A7%E9%83%A8%EF%BC%89-at-%E6%88%B4%E5%BE%B7%E6%A2%81%E8%A1%8C-4350684211?position=5&pageNum=0&refId=iaoAWJvnC1hwN4VvkLEiuw%3D%3D&trackingId=2qqKNquFW48R17Yt8DKUww%3D%3D",
-    "company": "戴德梁行",
     "location": "CN",
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
@@ -896,37 +1638,9 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "VP, Head of System Delivery & Operations",
-    "link": "https://cn.linkedin.com/jobs/view/vp-head-of-system-delivery-operations-at-blackrock-4336188009?position=1&pageNum=0&refId=Sl%2BVTrkA%2BB0ZVMh94mBeFQ%3D%3D&trackingId=hCzX3KDBoM0qCnWMAlbRhg%3D%3D",
-    "company": "BlackRock",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "BA Lead",
-    "link": "https://cn.linkedin.com/jobs/view/ba-lead-at-%E5%8F%8B%E9%82%A6%E7%A7%91%E6%8A%80-4350900492?position=3&pageNum=0&refId=Sl%2BVTrkA%2BB0ZVMh94mBeFQ%3D%3D&trackingId=u16rJvkLdiJ7jtTYqjcQ9Q%3D%3D",
-    "company": "友邦科技",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "HR Generalist Lead, Vice President",
     "link": "https://cn.linkedin.com/jobs/view/hr-generalist-lead-vice-president-at-citi-4326504229?position=1&pageNum=0&refId=xQzp7dkFVwDTco%2BtzxJigg%3D%3D&trackingId=ikMo7ys5kfFZIqtEoAIXdg%3D%3D",
     "company": "Citi",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Client Onboarding Analyst - China Futures NewCo - Officer",
-    "link": "https://cn.linkedin.com/jobs/view/client-onboarding-analyst-china-futures-newco-officer-at-citi-4350779930?position=2&pageNum=0&refId=xQzp7dkFVwDTco%2BtzxJigg%3D%3D&trackingId=1p4eLTSUs9lNLLa1i7eZGQ%3D%3D",
-    "company": "Citi",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Global Corporate Banking, Innovation Economy, Banker",
-    "link": "https://cn.linkedin.com/jobs/view/global-corporate-banking-innovation-economy-banker-at-jpmorganchase-4342825268?position=3&pageNum=0&refId=8akQDHwD7azScDbB%2BatTlQ%3D%3D&trackingId=dJEN391VdXrELpau3HUehA%3D%3D",
-    "company": "JPMorgan Chase",
     "location": "CN",
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
@@ -938,93 +1652,9 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "Associate Corporate Sales Payments",
-    "link": "https://cn.linkedin.com/jobs/view/associate-corporate-sales-payments-at-jpmorganchase-4342984645?position=5&pageNum=0&refId=8akQDHwD7azScDbB%2BatTlQ%3D%3D&trackingId=dWkukZcfMgRQMUc8rnXUmg%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Fund Accountant",
-    "link": "https://cn.linkedin.com/jobs/view/fund-accountant-at-hsbc-4335814070?position=6&pageNum=0&refId=8akQDHwD7azScDbB%2BatTlQ%3D%3D&trackingId=S69Yysdc6yHXBOSSMyG76A%3D%3D",
-    "company": "HSBC",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Financial Sector Ra Hsbc Qianhai Gcb 6",
-    "link": "https://cn.linkedin.com/jobs/view/financial-sector-ra-hsbc-qianhai-gcb-6-at-hsbc-4334871060?position=7&pageNum=0&refId=8akQDHwD7azScDbB%2BatTlQ%3D%3D&trackingId=mQD4cZyiyhbXDnuODbN80A%3D%3D",
-    "company": "HSBC",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Corporate Bank - Senior Relationship Manager(MNC) - VP",
-    "link": "https://cn.linkedin.com/jobs/view/corporate-bank-senior-relationship-manager-mnc-vp-at-deutsche-bank-4151251417?position=1&pageNum=0&refId=xdW8l4HpNok%2BDoptEFhh1g%3D%3D&trackingId=ai7gepqwYm8%2FYUi%2BIVj%2FYQ%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Investment Bank - FICC Sales Local Intern",
-    "link": "https://cn.linkedin.com/jobs/view/investment-bank-ficc-sales-local-intern-at-deutsche-bank-4336762655?position=2&pageNum=0&refId=xdW8l4HpNok%2BDoptEFhh1g%3D%3D&trackingId=uy0NrVZzHMN3HNScR8O03w%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "CB - Transactional FX Specialist - Analyst",
-    "link": "https://cn.linkedin.com/jobs/view/cb-transactional-fx-specialist-analyst-at-deutsche-bank-4300916264?position=3&pageNum=0&refId=xdW8l4HpNok%2BDoptEFhh1g%3D%3D&trackingId=XlH%2F98BY2xgi1K34cAThQw%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Corporate Bank Greater China Financial Institution Local Intern",
-    "link": "https://cn.linkedin.com/jobs/view/corporate-bank-greater-china-financial-institution-local-intern-at-deutsche-bank-4346725785?position=4&pageNum=0&refId=xdW8l4HpNok%2BDoptEFhh1g%3D%3D&trackingId=B6%2FoOQFHhpXnOdWduMidQA%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "集中交易员",
-    "link": "https://cn.linkedin.com/jobs/view/%E9%9B%86%E4%B8%AD%E4%BA%A4%E6%98%93%E5%91%98-at-%E5%B9%B3%E5%AE%89%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4346707660?position=2&pageNum=0&refId=hCbPqLEmsVe1Tqdq4U%2BBQg%3D%3D&trackingId=%2Fbf8W0xvRjY57DFHUBbIWw%3D%3D",
-    "company": "平安健康保险股份有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Asset Management Etf Platform Project Management Vice President",
-    "link": "https://cn.linkedin.com/jobs/view/asset-management-etf-platform-project-management-vice-president-at-jpmorganchase-4264763203?position=4&pageNum=0&refId=hCbPqLEmsVe1Tqdq4U%2BBQg%3D%3D&trackingId=FI0k17AzCh80BJ8%2BcNA0GA%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Cyber Defense Operations - Technical Specialist",
-    "link": "https://cn.linkedin.com/jobs/view/cyber-defense-operations-technical-specialist-at-fidelity-international-4340711080?position=1&pageNum=0&refId=pHZN9gpznhCtFQormZPYKg%3D%3D&trackingId=XU%2F3iM9Nl1fHkmw5%2FGOHBA%3D%3D",
-    "company": "Fidelity International",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "Investment Analyst / Associate (Corporate Development)",
     "link": "https://cn.linkedin.com/jobs/view/investment-analyst-associate-corporate-development-at-crypto-com-4093613421?position=1&pageNum=0&refId=Sn9KCUZa%2FkK7z9C1fOXyKw%3D%3D&trackingId=%2FsBxEtEk4RQ9LBgartrrmQ%3D%3D",
     "company": "Crypto.com",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Quantitative Researcher | Trading Team",
-    "link": "https://cn.linkedin.com/jobs/view/quantitative-researcher-trading-team-at-jump-trading-4228768667?position=2&pageNum=0&refId=Sn9KCUZa%2FkK7z9C1fOXyKw%3D%3D&trackingId=TKA4lw1CIDI%2FKN4k2FvKYA%3D%3D",
-    "company": "Jump Trading",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Global Banking & Markets, Corporate Access, Associate, Shanghai",
-    "link": "https://cn.linkedin.com/jobs/view/global-banking-markets-corporate-access-associate-shanghai-at-goldman-sachs-4326545146?position=3&pageNum=0&refId=Sn9KCUZa%2FkK7z9C1fOXyKw%3D%3D&trackingId=btysnQZswIAeD7do9ZOedQ%3D%3D",
-    "company": "Goldman Sachs",
     "location": "CN",
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
@@ -1036,118 +1666,6 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "Portfolio Finance Trader – Sbl Specialist",
-    "link": "https://cn.linkedin.com/jobs/view/portfolio-finance-trader-%E2%80%93-sbl-specialist-at-jump-trading-4318266297?position=5&pageNum=0&refId=Sn9KCUZa%2FkK7z9C1fOXyKw%3D%3D&trackingId=nWGaxelyXRfgJoW4w2LdeQ%3D%3D",
-    "company": "Jump Trading",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Quant Fof Investment Manager",
-    "link": "https://cn.linkedin.com/jobs/view/quant-fof-investment-manager-at-fosun-wealth-holdings-4346369428?position=6&pageNum=0&refId=Sn9KCUZa%2FkK7z9C1fOXyKw%3D%3D&trackingId=sLqxUqACWW703Gtn2VbiAA%3D%3D",
-    "company": "Fosun Wealth Holdings",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Vp Head Of System Delivery Operations",
-    "link": "https://cn.linkedin.com/jobs/view/vp-head-of-system-delivery-operations-at-blackrock-4336188009?position=7&pageNum=0&refId=Sn9KCUZa%2FkK7z9C1fOXyKw%3D%3D&trackingId=%2FUkybRnu9p2EdUjwX5GUmQ%3D%3D",
-    "company": "BlackRock",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Global Banking & Markets, Investment Banking, Financial Institutions Group, Analyst / Associate, Hong Kong / Beijing",
-    "link": "https://cn.linkedin.com/jobs/view/global-banking-markets-investment-banking-financial-institutions-group-analyst-associate-hong-kong-beijing-at-goldman-sachs-4326724727?position=1&pageNum=0&refId=QjpFFgpv2n652FCQso06iA%3D%3D&trackingId=xBidtOkoJZ26tId2UWCzJg%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Global Banking & Markets, Investment Banking, China Advisory, Analyst / Associate, Beijing / Hong Kong",
-    "link": "https://cn.linkedin.com/jobs/view/global-banking-markets-investment-banking-china-advisory-analyst-associate-beijing-hong-kong-at-goldman-sachs-4326910688?position=2&pageNum=0&refId=QjpFFgpv2n652FCQso06iA%3D%3D&trackingId=JhnfOoA8LL%2Bs6mnA7ZVNfQ%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Global Banking And Markets Operations China Local Markets Analyst Shanghai",
-    "link": "https://cn.linkedin.com/jobs/view/global-banking-and-markets-operations-china-local-markets-analyst-shanghai-at-goldman-sachs-4343871481?position=4&pageNum=0&refId=QjpFFgpv2n652FCQso06iA%3D%3D&trackingId=MLPKdbb3%2BBFote4GKz%2BJJw%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Risk Regional Risk Analyst Senior Analyst Beijing",
-    "link": "https://cn.linkedin.com/jobs/view/risk-regional-risk-analyst-senior-analyst-beijing-at-goldman-sachs-4322186468?position=5&pageNum=0&refId=QjpFFgpv2n652FCQso06iA%3D%3D&trackingId=yI0ty12Uorf41noVtXvlXA%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Compliance Asset Management Compliance Associate Beijing",
-    "link": "https://cn.linkedin.com/jobs/view/compliance-asset-management-compliance-associate-beijing-at-goldman-sachs-4322165096?position=6&pageNum=0&refId=QjpFFgpv2n652FCQso06iA%3D%3D&trackingId=6RV7D8QeB3yAOlyY2u%2FGMA%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Internal Audit Technology Audit Senior Analyst Shanghai",
-    "link": "https://cn.linkedin.com/jobs/view/internal-audit-technology-audit-senior-analyst-shanghai-at-goldman-sachs-4323500413?position=7&pageNum=0&refId=QjpFFgpv2n652FCQso06iA%3D%3D&trackingId=Bdtnl0m3x8QDVWvBwWHS0g%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Associate, ETF Markets",
-    "link": "https://hk.linkedin.com/jobs/view/associate-etf-markets-at-blackrock-4346226675?position=1&pageNum=0&refId=O66TqnW5Tu%2BJiXUqONi0Kw%3D%3D&trackingId=Ywv4rh0aRBwGKP6EekgaJA%3D%3D",
-    "company": "BlackRock",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Associate, China Offshore Wealth Team",
-    "link": "https://hk.linkedin.com/jobs/view/associate-china-offshore-wealth-team-at-blackrock-4335659526?position=2&pageNum=0&refId=O66TqnW5Tu%2BJiXUqONi0Kw%3D%3D&trackingId=ZwDS3jTc5z6GYXKIxN2lRw%3D%3D",
-    "company": "BlackRock",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Associate, Investment Performance Analytics & Client Reporting",
-    "link": "https://hk.linkedin.com/jobs/view/associate-investment-performance-analytics-client-reporting-at-pinebridge-investments-4340522626?position=3&pageNum=0&refId=O66TqnW5Tu%2BJiXUqONi0Kw%3D%3D&trackingId=RSaoLxR4qOdsbxCjIfb2xg%3D%3D",
-    "company": "PineBridge Investments",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Manager Asset Servicing Vp Markets Securities Services",
-    "link": "https://hk.linkedin.com/jobs/view/manager-asset-servicing-vp-markets-securities-services-at-hsbc-4335040012?position=4&pageNum=0&refId=O66TqnW5Tu%2BJiXUqONi0Kw%3D%3D&trackingId=Ju4ZropelLLHuk7LZ3q%2FBw%3D%3D",
-    "company": "HSBC",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Institutional Rwa Platform Product Manager Defi Yield Risk",
-    "link": "https://hk.linkedin.com/jobs/view/institutional-rwa-platform-product-manager-defi-yield-risk-at-hyphen-connect-4326395607?position=5&pageNum=0&refId=O66TqnW5Tu%2BJiXUqONi0Kw%3D%3D&trackingId=zmKDUmsJwwo8aNeLeaTJbg%3D%3D",
-    "company": "Hyphen Connect",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Team Head, Relationship Management, Wealth Management",
-    "link": "https://hk.linkedin.com/jobs/view/team-head-relationship-management-wealth-management-at-bnp-paribas-4003503827?position=1&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=hTR0rH%2F3CL5prEEZSFsEGA%3D%3D",
-    "company": "BNP Paribas",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Senior Marketing Associate, Wealth Management",
-    "link": "https://hk.linkedin.com/jobs/view/senior-marketing-associate-wealth-management-at-bnp-paribas-4165094197?position=2&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=vyH2HkriofDjcB%2BucjPsWQ%3D%3D",
-    "company": "BNP Paribas",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "Asset Management - Finance - Finance Permanent Controller (Trainee/Internship), Asia Pacific (6-month contract)",
     "link": "https://hk.linkedin.com/jobs/view/asset-management-finance-finance-permanent-controller-trainee-internship-asia-pacific-6-month-contract-at-bnp-paribas-asset-management-4314105013?position=3&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=W%2Bm4dS9T8aWbxG3JB3ieHw%3D%3D",
     "company": "BNP Paribas Asset Management",
@@ -1155,30 +1673,9 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "Regional It Security Risk Analyst",
-    "link": "https://hk.linkedin.com/jobs/view/regional-it-security-risk-analyst-at-bnp-paribas-4319140993?position=4&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=kdeSivZQld%2B6h53%2FoqXnPA%3D%3D",
-    "company": "BNP Paribas",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "Ccco Apac Conduct Officer",
     "link": "https://hk.linkedin.com/jobs/view/ccco-apac-conduct-officer-at-bnp-paribas-4261208195?position=5&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=%2BaHdkTbFWCiQHONu9f0akw%3D%3D",
     "company": "BNP Paribas",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Asset Management Regional Finance Financial Analyst Management Reporting Apac 9 Month Contract",
-    "link": "https://hk.linkedin.com/jobs/view/asset-management-regional-finance-financial-analyst-management-reporting-apac-9-month-contract-at-bnp-paribas-asset-management-4342770996?position=6&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=i3G4AkVkwv%2Fl8WsD3GLdVw%3D%3D",
-    "company": "Bnp Paribas Asset Management",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Institutional Account Manager",
-    "link": "https://hk.linkedin.com/jobs/view/institutional-account-manager-at-usmart-securities-limited-4329518641?position=7&pageNum=0&refId=LFea3%2Bmto75IfGmPIyva3A%3D%3D&trackingId=6RpJc4j7e%2FJU2RMaiIaUig%3D%3D",
-    "company": "Usmart Securities Limited",
     "location": "HK",
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
@@ -1192,13 +1689,6 @@
   {
     "title": "C&AFC – Private Bank Compliance – Vice President",
     "link": "https://hk.linkedin.com/jobs/view/c-afc-%E2%80%93-private-bank-compliance-%E2%80%93-vice-president-at-deutsche-bank-4335613978?position=2&pageNum=0&refId=%2FZKH%2BYinkRFNDSqdYBBTmw%3D%3D&trackingId=lXZfXSmM4jzaad4gCAneng%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "HK",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "C&AFC – Global Markets Compliance - VP",
-    "link": "https://hk.linkedin.com/jobs/view/c-afc-%E2%80%93-global-markets-compliance-vp-at-deutsche-bank-4289777318?position=3&pageNum=0&refId=%2FZKH%2BYinkRFNDSqdYBBTmw%3D%3D&trackingId=KbAn4XooVhOTcUjKZvC5uw%3D%3D",
     "company": "Deutsche Bank",
     "location": "HK",
     "pushTime": "2026-01-01T10:02:10.326Z"
@@ -1218,27 +1708,6 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "Junior Data Scientist",
-    "link": "https://sg.linkedin.com/jobs/view/junior-data-scientist-at-bnp-paribas-4308589389?position=1&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=V4BvKyyCvyUB9wf0K4R7%2BQ%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Wealth Management - Senior Relationship Manager / Relationship Manager",
-    "link": "https://sg.linkedin.com/jobs/view/wealth-management-senior-relationship-manager-relationship-manager-at-bnp-paribas-3984312593?position=2&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=EZLEMfzrfYNsd2mgikNZog%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Sustainability Project Manager",
-    "link": "https://sg.linkedin.com/jobs/view/sustainability-project-manager-at-bnp-paribas-4318344478?position=3&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=1pahfrPOM1GLBp6%2Ban%2FXFA%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
     "title": "Bcm Manager",
     "link": "https://sg.linkedin.com/jobs/view/bcm-manager-at-bnp-paribas-4253259111?position=4&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=HeQJ3Vq4ZAijDx0is72Apg%3D%3D",
     "company": "BNP Paribas",
@@ -1248,20 +1717,6 @@
   {
     "title": "Client Risk Management Officer Securities Services Apac",
     "link": "https://sg.linkedin.com/jobs/view/client-risk-management-officer-securities-services-apac-at-bnp-paribas-4122619035?position=5&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=qIMbYXEA7yA4C%2BbcS64Hew%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Kyc Expert Transfer Agency And Investor Services",
-    "link": "https://sg.linkedin.com/jobs/view/kyc-expert-transfer-agency-and-investor-services-at-bnp-paribas-4299396315?position=6&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=pJG5cRA%2FD7YNV6cDp4%2BxYg%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Specialist Compliance Officer Regional Aml Advisory Transaction Monitoring Team Wm Cib",
-    "link": "https://sg.linkedin.com/jobs/view/specialist-compliance-officer-regional-aml-advisory-transaction-monitoring-team-wm-cib-at-bnp-paribas-4319231744?position=7&pageNum=0&refId=CUQfepTFrJu6JaY4CDKIxA%3D%3D&trackingId=OLd8YxAowGArM7B02%2BHUZA%3D%3D",
     "company": "BNP Paribas",
     "location": "SG",
     "pushTime": "2026-01-01T10:02:10.326Z"
@@ -1281,111 +1736,6 @@
     "pushTime": "2026-01-01T10:02:10.326Z"
   },
   {
-    "title": "2026 BloombergNEF Summer Internship, Beijing",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/2026-BloombergNEF-Summer-Internship-Beijing/16036",
-    "company": "Beijing, Beijing, China",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "BNEF Hydrogen Analysis Researcher",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/BNEF-Hydrogen-Analysis-Researcher/15188",
-    "company": "Shanghai, Shanghai, China",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "BloombergNEF Relationship Manager - Beijing",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/BloombergNEF-Relationship-Manager-Beijing/13849",
-    "company": "Beijing, Beijing, China",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Senior Localization Analyst - Taiwanese Traditional Chinese, based in Hong Kong",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Senior-Localization-Analyst-Taiwanese-Traditional-Chinese-based-in-Hong-Kong/16487",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Manager - OTC Pricing Data, Hong Kong",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Manager-OTC-Pricing-Data-Hong-Kong/16467",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Technical Account Manager, Research, Hong Kong",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Technical-Account-Manager-Research-Hong-Kong/16454",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "BloombergNEF Account Manager - Hong Kong",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/BloombergNEF-Account-Manager-Hong-Kong/16373",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Enterprise Sales - Team Leader - BVAULT & RHUB Sales, Hong Kong",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Sales-Team-Leader-BVAULT-RHUB-Sales-Hong-Kong/16394",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Enterprise Data Sales Relationship Manager - Singapore",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Data-Sales-Relationship-Manager-Singapore/16363",
-    "company": "Singapore, Singapore",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Enterprise Sales - Electronic Trading Solutions, Sell Side Relationship Manager - Singapore",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Sales-Electronic-Trading-Solutions-Sell-Side-Relationship-Manager-Singapore/16302",
-    "company": "Singapore, Singapore",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Senior Creative Content Lead - Singapore",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Senior-Creative-Content-Lead-Singapore/16339",
-    "company": "Singapore, Singapore",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Enterprise Sales - Electronic Trading Solutions Sell-side Relationship Manager - Hong Kong",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/Enterprise-Sales-Electronic-Trading-Solutions-Sell-side-Relationship-Manager-Hong-Kong/16273",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "BNEF Energy Transition Finance and Investment Analyst",
-    "link": "https://bloomberg.avature.net/careers/JobDetail/BNEF-Energy-Transition-Finance-and-Investment-Analyst/16264",
-    "company": "Hong Kong, Hong Kong",
-    "location": "OTHER",
-    "pushTime": "2026-01-01T10:02:10.326Z"
-  },
-  {
-    "title": "Quantitative Analyst",
-    "link": "https://cn.linkedin.com/jobs/view/quantitative-analyst-at-east-west-bank-4329541144?position=1&pageNum=0&refId=AdSS4IjZrVT832BfXckSLg%3D%3D&trackingId=y9hg4j4W2X5ydKd74xt6Ww%3D%3D",
-    "company": "East West Bank",
-    "location": "CN",
-    "pushTime": "2026-01-01T10:02:10.325Z"
-  },
-  {
-    "title": "Senior Manager Sports Marketing Team China",
-    "link": "https://cn.linkedin.com/jobs/view/senior-manager-sports-marketing-team-china-at-adidas-4261691921?position=4&pageNum=0&refId=2I4tL848x09gVDSkhOMM%2FA%3D%3D&trackingId=kHWWQvxbFWe6RPcXv9RWQw%3D%3D",
-    "company": "Adidas",
-    "location": "CN",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
     "title": "Senior Relationship Manager China",
     "link": "https://cn.linkedin.com/jobs/view/senior-relationship-manager-china-at-afterpay-4348336295?position=5&pageNum=0&refId=2I4tL848x09gVDSkhOMM%2FA%3D%3D&trackingId=ogXzFxVX0tvAEWAeV25jjg%3D%3D",
     "company": "Afterpay",
@@ -1403,27 +1753,6 @@
     "title": "Centralized Research Group Crg Analyst",
     "link": "https://cn.linkedin.com/jobs/view/centralized-research-group-crg-analyst-at-jpmorganchase-4207822331?position=7&pageNum=0&refId=2I4tL848x09gVDSkhOMM%2FA%3D%3D&trackingId=NqH33%2FZW7vOX3nozB%2FStkQ%3D%3D",
     "company": "JPMorgan Chase",
-    "location": "CN",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "Calling Cdo",
-    "link": "https://cn.linkedin.com/jobs/view/calling-cdo-at-hsbc-4342796050?position=4&pageNum=0&refId=7Mi0FuQEbTtvVZ143UZ8Og%3D%3D&trackingId=iJTcFMHXRIzVDY6bsL3Vzw%3D%3D",
-    "company": "HSBC",
-    "location": "CN",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "Institutional Rwa Platform Gtm Bd Institutional Defi Eco Or Asset Management",
-    "link": "https://cn.linkedin.com/jobs/view/institutional-rwa-platform-gtm-bd-institutional-defi-eco-or-asset-management-at-hyphen-connect-4326483096?position=6&pageNum=0&refId=7Mi0FuQEbTtvVZ143UZ8Og%3D%3D&trackingId=DaKljSvTvnJxYctSurhDlA%3D%3D",
-    "company": "Hyphen Connect",
-    "location": "CN",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "Institutional Rwa Platform Product Manager Defi Yield Risk",
-    "link": "https://cn.linkedin.com/jobs/view/institutional-rwa-platform-product-manager-defi-yield-risk-at-hyphen-connect-4326375383?position=7&pageNum=0&refId=7Mi0FuQEbTtvVZ143UZ8Og%3D%3D&trackingId=KmzSH%2FiiZjm9iaN1KeBA%2Fw%3D%3D",
-    "company": "Hyphen Connect",
     "location": "CN",
     "pushTime": "2026-01-01T04:01:58.542Z"
   },
@@ -1470,13 +1799,6 @@
     "pushTime": "2026-01-01T04:01:58.542Z"
   },
   {
-    "title": "Ir融资经理 高级经理",
-    "link": "https://cn.linkedin.com/jobs/view/ir%E8%9E%8D%E8%B5%84%E7%BB%8F%E7%90%86-%E9%AB%98%E7%BA%A7%E7%BB%8F%E7%90%86-at-%E9%AB%98%E6%B5%8E%E5%8C%BB%E8%8D%AF-%E5%9B%9B%E5%B7%9D-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4351010496?position=7&pageNum=0&refId=sbE%2FyExKpOoFOYld0RAUCQ%3D%3D&trackingId=BE3UV7vyY9frJBdQdDlWNA%3D%3D",
-    "company": "高济医药 四川 有限公司",
-    "location": "CN",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
     "title": "Asset & Wealth Management, Private Wealth Management, Cross Markets Team, Vice President, Hong Kong",
     "link": "https://hk.linkedin.com/jobs/view/asset-wealth-management-private-wealth-management-cross-markets-team-vice-president-hong-kong-at-goldman-sachs-4323133553?position=4&pageNum=0&refId=%2B%2FPcvbGDxphQTF2W338OOw%3D%3D&trackingId=16dt%2Fx%2B08yXbpGczQKrrhg%3D%3D",
     "company": "Goldman Sachs",
@@ -1502,34 +1824,6 @@
     "link": "https://hk.linkedin.com/jobs/view/global-banking-markets-senior-low-level-systems-engineer-linux-kernel-and-low-latency-vice-president-hong-kong-at-goldman-sachs-4326036676?position=7&pageNum=0&refId=%2B%2FPcvbGDxphQTF2W338OOw%3D%3D&trackingId=csDpB1bYHo%2BAP1k%2BTAr%2BBA%3D%3D",
     "company": "Goldman Sachs",
     "location": "HK",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "BCM Manager",
-    "link": "https://sg.linkedin.com/jobs/view/bcm-manager-at-bnp-paribas-4253259111?position=3&pageNum=0&refId=H1dBfhj1jnpC2zmLQzp23w%3D%3D&trackingId=Uz%2Fmlx3r%2BsauLiRqtPy8uw%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "Risk Manager",
-    "link": "https://sg.linkedin.com/jobs/view/risk-manager-at-bnp-paribas-4309488712?position=7&pageNum=0&refId=H1dBfhj1jnpC2zmLQzp23w%3D%3D&trackingId=vorCcptSmVjmnzJALKI9Vw%3D%3D",
-    "company": "BNP Paribas",
-    "location": "SG",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "Asset & Wealth Management, Private Bank Lending, Executive Director, Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-bank-lending-executive-director-singapore-at-goldman-sachs-4323063591?position=4&pageNum=0&refId=3jfa4bZuokAdXcDD5hbkxQ%3D%3D&trackingId=iXh2DYXcF0wa28XVv%2FMCDA%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "SG",
-    "pushTime": "2026-01-01T04:01:58.542Z"
-  },
-  {
-    "title": "Asset & Wealth Management, Private Wealth Management, Family Office Wealth Strategist, Vice President/ Executive Director, Singapore",
-    "link": "https://sg.linkedin.com/jobs/view/asset-wealth-management-private-wealth-management-family-office-wealth-strategist-vice-president-executive-director-singapore-at-goldman-sachs-4307678295?position=5&pageNum=0&refId=3jfa4bZuokAdXcDD5hbkxQ%3D%3D&trackingId=kaLhUpeBTSBsj7anRd6jbQ%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "SG",
     "pushTime": "2026-01-01T04:01:58.542Z"
   },
   {
@@ -2030,13 +2324,6 @@
     "pushTime": "2025-12-31T10:01:32.372Z"
   },
   {
-    "title": "Asset Management Equity Portfolio Manager Technology Sector Coverage",
-    "link": "https://cn.linkedin.com/jobs/view/asset-management-equity-portfolio-manager-technology-sector-coverage-at-jpmorganchase-4342493199?position=4&pageNum=0&refId=j5ZSWNoQ8Q8Vv5IDooLztA%3D%3D&trackingId=alH4iM4Vhada3ruH%2FxuCOg%3D%3D",
-    "company": "JPMorgan Chase",
-    "location": "CN",
-    "pushTime": "2025-12-31T10:01:32.372Z"
-  },
-  {
     "title": "Product Manager - China Business Team / 产品经理 - 中国业务团队",
     "link": "https://cn.linkedin.com/jobs/view/product-manager-china-business-team-%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86-%E4%B8%AD%E5%9B%BD%E4%B8%9A%E5%8A%A1%E5%9B%A2%E9%98%9F-at-morningstar-4325274618?position=3&pageNum=0&refId=8qrq9TyndJEzM0e8EO1cNQ%3D%3D&trackingId=5ERxg9jbUQPb%2Bvku%2BD%2BNlw%3D%3D",
     "company": "Morningstar",
@@ -2089,13 +2376,6 @@
     "title": "Credit Group Manager - ICM, SVP",
     "link": "https://cn.linkedin.com/jobs/view/credit-group-manager-icm-svp-at-citi-4326264226?position=1&pageNum=0&refId=m9DoZdqZNjuRPjXODNOZhA%3D%3D&trackingId=2JtacmTysiVUC4EvIinpEg%3D%3D",
     "company": "Citi",
-    "location": "CN",
-    "pushTime": "2025-12-31T10:01:32.371Z"
-  },
-  {
-    "title": "OFFICER",
-    "link": "https://cn.linkedin.com/jobs/view/officer-at-hsbc-4346572769?position=3&pageNum=0&refId=XgFJniSrisBfBvL34eqCmw%3D%3D&trackingId=bnSqSu0iDWyqBk%2F%2BBO%2BSGw%3D%3D",
-    "company": "HSBC",
     "location": "CN",
     "pushTime": "2025-12-31T10:01:32.371Z"
   },
@@ -2294,13 +2574,6 @@
     "company": "JPMorgan Chase",
     "location": "HK",
     "pushTime": "2025-12-31T05:22:44.661Z"
-  },
-  {
-    "title": "Vice President People Culture China",
-    "link": "https://cn.linkedin.com/jobs/view/vice-president-people-culture-china-at-lululemon-3961620886?position=4&pageNum=0&refId=5pvBWR5G3hY%2BSDnPbAqtlA%3D%3D&trackingId=dTU454iTAX41bLlC9bLePg%3D%3D",
-    "company": "Lululemon",
-    "location": "CN",
-    "pushTime": "2025-12-31T05:18:54.076Z"
   },
   {
     "title": "Product Manager China Business Team 产品经理 中国业务团队",
@@ -3262,13 +3535,6 @@
     "pushTime": "2025-12-30T22:01:56.851Z"
   },
   {
-    "title": "资产运营岗（电力交易方向） (MJ001686)",
-    "link": "https://cn.linkedin.com/jobs/view/%E8%B5%84%E4%BA%A7%E8%BF%90%E8%90%A5%E5%B2%97%EF%BC%88%E7%94%B5%E5%8A%9B%E4%BA%A4%E6%98%93%E6%96%B9%E5%90%91%EF%BC%89-mj001686-at-jinko-power-4329634930?position=7&pageNum=0&refId=u1seQ8IFxVfWe9hq56b9Fw%3D%3D&trackingId=O1z3lHlQPaFa6iKTzWLdgg%3D%3D",
-    "company": "Jinko Power",
-    "location": "CN",
-    "pushTime": "2025-12-30T22:01:56.851Z"
-  },
-  {
     "title": "Assistant Vice President, Investment Group (MKT-China, Beijing)",
     "link": "https://cn.linkedin.com/jobs/view/assistant-vice-president-investment-group-mkt-china-beijing-at-temasek-4348496113?position=8&pageNum=0&refId=u1seQ8IFxVfWe9hq56b9Fw%3D%3D&trackingId=3KIwJYVvWwhv450%2FJLED0g%3D%3D",
     "company": "Temasek",
@@ -3406,13 +3672,6 @@
     "link": "https://cn.linkedin.com/jobs/view/senior-product-manager-ori-bb-at-adidas-4350781062?position=7&pageNum=0&refId=%2BUvKgv3s12rY1bJP3YNM3Q%3D%3D&trackingId=mLp1cGqmrnPs1MNaKmDnnw%3D%3D",
     "company": "******",
     "location": "CN",
-    "pushTime": "2025-12-30T16:02:01.718Z"
-  },
-  {
-    "title": "IB - ICG Asia FX Sales - Director",
-    "link": "https://hk.linkedin.com/jobs/view/ib-icg-asia-fx-sales-director-at-deutsche-bank-4331171093?position=6&pageNum=0&refId=trHrEJsH8GvmwmNWh9a2lw%3D%3D&trackingId=%2Fnesqu7B4oirbeXlErpcFw%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "HK",
     "pushTime": "2025-12-30T16:02:01.718Z"
   },
   {
@@ -3649,27 +3908,6 @@
   {
     "title": "College English Teacher",
     "link": "https://cn.linkedin.com/jobs/view/college-english-teacher-at-elevate-4346060765?position=3&pageNum=0&refId=YzSr29lbEyvnG3qW8Qnd4Q%3D%3D&trackingId=5Xfj%2BCRkUpypgcMMwrFV8Q%3D%3D",
-    "company": "elevate",
-    "location": "CN",
-    "pushTime": "2025-12-29T22:01:27.965Z"
-  },
-  {
-    "title": "Humanities Teacher (History/Social Studies)",
-    "link": "https://cn.linkedin.com/jobs/view/humanities-teacher-history-social-studies-at-elevate-4346188947?position=4&pageNum=0&refId=YzSr29lbEyvnG3qW8Qnd4Q%3D%3D&trackingId=iWnXxAUBH1uZacPpRjEB%2Bg%3D%3D",
-    "company": "elevate",
-    "location": "CN",
-    "pushTime": "2025-12-29T22:01:27.965Z"
-  },
-  {
-    "title": "Primary School Teacher",
-    "link": "https://cn.linkedin.com/jobs/view/primary-school-teacher-at-elevate-4346400150?position=7&pageNum=0&refId=YzSr29lbEyvnG3qW8Qnd4Q%3D%3D&trackingId=55LcDn5LOudoKln%2FIo5PHw%3D%3D",
-    "company": "elevate",
-    "location": "CN",
-    "pushTime": "2025-12-29T22:01:27.965Z"
-  },
-  {
-    "title": "English Teacher",
-    "link": "https://cn.linkedin.com/jobs/view/english-teacher-at-elevate-4346426550?position=10&pageNum=0&refId=YzSr29lbEyvnG3qW8Qnd4Q%3D%3D&trackingId=MeQg9vxZTSG9UlNT3lG6BA%3D%3D",
     "company": "elevate",
     "location": "CN",
     "pushTime": "2025-12-29T22:01:27.965Z"
@@ -9534,13 +9772,6 @@
     "pushTime": "2025-12-18T04:00:41.827Z"
   },
   {
-    "title": "China Business Development & Marketing Manager, CMP Pad",
-    "link": "https://cn.linkedin.com/jobs/view/china-business-development-marketing-manager-cmp-pad-at-qnity-4343044643?position=1&pageNum=0&refId=BKkS1w%2F0hEMfbSjzQb6ylg%3D%3D&trackingId=0mQHIMwenqvzhUmpynzdYA%3D%3D",
-    "company": "Qnity",
-    "location": "CN",
-    "pushTime": "2025-12-18T04:00:41.827Z"
-  },
-  {
     "title": "******* ********** *******",
     "link": "https://cn.linkedin.com/jobs/view/english-literature-teacher-at-elevate-4343114095?position=4&pageNum=0&refId=xd7LZ8NcDmd7d9gkQJmCzg%3D%3D&trackingId=Gzy07mudgxD9no1AXsPgkQ%3D%3D",
     "company": "*******",
@@ -9793,13 +10024,6 @@
     "pushTime": "2025-12-17T16:01:04.171Z"
   },
   {
-    "title": "Private Bank – Business Control Operations Officer - Associate",
-    "link": "https://hk.linkedin.com/jobs/view/private-bank-%E2%80%93-business-control-operations-officer-associate-at-deutsche-bank-4343019729?position=3&pageNum=0&refId=uIU1JASLdaSr22cN46S1zA%3D%3D&trackingId=S2dV4J%2FwqwQMrA%2BLGY8tlg%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "HK",
-    "pushTime": "2025-12-17T16:01:04.171Z"
-  },
-  {
     "title": "GRE - APAC Head of Facilities Management – Director",
     "link": "https://sg.linkedin.com/jobs/view/gre-apac-head-of-facilities-management-%E2%80%93-director-at-deutsche-bank-4343839359?position=1&pageNum=0&refId=wD5Qc9py2DrUhjeMdM0OmA%3D%3D&trackingId=NUn%2BnuAMBBJw1Ig16WYbng%3D%3D",
     "company": "Deutsche Bank",
@@ -9905,13 +10129,6 @@
     "pushTime": "2025-12-17T10:00:43.044Z"
   },
   {
-    "title": "Senior Director, Head of China Business Operations",
-    "link": "https://cn.linkedin.com/jobs/view/senior-director-head-of-china-business-operations-at-blizzard-entertainment-4319223919?position=1&pageNum=0&refId=xuMav31AmZzv0Njt0XkHFg%3D%3D&trackingId=bCk32xTfSyQdsgE9SlBICg%3D%3D",
-    "company": "Blizzard Entertainment",
-    "location": "CN",
-    "pushTime": "2025-12-17T10:00:43.044Z"
-  },
-  {
     "title": "Senior Relationship Manager/Relationship Manager, Wealth Management",
     "link": "https://hk.linkedin.com/jobs/view/senior-relationship-manager-relationship-manager-wealth-management-at-bnp-paribas-4133173951?position=4&pageNum=0&refId=gFE80PDkv9Fy8MAjdyL7jw%3D%3D&trackingId=D8r4%2FosZLLnXFYegtyQ9Hw%3D%3D",
     "company": "BNP Paribas",
@@ -9921,13 +10138,6 @@
   {
     "title": "Private Capital Associate",
     "link": "https://hk.linkedin.com/jobs/view/private-capital-associate-at-bnp-paribas-4326765205?position=5&pageNum=0&refId=gFE80PDkv9Fy8MAjdyL7jw%3D%3D&trackingId=T6pvCyH60xT50E0tWf8IkQ%3D%3D",
-    "company": "BNP Paribas",
-    "location": "HK",
-    "pushTime": "2025-12-17T10:00:43.044Z"
-  },
-  {
-    "title": "Associate - OPC & TAC Coordination Officer",
-    "link": "https://hk.linkedin.com/jobs/view/associate-opc-tac-coordination-officer-at-bnp-paribas-4077130611?position=6&pageNum=0&refId=gFE80PDkv9Fy8MAjdyL7jw%3D%3D&trackingId=jZYqYh95Adr14kEK8JNIIQ%3D%3D",
     "company": "BNP Paribas",
     "location": "HK",
     "pushTime": "2025-12-17T10:00:43.044Z"
@@ -9975,13 +10185,6 @@
     "pushTime": "2025-12-17T10:00:43.044Z"
   },
   {
-    "title": "Risk, Operational Risk, Associate, Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/risk-operational-risk-associate-hong-kong-at-goldman-sachs-4266123975?position=2&pageNum=0&refId=4fgFwAqUIUiDyPLs8P2tmA%3D%3D&trackingId=PqmRFO%2B5AFteN4S8jTzksA%3D%3D",
-    "company": "Goldman Sachs",
-    "location": "HK",
-    "pushTime": "2025-12-17T10:00:43.044Z"
-  },
-  {
     "title": "***** & ****** **********, ******* ****** **********, ********* ********** *****, **** *********",
     "link": "https://hk.linkedin.com/jobs/view/asset-wealth-management-private-wealth-management-portfolio-management-group-vice-president-at-goldman-sachs-4292129331?position=4&pageNum=0&refId=4fgFwAqUIUiDyPLs8P2tmA%3D%3D&trackingId=VjscKf4l5ts%2BrhlAmPj6eA%3D%3D",
     "company": "******* *****",
@@ -10001,13 +10204,6 @@
     "company": "Deutsche Bank",
     "location": "SG",
     "pushTime": "2025-12-17T10:00:43.044Z"
-  },
-  {
-    "title": "Executive - Business Development, China",
-    "link": "https://cn.linkedin.com/jobs/view/executive-business-development-china-at-anantara-vacation-club-4323383975?position=1&pageNum=0&refId=15mYcnKlt1qaNvmdwb5daQ%3D%3D&trackingId=xc8tHCo3yEw1%2BBGdBIZAAg%3D%3D",
-    "company": "Anantara Vacation Club",
-    "location": "CN",
-    "pushTime": "2025-12-17T10:00:43.043Z"
   },
   {
     "title": "English Literature and History Teacher",
@@ -10083,13 +10279,6 @@
     "title": "资金管理高级专家（投融资方向）",
     "link": "https://cn.linkedin.com/jobs/view/%E8%B5%84%E9%87%91%E7%AE%A1%E7%90%86%E9%AB%98%E7%BA%A7%E4%B8%93%E5%AE%B6%EF%BC%88%E6%8A%95%E8%9E%8D%E8%B5%84%E6%96%B9%E5%90%91%EF%BC%89-at-liuzhou-wuling-new-energy-automobile-co-ltd-4349136172?position=7&pageNum=0&refId=4150aDtob%2BJaJ2whA1kmfg%3D%3D&trackingId=vgvEfH6xaFopP96I4xMlzA%3D%3D",
     "company": "Liuzhou Wuling New Energy Automobile Co., Ltd.",
-    "location": "CN",
-    "pushTime": "2025-12-16T22:00:48.919Z"
-  },
-  {
-    "title": "机构客户服务岗（日语）",
-    "link": "https://cn.linkedin.com/jobs/view/%E6%9C%BA%E6%9E%84%E5%AE%A2%E6%88%B7%E6%9C%8D%E5%8A%A1%E5%B2%97%EF%BC%88%E6%97%A5%E8%AF%AD%EF%BC%89-at-daiwahouse-industry-co-ltd-4349886432?position=8&pageNum=0&refId=4150aDtob%2BJaJ2whA1kmfg%3D%3D&trackingId=qWwmN1Y%2BIoKG0xD7wCe0ag%3D%3D",
-    "company": "DaiwaHouse Industry Co., ltd",
     "location": "CN",
     "pushTime": "2025-12-16T22:00:48.919Z"
   },
@@ -10279,13 +10468,6 @@
     "title": "Associate Director, Communication & Marketing- Shanghai",
     "link": "https://cn.linkedin.com/jobs/view/associate-director-communication-marketing-shanghai-at-syneos-health-4342954401?position=1&pageNum=0&refId=q8gVQe4qeS7eZ12iXjlOeg%3D%3D&trackingId=GYHo5NAoShmIDPsnwjIwtA%3D%3D",
     "company": "Syneos Health",
-    "location": "CN",
-    "pushTime": "2025-12-16T10:00:43.032Z"
-  },
-  {
-    "title": "Senior Acquisition Relation Officer GZU",
-    "link": "https://cn.linkedin.com/jobs/view/senior-acquisition-relation-officer-gzu-at-hang-seng-bank-4342889369?position=4&pageNum=0&refId=q8gVQe4qeS7eZ12iXjlOeg%3D%3D&trackingId=AMesdnbMdNq6b%2BD%2B3Wmw0w%3D%3D",
-    "company": "Hang Seng Bank",
     "location": "CN",
     "pushTime": "2025-12-16T10:00:43.032Z"
   },
@@ -10741,13 +10923,6 @@
     "title": "Private Bank - Operations Analyst - NCT",
     "link": "https://hk.linkedin.com/jobs/view/private-bank-operations-analyst-nct-at-deutsche-bank-4342897750?position=5&pageNum=0&refId=lousUh12n6ZtJLhO5FEN9w%3D%3D&trackingId=gXOzXbsdvZcx9wC%2F9y7IKQ%3D%3D",
     "company": "Deutsche Bank",
-    "location": "HK",
-    "pushTime": "2025-12-15T10:00:43.895Z"
-  },
-  {
-    "title": "Executive Office, Office of Corporate Engagement, Analyst, Hong Kong",
-    "link": "https://hk.linkedin.com/jobs/view/executive-office-office-of-corporate-engagement-analyst-hong-kong-at-goldman-sachs-4323424507?position=2&pageNum=0&refId=QFMTY1HO21pTLZRPoZRLDw%3D%3D&trackingId=uKuWb%2FM%2FocHCF7fMNeZe3w%3D%3D",
-    "company": "Goldman Sachs",
     "location": "HK",
     "pushTime": "2025-12-15T10:00:43.895Z"
   },
@@ -11725,13 +11900,6 @@
     "pushTime": "2025-12-11T04:25:11.751Z"
   },
   {
-    "title": "Client Onboard Analyst - Officer",
-    "link": "https://cn.linkedin.com/jobs/view/client-onboard-analyst-officer-at-citi-4326603769?position=1&pageNum=0&refId=0LGuaW1ezvSSHI65Rs5ixw%3D%3D&trackingId=QjupC0FrMlpH8s%2B2wJFtAQ%3D%3D",
-    "company": "Citi",
-    "location": "CN",
-    "pushTime": "2025-12-11T04:25:11.751Z"
-  },
-  {
     "title": "Financial Sector RA, HSBC Qianhai (GCB 6)",
     "link": "https://cn.linkedin.com/jobs/view/financial-sector-ra-hsbc-qianhai-gcb-6-at-hsbc-4334871060?position=9&pageNum=0&refId=lt4slPRgY8JYuD2LE0LnKg%3D%3D&trackingId=YhHQNLerbuqLpa5l6%2BiEkA%3D%3D",
     "company": "HSBC",
@@ -11946,13 +12114,6 @@
     "link": "https://hk.linkedin.com/jobs/view/internal-audit-expert-global-markets-at-ubs-4326630505?position=10&pageNum=0&refId=bf9t295kpBX1co4eRWrYzg%3D%3D&trackingId=XGr8EgP%2BNQt2EuAdWKxZUA%3D%3D",
     "company": "UBS",
     "location": "HK",
-    "pushTime": "2025-12-11T04:25:11.751Z"
-  },
-  {
-    "title": "Corporate Bank - MNC Coverage - Associate",
-    "link": "https://sg.linkedin.com/jobs/view/corporate-bank-mnc-coverage-associate-at-deutsche-bank-4311171110?position=1&pageNum=0&refId=NB8Qr%2BVkMdnDZyG0CgCk%2Bg%3D%3D&trackingId=FUEfy3wp%2FVAMmgsj%2Bhy0Ug%3D%3D",
-    "company": "Deutsche Bank",
-    "location": "SG",
     "pushTime": "2025-12-11T04:25:11.751Z"
   },
   {
