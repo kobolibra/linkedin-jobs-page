@@ -9,16 +9,101 @@
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
-    h1 { margin-bottom: 12px; font-weight: 600; max-width: 70%; /* 防止标题遮挡右上角 */ }
+    /* 1. 全局设置：增加 box-sizing 保证尺寸计算准确 */
+    * { box-sizing: border-box; }
 
-    /* 筛选栏 */
-    .filter-bar { margin: 20px 0; display: flex; align-items: center; gap: 12px; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+      margin: 40px auto; 
+      /* 限制最大宽度，确保在大屏上左右对齐不散乱 */
+      max-width: 1200px; 
+      padding: 0 20px;
+      background: #f7f9fc; 
+      color: #222; 
+    }
+
+    /* 2. 布局容器：左侧(文本+筛选) vs 右侧(图表) */
+    .header-container {
+      display: flex;
+      justify-content: space-between; /* 撑开两端 */
+      align-items: flex-end;          /* 底部对齐：图表底边 = 筛选框底边 */
+      margin-bottom: 25px;
+      gap: 20px;                      /* 左右间距，防止重叠 */
+    }
+
+    /* 左侧列：包含 1.标题 2.口号 3.URL 4.筛选框 */
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 10px; /* 行间距 */
+      flex: 1;   /* 占据剩余空间 */
+    }
+
+    /* 第1行：主标题 */
+    h1 { 
+      margin: 0; 
+      font-weight: 600; 
+      font-size: 24px; 
+      line-height: 1.2;
+      color: #111827;
+    }
+
+    /* 第2行：中文口号 */
+    .subtitle {
+      font-size: 18px;
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    /* 第3行：URL */
+    .url-line {
+      font-size: 13px;
+      color: #6b7280;
+      font-family: monospace;
+    }
+
+    /* 第4行：筛选栏 (复用原有样式，去除margin由父容器控制) */
+    .filter-bar { 
+      margin: 0; 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+    }
     .filter-bar label { font-size: 0.9em; color: #4b5563; }
-    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; }
+    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; min-width: 120px; }
 
-    /* 专业配色 */
-    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; }
+
+    /* 右侧：统计卡片 (移除绝对定位，改为Flex项目) */
+    .stats-card {
+      background: #fff;
+      padding: 10px 15px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 稍微减淡阴影 */
+      border: 1px solid #e5e7eb;
+      width: 300px; /* 固定宽度 */
+      height: 110px; /* 适当增加高度以平衡左侧4行内容 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0; /* 防止被左侧内容挤压 */
+    }
+    
+    .stats-header {
+      font-size: 12px;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .stats-value {
+      font-weight: 700;
+      color: #111827;
+      font-size: 14px;
+    }
+
+
+    /* --- 以下保留你原有的样式，不做修改 --- */
+    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; border: 1px solid #e5e7eb; }
     .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
     .cn { background: #f3f4f6; }   
@@ -32,74 +117,53 @@
     .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
     .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
     .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
-
-    /* --- 新增：右上角统计卡片样式 --- */
-    .stats-card {
-      position: absolute;
-      top: 20px;
-      right: 40px;
-      background: #fff;
-      padding: 10px 15px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border: 1px solid #e5e7eb;
-      width: 280px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .stats-header {
-      font-size: 12px;
-      color: #6b7280;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .stats-value {
-      font-weight: 700;
-      color: #111827;
-      font-size: 14px;
-    }
-    /* 移动端适配：屏幕太窄时取消固定定位，放到标题下方 */
-    @media (max-width: 768px) {
-      .stats-card { position: static; width: 100%; margin-bottom: 20px; box-sizing: border-box; }
-      h1 { max-width: 100%; }
-    }
   </style>
 </head>
 <body>
   
-  <!-- 新增：右上角统计图表容器 -->
-  <div class="stats-card">
-    <div class="stats-header">
-      <span>👀 访客总数 (PV)</span>
-      <!-- 不蒜子统计 ID -->
-      <span id="busuanzi_container_site_pv" style="display:none">
-        <span id="busuanzi_value_site_pv" class="stats-value">Loading...</span>
-      </span>
-    </div>
+  <!-- 新增：头部布局容器 -->
+  <div class="header-container">
     
-    <!-- 折线图 Canvas -->
-    <div style="height: 100px; width: 100%;">
-      <canvas id="trendChart"></canvas>
+    <!-- 左侧列：1-4行 -->
+    <div class="header-left">
+      <!-- 第1行：主标题 -->
+      <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）</h1>
+      
+      <!-- 第2行：中文口号 (单独一行) -->
+      <div class="subtitle">祝我们都能拿到dream offer👏</div>
+      
+      <!-- 第3行：URL -->
+      <div class="url-line">https://kobolibra.github.io/linkedin-jobs-page/</div>
+      
+      <!-- 第4行：筛选栏 -->
+      <div class="filter-bar">
+        <label for="compFilter">筛选公司：</label>
+        <select id="compFilter">
+          <option value="all">全部</option>
+        </select>
+      </div>
     </div>
-    <div class="stats-header" style="justify-content: center; margin-top: 2px;">
-      <span style="font-size: 10px; color: #9ca3af;">Data Trend (Jobs Over Time)</span>
+
+    <!-- 右侧列：统计卡片 (与左侧底部对齐) -->
+    <div class="stats-card">
+      <div class="stats-header">
+        <span>👀 访客总数 (PV)</span>
+        <span id="busuanzi_container_site_pv" style="display:none">
+          <span id="busuanzi_value_site_pv" class="stats-value">Loading...</span>
+        </span>
+      </div>
+      
+      <!-- 折线图 Canvas -->
+      <div style="flex: 1; width: 100%; position: relative;">
+        <canvas id="trendChart"></canvas>
+      </div>
+      <div class="stats-header" style="justify-content: center; margin-top: 2px;">
+        <span style="font-size: 10px; color: #9ca3af;">Data Trend (Cumulative)</span>
+      </div>
     </div>
+
   </div>
 
-  <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）
-      祝我们都能拿到dream offer👏
-      <br><span style="font-size:0.6em; font-weight:400; color:#666;">https://kobolibra.github.io/linkedin-jobs-page/</span>
-  </h1>
-  
-  <div class="filter-bar">
-    <label for="compFilter">筛选公司：</label>
-    <select id="compFilter">
-      <option value="all">全部</option>
-    </select>
-  </div>
   <div id="jobs"></div>
 
   <script>
@@ -150,21 +214,15 @@
         });
 
         // ==========================================
-        // === 新增：绘制右上角折线图逻辑 (Star History 风格) ===
+        // === 绘制右上角折线图逻辑 ===
         // ==========================================
         renderTrendChart(data);
       });
 
     function renderTrendChart(data) {
-      // 1. 数据处理：按日期统计累计职位数 (模拟 Star History 的增长曲线)
-      // 注意：这里用职位增长趋势代替访客趋势，因为静态页面无法存储历史访客数据
-      // 但曲线形状和视觉效果与 Star History 几乎一致
       const dateMap = {};
-      
-      // 按时间排序
       const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
       
-      // 统计每天的新增数
       sorted.forEach(item => {
         const date = new Date(item.pushTime).toISOString().split('T')[0];
         dateMap[date] = (dateMap[date] || 0) + 1;
@@ -173,33 +231,34 @@
       const labels = Object.keys(dateMap);
       const counts = Object.values(dateMap);
       
-      // 计算累计数 (Cumulative) - 这样曲线就是只增不减，像 Star History
       let acc = 0;
       const cumulativeData = counts.map(c => { acc += c; return acc; });
 
-      // 2. 绘制图表
       const ctx = document.getElementById('trendChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels, // X轴：日期
+          labels: labels,
           datasets: [{
             label: 'Jobs',
-            data: cumulativeData, // Y轴：累计职位数
-            borderColor: '#ea580c', // 橙色，类似 Star History 风格
+            data: cumulativeData,
+            borderColor: '#ea580c',
             backgroundColor: 'rgba(234, 88, 12, 0.1)',
             borderWidth: 2,
-            pointRadius: 0, // 隐藏点，使线条更平滑
+            pointRadius: 0,
             pointHoverRadius: 4,
             fill: true,
-            tension: 0.4 // 曲线平滑度
+            tension: 0.4
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: {
+             padding: { top: 5, right: 10, bottom: 5, left: 5 } // 防止图表边缘溢出
+          },
           plugins: {
-            legend: { display: false }, // 隐藏图例
+            legend: { display: false },
             tooltip: { 
               mode: 'index', 
               intersect: false,
@@ -209,18 +268,18 @@
             }
           },
           scales: {
-            x: { display: false }, // 隐藏 X 轴刻度，保持简洁
+            x: { display: false },
             y: { 
               display: true, 
-              position: 'right', // Y轴在右侧
+              position: 'right',
               grid: { display: false },
-              ticks: { font: { size: 9 } }
+              ticks: { font: { size: 9 } },
+              grace: '5%' // 防止顶部被切
             }
           }
         }
       });
       
-      // 3. 激活不蒜子计数器显示
       const busuanziEl = document.getElementById('busuanzi_container_site_pv');
       if(busuanziEl) busuanziEl.style.display = 'inline';
     }
