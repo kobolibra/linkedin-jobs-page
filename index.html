@@ -8,95 +8,140 @@
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   <style>
-    /* 保持你原有的 body 样式，margin: 40px 决定了整体的左右边界 */
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
-    
-    /* 修改 1: H1 样式调整，强制不换行，移除 URL */
-    h1 { margin-bottom: 5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+    /* 1. 全局重置：这是对齐的基础，防止 padding 撑大盒子 */
+    * { box-sizing: border-box; }
 
-    /* 新增: 顶部控制区布局 (Flexbox) */
-    /* justify-content: space-between 确保了左右两侧分别顶到 margin:40px 的边界 */
-    .header-controls {
-      display: flex;
-      justify-content: space-between; 
-      align-items: flex-end; /* 底部对齐：筛选框底部 与 图表底部 对齐 */
-      margin-bottom: 20px;
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+      margin: 0; padding: 40px; /* 统一外边距 */
+      background: #f7f9fc; 
+      color: #222; 
     }
 
-    /* 左侧列：包含 URL 和 筛选栏 */
-    .left-col {
+    /* 2. 核心布局容器：限制最大宽度，保证在大屏上也是对齐的 */
+    .container {
+      max-width: 100%; /* 或者设置一个具体像素如 1200px */
+      margin: 0 auto;
+    }
+
+    /* 3. 第一行：标题 */
+    h1 { 
+      margin: 0 0 20px 0; /* 下方留白 */
+      font-weight: 600; 
+      font-size: 24px;
+      line-height: 1.2;
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+      /* 标题本身就是块级元素，默认占满容器，右侧自然对齐 */
+    }
+
+    /* 4. 第二部分：控制栏（左侧信息 + 右侧图表） */
+    .control-row {
+      display: flex;
+      justify-content: space-between; /* 左右两端对齐 */
+      align-items: flex-end;          /* 关键：底部对齐！ */
+      margin-bottom: 20px;            /* 与下方职位列表的间距 */
+      padding-bottom: 2px;            /* 微调，防止边框切断阴影 */
+    }
+
+    /* 左侧列：URL + 筛选 */
+    .left-panel {
       display: flex;
       flex-direction: column;
-      gap: 15px; /* URL 和 筛选栏的间距 */
+      gap: 12px;
     }
 
-    /* URL 独立样式 */
-    .url-line {
-      font-size: 0.9em;
+    .site-url {
+      font-size: 14px;
       color: #6b7280;
       font-family: monospace;
+      margin-bottom: 4px;
     }
 
-    /* 你的原有 .filter-bar，去掉 margin，由父容器控制布局 */
-    .filter-bar { margin: 0; display: flex; align-items: center; gap: 12px; }
-    .filter-bar label { font-size: 0.9em; color: #4b5563; }
-    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; }
+    .filter-box { display: flex; align-items: center; gap: 8px; }
+    .filter-box label { font-size: 14px; font-weight: 500; color: #374151; }
+    .filter-box select { 
+      padding: 8px 12px; 
+      border: 1px solid #d1d5db; 
+      border-radius: 6px; 
+      background: #fff; 
+      font-size: 14px; 
+      outline: none; 
+      min-width: 200px;
+    }
 
-    /* 新增: 右侧统计卡片样式 */
+    /* 右侧：统计卡片 */
     .stats-card {
       background: #fff;
-      border: 1px solid #d1d5db; /* 与 select 边框同色 */
+      border: 1px solid #d1d5db;
       border-radius: 8px;
-      padding: 10px 15px;
-      width: 280px; /* 固定宽度 */
-      height: 85px; /* 固定高度，确保布局稳定 */
+      padding: 12px 16px; /* 内部留白 */
+      width: 300px;       /* 固定宽度 */
+      height: 85px;       /* 固定高度，与左侧内容视觉高度平衡 */
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      /* 这里不需要 margin-right，Flexbox 会自动把它推到最右侧，与 body margin 对齐 */
+      /* Flex 布局会自动将其推到最右侧，与职位卡片右边框对齐 */
     }
 
-    .stats-info {
+    .stats-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.75em;
-      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 4px;
     }
-    
-    /* 你的原有 .job 等样式，完全保留 */
-    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; /* 确保卡片有背景色 */ }
-    .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
-    .cn { background: #f3f4f6; }   
-    .hk { background: #fff3d9; }   
-    .sg { background: #dcfce7; }   
-    .other { background: #e0f2fe; }
+    /* 5. 职位列表 */
+    .job { 
+      background: #fff;
+      border: 1px solid #e5e7eb; 
+      border-radius: 8px; 
+      padding: 16px; 
+      margin-bottom: 10px; 
+      position: relative; 
+      /* 这里的 width 默认为 100%，所以右边框会自动与上方的图表右边框对齐 */
+    }
+    .job.hidden { display: none; }
 
-    .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
+    .cn { border-left: 4px solid #9ca3af; }   
+    .hk { border-left: 4px solid #f59e0b; }   
+    .sg { border-left: 4px solid #10b981; }   
+    .other { border-left: 4px solid #3b82f6; }
+
+    .job a { font-weight: 600; color: #1e40af; text-decoration: none; font-size: 16px; }
     .job a:hover { text-decoration: underline; }
 
-    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
+    .meta { font-size: 13px; color: #4b5563; margin-top: 8px; }
     
-    /* 时间：保持你的原样 absolute right: 16px */
-    .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
+    /* 时间：绝对定位，靠右对齐 */
+    .time { 
+      position: absolute; 
+      right: 16px;  /* 距离卡片右边缘 16px */
+      top: 16px; 
+      font-size: 13px; 
+      color: #6b7280; 
+      font-family: monospace; 
+    }
+    
     .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
 <body>
+
+<div class="container">
   <!-- 1. 第一行：标题 -->
   <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer👏</h1>
 
-  <!-- 2. 布局容器：左侧(URL+筛选) vs 右侧(图表) -->
-  <div class="header-controls">
+  <!-- 2. 控制栏：包含左侧内容和右侧图表 -->
+  <div class="control-row">
     
-    <div class="left-col">
-      <!-- 第二行：URL -->
-      <div class="url-line">https://kobolibra.github.io/linkedin-jobs-page/</div>
-      
-      <!-- 第三行：筛选栏 (原代码结构) -->
-      <div class="filter-bar">
+    <!-- 左侧：URL 和 筛选框 -->
+    <div class="left-panel">
+      <div class="site-url">https://kobolibra.github.io/linkedin-jobs-page/</div>
+      <div class="filter-box">
         <label for="compFilter">筛选公司：</label>
         <select id="compFilter">
           <option value="all">全部</option>
@@ -104,17 +149,17 @@
       </div>
     </div>
 
-    <!-- 右侧：统计卡片 (右边缘与 H1 和 Job卡片 对齐) -->
+    <!-- 右侧：统计图表 -->
+    <!-- 这里的 div 会因为 justify-content: space-between 被推到最右边 -->
+    <!-- 它的右边框将与下方 Job 卡片的右边框在同一条垂直线上 -->
     <div class="stats-card">
-      <div class="stats-info">
-        <!-- 明确注明是累积数 -->
+      <div class="stats-top">
         <span style="font-weight: 700; color: #ea580c;">📈 职位收录趋势 (Cumulative)</span>
-        <!-- 访问数 -->
-        <span id="busuanzi_container_site_pv" style="display:none; font-family:monospace;">
+        <span id="busuanzi_container_site_pv" style="display:none; color:#9ca3af; font-family:monospace;">
           PV: <span id="busuanzi_value_site_pv">--</span>
         </span>
       </div>
-      <!-- 图表区域 -->
+      <!-- 图表高度容器 -->
       <div style="flex: 1; width: 100%; position: relative;">
         <canvas id="jobChart"></canvas>
       </div>
@@ -122,9 +167,11 @@
 
   </div>
 
+  <!-- 3. 职位列表 -->
   <div id="jobs"></div>
+</div>
 
-  <script>
+<script>
     fetch('jobs.json?_=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
@@ -132,7 +179,6 @@
         const filter = document.getElementById('compFilter');
         let lastDate = '';
 
-        // 生成公司下拉（不重复）
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
@@ -140,7 +186,6 @@
           filter.appendChild(opt);
         });
 
-        // 筛选事件
         filter.addEventListener('change', () => {
           const val = filter.value;
           container.querySelectorAll('.job').forEach(card => {
@@ -149,7 +194,6 @@
           });
         });
 
-        // 渲染
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
           if (jobDate !== lastDate) {
@@ -162,7 +206,7 @@
 
           const div = document.createElement('div');
           div.className = 'job ' + (job.location || 'other').toLowerCase();
-          div.dataset.comp = job.company;   // 只加这一行
+          div.dataset.comp = job.company; 
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
@@ -171,28 +215,22 @@
           container.appendChild(div);
         });
 
-        // === 新增：绘制图表逻辑 ===
         renderChart(data);
       });
 
-    // 只新增这一个函数，不改动其他逻辑
     function renderChart(data) {
-      // 1. 数据处理：按日期排序并计算累积数
       const dateMap = {};
       const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
       
       sorted.forEach(item => {
-        // 取出 YYYY-MM-DD
         const d = new Date(item.pushTime).toISOString().split('T')[0];
         dateMap[d] = (dateMap[d] || 0) + 1;
       });
 
       const labels = Object.keys(dateMap);
       let acc = 0;
-      // 计算累积值
       const values = Object.values(dateMap).map(count => { acc += count; return acc; });
 
-      // 2. 绘制图表
       const ctx = document.getElementById('jobChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
@@ -200,11 +238,11 @@
           labels: labels,
           datasets: [{
             data: values,
-            borderColor: '#ea580c', // 橙色
+            borderColor: '#ea580c', 
             borderWidth: 2,
             backgroundColor: 'rgba(234, 88, 12, 0.05)',
             fill: true,
-            pointRadius: 0, // 隐藏点，保持整洁
+            pointRadius: 0, 
             pointHoverRadius: 4,
             tension: 0.3
           }]
@@ -214,10 +252,10 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
           scales: {
-            x: { display: false }, // 隐藏 X 轴
-            y: { display: false }  // 隐藏 Y 轴
+            x: { display: false }, 
+            y: { display: false } 
           },
-          layout: { padding: 0 }
+          layout: { padding: 0 } // 确保图表填满容器
         }
       });
     }
