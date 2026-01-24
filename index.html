@@ -8,140 +8,98 @@
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   <style>
-    /* 1. 全局重置：这是对齐的基础，防止 padding 撑大盒子 */
+    /* 1. 基础设置：增加 box-sizing 确保边框不撑大容器，保证对齐 */
     * { box-sizing: border-box; }
 
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-      margin: 0; padding: 40px; /* 统一外边距 */
+      /* 统一页边距，限制最大宽度，这是“三者右侧对齐”的关键 */
+      margin: 40px auto; 
+      padding: 0 20px; 
+      max-width: 1200px;
       background: #f7f9fc; 
       color: #222; 
     }
 
-    /* 2. 核心布局容器：限制最大宽度，保证在大屏上也是对齐的 */
-    .container {
-      max-width: 100%; /* 或者设置一个具体像素如 1200px */
-      margin: 0 auto;
-    }
+    /* 2. 标题：块级元素，宽度100%，右侧自然对齐 */
+    h1 { margin-bottom: 5px; font-weight: 600; line-height: 1.2; }
 
-    /* 3. 第一行：标题 */
-    h1 { 
-      margin: 0 0 20px 0; /* 下方留白 */
-      font-weight: 600; 
-      font-size: 24px;
-      line-height: 1.2;
-      white-space: nowrap; 
-      overflow: hidden; 
-      text-overflow: ellipsis;
-      /* 标题本身就是块级元素，默认占满容器，右侧自然对齐 */
-    }
-
-    /* 4. 第二部分：控制栏（左侧信息 + 右侧图表） */
-    .control-row {
+    /* 3. 头部控制区布局：Flexbox */
+    .header-section {
       display: flex;
-      justify-content: space-between; /* 左右两端对齐 */
-      align-items: flex-end;          /* 关键：底部对齐！ */
-      margin-bottom: 20px;            /* 与下方职位列表的间距 */
-      padding-bottom: 2px;            /* 微调，防止边框切断阴影 */
+      justify-content: space-between; /* 撑开两端 */
+      align-items: flex-end;          /* 底部对齐 */
+      margin-bottom: 20px;
+      padding-bottom: 5px;
     }
 
-    /* 左侧列：URL + 筛选 */
-    .left-panel {
+    /* 左侧组：包含 URL 和 Filter */
+    .left-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 15px; /* URL和筛选框的间距 */
     }
 
-    .site-url {
-      font-size: 14px;
-      color: #6b7280;
-      font-family: monospace;
-      margin-bottom: 4px;
-    }
+    .url-text { font-size: 0.9em; color: #6b7280; font-family: monospace; }
 
-    .filter-box { display: flex; align-items: center; gap: 8px; }
-    .filter-box label { font-size: 14px; font-weight: 500; color: #374151; }
-    .filter-box select { 
-      padding: 8px 12px; 
-      border: 1px solid #d1d5db; 
-      border-radius: 6px; 
-      background: #fff; 
-      font-size: 14px; 
-      outline: none; 
-      min-width: 200px;
-    }
+    /* 复用你原本的筛选样式 */
+    .filter-bar { display: flex; align-items: center; gap: 12px; }
+    .filter-bar label { font-size: 0.9em; color: #4b5563; }
+    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; min-width: 120px; }
 
     /* 右侧：统计卡片 */
     .stats-card {
       background: #fff;
       border: 1px solid #d1d5db;
       border-radius: 8px;
-      padding: 12px 16px; /* 内部留白 */
-      width: 300px;       /* 固定宽度 */
-      height: 85px;       /* 固定高度，与左侧内容视觉高度平衡 */
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      padding: 10px 15px;
+      width: 320px; /* 固定宽度 */
+      height: 90px; /* 固定高度 */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      /* Flex 布局会自动将其推到最右侧，与职位卡片右边框对齐 */
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      /* 不需要 margin-right，父容器的 justify-content 会把它推到最右侧 */
     }
 
-    .stats-top {
+    .stats-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
       font-size: 12px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
-    /* 5. 职位列表 */
-    .job { 
-      background: #fff;
-      border: 1px solid #e5e7eb; 
-      border-radius: 8px; 
-      padding: 16px; 
-      margin-bottom: 10px; 
-      position: relative; 
-      /* 这里的 width 默认为 100%，所以右边框会自动与上方的图表右边框对齐 */
-    }
-    .job.hidden { display: none; }
+    /* --- 以下完全是你原始代码的样式，未做逻辑修改 --- */
+    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; border: 1px solid #e5e7eb; }
+    .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
-    .cn { border-left: 4px solid #9ca3af; }   
-    .hk { border-left: 4px solid #f59e0b; }   
-    .sg { border-left: 4px solid #10b981; }   
-    .other { border-left: 4px solid #3b82f6; }
+    .cn { background: #f3f4f6; }
+    .hk { background: #fff3d9; }
+    .sg { background: #dcfce7; }
+    .other { background: #e0f2fe; }
 
-    .job a { font-weight: 600; color: #1e40af; text-decoration: none; font-size: 16px; }
+    .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
     .job a:hover { text-decoration: underline; }
 
-    .meta { font-size: 13px; color: #4b5563; margin-top: 8px; }
-    
-    /* 时间：绝对定位，靠右对齐 */
-    .time { 
-      position: absolute; 
-      right: 16px;  /* 距离卡片右边缘 16px */
-      top: 16px; 
-      font-size: 13px; 
-      color: #6b7280; 
-      font-family: monospace; 
-    }
-    
+    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
+    .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
     .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <!-- 1. 第一行：标题 -->
+  <!-- 第一行：标题 -->
   <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer👏</h1>
 
-  <!-- 2. 控制栏：包含左侧内容和右侧图表 -->
-  <div class="control-row">
+  <!-- 第二部分：头部控制区 (左侧内容 vs 右侧图表) -->
+  <div class="header-section">
     
-    <!-- 左侧：URL 和 筛选框 -->
-    <div class="left-panel">
-      <div class="site-url">https://kobolibra.github.io/linkedin-jobs-page/</div>
-      <div class="filter-box">
+    <!-- 左侧组 -->
+    <div class="left-group">
+      <!-- 第二行：URL -->
+      <div class="url-text">https://kobolibra.github.io/linkedin-jobs-page/</div>
+      <!-- 第三行：筛选框 -->
+      <div class="filter-bar">
         <label for="compFilter">筛选公司：</label>
         <select id="compFilter">
           <option value="all">全部</option>
@@ -149,17 +107,16 @@
       </div>
     </div>
 
-    <!-- 右侧：统计图表 -->
-    <!-- 这里的 div 会因为 justify-content: space-between 被推到最右边 -->
-    <!-- 它的右边框将与下方 Job 卡片的右边框在同一条垂直线上 -->
+    <!-- 右侧：图表卡片 -->
+    <!-- 由于 justify-content: space-between，它的右边框会死死贴住容器最右侧，与下方 Job 卡片右边框对齐 -->
     <div class="stats-card">
-      <div class="stats-top">
+      <div class="stats-header">
         <span style="font-weight: 700; color: #ea580c;">📈 职位收录趋势 (Cumulative)</span>
-        <span id="busuanzi_container_site_pv" style="display:none; color:#9ca3af; font-family:monospace;">
+        <span style="font-family: monospace; color: #9ca3af;">
           PV: <span id="busuanzi_value_site_pv">--</span>
         </span>
       </div>
-      <!-- 图表高度容器 -->
+      <!-- 图表容器 -->
       <div style="flex: 1; width: 100%; position: relative;">
         <canvas id="jobChart"></canvas>
       </div>
@@ -167,11 +124,12 @@
 
   </div>
 
-  <!-- 3. 职位列表 -->
   <div id="jobs"></div>
-</div>
 
-<script>
+  <!-- 不蒜子容器 (隐藏，仅用于脚本抓取数据) -->
+  <span id="busuanzi_container_site_pv" style="display:none"></span>
+
+  <script>
     fetch('jobs.json?_=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
@@ -179,6 +137,7 @@
         const filter = document.getElementById('compFilter');
         let lastDate = '';
 
+        // 生成公司下拉
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
@@ -186,6 +145,7 @@
           filter.appendChild(opt);
         });
 
+        // 筛选事件
         filter.addEventListener('change', () => {
           const val = filter.value;
           container.querySelectorAll('.job').forEach(card => {
@@ -194,6 +154,7 @@
           });
         });
 
+        // 渲染列表
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
           if (jobDate !== lastDate) {
@@ -206,7 +167,7 @@
 
           const div = document.createElement('div');
           div.className = 'job ' + (job.location || 'other').toLowerCase();
-          div.dataset.comp = job.company; 
+          div.dataset.comp = job.company;
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
@@ -215,11 +176,14 @@
           container.appendChild(div);
         });
 
+        // 调用绘图
         renderChart(data);
       });
 
+    // 绘图函数
     function renderChart(data) {
       const dateMap = {};
+      // 按时间排序
       const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
       
       sorted.forEach(item => {
@@ -229,6 +193,7 @@
 
       const labels = Object.keys(dateMap);
       let acc = 0;
+      // 计算累积值
       const values = Object.values(dateMap).map(count => { acc += count; return acc; });
 
       const ctx = document.getElementById('jobChart').getContext('2d');
@@ -238,24 +203,21 @@
           labels: labels,
           datasets: [{
             data: values,
-            borderColor: '#ea580c', 
+            borderColor: '#ea580c',
             borderWidth: 2,
             backgroundColor: 'rgba(234, 88, 12, 0.05)',
             fill: true,
-            pointRadius: 0, 
+            pointRadius: 0,
             pointHoverRadius: 4,
-            tension: 0.3
+            tension: 0.4 // 曲线平滑
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-          scales: {
-            x: { display: false }, 
-            y: { display: false } 
-          },
-          layout: { padding: 0 } // 确保图表填满容器
+          scales: { x: { display: false }, y: { display: false } },
+          layout: { padding: 0 }
         }
       });
     }
