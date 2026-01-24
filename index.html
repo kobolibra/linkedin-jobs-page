@@ -3,165 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <title>LinkedIn Jobs</title>
+  <!-- 引入 Chart.js 用于画图 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- 引入 不蒜子 用于统计访问数 -->
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
+  
   <style>
-    /* 1. 基础重置 */
-    * { box-sizing: border-box; }
-    
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-      /* 限制最大宽度，保证所有元素都在这个框内对齐 */
-      max-width: 1200px;
-      margin: 40px auto; 
-      padding: 0 20px; 
-      background: #f7f9fc; 
-      color: #222; 
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
+    h1 { margin-bottom: 12px; font-weight: 600; max-width: 70%; /* 防止标题遮挡右上角 */ }
 
-    /* 2. 标题修复：强制单行，绝对不换行，超出部分省略号 */
-    h1 { 
-      display: block;        /* 块级元素占满整行 */
-      width: 100%;           /* 强制宽度 */
-      margin: 0 0 10px 0;    /* 底部留白 */
-      font-weight: 600; 
-      font-size: 24px;
-      line-height: 1.3;
-      white-space: nowrap;   /* 核心：禁止换行 */
-      overflow: hidden;      /* 核心：超出隐藏 */
-      text-overflow: ellipsis; 
-      color: #111827;
-    }
+    /* 筛选栏 */
+    .filter-bar { margin: 20px 0; display: flex; align-items: center; gap: 12px; }
+    .filter-bar label { font-size: 0.9em; color: #4b5563; }
+    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; }
 
-    /* 3. 头部布局：左侧信息 vs 右侧图表 (底部对齐) */
-    .header-layout {
-      display: flex;
-      justify-content: space-between; /* 左右两端撑开 */
-      align-items: flex-end;          /* 底部对齐 */
-      margin-bottom: 25px;            /* 与职位列表的间距 */
-      padding-bottom: 5px;
-      border-bottom: 1px solid #e5e7eb; /* 增加分割线增强对齐感 */
-    }
+    /* 专业配色 */
+    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; }
+    .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
-    /* 左侧列：URL 和 筛选 */
-    .left-col {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-bottom: 5px; /* 微调以匹配右侧卡片底部视觉 */
-    }
+    .cn { background: #f3f4f6; }   
+    .hk { background: #fff3d9; }   
+    .sg { background: #dcfce7; }   
+    .other { background: #e0f2fe; }
 
-    .site-url { 
-      font-size: 14px; 
-      color: #6b7280; 
-      font-family: monospace; 
-    }
+    .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
+    .job a:hover { text-decoration: underline; }
 
-    .filter-box { display: flex; align-items: center; gap: 8px; }
-    .filter-box label { font-size: 14px; font-weight: 600; color: #374151; }
-    .filter-box select { 
-      padding: 6px 12px; 
-      border: 1px solid #d1d5db; 
-      border-radius: 6px; 
-      background: #fff; 
-      font-size: 14px; 
-      min-width: 150px;
-    }
+    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
+    .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
+    .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
 
-    /* 右侧：统计卡片 */
+    /* --- 新增：右上角统计卡片样式 --- */
     .stats-card {
+      position: absolute;
+      top: 20px;
+      right: 40px;
       background: #fff;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      padding: 10px 12px;
-      width: 320px;   /* 固定宽度 */
-      height: 90px;   /* 固定高度 */
+      padding: 10px 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #e5e7eb;
+      width: 280px;
+      z-index: 100;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      /* 不需要 margin-right，父级 flex 保证它贴在最右侧 */
+      gap: 5px;
     }
-
     .stats-header {
+      font-size: 12px;
+      color: #6b7280;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
-      margin-bottom: 2px;
     }
-
-    /* 4. 职位列表 */
-    .job { 
-      background: #fff;
-      border: 1px solid #e5e7eb; 
-      border-radius: 8px; 
-      padding: 16px; 
-      margin-bottom: 10px; 
-      position: relative;
+    .stats-value {
+      font-weight: 700;
+      color: #111827;
+      font-size: 14px;
     }
-    .job.hidden { display: none; }
-
-    /* 职位右边的时间：绝对定位到右侧，与上方图表右边缘呼应 */
-    .time { 
-      position: absolute; 
-      right: 16px; 
-      top: 16px; 
-      font-size: 13px; 
-      color: #6b7280; 
-      font-family: monospace; 
+    /* 移动端适配：屏幕太窄时取消固定定位，放到标题下方 */
+    @media (max-width: 768px) {
+      .stats-card { position: static; width: 100%; margin-bottom: 20px; box-sizing: border-box; }
+      h1 { max-width: 100%; }
     }
-
-    .job a { font-weight: 600; color: #1e40af; text-decoration: none; font-size: 16px; margin-right: 80px; /* 防止标题盖住右侧时间 */ display: block; }
-    .job a:hover { text-decoration: underline; }
-    
-    .meta { font-size: 13px; color: #4b5563; margin-top: 6px; }
-
-    .cn { border-left: 4px solid #9ca3af; }   
-    .hk { border-left: 4px solid #f59e0b; }   
-    .sg { border-left: 4px solid #10b981; }   
-    .other { border-left: 4px solid #3b82f6; }
-
-    .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
 <body>
-
-  <!-- 第一行：标题 (强制单行) -->
-  <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer👏</h1>
-
-  <!-- 第二行：布局容器 (左侧 vs 右侧) -->
-  <div class="header-layout">
+  
+  <!-- 新增：右上角统计图表容器 -->
+  <div class="stats-card">
+    <div class="stats-header">
+      <span>👀 访客总数 (PV)</span>
+      <!-- 不蒜子统计 ID -->
+      <span id="busuanzi_container_site_pv" style="display:none">
+        <span id="busuanzi_value_site_pv" class="stats-value">Loading...</span>
+      </span>
+    </div>
     
-    <div class="left-col">
-      <div class="site-url">https://kobolibra.github.io/linkedin-jobs-page/</div>
-      <div class="filter-box">
-        <label for="compFilter">筛选公司：</label>
-        <select id="compFilter">
-          <option value="all">全部</option>
-        </select>
-      </div>
+    <!-- 折线图 Canvas -->
+    <div style="height: 100px; width: 100%;">
+      <canvas id="trendChart"></canvas>
     </div>
-
-    <!-- 右侧：图表卡片 -->
-    <div class="stats-card">
-      <div class="stats-header">
-        <span style="font-weight: 700; color: #ea580c;">📈 职位收录趋势 (Cumulative)</span>
-        <span style="color:#9ca3af; font-family:monospace;">
-          PV: <span id="busuanzi_value_site_pv">--</span>
-        </span>
-      </div>
-      <!-- 图表容器 -->
-      <div style="flex: 1; width: 100%; position: relative; overflow: visible;">
-        <canvas id="jobChart"></canvas>
-      </div>
+    <div class="stats-header" style="justify-content: center; margin-top: 2px;">
+      <span style="font-size: 10px; color: #9ca3af;">Data Trend (Jobs Over Time)</span>
     </div>
-
   </div>
 
+  <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer👏
+      <br><span style="font-size:0.6em; font-weight:400; color:#666;">https://kobolibra.github.io/linkedin-jobs-page/</span>
+  </h1>
+  
+  <div class="filter-bar">
+    <label for="compFilter">筛选公司：</label>
+    <select id="compFilter">
+      <option value="all">全部</option>
+    </select>
+  </div>
   <div id="jobs"></div>
-  <span id="busuanzi_container_site_pv" style="display:none"></span>
 
   <script>
     fetch('jobs.json?_=' + new Date().getTime())
@@ -171,6 +109,7 @@
         const filter = document.getElementById('compFilter');
         let lastDate = '';
 
+        // --- 原有逻辑：生成下拉筛选 ---
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
@@ -178,6 +117,7 @@
           filter.appendChild(opt);
         });
 
+        // --- 原有逻辑：筛选事件 ---
         filter.addEventListener('change', () => {
           const val = filter.value;
           container.querySelectorAll('.job').forEach(card => {
@@ -186,6 +126,7 @@
           });
         });
 
+        // --- 原有逻辑：渲染列表 ---
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
           if (jobDate !== lastDate) {
@@ -198,7 +139,7 @@
 
           const div = document.createElement('div');
           div.className = 'job ' + (job.location || 'other').toLowerCase();
-          div.dataset.comp = job.company; 
+          div.dataset.comp = job.company;
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
@@ -207,55 +148,80 @@
           container.appendChild(div);
         });
 
-        renderChart(data);
+        // ==========================================
+        // === 新增：绘制右上角折线图逻辑 (Star History 风格) ===
+        // ==========================================
+        renderTrendChart(data);
       });
 
-    // === 修复图表溢出的关键代码 ===
-    function renderChart(data) {
+    function renderTrendChart(data) {
+      // 1. 数据处理：按日期统计累计职位数 (模拟 Star History 的增长曲线)
+      // 注意：这里用职位增长趋势代替访客趋势，因为静态页面无法存储历史访客数据
+      // 但曲线形状和视觉效果与 Star History 几乎一致
       const dateMap = {};
+      
+      // 按时间排序
       const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
+      
+      // 统计每天的新增数
       sorted.forEach(item => {
-        const d = new Date(item.pushTime).toISOString().split('T')[0];
-        dateMap[d] = (dateMap[d] || 0) + 1;
+        const date = new Date(item.pushTime).toISOString().split('T')[0];
+        dateMap[date] = (dateMap[date] || 0) + 1;
       });
 
       const labels = Object.keys(dateMap);
+      const counts = Object.values(dateMap);
+      
+      // 计算累计数 (Cumulative) - 这样曲线就是只增不减，像 Star History
       let acc = 0;
-      const values = Object.values(dateMap).map(count => { acc += count; return acc; });
+      const cumulativeData = counts.map(c => { acc += c; return acc; });
 
-      const ctx = document.getElementById('jobChart').getContext('2d');
+      // 2. 绘制图表
+      const ctx = document.getElementById('trendChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
+          labels: labels, // X轴：日期
           datasets: [{
-            data: values,
-            borderColor: '#ea580c',
+            label: 'Jobs',
+            data: cumulativeData, // Y轴：累计职位数
+            borderColor: '#ea580c', // 橙色，类似 Star History 风格
+            backgroundColor: 'rgba(234, 88, 12, 0.1)',
             borderWidth: 2,
-            backgroundColor: 'rgba(234, 88, 12, 0.05)',
-            fill: true,
-            pointRadius: 0,
+            pointRadius: 0, // 隐藏点，使线条更平滑
             pointHoverRadius: 4,
-            tension: 0.2 // 降低曲线张力，防止线条甩出画布
+            fill: true,
+            tension: 0.4 // 曲线平滑度
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          layout: {
-            // 关键修复：增加内边距，确保线条的粗细和转折点不会被画布边缘切掉
-            padding: { top: 5, right: 10, bottom: 5, left: 10 }
-          },
-          scales: {
-            x: { display: false },
-            y: { 
-              display: false,
-              grace: '5%' // 关键修复：在顶部增加 5% 的空白缓冲区，防止最高点顶格被切
+          plugins: {
+            legend: { display: false }, // 隐藏图例
+            tooltip: { 
+              mode: 'index', 
+              intersect: false,
+              callbacks: {
+                label: function(ctx) { return 'Cumulative Jobs: ' + ctx.parsed.y; }
+              }
             }
           },
-          plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
+          scales: {
+            x: { display: false }, // 隐藏 X 轴刻度，保持简洁
+            y: { 
+              display: true, 
+              position: 'right', // Y轴在右侧
+              grid: { display: false },
+              ticks: { font: { size: 9 } }
+            }
+          }
         }
       });
+      
+      // 3. 激活不蒜子计数器显示
+      const busuanziEl = document.getElementById('busuanzi_container_site_pv');
+      if(busuanziEl) busuanziEl.style.display = 'inline';
     }
   </script>
 </body>
