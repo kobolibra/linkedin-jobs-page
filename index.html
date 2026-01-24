@@ -3,89 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <title>LinkedIn Jobs</title>
-  <!-- 引入 Chart.js 用于画图 -->
+  <!-- 1. 引入 Chart.js (画图) 和 不蒜子 (统计) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- 引入 不蒜子 用于统计访问数 -->
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
+
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
-    h1 { margin-bottom: 12px; font-weight: 600; max-width: 70%; /* 防止标题遮挡右上角 */ }
+    h1 { margin-bottom: 12px; font-weight: 600; max-width: 65%; /* 限制标题宽度，防止遮挡右上角 */ }
 
     /* 筛选栏 */
     .filter-bar { margin: 20px 0; display: flex; align-items: center; gap: 12px; }
     .filter-bar label { font-size: 0.9em; color: #4b5563; }
     .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; }
 
-    /* 专业配色 */
+    /* 职位卡片样式 */
     .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; }
     .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
-
     .cn { background: #f3f4f6; }   
     .hk { background: #fff3d9; }   
     .sg { background: #dcfce7; }   
     .other { background: #e0f2fe; }
-
     .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
     .job a:hover { text-decoration: underline; }
-
     .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
     .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
     .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
 
-    /* --- 新增：右上角统计卡片样式 --- */
+    /* --- 2. 统计卡片样式 (严格定位在第二行) --- */
     .stats-card {
       position: absolute;
-      top: 20px;
+      top: 110px; /* 关键修改：避开第一行标题，下移到第二行位置 */
       right: 40px;
+      width: 260px;
       background: #fff;
-      padding: 10px 15px;
+      padding: 12px 16px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       border: 1px solid #e5e7eb;
-      width: 280px;
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      z-index: 50;
     }
-    .stats-header {
-      font-size: 12px;
-      color: #6b7280;
+    .stats-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 8px;
     }
-    .stats-value {
-      font-weight: 700;
-      color: #111827;
-      font-size: 14px;
-    }
-    /* 移动端适配：屏幕太窄时取消固定定位，放到标题下方 */
-    @media (max-width: 768px) {
-      .stats-card { position: static; width: 100%; margin-bottom: 20px; box-sizing: border-box; }
+    .stats-label { font-size: 12px; color: #6b7280; font-weight: 500; }
+    .stats-value { font-size: 16px; font-weight: 700; color: #111827; font-family: monospace; }
+    
+    /* 移动端适配：屏幕变窄时流式布局 */
+    @media (max-width: 900px) {
+      .stats-card { position: static; width: auto; margin-bottom: 20px; margin-top: 10px; }
       h1 { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  
-  <!-- 新增：右上角统计图表容器 -->
+
+  <!-- 3. 统计图表容器 -->
   <div class="stats-card">
-    <div class="stats-header">
-      <span>👀 访客总数 (PV)</span>
-      <!-- 不蒜子统计 ID -->
+    <!-- 访问数显示 -->
+    <div class="stats-row">
+      <span class="stats-label">👀 总访问人次 (PV)</span>
       <span id="busuanzi_container_site_pv" style="display:none">
-        <span id="busuanzi_value_site_pv" class="stats-value">Loading...</span>
+        <span id="busuanzi_value_site_pv" class="stats-value">--</span>
       </span>
     </div>
-    
-    <!-- 折线图 Canvas -->
-    <div style="height: 100px; width: 100%;">
+    <!-- 折线图区域 -->
+    <div style="height: 80px; width: 100%;">
       <canvas id="trendChart"></canvas>
-    </div>
-    <div class="stats-header" style="justify-content: center; margin-top: 2px;">
-      <span style="font-size: 10px; color: #9ca3af;">Data Trend (Jobs Over Time)</span>
     </div>
   </div>
 
@@ -109,7 +95,7 @@
         const filter = document.getElementById('compFilter');
         let lastDate = '';
 
-        // --- 原有逻辑：生成下拉筛选 ---
+        // 生成公司下拉
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
@@ -117,7 +103,7 @@
           filter.appendChild(opt);
         });
 
-        // --- 原有逻辑：筛选事件 ---
+        // 筛选事件
         filter.addEventListener('change', () => {
           const val = filter.value;
           container.querySelectorAll('.job').forEach(card => {
@@ -126,7 +112,7 @@
           });
         });
 
-        // --- 原有逻辑：渲染列表 ---
+        // 渲染列表
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
           if (jobDate !== lastDate) {
@@ -148,22 +134,17 @@
           container.appendChild(div);
         });
 
-        // ==========================================
-        // === 新增：绘制右上角折线图逻辑 (Star History 风格) ===
-        // ==========================================
-        renderTrendChart(data);
+        // 4. 调用画图函数
+        renderChart(data);
       });
 
-    function renderTrendChart(data) {
-      // 1. 数据处理：按日期统计累计职位数 (模拟 Star History 的增长曲线)
-      // 注意：这里用职位增长趋势代替访客趋势，因为静态页面无法存储历史访客数据
-      // 但曲线形状和视觉效果与 Star History 几乎一致
+    // --- 画图逻辑 ---
+    function renderChart(data) {
+      // 这里的逻辑是：统计“累计收录职位数”随时间的变化
+      // 只有这样才能在纯静态页面画出一条“增长的折线”
       const dateMap = {};
-      
-      // 按时间排序
       const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
       
-      // 统计每天的新增数
       sorted.forEach(item => {
         const date = new Date(item.pushTime).toISOString().split('T')[0];
         dateMap[date] = (dateMap[date] || 0) + 1;
@@ -172,56 +153,39 @@
       const labels = Object.keys(dateMap);
       const counts = Object.values(dateMap);
       
-      // 计算累计数 (Cumulative) - 这样曲线就是只增不减，像 Star History
+      // 计算累计值，让曲线向上走 (Star History 风格)
       let acc = 0;
       const cumulativeData = counts.map(c => { acc += c; return acc; });
 
-      // 2. 绘制图表
       const ctx = document.getElementById('trendChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels, // X轴：日期
+          labels: labels,
           datasets: [{
-            label: 'Jobs',
-            data: cumulativeData, // Y轴：累计职位数
-            borderColor: '#ea580c', // 橙色，类似 Star History 风格
-            backgroundColor: 'rgba(234, 88, 12, 0.1)',
+            data: cumulativeData,
+            borderColor: '#2563eb', // 蓝色线条
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
             borderWidth: 2,
-            pointRadius: 0, // 隐藏点，使线条更平滑
+            pointRadius: 0, // 不显示点，线条更平滑
             pointHoverRadius: 4,
             fill: true,
-            tension: 0.4 // 曲线平滑度
+            tension: 0.4
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }, // 隐藏图例
-            tooltip: { 
-              mode: 'index', 
-              intersect: false,
-              callbacks: {
-                label: function(ctx) { return 'Cumulative Jobs: ' + ctx.parsed.y; }
-              }
-            }
-          },
+          plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
           scales: {
-            x: { display: false }, // 隐藏 X 轴刻度，保持简洁
-            y: { 
-              display: true, 
-              position: 'right', // Y轴在右侧
-              grid: { display: false },
-              ticks: { font: { size: 9 } }
-            }
+            x: { display: false }, // 隐藏X轴
+            y: { display: false }  // 隐藏Y轴，只看趋势
           }
         }
       });
       
-      // 3. 激活不蒜子计数器显示
-      const busuanziEl = document.getElementById('busuanzi_container_site_pv');
-      if(busuanziEl) busuanziEl.style.display = 'inline';
+      // 强制刷新不蒜子 (防止异步加载不显示)
+      if(window.Busuanzi) window.Busuanzi.fetch();
     }
   </script>
 </body>
