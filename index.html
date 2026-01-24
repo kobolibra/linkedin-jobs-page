@@ -3,184 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <title>LinkedIn Jobs</title>
+  <!-- 引入 Chart.js 和 不蒜子 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
   <style>
-    /* 1. 核心修正：全局盒模型重置，确保边框对齐 */
-    * { box-sizing: border-box; }
-
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-      margin: 40px auto; /* 居中 */
-      max-width: 1200px; /* 限制最大宽，防止大屏太散 */
-      padding: 0 20px;   /* 两侧留白 */
-      background: #f7f9fc; 
-      color: #222; 
-    }
+    /* 保持你原有的 body 样式，margin: 40px 决定了整体的左右边界 */
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 40px; background: #f7f9fc; color: #222; }
     
-    /* 2. 第一行：标题 (块级元素，默认占满整行，右侧自然对齐) */
-    h1 { 
-      margin: 0 0 15px 0; 
-      font-weight: 600; 
-      font-size: 24px;
-      color: #111827;
-      line-height: 1.3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      width: 100%; /* 确保撑满 */
-      border-bottom: 2px solid transparent; /* 占位，保持视觉平衡 */
-    }
+    /* 修改 1: H1 样式调整，强制不换行，移除 URL */
+    h1 { margin-bottom: 5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 
-    /* 3. 布局容器：左侧(URL+筛选) vs 右侧(图表) */
-    .header-layout {
+    /* 新增: 顶部控制区布局 (Flexbox) */
+    /* justify-content: space-between 确保了左右两侧分别顶到 margin:40px 的边界 */
+    .header-controls {
       display: flex;
-      justify-content: space-between; /* 关键：撑开两端，保证右侧对齐 */
-      align-items: flex-end;          /* 底部对齐 */
-      margin-bottom: 25px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #e5e7eb;
+      justify-content: space-between; 
+      align-items: flex-end; /* 底部对齐：筛选框底部 与 图表底部 对齐 */
+      margin-bottom: 20px;
     }
 
-    /* 左侧列 */
-    .header-left {
+    /* 左侧列：包含 URL 和 筛选栏 */
+    .left-col {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 15px; /* URL 和 筛选栏的间距 */
     }
 
-    .site-url {
-      font-size: 14px;
+    /* URL 独立样式 */
+    .url-line {
+      font-size: 0.9em;
       color: #6b7280;
       font-family: monospace;
     }
 
-    .filter-box { display: flex; align-items: center; gap: 8px; }
-    .filter-box label { font-size: 14px; font-weight: 600; color: #374151; }
-    .filter-box select { 
-      padding: 6px 12px; 
-      border: 1px solid #d1d5db; 
-      border-radius: 6px; 
-      background: #fff; 
-      font-size: 14px; 
-      outline: none;
-      min-width: 150px;
-    }
+    /* 你的原有 .filter-bar，去掉 margin，由父容器控制布局 */
+    .filter-bar { margin: 0; display: flex; align-items: center; gap: 12px; }
+    .filter-bar label { font-size: 0.9em; color: #4b5563; }
+    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; }
 
-    /* 右侧：统计卡片 (强制右对齐) */
+    /* 新增: 右侧统计卡片样式 */
     .stats-card {
       background: #fff;
-      border: 1px solid #e5e7eb;
+      border: 1px solid #d1d5db; /* 与 select 边框同色 */
       border-radius: 8px;
-      padding: 12px;
+      padding: 10px 15px;
+      width: 280px; /* 固定宽度 */
+      height: 85px; /* 固定高度，确保布局稳定 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      width: 280px; 
-      flex-shrink: 0; /* 防止被挤压 */
+      /* 这里不需要 margin-right，Flexbox 会自动把它推到最右侧，与 body margin 对齐 */
     }
 
-    .stats-header {
+    .stats-info {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 12px;
+      font-size: 0.75em;
+      color: #6b7280;
     }
     
-    .chart-label { font-weight: 700; color: #ea580c; }
-    .visit-label { font-family: monospace; color: #9ca3af; }
+    /* 你的原有 .job 等样式，完全保留 */
+    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; /* 确保卡片有背景色 */ }
+    .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
-    /* 4. 职位卡片：使用 Flex 布局处理内部对齐 */
-    .job { 
-      background: #fff;
-      border: 1px solid #e5e7eb; /* 显式边框，与上方图表边框呼应 */
-      border-radius: 8px;
-      padding: 16px; 
-      margin-bottom: 10px; 
-      display: flex;             /* 开启Flex */
-      flex-direction: column;    /* 垂直排列 */
-      transition: all 0.2s;
-    }
+    .cn { background: #f3f4f6; }   
+    .hk { background: #fff3d9; }   
+    .sg { background: #dcfce7; }   
+    .other { background: #e0f2fe; }
+
+    .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
+    .job a:hover { text-decoration: underline; }
+
+    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
     
-    .job:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #d1d5db; }
-    .job.hidden { display: none; }
-
-    /* 职位顶部行：标题左对齐 - 时间右对齐 */
-    .job-header {
-      display: flex;
-      justify-content: space-between; /* 关键：将时间顶到最右边 */
-      align-items: flex-start;
-      margin-bottom: 6px;
-    }
-
-    .job-title {
-      font-weight: 600; 
-      color: #2563eb; 
-      text-decoration: none; 
-      font-size: 16px; 
-      line-height: 1.4;
-      margin-right: 15px; /* 防止标题太长撞到时间 */
-    }
-    .job-title:hover { text-decoration: underline; color: #1e40af; }
-
-    /* 时间样式：右侧严格对齐 */
-    .time { 
-      font-size: 13px; 
-      color: #9ca3af; 
-      font-family: monospace; 
-      white-space: nowrap; /* 不换行 */
-      text-align: right;
-    }
-
-    /* 底部元数据 */
-    .meta { font-size: 13px; color: #4b5563; display: flex; align-items: center; gap: 8px; }
-    .tag { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #4b5563; border: 1px solid #e5e7eb; }
-    
-    /* 左边框颜色标识 */
-    .job.cn { border-left: 4px solid #9ca3af; }   
-    .job.hk { border-left: 4px solid #f59e0b; }   
-    .job.sg { border-left: 4px solid #10b981; }   
-    .job.other { border-left: 4px solid #3b82f6; }
-
-    .divider { 
-      margin: 30px 0 15px; 
-      font-size: 14px; 
-      color: #6b7280; 
-      font-weight: 600; 
-      display: flex; 
-      align-items: center; 
-      gap: 10px;
-    }
-    .divider::after { content: ""; flex: 1; height: 1px; background: #e5e7eb; } /* 分割线样式优化 */
+    /* 时间：保持你的原样 absolute right: 16px */
+    .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
+    .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
 <body>
-
-  <!-- 1. 标题：全宽，右边缘与页面对齐 -->
+  <!-- 1. 第一行：标题 -->
   <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）- 祝我们都能拿到dream offer👏</h1>
 
-  <!-- 2. 头部布局：右侧图表强制靠右 -->
-  <div class="header-layout">
+  <!-- 2. 布局容器：左侧(URL+筛选) vs 右侧(图表) -->
+  <div class="header-controls">
     
-    <div class="header-left">
-      <div class="site-url">https://kobolibra.github.io/linkedin-jobs-page/</div>
-      <div class="filter-box">
-        <label for="compFilter">🏢 筛选公司：</label>
+    <div class="left-col">
+      <!-- 第二行：URL -->
+      <div class="url-line">https://kobolibra.github.io/linkedin-jobs-page/</div>
+      
+      <!-- 第三行：筛选栏 (原代码结构) -->
+      <div class="filter-bar">
+        <label for="compFilter">筛选公司：</label>
         <select id="compFilter">
-          <option value="all">全部显示 (All)</option>
+          <option value="all">全部</option>
         </select>
       </div>
     </div>
 
-    <!-- 右侧图表：其右边框将与下方的职位卡片右边框完美对齐 -->
+    <!-- 右侧：统计卡片 (右边缘与 H1 和 Job卡片 对齐) -->
     <div class="stats-card">
-      <div class="stats-header">
-        <span class="chart-label">📈 职位累积数</span>
-        <span class="visit-label" id="busuanzi_container_site_pv" style="display:none">
+      <div class="stats-info">
+        <!-- 明确注明是累积数 -->
+        <span style="font-weight: 700; color: #ea580c;">📈 职位收录趋势 (Cumulative)</span>
+        <!-- 访问数 -->
+        <span id="busuanzi_container_site_pv" style="display:none; font-family:monospace;">
           PV: <span id="busuanzi_value_site_pv">--</span>
         </span>
       </div>
-      <div style="height: 50px; width: 100%;">
+      <!-- 图表区域 -->
+      <div style="flex: 1; width: 100%; position: relative;">
         <canvas id="jobChart"></canvas>
       </div>
     </div>
@@ -197,6 +132,7 @@
         const filter = document.getElementById('compFilter');
         let lastDate = '';
 
+        // 生成公司下拉（不重复）
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
@@ -204,75 +140,71 @@
           filter.appendChild(opt);
         });
 
+        // 筛选事件
         filter.addEventListener('change', () => {
           const val = filter.value;
           container.querySelectorAll('.job').forEach(card => {
             const comp = card.dataset.comp;
-            if (val === 'all' || comp === val) {
-              card.classList.remove('hidden');
-            } else {
-              card.classList.add('hidden');
-            }
+            card.classList.toggle('hidden', val !== 'all' && comp !== val);
           });
         });
 
+        // 渲染
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
           if (jobDate !== lastDate) {
             const divider = document.createElement('div');
             divider.className = 'divider';
-            divider.textContent = '📅 ' + jobDate;
+            divider.textContent = jobDate;
             container.appendChild(divider);
             lastDate = jobDate;
           }
 
           const div = document.createElement('div');
-          const loc = (job.location || 'other').toLowerCase();
-          div.className = `job ${loc}`;
-          div.dataset.comp = job.company;
-          
-          // 这里的结构保证了 time 元素位于 Flex 容器的最右侧
+          div.className = 'job ' + (job.location || 'other').toLowerCase();
+          div.dataset.comp = job.company;   // 只加这一行
           div.innerHTML = `
-            <div class="job-header">
-              <a href="${job.link}" target="_blank" class="job-title">${job.title}</a>
-              <div class="time">${jobDate}</div>
-            </div>
-            <div class="meta">
-              <span class="tag">🏢 ${job.company}</span>
-              <span class="tag">📍 ${job.location}</span>
-            </div>
+            <a href="${job.link}" target="_blank">${job.title}</a>
+            <div class="meta">${job.company} · ${job.location}</div>
+            <div class="time">${jobDate}</div>
           `;
           container.appendChild(div);
         });
 
+        // === 新增：绘制图表逻辑 ===
         renderChart(data);
       });
 
+    // 只新增这一个函数，不改动其他逻辑
     function renderChart(data) {
+      // 1. 数据处理：按日期排序并计算累积数
       const dateMap = {};
       const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
+      
       sorted.forEach(item => {
+        // 取出 YYYY-MM-DD
         const d = new Date(item.pushTime).toISOString().split('T')[0];
         dateMap[d] = (dateMap[d] || 0) + 1;
       });
 
       const labels = Object.keys(dateMap);
       let acc = 0;
+      // 计算累积值
       const values = Object.values(dateMap).map(count => { acc += count; return acc; });
 
+      // 2. 绘制图表
       const ctx = document.getElementById('jobChart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
         data: {
           labels: labels,
           datasets: [{
-            label: 'Jobs',
             data: values,
-            borderColor: '#ea580c',
+            borderColor: '#ea580c', // 橙色
             borderWidth: 2,
             backgroundColor: 'rgba(234, 88, 12, 0.05)',
             fill: true,
-            pointRadius: 0,
+            pointRadius: 0, // 隐藏点，保持整洁
             pointHoverRadius: 4,
             tension: 0.3
           }]
@@ -281,7 +213,10 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
-          scales: { x: { display: false }, y: { display: false } },
+          scales: {
+            x: { display: false }, // 隐藏 X 轴
+            y: { display: false }  // 隐藏 Y 轴
+          },
           layout: { padding: 0 }
         }
       });
