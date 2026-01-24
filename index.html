@@ -3,43 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <title>LinkedIn Jobs</title>
-  <!-- 引入 Chart.js 用于画图 -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- 引入 不蒜子 用于统计访问数 -->
+  <!-- 仅保留不蒜子用于统计访问数，移除 Chart.js -->
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   <style>
-    /* 1. 全局设置：增加 box-sizing 保证尺寸计算准确 */
     * { box-sizing: border-box; }
 
     body { 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
       margin: 40px auto; 
-      /* 限制最大宽度，确保在大屏上左右对齐不散乱 */
       max-width: 1200px; 
       padding: 0 20px;
       background: #f7f9fc; 
       color: #222; 
     }
 
-    /* 2. 布局容器：左侧(文本+筛选) vs 右侧(图表) */
+    /* 布局容器 */
     .header-container {
       display: flex;
-      justify-content: space-between; /* 撑开两端 */
-      align-items: flex-end;          /* 底部对齐：图表底边 = 筛选框底边 */
+      justify-content: space-between; 
+      align-items: flex-start;  /* 关键修改：顶部对齐 */
       margin-bottom: 25px;
-      gap: 20px;                      /* 左右间距，防止重叠 */
+      gap: 20px;
     }
 
-    /* 左侧列：包含 1.标题 2.口号 3.URL 4.筛选框 */
+    /* 左侧列 */
     .header-left {
       display: flex;
       flex-direction: column;
-      gap: 10px; /* 行间距 */
-      flex: 1;   /* 占据剩余空间 */
+      gap: 10px;
+      flex: 1;
     }
 
-    /* 第1行：主标题 */
     h1 { 
       margin: 0; 
       font-weight: 600; 
@@ -48,21 +43,18 @@
       color: #111827;
     }
 
-    /* 第2行：中文口号 */
     .subtitle {
       font-size: 18px;
       font-weight: 500;
       color: #4b5563;
     }
 
-    /* 第3行：URL */
     .url-line {
       font-size: 13px;
       color: #6b7280;
       font-family: monospace;
     }
 
-    /* 第4行：筛选栏 (复用原有样式，去除margin由父容器控制) */
     .filter-bar { 
       margin: 0; 
       display: flex; 
@@ -72,37 +64,26 @@
     .filter-bar label { font-size: 0.9em; color: #4b5563; }
     .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; min-width: 120px; }
 
-
-    /* 右侧：统计卡片 (移除绝对定位，改为Flex项目) */
+    /* 右侧：统计卡片 (纯文字版) */
     .stats-card {
       background: #fff;
-      padding: 10px 15px;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1); /* 稍微减淡阴影 */
-      border: 1px solid #e5e7eb;
-      width: 300px; /* 固定宽度 */
-      height: 110px; /* 适当增加高度以平衡左侧4行内容 */
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      flex-shrink: 0; /* 防止被左侧内容挤压 */
+      align-items: flex-end; /* 内容靠右对齐 */
+      gap: 4px;
+      /* 这里的 margin-top 可以微调以匹配 H1 的字高，0px 通常即为顶部对齐 */
+      margin-top: 0; 
     }
     
-    .stats-header {
-      font-size: 12px;
-      color: #6b7280;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .stats-value {
-      font-weight: 700;
-      color: #111827;
-      font-size: 14px;
-    }
+    .stats-label { font-size: 12px; color: #6b7280; }
+    .stats-value { font-weight: 700; color: #ea580c; font-size: 18px; font-family: monospace; }
 
-
-    /* --- 以下保留你原有的样式，不做修改 --- */
+    /* --- 职位列表样式保留 --- */
     .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; border: 1px solid #e5e7eb; }
     .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
@@ -121,21 +102,17 @@
 </head>
 <body>
   
-  <!-- 新增：头部布局容器 -->
   <div class="header-container">
     
-    <!-- 左侧列：1-4行 -->
+    <!-- 左侧列 -->
     <div class="header-left">
-      <!-- 第1行：主标题 -->
+      <!-- 第1行 -->
       <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）</h1>
-      
-      <!-- 第2行：中文口号 (单独一行) -->
+      <!-- 第2行 -->
       <div class="subtitle">祝我们都能拿到dream offer👏</div>
-      
-      <!-- 第3行：URL -->
+      <!-- 第3行 -->
       <div class="url-line">https://kobolibra.github.io/linkedin-jobs-page/</div>
-      
-      <!-- 第4行：筛选栏 -->
+      <!-- 第4行 -->
       <div class="filter-bar">
         <label for="compFilter">筛选公司：</label>
         <select id="compFilter">
@@ -144,22 +121,12 @@
       </div>
     </div>
 
-    <!-- 右侧列：统计卡片 (与左侧底部对齐) -->
+    <!-- 右侧列：仅统计数据，顶部与左侧H1对齐 -->
     <div class="stats-card">
-      <div class="stats-header">
-        <span>👀 访客总数 (PV)</span>
-        <span id="busuanzi_container_site_pv" style="display:none">
-          <span id="busuanzi_value_site_pv" class="stats-value">Loading...</span>
-        </span>
-      </div>
-      
-      <!-- 折线图 Canvas -->
-      <div style="flex: 1; width: 100%; position: relative;">
-        <canvas id="trendChart"></canvas>
-      </div>
-      <div class="stats-header" style="justify-content: center; margin-top: 2px;">
-        <span style="font-size: 10px; color: #9ca3af;">Data Trend (Cumulative)</span>
-      </div>
+      <span class="stats-label">👀 访客总数 (PV)</span>
+      <span id="busuanzi_container_site_pv" style="display:none">
+        <span id="busuanzi_value_site_pv" class="stats-value">--</span>
+      </span>
     </div>
 
   </div>
@@ -174,7 +141,6 @@
         const filter = document.getElementById('compFilter');
         let lastDate = '';
 
-        // --- 原有逻辑：生成下拉筛选 ---
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
@@ -182,7 +148,6 @@
           filter.appendChild(opt);
         });
 
-        // --- 原有逻辑：筛选事件 ---
         filter.addEventListener('change', () => {
           const val = filter.value;
           container.querySelectorAll('.job').forEach(card => {
@@ -191,7 +156,6 @@
           });
         });
 
-        // --- 原有逻辑：渲染列表 ---
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
           if (jobDate !== lastDate) {
@@ -212,77 +176,7 @@
           `;
           container.appendChild(div);
         });
-
-        // ==========================================
-        // === 绘制右上角折线图逻辑 ===
-        // ==========================================
-        renderTrendChart(data);
       });
-
-    function renderTrendChart(data) {
-      const dateMap = {};
-      const sorted = data.sort((a, b) => new Date(a.pushTime) - new Date(b.pushTime));
-      
-      sorted.forEach(item => {
-        const date = new Date(item.pushTime).toISOString().split('T')[0];
-        dateMap[date] = (dateMap[date] || 0) + 1;
-      });
-
-      const labels = Object.keys(dateMap);
-      const counts = Object.values(dateMap);
-      
-      let acc = 0;
-      const cumulativeData = counts.map(c => { acc += c; return acc; });
-
-      const ctx = document.getElementById('trendChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Jobs',
-            data: cumulativeData,
-            borderColor: '#ea580c',
-            backgroundColor: 'rgba(234, 88, 12, 0.1)',
-            borderWidth: 2,
-            pointRadius: 0,
-            pointHoverRadius: 4,
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          layout: {
-             padding: { top: 5, right: 10, bottom: 5, left: 5 } // 防止图表边缘溢出
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: { 
-              mode: 'index', 
-              intersect: false,
-              callbacks: {
-                label: function(ctx) { return 'Cumulative Jobs: ' + ctx.parsed.y; }
-              }
-            }
-          },
-          scales: {
-            x: { display: false },
-            y: { 
-              display: true, 
-              position: 'right',
-              grid: { display: false },
-              ticks: { font: { size: 9 } },
-              grace: '5%' // 防止顶部被切
-            }
-          }
-        }
-      });
-      
-      const busuanziEl = document.getElementById('busuanzi_container_site_pv');
-      if(busuanziEl) busuanziEl.style.display = 'inline';
-    }
   </script>
 </body>
 </html>
