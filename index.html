@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>LinkedIn Jobs</title>
-  <!-- 仅保留不蒜子用于统计访问数，移除 Chart.js -->
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
   <style>
@@ -18,16 +17,14 @@
       color: #222; 
     }
 
-    /* 布局容器 */
     .header-container {
       display: flex;
       justify-content: space-between; 
-      align-items: flex-start;  /* 关键修改：顶部对齐 */
+      align-items: flex-start;
       margin-bottom: 25px;
       gap: 20px;
     }
 
-    /* 左侧列 */
     .header-left {
       display: flex;
       flex-direction: column;
@@ -60,11 +57,26 @@
       display: flex; 
       align-items: center; 
       gap: 12px; 
+      flex-wrap: wrap;
     }
+
     .filter-bar label { font-size: 0.9em; color: #4b5563; }
     .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; min-width: 120px; }
 
-    /* 右侧：统计卡片 (纯文字版) */
+    /* 图例新增 */
+    .legend {
+      font-size: 12px;
+      color: #6b7280;
+      margin-left: 10px;
+    }
+
+    .badge {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #d1d5db;
+    }
+
     .stats-card {
       background: #fff;
       padding: 12px 20px;
@@ -74,16 +86,14 @@
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      align-items: flex-end; /* 内容靠右对齐 */
+      align-items: flex-end;
       gap: 4px;
-      /* 这里的 margin-top 可以微调以匹配 H1 的字高，0px 通常即为顶部对齐 */
       margin-top: 0; 
     }
     
     .stats-label { font-size: 12px; color: #6b7280; }
     .stats-value { font-weight: 700; color: #ea580c; font-size: 18px; font-family: monospace; }
 
-    /* --- 职位列表样式保留 --- */
     .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; border: 1px solid #e5e7eb; }
     .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
 
@@ -100,28 +110,36 @@
     .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
+
 <body>
   
   <div class="header-container">
     
-    <!-- 左侧列 -->
     <div class="header-left">
-      <!-- 第1行 -->
       <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）</h1>
-      <!-- 第2行 -->
       <div class="subtitle">祝我们都能拿到dream offer👏  https://kobolibra.github.io/linkedin-jobs-page/</div>
-      <!-- 第3行 -->
       <div class="url-line"></div>
-      <!-- 第4行 -->
+
+      <!-- 修改区域：筛选 + 图例 -->
       <div class="filter-bar">
         <label for="compFilter">筛选公司：</label>
         <select id="compFilter">
           <option value="all">全部</option>
         </select>
+
+        <label for="locFilter">筛选地点：</label>
+        <select id="locFilter">
+          <option value="all">全部</option>
+        </select>
+
+        <span class="legend">颜色说明：</span>
+        <span class="badge cn">CN</span>
+        <span class="badge hk">HK</span>
+        <span class="badge sg">SG</span>
+        <span class="badge other">Other</span>
       </div>
     </div>
 
-    <!-- 右侧列：仅统计数据，顶部与左侧H1对齐 -->
     <div class="stats-card">
       <span class="stats-label">👀 访客总数 (PV)</span>
       <span id="busuanzi_container_site_pv" style="display:none">
@@ -138,23 +156,41 @@
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('jobs');
-        const filter = document.getElementById('compFilter');
+        const compFilter = document.getElementById('compFilter');
+        const locFilter = document.getElementById('locFilter');
         let lastDate = '';
 
         [...new Set(data.map(j => j.company))].sort().forEach(c => {
           const opt = document.createElement('option');
           opt.value = c;
           opt.textContent = c;
-          filter.appendChild(opt);
+          compFilter.appendChild(opt);
         });
 
-        filter.addEventListener('change', () => {
-          const val = filter.value;
+        [...new Set(data.map(j => j.location || 'other'))].sort().forEach(l => {
+          const opt = document.createElement('option');
+          opt.value = l;
+          opt.textContent = l;
+          locFilter.appendChild(opt);
+        });
+
+        function applyFilters() {
+          const compVal = compFilter.value;
+          const locVal = locFilter.value;
+
           container.querySelectorAll('.job').forEach(card => {
             const comp = card.dataset.comp;
-            card.classList.toggle('hidden', val !== 'all' && comp !== val);
+            const loc = card.dataset.loc;
+
+            const matchComp = compVal === 'all' || comp === compVal;
+            const matchLoc = locVal === 'all' || loc === locVal;
+
+            card.classList.toggle('hidden', !(matchComp && matchLoc));
           });
-        });
+        }
+
+        compFilter.addEventListener('change', applyFilters);
+        locFilter.addEventListener('change', applyFilters);
 
         data.forEach(job => {
           const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
@@ -169,6 +205,8 @@
           const div = document.createElement('div');
           div.className = 'job ' + (job.location || 'other').toLowerCase();
           div.dataset.comp = job.company;
+          div.dataset.loc = job.location || 'other';
+
           div.innerHTML = `
             <a href="${job.link}" target="_blank">${job.title}</a>
             <div class="meta">${job.company} · ${job.location}</div>
@@ -178,5 +216,6 @@
         });
       });
   </script>
+
 </body>
 </html>
