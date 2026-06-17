@@ -1,222 +1,253 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>LinkedIn Jobs</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkedIn Jobs · 金融职位精选 (CN / HK / SG)</title>
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-  
   <style>
+    :root {
+      --bg: #f6f5f2;
+      --surface: #ffffff;
+      --ink: #11161d;
+      --ink-soft: #4d5663;
+      --ink-faint: #8a93a2;
+      --line: #e7e5df;
+      --line-strong: #d8d5cc;
+      --accent: #9b7c3a;
+      --navy: #0e2438;
+      --cn: #a4262c;   --cn-bg: #fbeded;
+      --hk: #8a6d1f;   --hk-bg: #f9f2df;
+      --sg: #1f7a4d;   --sg-bg: #e7f4ec;
+      --other: #33507f; --other-bg: #eaf0f8;
+      --serif: Georgia, "Songti SC", "Noto Serif CJK SC", "Times New Roman", serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
+      --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+    }
     * { box-sizing: border-box; }
-
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-      margin: 40px auto; 
-      max-width: 1200px; 
-      padding: 0 20px;
-      background: #f7f9fc; 
-      color: #222; 
+    html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.5;
     }
+    .shell { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
 
-    .header-container {
-      display: flex;
-      justify-content: space-between; 
-      align-items: flex-start;
-      margin-bottom: 25px;
-      gap: 20px;
+    /* Masthead */
+    .masthead { padding: 44px 0 22px; border-bottom: 1px solid var(--line); }
+    .eyebrow {
+      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent); font-weight: 700; margin: 0 0 14px;
+      display: flex; align-items: center; gap: 12px;
     }
-
-    /* ✅ 唯一修改：防止被右侧 stats-card 挤压 */
-    .header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1 1 auto;
-      min-width: 0;
+    .eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); }
+    .masthead h1 {
+      font-family: var(--serif); font-weight: 600; font-size: 34px;
+      line-height: 1.15; letter-spacing: -0.01em; margin: 0; color: var(--navy);
     }
+    .masthead .lede { margin: 12px 0 0; color: var(--ink-soft); font-size: 15px; max-width: 640px; }
+    .masthead .tagline { margin: 10px 0 0; font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-faint); }
 
-    h1 { 
-      margin: 0; 
-      font-weight: 600; 
-      font-size: 24px; 
-      line-height: 1.2;
-      color: #111827;
+    /* Stats strip */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 26px 0 0; }
+    .stat { background: var(--surface); padding: 16px 18px; }
+    .stat .k { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 6px; }
+    .stat .v { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--navy); letter-spacing: -0.02em; }
+    .stat .v small { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-left: 4px; }
+
+    /* Toolbar */
+    .toolbar { position: sticky; top: 0; z-index: 20; background: rgba(246,245,242,0.86); backdrop-filter: saturate(180%) blur(10px); -webkit-backdrop-filter: saturate(180%) blur(10px); border-bottom: 1px solid var(--line); margin: 28px 0 0; padding: 14px 0; }
+    .toolbar-inner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .search { position: relative; flex: 1 1 240px; min-width: 200px; }
+    .search input { width: 100%; padding: 10px 12px 10px 36px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); font-size: 14px; color: var(--ink); font-family: var(--sans); transition: border-color .15s, box-shadow .15s; }
+    .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155,124,58,0.14); }
+    .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--ink-faint); }
+    .segmented { display: inline-flex; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 9px; padding: 3px; gap: 2px; }
+    .seg { border: 0; background: transparent; font-family: var(--sans); font-size: 13px; color: var(--ink-soft); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all .15s; white-space: nowrap; }
+    .seg:hover { color: var(--ink); }
+    .seg.active { background: var(--navy); color: #fff; font-weight: 600; }
+    select.company { padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); font-size: 13px; color: var(--ink); font-family: var(--sans); max-width: 220px; cursor: pointer; }
+    select.company:focus { outline: none; border-color: var(--accent); }
+    .count { margin-left: auto; font-size: 13px; color: var(--ink-faint); font-family: var(--mono); white-space: nowrap; }
+    .count b { color: var(--navy); }
+
+    /* Day groups */
+    .day { margin-top: 30px; }
+    .day-head { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
+    .day-date { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--navy); }
+    .day-meta { font-size: 12px; color: var(--ink-faint); font-family: var(--mono); }
+    .day-new { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 2px 8px; font-weight: 700; }
+
+    /* Job row */
+    .job { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 16px; padding: 16px 4px; border-bottom: 1px solid var(--line); position: relative; }
+    .job::before { content: ""; position: absolute; left: -4px; top: 12px; bottom: 12px; width: 3px; border-radius: 3px; background: var(--region, var(--line-strong)); opacity: 0; transition: opacity .15s; }
+    .job:hover { background: var(--surface); border-radius: 10px; }
+    .job:hover::before { opacity: 1; }
+    .job.hidden { display: none; }
+    .mono { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; font-family: var(--serif); font-weight: 600; font-size: 17px; color: var(--region, var(--navy)); background: var(--region-bg, #eef0f3); border: 1px solid color-mix(in srgb, var(--region, #9aa3b0) 22%, transparent); user-select: none; }
+    .job-main { min-width: 0; }
+    .job-title { font-size: 15.5px; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; display: inline-block; }
+    .job-title:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    .job-sub { font-size: 13px; color: var(--ink-soft); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .job-sub .dot { color: var(--ink-faint); margin: 0 6px; }
+    .tag { justify-self: end; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 999px; color: var(--region, var(--other)); background: var(--region-bg, var(--other-bg)); white-space: nowrap; }
+
+    .empty { display: none; text-align: center; padding: 80px 20px; color: var(--ink-faint); }
+    .empty.show { display: block; }
+    .empty .big { font-family: var(--serif); font-size: 20px; color: var(--ink-soft); margin-bottom: 8px; }
+
+    .footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .footer a { color: var(--ink-soft); text-decoration: none; }
+    .footer a:hover { color: var(--accent); }
+
+    @media (max-width: 720px) {
+      .shell { padding: 0 16px 60px; }
+      .masthead h1 { font-size: 26px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .count { margin-left: 0; width: 100%; }
+      .job { grid-template-columns: 38px 1fr; }
+      .mono { width: 38px; height: 38px; font-size: 15px; }
+      .tag { grid-column: 2; justify-self: start; margin-top: 2px; }
+      select.company, .search { max-width: none; }
     }
-
-    .subtitle {
-      font-size: 18px;
-      font-weight: 500;
-      color: #4b5563;
-    }
-
-    .url-line {
-      font-size: 13px;
-      color: #6b7280;
-      font-family: monospace;
-    }
-
-    .filter-bar { 
-      margin: 0; 
-      display: flex; 
-      align-items: center; 
-      gap: 12px; 
-      flex-wrap: nowrap;
-      overflow-x: auto;
-    }
-
-    .filter-bar label { font-size: 0.9em; color: #4b5563; }
-    .filter-bar select { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: #ffffff; color: #111827; font-size: 0.9em; min-width: 80px; }
-
-    .legend {
-      font-size: 12px;
-      color: #6b7280;
-      margin-left: 10px;
-    }
-
-    .badge {
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid #d1d5db;
-    }
-
-    .stats-card {
-      background: #fff;
-      padding: 12px 20px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 4px;
-      margin-top: 0; 
-    }
-    
-    .stats-label { font-size: 12px; color: #6b7280; }
-    .stats-value { font-weight: 700; color: #ea580c; font-size: 18px; font-family: monospace; }
-
-    .job { border-bottom: 1px solid #e5e7eb; padding: 16px; margin-bottom: 6px; border-radius: 8px; position: relative; transition: opacity 0.2s; background: #fff; border: 1px solid #e5e7eb; }
-    .job.hidden { opacity: 0; height: 0; margin: 0; padding: 0; border: 0; pointer-events: none; }
-
-    .cn { background: #f3f4f6; }   
-    .hk { background: #fff3d9; }   
-    .sg { background: #dcfce7; }   
-    .other { background: #e0f2fe; }
-
-    .job a { font-weight: 600; color: #1e40af; text-decoration: none; }
-    .job a:hover { text-decoration: underline; }
-
-    .meta { font-size: 0.85em; color: #4b5563; margin-top: 4px; }
-    .time { position: absolute; right: 16px; top: 16px; font-size: 0.8em; color: #6b7280; }
-    .divider { margin: 30px 0 10px; border-top: 1px solid #d1d5db; padding-top: 8px; font-size: 0.9em; color: #6b7280; font-weight: 500; }
   </style>
 </head>
-
 <body>
-  
-  <div class="header-container">
-    
-    <div class="header-left">
-      <h1>Latest Linkedin Jobs（以金融类职位为主，包括CN/HK/SG）</h1>
-      <div class="subtitle">祝我们都能拿到dream offer👏  https://linkedin.claudecowork.workers.dev/</div>
-      <div class="url-line"></div>
+  <div class="shell">
+    <header class="masthead">
+      <p class="eyebrow">Finance Careers · CN / HK / SG</p>
+      <h1>LinkedIn 金融职位精选</h1>
+      <p class="lede">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
+      <p class="tagline">祝我们都能拿到 dream offer 👏</p>
 
-      <div class="filter-bar">
-        <label for="compFilter">公司：</label>
-        <select id="compFilter">
-          <option value="all">全部</option>
-        </select>
+      <div class="stats">
+        <div class="stat"><p class="k">职位总数</p><p class="v" id="stat-total">—</p></div>
+        <div class="stat"><p class="k">覆盖机构</p><p class="v" id="stat-comp">—</p></div>
+        <div class="stat"><p class="k">最近更新</p><p class="v" id="stat-updated" style="font-size:15px">—</p></div>
+        <div class="stat"><p class="k">访客总数 (PV)</p><p class="v"><span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">—</span></span></p></div>
+      </div>
+    </header>
 
-        <label for="locFilter">地点：</label>
-        <select id="locFilter">
-          <option value="all">全部</option>
-        </select>
-
-        <span class="legend"> </span>
-        <span class="badge cn">CN</span>
-        <span class="badge hk">HK</span>
-        <span class="badge sg">SG</span>
-        <span class="badge other">Other</span>
+    <div class="toolbar">
+      <div class="toolbar-inner">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="search" type="text" placeholder="搜索职位或机构…" autocomplete="off" />
+        </div>
+        <div class="segmented" id="regions">
+          <button class="seg active" data-region="all">全部</button>
+          <button class="seg" data-region="CN">CN</button>
+          <button class="seg" data-region="HK">HK</button>
+          <button class="seg" data-region="SG">SG</button>
+          <button class="seg" data-region="OTHER">其他</button>
+        </div>
+        <select class="company" id="company"><option value="all">全部机构</option></select>
+        <span class="count" id="count"></span>
       </div>
     </div>
 
-    <div class="stats-card">
-      <span class="stats-label">👀 访客总数 (PV)</span>
-      <span id="busuanzi_container_site_pv" style="display:none">
-        <span id="busuanzi_value_site_pv" class="stats-value">--</span>
-      </span>
-    </div>
+    <main id="jobs"></main>
+    <div class="empty" id="empty"><div class="big">未找到匹配的职位</div><div>试试调整筛选条件或清空搜索关键词。</div></div>
 
+    <footer class="footer">
+      <span>数据来源：LinkedIn · 每 6 小时自动同步</span>
+      <a href="https://linkedin.claudecowork.workers.dev/">linkedin.claudecowork.workers.dev</a>
+    </footer>
   </div>
 
-  <div id="jobs"></div>
-
   <script>
-    fetch('jobs.json?_=' + new Date().getTime())
-      .then(res => res.json())
+    const REGIONS = {
+      CN:    { label: "中国大陆", c: "var(--cn)",    bg: "var(--cn-bg)" },
+      HK:    { label: "香港",     c: "var(--hk)",    bg: "var(--hk-bg)" },
+      SG:    { label: "新加坡",   c: "var(--sg)",    bg: "var(--sg-bg)" },
+      OTHER: { label: "其他",     c: "var(--other)", bg: "var(--other-bg)" }
+    };
+    const norm = loc => { const u = (loc || "OTHER").toUpperCase(); return REGIONS[u] ? u : "OTHER"; };
+    const esc = s => String(s == null ? "" : s).replace(/[&<>\"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"}[m]));
+    const monogram = name => { const t = (name || "?").trim(); return t ? t[0].toUpperCase() : "?"; };
+    const dayKey = iso => { const d = new Date(iso); return isNaN(d) ? "—" : d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+    const dayLabel = iso => { const d = new Date(iso); return isNaN(d) ? "未知日期" : d.toLocaleDateString("zh-CN", { year:"numeric", month:"long", day:"numeric", weekday:"long" }); };
+
+    const jobsEl = document.getElementById("jobs");
+    const emptyEl = document.getElementById("empty");
+    const searchEl = document.getElementById("search");
+    const companyEl = document.getElementById("company");
+    const regionsEl = document.getElementById("regions");
+    const countEl = document.getElementById("count");
+    let activeRegion = "all";
+
+    fetch("jobs.json?_=" + Date.now())
+      .then(r => r.json())
       .then(data => {
-        const container = document.getElementById('jobs');
-        const compFilter = document.getElementById('compFilter');
-        const locFilter = document.getElementById('locFilter');
-        let lastDate = '';
+        if (!Array.isArray(data)) data = [];
 
-        [...new Set(data.map(j => j.company))].sort().forEach(c => {
-          const opt = document.createElement('option');
-          opt.value = c;
-          opt.textContent = c;
-          compFilter.appendChild(opt);
-        });
+        document.getElementById("stat-total").textContent = data.length.toLocaleString();
+        const companies = [...new Set(data.map(j => j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
+        document.getElementById("stat-comp").innerHTML = companies.length + " <small>家</small>";
+        if (data[0] && data[0].pushTime) {
+          const d = new Date(data[0].pushTime);
+          if (!isNaN(d)) document.getElementById("stat-updated").textContent = d.toLocaleString("zh-CN", { month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
+        }
+        companies.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; companyEl.appendChild(o); });
 
-        [...new Set(data.map(j => j.location || 'other'))].sort().forEach(l => {
-          const opt = document.createElement('option');
-          opt.value = l;
-          opt.textContent = l;
-          locFilter.appendChild(opt);
-        });
+        const groups = new Map();
+        data.forEach(j => { const k = dayKey(j.pushTime); if (!groups.has(k)) groups.set(k, { label: dayLabel(j.pushTime), items: [] }); groups.get(k).items.push(j); });
 
-        function applyFilters() {
-          const compVal = compFilter.value;
-          const locVal = locFilter.value;
-
-          container.querySelectorAll('.job').forEach(card => {
-            const comp = card.dataset.comp;
-            const loc = card.dataset.loc;
-
-            const matchComp = compVal === 'all' || comp === compVal;
-            const matchLoc = locVal === 'all' || loc === locVal;
-
-            card.classList.toggle('hidden', !(matchComp && matchLoc));
+        let first = true;
+        for (const [, g] of groups) {
+          const sec = document.createElement("section"); sec.className = "day";
+          const head = document.createElement("div"); head.className = "day-head";
+          head.innerHTML = '<span class="day-date">' + esc(g.label) + '</span>' +
+            '<span class="day-meta" data-role="daycount">' + g.items.length + ' 个职位</span>' +
+            (first ? '<span class="day-new">Latest</span>' : '');
+          sec.appendChild(head);
+          g.items.forEach(job => {
+            const r = norm(job.location); const meta = REGIONS[r];
+            const a = document.createElement("article"); a.className = "job";
+            a.style.setProperty("--region", meta.c); a.style.setProperty("--region-bg", meta.bg);
+            a.dataset.comp = job.company || ""; a.dataset.region = r;
+            a.dataset.search = ((job.title||"") + " " + (job.company||"")).toLowerCase();
+            a.innerHTML =
+              '<div class="mono">' + esc(monogram(job.company)) + '</div>' +
+              '<div class="job-main">' +
+                '<a class="job-title" href="' + esc(job.link) + '" target="_blank" rel="noopener">' + esc(job.title) + '</a>' +
+                '<div class="job-sub">' + esc(job.company || "未知机构") + '<span class="dot">·</span>' + esc(meta.label) + '</div>' +
+              '</div>' +
+              '<span class="tag">' + r + '</span>';
+            sec.appendChild(a);
           });
+          jobsEl.appendChild(sec); first = false;
         }
 
-        compFilter.addEventListener('change', applyFilters);
-        locFilter.addEventListener('change', applyFilters);
+        regionsEl.addEventListener("click", e => { const b = e.target.closest(".seg"); if (!b) return; regionsEl.querySelectorAll(".seg").forEach(x => x.classList.remove("active")); b.classList.add("active"); activeRegion = b.dataset.region; apply(); });
+        searchEl.addEventListener("input", apply);
+        companyEl.addEventListener("change", apply);
+        apply();
+      })
+      .catch(() => { emptyEl.classList.add("show"); emptyEl.querySelector(".big").textContent = "职位数据加载失败"; });
 
-        data.forEach(job => {
-          const jobDate = new Date(job.pushTime).toLocaleDateString('en-GB');
-          if (jobDate !== lastDate) {
-            const divider = document.createElement('div');
-            divider.className = 'divider';
-            divider.textContent = jobDate;
-            container.appendChild(divider);
-            lastDate = jobDate;
-          }
-
-          const div = document.createElement('div');
-          div.className = 'job ' + (job.location || 'other').toLowerCase();
-          div.dataset.comp = job.company;
-          div.dataset.loc = job.location || 'other';
-
-          div.innerHTML = `
-            <a href="${job.link}" target="_blank">${job.title}</a>
-            <div class="meta">${job.company} · ${job.location}</div>
-            <div class="time">${jobDate}</div>
-          `;
-          container.appendChild(div);
+    function apply() {
+      const q = searchEl.value.trim().toLowerCase();
+      const comp = companyEl.value;
+      let visible = 0;
+      jobsEl.querySelectorAll(".day").forEach(sec => {
+        let shown = 0;
+        sec.querySelectorAll(".job").forEach(card => {
+          const ok = (activeRegion === "all" || card.dataset.region === activeRegion)
+            && (comp === "all" || card.dataset.comp === comp)
+            && (!q || card.dataset.search.includes(q));
+          card.classList.toggle("hidden", !ok);
+          if (ok) shown++;
         });
+        const c = sec.querySelector('[data-role="daycount"]'); if (c) c.textContent = shown + " 个职位";
+        sec.style.display = shown ? "" : "none";
+        visible += shown;
       });
+      countEl.innerHTML = "显示 <b>" + visible + "</b> 个职位";
+      emptyEl.classList.toggle("show", visible === 0);
+    }
   </script>
-
 </body>
 </html>
