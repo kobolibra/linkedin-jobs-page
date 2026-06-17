@@ -21,15 +21,15 @@
       --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
     }
     [data-theme="dark"] {
-      --bg:#0a0e14; --surface:#111824; --surface-2:#0e141d;
+      --bg:#070b11; --surface:#101723; --surface-2:#0c121b;
       --ink:#e8edf4; --ink-soft:#9aa7b8; --ink-faint:#5d6b7e;
-      --line:#1c2632; --line-strong:#2b3a49;
-      --accent:#e0a93b; --navy:#cfe0f5;
-      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.5);
-      --cn:#ff7b7b; --cn-bg:rgba(255,107,107,.12);
-      --hk:#f0c84a; --hk-bg:rgba(240,200,74,.12);
-      --sg:#5fd998; --sg-bg:rgba(95,217,152,.12);
-      --other:#7fb0ff; --other-bg:rgba(127,176,255,.12);
+      --line:#1b2533; --line-strong:#2b3a49;
+      --accent:#e3ad42; --navy:#d2e3f7;
+      --shadow:0 1px 2px rgba(0,0,0,.5), 0 10px 30px rgba(0,0,0,.55);
+      --cn:#ff7d7d; --cn-bg:rgba(255,107,107,.13);
+      --hk:#f3cd55; --hk-bg:rgba(240,200,74,.13);
+      --sg:#5fd998; --sg-bg:rgba(95,217,152,.13);
+      --other:#83b2ff; --other-bg:rgba(127,176,255,.13);
     }
     * { box-sizing:border-box; }
     html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
@@ -39,6 +39,15 @@
     [data-region="HK"] { --region:var(--hk); --region-bg:var(--hk-bg); }
     [data-region="SG"] { --region:var(--sg); --region-bg:var(--sg-bg); }
     [data-region="OTHER"] { --region:var(--other); --region-bg:var(--other-bg); }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.8)} }
+    .live { display:inline-block; width:7px; height:7px; border-radius:50%; background:#1f9d55; margin-right:7px; vertical-align:middle; box-shadow:0 0 0 3px color-mix(in srgb,#1f9d55 24%,transparent); }
+    @media (prefers-reduced-motion: no-preference) {
+      body.anim .reveal { opacity:0; animation:fadeUp .7s cubic-bezier(.2,.8,.2,1) forwards; }
+      body.anim .job { animation:fadeUp .5s both; }
+      .live { animation:pulse 1.8s ease-in-out infinite; }
+    }
 
     .masthead { position:relative; padding:44px 0 22px; border-bottom:1px solid var(--line); }
     .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0 0 14px; display:flex; align-items:center; gap:12px; }
@@ -57,19 +66,26 @@
     .stat .v small { font-size:12px; color:var(--ink-faint); font-weight:500; margin-left:4px; }
 
     .analytics { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
-    .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow); }
+    .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow); transition:transform .2s ease, box-shadow .2s ease; }
+    .card:hover { transform:translateY(-2px); }
     .card h3 { margin:0 0 16px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:700; }
-    .dist-row { display:grid; grid-template-columns:64px 1fr 40px; align-items:center; gap:12px; margin-bottom:10px; }
+    .dist-row { display:grid; grid-template-columns:64px 1fr 52px; align-items:center; gap:12px; margin-bottom:10px; }
     .dist-row:last-child { margin-bottom:0; }
     .dist-label { font-size:13px; color:var(--ink-soft); }
     .dist-track { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
-    .dist-fill { height:100%; border-radius:4px; background:var(--region,var(--other)); transition:width .6s cubic-bezier(.2,.8,.2,1); }
+    .dist-fill { width:0; height:100%; border-radius:4px; background:var(--region,var(--other)); transition:width .7s cubic-bezier(.2,.8,.2,1); }
     .dist-val { font-family:var(--mono); font-size:13px; color:var(--navy); text-align:right; }
+    .dist-val small { display:block; font-size:10px; color:var(--ink-faint); font-weight:400; margin-top:1px; }
     .spark { display:flex; align-items:flex-end; gap:8px; height:96px; }
     .spark-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; }
-    .spark-bar { width:100%; background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 55%,transparent)); border-radius:4px 4px 0 0; min-height:3px; transition:height .6s cubic-bezier(.2,.8,.2,1); position:relative; }
+    .spark-bar { width:100%; height:0; background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 55%,transparent)); border-radius:4px 4px 0 0; min-height:3px; transition:height .7s cubic-bezier(.2,.8,.2,1); position:relative; }
     .spark-bar span { position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
     .spark-label { font-size:11px; color:var(--ink-faint); }
+
+    [data-theme="dark"] .card { background:linear-gradient(180deg,#131c29,#0e1622); }
+    [data-theme="dark"] .stat .v { text-shadow:0 0 20px color-mix(in srgb,var(--navy) 22%,transparent); }
+    [data-theme="dark"] .seg.active { box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent), 0 0 14px color-mix(in srgb,var(--accent) 22%,transparent); }
+    [data-theme="dark"] .spark-bar { box-shadow:0 0 16px color-mix(in srgb,var(--accent) 30%,transparent); }
 
     .toolbar { position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:saturate(180%) blur(10px); -webkit-backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid var(--line); margin:24px 0 0; padding:14px 0; }
     .toolbar-inner { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
@@ -146,19 +162,19 @@
   <div class="shell">
     <header class="masthead">
       <button class="theme-toggle" id="themeToggle" aria-label="切换主题"></button>
-      <p class="eyebrow">Finance Careers · CN / HK / SG</p>
-      <h1>LinkedIn 金融职位精选</h1>
-      <p class="lede">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
-      <p class="tagline">祝我们都能拿到 dream offer 👏</p>
+      <p class="eyebrow reveal">Finance Careers · CN / HK / SG</p>
+      <h1 class="reveal" style="animation-delay:.05s">LinkedIn 金融职位精选</h1>
+      <p class="lede reveal" style="animation-delay:.1s">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
+      <p class="tagline reveal" style="animation-delay:.15s">祝我们都能拿到 dream offer 👏</p>
 
-      <div class="stats">
+      <div class="stats reveal" style="animation-delay:.2s">
         <div class="stat"><p class="k">职位总数</p><p class="v" id="stat-total">—</p></div>
         <div class="stat"><p class="k">覆盖机构</p><p class="v" id="stat-comp">—</p></div>
-        <div class="stat"><p class="k">最近更新</p><p class="v" id="stat-updated" style="font-size:15px">—</p></div>
+        <div class="stat"><p class="k"><span class="live"></span>最近更新</p><p class="v" id="stat-updated" style="font-size:15px">—</p></div>
         <div class="stat"><p class="k">访客总数 (PV)</p><p class="v"><span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">—</span></span></p></div>
       </div>
 
-      <div class="analytics">
+      <div class="analytics reveal" style="animation-delay:.26s">
         <div class="card"><h3>地区分布</h3><div id="dist"></div></div>
         <div class="card"><h3>近 7 日新增</h3><div class="spark" id="spark"></div></div>
       </div>
@@ -209,6 +225,9 @@
     setTheme(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
     tbtn.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!reduce) document.body.classList.add('anim');
+
     const REGIONS = { CN:{label:"中国大陆"}, HK:{label:"香港"}, SG:{label:"新加坡"}, OTHER:{label:"其他"} };
     const norm = loc => { const u=(loc||"OTHER").toUpperCase(); return REGIONS[u]?u:"OTHER"; };
     const esc = s => String(s==null?"":s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
@@ -217,6 +236,7 @@
     const dayKey = iso => { const d=new Date(iso); return isNaN(d)?"—":keyOf(d); };
     const dayLabel = iso => { const d=new Date(iso); return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"}); };
     function levelOf(title){ const t=(title||"").toLowerCase(); if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return "Intern"; if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return "Director+"; if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return "VP"; if(/associate/.test(t)||/经理/.test(t))return "Associate"; if(/analyst/.test(t)||/分析师|专员/.test(t))return "Analyst"; return "Other"; }
+    function animNum(el, target, suffix){ suffix=suffix||""; if(reduce){ el.innerHTML=target.toLocaleString()+suffix; return; } const dur=900, start=performance.now(); const step=now=>{ const p=Math.min((now-start)/dur,1), e=1-Math.pow(1-p,3); el.innerHTML=Math.round(target*e).toLocaleString()+suffix; if(p<1)requestAnimationFrame(step); }; requestAnimationFrame(step); }
 
     const favs = new Set(JSON.parse(localStorage.getItem("favs")||"[]"));
     const reads = new Set(JSON.parse(localStorage.getItem("reads")||"[]"));
@@ -241,21 +261,25 @@
         if(!Array.isArray(data)) data=[];
         jobsEl.innerHTML="";
 
-        document.getElementById("stat-total").textContent=data.length.toLocaleString();
+        animNum(document.getElementById("stat-total"), data.length);
         const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
-        document.getElementById("stat-comp").innerHTML=companies.length+' <small>家</small>';
+        animNum(document.getElementById("stat-comp"), companies.length, ' <small>家</small>');
         if(data[0]&&data[0].pushTime){ const d=new Date(data[0].pushTime); if(!isNaN(d)) document.getElementById("stat-updated").textContent=d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); }
         companies.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent=c; companyEl.appendChild(o); });
 
         const rc={CN:0,HK:0,SG:0,OTHER:0}; data.forEach(j=>rc[norm(j.location)]++);
         const rmax=Math.max(...Object.values(rc),1);
-        document.getElementById("dist").innerHTML=Object.keys(rc).map(k=>'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" style="width:'+(rc[k]/rmax*100)+'%"></div></div><span class="dist-val">'+rc[k]+'</span></div>').join("");
+        const distEl=document.getElementById("dist");
+        distEl.innerHTML=Object.keys(rc).map(k=>{ const pct=data.length?Math.round(rc[k]/data.length*100):0; return '<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val">'+rc[k]+'<small>'+pct+'%</small></span></div>'; }).join("");
+        requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{ f.style.width=f.dataset.w+"%"; }));
 
         const counts={}; data.forEach(j=>{ const k=dayKey(j.pushTime); counts[k]=(counts[k]||0)+1; });
         const today=new Date(); const days=[];
         for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); days.push({label:d.toLocaleDateString("zh-CN",{weekday:"short"}).replace("周",""),count:counts[keyOf(d)]||0}); }
         const smax=Math.max(...days.map(d=>d.count),1);
-        document.getElementById("spark").innerHTML=days.map(d=>'<div class="spark-col"><div class="spark-bar" style="height:'+(d.count/smax*100)+'%">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
+        const sparkEl=document.getElementById("spark");
+        sparkEl.innerHTML=days.map(d=>'<div class="spark-col"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
+        requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{ b.style.height=b.dataset.h+"%"; }));
 
         const groups=new Map();
         data.forEach(j=>{ const k=dayKey(j.pushTime); if(!groups.has(k)) groups.set(k,{label:dayLabel(j.pushTime),items:[]}); groups.get(k).items.push(j); });
@@ -265,9 +289,10 @@
           const head=document.createElement("div"); head.className="day-head";
           head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'');
           sec.appendChild(head);
-          g.items.forEach(job=>{
+          g.items.forEach((job,idx)=>{
             const r=norm(job.location), lvl=levelOf(job.title), id=job.link||(job.title+"|"+job.company);
             const a=document.createElement("article"); a.className="job"+(reads.has(id)?" read":"");
+            if(first&&!reduce) a.style.animationDelay=Math.min(idx*0.03,0.45)+"s";
             a.dataset.region=r; a.dataset.comp=job.company||""; a.dataset.level=lvl; a.dataset.id=id;
             a.dataset.search=((job.title||"")+" "+(job.company||"")).toLowerCase();
             a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div>'+'<div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a>'+'<div class="job-sub">'+esc(job.company||"未知机构")+'<span class="dot">·</span>'+REGIONS[r].label+'</div></div>'+'<div class="job-right">'+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span>'+'<button class="star'+(favs.has(id)?" on":"")+'" title="收藏">'+(favs.has(id)?"★":"☆")+'</button></div>';
