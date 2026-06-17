@@ -325,7 +325,7 @@
 
         const counts={}; data.forEach(j=>{ const k=dayKey(j.pushTime); counts[k]=(counts[k]||0)+1; });
         const today=new Date(); const days=[];
-        for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); days.push({label:d.toLocaleDateString("zh-CN",{weekday:"short"}).replace("周",""),count:counts[keyOf(d)]||0}); }
+        for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),count:counts[keyOf(d)]||0}); }
         const smax=Math.max(...days.map(d=>d.count),1);
         const sparkEl=document.getElementById("spark");
         sparkEl.innerHTML=days.map(d=>'<div class="spark-col"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
