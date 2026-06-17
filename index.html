@@ -7,119 +7,148 @@
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <style>
     :root {
-      --bg: #f6f5f2;
-      --surface: #ffffff;
-      --ink: #11161d;
-      --ink-soft: #4d5663;
-      --ink-faint: #8a93a2;
-      --line: #e7e5df;
-      --line-strong: #d8d5cc;
-      --accent: #9b7c3a;
-      --navy: #0e2438;
-      --cn: #a4262c;   --cn-bg: #fbeded;
-      --hk: #8a6d1f;   --hk-bg: #f9f2df;
-      --sg: #1f7a4d;   --sg-bg: #e7f4ec;
-      --other: #33507f; --other-bg: #eaf0f8;
-      --serif: Georgia, "Songti SC", "Noto Serif CJK SC", "Times New Roman", serif;
+      --bg:#f6f5f2; --surface:#ffffff; --surface-2:#fbfaf8;
+      --ink:#11161d; --ink-soft:#4d5663; --ink-faint:#8a93a2;
+      --line:#e7e5df; --line-strong:#d8d5cc;
+      --accent:#9b7c3a; --navy:#0e2438;
+      --shadow:0 1px 2px rgba(16,22,29,.04), 0 8px 24px rgba(16,22,29,.05);
+      --cn:#a4262c; --cn-bg:#fbeded;
+      --hk:#8a6d1f; --hk-bg:#f9f2df;
+      --sg:#1f7a4d; --sg-bg:#e7f4ec;
+      --other:#33507f; --other-bg:#eaf0f8;
+      --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", "Noto Serif CJK SC", Georgia, "Times New Roman", serif;
       --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
       --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
     }
-    * { box-sizing: border-box; }
-    html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--ink);
-      margin: 0;
-      line-height: 1.5;
+    [data-theme="dark"] {
+      --bg:#0a0e14; --surface:#111824; --surface-2:#0e141d;
+      --ink:#e8edf4; --ink-soft:#9aa7b8; --ink-faint:#5d6b7e;
+      --line:#1c2632; --line-strong:#2b3a49;
+      --accent:#e0a93b; --navy:#cfe0f5;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.5);
+      --cn:#ff7b7b; --cn-bg:rgba(255,107,107,.12);
+      --hk:#f0c84a; --hk-bg:rgba(240,200,74,.12);
+      --sg:#5fd998; --sg-bg:rgba(95,217,152,.12);
+      --other:#7fb0ff; --other-bg:rgba(127,176,255,.12);
     }
-    .shell { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
+    * { box-sizing:border-box; }
+    html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--ink); margin:0; line-height:1.5; transition:background .3s, color .3s; }
+    .shell { max-width:1080px; margin:0 auto; padding:0 24px 80px; }
+    [data-region="CN"] { --region:var(--cn); --region-bg:var(--cn-bg); }
+    [data-region="HK"] { --region:var(--hk); --region-bg:var(--hk-bg); }
+    [data-region="SG"] { --region:var(--sg); --region-bg:var(--sg-bg); }
+    [data-region="OTHER"] { --region:var(--other); --region-bg:var(--other-bg); }
 
-    /* Masthead */
-    .masthead { padding: 44px 0 22px; border-bottom: 1px solid var(--line); }
-    .eyebrow {
-      font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--accent); font-weight: 700; margin: 0 0 14px;
-      display: flex; align-items: center; gap: 12px;
-    }
-    .eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--line-strong); }
-    .masthead h1 {
-      font-family: var(--serif); font-weight: 600; font-size: 34px;
-      line-height: 1.15; letter-spacing: -0.01em; margin: 0; color: var(--navy);
-    }
-    .masthead .lede { margin: 12px 0 0; color: var(--ink-soft); font-size: 15px; max-width: 640px; text-wrap: pretty; }
-    .masthead .tagline { margin: 10px 0 0; font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--ink-faint); }
+    .masthead { position:relative; padding:44px 0 22px; border-bottom:1px solid var(--line); }
+    .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0 0 14px; display:flex; align-items:center; gap:12px; }
+    .eyebrow::after { content:""; flex:1; height:1px; background:var(--line-strong); }
+    .masthead h1 { font-family:var(--serif); font-weight:600; font-size:34px; line-height:1.15; letter-spacing:-.01em; margin:0; color:var(--navy); }
+    .masthead .lede { margin:12px 0 0; color:var(--ink-soft); font-size:15px; max-width:640px; text-wrap:pretty; }
+    .masthead .tagline { margin:10px 0 0; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-faint); }
+    .theme-toggle { position:absolute; top:40px; right:0; width:40px; height:40px; border-radius:10px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); cursor:pointer; display:grid; place-items:center; transition:all .2s; }
+    .theme-toggle:hover { color:var(--accent); border-color:var(--accent); }
+    .theme-toggle svg { width:18px; height:18px; }
 
-    /* Stats strip */
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 26px 0 0; }
-    .stat { background: var(--surface); padding: 16px 18px; }
-    .stat .k { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 6px; }
-    .stat .v { font-family: var(--mono); font-size: 22px; font-weight: 600; color: var(--navy); letter-spacing: -0.02em; }
-    .stat .v small { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-left: 4px; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:26px 0 0; }
+    .stat { background:var(--surface); padding:16px 18px; }
+    .stat .k { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px; }
+    .stat .v { font-family:var(--mono); font-size:22px; font-weight:600; color:var(--navy); letter-spacing:-.02em; }
+    .stat .v small { font-size:12px; color:var(--ink-faint); font-weight:500; margin-left:4px; }
 
-    /* Toolbar */
-    .toolbar { position: sticky; top: 0; z-index: 20; background: rgba(246,245,242,0.86); backdrop-filter: saturate(180%) blur(10px); -webkit-backdrop-filter: saturate(180%) blur(10px); border-bottom: 1px solid var(--line); margin: 28px 0 0; padding: 14px 0; }
-    .toolbar-inner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-    .search { position: relative; flex: 1 1 240px; min-width: 200px; }
-    .search input { width: 100%; padding: 10px 12px 10px 36px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); font-size: 14px; color: var(--ink); font-family: var(--sans); transition: border-color .15s, box-shadow .15s; }
-    .search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155,124,58,0.14); }
-    .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--ink-faint); }
-    .segmented { display: inline-flex; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 9px; padding: 3px; gap: 2px; }
-    .seg { border: 0; background: transparent; font-family: var(--sans); font-size: 13px; color: var(--ink-soft); padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all .15s; white-space: nowrap; }
-    .seg:hover { color: var(--ink); }
-    .seg.active { background: var(--navy); color: #fff; font-weight: 600; }
-    select.company { padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); font-size: 13px; color: var(--ink); font-family: var(--sans); max-width: 220px; cursor: pointer; }
-    select.company:focus { outline: none; border-color: var(--accent); }
-    .count { margin-left: auto; font-size: 13px; color: var(--ink-faint); font-family: var(--mono); white-space: nowrap; }
-    .count b { color: var(--navy); }
+    .analytics { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+    .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow); }
+    .card h3 { margin:0 0 16px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:700; }
+    .dist-row { display:grid; grid-template-columns:64px 1fr 40px; align-items:center; gap:12px; margin-bottom:10px; }
+    .dist-row:last-child { margin-bottom:0; }
+    .dist-label { font-size:13px; color:var(--ink-soft); }
+    .dist-track { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+    .dist-fill { height:100%; border-radius:4px; background:var(--region,var(--other)); transition:width .6s cubic-bezier(.2,.8,.2,1); }
+    .dist-val { font-family:var(--mono); font-size:13px; color:var(--navy); text-align:right; }
+    .spark { display:flex; align-items:flex-end; gap:8px; height:96px; }
+    .spark-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; height:100%; justify-content:flex-end; }
+    .spark-bar { width:100%; background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 55%,transparent)); border-radius:4px 4px 0 0; min-height:3px; transition:height .6s cubic-bezier(.2,.8,.2,1); position:relative; }
+    .spark-bar span { position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+    .spark-label { font-size:11px; color:var(--ink-faint); }
 
-    /* Day groups */
-    .day { margin-top: 30px; }
-    .day-head { display: flex; align-items: baseline; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); margin-bottom: 4px; }
-    .day-date { font-family: var(--serif); font-size: 16px; font-weight: 600; color: var(--navy); }
-    .day-meta { font-size: 12px; color: var(--ink-faint); font-family: var(--mono); }
-    .day-new { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 2px 8px; font-weight: 700; }
+    .toolbar { position:sticky; top:0; z-index:20; background:color-mix(in srgb,var(--bg) 86%,transparent); backdrop-filter:saturate(180%) blur(10px); -webkit-backdrop-filter:saturate(180%) blur(10px); border-bottom:1px solid var(--line); margin:24px 0 0; padding:14px 0; }
+    .toolbar-inner { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+    .search { position:relative; flex:1 1 220px; min-width:180px; }
+    .search input { width:100%; padding:10px 12px 10px 36px; border:1px solid var(--line-strong); border-radius:9px; background:var(--surface); font-size:14px; color:var(--ink); font-family:var(--sans); transition:border-color .15s, box-shadow .15s; }
+    .search input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent); }
+    .search svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--ink-faint); }
+    .segmented { display:inline-flex; background:var(--surface); border:1px solid var(--line-strong); border-radius:9px; padding:3px; gap:2px; }
+    .seg { border:0; background:transparent; font-family:var(--sans); font-size:13px; color:var(--ink-soft); padding:6px 12px; border-radius:6px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+    .seg:hover { color:var(--ink); }
+    .seg.active { background:var(--navy); color:var(--surface); font-weight:600; }
+    select.ctrl { padding:9px 12px; border:1px solid var(--line-strong); border-radius:9px; background:var(--surface); font-size:13px; color:var(--ink); font-family:var(--sans); max-width:200px; cursor:pointer; }
+    select.ctrl:focus { outline:none; border-color:var(--accent); }
+    .fav-toggle { display:inline-flex; align-items:center; gap:6px; padding:9px 12px; border:1px solid var(--line-strong); border-radius:9px; background:var(--surface); font-size:13px; color:var(--ink-soft); cursor:pointer; font-family:var(--sans); transition:all .15s; }
+    .fav-toggle.active { color:var(--accent); border-color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,transparent); }
+    .count { margin-left:auto; font-size:13px; color:var(--ink-faint); font-family:var(--mono); white-space:nowrap; }
+    .count b { color:var(--navy); }
 
-    /* Job row */
-    .job { display: grid; grid-template-columns: 44px 1fr auto; align-items: center; gap: 16px; padding: 16px 4px; border-bottom: 1px solid var(--line); position: relative; }
-    .job::before { content: ""; position: absolute; left: -4px; top: 12px; bottom: 12px; width: 3px; border-radius: 3px; background: var(--region, var(--line-strong)); opacity: 0; transition: opacity .15s; }
-    .job:hover { background: var(--surface); border-radius: 10px; }
-    .job:hover::before { opacity: 1; }
-    .job.hidden { display: none; }
-    .mono { width: 44px; height: 44px; border-radius: 10px; display: grid; place-items: center; font-family: var(--serif); font-weight: 600; font-size: 17px; color: var(--region, var(--navy)); background: var(--region-bg, #eef0f3); border: 1px solid color-mix(in srgb, var(--region, #9aa3b0) 22%, transparent); user-select: none; }
-    .job-main { min-width: 0; }
-    .job-title { font-size: 15.5px; font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; display: inline-block; }
-    .job-title:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-    .job-sub { font-size: 13px; color: var(--ink-soft); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .job-sub .dot { color: var(--ink-faint); margin: 0 6px; }
-    .tag { justify-self: end; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 999px; color: var(--region, var(--other)); background: var(--region-bg, var(--other-bg)); white-space: nowrap; }
+    .day { margin-top:30px; }
+    .day-head { display:flex; align-items:baseline; gap:12px; padding-bottom:10px; border-bottom:1px solid var(--line); margin-bottom:4px; }
+    .day-date { font-family:var(--serif); font-size:16px; font-weight:600; color:var(--navy); }
+    .day-meta { font-size:12px; color:var(--ink-faint); font-family:var(--mono); }
+    .day-new { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); border:1px solid var(--accent); border-radius:999px; padding:2px 8px; font-weight:700; }
 
-    .empty { display: none; text-align: center; padding: 80px 20px; color: var(--ink-faint); }
-    .empty.show { display: block; }
-    .empty .big { font-family: var(--serif); font-size: 20px; color: var(--ink-soft); margin-bottom: 8px; }
+    .job { display:grid; grid-template-columns:44px 1fr auto; align-items:center; gap:16px; padding:16px 4px; border-bottom:1px solid var(--line); position:relative; }
+    .job::before { content:""; position:absolute; left:-4px; top:12px; bottom:12px; width:3px; border-radius:3px; background:var(--region,var(--line-strong)); opacity:0; transition:opacity .15s; }
+    .job:hover { background:var(--surface); border-radius:10px; }
+    .job:hover::before { opacity:1; }
+    .job.hidden { display:none; }
+    .job.read .job-title { color:var(--ink-faint); }
+    .job.read .mono { opacity:.55; }
+    .mono { width:44px; height:44px; border-radius:10px; display:grid; place-items:center; font-family:var(--serif); font-weight:600; font-size:17px; color:var(--region,var(--navy)); background:var(--region-bg,var(--surface-2)); border:1px solid color-mix(in srgb,var(--region,#9aa3b0) 22%,transparent); user-select:none; }
+    .job-main { min-width:0; }
+    .job-title { font-size:15.5px; font-weight:600; color:var(--ink); text-decoration:none; line-height:1.35; }
+    .job-title:hover { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+    .job-sub { font-size:13px; color:var(--ink-soft); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .job-sub .dot { color:var(--ink-faint); margin:0 6px; }
+    .job-right { display:flex; align-items:center; gap:10px; }
+    .lvl { font-size:11px; font-weight:600; color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--line); padding:3px 8px; border-radius:6px; white-space:nowrap; }
+    .tag { font-size:11px; font-weight:700; letter-spacing:.06em; padding:4px 10px; border-radius:999px; color:var(--region,var(--other)); background:var(--region-bg,var(--other-bg)); white-space:nowrap; }
+    .star { border:0; background:transparent; cursor:pointer; font-size:18px; line-height:1; color:var(--ink-faint); padding:2px; transition:transform .15s, color .15s; }
+    .star:hover { transform:scale(1.2); }
+    .star.on { color:var(--accent); }
 
-    .footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .footer a { color: var(--ink-soft); text-decoration: none; }
-    .footer a:hover { color: var(--accent); }
+    .sk { padding:16px 4px; border-bottom:1px solid var(--line); display:grid; grid-template-columns:44px 1fr; gap:16px; align-items:center; }
+    .sk-box { background:linear-gradient(90deg,var(--line) 25%,var(--surface-2) 37%,var(--line) 63%); background-size:400% 100%; animation:sh 1.4s ease infinite; border-radius:8px; }
+    .sk-mono { width:44px; height:44px; border-radius:10px; }
+    .sk-l1 { height:14px; width:60%; margin-bottom:8px; }
+    .sk-l2 { height:11px; width:35%; }
+    @keyframes sh { 0%{background-position:100% 0} 100%{background-position:0 0} }
 
-    @media (max-width: 720px) {
-      .shell { padding: 0 16px 60px; }
-      .masthead h1 { font-size: 26px; }
-      .stats { grid-template-columns: repeat(2, 1fr); }
-      .count { margin-left: 0; width: 100%; }
-      .job { grid-template-columns: 38px 1fr; }
-      .mono { width: 38px; height: 38px; font-size: 15px; }
-      .tag { grid-column: 2; justify-self: start; margin-top: 2px; }
-      select.company, .search { max-width: none; }
+    .empty { display:none; text-align:center; padding:80px 20px; color:var(--ink-faint); }
+    .empty.show { display:block; }
+    .empty .big { font-family:var(--serif); font-size:20px; color:var(--ink-soft); margin-bottom:8px; }
+
+    .footer { margin-top:56px; padding-top:22px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-faint); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .footer a { color:var(--ink-soft); text-decoration:none; }
+    .footer a:hover { color:var(--accent); }
+
+    @media (max-width:720px) {
+      .shell { padding:0 16px 60px; }
+      .masthead h1 { font-size:26px; }
+      .stats { grid-template-columns:repeat(2,1fr); }
+      .analytics { grid-template-columns:1fr; }
+      .count { margin-left:0; width:100%; }
+      .job { grid-template-columns:38px 1fr; }
+      .mono { width:38px; height:38px; font-size:15px; }
+      .job-right { grid-column:2; justify-content:flex-start; margin-top:2px; }
+      select.ctrl, .search { max-width:none; }
     }
   </style>
 </head>
 <body>
   <div class="shell">
     <header class="masthead">
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题"></button>
       <p class="eyebrow">Finance Careers · CN / HK / SG</p>
       <h1>LinkedIn 金融职位精选</h1>
-      <p class="lede">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，<span style="white-space:nowrap">每 6 小时自动更新一次。</span></p>
+      <p class="lede"><span style="white-space:nowrap">聚合自 LinkedIn 的金融行业最新职位，</span><span style="white-space:nowrap">覆盖中国大陆、香港与新加坡市场，</span><span style="white-space:nowrap">每 6 小时自动更新一次。</span></p>
       <p class="tagline">祝我们都能拿到 dream offer 👏</p>
 
       <div class="stats">
@@ -127,6 +156,11 @@
         <div class="stat"><p class="k">覆盖机构</p><p class="v" id="stat-comp">—</p></div>
         <div class="stat"><p class="k">最近更新</p><p class="v" id="stat-updated" style="font-size:15px">—</p></div>
         <div class="stat"><p class="k">访客总数 (PV)</p><p class="v"><span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">—</span></span></p></div>
+      </div>
+
+      <div class="analytics">
+        <div class="card"><h3>地区分布</h3><div id="dist"></div></div>
+        <div class="card"><h3>近 7 日新增</h3><div class="spark" id="spark"></div></div>
       </div>
     </header>
 
@@ -143,7 +177,17 @@
           <button class="seg" data-region="SG">SG</button>
           <button class="seg" data-region="OTHER">其他</button>
         </div>
-        <select class="company" id="company"><option value="all">全部机构</option></select>
+        <select class="ctrl" id="level">
+          <option value="all">全部职级</option>
+          <option value="Intern">实习 Intern</option>
+          <option value="Analyst">Analyst</option>
+          <option value="Associate">Associate</option>
+          <option value="VP">VP</option>
+          <option value="Director+">Director+</option>
+          <option value="Other">其他</option>
+        </select>
+        <select class="ctrl" id="company"><option value="all">全部机构</option></select>
+        <button class="fav-toggle" id="favToggle"><span>★</span> 收藏</button>
         <span class="count" id="count"></span>
       </div>
     </div>
@@ -158,95 +202,106 @@
   </div>
 
   <script>
-    const REGIONS = {
-      CN:    { label: "中国大陆", c: "var(--cn)",    bg: "var(--cn-bg)" },
-      HK:    { label: "香港",     c: "var(--hk)",    bg: "var(--hk-bg)" },
-      SG:    { label: "新加坡",   c: "var(--sg)",    bg: "var(--sg-bg)" },
-      OTHER: { label: "其他",     c: "var(--other)", bg: "var(--other-bg)" }
-    };
-    const norm = loc => { const u = (loc || "OTHER").toUpperCase(); return REGIONS[u] ? u : "OTHER"; };
-    const esc = s => String(s == null ? "" : s).replace(/[&<>\"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'\"':"&quot;","'":"&#39;"}[m]));
-    const monogram = name => { const t = (name || "?").trim(); return t ? t[0].toUpperCase() : "?"; };
-    const dayKey = iso => { const d = new Date(iso); return isNaN(d) ? "—" : d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
-    const dayLabel = iso => { const d = new Date(iso); return isNaN(d) ? "未知日期" : d.toLocaleDateString("zh-CN", { year:"numeric", month:"long", day:"numeric", weekday:"long" }); };
+    const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+    const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+    const tbtn = document.getElementById('themeToggle');
+    function setTheme(t){ document.documentElement.setAttribute('data-theme', t); tbtn.innerHTML = t === 'dark' ? SUN : MOON; localStorage.setItem('theme', t); }
+    setTheme(localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    tbtn.addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
-    const jobsEl = document.getElementById("jobs");
-    const emptyEl = document.getElementById("empty");
-    const searchEl = document.getElementById("search");
-    const companyEl = document.getElementById("company");
-    const regionsEl = document.getElementById("regions");
-    const countEl = document.getElementById("count");
-    let activeRegion = "all";
+    const REGIONS = { CN:{label:"中国大陆"}, HK:{label:"香港"}, SG:{label:"新加坡"}, OTHER:{label:"其他"} };
+    const norm = loc => { const u=(loc||"OTHER").toUpperCase(); return REGIONS[u]?u:"OTHER"; };
+    const esc = s => String(s==null?"":s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+    const monogram = n => { const t=(n||"?").trim(); return t?t[0].toUpperCase():"?"; };
+    const keyOf = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const dayKey = iso => { const d=new Date(iso); return isNaN(d)?"—":keyOf(d); };
+    const dayLabel = iso => { const d=new Date(iso); return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"}); };
+    function levelOf(title){ const t=(title||"").toLowerCase(); if(/intern|实习/.test(t))return "Intern"; if(/\b(md|managing director|director|head of)\b|总监|主管/.test(t))return "Director+"; if(/\b(vp|svp|evp|vice president)\b|副总裁/.test(t))return "VP"; if(/associate|经理/.test(t))return "Associate"; if(/analyst|分析师|专员/.test(t))return "Analyst"; return "Other"; }
 
-    fetch("jobs.json?_=" + Date.now())
-      .then(r => r.json())
-      .then(data => {
-        if (!Array.isArray(data)) data = [];
+    const favs = new Set(JSON.parse(localStorage.getItem("favs")||"[]"));
+    const reads = new Set(JSON.parse(localStorage.getItem("reads")||"[]"));
+    const saveFavs = () => localStorage.setItem("favs", JSON.stringify([...favs]));
+    const saveReads = () => localStorage.setItem("reads", JSON.stringify([...reads]));
 
-        document.getElementById("stat-total").textContent = data.length.toLocaleString();
-        const companies = [...new Set(data.map(j => j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
-        document.getElementById("stat-comp").innerHTML = companies.length + " <small>家</small>";
-        if (data[0] && data[0].pushTime) {
-          const d = new Date(data[0].pushTime);
-          if (!isNaN(d)) document.getElementById("stat-updated").textContent = d.toLocaleString("zh-CN", { month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit" });
-        }
-        companies.forEach(c => { const o = document.createElement("option"); o.value = c; o.textContent = c; companyEl.appendChild(o); });
+    const jobsEl=document.getElementById("jobs");
+    const emptyEl=document.getElementById("empty");
+    const searchEl=document.getElementById("search");
+    const companyEl=document.getElementById("company");
+    const levelEl=document.getElementById("level");
+    const regionsEl=document.getElementById("regions");
+    const favEl=document.getElementById("favToggle");
+    const countEl=document.getElementById("count");
+    let activeRegion="all", favOnly=false;
 
-        const groups = new Map();
-        data.forEach(j => { const k = dayKey(j.pushTime); if (!groups.has(k)) groups.set(k, { label: dayLabel(j.pushTime), items: [] }); groups.get(k).items.push(j); });
+    jobsEl.innerHTML = Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 
-        let first = true;
-        for (const [, g] of groups) {
-          const sec = document.createElement("section"); sec.className = "day";
-          const head = document.createElement("div"); head.className = "day-head";
-          head.innerHTML = '<span class="day-date">' + esc(g.label) + '</span>' +
-            '<span class="day-meta" data-role="daycount">' + g.items.length + ' 个职位</span>' +
-            (first ? '<span class="day-new">Latest</span>' : '');
+    fetch("jobs.json?_="+Date.now())
+      .then(r=>r.json())
+      .then(data=>{
+        if(!Array.isArray(data)) data=[];
+        jobsEl.innerHTML="";
+
+        document.getElementById("stat-total").textContent=data.length.toLocaleString();
+        const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
+        document.getElementById("stat-comp").innerHTML=companies.length+' <small>家</small>';
+        if(data[0]&&data[0].pushTime){ const d=new Date(data[0].pushTime); if(!isNaN(d)) document.getElementById("stat-updated").textContent=d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); }
+        companies.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent=c; companyEl.appendChild(o); });
+
+        const rc={CN:0,HK:0,SG:0,OTHER:0}; data.forEach(j=>rc[norm(j.location)]++);
+        const rmax=Math.max(...Object.values(rc),1);
+        document.getElementById("dist").innerHTML=Object.keys(rc).map(k=>'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" style="width:'+(rc[k]/rmax*100)+'%"></div></div><span class="dist-val">'+rc[k]+'</span></div>').join("");
+
+        const counts={}; data.forEach(j=>{ const k=dayKey(j.pushTime); counts[k]=(counts[k]||0)+1; });
+        const today=new Date(); const days=[];
+        for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(d.getDate()-i); days.push({label:d.toLocaleDateString("zh-CN",{weekday:"short"}).replace("周",""),count:counts[keyOf(d)]||0}); }
+        const smax=Math.max(...days.map(d=>d.count),1);
+        document.getElementById("spark").innerHTML=days.map(d=>'<div class="spark-col"><div class="spark-bar" style="height:'+(d.count/smax*100)+'%">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
+
+        const groups=new Map();
+        data.forEach(j=>{ const k=dayKey(j.pushTime); if(!groups.has(k)) groups.set(k,{label:dayLabel(j.pushTime),items:[]}); groups.get(k).items.push(j); });
+        let first=true;
+        for(const [,g] of groups){
+          const sec=document.createElement("section"); sec.className="day";
+          const head=document.createElement("div"); head.className="day-head";
+          head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'');
           sec.appendChild(head);
-          g.items.forEach(job => {
-            const r = norm(job.location); const meta = REGIONS[r];
-            const a = document.createElement("article"); a.className = "job";
-            a.style.setProperty("--region", meta.c); a.style.setProperty("--region-bg", meta.bg);
-            a.dataset.comp = job.company || ""; a.dataset.region = r;
-            a.dataset.search = ((job.title||"") + " " + (job.company||"")).toLowerCase();
-            a.innerHTML =
-              '<div class="mono">' + esc(monogram(job.company)) + '</div>' +
-              '<div class="job-main">' +
-                '<a class="job-title" href="' + esc(job.link) + '" target="_blank" rel="noopener">' + esc(job.title) + '</a>' +
-                '<div class="job-sub">' + esc(job.company || "未知机构") + '<span class="dot">·</span>' + esc(meta.label) + '</div>' +
-              '</div>' +
-              '<span class="tag">' + r + '</span>';
+          g.items.forEach(job=>{
+            const r=norm(job.location), lvl=levelOf(job.title), id=job.link||(job.title+"|"+job.company);
+            const a=document.createElement("article"); a.className="job"+(reads.has(id)?" read":"");
+            a.dataset.region=r; a.dataset.comp=job.company||""; a.dataset.level=lvl; a.dataset.id=id;
+            a.dataset.search=((job.title||"")+" "+(job.company||"")).toLowerCase();
+            a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div>'+'<div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a>'+'<div class="job-sub">'+esc(job.company||"未知机构")+'<span class="dot">·</span>'+REGIONS[r].label+'</div></div>'+'<div class="job-right">'+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span>'+'<button class="star'+(favs.has(id)?" on":"")+'" title="收藏">'+(favs.has(id)?"★":"☆")+'</button></div>';
+            a.querySelector(".job-title").addEventListener("click",()=>{ reads.add(id); saveReads(); a.classList.add("read"); });
+            const star=a.querySelector(".star");
+            star.addEventListener("click",e=>{ e.preventDefault(); if(favs.has(id)){favs.delete(id);star.classList.remove("on");star.textContent="☆";}else{favs.add(id);star.classList.add("on");star.textContent="★";} saveFavs(); if(favOnly) apply(); });
             sec.appendChild(a);
           });
-          jobsEl.appendChild(sec); first = false;
+          jobsEl.appendChild(sec); first=false;
         }
 
-        regionsEl.addEventListener("click", e => { const b = e.target.closest(".seg"); if (!b) return; regionsEl.querySelectorAll(".seg").forEach(x => x.classList.remove("active")); b.classList.add("active"); activeRegion = b.dataset.region; apply(); });
-        searchEl.addEventListener("input", apply);
-        companyEl.addEventListener("change", apply);
+        regionsEl.addEventListener("click",e=>{ const b=e.target.closest(".seg"); if(!b)return; regionsEl.querySelectorAll(".seg").forEach(x=>x.classList.remove("active")); b.classList.add("active"); activeRegion=b.dataset.region; apply(); });
+        favEl.addEventListener("click",()=>{ favOnly=!favOnly; favEl.classList.toggle("active",favOnly); apply(); });
+        searchEl.addEventListener("input",apply);
+        companyEl.addEventListener("change",apply);
+        levelEl.addEventListener("change",apply);
         apply();
       })
-      .catch(() => { emptyEl.classList.add("show"); emptyEl.querySelector(".big").textContent = "职位数据加载失败"; });
+      .catch(()=>{ jobsEl.innerHTML=""; emptyEl.classList.add("show"); emptyEl.querySelector(".big").textContent="职位数据加载失败"; });
 
-    function apply() {
-      const q = searchEl.value.trim().toLowerCase();
-      const comp = companyEl.value;
-      let visible = 0;
-      jobsEl.querySelectorAll(".day").forEach(sec => {
-        let shown = 0;
-        sec.querySelectorAll(".job").forEach(card => {
-          const ok = (activeRegion === "all" || card.dataset.region === activeRegion)
-            && (comp === "all" || card.dataset.comp === comp)
-            && (!q || card.dataset.search.includes(q));
-          card.classList.toggle("hidden", !ok);
-          if (ok) shown++;
+    function apply(){
+      const q=searchEl.value.trim().toLowerCase(), comp=companyEl.value, lv=levelEl.value;
+      let visible=0;
+      jobsEl.querySelectorAll(".day").forEach(sec=>{
+        let shown=0;
+        sec.querySelectorAll(".job").forEach(card=>{
+          const ok=(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(lv==="all"||card.dataset.level===lv)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
+          card.classList.toggle("hidden",!ok); if(ok)shown++;
         });
-        const c = sec.querySelector('[data-role="daycount"]'); if (c) c.textContent = shown + " 个职位";
-        sec.style.display = shown ? "" : "none";
-        visible += shown;
+        const c=sec.querySelector('[data-role="daycount"]'); if(c)c.textContent=shown+" 个职位";
+        sec.style.display=shown?"":"none"; visible+=shown;
       });
-      countEl.innerHTML = "显示 <b>" + visible + "</b> 个职位";
-      emptyEl.classList.toggle("show", visible === 0);
+      countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
+      emptyEl.classList.toggle("show",visible===0);
     }
   </script>
 </body>
