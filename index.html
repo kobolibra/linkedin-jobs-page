@@ -44,7 +44,7 @@
     .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0 0 14px; display:flex; align-items:center; gap:12px; }
     .eyebrow::after { content:""; flex:1; height:1px; background:var(--line-strong); }
     .masthead h1 { font-family:var(--serif); font-weight:600; font-size:34px; line-height:1.15; letter-spacing:-.01em; margin:0; color:var(--navy); }
-    .masthead .lede { margin:12px 0 0; color:var(--ink-soft); font-size:15px; max-width:640px; text-wrap:pretty; }
+    .masthead .lede { margin:12px 0 0; color:var(--ink-soft); font-size:15px; white-space:nowrap; overflow-x:auto; }
     .masthead .tagline { margin:10px 0 0; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-faint); }
     .theme-toggle { position:absolute; top:40px; right:0; width:40px; height:40px; border-radius:10px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); cursor:pointer; display:grid; place-items:center; transition:all .2s; }
     .theme-toggle:hover { color:var(--accent); border-color:var(--accent); }
@@ -148,7 +148,7 @@
       <button class="theme-toggle" id="themeToggle" aria-label="切换主题"></button>
       <p class="eyebrow">Finance Careers · CN / HK / SG</p>
       <h1>LinkedIn 金融职位精选</h1>
-      <p class="lede"><span style="white-space:nowrap">聚合自 LinkedIn 的金融行业最新职位，</span><span style="white-space:nowrap">覆盖中国大陆、香港与新加坡市场，</span><span style="white-space:nowrap">每 6 小时自动更新一次。</span></p>
+      <p class="lede">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
       <p class="tagline">祝我们都能拿到 dream offer 👏</p>
 
       <div class="stats">
@@ -216,7 +216,7 @@
     const keyOf = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
     const dayKey = iso => { const d=new Date(iso); return isNaN(d)?"—":keyOf(d); };
     const dayLabel = iso => { const d=new Date(iso); return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"}); };
-    function levelOf(title){ const t=(title||"").toLowerCase(); if(/intern|实习/.test(t))return "Intern"; if(/\b(md|managing director|director|head of)\b|总监|主管/.test(t))return "Director+"; if(/\b(vp|svp|evp|vice president)\b|副总裁/.test(t))return "VP"; if(/associate|经理/.test(t))return "Associate"; if(/analyst|分析师|专员/.test(t))return "Analyst"; return "Other"; }
+    function levelOf(title){ const t=(title||"").toLowerCase(); if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return "Intern"; if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return "Director+"; if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return "VP"; if(/associate/.test(t)||/经理/.test(t))return "Associate"; if(/analyst/.test(t)||/分析师|专员/.test(t))return "Analyst"; return "Other"; }
 
     const favs = new Set(JSON.parse(localStorage.getItem("favs")||"[]"));
     const reads = new Set(JSON.parse(localStorage.getItem("reads")||"[]"));
