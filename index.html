@@ -50,12 +50,12 @@
     }
 
     .masthead { position:relative; padding:44px 0 22px; border-bottom:1px solid var(--line); }
-    .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0 0 14px; display:flex; align-items:center; gap:12px; }
+    .eyebrow { font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); font-weight:700; margin:0 0 14px; padding-right:54px; display:flex; align-items:center; gap:12px; }
     .eyebrow::after { content:""; flex:1; height:1px; background:var(--line-strong); }
     .masthead h1 { font-family:var(--serif); font-weight:600; font-size:34px; line-height:1.15; letter-spacing:-.01em; margin:0; color:var(--navy); }
     .masthead .lede { margin:12px 0 0; color:var(--ink-soft); font-size:15px; white-space:nowrap; overflow-x:auto; }
     .masthead .tagline { margin:10px 0 0; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-faint); }
-    .theme-toggle { position:absolute; top:40px; right:0; width:40px; height:40px; border-radius:10px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); cursor:pointer; display:grid; place-items:center; transition:all .2s; }
+    .theme-toggle { position:absolute; top:40px; right:0; z-index:3; width:40px; height:40px; border-radius:10px; border:1px solid var(--line-strong); background:var(--surface); color:var(--ink-soft); cursor:pointer; display:grid; place-items:center; transition:all .2s; }
     .theme-toggle:hover { color:var(--accent); border-color:var(--accent); }
     .theme-toggle svg { width:18px; height:18px; }
 
