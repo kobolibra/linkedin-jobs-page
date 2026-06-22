@@ -322,24 +322,24 @@
     const dayKey = iso => { const d=new Date(iso); return isNaN(d)?"—":keyOf(d); };
     const dayLabel = iso => { const d=new Date(iso); return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"}); };
 
-    function levelOf(title){ const t=(title||"").toLowerCase(); if(/\\bintern(s|ship)?\\b/.test(t)||/实习/.test(t))return "Intern"; if(/\\b(md|managing director|director|head of)\\b/.test(t)||/总监|主管/.test(t))return "Director+"; if(/\\b(vp|svp|evp|vice president)\\b/.test(t)||/副总裁/.test(t))return "VP"; if(/associate/.test(t)||/经理/.test(t))return "Associate"; if(/analyst/.test(t)||/分析师|专员/.test(t))return "Analyst"; return "Other"; }
+    function levelOf(title){ const t=(title||"").toLowerCase(); if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return "Intern"; if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return "Director+"; if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return "VP"; if(/associate/.test(t)||/经理/.test(t))return "Associate"; if(/analyst/.test(t)||/分析师|专员/.test(t))return "Analyst"; return "Other"; }
 
     const CATS = [
       {key:"CRYPTO", label:"数字资产", kw:[/crypto|blockchain|web3|digital asset|token|defi/, /加密|数字资产|区块链/]},
-      {key:"RISK", label:"风险", kw:[/\\brisk\\b/, /风险|风控/]},
-      {key:"QUANT", label:"量化", kw:[/quant|quantitative|\\balgo\\b/, /量化/]},
-      {key:"COMP", label:"合规/法务", kw:[/complian|\\blegal\\b|\\baml\\b|\\bkyc\\b|regulatory|\\baudit/, /合规|法务|反洗钱|审计|监管/]},
-      {key:"IBD", label:"投行 IBD", kw:[/investment bank|\\bibd\\b|\\bm&a\\b|merger|\\becm\\b|\\bdcm\\b|capital markets/, /投行|投资银行|并购|资本市场/]},
-      {key:"PE", label:"私募/PE", kw:[/private equity|private debt|private credit|principal invest|venture capital|\\bvc\\b|buyout/, /私募股权|股权投资/]},
+      {key:"RISK", label:"风险", kw:[/\brisk\b/, /风险|风控/]},
+      {key:"QUANT", label:"量化", kw:[/quant|quantitative|\balgo\b/, /量化/]},
+      {key:"COMP", label:"合规/法务", kw:[/complian|\blegal\b|\baml\b|\bkyc\b|regulatory|\baudit/, /合规|法务|反洗钱|审计|监管/]},
+      {key:"IBD", label:"投行 IBD", kw:[/investment bank|\bibd\b|\bm&a\b|merger|\becm\b|\bdcm\b|capital markets/, /投行|投资银行|并购|资本市场/]},
+      {key:"PE", label:"私募/PE", kw:[/private equity|private debt|private credit|principal invest|venture capital|\bvc\b|buyout/, /私募股权|股权投资/]},
       {key:"RES", label:"研究/策略", kw:[/research|strateg|economist/, /研究|策略/]},
-      {key:"SALES", label:"销售/BD", kw:[/sales|business development|relationship manager|\\bcoverage\\b|client manage|distribution/, /销售|客户经理|渠道|拓展|分销/]},
+      {key:"SALES", label:"销售/BD", kw:[/sales|business development|relationship manager|\bcoverage\b|client manage|distribution/, /销售|客户经理|渠道|拓展|分销/]},
       {key:"OPS", label:"运营/中后台", kw:[/operation|middle office|back office|settlement|clearing|custod|transfer agency|fund admin|reconcil/, /运营|清算|结算|托管|中后台|后台/]},
-      {key:"AM", label:"资管/财富", kw:[/asset management|wealth management|portfolio|fund manager|private bank|investment manager|investment analyst|investment associate|\\binvestment\\b|\\bfund\\b/, /资产管理|财富|基金经理|投资经理|投资|资管|私人银行/]},
-      {key:"MKT", label:"交易/市场", kw:[/trading|trader|\\bmarkets\\b|fixed income|equit|derivative|\\bfx\\b|foreign exchange|securities|execution|market making/, /交易|做市|外汇|固定收益|证券/]},
-      {key:"TECH", label:"科技/数据", kw:[/engineer|developer|software|\\bdata\\b|\\bit\\b|technolog|programmer|product manager|devops/, /工程师|开发|技术|数据/]}
+      {key:"AM", label:"资管/财富", kw:[/asset management|wealth management|portfolio|fund manager|private bank|investment manager|investment analyst|investment associate|\binvestment\b|\bfund\b/, /资产管理|财富|基金经理|投资经理|投资|资管|私人银行/]},
+      {key:"MKT", label:"交易/市场", kw:[/trading|trader|\bmarkets\b|fixed income|equit|derivative|\bfx\b|foreign exchange|securities|execution|market making/, /交易|做市|外汇|固定收益|证券/]},
+      {key:"TECH", label:"科技/数据", kw:[/engineer|developer|software|\bdata\b|\bit\b|technolog|programmer|product manager|devops/, /工程师|开发|技术|数据/]}
     ];
     const OTHER_CAT = {key:"OTHER", label:"其他"};
-    const CRYPTO_FIRMS = /crypto\\.com|okx|coins\\.ph|metacomp|binance|bybit|kraken|hashkey|amber|matrixport|bitget|gate\\.io|huobi|coinbase/i;
+    const CRYPTO_FIRMS = /crypto\.com|okx|coins\.ph|metacomp|binance|bybit|kraken|hashkey|amber|matrixport|bitget|gate\.io|huobi|coinbase/i;
     function categoryOf(title, company){ const t=(title||"").toLowerCase(); for(const c of CATS){ if(c.kw.some(re=>re.test(t))) return c; } if(CRYPTO_FIRMS.test(company||"")) return CATS[0]; return OTHER_CAT; }
 
     function animNum(el, target, suffix){ suffix=suffix||""; if(reduce){ el.innerHTML=target.toLocaleString()+suffix; return; } const dur=900, start=performance.now(); const step=now=>{ const p=Math.min((now-start)/dur,1), e=1-Math.pow(1-p,3); el.innerHTML=Math.round(target*e).toLocaleString()+suffix; if(p<1)requestAnimationFrame(step); }; requestAnimationFrame(step); }
@@ -465,4 +465,20 @@
         const c=sec.querySelector('[data-role="daycount"]'); if(c)c.textContent=shown+" 个职位";
         sec.style.display=shown?"":"none"; visible+=shown;
       });
-      countEl.innerHTML="显示 <b>"+visible+"</b
+      countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
+      emptyEl.classList.toggle("show",visible===0);
+    }
+
+    document.addEventListener("keydown",e=>{
+      const tag=(e.target.tagName||"").toLowerCase();
+      if(tag==="input"||tag==="select"||tag==="textarea")return;
+      if(e.key==="/"){ e.preventDefault(); searchEl.focus(); }
+      else if(e.key.toLowerCase()==="t"){ setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"); }
+    });
+
+    const totop=document.getElementById("totop");
+    addEventListener("scroll",()=>{ totop.classList.toggle("show", window.scrollY>600); },{passive:true});
+    totop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+  </script>
+</body>
+</html>
