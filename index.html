@@ -230,7 +230,7 @@
       <div class="stats reveal" style="animation-delay:.2s">
         <div class="stat"><p class="k">职位总数</p><p class="v" id="stat-total">—</p></div>
         <div class="stat"><p class="k">覆盖机构</p><p class="v" id="stat-comp">—</p></div>
-        <div class="stat"><p class="k"><span class="live"></span>最近更新</p><p class="v" id="stat-updated" style="font-size:15px">—</p></div>
+        <div class="stat"><p class="k"><span class="live"></span>最近更新</p><p class="v" id="stat-updated" style="white-space:nowrap">—</p></div>
         <div class="stat"><p class="k">访客总数 (PV)</p><p class="v"><span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">—</span></span></p></div>
       </div>
 
@@ -361,14 +361,14 @@
 
         animNum(document.getElementById("stat-total"), data.length);
         const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
-        animNum(document.getElementById("stat-comp"), companies.length, ' <small>家</small>');
+        animNum(document.getElementById("stat-comp"), companies.length);
         if(data[0]&&data[0].pushTime){ const d=new Date(data[0].pushTime); if(!isNaN(d)) document.getElementById("stat-updated").textContent=d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); }
         companies.forEach(c=>{ const o=document.createElement("option"); o.value=c; o.textContent=c; companyEl.appendChild(o); });
 
         const rc={CN:0,HK:0,SG:0,OTHER:0}; data.forEach(j=>rc[norm(j.location)]++);
         const rmax=Math.max(...Object.values(rc),1);
         const distEl=document.getElementById("dist");
-        distEl.innerHTML=Object.keys(rc).map(k=>{ const pct=data.length?Math.round(rc[k]/data.length*100):0; return '<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>'; }).join("");
+        distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{ const pct=data.length?Math.round(rc[k]/data.length*100):0; return '<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>'; }).join("");
         requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{ f.style.width=f.dataset.w+"%"; }));
 
         const counts={}; data.forEach(j=>{ const k=dayKey(j.pushTime); counts[k]=(counts[k]||0)+1; });
