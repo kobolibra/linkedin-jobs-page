@@ -86,10 +86,15 @@
     .theme-toggle[data-mode="dark"] .tt-thumb { transform:translateX(16px); }
     .theme-toggle[data-mode="light"] .tt-sun { color:var(--accent-2); transform:scale(1.08); }
     .theme-toggle[data-mode="dark"] .tt-moon { color:var(--accent); transform:scale(1.08); }
-    .mast-avatar { position:absolute; right:2px; top:84px; width:88px; height:88px; border-radius:50%; object-fit:cover; border:3px solid var(--surface); box-shadow:0 0 0 1px var(--line-strong), 0 8px 22px rgba(8,23,36,.16); background:var(--surface-2); z-index:2; opacity:0; transform:scale(.96); transition:opacity .6s ease, transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
-    .mast-avatar.show { opacity:1; transform:scale(1); }
-    .mast-avatar:hover { transform:scale(1.05); box-shadow:0 0 0 1px var(--accent), 0 12px 28px rgba(8,23,36,.2); }
-    [data-theme="dark"] .mast-avatar { box-shadow:0 0 0 1px var(--line-strong), 0 8px 24px rgba(0,0,0,.5); }
+    .mast-photo { position:absolute; right:62px; top:84px; z-index:2; padding:6px; background:linear-gradient(160deg,#fffdf8,#f3ede1); border:1px solid var(--line-strong); border-radius:5px; box-shadow:0 1px 2px rgba(8,23,36,.08), 0 10px 26px rgba(8,23,36,.16); transform:rotate(-3deg); transform-origin:50% 0; opacity:0; transition:opacity .6s ease, transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+    .mast-photo::after { content:""; position:absolute; inset:6px; border:1px solid color-mix(in srgb,var(--accent) 38%,transparent); border-radius:2px; pointer-events:none; }
+    .mast-photo.show { opacity:1; }
+    .mast-photo:hover { transform:rotate(0deg) translateY(-3px); box-shadow:0 3px 6px rgba(8,23,36,.12), 0 16px 34px rgba(8,23,36,.22); }
+    .mast-avatar { display:block; width:82px; height:82px; object-fit:cover; border-radius:2px; }
+    .mast-clip { position:absolute; top:-17px; left:13px; width:20px; height:40px; color:var(--accent); transform:rotate(7deg); filter:drop-shadow(0 2px 2px rgba(8,23,36,.28)); pointer-events:none; z-index:3; }
+    .mast-clip svg { width:100%; height:100%; display:block; }
+    [data-theme="dark"] .mast-photo { background:linear-gradient(160deg,#1a2632,#131d28); box-shadow:0 1px 3px rgba(0,0,0,.5), 0 12px 30px rgba(0,0,0,.55); }
+    [data-theme="dark"] .mast-clip { color:var(--accent-2); }
 
     .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; overflow:hidden; margin:30px 0 0; box-shadow:var(--shadow-strong); position:relative; z-index:1; }
     .stats::before { content:""; position:absolute; left:0; right:0; top:0; height:2px; background:linear-gradient(90deg,var(--navy),var(--gold)); opacity:.86; }
@@ -218,7 +223,7 @@
       .masthead h1 { font-size:26px; }
       .masthead .lede { font-size:14px; }
       .theme-toggle { top:22px; right:0; }
-      .mast-avatar { display:none; }
+      .mast-photo { display:none; }
       .stats { grid-template-columns:repeat(2,1fr); margin-top:22px; }
       .stat { padding:14px; }
       .stat .v { font-size:20px; }
@@ -249,7 +254,7 @@
   <div class="shell">
     <header class="masthead">
       <button class="theme-toggle" id="themeToggle" role="switch" aria-label="切换深浅主题"></button>
-      <img class="mast-avatar" id="mastAvatar" alt="" />
+      <div class="mast-photo" id="mastPhoto"><span class="mast-clip"><svg viewBox="0 0 20 40" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 13 V30 a4 4 0 0 1 -8 0 V9 a3 3 0 0 1 6 0 V27"/></svg></span><img class="mast-avatar" id="mastAvatar" alt="" /></div>
       <p class="eyebrow reveal">Finance Careers · CN / HK / SG</p>
       <h1 class="reveal" style="animation-delay:.05s">LinkedIn 金融职位精选</h1>
       <p class="lede reveal" style="animation-delay:.1s">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
@@ -331,9 +336,10 @@
     (function(){
       const AVATARS = ["avatars/1.jpg"]; // 随机头像池：可继续添加 "avatars/2.jpg", "avatars/3.jpg" ...
       const el = document.getElementById('mastAvatar');
-      if(!el || !AVATARS.length) return;
-      el.addEventListener('load', () => el.classList.add('show'));
-      el.addEventListener('error', () => { el.style.display = 'none'; });
+      const box = document.getElementById('mastPhoto');
+      if(!el || !box || !AVATARS.length) return;
+      el.addEventListener('load', () => box.classList.add('show'));
+      el.addEventListener('error', () => { box.style.display = 'none'; });
       el.src = AVATARS[Math.floor(Math.random()*AVATARS.length)];
     })();
 
