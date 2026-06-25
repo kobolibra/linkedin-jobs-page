@@ -86,17 +86,17 @@
     .theme-toggle[data-mode="dark"] .tt-thumb { transform:translateX(16px); }
     .theme-toggle[data-mode="light"] .tt-sun { color:var(--accent-2); transform:scale(1.08); }
     .theme-toggle[data-mode="dark"] .tt-moon { color:var(--accent); transform:scale(1.08); }
-    .mast-photo { position:absolute; right:100px; top:84px; z-index:2; padding:7px 7px 8px; background:linear-gradient(155deg,#fffefb 0%,#f6f0e4 58%,#efe7d6 100%); border:1px solid var(--line-strong); border-radius:4px; box-shadow:0 1px 1px rgba(8,23,36,.1), 0 6px 14px rgba(8,23,36,.12), 0 18px 36px rgba(8,23,36,.16); transform:rotate(-2.5deg); transform-origin:50% 0; opacity:0; transition:opacity .6s ease, transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
-    .mast-photo::before { content:""; position:absolute; inset:0; border-radius:4px; box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1px 2px rgba(8,23,36,.06); pointer-events:none; }
-    .mast-photo::after { content:""; position:absolute; inset:7px; border:1px solid color-mix(in srgb,var(--accent) 42%,transparent); border-radius:2px; pointer-events:none; }
+    .mast-photo { position:absolute; right:100px; top:84px; z-index:2; padding:7px; background:linear-gradient(155deg,#fffefb 0%,#f5efe2 60%,#eee5d4 100%); border:1px solid var(--line-strong); border-radius:3px; box-shadow:0 1px 1px rgba(8,23,36,.1), 0 6px 14px rgba(8,23,36,.12), 0 18px 36px rgba(8,23,36,.16); transform:rotate(-2.5deg); transform-origin:50% 0; opacity:0; transition:opacity .6s ease, transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .3s; }
+    .mast-photo::before { content:""; position:absolute; inset:0; border-radius:3px; box-shadow:inset 0 1px 0 rgba(255,255,255,.72), inset 0 -1px 2px rgba(8,23,36,.06); pointer-events:none; z-index:4; }
+    .mast-photo::after { content:""; position:absolute; inset:7px; border:1px solid color-mix(in srgb,var(--accent) 40%,transparent); pointer-events:none; z-index:4; }
     .mast-photo.show { opacity:1; }
     .mast-photo:hover { transform:rotate(0deg) translateY(-4px) scale(1.02); box-shadow:0 2px 3px rgba(8,23,36,.14), 0 10px 22px rgba(8,23,36,.16), 0 26px 48px rgba(8,23,36,.22); }
-    .mast-avatar { display:block; width:80px; height:80px; object-fit:cover; border-radius:2px; box-shadow:inset 0 0 0 1px rgba(8,23,36,.07); }
-    .mast-clip { position:absolute; top:-16px; left:11px; width:22px; height:42px; color:var(--accent); transform:rotate(6deg); filter:drop-shadow(0 1px 1px rgba(8,23,36,.4)) drop-shadow(0 3px 4px rgba(8,23,36,.2)); pointer-events:none; z-index:3; }
-    .mast-clip svg { width:100%; height:100%; display:block; }
+    .mast-avatar { display:block; width:84px; height:84px; object-fit:cover; border-radius:1px; box-shadow:inset 0 0 0 1px rgba(8,23,36,.07); }
+    .pc { position:absolute; width:16px; height:16px; z-index:5; pointer-events:none; background:linear-gradient(135deg,var(--gold-hi),var(--gold-deep)); box-shadow:inset 1px 1px 0 rgba(255,255,255,.45), 0 1px 2px rgba(8,23,36,.3); }
+    .pc.tl { top:7px; left:7px; clip-path:polygon(0 0,100% 0,0 100%); }
+    .pc.br { right:7px; bottom:7px; clip-path:polygon(100% 0,100% 100%,0 100%); }
     [data-theme="dark"] .mast-photo { background:linear-gradient(155deg,#1d2a38,#141e29 60%,#101a24); box-shadow:0 1px 2px rgba(0,0,0,.5), 0 8px 18px rgba(0,0,0,.45), 0 22px 42px rgba(0,0,0,.55); }
     [data-theme="dark"] .mast-photo::before { box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 0 -1px 2px rgba(0,0,0,.4); }
-    [data-theme="dark"] .mast-clip { color:var(--accent-2); }
 
     .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; overflow:hidden; margin:30px 0 0; box-shadow:var(--shadow-strong); position:relative; z-index:1; }
     .stats::before { content:""; position:absolute; left:0; right:0; top:0; height:2px; background:linear-gradient(90deg,var(--navy),var(--gold)); opacity:.86; }
@@ -222,10 +222,16 @@
     @media (max-width:720px) {
       .shell { padding:0 16px 56px; }
       .masthead { padding:34px 0 20px; }
-      .masthead h1 { font-size:26px; }
-      .masthead .lede { font-size:14px; }
+      .masthead h1 { font-size:26px; padding-right:80px; }
+      .masthead .lede { font-size:14px; white-space:normal; overflow:visible; padding-right:80px; }
+      .masthead .tagline { padding-right:80px; }
       .theme-toggle { top:22px; right:0; }
-      .mast-photo { display:none; }
+      .mast-photo { right:6px; top:52px; padding:5px; }
+      .mast-photo::after { inset:5px; }
+      .mast-photo .pc { width:12px; height:12px; }
+      .mast-photo .pc.tl { top:5px; left:5px; }
+      .mast-photo .pc.br { right:5px; bottom:5px; }
+      .mast-avatar { width:56px; height:56px; }
       .stats { grid-template-columns:repeat(2,1fr); margin-top:22px; }
       .stat { padding:14px; }
       .stat .v { font-size:20px; }
@@ -256,7 +262,7 @@
   <div class="shell">
     <header class="masthead">
       <button class="theme-toggle" id="themeToggle" role="switch" aria-label="切换深浅主题"></button>
-      <div class="mast-photo" id="mastPhoto"><span class="mast-clip"><svg viewBox="0 0 22 42" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14 V32 a4.2 4.2 0 0 1 -8.4 0 V10 a3.1 3.1 0 0 1 6.2 0 V29" stroke="currentColor" stroke-width="2.5"/><path d="M15 14 V32 a4.2 4.2 0 0 1 -8.4 0 V10 a3.1 3.1 0 0 1 6.2 0 V29" stroke="rgba(255,255,255,.5)" stroke-width="1" transform="translate(-.55 -.55)"/></svg></span><img class="mast-avatar" id="mastAvatar" alt="" /></div>
+      <div class="mast-photo" id="mastPhoto"><img class="mast-avatar" id="mastAvatar" alt="" /><span class="pc tl"></span><span class="pc br"></span></div>
       <p class="eyebrow reveal">Finance Careers · CN / HK / SG</p>
       <h1 class="reveal" style="animation-delay:.05s">LinkedIn 金融职位精选</h1>
       <p class="lede reveal" style="animation-delay:.1s">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
