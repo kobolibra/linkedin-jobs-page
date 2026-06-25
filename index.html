@@ -77,9 +77,9 @@
     .masthead .lede { margin:14px 0 0; color:var(--ink-soft); font-size:15px; white-space:nowrap; overflow-x:auto; scrollbar-width:none; position:relative; z-index:1; }
     .masthead .lede::-webkit-scrollbar { display:none; }
     .masthead .tagline { margin:10px 0 0; font-family:var(--serif); font-style:italic; font-size:14px; color:var(--ink-faint); position:relative; z-index:1; }
-    .theme-toggle { position:absolute; top:42px; right:0; z-index:3; width:40px; height:40px; border-radius:10px; border:1px solid var(--line-strong); background:linear-gradient(180deg,var(--surface),var(--surface-2)); color:var(--ink-soft); cursor:pointer; display:grid; place-items:center; transition:all .2s; box-shadow:0 6px 18px rgba(8,23,36,.055); }
-    .theme-toggle:hover { color:var(--surface); border-color:var(--navy); background:var(--navy); transform:translateY(-1px); }
-    .theme-toggle svg { width:18px; height:18px; }
+    .theme-toggle { position:absolute; top:48px; right:2px; z-index:3; width:34px; height:34px; border-radius:999px; border:1px solid color-mix(in srgb,var(--line-strong) 78%,transparent); background:color-mix(in srgb,var(--surface) 86%,transparent); color:var(--ink-faint); cursor:pointer; display:grid; place-items:center; transition:all .2s; box-shadow:none; }
+    .theme-toggle:hover { color:var(--navy); border-color:var(--accent); background:color-mix(in srgb,var(--accent) 8%,var(--surface)); transform:translateY(-1px); }
+    .theme-toggle svg { width:16px; height:16px; }
 
     .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:var(--surface); border:1px solid var(--line-strong); border-radius:12px; overflow:hidden; margin:30px 0 0; box-shadow:var(--shadow-strong); position:relative; z-index:1; }
     .stats::before { content:""; position:absolute; left:0; right:0; top:0; height:2px; background:linear-gradient(90deg,var(--navy),var(--gold)); opacity:.86; }
@@ -208,7 +208,7 @@
       .masthead { padding:34px 0 20px; }
       .masthead h1 { font-size:26px; }
       .masthead .lede { font-size:14px; }
-      .theme-toggle { top:28px; width:38px; height:38px; }
+      .theme-toggle { top:30px; right:2px; width:34px; height:34px; }
       .stats { grid-template-columns:repeat(2,1fr); margin-top:22px; }
       .stat { padding:14px; }
       .stat .v { font-size:20px; }
