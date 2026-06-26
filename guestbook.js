@@ -1,4 +1,4 @@
-/* 留言板 Guestbook —— 浮动按钮 + 弹窗；点赞/回复对所有人开放，置顶/删除需管理员密码 */
+/* 留言板 Guestbook —— 浮动按钮 + 弹窗；点赞/多层回复开放，置顶/删除需管理员密码 */
 (function () {
   // ===== 配置 =====
   const API = "https://guestbook-api.claudecowork.workers.dev";
@@ -8,6 +8,7 @@
   // ===== 样式 =====
   const css = `
   @keyframes gbFadeUp { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
+  @keyframes gbPop { 0%{transform:scale(1)} 40%{transform:scale(1.4)} 100%{transform:scale(1)} }
   .gb-fab { position:fixed; left:24px; bottom:24px; z-index:120; display:inline-flex; align-items:center; gap:8px; padding:11px 18px 11px 15px; border:1px solid var(--line-strong); border-radius:999px; background:linear-gradient(180deg,var(--navy-2),var(--navy)); color:var(--surface); font-family:var(--sans); font-size:13px; font-weight:650; cursor:pointer; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.18)); transition:transform .18s, box-shadow .2s; }
   .gb-fab:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.22); }
   .gb-fab svg { width:17px; height:17px; }
@@ -45,9 +46,11 @@
   .gb-tools { display:flex; align-items:center; gap:8px; margin-top:9px; flex-wrap:wrap; }
   .gb-act { display:inline-flex; align-items:center; gap:5px; font-family:var(--sans); font-size:12px; color:var(--ink-faint); background:none; border:1px solid var(--line); border-radius:7px; padding:4px 10px; cursor:pointer; transition:color .15s,border-color .15s; }
   .gb-act:hover { color:var(--ink); border-color:var(--line-strong); }
+  .gb-small { font-size:11px; padding:3px 8px; }
   .gb-like svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; transition:fill .15s, stroke .15s; }
   .gb-like.liked { color:#e0526b; border-color:color-mix(in srgb,#e0526b 40%,transparent); }
   .gb-like.liked svg { fill:#e0526b; stroke:#e0526b; }
+  .gb-like.pop svg { animation:gbPop .3s ease; }
   .gb-likenum { font-variant-numeric:tabular-nums; }
   .gb-admin { color:var(--navy-2); }
   .gb-del:hover { color:#b4534b; border-color:color-mix(in srgb,#b4534b 40%,transparent); }
@@ -55,8 +58,7 @@
   .gb-reply { font-size:13px; }
   .gb-reply .gb-mname { font-size:13px; }
   .gb-reply .gb-mtext { margin-top:2px; font-size:13px; }
-  .gb-mini { margin-left:8px; font-size:11px; color:var(--ink-faint); background:none; border:0; cursor:pointer; }
-  .gb-mini:hover { color:#b4534b; }
+  .gb-reply .gb-tools { margin-top:6px; }
   .gb-rform { margin-top:10px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:10px; }
   .gb-rname { width:100%; max-width:200px; display:block; padding:7px 10px; border:1px solid var(--line-strong); border-radius:7px; background:var(--surface); font-size:13px; color:var(--ink); font-family:var(--sans); margin-bottom:8px; }
   .gb-rtext { width:100%; min-height:54px; resize:vertical; display:block; padding:8px 10px; border:1px solid var(--line-strong); border-radius:7px; background:var(--surface); font-size:13px; color:var(--ink); font-family:var(--sans); line-height:1.5; }
@@ -152,15 +154,21 @@
       return new Date(b.time) - new Date(a.time);
     });
   }
+  function findNode(list, id) {
+    for (const n of list) {
+      if (n.id === id) return n;
+      if (Array.isArray(n.replies)) { const f = findNode(n.replies, id); if (f) return f; }
+    }
+    return null;
+  }
+  function removeNode(list, id) {
+    return list.filter(n => n.id !== id).map(n => {
+      if (Array.isArray(n.replies) && n.replies.length) n.replies = removeNode(n.replies, id);
+      return n;
+    });
+  }
 
   // ===== 渲染 =====
-  function replyHTML(pid, r) {
-    return '<div class="gb-reply">' +
-      '<span class="gb-mname">' + esc(r.name || "匿名") + '</span> ' +
-      '<span class="gb-mtime">' + esc(fmtTime(r.time)) + '</span>' +
-      (isAdmin ? '<button class="gb-mini" data-act="delreply" data-id="' + esc(pid) + '" data-rid="' + esc(r.id) + '">删除</button>' : '') +
-      '<div class="gb-mtext">' + esc(r.text) + '</div></div>';
-  }
   function replyFormHTML(id) {
     return '<form class="gb-rform" data-id="' + esc(id) + '">' +
       '<input class="gb-rname" type="text" placeholder="昵称（可空）" maxlength="40" autocomplete="off" />' +
@@ -168,9 +176,26 @@
       '<div class="gb-ractions"><button type="button" class="gb-rcancel">取消</button><button type="submit" class="gb-rsubmit">回复</button></div>' +
       '</form>';
   }
+  function replyNodeHTML(r) {
+    const replies = Array.isArray(r.replies) ? r.replies : [];
+    let inner = replies.map(replyNodeHTML).join("");
+    if (replyOpen === r.id) inner += replyFormHTML(r.id);
+    return '<div class="gb-reply" data-id="' + esc(r.id) + '">' +
+      '<span class="gb-mname">' + esc(r.name || "匿名") + '</span> ' +
+      '<span class="gb-mtime">' + esc(fmtTime(r.time)) + '</span>' +
+      '<div class="gb-mtext">' + esc(r.text) + '</div>' +
+      '<div class="gb-tools">' +
+        '<button class="gb-act gb-small" data-act="reply" data-id="' + esc(r.id) + '">回复' + (replies.length ? ' · ' + replies.length : '') + '</button>' +
+        (isAdmin ? '<button class="gb-act gb-small gb-del" data-act="del" data-id="' + esc(r.id) + '">删除</button>' : '') +
+      '</div>' +
+      (inner ? '<div class="gb-replies">' + inner + '</div>' : '') +
+      '</div>';
+  }
   function msgHTML(m) {
     const liked = likedSet.has(m.id);
     const replies = Array.isArray(m.replies) ? m.replies : [];
+    let inner = replies.map(replyNodeHTML).join("");
+    if (replyOpen === m.id) inner += replyFormHTML(m.id);
     return '<div class="gb-msg" data-id="' + esc(m.id) + '">' +
       (m.pinned ? '<span class="gb-pin">📌 置顶</span>' : '') +
       '<div class="gb-meta"><span class="gb-mname">' + esc(m.name || "匿名") + '</span><span class="gb-mtime">' + esc(fmtTime(m.time)) + '</span></div>' +
@@ -180,8 +205,7 @@
         '<button class="gb-act" data-act="reply" data-id="' + esc(m.id) + '">回复' + (replies.length ? ' · ' + replies.length : '') + '</button>' +
         (isAdmin ? '<button class="gb-act gb-admin" data-act="pin" data-id="' + esc(m.id) + '">' + (m.pinned ? '取消置顶' : '置顶') + '</button><button class="gb-act gb-admin gb-del" data-act="del" data-id="' + esc(m.id) + '">删除</button>' : '') +
       '</div>' +
-      (replies.length ? '<div class="gb-replies">' + replies.map(r => replyHTML(m.id, r)).join("") + '</div>' : '') +
-      (replyOpen === m.id ? replyFormHTML(m.id) : '') +
+      (inner ? '<div class="gb-replies">' + inner + '</div>' : '') +
       '</div>';
   }
   function render() {
@@ -242,11 +266,10 @@
     const btn = e.target.closest("[data-act]");
     if (!btn) return;
     const act = btn.dataset.act, id = btn.dataset.id;
-    if (act === "like") doLike(id);
+    if (act === "like") doLike(id, btn);
     else if (act === "reply") { replyOpen = (replyOpen === id ? null : id); render(); }
     else if (act === "pin") doPin(id);
     else if (act === "del") doDelete(id);
-    else if (act === "delreply") doDeleteReply(id, btn.dataset.rid);
   });
   listEl.addEventListener("submit", e => {
     const form = e.target.closest(".gb-rform");
@@ -259,38 +282,38 @@
     const sub = form.querySelector(".gb-rsubmit"); sub.disabled = true; sub.textContent = "…";
     post("/reply", { id: id, name: name, text: text })
       .then(res => {
-        const m = messages.find(x => x.id === id);
+        const m = findNode(messages, id);
         if (m) { if (!Array.isArray(m.replies)) m.replies = []; m.replies.push(res.reply); }
         replyOpen = null; render();
       })
       .catch(() => { sub.disabled = false; sub.textContent = "回复"; toast("回复失败，后台可能没连通～"); });
   });
 
-  function doLike(id) {
+  function doLike(id, btn) {
     const liked = likedSet.has(id);
-    const m = messages.find(x => x.id === id);
+    const m = findNode(messages, id);
     if (m) m.likes = Math.max(0, (m.likes || 0) + (liked ? -1 : 1));
     if (liked) likedSet.delete(id); else likedSet.add(id);
     localStorage.setItem(LS_LIKES, JSON.stringify([...likedSet]));
-    render();
-    post("/like", { id: id, unlike: liked }).then(res => { if (m) { m.likes = res.likes; render(); } }).catch(() => {});
+    if (btn) {
+      btn.classList.toggle("liked", !liked);
+      const num = btn.querySelector(".gb-likenum"); if (num && m) num.textContent = m.likes;
+      btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop");
+    }
+    post("/like", { id: id, unlike: liked })
+      .then(res => { if (m) { m.likes = res.likes; const n = listEl.querySelector('.gb-like[data-id="' + id + '"] .gb-likenum'); if (n) n.textContent = res.likes; } })
+      .catch(() => {});
   }
   function doPin(id) {
-    const m = messages.find(x => x.id === id); if (!m) return;
+    const m = findNode(messages, id); if (!m) return;
     post("/pin", { id: id, pinned: !m.pinned }, true)
       .then(res => { m.pinned = res.pinned; render(); })
       .catch(err => { if (String(err.message) === "401") adminFail(); else toast("操作失败～"); });
   }
   function doDelete(id) {
-    if (!confirm("确定删除这条留言吗？")) return;
+    if (!confirm("确定删除吗？子回复也会一并删除。")) return;
     post("/delete", { id: id }, true)
-      .then(() => { messages = messages.filter(x => x.id !== id); render(); })
-      .catch(err => { if (String(err.message) === "401") adminFail(); else toast("删除失败～"); });
-  }
-  function doDeleteReply(id, rid) {
-    if (!confirm("确定删除这条回复吗？")) return;
-    post("/delete", { id: id, replyId: rid }, true)
-      .then(() => { const m = messages.find(x => x.id === id); if (m && Array.isArray(m.replies)) m.replies = m.replies.filter(r => r.id !== rid); render(); })
+      .then(() => { messages = removeNode(messages, id); render(); })
       .catch(err => { if (String(err.message) === "401") adminFail(); else toast("删除失败～"); });
   }
 
