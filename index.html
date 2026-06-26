@@ -363,6 +363,8 @@
     const norm = loc => { const u=(loc||"OTHER").toUpperCase(); return REGIONS[u]?u:"OTHER"; };
     const esc = s => String(s==null?"":s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
     const monogram = n => { const t=(n||"?").trim(); return t?t[0].toUpperCase():"?"; };
+    // 收藏/已读身份：优先用 LinkedIn 职位数字 ID（稳定，不随日期/跟踪参数变化）；抽不到时回退 title|company。跳转仍用原始 job.link，不受影响。
+    const jobId = link => { if(!link) return ""; const s=String(link); const m=s.match(/\/jobs\/view\/(\d+)/)||s.match(/[?&]currentJobId=(\d+)/); return m?("ln:"+m[1]):s.split(/[?#]/)[0].replace(/\/+$/,""); };
     const keyOf = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
     const dayKey = iso => { const d=new Date(iso); return isNaN(d)?"—":keyOf(d); };
     const dayLabel = iso => { const d=new Date(iso); return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"}); };
@@ -440,7 +442,7 @@
           head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'');
           sec.appendChild(head);
           g.items.forEach((job,idx)=>{
-            const r=norm(job.location), lvl=levelOf(job.title), id=job.link||(job.title+"|"+job.company);
+            const r=norm(job.location), lvl=levelOf(job.title), id=jobId(job.link)||(job.title+"|"+job.company);
             const a=document.createElement("article"); a.className="job"+(reads.has(id)?" read":"");
             if(first&&!reduce) a.style.animationDelay=Math.min(idx*0.03,0.45)+"s";
             a.dataset.region=r; a.dataset.comp=job.company||""; a.dataset.level=lvl; a.dataset.id=id;
