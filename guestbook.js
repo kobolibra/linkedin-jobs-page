@@ -72,11 +72,13 @@
   .gb-toast.show { opacity:1; }
   [data-theme="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
   .gb-scrollnav { position:fixed; left:11px; top:50%; transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
-  .gb-tick { width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; cursor:pointer; transition:width .28s cubic-bezier(.2,.8,.2,1), background .25s, opacity .25s; }
+  .gb-tick { position:relative; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; cursor:pointer; transition:width .28s cubic-bezier(.2,.8,.2,1), background .25s, opacity .25s; }
   .gb-tick:hover { width:24px; opacity:.9; }
   .gb-tick.on { background:var(--gold); opacity:.9; }
   .gb-tick.cur { width:24px; background:var(--gold-deep); opacity:1; }
   [data-theme="dark"] .gb-tick.cur { background:var(--gold-hi); }
+  .gb-ticklabel { position:absolute; left:20px; top:50%; transform:translateY(-50%) translateX(-4px); white-space:nowrap; font-family:var(--mono); font-size:11px; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; padding:3px 9px; box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.12)); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
+  .gb-tick:hover .gb-ticklabel { opacity:1; transform:translateY(-50%) translateX(0); }
   @media (max-width:720px){ .gb-scrollnav { display:none; } }
   `;
   const style = document.createElement("style");
@@ -340,33 +342,64 @@
   }
   function adminFail() { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
 
-  // ===== 左侧滚动定位条 =====
+  // ===== 左侧滚动定位条（第一根=顶部，之后每根对应一天）=====
   (function () {
-    const N = 14;
+    const jobsEl = document.getElementById("jobs");
     const nav = document.createElement("div");
     nav.className = "gb-scrollnav";
     nav.setAttribute("aria-hidden", "true");
-    for (let i = 0; i < N; i++) {
-      const t = document.createElement("button");
-      t.className = "gb-tick"; t.type = "button"; t.dataset.i = i; t.tabIndex = -1;
-      nav.appendChild(t);
-    }
     document.body.appendChild(nav);
-    const ticks = Array.prototype.slice.call(nav.children);
-    function scrollable() { return Math.max(0, document.documentElement.scrollHeight - window.innerHeight); }
-    function update() {
-      const h = scrollable();
-      const p = h > 0 ? Math.min(1, Math.max(0, window.scrollY / h)) : 0;
-      const cur = Math.round(p * (N - 1));
-      ticks.forEach((t, i) => { t.classList.toggle("on", i <= cur); t.classList.toggle("cur", i === cur); });
+
+    let targets = [];
+    function toolbarH() { const t = document.querySelector(".toolbar"); return t ? t.getBoundingClientRect().height : 0; }
+    function offset() { return toolbarH() + 14; }
+    function scrollableBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2; }
+
+    function build() {
+      const days = jobsEl ? Array.prototype.slice.call(jobsEl.querySelectorAll(".day")).filter(d => d.style.display !== "none") : [];
+      targets = [{ el: null, label: "顶部·总览" }].concat(days.map(d => {
+        const dd = d.querySelector(".day-date");
+        return { el: d, label: dd ? dd.textContent.trim() : "" };
+      }));
+      nav.innerHTML = targets.map((t, i) =>
+        '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>'
+      ).join("");
+      update();
     }
+
+    function update() {
+      if (!targets.length) return;
+      const off = offset();
+      let active = 0;
+      for (let i = 1; i < targets.length; i++) {
+        const el = targets[i].el; if (!el) continue;
+        if (el.getBoundingClientRect().top - off <= 1) active = i; else break;
+      }
+      if (scrollableBottom()) active = targets.length - 1;
+      const ticks = nav.children;
+      for (let i = 0; i < ticks.length; i++) {
+        ticks[i].classList.toggle("on", i <= active);
+        ticks[i].classList.toggle("cur", i === active);
+      }
+    }
+
     nav.addEventListener("click", e => {
       const t = e.target.closest(".gb-tick"); if (!t) return;
       const i = +t.dataset.i;
-      window.scrollTo({ top: scrollable() * (i / (N - 1)), behavior: "smooth" });
+      const tgt = targets[i];
+      if (!tgt || !tgt.el) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      const y = window.scrollY + tgt.el.getBoundingClientRect().top - offset();
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     });
+
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
-    update();
+
+    if (jobsEl) {
+      let deb;
+      const obs = new MutationObserver(() => { clearTimeout(deb); deb = setTimeout(build, 160); });
+      obs.observe(jobsEl, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+    }
+    build();
   })();
 })();
