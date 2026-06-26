@@ -458,4 +458,40 @@
 
         regionsEl.addEventListener("click",e=>{ const b=e.target.closest(".seg"); if(!b)return; regionsEl.querySelectorAll(".seg").forEach(x=>x.classList.remove("active")); b.classList.add("active"); activeRegion=b.dataset.region; apply(); });
         favEl.addEventListener("click",()=>{ favOnly=!favOnly; favEl.classList.toggle("active",favOnly); apply(); });
-        searchEl.
+        searchEl.addEventListener("input",apply);
+        companyEl.addEventListener("change",apply);
+        levelEl.addEventListener("change",apply);
+        apply();
+      })
+      .catch(()=>{ jobsEl.innerHTML=""; emptyEl.classList.add("show"); emptyEl.querySelector(".big").textContent="职位数据加载失败"; });
+
+    function apply(){
+      const q=searchEl.value.trim().toLowerCase(), comp=companyEl.value, lv=levelEl.value;
+      let visible=0;
+      jobsEl.querySelectorAll(".day").forEach(sec=>{
+        let shown=0;
+        sec.querySelectorAll(".job").forEach(card=>{
+          const ok=!blocked.has(card.dataset.comp)&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(lv==="all"||card.dataset.level===lv)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
+          card.classList.toggle("hidden",!ok); if(ok)shown++;
+        });
+        const c=sec.querySelector('[data-role="daycount"]'); if(c)c.textContent=shown+" 个职位";
+        sec.style.display=shown?"":"none"; visible+=shown;
+      });
+      countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
+      emptyEl.classList.toggle("show",visible===0);
+    }
+
+    document.addEventListener("keydown",e=>{
+      const tag=(e.target.tagName||"").toLowerCase();
+      if(tag==="input"||tag==="select"||tag==="textarea")return;
+      if(e.key==="/"){ e.preventDefault(); searchEl.focus(); }
+      else if(e.key.toLowerCase()==="t"){ setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"); }
+    });
+
+    const totop=document.getElementById("totop");
+    addEventListener("scroll",()=>{ totop.classList.toggle("show", window.scrollY>600); },{passive:true});
+    totop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+  </script>
+  <script src="guestbook.js"></script>
+</body>
+</html>
