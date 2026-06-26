@@ -1,4 +1,4 @@
-/* 留言板 Guestbook + 左侧滚动定位条 —— 浮动按钮 + 弹窗；点赞/多层回复开放，置顶/删除需管理员密码 */
+/* 留言板 Guestbook + 左侧滚动定位条（上海中心大厦造型）—— 浮动按钮 + 弹窗；点赞/多层回复开放，置顶/删除需管理员密码 */
 (function () {
   // ===== 配置 =====
   const API = "https://guestbook-api.claudecowork.workers.dev";
@@ -71,15 +71,24 @@
   .gb-toast { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); background:var(--navy); color:var(--surface); font-size:12.5px; padding:8px 16px; border-radius:8px; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.2)); opacity:0; transition:opacity .25s; pointer-events:none; z-index:5; white-space:nowrap; }
   .gb-toast.show { opacity:1; }
   [data-theme="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
-  .gb-scrollnav { position:fixed; left:11px; top:50%; transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
-  .gb-tick { position:relative; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; cursor:pointer; transition:width .28s cubic-bezier(.2,.8,.2,1), background .25s, opacity .25s; }
-  .gb-tick:hover { width:24px; opacity:.9; }
-  .gb-tick.on { background:var(--gold); opacity:.9; }
-  .gb-tick.cur { width:24px; background:var(--gold-deep); opacity:1; }
-  [data-theme="dark"] .gb-tick.cur { background:var(--gold-hi); }
-  .gb-ticklabel { position:absolute; left:20px; top:50%; transform:translateY(-50%) translateX(-4px); white-space:nowrap; font-family:var(--mono); font-size:11px; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; padding:3px 9px; box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.12)); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
-  .gb-tick:hover .gb-ticklabel { opacity:1; transform:translateY(-50%) translateX(0); }
-  @media (max-width:720px){ .gb-scrollnav { display:none; } }
+  .gb-tower { position:fixed; left:13px; top:50%; transform:translateY(-50%); z-index:90; width:48px; height:clamp(210px,58vh,330px); }
+  .gb-tower-svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+  .gb-tw-body { fill:color-mix(in srgb, var(--navy-2) 12%, transparent); stroke:color-mix(in srgb, var(--navy-2) 40%, transparent); stroke-width:1; }
+  [data-theme="dark"] .gb-tw-body { fill:color-mix(in srgb, var(--navy-2) 18%, transparent); stroke:color-mix(in srgb, var(--navy-2) 55%, transparent); }
+  .gb-tw-zone line { stroke:var(--line-strong); stroke-width:.8; opacity:.4; }
+  .gb-tw-seam { fill:none; stroke:var(--gold); stroke-width:1.3; opacity:.55; stroke-linecap:round; }
+  .gb-tw-seam2 { fill:none; stroke:var(--line-strong); stroke-width:.8; opacity:.4; stroke-linecap:round; }
+  .gb-tw-spire { stroke:var(--gold-deep); stroke-width:1.4; opacity:.75; stroke-linecap:round; }
+  [data-theme="dark"] .gb-tw-spire { stroke:var(--gold-hi); }
+  .gb-floors { position:absolute; inset:0; pointer-events:none; }
+  .gb-floor { position:absolute; left:50%; height:2px; border-radius:1px; background:var(--line-strong); opacity:.5; transform:translate(-50%,-50%); transition:width .25s cubic-bezier(.2,.8,.2,1), background .25s, opacity .25s, box-shadow .3s, transform .25s; cursor:pointer; pointer-events:auto; }
+  .gb-floor:hover { opacity:1; }
+  .gb-floor.on { background:linear-gradient(90deg, var(--gold-deep), var(--gold-hi)); opacity:.92; }
+  .gb-floor.cur { background:linear-gradient(90deg,#3f9fb8,#7fd6e6); opacity:1; box-shadow:0 0 10px color-mix(in srgb,#4fb0c8 70%,transparent); transform:translate(-50%,-50%) scaleX(1.2); }
+  [data-theme="dark"] .gb-floor.cur { background:linear-gradient(90deg,#54bcd6,#9fecf8); box-shadow:0 0 13px color-mix(in srgb,#6fd0e8 78%,transparent); }
+  .gb-floorlabel { position:absolute; top:50%; left:50%; transform:translate(20px,-50%); white-space:nowrap; font-family:var(--mono); font-size:11px; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; padding:3px 9px; box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.12)); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
+  .gb-floor:hover .gb-floorlabel { opacity:1; transform:translate(24px,-50%); }
+  @media (max-width:720px){ .gb-tower { display:none; } }
   `;
   const style = document.createElement("style");
   style.textContent = css;
@@ -342,18 +351,33 @@
   }
   function adminFail() { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
 
-  // ===== 左侧滚动定位条（第一根=顶部，之后每根对应一天）=====
+  // ===== 左侧滚动定位条·上海中心大厦造型（第一根=顶部，之后每根对应一天）=====
   (function () {
     const jobsEl = document.getElementById("jobs");
+    const TWPATH = "M9 99 C12 72,15 40,19 9 C20 5,22 2,24 5 C26 2,28 5,29 9 C33 40,36 72,39 99 Z";
+    let zones = "";
+    [16, 26, 36, 46, 56, 66, 76, 86, 93].forEach(y => { zones += '<line x1="5" y1="' + y + '" x2="43" y2="' + y + '" vector-effect="non-scaling-stroke"/>'; });
+    const svg =
+      '<svg class="gb-tower-svg" viewBox="0 0 48 100" preserveAspectRatio="none" aria-hidden="true">' +
+        '<defs><clipPath id="gbTwClip"><path d="' + TWPATH + '"/></clipPath></defs>' +
+        '<path class="gb-tw-body" d="' + TWPATH + '" vector-effect="non-scaling-stroke"/>' +
+        '<g class="gb-tw-zone" clip-path="url(#gbTwClip)">' + zones + '</g>' +
+        '<path class="gb-tw-seam2" d="M15 97 C18 66,21 33,23 7" vector-effect="non-scaling-stroke"/>' +
+        '<path class="gb-tw-seam" d="M33 97 C30 66,27 33,24 6" vector-effect="non-scaling-stroke"/>' +
+        '<line class="gb-tw-spire" x1="24" y1="5" x2="24" y2="0.5" vector-effect="non-scaling-stroke"/>' +
+      '</svg>';
+
     const nav = document.createElement("div");
-    nav.className = "gb-scrollnav";
+    nav.className = "gb-tower";
     nav.setAttribute("aria-hidden", "true");
+    nav.innerHTML = svg + '<div class="gb-floors"></div>';
     document.body.appendChild(nav);
+    const floorsEl = nav.querySelector(".gb-floors");
 
     let targets = [];
     function toolbarH() { const t = document.querySelector(".toolbar"); return t ? t.getBoundingClientRect().height : 0; }
     function offset() { return toolbarH() + 14; }
-    function scrollableBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2; }
+    function atBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2; }
 
     function build() {
       const days = jobsEl ? Array.prototype.slice.call(jobsEl.querySelectorAll(".day")).filter(d => d.style.display !== "none") : [];
@@ -361,9 +385,13 @@
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
       }));
-      nav.innerHTML = targets.map((t, i) =>
-        '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>'
-      ).join("");
+      const n = targets.length;
+      floorsEl.innerHTML = targets.map((t, i) => {
+        const f = n > 1 ? i / (n - 1) : 0;
+        const pos = (7 + f * 88).toFixed(2);
+        const w = (8 + f * 18).toFixed(1);
+        return '<button class="gb-floor" type="button" tabindex="-1" data-i="' + i + '" style="top:' + pos + '%;width:' + w + 'px"><span class="gb-floorlabel">' + esc(t.label) + '</span></button>';
+      }).join("");
       update();
     }
 
@@ -375,16 +403,16 @@
         const el = targets[i].el; if (!el) continue;
         if (el.getBoundingClientRect().top - off <= 1) active = i; else break;
       }
-      if (scrollableBottom()) active = targets.length - 1;
-      const ticks = nav.children;
-      for (let i = 0; i < ticks.length; i++) {
-        ticks[i].classList.toggle("on", i <= active);
-        ticks[i].classList.toggle("cur", i === active);
+      if (atBottom()) active = targets.length - 1;
+      const floors = floorsEl.children;
+      for (let i = 0; i < floors.length; i++) {
+        floors[i].classList.toggle("on", i <= active);
+        floors[i].classList.toggle("cur", i === active);
       }
     }
 
-    nav.addEventListener("click", e => {
-      const t = e.target.closest(".gb-tick"); if (!t) return;
+    floorsEl.addEventListener("click", e => {
+      const t = e.target.closest(".gb-floor"); if (!t) return;
       const i = +t.dataset.i;
       const tgt = targets[i];
       if (!tgt || !tgt.el) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
