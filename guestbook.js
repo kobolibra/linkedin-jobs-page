@@ -1,8 +1,7 @@
-/* 留言板 Guestbook + 左侧滚动定位条（上海中心大厦实拍照）—— 浮动按钮 + 弹窗；点赞/多层回复开放，置顶/删除需管理员密码 */
+/* 留言板 Guestbook + 左侧滚动定位条 —— 浮动按钮 + 弹窗；点赞/多层回复开放，置顶/删除需管理员密码 */
 (function () {
   // ===== 配置 =====
   const API = "https://guestbook-api.claudecowork.workers.dev";
-  const TOWER_IMG = "assets/shanghai-tower.png";
   const LS_LIKES = "gbLikes";
   const LS_ADMIN = "gbAdminKey";
 
@@ -72,19 +71,15 @@
   .gb-toast { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); background:var(--navy); color:var(--surface); font-size:12.5px; padding:8px 16px; border-radius:8px; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.2)); opacity:0; transition:opacity .25s; pointer-events:none; z-index:5; white-space:nowrap; }
   .gb-toast.show { opacity:1; }
   [data-theme="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
-  .gb-tower { position:fixed; left:14px; top:50%; transform:translateY(-50%); z-index:90; width:74px; min-height:150px; }
-  .gb-tw-img { display:block; width:60px; height:auto; opacity:.96; filter:drop-shadow(0 8px 16px rgba(8,16,28,.20)); -webkit-user-drag:none; user-select:none; pointer-events:none; }
-  [data-theme="dark"] .gb-tw-img { filter:drop-shadow(0 8px 18px rgba(0,0,0,.5)) brightness(1.05); }
-  .gb-floors { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
-  .gb-floor { position:absolute; left:62px; height:2px; width:8px; border-radius:2px; background:var(--ink-faint); opacity:.45; transform:translateY(-50%); transition:width .2s cubic-bezier(.2,.8,.2,1), background .25s, opacity .25s, box-shadow .3s, height .2s; cursor:pointer; pointer-events:auto; }
-  .gb-floor:hover { opacity:.9; width:14px; }
-  .gb-floor.cur { width:18px; height:3px; background:var(--gold-deep); opacity:1; box-shadow:0 0 9px color-mix(in srgb,var(--gold) 75%,transparent); }
-  [data-theme="dark"] .gb-floor.cur { background:var(--gold-hi); box-shadow:0 0 11px color-mix(in srgb,var(--gold-hi) 70%,transparent); }
-  .gb-floor.cur::before { content:""; position:absolute; right:100%; top:50%; transform:translateY(-50%); margin-right:3px; width:0; height:0; border:4px solid transparent; border-right-color:var(--gold-deep); }
-  [data-theme="dark"] .gb-floor.cur::before { border-right-color:var(--gold-hi); }
-  .gb-floorlabel { position:absolute; top:50%; left:100%; transform:translate(8px,-50%); white-space:nowrap; font-family:var(--mono); font-size:11px; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; padding:3px 9px; box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.12)); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
-  .gb-floor:hover .gb-floorlabel { opacity:1; transform:translate(12px,-50%); }
-  @media (max-width:720px){ .gb-tower { display:none; } }
+  .gb-scrollnav { position:fixed; left:11px; top:50%; transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
+  .gb-tick { position:relative; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; cursor:pointer; transition:width .28s cubic-bezier(.2,.8,.2,1), background .25s, opacity .25s; }
+  .gb-tick:hover { width:24px; opacity:.9; }
+  .gb-tick.on { background:var(--gold); opacity:.9; }
+  .gb-tick.cur { width:24px; background:var(--gold-deep); opacity:1; }
+  [data-theme="dark"] .gb-tick.cur { background:var(--gold-hi); }
+  .gb-ticklabel { position:absolute; left:20px; top:50%; transform:translateY(-50%) translateX(-4px); white-space:nowrap; font-family:var(--mono); font-size:11px; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; padding:3px 9px; box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.12)); opacity:0; pointer-events:none; transition:opacity .18s, transform .18s; }
+  .gb-tick:hover .gb-ticklabel { opacity:1; transform:translateY(-50%) translateX(0); }
+  @media (max-width:720px){ .gb-scrollnav { display:none; } }
   `;
   const style = document.createElement("style");
   style.textContent = css;
@@ -347,27 +342,18 @@
   }
   function adminFail() { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
 
-  // ===== 左侧滚动定位条·上海中心实拍照（第一根=顶部，之后每根对应一天）=====
+  // ===== 左侧滚动定位条（第一根=顶部，之后每根对应一天）=====
   (function () {
     const jobsEl = document.getElementById("jobs");
     const nav = document.createElement("div");
-    nav.className = "gb-tower";
+    nav.className = "gb-scrollnav";
     nav.setAttribute("aria-hidden", "true");
-    const img = document.createElement("img");
-    img.className = "gb-tw-img";
-    img.alt = "上海中心大厦";
-    img.src = TOWER_IMG;
-    img.addEventListener("error", () => { img.style.display = "none"; });
-    const floorsEl = document.createElement("div");
-    floorsEl.className = "gb-floors";
-    nav.appendChild(img);
-    nav.appendChild(floorsEl);
     document.body.appendChild(nav);
 
     let targets = [];
     function toolbarH() { const t = document.querySelector(".toolbar"); return t ? t.getBoundingClientRect().height : 0; }
     function offset() { return toolbarH() + 14; }
-    function atBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2; }
+    function scrollableBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2; }
 
     function build() {
       const days = jobsEl ? Array.prototype.slice.call(jobsEl.querySelectorAll(".day")).filter(d => d.style.display !== "none") : [];
@@ -375,12 +361,9 @@
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
       }));
-      const n = targets.length;
-      floorsEl.innerHTML = targets.map((t, i) => {
-        const f = n > 1 ? i / (n - 1) : 0;
-        const pos = (6 + f * 88).toFixed(2);
-        return '<button class="gb-floor" type="button" tabindex="-1" data-i="' + i + '" style="top:' + pos + '%"><span class="gb-floorlabel">' + esc(t.label) + '</span></button>';
-      }).join("");
+      nav.innerHTML = targets.map((t, i) =>
+        '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>'
+      ).join("");
       update();
     }
 
@@ -392,15 +375,16 @@
         const el = targets[i].el; if (!el) continue;
         if (el.getBoundingClientRect().top - off <= 1) active = i; else break;
       }
-      if (atBottom()) active = targets.length - 1;
-      const floors = floorsEl.children;
-      for (let i = 0; i < floors.length; i++) {
-        floors[i].classList.toggle("cur", i === active);
+      if (scrollableBottom()) active = targets.length - 1;
+      const ticks = nav.children;
+      for (let i = 0; i < ticks.length; i++) {
+        ticks[i].classList.toggle("on", i <= active);
+        ticks[i].classList.toggle("cur", i === active);
       }
     }
 
-    floorsEl.addEventListener("click", e => {
-      const t = e.target.closest(".gb-floor"); if (!t) return;
+    nav.addEventListener("click", e => {
+      const t = e.target.closest(".gb-tick"); if (!t) return;
       const i = +t.dataset.i;
       const tgt = targets[i];
       if (!tgt || !tgt.el) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
