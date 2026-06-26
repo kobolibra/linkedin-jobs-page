@@ -1,24 +1,24 @@
-/* 留言板 Guestbook —— 独立前端模块（浮动按钮 + 弹窗，自包含） */
+/* 留言板 Guestbook —— 浮动按钮 + 弹窗；点赞/回复对所有人开放，置顶/删除需管理员密码 */
 (function () {
   // ===== 配置 =====
-  // Cloudflare Worker 地址。Worker 命名为 guestbook-api 时无需修改这一行。
   const API = "https://guestbook-api.claudecowork.workers.dev";
+  const LS_LIKES = "gbLikes";
+  const LS_ADMIN = "gbAdminKey";
 
   // ===== 样式 =====
   const css = `
-  @keyframes gbFadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
-  .gb-fab { position:fixed; left:24px; bottom:24px; z-index:120; display:inline-flex; align-items:center; gap:8px; padding:11px 18px 11px 15px; border:1px solid var(--line-strong); border-radius:999px; background:linear-gradient(180deg,var(--navy-2),var(--navy)); color:var(--surface); font-family:var(--sans); font-size:13px; font-weight:650; letter-spacing:.01em; cursor:pointer; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.18)); transition:transform .18s, box-shadow .2s, opacity .3s; }
+  @keyframes gbFadeUp { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
+  .gb-fab { position:fixed; left:24px; bottom:24px; z-index:120; display:inline-flex; align-items:center; gap:8px; padding:11px 18px 11px 15px; border:1px solid var(--line-strong); border-radius:999px; background:linear-gradient(180deg,var(--navy-2),var(--navy)); color:var(--surface); font-family:var(--sans); font-size:13px; font-weight:650; cursor:pointer; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.18)); transition:transform .18s, box-shadow .2s; }
   .gb-fab:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.22); }
   .gb-fab svg { width:17px; height:17px; }
   [data-mode="dark"] .gb-fab { color:var(--navy); background:linear-gradient(180deg,var(--gold-hi),var(--gold)); }
   @media (max-width:720px){ .gb-fab { left:16px; bottom:16px; padding:10px 16px 10px 13px; } }
-
   .gb-overlay { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(8,16,28,.46); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity .25s; }
   .gb-overlay.open { opacity:1; pointer-events:auto; }
-  .gb-modal { width:100%; max-width:480px; max-height:84vh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line-strong); border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.4); transform:translateY(14px) scale(.98); transition:transform .28s cubic-bezier(.34,1.4,.5,1); overflow:hidden; }
+  .gb-modal { position:relative; width:100%; max-width:480px; max-height:84vh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line-strong); border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.4); transform:translateY(14px) scale(.98); transition:transform .28s cubic-bezier(.34,1.4,.5,1); overflow:hidden; }
   .gb-overlay.open .gb-modal { transform:none; }
   .gb-head { display:flex; align-items:flex-start; gap:12px; padding:20px 22px 16px; border-bottom:1px solid var(--line); }
-  .gb-head h2 { font-family:var(--serif); font-size:21px; font-weight:650; letter-spacing:-.02em; color:var(--navy); margin:0; }
+  .gb-head h2 { font-family:var(--serif); font-size:21px; font-weight:650; letter-spacing:-.02em; color:var(--navy); margin:0; user-select:none; }
   .gb-sub { display:block; font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-faint); margin-top:5px; }
   .gb-close { margin-left:auto; flex:none; width:30px; height:30px; display:grid; place-items:center; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); color:var(--ink-soft); font-size:17px; line-height:1; cursor:pointer; transition:background .15s,color .15s; }
   .gb-close:hover { background:var(--line); color:var(--ink); }
@@ -31,42 +31,65 @@
   .gb-count { font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-right:auto; font-variant-numeric:tabular-nums; }
   .gb-err { color:#b4534b; font-size:12px; margin-right:auto; }
   .gb-submit { font-family:var(--sans); font-size:13px; font-weight:650; color:var(--surface); background:linear-gradient(180deg,var(--navy-2),var(--navy)); border:0; border-radius:9px; padding:10px 22px; cursor:pointer; transition:transform .15s, box-shadow .2s, opacity .2s; box-shadow:var(--shadow,0 6px 18px rgba(0,0,0,.12)); }
-  .gb-submit:hover { transform:translateY(-1px); box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.18)); }
+  .gb-submit:hover { transform:translateY(-1px); }
   .gb-submit:disabled { opacity:.5; cursor:default; transform:none; }
   [data-mode="dark"] .gb-submit { color:var(--navy); background:linear-gradient(180deg,var(--gold-hi),var(--gold)); }
   .gb-list { display:flex; flex-direction:column; }
-  .gb-msg { display:grid; grid-template-columns:38px 1fr; gap:13px; padding:14px 2px; border-bottom:1px solid var(--line); animation:gbFadeUp .4s both; }
+  .gb-msg { position:relative; padding:14px 2px; border-bottom:1px solid var(--line); animation:gbFadeUp .4s both; }
   .gb-msg:last-child { border-bottom:0; }
-  .gb-ava { width:38px; height:38px; border-radius:9px; display:grid; place-items:center; font-family:var(--serif); font-weight:650; font-size:15px; color:var(--navy); background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--gold) 26%,transparent); user-select:none; }
-  [data-mode="dark"] .gb-ava { color:var(--gold-hi); }
+  .gb-pin { display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--gold-deep,#806238); background:var(--accent-soft); border-radius:5px; padding:2px 7px; margin-bottom:6px; }
   .gb-meta { display:flex; align-items:baseline; gap:10px; }
   .gb-mname { font-size:14px; font-weight:650; color:var(--ink); }
   .gb-mtime { font-family:var(--mono); font-size:11px; color:var(--ink-faint); font-variant-numeric:tabular-nums; }
   .gb-mtext { font-size:14px; color:var(--ink-soft); line-height:1.65; margin-top:4px; white-space:pre-wrap; word-break:break-word; }
+  .gb-tools { display:flex; align-items:center; gap:8px; margin-top:9px; flex-wrap:wrap; }
+  .gb-act { display:inline-flex; align-items:center; gap:5px; font-family:var(--sans); font-size:12px; color:var(--ink-faint); background:none; border:1px solid var(--line); border-radius:7px; padding:4px 10px; cursor:pointer; transition:color .15s,border-color .15s; }
+  .gb-act:hover { color:var(--ink); border-color:var(--line-strong); }
+  .gb-like svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; transition:fill .15s, stroke .15s; }
+  .gb-like.liked { color:#e0526b; border-color:color-mix(in srgb,#e0526b 40%,transparent); }
+  .gb-like.liked svg { fill:#e0526b; stroke:#e0526b; }
+  .gb-likenum { font-variant-numeric:tabular-nums; }
+  .gb-admin { color:var(--navy-2); }
+  .gb-del:hover { color:#b4534b; border-color:color-mix(in srgb,#b4534b 40%,transparent); }
+  .gb-replies { margin:10px 0 0 14px; padding-left:14px; border-left:2px solid var(--line); display:flex; flex-direction:column; gap:10px; }
+  .gb-reply { font-size:13px; }
+  .gb-reply .gb-mname { font-size:13px; }
+  .gb-reply .gb-mtext { margin-top:2px; font-size:13px; }
+  .gb-mini { margin-left:8px; font-size:11px; color:var(--ink-faint); background:none; border:0; cursor:pointer; }
+  .gb-mini:hover { color:#b4534b; }
+  .gb-rform { margin-top:10px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:10px; }
+  .gb-rname { width:100%; max-width:200px; display:block; padding:7px 10px; border:1px solid var(--line-strong); border-radius:7px; background:var(--surface); font-size:13px; color:var(--ink); font-family:var(--sans); margin-bottom:8px; }
+  .gb-rtext { width:100%; min-height:54px; resize:vertical; display:block; padding:8px 10px; border:1px solid var(--line-strong); border-radius:7px; background:var(--surface); font-size:13px; color:var(--ink); font-family:var(--sans); line-height:1.5; }
+  .gb-ractions { display:flex; justify-content:flex-end; gap:8px; margin-top:8px; }
+  .gb-rcancel { font-size:12px; color:var(--ink-faint); background:none; border:0; cursor:pointer; }
+  .gb-rsubmit { font-size:12px; font-weight:650; color:var(--surface); background:var(--navy); border:0; border-radius:7px; padding:6px 16px; cursor:pointer; }
+  [data-mode="dark"] .gb-rsubmit { color:var(--navy); background:var(--gold); }
   .gb-state { text-align:center; padding:36px 20px; color:var(--ink-faint); font-size:14px; }
   .gb-state .gb-big { font-family:var(--serif); font-size:17px; color:var(--ink-soft); margin-bottom:6px; }
+  .gb-toast { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); background:var(--navy); color:var(--surface); font-size:12.5px; padding:8px 16px; border-radius:8px; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.2)); opacity:0; transition:opacity .25s; pointer-events:none; z-index:5; white-space:nowrap; }
+  .gb-toast.show { opacity:1; }
+  [data-mode="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
   `;
   const style = document.createElement("style");
   style.textContent = css;
   document.head.appendChild(style);
 
-  const ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
+  const BUBBLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>';
+  const HEART = '<svg viewBox="0 0 24 24"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.15 2 7.4 2 4.9 3.98 3 6.5 3c1.74 0 3.41.81 4.5 2.09C12.09 3.81 13.76 3 15.5 3 18.02 3 20 4.9 20 7.4c0 3.75-3.4 6.84-8.55 11.58L12 20.3z"/></svg>';
 
   // ===== 浮动按钮 =====
   const fab = document.createElement("button");
   fab.className = "gb-fab";
-  fab.id = "gbFab";
   fab.type = "button";
-  fab.innerHTML = ICON + "<span>留言</span>";
+  fab.innerHTML = BUBBLE + "<span>留言</span>";
   document.body.appendChild(fab);
 
   // ===== 弹窗 =====
   const overlay = document.createElement("div");
   overlay.className = "gb-overlay";
-  overlay.id = "gbOverlay";
   overlay.innerHTML =
     '<div class="gb-modal" role="dialog" aria-modal="true" aria-label="留言板">' +
-      '<div class="gb-head"><div><h2>留言板</h2><span class="gb-sub">if you would like to leave a message</span></div>' +
+      '<div class="gb-head"><div><h2 id="gbTitle">留言板</h2><span class="gb-sub">if you would like to leave a message</span></div>' +
         '<button class="gb-close" id="gbClose" type="button" aria-label="关闭">&times;</button></div>' +
       '<div class="gb-body">' +
         '<form class="gb-form" id="gbForm">' +
@@ -76,9 +99,11 @@
         '</form>' +
         '<div class="gb-list" id="gbList"><div class="gb-state">留言加载中…</div></div>' +
       '</div>' +
+      '<div class="gb-toast" id="gbToast"></div>' +
     '</div>';
   document.body.appendChild(overlay);
 
+  const titleEl = overlay.querySelector("#gbTitle");
   const closeEl = overlay.querySelector("#gbClose");
   const listEl = overlay.querySelector("#gbList");
   const formEl = overlay.querySelector("#gbForm");
@@ -87,9 +112,18 @@
   const countEl = overlay.querySelector("#gbCount");
   const submitEl = overlay.querySelector("#gbSubmit");
   const actionsEl = formEl.querySelector(".gb-actions");
+  const toastEl = overlay.querySelector("#gbToast");
 
+  // ===== 状态 =====
+  let messages = [];
+  let replyOpen = null;
+  let loaded = false;
+  const likedSet = new Set(JSON.parse(localStorage.getItem(LS_LIKES) || "[]"));
+  let adminKey = localStorage.getItem(LS_ADMIN) || "";
+  let isAdmin = !!adminKey;
+
+  // ===== 工具 =====
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
-  const mono = n => { const t = (n || "?").trim(); return t ? t[0].toUpperCase() : "?"; };
   function fmtTime(iso) {
     const d = new Date(iso); if (isNaN(d)) return "";
     const diff = (Date.now() - d.getTime()) / 1000;
@@ -98,37 +132,81 @@
     if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
     return d.toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
   }
-  function msgHTML(m) {
-    return '<div class="gb-msg"><div class="gb-ava">' + esc(mono(m.name)) + '</div>' +
-      '<div class="gb-mbody"><div class="gb-meta"><span class="gb-mname">' + esc(m.name || "匿名") + '</span><span class="gb-mtime">' + esc(fmtTime(m.time)) + '</span></div>' +
-      '<div class="gb-mtext">' + esc(m.text) + '</div></div></div>';
+  let toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
   }
-  function render(list) {
-    if (!Array.isArray(list) || list.length === 0) {
-      listEl.innerHTML = '<div class="gb-state"><div class="gb-big">还没有留言</div>来抢个沙发吧 🛋️</div>';
-      return;
-    }
-    listEl.innerHTML = list.map(msgHTML).join("");
+  function authHeaders() { return (isAdmin && adminKey) ? { "X-Admin-Key": adminKey } : {}; }
+  function post(path, body, admin) {
+    return fetch(API + path, {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, admin ? authHeaders() : {}),
+      body: JSON.stringify(body || {})
+    }).then(r => { if (!r.ok) throw new Error(String(r.status)); return r.json(); });
+  }
+  function sortMsgs(list) {
+    return list.slice().sort((a, b) => {
+      const pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
+      if (pa !== pb) return pb - pa;
+      return new Date(b.time) - new Date(a.time);
+    });
   }
 
-  // ===== 打开 / 关闭 =====
-  let loaded = false;
+  // ===== 渲染 =====
+  function replyHTML(pid, r) {
+    return '<div class="gb-reply">' +
+      '<span class="gb-mname">' + esc(r.name || "匿名") + '</span> ' +
+      '<span class="gb-mtime">' + esc(fmtTime(r.time)) + '</span>' +
+      (isAdmin ? '<button class="gb-mini" data-act="delreply" data-id="' + esc(pid) + '" data-rid="' + esc(r.id) + '">删除</button>' : '') +
+      '<div class="gb-mtext">' + esc(r.text) + '</div></div>';
+  }
+  function replyFormHTML(id) {
+    return '<form class="gb-rform" data-id="' + esc(id) + '">' +
+      '<input class="gb-rname" type="text" placeholder="昵称（可空）" maxlength="40" autocomplete="off" />' +
+      '<textarea class="gb-rtext" placeholder="回复…（最多 500 字）" maxlength="500"></textarea>' +
+      '<div class="gb-ractions"><button type="button" class="gb-rcancel">取消</button><button type="submit" class="gb-rsubmit">回复</button></div>' +
+      '</form>';
+  }
+  function msgHTML(m) {
+    const liked = likedSet.has(m.id);
+    const replies = Array.isArray(m.replies) ? m.replies : [];
+    return '<div class="gb-msg" data-id="' + esc(m.id) + '">' +
+      (m.pinned ? '<span class="gb-pin">📌 置顶</span>' : '') +
+      '<div class="gb-meta"><span class="gb-mname">' + esc(m.name || "匿名") + '</span><span class="gb-mtime">' + esc(fmtTime(m.time)) + '</span></div>' +
+      '<div class="gb-mtext">' + esc(m.text) + '</div>' +
+      '<div class="gb-tools">' +
+        '<button class="gb-act gb-like' + (liked ? ' liked' : '') + '" data-act="like" data-id="' + esc(m.id) + '">' + HEART + '<span class="gb-likenum">' + (m.likes || 0) + '</span></button>' +
+        '<button class="gb-act" data-act="reply" data-id="' + esc(m.id) + '">回复' + (replies.length ? ' · ' + replies.length : '') + '</button>' +
+        (isAdmin ? '<button class="gb-act gb-admin" data-act="pin" data-id="' + esc(m.id) + '">' + (m.pinned ? '取消置顶' : '置顶') + '</button><button class="gb-act gb-admin gb-del" data-act="del" data-id="' + esc(m.id) + '">删除</button>' : '') +
+      '</div>' +
+      (replies.length ? '<div class="gb-replies">' + replies.map(r => replyHTML(m.id, r)).join("") + '</div>' : '') +
+      (replyOpen === m.id ? replyFormHTML(m.id) : '') +
+      '</div>';
+  }
+  function render() {
+    const list = sortMsgs(messages);
+    if (!list.length) { listEl.innerHTML = '<div class="gb-state"><div class="gb-big">还没有留言</div>来抢个沙发吧 🛋️</div>'; return; }
+    listEl.innerHTML = list.map(msgHTML).join("");
+    if (replyOpen) { const t = listEl.querySelector('.gb-rform[data-id="' + replyOpen + '"] .gb-rtext'); if (t) t.focus(); }
+  }
+
+  // ===== 加载 =====
   function load() {
     fetch(API, { method: "GET" })
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(render)
+      .then(data => { messages = Array.isArray(data) ? data : []; render(); })
       .catch(() => { listEl.innerHTML = '<div class="gb-state">留言板暂时连接不上，请稍后再试～</div>'; });
   }
+
+  // ===== 开关 =====
   function openModal() {
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
     if (!loaded) { loaded = true; load(); }
     setTimeout(() => textEl.focus(), 280);
   }
-  function closeModal() {
-    overlay.classList.remove("open");
-    document.body.style.overflow = "";
-  }
+  function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; }
   fab.addEventListener("click", openModal);
   closeEl.addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
@@ -136,6 +214,7 @@
 
   textEl.addEventListener("input", () => { countEl.textContent = textEl.value.length + " / 500"; });
 
+  // ===== 发布新留言 =====
   formEl.addEventListener("submit", e => {
     e.preventDefault();
     const oldErr = actionsEl.querySelector(".gb-err"); if (oldErr) oldErr.remove();
@@ -143,24 +222,91 @@
     const name = nameEl.value.trim();
     if (!text) { textEl.focus(); return; }
     submitEl.disabled = true; submitEl.textContent = "发布中…";
-    fetch(API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name, text: text })
-    })
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    post("/", { name: name, text: text })
       .then(msg => {
-        const state = listEl.querySelector(".gb-state");
-        if (state) listEl.innerHTML = "";
-        listEl.insertAdjacentHTML("afterbegin", msgHTML(msg));
+        messages.unshift(msg); replyOpen = null; render();
         textEl.value = ""; nameEl.value = ""; countEl.textContent = "0 / 500";
       })
       .catch(() => {
         const err = document.createElement("span");
-        err.className = "gb-err";
-        err.textContent = "发布失败，后台可能还没连通～";
+        err.className = "gb-err"; err.textContent = "发布失败，后台可能还没连通～";
         actionsEl.insertBefore(err, countEl);
       })
       .finally(() => { submitEl.disabled = false; submitEl.textContent = "发布留言"; });
   });
+
+  // ===== 列表交互（事件委托）=====
+  listEl.addEventListener("click", e => {
+    const cancel = e.target.closest(".gb-rcancel");
+    if (cancel) { replyOpen = null; render(); return; }
+    const btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    const act = btn.dataset.act, id = btn.dataset.id;
+    if (act === "like") doLike(id);
+    else if (act === "reply") { replyOpen = (replyOpen === id ? null : id); render(); }
+    else if (act === "pin") doPin(id);
+    else if (act === "del") doDelete(id);
+    else if (act === "delreply") doDeleteReply(id, btn.dataset.rid);
+  });
+  listEl.addEventListener("submit", e => {
+    const form = e.target.closest(".gb-rform");
+    if (!form) return;
+    e.preventDefault();
+    const id = form.dataset.id;
+    const text = form.querySelector(".gb-rtext").value.trim();
+    const name = form.querySelector(".gb-rname").value.trim();
+    if (!text) return;
+    const sub = form.querySelector(".gb-rsubmit"); sub.disabled = true; sub.textContent = "…";
+    post("/reply", { id: id, name: name, text: text })
+      .then(res => {
+        const m = messages.find(x => x.id === id);
+        if (m) { if (!Array.isArray(m.replies)) m.replies = []; m.replies.push(res.reply); }
+        replyOpen = null; render();
+      })
+      .catch(() => { sub.disabled = false; sub.textContent = "回复"; toast("回复失败，后台可能没连通～"); });
+  });
+
+  function doLike(id) {
+    const liked = likedSet.has(id);
+    const m = messages.find(x => x.id === id);
+    if (m) m.likes = Math.max(0, (m.likes || 0) + (liked ? -1 : 1));
+    if (liked) likedSet.delete(id); else likedSet.add(id);
+    localStorage.setItem(LS_LIKES, JSON.stringify([...likedSet]));
+    render();
+    post("/like", { id: id, unlike: liked }).then(res => { if (m) { m.likes = res.likes; render(); } }).catch(() => {});
+  }
+  function doPin(id) {
+    const m = messages.find(x => x.id === id); if (!m) return;
+    post("/pin", { id: id, pinned: !m.pinned }, true)
+      .then(res => { m.pinned = res.pinned; render(); })
+      .catch(err => { if (String(err.message) === "401") adminFail(); else toast("操作失败～"); });
+  }
+  function doDelete(id) {
+    if (!confirm("确定删除这条留言吗？")) return;
+    post("/delete", { id: id }, true)
+      .then(() => { messages = messages.filter(x => x.id !== id); render(); })
+      .catch(err => { if (String(err.message) === "401") adminFail(); else toast("删除失败～"); });
+  }
+  function doDeleteReply(id, rid) {
+    if (!confirm("确定删除这条回复吗？")) return;
+    post("/delete", { id: id, replyId: rid }, true)
+      .then(() => { const m = messages.find(x => x.id === id); if (m && Array.isArray(m.replies)) m.replies = m.replies.filter(r => r.id !== rid); render(); })
+      .catch(err => { if (String(err.message) === "401") adminFail(); else toast("删除失败～"); });
+  }
+
+  // ===== 管理员解锁（连点标题 3 次）=====
+  let clicks = 0, clickTimer;
+  titleEl.addEventListener("click", () => {
+    clicks++; clearTimeout(clickTimer); clickTimer = setTimeout(() => clicks = 0, 600);
+    if (clicks >= 3) { clicks = 0; adminPrompt(); }
+  });
+  function adminPrompt() {
+    if (isAdmin) { if (confirm("退出管理员模式？")) { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("已退出管理员模式"); } return; }
+    const key = prompt("请输入管理员密码："); if (!key) return;
+    fetch(API + "/verify", { method: "POST", headers: { "Content-Type": "application/json", "X-Admin-Key": key }, body: "{}" })
+      .then(r => r.json())
+      .then(res => { if (res && res.ok) { adminKey = key; isAdmin = true; localStorage.setItem(LS_ADMIN, key); render(); toast("已进入管理员模式"); } else { toast("密码错误"); } })
+      .catch(() => toast("验证失败，后台可能没连通～"));
+  }
+  function adminFail() { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
 })();
