@@ -363,8 +363,8 @@
     const norm = loc => { const u=(loc||"OTHER").toUpperCase(); return REGIONS[u]?u:"OTHER"; };
     const esc = s => String(s==null?"":s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
     const monogram = n => { const t=(n||"?").trim(); return t?t[0].toUpperCase():"?"; };
-    // 收藏/已读身份：优先用 LinkedIn 职位数字 ID（稳定，不随日期/跟踪参数变化）；抽不到时回退 title|company。跳转仍用原始 job.link，不受影响。
-    const jobId = link => { if(!link) return ""; const s=String(link); const m=s.match(/\/jobs\/view\/(\d+)/)||s.match(/[?&]currentJobId=(\d+)/); return m?("ln:"+m[1]):s.split(/[?#]/)[0].replace(/\/+$/,""); };
+    // 收藏/已读身份：LinkedIn 职位链接格式为 /jobs/view/<slug>-<数字ID>?<变动参数>，只有末尾数字 ID 稳定。优先抽末尾数字 ID，抽不到时回退去参数路径；跳转仍用原始 job.link。
+    const jobId = link => { if(!link) return ""; const path=String(link).split(/[?#]/)[0]; const m=path.match(/(\d{5,})\/?$/)||String(link).match(/[?&]currentJobId=(\d+)/); return m?("ln:"+m[1]):path.replace(/\/+$/,""); };
     const keyOf = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
     const dayKey = iso => { const d=new Date(iso); return isNaN(d)?"—":keyOf(d); };
     const dayLabel = iso => { const d=new Date(iso); return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"}); };
@@ -379,6 +379,8 @@
     const saveFavs = () => localStorage.setItem("favs", JSON.stringify([...favs]));
     const saveReads = () => localStorage.setItem("reads", JSON.stringify([...reads]));
     const saveBlocked = () => localStorage.setItem("blocked", JSON.stringify([...blocked]));
+    // 一次性迁移：把旧的收藏/已读 key（完整 URL 或去参数路径）按稳定的 ln:<数字ID> 重新映射，找回之前的收藏。幂等，只执行一次。
+    (function(){ if(localStorage.getItem("favKeyV")==="2") return; [favs,reads].forEach(set=>{ const arr=[...set]; set.clear(); arr.forEach(k=>set.add(jobId(k))); }); saveFavs(); saveReads(); localStorage.setItem("favKeyV","2"); })();
 
     const jobsEl=document.getElementById("jobs");
     const emptyEl=document.getElementById("empty");
