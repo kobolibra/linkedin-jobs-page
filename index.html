@@ -31,15 +31,15 @@
       --shadow:0 1px 3px rgba(28,27,24,.06), 0 2px 8px rgba(28,27,24,.04);
       --shadow-strong:0 2px 6px rgba(28,27,24,.08), 0 8px 24px rgba(28,27,24,.06);
       /* ══ REGIONS = the six-era a16z legend colors ══ */
-      /* foreground = rich era hue · -bg = whisper-soft pastel chip */
+      /* foreground = rich era hue · -bg = near-paper whisper tint */
       /* CN → Oxblood Wine (2020-2024)                     */
       /* HK → Deep Ochre   (2005-2009)                     */
       /* SG → Deep Sage    (2010-2014)                     */
       /* OTHER → Deep Teal  (2000-2004)                    */
-      --cn:#9c2a33; --cn-bg:#f8ece9;
-      --hk:#b07c22; --hk-bg:#f8f2e0;
-      --sg:#6e8a46; --sg-bg:#f0f3e6;
-      --other:#357585; --other-bg:#ebf2f0;
+      --cn:#9c2a33; --cn-bg:#f9efec;
+      --hk:#b07c22; --hk-bg:#f9f3e6;
+      --sg:#6e8a46; --sg-bg:#f2f4ec;
+      --other:#357585; --other-bg:#eef3f1;
       /* ─ Type stacks ─ */
       --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
       --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
@@ -209,15 +209,16 @@
     .job.read .job-title { color:var(--ink-faint); }
     .job.read .mono { opacity:.45; }
     /* Monogram badge: tinted with region color */
-    .mono { width:44px;height:44px;border-radius:3px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--region,var(--navy));background:var(--region-bg,var(--surface-2));border:1.5px solid color-mix(in srgb,var(--region,var(--navy)) 28%,transparent);user-select:none; }
+    .mono { width:44px;height:44px;border-radius:3px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--region,var(--navy));background:var(--region-bg,var(--surface-2));border:1.5px solid color-mix(in srgb,var(--region,var(--navy)) 22%,transparent);user-select:none; }
     .job-main { min-width:0; }
     .job-title { font-size:15.5px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.35; }
     .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px; }
     .job-sub { font-size:13px;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
     .job-right { display:flex;align-items:center;gap:7px; }
     .lvl { font-size:11px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--line-strong);padding:2px 6px;border-radius:2px;white-space:nowrap; }
-    /* Tag: region-color text on its own tint — a16z editorial style */
-    .tag { font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 30%,transparent);white-space:nowrap; }
+    /* Tag: legend-style colored dot + muted label on near-paper tint — a16z editorial */
+    .tag { display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px 2px 7px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 15%,transparent);white-space:nowrap; }
+    .tag::before { content:"";width:5px;height:5px;border-radius:50%;background:var(--region,var(--other));flex:none; }
     .icon-btn { width:28px;height:28px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;color:var(--ink-faint);border-radius:3px;transition:all .15s; }
     .icon-btn svg { width:16px;height:16px; }
     .icon-btn:hover { color:var(--ink);background:var(--surface-2); }
