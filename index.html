@@ -8,53 +8,58 @@
   <meta property="og:title" content="LinkedIn 金融职位精选 · CN / HK / SG" />
   <meta property="og:description" content="覆盖中国大陆、香港与新加坡的金融行业最新职位，每 6 小时自动更新。" />
   <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#1a3252" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' x2='1'><stop stop-color='%231a3252'/><stop offset='1' stop-color='%2324486e'/></linearGradient></defs><rect width='32' height='32' rx='6' fill='url(%23g)'/><path d='M11 8v16h10' fill='none' stroke='%23d48c1a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
+  <meta name="theme-color" content="#16395a" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' x2='1'><stop stop-color='%2316395a'/><stop offset='1' stop-color='%231f4a72'/></linearGradient></defs><rect width='32' height='32' rx='6' fill='url(%23g)'/><path d='M11 8v16h10' fill='none' stroke='%23c1923a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <style>
     :root {
-      /* ─ Grounds ────────────────────────────────────────── */
-      --bg:#f5f4f0; --surface:#ffffff; --surface-2:#eeebe6;
-      /* ─ Typography ───────────────────────────────────── */
-      --ink:#0e1318; --ink-soft:#4a5260; --ink-faint:#8a9098;
-      /* ─ Borders ──────────────────────────────────────── */
-      --line:#ddd9d2; --line-strong:#c8c2b8;
-      /* ─ a16z Series 1: Deep Navy — the dominant hero ── */
-      --navy:#1a3252; --navy-2:#24486e; --navy-3:#2e6090;
-      --accent:#c07818; --accent-2:#8a5410; --accent-soft:rgba(192,120,24,.09);
-      --gold-hi:#e8a830; --gold:#c07818; --gold-deep:#8a5410;
-      --chart:#1a3252; --chart-track:#e4e0da;
-      --shadow:0 1px 3px rgba(14,19,24,.06), 0 2px 8px rgba(14,19,24,.04);
-      --shadow-strong:0 2px 6px rgba(14,19,24,.08), 0 8px 24px rgba(14,19,24,.06);
-      /* ──────────────────────────────────────────────── */
-      /* REGIONAL — each color = one a16z chart data series */
-      /* CN   → Series 4 Vivid Crimson                      */
-      /* HK   → Series 3 Warm Amber                         */
-      /* SG   → Series 2 Forest Green                       */
-      /* OTHER→ Series 5 Prussian Teal                      */
-      /* ──────────────────────────────────────────────── */
-      --cn:#c42838; --cn-bg:#fdf0f1;
-      --hk:#d48c1a; --hk-bg:#fdf8ec;
-      --sg:#2d6b44; --sg-bg:#eef8f2;
-      --other:#1c6880; --other-bg:#edf6fa;
+      /* ══ a16z PARCHMENT PALETTE — extracted from the S&P 500 charts ══ */
+      /* ─ Grounds: warm cream paper, never pure white ─ */
+      --bg:#ece7dd; --surface:#f4f1e9; --surface-2:#e0dacb;
+      /* ─ Ink: near-black + warm grays (matches axis labels) ─ */
+      --ink:#1c1b18; --ink-soft:#6b665c; --ink-faint:#9c9588;
+      /* ─ Borders ─ */
+      --line:#d8d1c1; --line-strong:#c5bda9;
+      /* ─ Hero: the deep navy headline color from the chart titles ─ */
+      --navy:#16395a; --navy-2:#1f4a72; --navy-3:#2e6090;
+      /* ─ Accent: the ochre/mustard era color ─ */
+      --accent:#c1923a; --accent-2:#8f6a22; --accent-soft:rgba(193,146,58,.10);
+      --gold-hi:#d9ad55; --gold:#c1923a; --gold-deep:#8f6a22;
+      /* ─ Chart ─ */
+      --chart:#16395a; --chart-track:#ddd6c6;
+      /* ─ Shadows: warm-tinted, very soft ─ */
+      --shadow:0 1px 3px rgba(28,27,24,.06), 0 2px 8px rgba(28,27,24,.04);
+      --shadow-strong:0 2px 6px rgba(28,27,24,.08), 0 8px 24px rgba(28,27,24,.06);
+      /* ══ REGIONS = the six-era a16z legend colors ══ */
+      /* CN → Wine    (2020-2024)                          */
+      /* HK → Ochre   (2005-2009)                          */
+      /* SG → Sage    (2010-2014)                          */
+      /* OTHER → Teal  (2000-2004)                         */
+      --cn:#9e2b38; --cn-bg:#f1e3e1;
+      --hk:#bd8a30; --hk-bg:#f3ebd5;
+      --sg:#7a9450; --sg-bg:#ebf0dd;
+      --other:#3d7d8c; --other-bg:#e2ecec;
+      /* ─ Type stacks ─ */
       --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
       --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
       --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
     }
     [data-theme="dark"] {
-      --bg:#010409; --surface:#0d1117; --surface-2:#161b22;
-      --ink:#e6edf3; --ink-soft:#8b949e; --ink-faint:#484f58;
-      --line:#21262d; --line-strong:#30363d;
-      --navy:#e6edf3; --navy-2:#8b949e; --navy-3:#6e7681;
-      --accent:#e8a830; --accent-2:#f0c040; --accent-soft:rgba(232,168,48,.12);
-      --gold-hi:#f4d060; --gold:#e8a830; --gold-deep:#b07c18;
-      --chart:#7a92a8; --chart-track:#21262d;
-      --shadow:0 1px 3px rgba(0,0,0,.50), 0 4px 16px rgba(0,0,0,.40);
-      --shadow-strong:0 2px 8px rgba(0,0,0,.58), 0 16px 40px rgba(0,0,0,.50);
-      --cn:#f04060; --cn-bg:rgba(240,64,96,.13);
-      --hk:#e8a830; --hk-bg:rgba(232,168,48,.12);
-      --sg:#3cd870; --sg-bg:rgba(60,216,112,.12);
-      --other:#28b4e0; --other-bg:rgba(40,180,224,.12);
+      /* ─ Warm charcoal ground (keeps the parchment temperature) ─ */
+      --bg:#14130f; --surface:#1c1b16; --surface-2:#26241d;
+      --ink:#ece7dd; --ink-soft:#a39c8c; --ink-faint:#6b665a;
+      --line:#2e2c24; --line-strong:#3d3a30;
+      --navy:#ece7dd; --navy-2:#a39c8c; --navy-3:#7d7768;
+      --accent:#d9ad55; --accent-2:#e8c878; --accent-soft:rgba(217,173,85,.12);
+      --gold-hi:#e8c878; --gold:#d9ad55; --gold-deep:#b08a3a;
+      --chart:#a39c8c; --chart-track:#2e2c24;
+      --shadow:0 1px 3px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.4);
+      --shadow-strong:0 2px 8px rgba(0,0,0,.58), 0 16px 40px rgba(0,0,0,.5);
+      /* ─ Brightened era colors for dark ground ─ */
+      --cn:#d4566a; --cn-bg:rgba(212,86,106,.14);
+      --hk:#d9ad55; --hk-bg:rgba(217,173,85,.13);
+      --sg:#a3c06e; --sg-bg:rgba(163,192,110,.13);
+      --other:#5ba8bc; --other-bg:rgba(91,168,188,.13);
     }
     * { box-sizing:border-box; }
     html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
@@ -70,7 +75,7 @@
     button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:not(:focus-visible) { outline:none; }
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.8)} }
-    .live { display:inline-block;width:7px;height:7px;border-radius:50%;background:#1a9e5c;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 3px rgba(26,158,92,.22); }
+    .live { display:inline-block;width:7px;height:7px;border-radius:50%;background:#7a9450;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 3px rgba(122,148,80,.22); }
     @media (prefers-reduced-motion:no-preference) {
       body.anim .reveal { opacity:0;animation:fadeUp .7s cubic-bezier(.2,.8,.2,1) forwards; }
       body.anim .job { animation:fadeUp .5s both; }
@@ -100,19 +105,19 @@
     .theme-toggle[data-mode="dark"] .tt-moon { color:var(--gold); }
 
     /* PHOTO */
-    .mast-photo { position:absolute;right:100px;top:80px;z-index:2;padding:7px 7px 9px;background:#fff;border:1px solid var(--line-strong);border-radius:2px;box-shadow:0 2px 4px rgba(14,19,26,.08),0 8px 20px rgba(14,19,26,.10),0 20px 40px rgba(14,19,26,.12);transform:rotate(-2.5deg);transform-origin:50% 0;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1); }
+    .mast-photo { position:absolute;right:100px;top:80px;z-index:2;padding:7px 7px 9px;background:#f4f1e9;border:1px solid var(--line-strong);border-radius:2px;box-shadow:0 2px 4px rgba(28,27,24,.08),0 8px 20px rgba(28,27,24,.10),0 20px 40px rgba(28,27,24,.12);transform:rotate(-2.5deg);transform-origin:50% 0;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1); }
     .mast-photo::after { content:"";position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--gold) 38%,transparent);border-radius:1px;pointer-events:none; }
     .mast-photo.show { opacity:1; }
-    .mast-photo:hover { transform:rotate(0deg) translateY(-3px);box-shadow:0 4px 8px rgba(14,19,26,.12),0 16px 32px rgba(14,19,26,.14); }
+    .mast-photo:hover { transform:rotate(0deg) translateY(-3px);box-shadow:0 4px 8px rgba(28,27,24,.12),0 16px 32px rgba(28,27,24,.14); }
     .mast-avatar { display:block;width:80px;height:80px;object-fit:cover;border-radius:1px; }
-    .mast-clip { position:absolute;top:-15px;left:10px;width:21px;height:40px;color:var(--gold);transform:rotate(5deg);filter:drop-shadow(0 1px 2px rgba(14,19,26,.3));pointer-events:none;z-index:3; }
+    .mast-clip { position:absolute;top:-15px;left:10px;width:21px;height:40px;color:var(--gold);transform:rotate(5deg);filter:drop-shadow(0 1px 2px rgba(28,27,24,.3));pointer-events:none;z-index:3; }
     .mast-clip svg { width:100%;height:100%;display:block; }
     [data-theme="dark"] .mast-photo { background:var(--surface-2);border-color:var(--line-strong); }
     [data-theme="dark"] .mast-clip { color:var(--gold); }
 
     /* STATS */
     .stats { display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line-strong);border-radius:2px;overflow:hidden;margin:28px 0 0;position:relative; }
-    .stats::before { content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--navy) 0%,var(--cn) 33%,var(--hk) 55%,var(--sg) 75%,var(--other) 100%); }
+    .stats::before { content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--other) 0%,var(--sg) 30%,var(--hk) 55%,var(--cn) 80%,var(--navy) 100%); }
     .stat { padding:20px 24px 18px;border-right:1px solid var(--line); }
     .stat:last-child { border-right:0; }
     .stat .k { font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 6px; }
@@ -126,7 +131,7 @@
     .card h3 { margin:0 0 16px;font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);font-weight:700; }
     [data-theme="dark"] .card { background:var(--surface-2);border-color:var(--line-strong); }
 
-    /* DIST BARS — each region uses its own color */
+    /* DIST BARS — each region uses its own era color */
     .dist-row { display:grid;grid-template-columns:76px 1fr 56px;align-items:center;gap:12px;margin-bottom:10px; }
     .dist-row:last-child { margin-bottom:0; }
     .dist-label { font-size:13px;color:var(--ink-soft); }
@@ -155,12 +160,11 @@
     .segmented { display:inline-flex;background:var(--surface);border:1px solid var(--line-strong);border-radius:4px;padding:3px;gap:2px; }
     .seg { border:0;background:transparent;font-family:var(--sans);font-size:13px;color:var(--ink-soft);padding:6px 12px;border-radius:3px;cursor:pointer;transition:all .15s;white-space:nowrap; }
     .seg:hover { color:var(--ink);background:var(--surface-2); }
-    .seg.active { background:var(--navy);color:#fff;font-weight:700; }
-    /* Region-specific seg active states */
-    .seg[data-region="CN"].active { background:var(--cn); }
-    .seg[data-region="HK"].active { background:var(--hk); }
-    .seg[data-region="SG"].active { background:var(--sg); }
-    .seg[data-region="OTHER"].active { background:var(--other); }
+    .seg.active { background:var(--navy);color:#f4f1e9;font-weight:700; }
+    .seg[data-region="CN"].active { background:var(--cn);color:#fff; }
+    .seg[data-region="HK"].active { background:var(--hk);color:#fff; }
+    .seg[data-region="SG"].active { background:var(--sg);color:#fff; }
+    .seg[data-region="OTHER"].active { background:var(--other);color:#fff; }
     select.ctrl { padding:9px 12px;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);font-size:13px;color:var(--ink);font-family:var(--sans);max-width:190px;cursor:pointer; }
     select.ctrl:focus { outline:none;border-color:var(--accent); }
     .pill { display:inline-flex;align-items:center;gap:5px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:4px;background:var(--surface);font-size:13px;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);transition:all .15s; }
@@ -197,7 +201,6 @@
     [data-theme="dark"] .day-new { color:var(--gold);border-color:var(--gold); }
 
     .job { display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;padding:15px 4px;border-bottom:1px solid var(--line);position:relative; }
-    /* Left accent bar uses each region's actual color */
     .job::before { content:"";position:absolute;left:-4px;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--region,var(--line-strong));opacity:0;transition:opacity .15s; }
     .job:hover { background:color-mix(in srgb,var(--region-bg,var(--surface-2)) 80%,var(--surface));border-radius:2px; }
     .job:hover::before { opacity:1; }
@@ -212,9 +215,8 @@
     .job-sub { font-size:13px;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
     .job-right { display:flex;align-items:center;gap:7px; }
     .lvl { font-size:11px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--line-strong);padding:2px 6px;border-radius:2px;white-space:nowrap; }
-    /* Tag: solid filled with region color */
-    .tag { font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;color:#fff;background:var(--region,var(--other));border:0;white-space:nowrap; }
-    [data-theme="dark"] .tag { color:#fff; }
+    /* Tag: region-color text on its own tint — a16z editorial style */
+    .tag { font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 32%,transparent);white-space:nowrap; }
     .icon-btn { width:28px;height:28px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;color:var(--ink-faint);border-radius:3px;transition:all .15s; }
     .icon-btn svg { width:16px;height:16px; }
     .icon-btn:hover { color:var(--ink);background:var(--surface-2); }
@@ -234,7 +236,7 @@
     .empty.show { display:block; }
     .empty .big { font-family:var(--serif);font-size:20px;color:var(--ink-soft);margin-bottom:8px; }
 
-    .totop { position:fixed;right:20px;bottom:20px;width:36px;height:36px;border-radius:2px;background:var(--navy);color:#fff;border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(6px);transition:all .2s;box-shadow:var(--shadow);z-index:30; }
+    .totop { position:fixed;right:20px;bottom:20px;width:36px;height:36px;border-radius:2px;background:var(--navy);color:#f4f1e9;border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(6px);transition:all .2s;box-shadow:var(--shadow);z-index:30; }
     .totop.show { opacity:1;pointer-events:auto;transform:none; }
     .totop svg { width:16px;height:16px; }
     .totop:hover { background:var(--navy-2); }
@@ -291,7 +293,7 @@
     <header class="masthead">
       <button class="theme-toggle" id="themeToggle" role="switch" aria-label="切换深浅主题"></button>
       <div class="mast-photo" id="mastPhoto"><span class="mast-clip"><svg viewBox="0 0 22 42" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14 V32 a4.2 4.2 0 0 1 -8.4 0 V10 a3.1 3.1 0 0 1 6.2 0 V29" stroke="currentColor" stroke-width="2.5"/><path d="M15 14 V32 a4.2 4.2 0 0 1 -8.4 0 V10 a3.1 3.1 0 0 1 6.2 0 V29" stroke="rgba(255,255,255,.5)" stroke-width="1" transform="translate(-.55 -.55)"/></svg></span><img class="mast-avatar" id="mastAvatar" alt="" /></div>
-      <p class="eyebrow reveal">Finance Careers · CN / HK / SG</p>
+      <p class="eyebrow reveal">Finance Careers · CN / HK / SG</p>
       <h1 class="reveal" style="animation-delay:.05s">LinkedIn 金融职位精选</h1>
       <p class="lede reveal" style="animation-delay:.1s">聚合自 LinkedIn 的金融行业最新职位，覆盖中国大陆、香港与新加坡市场，每 6 小时自动更新一次。</p>
       <p class="tagline reveal" style="animation-delay:.15s">祝我们都能拿到 dream offer 👏</p>
