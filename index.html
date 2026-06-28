@@ -31,14 +31,15 @@
       --shadow:0 1px 3px rgba(28,27,24,.06), 0 2px 8px rgba(28,27,24,.04);
       --shadow-strong:0 2px 6px rgba(28,27,24,.08), 0 8px 24px rgba(28,27,24,.06);
       /* ══ REGIONS = the six-era a16z legend colors ══ */
-      /* CN → Wine    (2020-2024)                          */
-      /* HK → Ochre   (2005-2009)                          */
-      /* SG → Sage    (2010-2014)                          */
-      /* OTHER → Teal  (2000-2004)                         */
-      --cn:#9e2b38; --cn-bg:#f1e3e1;
-      --hk:#bd8a30; --hk-bg:#f3ebd5;
-      --sg:#7a9450; --sg-bg:#ebf0dd;
-      --other:#3d7d8c; --other-bg:#e2ecec;
+      /* foreground = rich era hue · -bg = unified-temperature soft chip */
+      /* CN → Oxblood Wine (2020-2024)                     */
+      /* HK → Deep Ochre   (2005-2009)                     */
+      /* SG → Deep Sage    (2010-2014)                     */
+      /* OTHER → Deep Teal  (2000-2004)                    */
+      --cn:#9c2a33; --cn-bg:#f3ddd9;
+      --hk:#b07c22; --hk-bg:#f4ead0;
+      --sg:#6e8a46; --sg-bg:#e9efd6;
+      --other:#357585; --other-bg:#dde9ea;
       /* ─ Type stacks ─ */
       --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
       --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
@@ -75,7 +76,7 @@
     button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:not(:focus-visible) { outline:none; }
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.8)} }
-    .live { display:inline-block;width:7px;height:7px;border-radius:50%;background:#7a9450;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 3px rgba(122,148,80,.22); }
+    .live { display:inline-block;width:7px;height:7px;border-radius:50%;background:#6e8a46;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 3px rgba(110,138,70,.22); }
     @media (prefers-reduced-motion:no-preference) {
       body.anim .reveal { opacity:0;animation:fadeUp .7s cubic-bezier(.2,.8,.2,1) forwards; }
       body.anim .job { animation:fadeUp .5s both; }
@@ -208,7 +209,7 @@
     .job.read .job-title { color:var(--ink-faint); }
     .job.read .mono { opacity:.45; }
     /* Monogram badge: tinted with region color */
-    .mono { width:44px;height:44px;border-radius:3px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--region,var(--navy));background:var(--region-bg,var(--surface-2));border:1.5px solid color-mix(in srgb,var(--region,var(--navy)) 25%,transparent);user-select:none; }
+    .mono { width:44px;height:44px;border-radius:3px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--region,var(--navy));background:var(--region-bg,var(--surface-2));border:1.5px solid color-mix(in srgb,var(--region,var(--navy)) 28%,transparent);user-select:none; }
     .job-main { min-width:0; }
     .job-title { font-size:15.5px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.35; }
     .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px; }
@@ -216,7 +217,7 @@
     .job-right { display:flex;align-items:center;gap:7px; }
     .lvl { font-size:11px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--line-strong);padding:2px 6px;border-radius:2px;white-space:nowrap; }
     /* Tag: region-color text on its own tint — a16z editorial style */
-    .tag { font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 32%,transparent);white-space:nowrap; }
+    .tag { font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 30%,transparent);white-space:nowrap; }
     .icon-btn { width:28px;height:28px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;color:var(--ink-faint);border-radius:3px;transition:all .15s; }
     .icon-btn svg { width:16px;height:16px; }
     .icon-btn:hover { color:var(--ink);background:var(--surface-2); }
