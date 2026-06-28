@@ -13,17 +13,17 @@
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <style>
     :root {
-      --bg:#ede8d8; --surface:#f8f3e9; --surface-2:#e6dfc8;
+      --bg:#ede8d8; --surface:#f8f3e9; --surface-2:#e4dcc5;
       --ink:#0c1a2b; --ink-soft:#445264; --ink-faint:#8b8880;
       --line:#d4cbb8; --line-strong:#b0a48e;
       --accent:#b89b66; --accent-2:#8b6c3a; --accent-soft:#ede0cc; --navy:#0c1f36;
       --navy-2:#1c3554; --navy-3:#355470;
       --gold-hi:#d4b882; --gold:#b89b66; --gold-deep:#8b6c3a;
-      --ember:#b55a3c; --chart:#1c3554; --chart-track:#ede9de;
+      --ember:#b55a3c; --chart:#1c3554; --chart-track:#ddd6c2;
       --shadow:0 1px 1px rgba(8,23,36,.045), 0 14px 34px rgba(8,23,36,.07);
       --shadow-strong:0 18px 46px rgba(8,23,36,.105);
       --cn:#882233; --cn-bg:#efe4e6;
-      --hk:#b89038; --hk-bg:#f0e8cc;
+      --hk:#c09430; --hk-bg:#f0e8cc;
       --sg:#2d6b42; --sg-bg:#e0ecdf;
       --other:#1d6b82; --other-bg:#ddeef3;
       --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
@@ -37,11 +37,11 @@
       --accent:#c9ad78; --accent-2:#d4b882; --accent-soft:rgba(201,173,120,.14); --navy:#f0ece2;
       --navy-2:#9db4c8; --navy-3:#bfcfdd;
       --gold-hi:#e2ce9c; --gold:#c9ad78; --gold-deep:#8e6e3e;
-      --ember:#c77a60; --chart:#9db4c8; --chart-track:#0f1e2c;
+      --ember:#c77a60; --chart:#9db4c8; --chart-track:#0e1c2a;
       --shadow:0 1px 2px rgba(0,0,0,.55), 0 14px 34px rgba(0,0,0,.48);
       --shadow-strong:0 18px 52px rgba(0,0,0,.58);
       --cn:#c46070; --cn-bg:rgba(196,96,112,.14);
-      --hk:#d4a83c; --hk-bg:rgba(212,168,60,.13);
+      --hk:#d4a030; --hk-bg:rgba(212,160,48,.13);
       --sg:#68ad86; --sg-bg:rgba(104,173,134,.14);
       --other:#56aec8; --other-bg:rgba(86,174,200,.14);
     }
@@ -113,7 +113,7 @@
     .dist-row { display:grid; grid-template-columns:76px 1fr 56px; align-items:center; gap:12px; margin-bottom:10px; }
     .dist-row:last-child { margin-bottom:0; }
     .dist-label { font-size:13px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .dist-track { height:7px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+    .dist-track { height:7px; background:var(--chart-track); border:1px solid var(--line); border-radius:999px; overflow:hidden; }
     .dist-fill { width:0; height:100%; border-radius:999px; background:linear-gradient(90deg,var(--region,var(--other)),color-mix(in srgb,var(--region,var(--other)) 58%,var(--surface))); transition:width .7s cubic-bezier(.2,.8,.2,1); }
     .dist-val { font-family:var(--mono); font-size:13px; color:var(--navy); text-align:right; font-variant-numeric:tabular-nums; }
     .dist-val small { display:block; font-size:10px; color:var(--ink-faint); font-weight:400; margin-top:1px; }
@@ -374,7 +374,7 @@
 
     const favs = new Set(JSON.parse(localStorage.getItem("favs")||"[]"));
     const reads = new Set(JSON.parse(localStorage.getItem("reads")||"[]"));
-    const blocked = new Set(JSON.parse(localStorage.getItem("blocked")||"[]"));
+      const blocked = new Set(JSON.parse(localStorage.getItem("blocked")||"[]"));
     const saveFavs = () => localStorage.setItem("favs", JSON.stringify([...favs]));
     const saveReads = () => localStorage.setItem("reads", JSON.stringify([...reads]));
     const saveBlocked = () => localStorage.setItem("blocked", JSON.stringify([...blocked]));
