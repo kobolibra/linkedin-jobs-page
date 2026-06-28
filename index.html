@@ -168,7 +168,7 @@
     .seg[data-region="OTHER"].active { background:var(--other);color:#fff; }
     select.ctrl { padding:9px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);font-size:13px;color:var(--ink);font-family:var(--sans);max-width:190px;cursor:pointer; }
     select.ctrl:focus { outline:none;border-color:var(--accent); }
-    .pill { display:inline-flex;align-items:center;gap:5px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);font-size:13px;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);transition:all .15s; }
+    .pill { display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);font-size:13px;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);transition:all .15s; }
     .pill svg { width:14px;height:14px; }
     .pill:hover { color:var(--ink);border-color:var(--gold); }
     .pill.active { color:var(--gold-deep);border-color:var(--gold);background:color-mix(in srgb,var(--gold) 8%,transparent); }
@@ -216,8 +216,8 @@
     .job-right { display:flex;align-items:center;gap:10px; }
     /* Level: quiet uppercase kicker — no box, just whisper text before the chip */
     .lvl { font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);background:transparent;border:0;padding:0;white-space:nowrap; }
-    /* Tag: the sole marker — muted region label as a soft pill on near-paper tint */
-    .tag { display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:21px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:0 11px;border-radius:999px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 16%,transparent);white-space:nowrap; }
+    /* Tag: the sole marker — snug region pill on near-paper tint */
+    .tag { display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:20px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:0 9px;border-radius:999px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 16%,transparent);white-space:nowrap; }
     .icon-btn { width:28px;height:28px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;color:var(--ink-faint);border-radius:8px;transition:all .15s; }
     .icon-btn svg { width:16px;height:16px; }
     .icon-btn:hover { color:var(--ink);background:var(--surface-2); }
