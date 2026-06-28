@@ -215,9 +215,8 @@
     .job-sub { font-size:13px;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
     .job-right { display:flex;align-items:center;gap:7px; }
     .lvl { font-size:11px;font-weight:600;color:var(--ink-soft);background:transparent;border:1px solid var(--line-strong);padding:2px 6px;border-radius:2px;white-space:nowrap; }
-    /* Tag: legend-style colored dot + muted label on near-paper tint — a16z editorial */
-    .tag { display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px 2px 7px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 15%,transparent);white-space:nowrap; }
-    .tag::before { content:"";width:5px;height:5px;border-radius:50%;background:var(--region,var(--other));flex:none; }
+    /* Tag: muted region label on near-paper tint — a16z editorial */
+    .tag { display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:2px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 15%,transparent);white-space:nowrap; }
     .icon-btn { width:28px;height:28px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;color:var(--ink-faint);border-radius:3px;transition:all .15s; }
     .icon-btn svg { width:16px;height:16px; }
     .icon-btn:hover { color:var(--ink);background:var(--surface-2); }
