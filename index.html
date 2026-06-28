@@ -203,7 +203,6 @@
 
     .job { display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;padding:15px 4px;border-bottom:1px solid var(--line);position:relative; }
     .job::before { content:"";position:absolute;left:-4px;top:10px;bottom:10px;width:3px;border-radius:2px;background:var(--region,var(--line-strong));opacity:0;transition:opacity .15s; }
-    .job:hover { background:color-mix(in srgb,var(--region-bg,var(--surface-2)) 80%,var(--surface));border-radius:2px; }
     .job:hover::before { opacity:1; }
     .job.hidden { display:none; }
     .job.read .job-title { color:var(--ink-faint); }
