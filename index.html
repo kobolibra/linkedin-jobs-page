@@ -13,25 +13,25 @@
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <style>
     :root {
-      --bg:#f5f1e9; --surface:#fefcf6; --surface-2:#ede9de;
+      --bg:#ede8d8; --surface:#f8f3e9; --surface-2:#e6dfc8;
       --ink:#0c1a2b; --ink-soft:#445264; --ink-faint:#8b8880;
-      --line:#dbd3c3; --line-strong:#bab09e;
+      --line:#d4cbb8; --line-strong:#b0a48e;
       --accent:#b89b66; --accent-2:#8b6c3a; --accent-soft:#ede0cc; --navy:#0c1f36;
       --navy-2:#1c3554; --navy-3:#355470;
       --gold-hi:#d4b882; --gold:#b89b66; --gold-deep:#8b6c3a;
       --ember:#b55a3c; --chart:#1c3554; --chart-track:#ede9de;
       --shadow:0 1px 1px rgba(8,23,36,.045), 0 14px 34px rgba(8,23,36,.07);
       --shadow-strong:0 18px 46px rgba(8,23,36,.105);
-      --cn:#9b4a40; --cn-bg:#f2e8e3;
-      --hk:#947745; --hk-bg:#f0e7d2;
-      --sg:#3d7260; --sg-bg:#e5ede9;
-      --other:#4d6178; --other-bg:#e9edf2;
+      --cn:#882233; --cn-bg:#efe4e6;
+      --hk:#b89038; --hk-bg:#f0e8cc;
+      --sg:#2d6b42; --sg-bg:#e0ecdf;
+      --other:#1d6b82; --other-bg:#ddeef3;
       --serif: Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
       --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
       --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
     }
     [data-theme="dark"] {
-      --bg:#060c16; --surface:#0d1b2a; --surface-2:#09141f;
+      --bg:#050b14; --surface:#0c1a28; --surface-2:#08121c;
       --ink:#f0ece2; --ink-soft:#b0a897; --ink-faint:#6e6860;
       --line:#243040; --line-strong:#3b4a5a;
       --accent:#c9ad78; --accent-2:#d4b882; --accent-soft:rgba(201,173,120,.14); --navy:#f0ece2;
@@ -40,14 +40,14 @@
       --ember:#c77a60; --chart:#9db4c8; --chart-track:#0f1e2c;
       --shadow:0 1px 2px rgba(0,0,0,.55), 0 14px 34px rgba(0,0,0,.48);
       --shadow-strong:0 18px 52px rgba(0,0,0,.58);
-      --cn:#cc8a7a; --cn-bg:rgba(204,138,122,.13);
-      --hk:#ccb47e; --hk-bg:rgba(204,180,126,.13);
-      --sg:#82bfa4; --sg-bg:rgba(130,191,164,.13);
-      --other:#98afc6; --other-bg:rgba(152,175,198,.14);
+      --cn:#c46070; --cn-bg:rgba(196,96,112,.14);
+      --hk:#d4a83c; --hk-bg:rgba(212,168,60,.13);
+      --sg:#68ad86; --sg-bg:rgba(104,173,134,.14);
+      --other:#56aec8; --other-bg:rgba(86,174,200,.14);
     }
     * { box-sizing:border-box; }
     html { -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
-    body { font-family:var(--sans); background:radial-gradient(circle at 50% -120px,rgba(184,155,102,.16),transparent 360px),linear-gradient(180deg,#fefcf6 0%,var(--bg) 340px); color:var(--ink); margin:0; line-height:1.5; transition:background .3s, color .3s; }
+    body { font-family:var(--sans); background:radial-gradient(circle at 50% -120px,rgba(184,155,102,.16),transparent 360px),linear-gradient(180deg,#f8f3e9 0%,var(--bg) 340px); color:var(--ink); margin:0; line-height:1.5; transition:background .3s, color .3s; }
     [data-theme="dark"] body { background:radial-gradient(circle at 50% -120px,rgba(201,173,120,.11),transparent 360px),linear-gradient(180deg,#060c16 0%,var(--bg) 340px); }
     .tnum { font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
     .shell { max-width:1140px; margin:0 auto; padding:0 28px 84px; }
@@ -124,7 +124,7 @@
     .spark-bar span { position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:11px; color:var(--navy); font-variant-numeric:tabular-nums; }
     .spark-label { position:relative; z-index:1; font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
 
-    [data-theme="dark"] .card { background:linear-gradient(180deg,#0d1b2a,#09141f); }
+    [data-theme="dark"] .card { background:linear-gradient(180deg,#0c1a28,#08121c); }
     [data-theme="dark"] .stat { background:linear-gradient(180deg,#0e1c2b,#09141f); }
     [data-theme="dark"] .stat .v { text-shadow:0 0 20px color-mix(in srgb,var(--accent) 16%,transparent); }
     [data-theme="dark"] .seg.active { box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 32%,transparent), 0 0 14px color-mix(in srgb,var(--accent) 18%,transparent); }
@@ -487,7 +487,7 @@
       const tag=(e.target.tagName||"").toLowerCase();
       if(tag==="input"||tag==="select"||tag==="textarea")return;
       if(e.key==="/"){ e.preventDefault(); searchEl.focus(); }
-      else if(e.key.toLowerCase()==="t"){ setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"); }
+      else if(e.key.toLowerCase()==="t"){ setTheme(document.documentElement.getAttribute('data-theme')==="dark"?"light":"dark"); }
     });
 
     const totop=document.getElementById("totop");
