@@ -169,8 +169,11 @@
     .seg[data-region="HK"].active { background:var(--hk);color:#fff; }
     .seg[data-region="SG"].active { background:var(--sg);color:#fff; }
     .seg[data-region="OTHER"].active { background:var(--other);color:#fff; }
+    [data-theme="dark"] .seg[data-region="all"].active { background:var(--gold);color:#14130f; }
     select.ctrl { padding:9px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);font-size:13px;color:var(--ink);font-family:var(--sans);max-width:190px;cursor:pointer; }
     select.ctrl:focus { outline:none;border-color:var(--accent); }
+    select.ctrl.on { border-color:var(--gold);background:color-mix(in srgb,var(--gold) 13%,var(--surface));color:var(--gold-deep);font-weight:700; }
+    [data-theme="dark"] select.ctrl.on { color:var(--gold-hi);background:color-mix(in srgb,var(--gold) 20%,var(--surface));border-color:var(--gold); }
     .pill { display:inline-flex;align-items:center;gap:5px;padding:9px 12px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);font-size:13px;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);transition:all .15s; }
     .pill svg { width:14px;height:14px; }
     .pill:hover { color:var(--ink);border-color:var(--gold); }
@@ -246,6 +249,8 @@
     .totop.show { opacity:1;pointer-events:auto;transform:none; }
     .totop svg { width:16px;height:16px; }
     .totop:hover { background:var(--navy-2); }
+    [data-theme="dark"] .totop { background:var(--gold);color:#14130f; }
+    [data-theme="dark"] .totop:hover { background:var(--gold-hi); }
 
     .footer { margin-top:56px;padding-top:20px;border-top:1px solid var(--line-strong);font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:var(--mono); }
     .footer a { color:var(--ink-soft);text-decoration:none; }
@@ -478,6 +483,7 @@
       .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
     function apply(){
       const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value;
+      companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
       let visible=0;
       jobsEl.querySelectorAll(".day").forEach(sec=>{
         let shown=0;
