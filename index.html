@@ -89,7 +89,7 @@
     .eyebrow { font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:800;margin:0 0 16px;padding-right:96px;display:flex;align-items:center;gap:14px; }
     [data-theme="dark"] .eyebrow { color:var(--gold); }
     .eyebrow::after { content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent); }
-    .masthead h1 { font-family:var(--serif);font-weight:700;font-size:52px;line-height:1.04;letter-spacing:-.04em;margin:0;color:var(--navy);position:relative;z-index:1; }
+    .masthead h1 { font-family:var(--serif);font-weight:700;font-size:44px;line-height:1.04;letter-spacing:-.04em;margin:0;color:var(--navy);position:relative;z-index:1; }
     .masthead .lede { margin:14px 0 0;color:var(--ink-soft);font-size:15px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;position:relative;z-index:1; }
     .masthead .lede::-webkit-scrollbar { display:none; }
     .masthead .tagline { margin:10px 0 0;font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-faint);position:relative;z-index:1; }
@@ -122,15 +122,18 @@
     .stat { padding:20px 24px 18px;border-right:1px solid var(--line); }
     .stat:last-child { border-right:0; }
     .stat .k { font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 6px; }
-    .stat .v { font-family:var(--mono);font-size:28px;font-weight:700;color:var(--navy);letter-spacing:-.04em;font-variant-numeric:tabular-nums; }
+    .stat .v { font-family:var(--mono);font-size:23px;font-weight:700;color:var(--navy);letter-spacing:-.04em;font-variant-numeric:tabular-nums; }
     [data-theme="dark"] .stat { background:var(--surface); }
 
-    /* ANALYTICS */
-    .analytics { display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:16px; }
+    /* ANALYTICS — the two charts share one panel, divided by a hairline */
+    .analytics { margin-top:16px; }
     .card { background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;padding:20px 22px;box-shadow:var(--shadow);transition:border-color .2s; }
     .card:hover { border-color:var(--accent); }
     .card h3 { margin:0 0 16px;font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);font-weight:700; }
     [data-theme="dark"] .card { background:var(--surface-2);border-color:var(--line-strong); }
+    .analytics-card { display:grid;grid-template-columns:1fr 1fr;padding:0;overflow:hidden; }
+    .ac-col { padding:20px 22px;min-width:0; }
+    .ac-col + .ac-col { border-left:1px solid var(--line); }
 
     /* DIST BARS — each region uses its own era color */
     .dist-row { display:grid;grid-template-columns:76px 1fr 56px;align-items:center;gap:12px;margin-bottom:10px; }
@@ -217,7 +220,7 @@
     /* Level: quiet uppercase kicker — no box, just whisper text before the chip */
     .lvl { font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);background:transparent;border:0;padding:0;white-space:nowrap; }
     /* Tag: the sole marker — snug region pill on near-paper tint */
-    .tag { display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:20px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:0 9px;border-radius:999px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 16%,transparent);white-space:nowrap; }
+    .tag { display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:17px;font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:0 7px;border-radius:999px;color:var(--region,var(--other));background:var(--region-bg);border:1px solid color-mix(in srgb,var(--region,var(--other)) 16%,transparent);white-space:nowrap; }
     .icon-btn { width:28px;height:28px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;color:var(--ink-faint);border-radius:8px;transition:all .15s; }
     .icon-btn svg { width:16px;height:16px; }
     .icon-btn:hover { color:var(--ink);background:var(--surface-2); }
@@ -256,7 +259,7 @@
       .masthead { padding:34px 0 20px; }
       .masthead .eyebrow { padding-right:68px; }
       .masthead .eyebrow::after { display:none; }
-      .masthead h1 { font-size:32px;padding-right:76px; }
+      .masthead h1 { font-size:30px;padding-right:76px; }
       .masthead .lede { font-size:14px;white-space:normal;overflow:visible;padding-right:76px; }
       .masthead .tagline { padding-right:76px; }
       .theme-toggle { top:30px;right:0; }
@@ -266,8 +269,9 @@
       .mast-avatar { width:54px;height:54px; }
       .stats { grid-template-columns:repeat(2,1fr);margin-top:20px; }
       .stat { padding:14px 16px; }
-      .stat .v { font-size:22px; }
-      .analytics { grid-template-columns:1fr;gap:12px; }
+      .stat .v { font-size:19px; }
+      .analytics-card { grid-template-columns:1fr; }
+      .ac-col + .ac-col { border-left:0;border-top:1px solid var(--line); }
       .toolbar { padding:10px 0; }
       .toolbar-inner { gap:8px; }
       .search { flex:1 1 100%;min-width:0; }
@@ -284,7 +288,7 @@
       .job-right { grid-column:2;justify-content:flex-start;margin-top:5px;flex-wrap:wrap;gap:9px; }
     }
     @media (max-width:420px) {
-      .masthead h1 { font-size:24px; }
+      .masthead h1 { font-size:23px; }
       .day-head { flex-wrap:wrap;gap:5px 10px; }
     }
   </style>
@@ -305,8 +309,10 @@
         <div class="stat"><p class="k">访客流量 (PV)</p><p class="v"><span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">—</span></span></p></div>
       </div>
       <div class="analytics reveal" style="animation-delay:.25s">
-        <div class="card"><h3>地区分布</h3><div id="dist"></div></div>
-        <div class="card"><h3>近 7 日新增</h3><div class="spark" id="spark"></div></div>
+        <div class="card analytics-card">
+          <div class="ac-col"><h3>地区分布</h3><div id="dist"></div></div>
+          <div class="ac-col"><h3>近 7 日新增</h3><div class="spark" id="spark"></div></div>
+        </div>
       </div>
     </header>
 
@@ -419,7 +425,7 @@
         animNum(document.getElementById("stat-total"),data.length);
         const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
         animNum(document.getElementById("stat-comp"),companies.length);
-        if(data[0]&&data[0].pushTime){const d=new Date(data[0].pushTime);if(!isNaN(d))document.getElementById("stat-updated").innerHTML='<span style="font-size:16px">'+d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})+'</span>';}
+        if(data[0]&&data[0].pushTime){const d=new Date(data[0].pushTime);if(!isNaN(d))document.getElementById("stat-updated").innerHTML='<span style="font-size:15px">'+d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})+'</span>';}
         companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
         const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
         const rmax=Math.max(...Object.values(rc),1);
