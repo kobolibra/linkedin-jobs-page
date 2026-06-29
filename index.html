@@ -214,6 +214,8 @@
     .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px; }
     .job-sub { font-size:13px;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
     .job-right { display:flex;align-items:center;gap:10px; }
+    /* Age: posting age, ID-stable — quiet mono meta */
+    .age { font-family:var(--mono);font-size:10px;color:var(--ink-faint);white-space:nowrap;font-variant-numeric:tabular-nums; }
     /* Level: quiet uppercase kicker — no box, just whisper text before the chip */
     .lvl { font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);background:transparent;border:0;padding:0;white-space:nowrap; }
     /* Tag: the sole marker — snug region pill on near-paper tint */
@@ -324,14 +326,13 @@
           <button class="seg" data-region="SG">SG</button>
           <button class="seg" data-region="OTHER">其他</button>
         </div>
-        <select class="ctrl" id="level">
-          <option value="all">全部职级</option>
-          <option value="Intern">实习 Intern</option>
-          <option value="Analyst">Analyst</option>
-          <option value="Associate">Associate</option>
-          <option value="VP">VP</option>
-          <option value="Director+">Director+</option>
-          <option value="Other">其他</option>
+        <select class="ctrl" id="age">
+          <option value="all">全部时间</option>
+          <option value="0">今天</option>
+          <option value="1-3">1–3 天</option>
+          <option value="4-7">4–7 天</option>
+          <option value="8-14">8–14 天</option>
+          <option value="15+">15 天以上</option>
         </select>
         <select class="ctrl" id="company"><option value="all">全部机构</option></select>
         <button class="pill" id="favToggle" aria-label="只看收藏"></button>
@@ -397,8 +398,12 @@
     const saveFavs=()=>localStorage.setItem("favs",JSON.stringify([...favs]));
     const saveReads=()=>localStorage.setItem("reads",JSON.stringify([...reads]));
     const saveBlocked=()=>localStorage.setItem("blocked",JSON.stringify([...blocked]));
+    const seen=JSON.parse(localStorage.getItem("seen")||"{}");
+    const saveSeen=()=>localStorage.setItem("seen",JSON.stringify(seen));
+    const ageOf=id=>{const t=new Date(seen[id]).getTime();return isNaN(t)?0:Math.max(0,Math.floor((Date.now()-t)/86400000));};
+    const ageMatch=(sel,d)=>{if(sel==="all")return true;if(sel==="15+")return d>=15;const p=sel.split("-").map(Number);return p.length===1?d===p[0]:d>=p[0]&&d<=p[1];};
     (function(){if(localStorage.getItem("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();localStorage.setItem("favKeyV","2");})();
-    const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),levelEl=document.getElementById("level"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar");
+    const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar");
     let activeRegion="all",favOnly=false,blockedOpen=false;
     function setDensity(d){const c=d==="compact";document.body.classList.toggle("compact",c);dbtn.classList.toggle("active",c);localStorage.setItem("density",d);}
     setDensity(localStorage.getItem("density")||"comfortable");
@@ -443,11 +448,13 @@
           sec.appendChild(head);
           g.items.forEach((job,idx)=>{
             const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company);
+            if(!seen[id])seen[id]=job.pushTime||new Date().toISOString();
+            const ageDays=ageOf(id),ageLabel=ageDays===0?"今天":ageDays+"天前";
             const a=document.createElement("article");a.className="job"+(reads.has(id)?" read":"");
             if(first&&!reduce)a.style.animationDelay=Math.min(idx*.03,.45)+"s";
-            a.dataset.region=r;a.dataset.comp=job.company||"";a.dataset.level=lvl;a.dataset.id=id;
+            a.dataset.region=r;a.dataset.comp=job.company||"";a.dataset.level=lvl;a.dataset.id=id;a.dataset.age=ageDays;
             a.dataset.search=((job.title||"")+" "+(job.company||"")).toLowerCase();
-            a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub">'+esc(job.company||"未知机构")+'</div></div><div class="job-right">'+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽">'+IC.ban+'</button></div>';
+            a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub">'+esc(job.company||"未知机构")+'</div></div><div class="job-right"><span class="age">'+ageLabel+'</span>'+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽">'+IC.ban+'</button></div>';
             a.querySelector(".job-title").addEventListener("click",()=>{reads.add(id);saveReads();a.classList.add("read");});
             const star=a.querySelector(".star");
             star.addEventListener("click",e=>{e.preventDefault();if(favs.has(id)){favs.delete(id);star.classList.remove("on");}else{favs.add(id);star.classList.add("on");}saveFavs();if(favOnly)apply();});
@@ -457,21 +464,22 @@
           });
           jobsEl.appendChild(sec);first=false;
         }
+        saveSeen();
         regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>x.classList.remove("active"));b.classList.add("active");activeRegion=b.dataset.region;apply();});
         favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
         searchEl.addEventListener("input",apply);
         companyEl.addEventListener("change",apply);
-        levelEl.addEventListener("change",apply);
+        ageEl.addEventListener("change",apply);
         apply();
       })
       .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
     function apply(){
-      const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,lv=levelEl.value;
+      const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ag=ageEl.value;
       let visible=0;
       jobsEl.querySelectorAll(".day").forEach(sec=>{
         let shown=0;
         sec.querySelectorAll(".job").forEach(card=>{
-          const ok=!blocked.has(card.dataset.comp)&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(lv==="all"||card.dataset.level===lv)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
+          const ok=!blocked.has(card.dataset.comp)&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(ag==="all"||ageMatch(ag,+card.dataset.age))&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
           card.classList.toggle("hidden",!ok);if(ok)shown++;
         });
         const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shown+" 个职位";
