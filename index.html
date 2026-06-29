@@ -106,7 +106,7 @@
     .theme-toggle[data-mode="dark"] .tt-moon { color:var(--gold); }
 
     /* PHOTO */
-    .mast-photo { position:absolute;right:100px;top:80px;z-index:2;padding:7px 7px 9px;background:#f4f1e9;border:1px solid var(--line-strong);border-radius:5px;box-shadow:0 2px 4px rgba(28,27,24,.08),0 8px 20px rgba(28,27,24,.10),0 20px 40px rgba(28,27,24,.12);transform:rotate(-2.5deg);transform-origin:50% 0;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1); }
+    .mast-photo { position:absolute;right:84px;top:92px;z-index:2;padding:7px 7px 9px;background:#f4f1e9;border:1px solid var(--line-strong);border-radius:5px;box-shadow:0 2px 4px rgba(28,27,24,.08),0 8px 20px rgba(28,27,24,.10),0 20px 40px rgba(28,27,24,.12);transform:rotate(-4deg);transform-origin:50% 0;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1); }
     .mast-photo::after { content:"";position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--gold) 38%,transparent);border-radius:3px;pointer-events:none; }
     .mast-photo.show { opacity:1; }
     .mast-photo:hover { transform:rotate(0deg) translateY(-3px);box-shadow:0 4px 8px rgba(28,27,24,.12),0 16px 32px rgba(28,27,24,.14); }
@@ -117,7 +117,7 @@
     [data-theme="dark"] .mast-clip { color:var(--gold); }
 
     /* BACKGROUND PHOTO — random 2/3, sunk into a feathered ambient layer left of the polaroid */
-    .mast-bg { position:absolute;top:66px;right:208px;width:160px;height:154px;z-index:0;border-radius:10px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;filter:saturate(.9);transition:opacity .8s ease;-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%); }
+    .mast-bg { position:absolute;top:60px;right:192px;width:160px;height:160px;z-index:0;border-radius:10px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;filter:saturate(.9);transition:opacity .8s ease;-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%); }
     .mast-bg.show { opacity:.9; }
     [data-theme="dark"] .mast-bg.show { opacity:.58; }
 
