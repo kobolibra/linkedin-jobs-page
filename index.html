@@ -86,7 +86,7 @@
     /* MASTHEAD */
     .masthead { position:relative;padding:48px 0 28px;border-bottom:2px solid var(--navy); }
     .masthead::before { content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--navy); }
-    .eyebrow { font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:800;margin:0 0 16px;padding-right:96px;display:flex;align-items:center;gap:14px; }
+    .eyebrow { font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:800;margin:0 0 16px;padding-right:96px;display:flex;align-items:center;gap:14px;position:relative;z-index:1; }
     [data-theme="dark"] .eyebrow { color:var(--gold); }
     .eyebrow::after { content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent); }
     .masthead h1 { font-family:var(--serif);font-weight:700;font-size:44px;line-height:1.04;letter-spacing:-.04em;margin:0;color:var(--navy);position:relative;z-index:1; }
@@ -116,11 +116,10 @@
     [data-theme="dark"] .mast-photo { background:var(--surface-2);border-color:var(--line-strong); }
     [data-theme="dark"] .mast-clip { color:var(--gold); }
 
-    /* BACKGROUND PHOTO — random 2/3, sits to the left of the polaroid */
-    .mast-bg { position:absolute;top:56px;right:208px;width:160px;height:164px;z-index:1;border-radius:8px;background-size:cover;background-position:center;background-repeat:no-repeat;border:1px solid var(--line-strong);box-shadow:0 2px 6px rgba(28,27,24,.10),0 10px 28px rgba(28,27,24,.14);opacity:0;transition:opacity .6s ease; }
-    .mast-bg::after { content:"";position:absolute;inset:0;border-radius:8px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 22%,transparent);pointer-events:none; }
-    .mast-bg.show { opacity:1; }
-    [data-theme="dark"] .mast-bg { border-color:var(--line-strong);box-shadow:0 2px 8px rgba(0,0,0,.5),0 14px 34px rgba(0,0,0,.45); }
+    /* BACKGROUND PHOTO — random 2/3, sunk into a feathered ambient layer left of the polaroid */
+    .mast-bg { position:absolute;top:66px;right:208px;width:160px;height:154px;z-index:0;border-radius:10px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;filter:saturate(.9);transition:opacity .8s ease;-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%); }
+    .mast-bg.show { opacity:.9; }
+    [data-theme="dark"] .mast-bg.show { opacity:.58; }
 
     /* STATS */
     .stats { display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;margin:28px 0 0;position:relative; }
