@@ -448,7 +448,7 @@
           sec.appendChild(head);
           g.items.forEach((job,idx)=>{
             const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company);
-            if(!seen[id])seen[id]=job.pushTime||new Date().toISOString();
+            if(!seen[id])seen[id]=new Date().toISOString();
             const ageDays=ageOf(id),ageLabel=ageDays===0?"今天":ageDays+"天前";
             const a=document.createElement("article");a.className="job"+(reads.has(id)?" read":"");
             if(first&&!reduce)a.style.animationDelay=Math.min(idx*.03,.45)+"s";
