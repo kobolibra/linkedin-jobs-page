@@ -436,6 +436,19 @@
       .then(r=>r.json())
       .then(data=>{
         if(!Array.isArray(data))data=[];
+        (function(){
+          const norm2=s=>(s||"").trim().toLowerCase().replace(/\s+/g," ");
+          const byKey=new Map();
+          data.forEach(j=>{
+            const k=norm2(j.title)+"|"+norm2(j.company)+"|"+norm(j.location);
+            const fs=new Date(j.firstSeen||j.pushTime).getTime();
+            const pt=new Date(j.pushTime||j.firstSeen).getTime();
+            const prev=byKey.get(k);
+            if(!prev){byKey.set(k,{rep:j,fs,pt});return;}
+            byKey.set(k,{rep:pt>=prev.pt?j:prev.rep,fs:Math.min(fs,prev.fs),pt:Math.max(pt,prev.pt)});
+          });
+          data=[...byKey.values()].map(v=>Object.assign({},v.rep,{firstSeen:isNaN(v.fs)?v.rep.firstSeen:new Date(v.fs).toISOString(),pushTime:isNaN(v.pt)?v.rep.pushTime:new Date(v.pt).toISOString()}));
+        })();
         jobsEl.innerHTML="";
         animNum(document.getElementById("stat-total"),data.length);
         const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
