@@ -462,7 +462,7 @@
         const distEl=document.getElementById("dist");
         distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
         requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
-        const counts={};data.forEach(j=>{const k=dayKey(placeAt(j));counts[k]=(counts[k]||0)+1;});
+        const counts={};data.forEach(j=>{const k=dayKey(seenAt(j));counts[k]=(counts[k]||0)+1;});
         const today=new Date(),days=[];
         for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),count:counts[keyOf(d)]||0});}
         const smax=Math.max(...days.map(d=>d.count),1);
