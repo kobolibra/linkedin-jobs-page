@@ -98,7 +98,7 @@
     .masthead .lede { margin:14px 0 0;color:var(--ink-soft);font-size:15px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;position:relative;z-index:1; }
     .masthead .lede::-webkit-scrollbar { display:none; }
     .masthead .tagline { margin:10px 0 0;font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-faint);position:relative;z-index:1; }
-    .theme-toggle { position:absolute;top:40px;right:0;z-index:3;display:flex;align-items:center;gap:9px;background:none;border:0;padding:0;cursor:pointer; }
+    .theme-toggle { position:absolute;top:64px;right:0;z-index:3;display:flex;align-items:center;gap:9px;background:none;border:0;padding:0;cursor:pointer; }
     .theme-toggle .tt-ic { display:grid;place-items:center;color:var(--ink-faint);transition:color .3s,transform .3s; }
     .theme-toggle .tt-ic svg { width:17px;height:17px;display:block; }
     .theme-toggle .tt-track { position:relative;width:36px;height:20px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line-strong);transition:background .25s,border-color .25s; }
@@ -107,7 +107,7 @@
     .theme-toggle[data-mode="dark"] .tt-thumb { transform:translateX(16px);background:var(--gold); }
     .theme-toggle[data-mode="light"] .tt-sun { color:var(--gold-deep); }
     .theme-toggle[data-mode="dark"] .tt-moon { color:var(--gold); }
-    .mast-stack { position:absolute;right:84px;top:92px;z-index:2;width:94px;height:106px; }
+    .mast-stack { position:absolute;right:84px;top:116px;z-index:2;width:94px;height:106px; }
     .mast-photo { position:absolute;top:0;left:0;padding:7px 7px 9px;background:#f4f1e9;border:1px solid var(--line-strong);border-radius:5px;box-shadow:0 2px 4px rgba(28,27,24,.08),0 8px 20px rgba(28,27,24,.10),0 20px 40px rgba(28,27,24,.12);transform-origin:50% 50%;opacity:0;transition:opacity .6s ease,transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .3s; }
     .mast-photo::after { content:"";position:absolute;inset:7px;border:1px solid color-mix(in srgb,var(--gold) 38%,transparent);border-radius:3px;pointer-events:none; }
     .mast-avatar { display:block;width:80px;height:80px;object-fit:cover;border-radius:3px;filter:saturate(1.15) contrast(1.05); }
@@ -123,7 +123,7 @@
     .mast-stack.show:hover .mp-4 { opacity:.82;transform:translate(104px,-14px) rotate(24deg) scale(.97); }
     [data-theme="dark"] .mast-photo { background:var(--surface-2);border-color:var(--line-strong); }
     [data-theme="dark"] .mast-clip { color:var(--gold); }
-    .mast-bg { position:absolute;top:60px;right:192px;width:160px;height:160px;z-index:0;border-radius:10px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;filter:saturate(.9);transition:opacity .8s ease;-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%); }
+    .mast-bg { position:absolute;top:84px;right:192px;width:160px;height:160px;z-index:0;border-radius:10px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;filter:saturate(.9);transition:opacity .8s ease;-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 56%,transparent 100%); }
     .mast-bg.show { opacity:.9; }
     [data-theme="dark"] .mast-bg.show { opacity:.58; }
     .stats { display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;margin:28px 0 0;position:relative; }
@@ -268,8 +268,8 @@
       .masthead h1 { font-size:30px;padding-right:76px; }
       .masthead .lede { font-size:14px;white-space:normal;overflow:visible;padding-right:76px; }
       .masthead .tagline { padding-right:76px; }
-      .theme-toggle { top:30px;right:0; }
-      .mast-stack { right:4px;top:72px;width:64px;height:74px; }
+      .theme-toggle { top:40px;right:0; }
+      .mast-stack { right:4px;top:82px;width:64px;height:74px; }
       .mast-stack .mp-2,.mast-stack .mp-3,.mast-stack .mp-4 { display:none; }
       .mast-photo { padding:5px; }
       .mast-photo::after { inset:5px; }
