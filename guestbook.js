@@ -108,9 +108,9 @@
           '<textarea class="gb-text" id="gbText" placeholder="写点什么…（最多 500 字）" maxlength="500"></textarea>' +
           '<div class="gb-actions"><span class="gb-count" id="gbCount">0 / 500</span><button type="submit" class="gb-submit" id="gbSubmit">发布留言</button></div>' +
         '</form>' +
-        '<div class="gb-list" id="gbList"><div class="gb-state">留言加载中…</div></div>' +
+        '<div class="gb-list" id="gbList" role="log" aria-live="polite"><div class="gb-state">留言加载中…</div></div>' +
       '</div>' +
-      '<div class="gb-toast" id="gbToast"></div>' +
+      '<div class="gb-toast" id="gbToast" role="status" aria-live="polite"></div>' +
     '</div>';
   document.body.appendChild(overlay);
 
@@ -130,7 +130,8 @@
   let replyOpen = null;
   let loaded = false;
   const likedSet = new Set(JSON.parse(localStorage.getItem(LS_LIKES) || "[]"));
-  let adminKey = localStorage.getItem(LS_ADMIN) || "";
+  // 管理员密钥改用 sessionStorage：仅在当前标签页会话内有效，关闭标签页后自动失效，降低长期明文留存的风险。
+  let adminKey = sessionStorage.getItem(LS_ADMIN) || "";
   let isAdmin = !!adminKey;
 
   // ===== 工具 =====
@@ -333,14 +334,14 @@
     if (clicks >= 3) { clicks = 0; adminPrompt(); }
   });
   function adminPrompt() {
-    if (isAdmin) { if (confirm("退出管理员模式？")) { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("已退出管理员模式"); } return; }
+    if (isAdmin) { if (confirm("退出管理员模式？")) { isAdmin = false; adminKey = ""; sessionStorage.removeItem(LS_ADMIN); render(); toast("已退出管理员模式"); } return; }
     const key = prompt("请输入管理员密码："); if (!key) return;
     fetch(API + "/verify", { method: "POST", headers: { "Content-Type": "application/json", "X-Admin-Key": key }, body: "{}" })
       .then(r => r.json())
-      .then(res => { if (res && res.ok) { adminKey = key; isAdmin = true; localStorage.setItem(LS_ADMIN, key); render(); toast("已进入管理员模式"); } else { toast("密码错误"); } })
+      .then(res => { if (res && res.ok) { adminKey = key; isAdmin = true; sessionStorage.setItem(LS_ADMIN, key); render(); toast("已进入管理员模式"); } else { toast("密码错误"); } })
       .catch(() => toast("验证失败，后台可能没连通～"));
   }
-  function adminFail() { isAdmin = false; adminKey = ""; localStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
+  function adminFail() { isAdmin = false; adminKey = ""; sessionStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
 
   // ===== 左侧滚动定位条（第一根=顶部，之后每根对应一天）=====
   (function () {
