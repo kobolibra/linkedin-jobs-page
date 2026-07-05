@@ -216,8 +216,6 @@
     .job-sub-link { cursor:pointer; }
     .job-sub-link:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:2px; }
     .day { margin-top:64px; }
-    body.anim .day.day-reveal { opacity:0;transform:translateY(18px); }
-    body.anim .day.day-reveal.in-view { opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease); }
     .day-head { display:flex;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:2px solid var(--navy);margin-bottom:2px; }
     [data-theme="dark"] .day-head { border-bottom-color:var(--line-strong); }
     .day-date { font-family:var(--serif);font-optical-sizing:auto;font-size:21px;font-weight:700;color:var(--navy);letter-spacing:-.02em; }
@@ -507,7 +505,7 @@
         orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx;});});
         let first=true;
         for(const[,g]of orderedGroups){
-          const sec=document.createElement("section");sec.className="day"+(first?"":" day-reveal");
+          const sec=document.createElement("section");sec.className="day";
           const head=document.createElement("div");head.className="day-head";
           head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'');
           sec.appendChild(head);
@@ -533,12 +531,6 @@
             sec.appendChild(a);
           });
           jobsEl.appendChild(sec);first=false;
-        }
-        if(!reduce&&"IntersectionObserver" in window){
-          const dio=new IntersectionObserver(entries=>{entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in-view");dio.unobserve(en.target);}});},{threshold:.08,rootMargin:"0px 0px -60px 0px"});
-          jobsEl.querySelectorAll(".day-reveal").forEach(d=>dio.observe(d));
-        } else {
-          jobsEl.querySelectorAll(".day-reveal").forEach(d=>d.classList.add("in-view"));
         }
         regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=b.dataset.region;apply();});
         favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
