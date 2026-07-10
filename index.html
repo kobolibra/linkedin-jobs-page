@@ -534,7 +534,12 @@
         }
         regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=b.dataset.region;apply();});
         favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
-        searchEl.addEventListener("input",apply);
+        let _searchTimer=null;
+        searchEl.addEventListener("input",()=>{
+          clearTimeout(_searchTimer);
+          if(searchEl.value===""){apply();}
+          else{_searchTimer=setTimeout(apply,200);}
+        });
         companyEl.addEventListener("change",apply);
         ageEl.addEventListener("change",apply);
         apply();
