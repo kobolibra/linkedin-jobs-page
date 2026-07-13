@@ -234,6 +234,7 @@
     .job-title { font-size:15.5px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.35; }
     .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px; }
     .job-sub { font-size:13px;color:var(--ink-soft);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .co-count { font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-left:5px;font-variant-numeric:tabular-nums;letter-spacing:.02em; }
     .job-right { display:flex;align-items:center;gap:10px; }
     .lvl { font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);background:transparent;border:0;padding:0;white-space:nowrap; }
     .age { font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--ink-faint);white-space:nowrap; }
@@ -480,6 +481,8 @@
           });
           data=[...byKey.values()].map(v=>Object.assign({},v.rep,{firstSeen:isNaN(v.fs)?v.rep.firstSeen:new Date(v.fs).toISOString(),pushTime:isNaN(v.pt)?v.rep.pushTime:new Date(v.pt).toISOString()}));
         })();
+        const companyRegionCount=new Map();
+        data.forEach(j=>{const k=(j.company||"")+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
         jobsEl.innerHTML="";
         animNum(document.getElementById("stat-total"),data.length);
         const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
@@ -516,7 +519,8 @@
             const _ad=ageDays(seenAt(job));a.dataset.region=r;a.dataset.comp=job.company||"";a.dataset.level=lvl;a.dataset.age=(_ad==null?"":_ad);a.dataset.id=id;
             a.dataset.search=((job.title||"")+" "+(job.company||"")).toLowerCase();
             a.dataset.title=(job.title||"").toLowerCase();
-            a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?"今天":_ad+"天前")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽">'+IC.ban+'</button></div>';
+            const _coKey=job.company?job.company+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||1:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
+            a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?"今天":_ad+"天前")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽">'+IC.ban+'</button></div>';
             a.querySelector(".job-title").addEventListener("click",()=>{reads.add(id);saveReads();a.classList.add("read");});
             const star=a.querySelector(".star");
             star.addEventListener("click",e=>{e.preventDefault();if(favs.has(id)){favs.delete(id);star.classList.remove("on");}else{favs.add(id);star.classList.add("on");}saveFavs();if(favOnly)apply();});
