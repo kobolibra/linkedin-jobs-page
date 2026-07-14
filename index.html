@@ -315,11 +315,85 @@
       .job-sub { white-space:normal; }
       .job-right { grid-column:2;justify-content:flex-start;margin-top:5px;flex-wrap:wrap;gap:9px; }
     }
-    @media (max-width:420px) {
-      .masthead h1 { font-size:23px; }
-      .day-head { flex-wrap:wrap;gap:5px 10px; }
+  @media (max-width:420px) {
+    .masthead h1 { font-size:23px; }
+    .day-head { flex-wrap:wrap;gap:5px 10px; }
+  }
+
+  /* =========================================================
+     Desktop toolbar stability fix
+     ========================================================= */
+
+  #kwToggle {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  @media (min-width: 960px) {
+    .toolbar-inner {
+      flex-wrap: nowrap;
+      gap: 6px;
     }
-  </style>
+
+    .search {
+      flex: 1 1 150px;
+      min-width: 90px;
+    }
+
+    .segmented {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .seg {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    #age {
+      flex: 0 0 96px;
+      width: 96px;
+      min-width: 96px;
+      max-width: 96px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .comp-group {
+      position: relative;
+      flex: 0 1 132px;
+      width: 132px;
+      min-width: 110px;
+      max-width: 132px;
+    }
+
+    .comp-group select.ctrl {
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+      padding-left: 8px;
+    }
+
+    .comp-group.filtering select.ctrl {
+      padding-right: 28px;
+    }
+
+    .pill {
+      flex: 0 0 auto;
+      padding-left: 8px;
+      padding-right: 8px;
+      white-space: nowrap;
+    }
+
+    .count {
+      flex: 0 0 auto;
+      margin-left: 0;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+  }
+</style>
 </head>
 <body>
   <div class="shell">
