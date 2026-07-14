@@ -267,13 +267,14 @@
     body.compact .job-title { font-size:14px; }
     body.compact .mono { width:38px;height:38px;font-size:15px; }
     body.compact .day { margin-top:24px; }
-    .comp-group { display:inline-flex;align-items:center;gap:4px;flex:0 0 auto; }
-    .comp-clear { display:none;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid var(--gold);border-radius:50%;background:color-mix(in srgb,var(--gold) 10%,var(--surface));color:var(--gold-deep);cursor:pointer;padding:0;flex-shrink:0;transition:background .15s,color .15s,border-color .15s; }
-    .comp-clear svg { width:11px;height:11px; }
-    .comp-clear:hover { background:var(--gold);color:#fff; }
+    .comp-group { display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;width:190px; }
+    .comp-group select.ctrl { flex:1 1 auto;min-width:0;max-width:none; }
+    .comp-clear { display:none;flex-shrink:0;align-items:center;justify-content:center;width:18px;height:18px;border:0;background:transparent;color:var(--gold-deep);cursor:pointer;padding:0;border-radius:4px;transition:color .15s,background .15s; }
+    .comp-clear svg { width:10px;height:10px;display:block; }
+    .comp-clear:hover { background:color-mix(in srgb,var(--gold) 14%,transparent); }
     .comp-clear.show { display:inline-flex; }
     [data-theme="dark"] .comp-clear { color:var(--gold); }
-    [data-theme="dark"] .comp-clear:hover { color:#14130f; }
+    [data-theme="dark"] .comp-clear:hover { background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold-hi); }
     @media (max-width:720px) {
       .shell { padding:0 16px 56px; }
       .masthead { padding:44px 0 28px; }
@@ -302,8 +303,8 @@
       .segmented { width:100%; }
       .seg { flex:1;text-align:center;padding:7px 4px; }
       select.ctrl { flex:1 1 calc(50% - 4px);min-width:0;max-width:none;width:100%; }
-      .comp-group { flex:1 1 calc(50% - 4px);min-width:0; }
-      .comp-group select.ctrl { flex:1;min-width:0;max-width:none;width:auto; }
+      .comp-group { flex:1 1 calc(50% - 4px);min-width:0;width:auto; }
+      .comp-group select.ctrl { flex:1;min-width:0; }
       .pill { flex:1 1 calc(50% - 4px);justify-content:center; }
       .count { margin-left:0;width:100%;text-align:right; }
       .kw-form { flex-direction:column; }
