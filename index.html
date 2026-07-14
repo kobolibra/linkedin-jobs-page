@@ -88,11 +88,24 @@
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.8)} }
     .live { display:inline-block;width:7px;height:7px;border-radius:50%;background:#6e8a46;margin-right:7px;vertical-align:middle;box-shadow:0 0 0 3px rgba(110,138,70,.22); }
-    @media (prefers-reduced-motion:no-preference) {
-      body.anim .reveal { opacity:0;animation:fadeUp .7s cubic-bezier(.2,.8,.2,1) forwards; }
-      body.anim .job { animation:fadeUp .5s both; }
-      .live { animation:pulse 1.8s ease-in-out infinite; }
-    }
+@media (prefers-reduced-motion:no-preference) {
+  body.anim .reveal {
+    opacity:0;
+    animation:fadeUp .7s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+
+  /*
+   * 只让最新日期分组的职位执行短暂入场动画。
+   * 避免所有职位同时保持动画状态。
+   */
+  body.anim .day:first-child .job {
+    animation:fadeUp .32s cubic-bezier(.2,.8,.2,1) backwards;
+  }
+
+  .live {
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+}
     .masthead { position:relative;padding:72px 0 40px;border-bottom:2px solid var(--navy); }
     .masthead::before { content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--navy); }
     .eyebrow { font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:800;margin:0 0 16px;padding-right:96px;display:flex;align-items:center;gap:14px;position:relative;z-index:1; }
@@ -222,11 +235,51 @@
     .day-meta { font-size:12px;color:var(--ink-faint);font-family:var(--mono);font-variant-numeric:tabular-nums; }
     .day-new { font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep);border:1px solid var(--gold);border-radius:999px;padding:2px 9px;font-weight:700; }
     [data-theme="dark"] .day-new { color:var(--gold);border-color:var(--gold); }
-    .job { display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:14px;padding:15px 4px;border-bottom:1px solid var(--line);position:relative;border-radius:8px;transition:background-color .25s var(--ease); }
-    .job::before { content:"";position:absolute;left:-4px;top:10px;bottom:10px;width:3px;border-radius:999px;background:var(--region,var(--line-strong));opacity:0;transition:opacity .2s var(--ease); }
-    .job:hover { background-color:color-mix(in srgb,var(--region,var(--surface-2)) 7%,transparent); }
-    .job:hover::before { opacity:1; }
-    .job.hidden { display:none; }
+.job {
+  display:grid;
+  grid-template-columns:44px 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding:15px 4px;
+  border-bottom:1px solid var(--line);
+  position:relative;
+  border-radius:8px;
+
+  /*
+   * 原来是 250ms，快速移动时会产生明显拖尾。
+   * 缩短为 70ms，保留精致反馈但响应更直接。
+   */
+  transition:background-color 70ms ease-out;
+}
+
+.job::before {
+  content:"";
+  position:absolute;
+  left:-4px;
+  top:10px;
+  bottom:10px;
+  width:3px;
+  border-radius:999px;
+  background:var(--region,var(--line-strong));
+  opacity:0;
+  transition:opacity 70ms ease-out;
+}
+
+.job:hover {
+  background-color:color-mix(
+    in srgb,
+    var(--region,var(--surface-2)) 7%,
+    transparent
+  );
+}
+
+.job:hover::before {
+  opacity:1;
+}
+
+.job.hidden {
+  display:none;
+}
     .job.read .job-title { color:var(--ink-faint); }
     .job.read .mono { opacity:.45; }
     .mono { width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--region,var(--navy));background:var(--region-bg,var(--surface-2));border:1.5px solid color-mix(in srgb,var(--region,var(--navy)) 22%,transparent);user-select:none; }
