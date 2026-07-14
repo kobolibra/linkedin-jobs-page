@@ -267,6 +267,13 @@
     body.compact .job-title { font-size:14px; }
     body.compact .mono { width:38px;height:38px;font-size:15px; }
     body.compact .day { margin-top:24px; }
+    .comp-group { display:inline-flex;align-items:center;gap:4px;flex:0 0 auto; }
+    .comp-clear { display:none;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid var(--gold);border-radius:50%;background:color-mix(in srgb,var(--gold) 10%,var(--surface));color:var(--gold-deep);cursor:pointer;padding:0;flex-shrink:0;transition:background .15s,color .15s,border-color .15s; }
+    .comp-clear svg { width:11px;height:11px; }
+    .comp-clear:hover { background:var(--gold);color:#fff; }
+    .comp-clear.show { display:inline-flex; }
+    [data-theme="dark"] .comp-clear { color:var(--gold); }
+    [data-theme="dark"] .comp-clear:hover { color:#14130f; }
     @media (max-width:720px) {
       .shell { padding:0 16px 56px; }
       .masthead { padding:44px 0 28px; }
@@ -295,6 +302,8 @@
       .segmented { width:100%; }
       .seg { flex:1;text-align:center;padding:7px 4px; }
       select.ctrl { flex:1 1 calc(50% - 4px);min-width:0;max-width:none;width:100%; }
+      .comp-group { flex:1 1 calc(50% - 4px);min-width:0; }
+      .comp-group select.ctrl { flex:1;min-width:0;max-width:none;width:auto; }
       .pill { flex:1 1 calc(50% - 4px);justify-content:center; }
       .count { margin-left:0;width:100%;text-align:right; }
       .kw-form { flex-direction:column; }
@@ -356,7 +365,10 @@
           <option value="8-14">8–14 天</option>
           <option value="15+">15 天以上</option>
         </select>
-        <select class="ctrl" id="company"><option value="all">全部机构</option></select>
+        <div class="comp-group">
+          <select class="ctrl" id="company"><option value="all">全部机构</option></select>
+          <button class="comp-clear" id="compClear" aria-label="清除机构筛选" title="清除机构筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        </div>
         <button class="pill" id="favToggle" aria-label="只看收藏"></button>
         <button class="pill" id="densityToggle" aria-label="切换密度"></button>
         <button class="pill" id="kwToggle" aria-label="关键词屏蔽"></button>
@@ -440,7 +452,8 @@
     const saveBlocked=()=>localStorage.setItem("blocked",JSON.stringify([...blocked]));
     const saveBlockedKw=()=>localStorage.setItem("blockedKw",JSON.stringify([...blockedKw]));
     (function(){if(localStorage.getItem("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();localStorage.setItem("favKeyV","2");})();
-    const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar");
+    const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");
+    compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
     const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
     let activeRegion="all",favOnly=false,blockedOpen=false;
     function setDensity(d){const c=d==="compact";document.body.classList.toggle("compact",c);dbtn.classList.toggle("active",c);localStorage.setItem("density",d);}
@@ -552,6 +565,7 @@
     function apply(){
       const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
       companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
+      compClear.classList.toggle("show",comp!=="all");
       let visible=0;
       jobsEl.querySelectorAll(".day").forEach(sec=>{
         let shown=0;
