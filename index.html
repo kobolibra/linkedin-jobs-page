@@ -267,13 +267,14 @@
     body.compact .job-title { font-size:14px; }
     body.compact .mono { width:38px;height:38px;font-size:15px; }
     body.compact .day { margin-top:24px; }
-    .comp-group { display:inline-flex;align-items:center;gap:4px;flex:0 0 auto; }
-    .comp-clear { display:none;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid var(--gold);border-radius:50%;background:color-mix(in srgb,var(--gold) 10%,var(--surface));color:var(--gold-deep);cursor:pointer;padding:0;flex-shrink:0;transition:background .15s,color .15s,border-color .15s; }
-    .comp-clear svg { width:11px;height:11px; }
+    .comp-group { display:inline-flex;align-items:center;flex:0 0 auto;position:relative; }
+    .comp-group.filtering select.ctrl { padding-right:28px; }
+    .comp-clear { display:none;position:absolute;right:3px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:19px;height:19px;border:0;border-radius:4px;background:color-mix(in srgb,var(--gold) 18%,var(--surface));color:var(--gold-deep);cursor:pointer;padding:0;z-index:2;transition:color .15s,background .15s; }
+    .comp-clear svg { width:9px;height:9px;display:block; }
     .comp-clear:hover { background:var(--gold);color:#fff; }
-    .comp-clear.show { display:inline-flex; }
-    [data-theme="dark"] .comp-clear { color:var(--gold); }
-    [data-theme="dark"] .comp-clear:hover { color:#14130f; }
+    .comp-clear.show { display:flex; }
+    [data-theme="dark"] .comp-clear { background:color-mix(in srgb,var(--gold) 22%,var(--surface));color:var(--gold-hi); }
+    [data-theme="dark"] .comp-clear:hover { background:var(--gold);color:#14130f; }
     @media (max-width:720px) {
       .shell { padding:0 16px 56px; }
       .masthead { padding:44px 0 28px; }
@@ -565,7 +566,7 @@
     function apply(){
       const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
       companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
-      compClear.classList.toggle("show",comp!=="all");
+      compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
       let visible=0;
       jobsEl.querySelectorAll(".day").forEach(sec=>{
         let shown=0;
