@@ -320,19 +320,21 @@
     .day-head { flex-wrap:wrap;gap:5px 10px; }
   }
 
-  /* =========================================================
-     Desktop toolbar stability fix
-     ========================================================= */
+/* =========================================================
+   Desktop toolbar stability fix
+   ========================================================= */
 
-  #kwToggle {
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+#kwToggle {
+  white-space:nowrap;
+  flex-shrink:0;
+}
 
 @media (min-width:960px) {
   /*
    * 第一行：7 个筛选控件
-   * 第二行：职位数量
+   * 第二视觉行：
+   * 左侧“已屏蔽机构”
+   * 右侧“显示 xxx 个职位”
    */
   .toolbar-inner {
     display:grid;
@@ -346,7 +348,11 @@
       max-content;
     align-items:center;
     column-gap:8px;
-    row-gap:6px;
+
+    /*
+     * 第一行筛选器与第二行状态信息之间的距离
+     */
+    row-gap:10px;
   }
 
   /* 搜索框 */
@@ -404,26 +410,37 @@
     white-space:nowrap;
   }
 
-  #kwToggle {
-    white-space:nowrap;
-  }
-
   /*
-   * 职位数量独占第二行，右对齐
+   * 职位数量位于工具栏 Grid 第二行右侧
    */
   .count {
     grid-column:1 / -1;
     grid-row:2;
     justify-self:end;
+    align-self:start;
     width:auto;
-    min-width:0;
-    margin-left:0;
+    min-width:max-content;
+    margin:0;
     font-size:12px;
-    line-height:1.2;
+    line-height:18px;
     text-align:right;
     white-space:nowrap;
   }
-}
+
+  /*
+   * blocked-bar 在 HTML 中位于 toolbar-inner 后面。
+   *
+   * 将它上移到与 count 相同的视觉行：
+   * 18px 是 count 行高；
+   * 10px 是 blocked-bar 顶部内边距；
+   * 合计上移 28px。
+   */
+  .blocked-bar.show {
+    margin-top:-28px;
+    padding-top:10px;
+    padding-right:160px;
+  }
+}    
 </style>
 </head>
 <body>
