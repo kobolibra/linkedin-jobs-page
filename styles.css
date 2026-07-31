@@ -13,10 +13,11 @@
   --shadow:0 1px 2px rgba(26,25,22,.05), 0 2px 10px rgba(26,25,22,.04);
   --shadow-strong:0 2px 6px rgba(26,25,22,.07), 0 10px 28px rgba(26,25,22,.06);
   --hairline:inset 0 1px 0 rgba(255,255,255,.55);
-  --cn:#96323a; --cn-bg:rgba(150,50,58,.10);
-  --hk:#9a6f28; --hk-bg:rgba(154,111,40,.11);
-  --sg:#63793f; --sg-bg:rgba(99,121,63,.11);
-  --other:#356b7a; --other-bg:rgba(53,107,122,.10);
+  /* 地区色：原始配色，不再降饱和度 */
+  --cn:#9c2a33; --cn-bg:#f9efec;
+  --hk:#b07c22; --hk-bg:#f9f3e6;
+  --sg:#6e8a46; --sg-bg:#f2f4ec;
+  --other:#357585; --other-bg:#eef3f1;
   --serif: "Source Serif 4", Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
   --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
@@ -36,10 +37,10 @@
   --shadow:0 1px 3px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.4);
   --shadow-strong:0 2px 8px rgba(0,0,0,.58), 0 16px 40px rgba(0,0,0,.5);
   --hairline:inset 0 1px 0 rgba(255,255,255,.045);
-  --cn:#d4566a; --cn-bg:rgba(212,86,106,.15);
-  --hk:#d9ad55; --hk-bg:rgba(217,173,85,.14);
-  --sg:#a3c06e; --sg-bg:rgba(163,192,110,.14);
-  --other:#5ba8bc; --other-bg:rgba(91,168,188,.14);
+  --cn:#d4566a; --cn-bg:rgba(212,86,106,.14);
+  --hk:#d9ad55; --hk-bg:rgba(217,173,85,.13);
+  --sg:#a3c06e; --sg-bg:rgba(163,192,110,.13);
+  --other:#5ba8bc; --other-bg:rgba(91,168,188,.13);
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a39c8c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 * { box-sizing:border-box; scrollbar-width:thin; scrollbar-color:var(--line-strong) transparent; }
@@ -72,14 +73,12 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 }
 
 /* ---------- Masthead ---------- */
-/* 右侧预留 190px 给照片堆叠，正文不会跑到照片下面 */
 .masthead { position:relative;padding:52px 0 var(--s6);border-bottom:1px solid var(--line-strong);overflow:hidden; }
 .masthead::before { content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--navy);z-index:6; }
 .eyebrow { font-family:var(--mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin:0 0 var(--s3);padding-right:190px;display:flex;align-items:center;gap:var(--s3);position:relative;z-index:1; }
 [data-theme="dark"] .eyebrow { color:var(--gold); }
 .eyebrow::after { content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent); }
 .masthead h1 { font-family:var(--serif);font-optical-sizing:auto;font-weight:700;font-size:40px;line-height:1.06;letter-spacing:-.035em;margin:0;color:var(--navy);position:relative;z-index:1;padding-right:190px; }
-/* 副标题：不断行（回到原来的行为），窗口太窄时横向滑动 */
 .masthead .lede { margin:var(--s3) 0 0;color:var(--ink-soft);font-size:14.5px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;padding-right:190px;position:relative;z-index:1; }
 .masthead .lede::-webkit-scrollbar { display:none; }
 .masthead .tagline { margin:var(--s2) 0 0;font-family:var(--serif);font-optical-sizing:auto;font-style:italic;font-size:14px;color:var(--ink-faint);padding-right:190px;position:relative;z-index:1; }
@@ -92,7 +91,6 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .theme-toggle[data-mode="dark"] .tt-thumb { transform:translateX(15px);background:var(--gold); }
 .theme-toggle[data-mode="light"] .tt-sun { color:var(--gold-deep); }
 .theme-toggle[data-mode="dark"] .tt-moon { color:var(--gold); }
-/* 照片堆叠：靠右但留出展开余地，展开方向改为向左，不再冲出页面 */
 .mast-stack { position:absolute;right:6px;top:86px;z-index:5;width:76px;height:86px; }
 .mast-photo { position:absolute;top:0;right:0;border-radius:4px;box-shadow:0 1px 2px rgba(26,25,22,.05),0 6px 16px rgba(26,25,22,.09),0 14px 30px rgba(26,25,22,.09);transform-origin:50% 50%;opacity:0;transition:opacity .6s ease,transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .3s; }
 .mast-photo::after { content:"";position:absolute;inset:0;border-radius:4px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 20%,transparent);pointer-events:none; }
@@ -108,7 +106,6 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .mast-stack.show:hover .mp-3 { opacity:.84;transform:translate(-58px,12px) rotate(-14deg) scale(.97); }
 .mast-stack.show:hover .mp-4 { opacity:.72;transform:translate(-86px,-10px) rotate(21deg) scale(.95); }
 [data-theme="dark"] .mast-photo { box-shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4); }
-/* 背景照（小猫）回来了 */
 .mast-bg { position:absolute;top:60px;right:120px;width:150px;height:150px;z-index:0;border-radius:8px;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;filter:saturate(.92);transition:opacity .8s ease;-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 54%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 54%,transparent 100%);pointer-events:none; }
 .mast-bg.show { opacity:.88; }
 [data-theme="dark"] .mast-bg.show { opacity:.55; }
