@@ -10,63 +10,6 @@ const IC={
   up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>',
   rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'
 };
-
-/*
- * 全局提示气泡
- * 任意带 [data-tip] 的元素在悬浮或键盘聚焦时给出说明：
- * 统一延迟与动效、自动上下翻转、视口边缘夹取、箭头跟随锚点；
- * 触屏设备不启用，避免与点击行为冲突。
- */
-const Tip=(function(){
-  if(typeof matchMedia==="function"&&matchMedia("(hover: none)").matches)return{show(){},hide(){},sync(){}};
-  const el=document.createElement("div");
-  el.className="tip";
-  el.setAttribute("role","tooltip");
-  el.dataset.side="top";
-  document.body.appendChild(el);
-  let cur=null,timer=null;
-  function place(){
-    if(!cur)return;
-    const r=cur.getBoundingClientRect();
-    const w=el.offsetWidth,h=el.offsetHeight;
-    const side=r.top<h+22?"bottom":"top";
-    el.dataset.side=side;
-    const anchor=r.left+r.width/2;
-    const min=10+w/2,max=window.innerWidth-10-w/2;
-    const x=max<min?window.innerWidth/2:Math.max(min,Math.min(max,anchor));
-    el.style.left=x+"px";
-    el.style.top=(side==="top"?r.top:r.bottom)+"px";
-    const ax=w?Math.max(12,Math.min(w-12,w/2+(anchor-x))):0;
-    el.style.setProperty("--tip-ax",ax+"px");
-  }
-  function show(t){
-    const txt=t.getAttribute("data-tip");
-    if(!txt)return;
-    cur=t;
-    el.textContent=txt;
-    el.classList.add("show");
-    place();
-  }
-  function hide(){clearTimeout(timer);if(!cur)return;cur=null;el.classList.remove("show");}
-  function sync(){if(cur&&document.contains(cur)){el.textContent=cur.getAttribute("data-tip")||"";place();}else{hide();}}
-  document.addEventListener("pointerover",e=>{
-    if(e.pointerType==="touch")return;
-    const t=e.target.closest?e.target.closest("[data-tip]"):null;
-    if(!t){hide();return;}
-    if(t===cur)return;
-    clearTimeout(timer);
-    const delay=el.classList.contains("show")?0:120;
-    timer=setTimeout(()=>show(t),delay);
-  });
-  document.addEventListener("pointerdown",e=>{if(e.pointerType==="touch")hide();});
-  document.addEventListener("focusin",e=>{const t=e.target.closest?e.target.closest("[data-tip]"):null;if(t)show(t);});
-  document.addEventListener("focusout",hide);
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")hide();});
-  addEventListener("scroll",hide,{passive:true});
-  addEventListener("resize",hide);
-  return{show,hide,sync};
-})();
-
 const SUN='<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5" stroke="none"/><g fill="none"><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></g></svg>';
 const MOON='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
 const tbtn=document.getElementById('themeToggle');
@@ -75,8 +18,7 @@ function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   tbtn.setAttribute('data-mode',t);
   tbtn.setAttribute('aria-checked',t==='dark'?'true':'false');
-  tbtn.setAttribute('data-tip',(t==='dark'?'切换到浅色主题':'切换到深色主题')+'（快捷键 T）');
-  Tip.sync();
+  tbtn.title=t==='dark'?'浅色主题':'深色主题';
   localStorage.setItem('theme',t);
 }
 setTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
@@ -114,7 +56,7 @@ const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLo
 const seenAt=j=>j.firstSeen||j.pushTime;
 const placeAt=j=>j.pushTime||j.firstSeen;
 const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.max(0,Math.floor((Date.now()-d)/864e5));};
-const exactTime=iso=>{const d=new Date(iso);return isNaN(d)?"":d.toLocaleString("zh-CN",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});};
+const exactTime=iso=>{const d=new Date(iso);return isNaN(d)?"":d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});};
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel==="15+")return d>=15;const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
 function animNum(el,target,suffix){suffix=suffix||"";if(reduce){el.innerHTML=target.toLocaleString()+suffix;return;}const dur=900,start=performance.now();const step=now=>{const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);el.innerHTML=Math.round(target*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -135,8 +77,7 @@ function setDensity(d){
   const c=d==="compact";
   document.body.classList.toggle("compact",c);
   dbtn.classList.toggle("active",c);
-  dbtn.setAttribute("data-tip",c?"切换回舒适行距":"切换为紧凑行距");
-  Tip.sync();
+  dbtn.title=c?"舒适行距":"紧凑行距";
   localStorage.setItem("density",d);
 }
 setDensity(localStorage.getItem("density")||"comfortable");
@@ -144,19 +85,19 @@ dbtn.addEventListener("click",()=>setDensity(document.body.classList.contains("c
 function renderBlocked(){
   if(blocked.size===0){blockedBar.classList.remove("show","open");blockedBar.innerHTML="";blockedOpen=false;return;}
   blockedBar.classList.add("show");blockedBar.classList.toggle("open",blockedOpen);
-  blockedBar.innerHTML='<button class="bl-toggle" id="blToggle" data-tip="展开或收起已屏蔽的机构">已屏蔽机构 ('+blocked.size+') <span class="bl-caret">'+IC.chevron+'</span></button><div class="bl-list">'+[...blocked].map(c=>'<span class="bl-chip">'+esc(c)+'<button data-c="'+esc(c)+'" aria-label="取消屏蔽" data-tip="取消屏蔽「'+esc(c)+'」">'+IC.x+'</button></span>').join('')+'<button class="bl-clear" id="blClear" data-tip="清除全部机构屏蔽">全部清除</button></div>';
+  blockedBar.innerHTML='<button class="bl-toggle" id="blToggle">已屏蔽机构 ('+blocked.size+') <span class="bl-caret">'+IC.chevron+'</span></button><div class="bl-list">'+[...blocked].map(c=>'<span class="bl-chip">'+esc(c)+'<button data-c="'+esc(c)+'" aria-label="取消屏蔽" title="取消屏蔽">'+IC.x+'</button></span>').join('')+'<button class="bl-clear" id="blClear">全部清除</button></div>';
 }
-blockedBar.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="blToggle"){blockedOpen=!blockedOpen;blockedBar.classList.toggle("open",blockedOpen);return;}if(b.id==="blClear"){blocked.clear();}else if(b.dataset.c!=null){blocked.delete(b.dataset.c);}saveBlocked();renderBlocked();Tip.hide();apply();});
+blockedBar.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="blToggle"){blockedOpen=!blockedOpen;blockedBar.classList.toggle("open",blockedOpen);return;}if(b.id==="blClear"){blocked.clear();}else if(b.dataset.c!=null){blocked.delete(b.dataset.c);}saveBlocked();renderBlocked();apply();});
 renderBlocked();
 function renderKw(){
   kwToggle.classList.toggle("active",blockedKw.size>0);
   kwToggle.innerHTML=IC.ban+'<span>屏蔽词'+(blockedKw.size?' ('+blockedKw.size+')':'')+'</span>';
   if(!blockedKw.size){kwList.innerHTML='<span class="kw-empty">暂无屏蔽词，添加后标题包含该词的职位会被隐藏（不区分大小写）。</span>';return;}
-  kwList.innerHTML=[...blockedKw].map(k=>'<span class="bl-chip">'+esc(k)+'<button type="button" data-k="'+esc(k)+'" aria-label="移除屏蔽词" data-tip="移除屏蔽词「'+esc(k)+'」">'+IC.x+'</button></span>').join('')+'<button type="button" class="bl-clear" id="kwClear" data-tip="清除全部屏蔽词">全部清除</button>';
+  kwList.innerHTML=[...blockedKw].map(k=>'<span class="bl-chip">'+esc(k)+'<button type="button" data-k="'+esc(k)+'" aria-label="移除屏蔽词" title="移除">'+IC.x+'</button></span>').join('')+'<button type="button" class="bl-clear" id="kwClear">全部清除</button>';
 }
 kwToggle.addEventListener("click",()=>{kwPanel.classList.toggle("open");if(kwPanel.classList.contains("open"))kwInput.focus();});
 kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.trim().toLowerCase();if(!v)return;blockedKw.add(v);saveBlockedKw();kwInput.value="";renderKw();apply();});
-kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();Tip.hide();apply();});
+kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();apply();});
 renderKw();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 fetch("jobs.json?_="+Date.now())
@@ -188,14 +129,14 @@ fetch("jobs.json?_="+Date.now())
     const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'" data-tip="'+REGIONS[k].label+'：'+rc[k]+' 个职位，占比 '+pct+'%"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
+    distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'" title="'+REGIONS[k].label+' '+rc[k]+' 个·'+pct+'%"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
     requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     const counts={};data.forEach(j=>{const k=dayKey(seenAt(j));counts[k]=(counts[k]||0)+1;});
     const today=new Date(),days=[];
-    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),full:d.toLocaleDateString("zh-CN",{month:"long",day:"numeric",weekday:"long"}),count:counts[keyOf(d)]||0});}
+    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),full:d.toLocaleDateString("zh-CN",{month:"numeric",day:"numeric"}),count:counts[keyOf(d)]||0});}
     const smax=Math.max(...days.map(d=>d.count),1);
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML=days.map(d=>'<div class="spark-col" data-tip="'+esc(d.full)+' 新增 '+d.count+' 个职位"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
+    sparkEl.innerHTML=days.map(d=>'<div class="spark-col" title="'+esc(d.full)+' 新增 '+d.count+' 个"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
     requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
@@ -205,7 +146,7 @@ fetch("jobs.json?_="+Date.now())
     for(const[,g]of orderedGroups){
       const sec=document.createElement("section");sec.className="day";
       const head=document.createElement("div");head.className="day-head";
-      head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new" data-tip="当前列表中最新的一批职位">Latest</span>':'');
+      head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'');
       sec.appendChild(head);
       g.items.forEach((job,idx)=>{
         const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company);
@@ -216,22 +157,19 @@ fetch("jobs.json?_="+Date.now())
         a.dataset.title=(job.title||"").toLowerCase();
         const _coKey=job.company?job.company+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||1:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
         const _exact=exactTime(seenAt(job));
-        const _favTip=favs.has(id)?"取消收藏该职位":"收藏该职位，可在「收藏」中集中查看";
-        const _banTip=job.company?"屏蔽「"+esc(job.company)+"」，不再显示该机构的职位":"该职位缺少机构信息，无法屏蔽";
-        a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener" data-tip="在 LinkedIn 打开该职位">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" data-tip="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age"'+(_exact?' data-tip="发布时间：'+esc(_exact)+'"':'')+'>'+(_ad===0?"今天":_ad+"天前")+'</span>':'')+(lvl!=="Other"?'<span class="lvl" data-tip="职级：'+lvl+'（依据标题自动识别）">'+lvl+'</span>':'')+'<span class="tag" data-tip="地区：'+REGIONS[r].label+'">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏" data-tip="'+_favTip+'">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽机构" data-tip="'+_banTip+'">'+IC.ban+'</button></div>';
+        a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age"'+(_exact?' title="'+esc(_exact)+'"':'')+'>'+(_ad===0?"今天":_ad+"天前")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag" title="'+REGIONS[r].label+'">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏" title="'+(favs.has(id)?"取消收藏":"收藏")+'">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构">'+IC.ban+'</button></div>';
         a.querySelector(".job-title").addEventListener("click",()=>{reads.add(id);saveReads();a.classList.add("read");});
         const star=a.querySelector(".star");
         star.addEventListener("click",e=>{
           e.preventDefault();
           if(favs.has(id)){favs.delete(id);star.classList.remove("on");}
           else{favs.add(id);star.classList.add("on");star.classList.remove("pop");void star.offsetWidth;star.classList.add("pop");}
-          star.setAttribute("data-tip",favs.has(id)?"取消收藏该职位":"收藏该职位，可在「收藏」中集中查看");
-          Tip.sync();
+          star.title=favs.has(id)?"取消收藏":"收藏";
           saveFavs();
           if(favOnly)apply();
         });
         const ban=a.querySelector(".ban");
-        ban.addEventListener("click",e=>{e.preventDefault();const c=job.company;if(c){blocked.add(c);saveBlocked();renderBlocked();Tip.hide();apply();}});
+        ban.addEventListener("click",e=>{e.preventDefault();const c=job.company;if(c){blocked.add(c);saveBlocked();renderBlocked();apply();}});
         const subEl=a.querySelector(".job-sub");
         if(job.company){
           const openCompany=()=>{companyEl.value=job.company;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});};
@@ -243,7 +181,7 @@ fetch("jobs.json?_="+Date.now())
       jobsEl.appendChild(sec);first=false;
     }
     regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=b.dataset.region;apply();});
-    favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);favEl.setAttribute("data-tip",favOnly?"显示全部职位":"只看已收藏的职位");Tip.sync();apply();});
+    favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);favEl.title=favOnly?"显示全部":"只看收藏";apply();});
     let _searchTimer=null;
     searchEl.addEventListener("input",()=>{
       clearTimeout(_searchTimer);
