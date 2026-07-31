@@ -113,41 +113,32 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .mast-bg.show { opacity:.55; }
 @media (max-width:1000px) { :root { --mast-reserve:150px; } .mast-bg { right:150px;width:112px;height:112px; } .masthead h1 { font-size:34px; } }
 
-/* ---------- 手机端报头（高优先级，覆盖 styles-list.css 旧规则）---------- */
+/* ---------- 手机端报头：只留一张照片，固定在右上角 ---------- */
 @media (max-width:720px) {
   :root { --mast-reserve:0px; }
   .shell { padding-left:var(--s4);padding-right:var(--s4);padding-bottom:72px; }
-  .masthead { padding:32px 0 var(--s3); }
-  .masthead .eyebrow { padding-right:64px;font-size:9px;letter-spacing:.18em;gap:var(--s2);margin-bottom:var(--s2); }
-  .masthead h1 { font-size:29px;letter-spacing:-.03em;padding-right:0; }
-  .masthead .lede { white-space:normal;overflow-x:visible;font-size:13.5px;line-height:1.6;padding-right:0;margin-top:var(--s2); }
-  .masthead .tagline { font-size:12.5px;padding-right:104px;min-height:58px; }
-  .theme-toggle { top:24px;right:0;z-index:8; }
-  /* 头像堆：移到报头右下角的空白区，不再撞主题开关也不压标题 */
-  .masthead .mast-stack { position:absolute;right:0;left:auto;top:auto;bottom:10px;width:88px;height:56px;margin:0;z-index:5; }
-  .masthead .mast-avatar { width:50px;height:50px; }
-  .masthead .mast-clip { top:-9px;left:6px;width:13px;height:25px; }
-  .masthead .mast-stack.show .mp-2 { transform:translate(-10px,-6px) rotate(6deg) scale(.97); }
-  .masthead .mast-stack.show .mp-3 { transform:translate(-19px,4px) rotate(-8deg) scale(.95); }
-  .masthead .mast-stack.show .mp-4 { transform:translate(-28px,-3px) rotate(13deg) scale(.93); }
-  /* 小猫：手机上保留，做成头像堆背后的水印 */
-  .masthead .mast-bg { display:block !important;top:auto;bottom:0;right:52px;width:96px;height:96px;z-index:0; }
-  .masthead .mast-bg.show { opacity:.42; }
-  [data-theme="dark"] .masthead .mast-bg.show { opacity:.3; }
+  .masthead { padding:38px 0 var(--s5); }
+  .masthead .eyebrow { padding-right:0;font-size:9px;letter-spacing:.18em;gap:var(--s2);margin-bottom:var(--s2); }
+  .masthead h1 { font-size:28px;letter-spacing:-.03em;padding-right:82px; }
+  .masthead .lede { white-space:normal;overflow-x:visible;font-size:13.5px;line-height:1.6;padding-right:82px;margin-top:var(--s2); }
+  .masthead .tagline { font-size:12.5px;padding-right:0;min-height:0; }
+  .theme-toggle { top:12px;right:0;z-index:8; }
+  /* 单张照片：固定在标题右侧，不跨到统计区 */
+  .masthead .mast-stack { position:absolute;right:0;left:auto;top:50px;bottom:auto;width:62px;height:70px;margin:0;z-index:5; }
+  .masthead .mast-avatar { width:58px;height:58px; }
+  .masthead .mast-clip { top:-10px;left:7px;width:14px;height:27px; }
+  .masthead .mast-photo.mp-2,
+  .masthead .mast-photo.mp-3,
+  .masthead .mast-photo.mp-4 { display:none; }
+  .masthead .mast-stack.show .mp-1,
+  .masthead .mast-stack.show:hover .mp-1 { transform:rotate(-3deg); }
+  .masthead .mast-bg { display:none; }
 }
 @media (max-width:420px) {
-  .masthead h1 { font-size:25px; }
-  .masthead .lede { font-size:13px; }
-  .masthead .tagline { padding-right:92px;min-height:54px; }
-  .masthead .mast-stack { width:78px;height:50px;bottom:8px; }
-  .masthead .mast-avatar { width:44px;height:44px; }
-  .masthead .mast-bg { right:44px;width:84px;height:84px; }
-}
-@media (hover:none) {
-  .mast-stack.show:hover .mp-1 { transform:rotate(-4deg); }
-  .mast-stack.show:hover .mp-2 { opacity:.84;transform:translate(-10px,-6px) rotate(6deg) scale(.97); }
-  .mast-stack.show:hover .mp-3 { opacity:.66;transform:translate(-19px,4px) rotate(-8deg) scale(.95); }
-  .mast-stack.show:hover .mp-4 { opacity:.48;transform:translate(-28px,-3px) rotate(13deg) scale(.93); }
+  .masthead h1 { font-size:24px;padding-right:74px; }
+  .masthead .lede { font-size:13px;padding-right:74px; }
+  .masthead .mast-stack { width:56px;height:64px;top:46px; }
+  .masthead .mast-avatar { width:52px;height:52px; }
 }
 
 /* ---------- Stats ---------- */
@@ -160,8 +151,8 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .stat:hover .v { color:var(--gold-deep); }
 [data-theme="dark"] .stat:hover .v { color:var(--gold); }
 @media (max-width:720px) {
-  .masthead .stats,.stats { grid-template-columns:repeat(2,1fr);margin-top:var(--s4);gap:0; }
-  .stats .stat { padding:var(--s3) var(--s3) var(--s3) 0; }
+  .stats { grid-template-columns:repeat(2,1fr);margin-top:var(--s4);gap:0; }
+  .stats .stat { padding:var(--s3) var(--s3) var(--s3) 0;border-bottom:0; }
   .stats .stat:nth-child(2n) { border-right:0;padding-left:var(--s3); }
   .stats .stat:nth-child(2n+1) { padding-left:0;border-right:1px solid var(--line); }
   .stats .stat:nth-child(n+3) { border-top:1px solid var(--line); }
