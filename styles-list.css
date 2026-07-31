@@ -152,11 +152,18 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .footer a { color:var(--ink-soft);text-decoration:none;transition:color .2s var(--ease); }
 .footer a:hover { color:var(--gold-deep); }
 [data-theme="dark"] .footer a:hover { color:var(--gold); }
-body.compact .job { padding:10px var(--s2) 10px 0;grid-template-columns:38px 1fr auto; }
-body.compact .job-title { font-size:15px; }
-body.compact .job-sub { margin-top:1px; }
-body.compact .mono { width:38px;height:38px;font-size:15px; }
+
+/* ---------- 紧凑模式（真正收紧）---------- */
+body.compact .job { padding:7px var(--s2) 7px 0;grid-template-columns:34px 1fr auto;gap:var(--s3); }
+body.compact .mono { width:34px;height:34px;font-size:14px;border-radius:8px;border-width:1.5px; }
+body.compact .job-title { font-size:14.5px; }
+body.compact .job-sub { margin-top:0;font-size:12px; }
+body.compact .job-right { gap:var(--s3); }
+body.compact .icon-btn { width:22px;height:22px; }
+body.compact .icon-btn svg { width:14px;height:14px; }
+body.compact .job::before { top:6px;bottom:6px; }
 body.compact .day { margin-top:var(--s5); }
+body.compact .day-head { padding-bottom:6px; }
 
 /* ---------- Desktop toolbar grid ---------- */
 #kwToggle { white-space:nowrap;flex-shrink:0; }
@@ -178,29 +185,8 @@ body.compact .day { margin-top:var(--s5); }
   .blocked-bar.show { margin-top:-26px;padding-top:var(--s2);padding-right:170px; }
 }
 
-/* ---------- Mobile ---------- */
+/* ---------- Mobile（报头与统计区的移动端规则统一在 styles.css）---------- */
 @media (max-width:720px) {
-  .shell { padding:0 var(--s4) 56px; }
-  .masthead { padding:40px 0 var(--s5); }
-  .masthead .eyebrow { padding-right:74px; }
-  .masthead .eyebrow::after { display:none; }
-  .masthead h1 { font-size:29px;padding-right:84px; }
-  .masthead .lede { font-size:13.5px;padding-right:0;white-space:normal; }
-  .masthead .tagline { padding-right:0; }
-  .theme-toggle { top:36px;right:0; }
-  .mast-stack { right:0;top:66px;width:56px;height:64px; }
-  .mast-stack .mp-2,.mast-stack .mp-3,.mast-stack .mp-4 { display:none; }
-  .mast-clip { width:14px;height:26px;top:-10px;left:6px; }
-  .mast-avatar { width:52px;height:52px; }
-  .mast-bg { display:none; }
-  .stats { grid-template-columns:repeat(2,1fr);margin-top:var(--s5); }
-  .stat { padding:var(--s3) var(--s3) var(--s3) 0; }
-  .stat:not(:first-child) { padding-left:0; }
-  .stat:nth-child(2n) { border-right:0;padding-left:var(--s3); }
-  .stat:nth-child(-n+2) { border-bottom:1px solid var(--line); }
-  .stat .v { font-size:22px; }
-  .analytics-card { grid-template-columns:1fr; }
-  .ac-col + .ac-col { border-left:0;border-top:1px solid var(--line); }
   .toolbar { padding:var(--s2) 0; }
   .search { flex:1 1 100%;min-width:0; }
   .search .s-key { display:none; }
@@ -213,18 +199,30 @@ body.compact .day { margin-top:var(--s5); }
   .count { margin-left:0;width:100%;text-align:right; }
   .kw-form { flex-direction:column; }
   .kw-form button { width:100%; }
-  .job,body.compact .job { grid-template-columns:38px 1fr;gap:var(--s3);padding:13px 0; }
+  .day { margin-top:var(--s6); }
+  .job { grid-template-columns:38px 1fr;gap:var(--s3);padding:12px 0; }
   .job::before { left:-6px; }
-  .mono,body.compact .mono { width:38px;height:38px;font-size:15px; }
+  .mono { width:38px;height:38px;font-size:15px; }
   .job-title { font-size:15.5px; }
   .job-sub { white-space:normal; }
-  .job-right { grid-column:2;grid-auto-flow:row dense;grid-template-columns:repeat(auto-fit,minmax(0,max-content));justify-content:start;margin-top:6px;gap:var(--s3); }
+  .job-right { grid-column:2;grid-auto-flow:column;justify-content:start;align-items:center;margin-top:5px;gap:var(--s3); }
   .lvl,.age { min-width:0;text-align:left; }
   .day-meta { margin-left:0; }
   .footer span,.footer a { white-space:normal; }
+  /* 手机紧凑模式：行高再压一半 */
+  body.compact .job { grid-template-columns:30px 1fr;gap:var(--s2);padding:5px 0; }
+  body.compact .mono { width:30px;height:30px;font-size:12.5px;border-radius:7px;align-self:start;margin-top:1px; }
+  body.compact .job-title { font-size:13.5px;line-height:1.25; }
+  body.compact .job-sub { font-size:11.5px;margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  body.compact .job-right { margin-top:1px;gap:var(--s2); }
+  body.compact .tag { height:15px;min-width:24px;padding:0 6px;font-size:8.5px; }
+  body.compact .lvl { font-size:9px;letter-spacing:.08em; }
+  body.compact .age { font-size:9.5px; }
+  body.compact .icon-btn { width:20px;height:20px; }
+  body.compact .icon-btn svg { width:13px;height:13px; }
+  body.compact .day { margin-top:var(--s5); }
 }
 @media (max-width:420px) {
-  .masthead h1 { font-size:24px; }
   .day-head { flex-wrap:wrap;gap:4px var(--s2); }
   .day-meta { margin-left:0; }
 }
