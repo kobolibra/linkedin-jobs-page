@@ -18,7 +18,6 @@ function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   tbtn.setAttribute('data-mode',t);
   tbtn.setAttribute('aria-checked',t==='dark'?'true':'false');
-  tbtn.title=t==='dark'?'浅色主题':'深色主题';
   localStorage.setItem('theme',t);
 }
 setTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
@@ -56,7 +55,6 @@ const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLo
 const seenAt=j=>j.firstSeen||j.pushTime;
 const placeAt=j=>j.pushTime||j.firstSeen;
 const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.max(0,Math.floor((Date.now()-d)/864e5));};
-const exactTime=iso=>{const d=new Date(iso);return isNaN(d)?"":d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});};
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel==="15+")return d>=15;const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
 function animNum(el,target,suffix){suffix=suffix||"";if(reduce){el.innerHTML=target.toLocaleString()+suffix;return;}const dur=900,start=performance.now();const step=now=>{const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);el.innerHTML=Math.round(target*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -77,7 +75,6 @@ function setDensity(d){
   const c=d==="compact";
   document.body.classList.toggle("compact",c);
   dbtn.classList.toggle("active",c);
-  dbtn.title=c?"舒适行距":"紧凑行距";
   localStorage.setItem("density",d);
 }
 setDensity(localStorage.getItem("density")||"comfortable");
@@ -85,7 +82,7 @@ dbtn.addEventListener("click",()=>setDensity(document.body.classList.contains("c
 function renderBlocked(){
   if(blocked.size===0){blockedBar.classList.remove("show","open");blockedBar.innerHTML="";blockedOpen=false;return;}
   blockedBar.classList.add("show");blockedBar.classList.toggle("open",blockedOpen);
-  blockedBar.innerHTML='<button class="bl-toggle" id="blToggle">已屏蔽机构 ('+blocked.size+') <span class="bl-caret">'+IC.chevron+'</span></button><div class="bl-list">'+[...blocked].map(c=>'<span class="bl-chip">'+esc(c)+'<button data-c="'+esc(c)+'" aria-label="取消屏蔽" title="取消屏蔽">'+IC.x+'</button></span>').join('')+'<button class="bl-clear" id="blClear">全部清除</button></div>';
+  blockedBar.innerHTML='<button class="bl-toggle" id="blToggle">已屏蔽机构 ('+blocked.size+') <span class="bl-caret">'+IC.chevron+'</span></button><div class="bl-list">'+[...blocked].map(c=>'<span class="bl-chip">'+esc(c)+'<button data-c="'+esc(c)+'" aria-label="取消屏蔽">'+IC.x+'</button></span>').join('')+'<button class="bl-clear" id="blClear">全部清除</button></div>';
 }
 blockedBar.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="blToggle"){blockedOpen=!blockedOpen;blockedBar.classList.toggle("open",blockedOpen);return;}if(b.id==="blClear"){blocked.clear();}else if(b.dataset.c!=null){blocked.delete(b.dataset.c);}saveBlocked();renderBlocked();apply();});
 renderBlocked();
@@ -93,7 +90,7 @@ function renderKw(){
   kwToggle.classList.toggle("active",blockedKw.size>0);
   kwToggle.innerHTML=IC.ban+'<span>屏蔽词'+(blockedKw.size?' ('+blockedKw.size+')':'')+'</span>';
   if(!blockedKw.size){kwList.innerHTML='<span class="kw-empty">暂无屏蔽词，添加后标题包含该词的职位会被隐藏（不区分大小写）。</span>';return;}
-  kwList.innerHTML=[...blockedKw].map(k=>'<span class="bl-chip">'+esc(k)+'<button type="button" data-k="'+esc(k)+'" aria-label="移除屏蔽词" title="移除">'+IC.x+'</button></span>').join('')+'<button type="button" class="bl-clear" id="kwClear">全部清除</button>';
+  kwList.innerHTML=[...blockedKw].map(k=>'<span class="bl-chip">'+esc(k)+'<button type="button" data-k="'+esc(k)+'" aria-label="移除屏蔽词">'+IC.x+'</button></span>').join('')+'<button type="button" class="bl-clear" id="kwClear">全部清除</button>';
 }
 kwToggle.addEventListener("click",()=>{kwPanel.classList.toggle("open");if(kwPanel.classList.contains("open"))kwInput.focus();});
 kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.trim().toLowerCase();if(!v)return;blockedKw.add(v);saveBlockedKw();kwInput.value="";renderKw();apply();});
@@ -129,14 +126,14 @@ fetch("jobs.json?_="+Date.now())
     const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'" title="'+REGIONS[k].label+' '+rc[k]+' 个·'+pct+'%"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
+    distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
     requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     const counts={};data.forEach(j=>{const k=dayKey(seenAt(j));counts[k]=(counts[k]||0)+1;});
     const today=new Date(),days=[];
-    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),full:d.toLocaleDateString("zh-CN",{month:"numeric",day:"numeric"}),count:counts[keyOf(d)]||0});}
+    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),count:counts[keyOf(d)]||0});}
     const smax=Math.max(...days.map(d=>d.count),1);
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML=days.map(d=>'<div class="spark-col" title="'+esc(d.full)+' 新增 '+d.count+' 个"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
+    sparkEl.innerHTML=days.map(d=>'<div class="spark-col"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
     requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
@@ -156,14 +153,13 @@ fetch("jobs.json?_="+Date.now())
         a.dataset.search=((job.title||"")+" "+(job.company||"")).toLowerCase();
         a.dataset.title=(job.title||"").toLowerCase();
         const _coKey=job.company?job.company+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||1:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
-        const _exact=exactTime(seenAt(job));
-        a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age"'+(_exact?' title="'+esc(_exact)+'"':'')+'>'+(_ad===0?"今天":_ad+"天前")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag" title="'+REGIONS[r].label+'">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏" title="'+(favs.has(id)?"取消收藏":"收藏")+'">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构">'+IC.ban+'</button></div>';
+        a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?"今天":_ad+"天前")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏" title="'+(favs.has(id)?"取消收藏":"收藏")+'">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构">'+IC.ban+'</button></div>';
         a.querySelector(".job-title").addEventListener("click",()=>{reads.add(id);saveReads();a.classList.add("read");});
         const star=a.querySelector(".star");
         star.addEventListener("click",e=>{
           e.preventDefault();
           if(favs.has(id)){favs.delete(id);star.classList.remove("on");}
-          else{favs.add(id);star.classList.add("on");star.classList.remove("pop");void star.offsetWidth;star.classList.add("pop");}
+          else{favs.add(id);star.classList.add("on");}
           star.title=favs.has(id)?"取消收藏":"收藏";
           saveFavs();
           if(favOnly)apply();
@@ -181,7 +177,7 @@ fetch("jobs.json?_="+Date.now())
       jobsEl.appendChild(sec);first=false;
     }
     regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=b.dataset.region;apply();});
-    favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);favEl.title=favOnly?"显示全部":"只看收藏";apply();});
+    favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
     let _searchTimer=null;
     searchEl.addEventListener("input",()=>{
       clearTimeout(_searchTimer);
