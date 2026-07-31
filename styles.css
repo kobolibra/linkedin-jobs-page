@@ -92,7 +92,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .theme-toggle[data-mode="dark"] .tt-thumb { transform:translateX(15px);background:var(--gold); }
 .theme-toggle[data-mode="light"] .tt-sun { color:var(--gold-deep); }
 .theme-toggle[data-mode="dark"] .tt-moon { color:var(--gold); }
-.mast-stack { position:absolute;right:6px;top:86px;z-index:5;width:76px;height:86px; }
+.mast-stack { position:absolute;right:6px;top:114px;z-index:5;width:76px;height:86px; }
 .mast-photo { position:absolute;top:0;right:0;border-radius:4px;box-shadow:0 1px 2px rgba(26,25,22,.05),0 6px 16px rgba(26,25,22,.09),0 14px 30px rgba(26,25,22,.09);transform-origin:50% 50%;opacity:0;transition:opacity .6s ease,transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .3s; }
 .mast-photo::after { content:"";position:absolute;inset:0;border-radius:4px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 20%,transparent);pointer-events:none; }
 .mast-avatar { display:block;width:70px;height:70px;object-fit:cover;border-radius:4px;filter:saturate(1.1) contrast(1.04); }
