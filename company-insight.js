@@ -49,8 +49,15 @@
     }else{
       elAxisSec.style.display="none";
     }
+    /* 判读：先看存量/新发占比（更直接），再看偏态 */
     const skew=med>0?mean/med:1;
-    const note=n<4?"样本较少，指标仅供参考。":skew>1.2?"分布右偏——少量长期未关闭的职位抬高了平均值，以中位数为准。":skew<.85?"分布左偏——近期集中放出，早期职位已较少。":"分布接近对称——发布节奏稳定。";
+    const stale=s.filter(d=>d>=15).length/n,fresh=s.filter(d=>d<=7).length/n,pct=x=>Math.round(x*100)+"%";
+    const note=n<4?"样本较少，指标仅供参考。"
+      :stale>=.5?"以存量职位为主——"+pct(stale)+" 已挂满 15 天以上，中位 "+num(med)+" 天，近期新增有限。"
+      :fresh>=.6?"以新发职位为主——"+pct(fresh)+" 在 7 天内发布，招聘正在推进。"
+      :skew>1.2?"分布右偏——少量长期未关闭的职位抬高了平均值，以中位数为准。"
+      :skew<.85?"分布左偏——多数职位已挂较久，少量新发职位拉低了平均值，以中位数为准。"
+      :"分布接近对称——发布节奏稳定。";
     elFoot.innerHTML='<div class="co-fact"><span class="co-fact-k">最新</span><b>'+dayText(lo)+'</b></div>'
       +'<div class="co-fact"><span class="co-fact-k">最早</span><b>'+dayText(hi)+'</b></div>'
       +'<div class="co-fact" title="排序后去掉最新 25% 与最早 25%，中间一半职位的已发布天数区间"><span class="co-fact-k">中间 50%</span><b>'+num(q1)+' – '+num(q3)+' 天</b></div>'
