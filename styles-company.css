@@ -1,47 +1,46 @@
 /* =========================================================
-   LinkedIn 金融职位精选 · 视觉系统 3/3
-   机构统计面板 Company Insight —— 无框编辑部式排版
-   设计原则：
-   1) 不做「盒中盒」。列表本身是无框的行式排版，面板也应无框，
-      仅以一根 1px 竖向界线分栏，靠字号层级与留白建立秩序。
-   2) 数字是主角。衬线数字 + tabular-nums，标签退为 mono 小字。
-   3) 只在语义真正断裂处画线，且只画一根发丝线。
+   Company Insight 面板 · 视觉系统 3/3
+   设计策略：用「面」而不是「线」来分区。
+   - 不用边框、不用阴影、不用竖分割线；
+   - 面板坐在一块比页面底色更浅的纸面上（--surface），
+     靠色阶差（tonal plane）与留白建立层级；
+   - 只保留 eyebrow 处一根渐隐引导线作为版面节奏记号。
    ========================================================= */
 
 .co-panel { display:none; }
 .co-panel.on { display:block;opacity:0;transform:translateY(8px);transition:opacity .42s var(--ease),transform .42s var(--ease); }
 .co-panel.on.in { opacity:1;transform:none; }
 
-/* 无边框、无阴影、无圆角：与页面同底色，融入版面而非浮在版面上 */
 .co-card { position:relative;background:none;border:0;border-radius:0;box-shadow:none; }
 
 /* ---------- 抬头 ---------- */
 .co-head { position:relative;padding:0; }
-.co-eyebrow { display:flex;align-items:center;gap:var(--s3);margin:0 0 var(--s4);padding-right:22px;font-family:var(--mono);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:700; }
+.co-eyebrow { display:flex;align-items:center;gap:var(--s3);margin:0 0 var(--s4);padding-right:24px;font-family:var(--mono);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-deep);font-weight:700; }
 [data-theme="dark"] .co-eyebrow { color:var(--gold); }
 .co-eyebrow::after { content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-strong),transparent); }
-.co-close { position:absolute;top:-4px;right:-4px;width:22px;height:22px;display:grid;place-items:center;border:0;border-radius:4px;background:none;color:var(--ink-faint);cursor:pointer;z-index:3;transition:color .18s var(--ease),opacity .18s var(--ease);opacity:.7; }
+.co-close { position:absolute;top:-5px;right:-6px;width:24px;height:24px;display:grid;place-items:center;border:0;border-radius:4px;background:none;color:var(--ink-faint);cursor:pointer;z-index:3;opacity:.65;transition:color .18s var(--ease),opacity .18s var(--ease); }
 .co-close svg { width:11px;height:11px;display:block; }
 .co-close:hover { color:var(--ink);opacity:1; }
 
-/* 首字母作首字下沉，替代原先的方块头像，避免与列表头像重复成盒 */
-.co-id { display:flex;align-items:baseline;gap:9px;min-width:0; }
-.co-mono { flex:0 0 auto;width:auto;height:auto;border:0;background:none;font-family:var(--serif);font-optical-sizing:auto;font-weight:700;font-size:27px;line-height:.9;letter-spacing:-.03em;color:var(--gold);opacity:.85;user-select:none; }
-.co-name { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.028em;color:var(--navy);overflow-wrap:anywhere; }
+/* 首字母标记已取消：公司名直接起排，避免与列表头像语法重复 */
+.co-mono { display:none !important; }
+
+.co-id { display:block;min-width:0; }
+.co-name { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:20px;font-weight:700;line-height:1.28;letter-spacing:-.024em;color:var(--navy);overflow-wrap:anywhere;text-wrap:pretty; }
 .co-meta { display:flex;flex-wrap:wrap;gap:4px 12px;margin:10px 0 0; }
 .co-chip { display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-faint);font-variant-numeric:tabular-nums; }
 .co-chip i { width:5px;height:5px;border-radius:50%;background:var(--region,var(--other)); }
 
-/* ---------- 指标：无格线，靠基线与字号层级 ---------- */
+/* ---------- 指标：基线对齐，无格线 ---------- */
 .co-kpis { display:flex;align-items:baseline;gap:var(--s5);margin:var(--s5) 0 0;border:0; }
 .co-kpi { padding:0;border:0;min-width:0; }
-.co-k { margin:0 0 5px;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap; }
-.co-v { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:25px;font-weight:700;line-height:.95;letter-spacing:-.04em;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap; }
-.co-kpi:first-child .co-v { font-size:33px; }
+.co-k { margin:0 0 6px;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap; }
+.co-v { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:24px;font-weight:700;line-height:.95;letter-spacing:-.04em;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap; }
+.co-kpi:first-child .co-v { font-size:31px; }
 .co-v small { font-family:var(--sans);font-size:10px;font-weight:650;letter-spacing:0;color:var(--ink-faint);margin-left:2px; }
 
 /* ---------- 区块 ---------- */
-.co-sec { padding:0;margin-top:26px; }
+.co-sec { padding:0;margin-top:26px;border:0; }
 .co-sec + .co-sec { border-top:0; }
 .co-h { display:flex;align-items:center;gap:var(--s2);margin:0 0 var(--s3);font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);font-weight:700; }
 .co-hint { display:inline-flex;align-items:center;gap:4px;margin-left:auto;font-size:8.5px;letter-spacing:.08em;text-transform:none;color:var(--ink-faint);white-space:nowrap; }
@@ -51,32 +50,33 @@
 
 /* ---------- 分布直方 ---------- */
 .co-hist { display:grid;gap:1px; }
-.co-bar { position:relative;display:grid;grid-template-columns:46px 1fr 18px 26px;align-items:center;gap:9px;width:100%;padding:5px 0;border:0;border-radius:0;background:none;font-family:var(--sans);text-align:left;cursor:pointer; }
+.co-bar { position:relative;display:grid;grid-template-columns:46px 1fr 18px 26px;align-items:center;gap:10px;width:100%;padding:5px 0;border:0;border-radius:0;background:none;font-family:var(--sans);text-align:left;cursor:pointer; }
 .co-bar-l { font-size:11px;color:var(--ink-soft);white-space:nowrap;transition:color .18s var(--ease); }
-.co-bar-t { height:4px;background:color-mix(in srgb,var(--line-strong) 70%,transparent);overflow:hidden;min-width:0;border-radius:1px; }
-.co-bar-f { display:block;width:0;height:100%;border-radius:1px;background:var(--navy);opacity:.85;transition:width .8s cubic-bezier(.2,.8,.2,1),background-color .2s,opacity .2s; }
+.co-bar-t { height:4px;background:color-mix(in srgb,var(--line-strong) 62%,transparent);overflow:hidden;min-width:0;border-radius:2px; }
+[data-theme="dark"] .co-bar-t { background:color-mix(in srgb,var(--ink) 14%,transparent); }
+.co-bar-f { display:block;width:0;height:100%;border-radius:2px;background:var(--navy);opacity:.85;transition:width .8s cubic-bezier(.2,.8,.2,1),background-color .2s,opacity .2s; }
 [data-theme="dark"] .co-bar-f { background:var(--chart); }
 .co-bar:hover .co-bar-l { color:var(--ink); }
 .co-bar:hover .co-bar-f { opacity:1; }
 .co-bar-v { font-family:var(--mono);font-size:10.5px;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums; }
 .co-bar-p { font-family:var(--mono);font-size:9px;color:var(--ink-faint);text-align:right;font-variant-numeric:tabular-nums; }
-.co-bar.empty { cursor:default;opacity:.4; }
-.co-bar.empty:hover .co-bar-l { color:var(--ink-soft); }
+.co-bar.empty { cursor:default; }
+.co-bar.empty .co-bar-l,.co-bar.empty .co-bar-v { color:var(--ink-faint);opacity:.75; }
+.co-bar.empty:hover .co-bar-l { color:var(--ink-faint); }
 .co-bar.active .co-bar-l { color:var(--gold-deep);font-weight:650; }
 [data-theme="dark"] .co-bar.active .co-bar-l { color:var(--gold-hi); }
 .co-bar.active .co-bar-f,[data-theme="dark"] .co-bar.active .co-bar-f { background:var(--gold);opacity:1; }
 .co-bar.active .co-bar-v { color:var(--gold-deep); }
 [data-theme="dark"] .co-bar.active .co-bar-v { color:var(--gold-hi); }
-/* 选中态用左侧细金标记，而不是填充一个色块 */
-.co-bar.active::before { content:"";position:absolute;left:-11px;top:7px;bottom:7px;width:2px;border-radius:1px;background:var(--gold); }
+.co-bar.active::before { content:"";position:absolute;left:-12px;top:7px;bottom:7px;width:2px;border-radius:1px;background:var(--gold); }
 .co-bar:focus-visible { outline:1.5px solid var(--gold);outline-offset:3px; }
 
-/* ---------- 分布轴（每刻度一个职位） ---------- */
-.co-axis { position:relative;height:54px;margin-top:2px; }
-.co-plot { position:absolute;left:0;right:0;top:4px;height:32px;border-bottom:1px solid var(--line-strong); }
-.co-band { position:absolute;top:6px;bottom:4px;background:var(--accent-soft);border-radius:0; }
-.co-tick { position:absolute;top:10px;height:15px;width:1px;margin-left:-.5px;background:var(--navy);opacity:.3; }
-[data-theme="dark"] .co-tick { background:var(--ink);opacity:.36; }
+/* ---------- 分布轴 ---------- */
+.co-axis { position:relative;height:54px;margin-top:4px; }
+.co-plot { position:absolute;left:0;right:0;top:4px;height:32px;border-bottom:1px solid color-mix(in srgb,var(--line-strong) 80%,transparent); }
+.co-band { position:absolute;top:6px;bottom:4px;background:var(--accent-soft);border-radius:2px; }
+.co-tick { position:absolute;top:10px;height:15px;width:1px;margin-left:-.5px;background:var(--navy);opacity:.28; }
+[data-theme="dark"] .co-tick { background:var(--ink);opacity:.34; }
 .co-mk { position:absolute;top:0;bottom:0;width:0;margin-left:-.5px; }
 .co-mk.co-med { border-left:1px solid var(--navy); }
 .co-mk.co-mean { border-left:1px dashed var(--gold); }
@@ -85,40 +85,52 @@
 .co-mk.co-mean::after { background:var(--gold); }
 .co-scale { position:absolute;left:0;right:0;top:42px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--ink-faint);font-variant-numeric:tabular-nums; }
 
-/* ---------- 脚注 ---------- */
-.co-foot { margin-top:24px;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:5px; }
-.co-fact { display:flex;align-items:baseline;gap:var(--s3); }
+/* ---------- 事实脚注：键值同行、右对齐数字 ---------- */
+.co-foot { margin-top:24px;padding-top:0;border-top:0;display:grid;gap:7px; }
+.co-fact { display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:var(--s3); }
 .co-fact-k { font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap; }
-.co-fact b { margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap; }
-.co-note { margin:12px 0 0;font-family:var(--serif);font-optical-sizing:auto;font-style:italic;font-size:11.5px;line-height:1.6;color:var(--ink-faint);padding:0;border:0; }
+.co-fact b { margin:0;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right; }
+.co-note { margin:14px 0 0;font-family:var(--serif);font-optical-sizing:auto;font-style:italic;font-size:11.5px;line-height:1.65;color:var(--ink-faint);padding:0;border:0; }
 
 /* ---------- 紧凑密度 ---------- */
 body.compact .co-kpis { margin-top:var(--s4);gap:var(--s4); }
 body.compact .co-sec { margin-top:20px; }
 body.compact .co-foot { margin-top:18px; }
-body.compact .co-kpi:first-child .co-v { font-size:29px; }
+body.compact .co-kpi:first-child .co-v { font-size:28px; }
 body.compact .co-v { font-size:22px; }
 
-/* ---------- 布局：与职位列表平行双列 ---------- */
+/* =========================================================
+   布局：与职位列表平行双列
+   面板不描边，改为浅一阶的纸面（tonal plane）
+   ========================================================= */
 .content-row { display:flex;flex-direction:column;align-items:stretch; }
 .content-row > #jobs { min-width:0; }
-.co-panel.on { order:-1;margin:var(--s5) 0 var(--s2);padding:var(--s5) 0 0;border-top:1px solid var(--line-strong); }
+
+.co-panel.on {
+  order:-1;
+  margin:var(--s5) 0 var(--s3);
+  padding:var(--s5);
+  background:var(--surface);
+  border:0;border-radius:4px;
+  box-shadow:none;
+}
+[data-theme="dark"] .co-panel.on { background:color-mix(in srgb,var(--surface) 76%,var(--bg)); }
 
 @media (min-width:560px) and (max-width:899.98px) {
   .co-panel.on { max-width:520px;margin-left:auto; }
 }
 
-/* 并列：一根发丝竖线分栏，别无其他容器 */
 @media (min-width:900px) {
-  .content-row { flex-direction:row;align-items:flex-start;gap:0; }
+  .content-row { flex-direction:row;align-items:flex-start;gap:var(--s5); }
   .content-row > #jobs { order:0;flex:1 1 auto; }
-  .co-panel.on { order:1;flex:0 0 286px;width:286px;max-width:none;margin:var(--s6) 0 0;padding:2px 0 var(--s5) var(--s5);border-top:0;border-left:1px solid var(--line);position:sticky;top:104px;max-height:calc(100vh - 128px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin; }
+  .co-panel.on { order:1;flex:0 0 300px;width:300px;max-width:none;margin:var(--s6) 0 0;padding:var(--s5);position:sticky;top:104px;max-height:calc(100vh - 128px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin; }
 }
 @media (min-width:1060px) {
-  .co-panel.on { flex-basis:322px;width:322px;padding-left:var(--s6); }
+  .content-row { gap:var(--s6); }
+  .co-panel.on { flex-basis:328px;width:328px;padding:var(--s5) var(--s5) var(--s6); }
 }
 @media (min-width:1320px) {
-  .co-panel.on { flex-basis:348px;width:348px; }
+  .co-panel.on { flex-basis:352px;width:352px; }
 }
 
 @media (prefers-reduced-motion:reduce) {
@@ -127,9 +139,10 @@ body.compact .co-v { font-size:22px; }
 }
 
 @media (max-width:420px) {
+  .co-panel.on { padding:var(--s4); }
   .co-kpis { gap:var(--s4); }
-  .co-kpi:first-child .co-v { font-size:29px; }
-  .co-v { font-size:22px; }
+  .co-kpi:first-child .co-v { font-size:28px; }
+  .co-v { font-size:21px; }
   .co-bar { grid-template-columns:44px 1fr 18px 26px;gap:8px; }
 }
 
