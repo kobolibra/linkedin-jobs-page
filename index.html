@@ -102,31 +102,33 @@
         <div class="kw-list" id="kwList"></div>
       </div>
     </div>
-    <aside class="co-panel" id="coPanel" aria-labelledby="coName" aria-live="polite">
-      <div class="co-card">
-        <div class="co-head">
-          <p class="co-eyebrow">Company Insight</p>
-          <button class="co-close" id="coClose" aria-label="清除机构筛选" title="清除机构筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-          <div class="co-id"><span class="co-mono" id="coMono">—</span><h2 class="co-name" id="coName">—</h2></div>
-          <div class="co-meta" id="coRegions"></div>
+    <div class="content-row">
+      <main id="jobs"></main>
+      <aside class="co-panel" id="coPanel" aria-labelledby="coName" aria-live="polite">
+        <div class="co-card">
+          <div class="co-head">
+            <p class="co-eyebrow">Company Insight</p>
+            <button class="co-close" id="coClose" aria-label="清除机构筛选" title="清除机构筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <div class="co-id"><span class="co-mono" id="coMono">—</span><h2 class="co-name" id="coName">—</h2></div>
+            <div class="co-meta" id="coRegions"></div>
+          </div>
+          <div class="co-kpis">
+            <div class="co-kpi"><p class="co-k">职位数</p><p class="co-v tnum" id="coCount">—</p></div>
+            <div class="co-kpi"><p class="co-k">平均</p><p class="co-v tnum" id="coMean">—</p></div>
+            <div class="co-kpi"><p class="co-k">中位</p><p class="co-v tnum" id="coMed">—</p></div>
+          </div>
+          <section class="co-sec">
+            <h3 class="co-h">已发布天数分布<span class="co-hint">点击筛选</span></h3>
+            <div class="co-hist" id="coHist"></div>
+          </section>
+          <section class="co-sec" id="coAxisSec">
+            <h3 class="co-h">分布轴<span class="co-hint"><i class="co-sw co-sw-med"></i>中位<i class="co-sw co-sw-mean"></i>平均</span></h3>
+            <div class="co-axis"><div class="co-plot" id="coPlot"></div><div class="co-scale" id="coScale"></div></div>
+          </section>
+          <div class="co-foot" id="coFoot"></div>
         </div>
-        <div class="co-kpis">
-          <div class="co-kpi"><p class="co-k">职位数</p><p class="co-v tnum" id="coCount">—</p></div>
-          <div class="co-kpi"><p class="co-k">平均</p><p class="co-v tnum" id="coMean">—</p></div>
-          <div class="co-kpi"><p class="co-k">中位</p><p class="co-v tnum" id="coMed">—</p></div>
-        </div>
-        <section class="co-sec">
-          <h3 class="co-h">已发布天数分布<span class="co-hint">点击筛选</span></h3>
-          <div class="co-hist" id="coHist"></div>
-        </section>
-        <section class="co-sec" id="coAxisSec">
-          <h3 class="co-h">分布轴<span class="co-hint"><i class="co-sw co-sw-med"></i>中位<i class="co-sw co-sw-mean"></i>平均</span></h3>
-          <div class="co-axis"><div class="co-plot" id="coPlot"></div><div class="co-scale" id="coScale"></div></div>
-        </section>
-        <div class="co-foot" id="coFoot"></div>
-      </div>
-    </aside>
-    <main id="jobs"></main>
+      </aside>
+    </div>
     <div class="empty" id="empty" role="status" aria-live="polite"><div class="big">未找到匹配的职位</div><div>试试调整筛选条件或清空搜索关键词。</div></div>
     <footer class="footer">
       <span>数据来源：LinkedIn · 每 6 小时自动同步</span>
