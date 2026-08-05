@@ -23,7 +23,7 @@
     if(!comp||!ages||!ages.length){hide();return;}
     const s=ages.slice().sort((a,b)=>a-b),n=s.length;
     const mean=s.reduce((x,y)=>x+y,0)/n,med=quant(s,.5),q1=quant(s,.25),q3=quant(s,.75),lo=s[0],hi=s[n-1];
-    elMono.textContent=monogram(comp);
+    if(elMono)elMono.textContent=monogram(comp);
     elName.textContent=comp;elName.title=comp;
     elRegions.innerHTML=Object.keys(REGIONS).filter(k=>regions&&regions[k]).map(k=>'<span class="co-chip" data-region="'+k+'"><i></i>'+k+' '+regions[k]+'</span>').join("");
     elCount.textContent=n;
@@ -50,10 +50,10 @@
       elAxisSec.style.display="none";
     }
     const skew=med>0?mean/med:1;
-    const note=n<4?"样本较少，指标仅供参考。":skew>1.2?"分布右偏——少量长期未关闭的职位抬高了平均值，以中位数为准。":skew<.85?"分布左偏——近期集中放出，早期职位已较少。":"分布接近对称——发帖节奏稳定。";
+    const note=n<4?"样本较少，指标仅供参考。":skew>1.2?"分布右偏——少量长期未关闭的职位抬高了平均值，以中位数为准。":skew<.85?"分布左偏——近期集中放出，早期职位已较少。":"分布接近对称——发布节奏稳定。";
     elFoot.innerHTML='<div class="co-fact"><span class="co-fact-k">最新</span><b>'+dayText(lo)+'</b></div>'
       +'<div class="co-fact"><span class="co-fact-k">最早</span><b>'+dayText(hi)+'</b></div>'
-      +'<div class="co-fact"><span class="co-fact-k">四分位</span><b>'+num(q1)+' – '+num(q3)+' 天</b></div>'
+      +'<div class="co-fact" title="排序后去掉最新 25% 与最早 25%，中间一半职位的已发布天数区间"><span class="co-fact-k">中间 50%</span><b>'+num(q1)+' – '+num(q3)+' 天</b></div>'
       +'<p class="co-note">'+note+'</p>';
     panel.classList.add("on");document.body.classList.add("co-open");
     requestAnimationFrame(()=>{panel.classList.add("in");elHist.querySelectorAll(".co-bar-f").forEach(f=>{f.style.width=f.dataset.w+"%";});});
