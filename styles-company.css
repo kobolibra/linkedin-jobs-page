@@ -1,6 +1,9 @@
 /* =========================================================
    LinkedIn 金融职位精选 · 视觉系统 3/3
-   机构统计面板 Company Insight（桌面右侧停靠 / 窄屏内联）
+   机构统计面板 Company Insight
+   布局原则：永不遮挡、永不挤压正文列
+   - 宽屏（≥ 1704px，右侧留白容得下）：完全位于正文右侧留白内的停靠卡片
+   - 其余尺寸：列表上方的内联卡片（≥ 640px 时右对齐）
    ========================================================= */
 
 .co-panel { display:none; }
@@ -95,18 +98,19 @@ body.compact .co-kpi:first-child { padding-left:var(--s4); }
 body.compact .co-foot { padding:var(--s3) var(--s4) var(--s4); }
 body.compact .co-v { font-size:22px; }
 
-/* ---------- 桌面端：右侧停靠，正文让位 ---------- */
-@media (min-width:1120px) {
-  .co-panel.on { position:fixed;top:104px;right:max(var(--s5),calc(50vw - 540px));width:314px;max-height:calc(100vh - 136px);overflow-y:auto;overscroll-behavior:contain;margin:0;z-index:15;transform:translateY(6px); }
+/* ---------- 中屏：内联在列表上方、右对齐（不遮挡、不挤压正文） ---------- */
+@media (min-width:640px) {
+  .co-panel.on { max-width:520px;margin-left:auto; }
+}
+
+/* ---------- 宽屏：仅当右侧留白真正容得下时才停靠，卡片完全位于正文之外 ---------- */
+@media (min-width:1704px) {
+  .co-panel.on { position:fixed;top:104px;left:calc(50vw + 540px + var(--s5));width:min(320px,calc(50vw - 588px));max-width:none;max-height:calc(100vh - 136px);overflow-y:auto;overscroll-behavior:contain;margin:0;z-index:15;transform:translateY(6px); }
   .co-panel.on.in { transform:none; }
-  body.co-open .shell { padding-right:calc(314px + var(--s5) + var(--s6)); }
-  .shell { transition:padding-right .42s var(--ease); }
-  body.co-open .totop { right:calc(max(var(--s5),calc(50vw - 540px)) + 314px + var(--s3)); }
 }
 
 @media (prefers-reduced-motion:reduce) {
   .co-panel.on,.co-panel.on.in { opacity:1;transform:none;transition:none; }
-  .shell { transition:none; }
   .co-bar-f { transition:none; }
 }
 
