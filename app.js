@@ -194,10 +194,16 @@ function apply(){
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
   let visible=0;
+  const coAges=[],coRegions={};
   jobsEl.querySelectorAll(".day").forEach(sec=>{
     let shown=0;
     sec.querySelectorAll(".job").forEach(card=>{
-      const ok=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&ageMatch(ageSel,card.dataset.age===""?null:+card.dataset.age)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
+      const age=card.dataset.age===""?null:+card.dataset.age;
+      /* base：除“发布时间”之外的全部筛选条件。机构统计以 base 为样本，
+         因此选中某一时间区间时，分布图仍然完整，不会塌缩为单根柱子。 */
+      const base=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
+      const ok=base&&ageMatch(ageSel,age);
+      if(base&&comp!=="all"&&age!=null){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
       card.classList.toggle("hidden",!ok);if(ok)shown++;
     });
     const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shown+" 个职位";
@@ -205,6 +211,7 @@ function apply(){
   });
   countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
   emptyEl.classList.toggle("show",visible===0);
+  if(typeof renderCo==="function")renderCo(comp==="all"?null:comp,coAges,coRegions,ageSel);
 }
 document.addEventListener("keydown",e=>{
   const tag=(e.target.tagName||"").toLowerCase();
