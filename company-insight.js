@@ -72,50 +72,42 @@
     }
 
     /* ═══════════════════════════════════════════
-       分析引擎：数据驱动的模式识别
-       每个判断都锚定在具体数字上，不臆测动机，不给建议。
-       结构：核心发现 → 分布证据 → 统计特征
+       分析引擎：模式识别 + 深度洞察
+       核心发现（1行）+ 关键统计关系（1行，可选）。
+       直方图已有完整分布，KPI 卡已有中位/平均，文本只补充图表无法表达的关系。
        ═══════════════════════════════════════════ */
     const pct=x=>Math.round(x*100)+"%";
     const fresh=freshN/n,stale=s.filter(d=>d>=22).length/n,skew=med>0?mean/med:1;
-    const f1w=pct(freshN/n),f2w=pct(s.filter(d=>d>=8&&d<=14).length/n),
-          f3w=pct(s.filter(d=>d>=15&&d<=21).length/n),f3wp=pct(s.filter(d=>d>=22).length/n);
     let note='';
 
     if(n<4){
-      note='<p class="co-note"><b>样本较少</b>（'+n+' 个职位），统计指标仅供参考。</p>';
+      note='<p class="co-note"><b>样本较少</b>（'+n+' 个），统计指标仅供参考。</p>';
     }else{
-      /* 模式识别：根据新鲜度/存量占比自动判定招聘节奏 */
       let lead='';
       if(fresh>=0.8){
-        lead='<b>几乎全部为近期新发</b>，'+f1w+' 在 7 日内发布。';
+        lead='<b>几乎全部为近期新发</b>，'+pct(fresh)+' 在 7 日内发布。';
       }else if(fresh>=0.6){
-        lead='<b>近期招聘活跃</b>，7 日内新发职位占 '+f1w+'。';
+        lead='<b>近期招聘活跃</b>，7 日内新发约占 '+pct(fresh)+'。';
       }else if(stale>=0.7){
-        lead='<b>存量职位严重堆积</b>，'+f3wp+' 的职位已发布超过 3 周。';
+        lead='<b>存量职位严重堆积</b>，'+pct(stale)+' 已超 3 周。';
       }else if(stale>=0.5){
-        lead='<b>以存量职位为主</b>，'+f3wp+' 的职位已发布超过 3 周';
-        if(freshN>0)lead+='，近 7 日仅新增 '+freshN+' 个职位（'+f1w+'）';
+        lead='<b>以存量职位为主</b>，'+pct(stale)+' 已超 3 周';
+        if(freshN>0)lead+='，近 7 日仅新增 '+freshN+' 个';
         lead+='。';
       }else if(fresh>=0.35){
         lead='<b>招聘节奏平稳</b>，新发与存量大致均衡。';
       }else{
-        lead='<b>招聘节奏偏慢</b>，新发职位仅占 '+f1w+'。';
+        lead='<b>招聘节奏偏慢</b>，新发仅占 '+pct(fresh)+'。';
       }
-      /* 分布证据 + 统计特征 */
-      note='<p class="co-note">'+lead
-        +' 1 周内 '+f1w+'，2 周内 '+f2w+'，3 周内 '+f3w+'，3 周+ '+f3wp+'。'
-        +'中位 '+num(med)+' 天，平均 '+num(mean)+' 天';
-      if(skew>1.5){
-        note+='（分布明显右偏，均值/中位='+num(skew)+'，少数长期未关闭职位拉高了平均值）。';
-      }else if(skew>1.3){
-        note+='（分布右偏，均值/中位='+num(skew)+'）。';
+      let depth='';
+      if(skew>1.3){
+        depth='均值高于中位，少量长期职位拉高了平均值。';
       }else if(skew<0.8){
-        note+='（分布左偏，均值/中位='+num(skew)+'）。';
-      }else{
-        note+='。';
+        depth='均值低于中位，少量新发职位拉低了平均值。';
+      }else if(stale>=0.5&&n>=10){
+        depth='堆积是系统性的，非个别职位撑高。';
       }
-      note+='</p>';
+      note='<p class="co-note">'+lead+(depth?' '+depth:'')+'</p>';
     }
 
     elFoot.innerHTML='<div class="co-facts">'
