@@ -3,7 +3,7 @@
    设计策略：用「面」而不是「线」来分区。
    - 不用边框、不用阴影、不用竖分割线；
    - 面板坐在一块比页面底色更浅一阶的纸面上（tonal plane）；
-   - 三个指标同字号平等排列，不做大小差。
+   - 四个指标平等排列，以色彩编码传递信息而非装饰。
    ========================================================= */
 
 .co-panel { display:none; }
@@ -13,8 +13,8 @@
 .co-card { position:relative;background:none;border:0;border-radius:0;box-shadow:none; }
 
 /* ---------- 抬头：公司名直接作为标题 ---------- */
-.co-eyebrow { display:none !important; }   /* 去掤 COMPANY INSIGHT 标题行 */
-.co-mono { display:none !important; }      /* 去掤首字母标记 */
+.co-eyebrow { display:none !important; }
+.co-mono { display:none !important; }
 
 .co-head { position:relative;padding:0; }
 .co-close { position:absolute;top:-2px;right:-6px;width:24px;height:24px;display:grid;place-items:center;border:0;border-radius:4px;background:none;color:var(--ink-faint);cursor:pointer;z-index:3;opacity:.55;transition:color .18s var(--ease),opacity .18s var(--ease); }
@@ -27,12 +27,18 @@
 .co-chip { display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-faint);font-variant-numeric:tabular-nums; }
 .co-chip i { width:5px;height:5px;border-radius:50%;background:var(--region,var(--other)); }
 
-/* ---------- 指标：三项平等，基线对齐，无格线 ---------- */
+/* ---------- 指标：四项平等，基线对齐，无格线 ---------- */
 .co-kpis { display:flex;align-items:baseline;gap:var(--s5);margin:var(--s5) 0 0;border:0; }
 .co-kpi { padding:0;border:0;min-width:0; }
 .co-k { margin:0 0 6px;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap; }
 .co-v { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:26px;font-weight:700;line-height:.95;letter-spacing:-.035em;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap; }
 .co-v small { font-family:var(--sans);font-size:10px;font-weight:650;letter-spacing:0;color:var(--ink-faint);margin-left:2px; }
+
+/* KPI 色彩编码：新鲜=绿调，陈旧=红褐调 */
+.co-kpi-fresh .co-v { color:var(--sg); }
+.co-kpi-stale .co-v { color:var(--cn); }
+[data-theme="dark"] .co-kpi-fresh .co-v { color:var(--sg); }
+[data-theme="dark"] .co-kpi-stale .co-v { color:var(--cn); }
 
 /* ---------- 区块 ---------- */
 .co-sec { padding:0;margin-top:26px;border:0; }
@@ -43,7 +49,7 @@
 .co-sw-med { border-top-style:solid;border-top-color:var(--navy); }
 .co-sw-mean { border-top-style:dashed;border-top-color:var(--gold);margin-left:5px; }
 
-/* ---------- 分布直方 ---------- */
+/* ---------- 分布直方（三层色彩编码）---------- */
 .co-hist { display:grid;gap:1px; }
 .co-bar { position:relative;display:grid;grid-template-columns:46px 1fr 18px 26px;align-items:center;gap:10px;width:100%;padding:5px 0;border:0;border-radius:0;background:none;font-family:var(--sans);text-align:left;cursor:pointer; }
 .co-bar-l { font-size:11px;color:var(--ink-soft);white-space:nowrap;transition:color .18s var(--ease); }
@@ -51,6 +57,22 @@
 [data-theme="dark"] .co-bar-t { background:color-mix(in srgb,var(--ink) 14%,transparent); }
 .co-bar-f { display:block;width:0;height:100%;border-radius:2px;background:var(--navy);opacity:.85;transition:width .8s cubic-bezier(.2,.8,.2,1),background-color .2s,opacity .2s; }
 [data-theme="dark"] .co-bar-f { background:var(--chart); }
+
+/* 色彩编码：新鲜 → 绿色系，中期 → 琥珀系，陈旧 → 灰色系 */
+.co-bar.fresh .co-bar-f { background:var(--sg);opacity:.82; }
+[data-theme="dark"] .co-bar.fresh .co-bar-f { background:var(--sg);opacity:.78; }
+.co-bar.fresh .co-bar-l { color:var(--sg); }
+[data-theme="dark"] .co-bar.fresh .co-bar-l { color:var(--sg); }
+
+.co-bar.mid .co-bar-f { background:var(--hk);opacity:.78; }
+[data-theme="dark"] .co-bar.mid .co-bar-f { background:var(--hk);opacity:.74; }
+.co-bar.mid .co-bar-l { color:var(--hk); }
+[data-theme="dark"] .co-bar.mid .co-bar-l { color:var(--hk); }
+
+.co-bar.stale .co-bar-f { background:var(--ink-faint);opacity:.65; }
+[data-theme="dark"] .co-bar.stale .co-bar-f { background:var(--ink-faint);opacity:.55; }
+.co-bar.stale .co-bar-l { color:var(--ink-faint); }
+
 .co-bar:hover .co-bar-l { color:var(--ink); }
 .co-bar:hover .co-bar-f { opacity:1; }
 .co-bar-v { font-family:var(--mono);font-size:10.5px;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums; }
@@ -80,18 +102,37 @@
 .co-mk.co-mean::after { background:var(--gold); }
 .co-scale { position:absolute;left:0;right:0;top:42px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--ink-faint);font-variant-numeric:tabular-nums; }
 
+/* ---------- 招聘动量指示器 ---------- */
+.co-momentum { display:flex;align-items:center;gap:7px;margin-bottom:12px; }
+.mo-dot { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
+.mo-label { font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;line-height:1; }
+.mo-hi .mo-dot { background:var(--sg); }
+.mo-hi .mo-label { color:var(--sg); }
+.mo-md .mo-dot { background:var(--hk); }
+.mo-md .mo-label { color:var(--hk); }
+.mo-lo .mo-dot { background:var(--cn); }
+.mo-lo .mo-label { color:var(--cn); }
+[data-theme="dark"] .mo-hi .mo-dot,[data-theme="dark"] .mo-hi .mo-label { color:var(--sg); }
+[data-theme="dark"] .mo-md .mo-dot,[data-theme="dark"] .mo-md .mo-label { color:var(--hk); }
+[data-theme="dark"] .mo-lo .mo-dot,[data-theme="dark"] .mo-lo .mo-label { color:var(--cn); }
+
+/* ---------- 事实区 ---------- */
+.co-facts { display:grid;gap:4px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid color-mix(in srgb,var(--line) 80%,transparent); }
+
 /* ---------- 事实脚注 ---------- */
-.co-foot { margin-top:24px;padding-top:0;border-top:0;display:grid;gap:7px; }
+.co-foot { margin-top:24px;padding-top:0;border-top:0;display:block; }
 .co-fact { display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:var(--s3); }
 .co-fact-k { font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap; }
 .co-fact b { margin:0;font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right; }
-.co-note { margin:14px 0 0;font-family:var(--serif);font-optical-sizing:auto;font-style:italic;font-size:11.5px;line-height:1.65;color:var(--ink-faint);padding:0;border:0; }
+.co-note { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:12px;line-height:1.72;color:var(--ink-soft);padding:0;border:0; }
 
 /* ---------- 紧凑密度 ---------- */
 body.compact .co-kpis { margin-top:var(--s4);gap:var(--s4); }
 body.compact .co-sec { margin-top:20px; }
 body.compact .co-foot { margin-top:18px; }
 body.compact .co-v { font-size:23px; }
+body.compact .co-facts { margin-bottom:10px;padding-bottom:10px; }
+body.compact .co-note { font-size:11px;line-height:1.6; }
 
 /* =========================================================
    布局：与职位列表平行双列，面板坐在浅一阶纸面上
@@ -126,16 +167,25 @@ body.compact .co-v { font-size:23px; }
   .co-panel.on { flex-basis:352px;width:352px; }
 }
 
-@media (prefers-reduced-motion:reduce) {
-  .co-panel.on,.co-panel.on.in { opacity:1;transform:none;transition:none; }
-  .co-bar-f { transition:none; }
+/* 4-KPI 在小屏折叠为 2×2 网格 */
+@media (max-width:560px) {
+  .co-kpis { display:grid;grid-template-columns:1fr 1fr;gap:var(--s3) var(--s4); }
+  .co-v { font-size:23px; }
 }
 
 @media (max-width:420px) {
   .co-panel.on { padding:var(--s4); }
-  .co-kpis { gap:var(--s4); }
-  .co-v { font-size:23px; }
+  .co-kpis { gap:var(--s3) var(--s3); }
+  .co-v { font-size:21px; }
   .co-bar { grid-template-columns:44px 1fr 18px 26px;gap:8px; }
+  .co-momentum { margin-bottom:10px; }
+  .co-facts { margin-bottom:10px;padding-bottom:10px; }
+  .co-note { font-size:11px;line-height:1.6; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .co-panel.on,.co-panel.on.in { opacity:1;transform:none;transition:none; }
+  .co-bar-f { transition:none; }
 }
 
 @media print { .co-panel { display:none !important; } }
