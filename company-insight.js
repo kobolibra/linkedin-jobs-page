@@ -72,22 +72,50 @@
     }
 
     /* ═══════════════════════════════════════════
-       客观数据摘要：只说事实，不做解读
+       分析引擎：数据驱动的模式识别
+       每个判断都锚定在具体数字上，不臆测动机，不给建议。
+       结构：核心发现 → 分布证据 → 统计特征
        ═══════════════════════════════════════════ */
     const pct=x=>Math.round(x*100)+"%";
-    const skew=med>0?mean/med:1;
+    const fresh=freshN/n,stale=s.filter(d=>d>=22).length/n,skew=med>0?mean/med:1;
+    const f1w=pct(freshN/n),f2w=pct(s.filter(d=>d>=8&&d<=14).length/n),
+          f3w=pct(s.filter(d=>d>=15&&d<=21).length/n),f3wp=pct(s.filter(d=>d>=22).length/n);
     let note='';
 
     if(n<4){
-      note='<p class="co-note">样本较少（'+n+' 个职位），统计指标仅供参考。</p>';
+      note='<p class="co-note"><b>样本较少</b>（'+n+' 个职位），统计指标仅供参考。</p>';
     }else{
-      /* 分布概览：各段占比 + 中位/平均 + 偏态 */
-      const f1w=pct(freshN/n),f2w=pct(s.filter(d=>d>=8&&d<=14).length/n),f3w=pct(s.filter(d=>d>=15&&d<=21).length/n),f3wp=pct(s.filter(d=>d>=22).length/n);
-      note='<p class="co-note">1周内 '+f1w+'，2周内 '+f2w+'，3周内 '+f3w+'，3周+ '+f3wp+'。';
-      note+='中位 '+num(med)+' 天，平均 '+num(mean)+' 天';
-      if(skew>1.3)note+='（均值/中位='+num(skew)+'，分布右偏）。</p>';
-      else if(skew<.85)note+='（均值/中位='+num(skew)+'，分布左偏）。</p>';
-      else note+='（均值/中位='+num(skew)+'）。</p>';
+      /* 模式识别：根据新鲜度/存量占比自动判定招聘节奏 */
+      let lead='';
+      if(fresh>=0.8){
+        lead='<b>几乎全部为近期新发</b>，'+f1w+' 在 7 日内发布。';
+      }else if(fresh>=0.6){
+        lead='<b>近期招聘活跃</b>，7 日内新发职位占 '+f1w+'。';
+      }else if(stale>=0.7){
+        lead='<b>存量职位严重堆积</b>，'+f3wp+' 的职位已发布超过 3 周。';
+      }else if(stale>=0.5){
+        lead='<b>以存量职位为主</b>，'+f3wp+' 的职位已发布超过 3 周';
+        if(freshN>0)lead+='，近 7 日仅新增 '+freshN+' 个职位（'+f1w+'）';
+        lead+='。';
+      }else if(fresh>=0.35){
+        lead='<b>招聘节奏平稳</b>，新发与存量大致均衡。';
+      }else{
+        lead='<b>招聘节奏偏慢</b>，新发职位仅占 '+f1w+'。';
+      }
+      /* 分布证据 + 统计特征 */
+      note='<p class="co-note">'+lead
+        +' 1 周内 '+f1w+'，2 周内 '+f2w+'，3 周内 '+f3w+'，3 周+ '+f3wp+'。'
+        +'中位 '+num(med)+' 天，平均 '+num(mean)+' 天';
+      if(skew>1.5){
+        note+='（分布明显右偏，均值/中位='+num(skew)+'，少数长期未关闭职位拉高了平均值）。';
+      }else if(skew>1.3){
+        note+='（分布右偏，均值/中位='+num(skew)+'）。';
+      }else if(skew<0.8){
+        note+='（分布左偏，均值/中位='+num(skew)+'）。';
+      }else{
+        note+='。';
+      }
+      note+='</p>';
     }
 
     elFoot.innerHTML='<div class="co-facts">'
