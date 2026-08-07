@@ -79,10 +79,10 @@
         <select class="ctrl" id="age" aria-label="按发布时间筛选">
           <option value="all">全部时间</option>
           <option value="0">今天</option>
-          <option value="1-3">1–3 天</option>
-          <option value="4-7">4–7 天</option>
-          <option value="8-14">8–14 天</option>
-          <option value="15+">15 天以上</option>
+          <option value="1-7">1 周内</option>
+          <option value="8-14">2 周内</option>
+          <option value="15-21">3 周内</option>
+          <option value="22+">3 周+</option>
         </select>
         <div class="comp-group">
           <select class="ctrl" id="company" aria-label="按机构筛选"><option value="all">全部机构</option></select>
@@ -116,7 +116,7 @@
             <div class="co-kpi"><p class="co-k">职位数</p><p class="co-v tnum" id="coCount">—</p></div>
             <div class="co-kpi co-kpi-fresh"><p class="co-k">7日新增</p><p class="co-v tnum" id="coFresh">—</p></div>
             <div class="co-kpi"><p class="co-k">中位</p><p class="co-v tnum" id="coMed">—</p></div>
-            <div class="co-kpi co-kpi-stale"><p class="co-k">15天+</p><p class="co-v tnum" id="coStale">—</p></div>
+            <div class="co-kpi co-kpi-stale"><p class="co-k">3周+</p><p class="co-v tnum" id="coStale">—</p></div>
           </div>
           <section class="co-sec">
             <h3 class="co-h">已发布天数分布<span class="co-hint">点击筛选</span></h3>
