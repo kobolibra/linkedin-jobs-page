@@ -12,11 +12,11 @@
         elHist=$("coHist"),elAxisSec=$("coAxisSec"),elPlot=$("coPlot"),elScale=$("coScale"),
         elFoot=$("coFoot"),elClose=$("coClose");
   const BUCKETS=[
-    {v:"0",  label:"今天",    hit:d=>d===0,           tier:"fresh"},
-    {v:"1-3",label:"1–3 天",  hit:d=>d>=1&&d<=3,      tier:"fresh"},
-    {v:"4-7",label:"4–7 天",  hit:d=>d>=4&&d<=7,      tier:"fresh"},
-    {v:"8-14",label:"8–14 天",hit:d=>d>=8&&d<=14,     tier:"mid"},
-    {v:"15+",label:"15 天+",  hit:d=>d>=15,           tier:"stale"}
+    {v:"0",    label:"今天",    hit:d=>d===0,             tier:"fresh"},
+    {v:"1-7",  label:"1 周内",  hit:d=>d>=1&&d<=7,        tier:"fresh"},
+    {v:"8-14", label:"2 周内",  hit:d=>d>=8&&d<=14,       tier:"mid"},
+    {v:"15-21",label:"3 周内",  hit:d=>d>=15&&d<=21,      tier:"stale"},
+    {v:"22+",  label:"3 周+",   hit:d=>d>=22,             tier:"stale"}
   ];
   const quant=(a,p)=>{const i=(a.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return a[lo]+(a[hi]-a[lo])*(i-lo);};
   const num=n=>{const r=Math.round(n*10)/10;return Number.isInteger(r)?String(r):r.toFixed(1);};
@@ -36,7 +36,7 @@
       '<span class="co-chip" data-region="'+k+'"><i></i>'+k+' '+regions[k]+'</span>').join("");
 
     /* ── KPI 四指标 ── */
-    const freshN=s.filter(d=>d<=7).length,staleN=s.filter(d=>d>=15).length;
+    const freshN=s.filter(d=>d<=7).length,staleN=s.filter(d=>d>=22).length;
     elCount.textContent=n;
     elFresh.innerHTML=freshN+'<small>'+Math.round(freshN/n*100)+'%</small>';
     elMed.innerHTML=num(med)+'<small>天</small>';
@@ -75,7 +75,7 @@
        分析引擎：多维度判读 + 招聘动量
        ═══════════════════════════════════════════ */
     const skew=med>0?mean/med:1;
-    const fresh=s.filter(d=>d<=7).length/n,stale=s.filter(d=>d>=15).length/n,pct=x=>Math.round(x*100)+"%";
+    const fresh=s.filter(d=>d<=7).length/n,stale=s.filter(d=>d>=22).length/n,pct=x=>Math.round(x*100)+"%";
     let momentum,momentumClass,title,body;
 
     if(n<4){
@@ -88,7 +88,7 @@
       body+='。该机构当前招聘需求旺盛，建议尽快投递。</p>';
     }else if(fresh>=.35){
       momentum="medium";momentumClass="mo-md";title="招聘平稳";
-      body='<p class="co-note">'+pct(fresh)+' 新发（7日内），'+pct(stale)+' 存量（15天+），中位 '+num(med)+' 天';
+      body='<p class="co-note">'+pct(fresh)+' 新发（1周内），'+pct(stale)+' 存量（3周+），中位 '+num(med)+' 天';
       if(skew>1.3)body+='。分布右偏——少数职位长期未关闭，但大部分招聘周期正常';
       else if(skew<.85)body+='。分布左偏——多数职位已挂较久，少量新职位拉低了中位数';
       else body+='，分布接近对称，发布节奏稳定';
