@@ -34,11 +34,9 @@
 .co-v { margin:0;font-family:var(--serif);font-optical-sizing:auto;font-size:26px;font-weight:700;line-height:.95;letter-spacing:-.035em;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap; }
 .co-v small { font-family:var(--sans);font-size:10px;font-weight:650;letter-spacing:0;color:var(--ink-faint);margin-left:2px; }
 
-/* KPI 色彩编码：新鲜=绿调，陈旧=红褐调 */
+/* KPI 色彩编码：新鲜=绿调 */
 .co-kpi-fresh .co-v { color:var(--sg); }
-.co-kpi-stale .co-v { color:var(--cn); }
 [data-theme="dark"] .co-kpi-fresh .co-v { color:var(--sg); }
-[data-theme="dark"] .co-kpi-stale .co-v { color:var(--cn); }
 
 /* ---------- 区块 ---------- */
 .co-sec { padding:0;margin-top:26px;border:0; }
@@ -102,20 +100,6 @@
 .co-mk.co-mean::after { background:var(--gold); }
 .co-scale { position:absolute;left:0;right:0;top:42px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--ink-faint);font-variant-numeric:tabular-nums; }
 
-/* ---------- 招聘动量指示器 ---------- */
-.co-momentum { display:flex;align-items:center;gap:7px;margin-bottom:12px; }
-.mo-dot { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
-.mo-label { font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;line-height:1; }
-.mo-hi .mo-dot { background:var(--sg); }
-.mo-hi .mo-label { color:var(--sg); }
-.mo-md .mo-dot { background:var(--hk); }
-.mo-md .mo-label { color:var(--hk); }
-.mo-lo .mo-dot { background:var(--cn); }
-.mo-lo .mo-label { color:var(--cn); }
-[data-theme="dark"] .mo-hi .mo-dot,[data-theme="dark"] .mo-hi .mo-label { color:var(--sg); }
-[data-theme="dark"] .mo-md .mo-dot,[data-theme="dark"] .mo-md .mo-label { color:var(--hk); }
-[data-theme="dark"] .mo-lo .mo-dot,[data-theme="dark"] .mo-lo .mo-label { color:var(--cn); }
-
 /* ---------- 事实区 ---------- */
 .co-facts { display:grid;gap:4px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid color-mix(in srgb,var(--line) 80%,transparent); }
 
@@ -178,7 +162,6 @@ body.compact .co-note { font-size:11px;line-height:1.6; }
   .co-kpis { gap:var(--s3) var(--s3); }
   .co-v { font-size:21px; }
   .co-bar { grid-template-columns:44px 1fr 18px 26px;gap:8px; }
-  .co-momentum { margin-bottom:10px; }
   .co-facts { margin-bottom:10px;padding-bottom:10px; }
   .co-note { font-size:11px;line-height:1.6; }
 }
