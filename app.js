@@ -128,12 +128,22 @@ fetch("jobs.json?_="+Date.now())
     const distEl=document.getElementById("dist");
     distEl.innerHTML=Object.keys(rc).filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
     requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
-    const counts={};data.forEach(j=>{const k=dayKey(seenAt(j));counts[k]=(counts[k]||0)+1;});
+    /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
+    const RKEYS=["CN","HK","SG","OTHER"];
+    const rcounts={};data.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=new Date(),days=[];
-    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),count:counts[keyOf(d)]||0});}
-    const smax=Math.max(...days.map(d=>d.count),1);
+    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
+    const smax=Math.max(...days.map(d=>d.total),1);
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML=days.map(d=>'<div class="spark-col"><div class="spark-bar" data-h="'+(d.count/smax*100)+'">'+(d.count?'<span>'+d.count+'</span>':'')+'</div><span class="spark-label">'+d.label+'</span></div>').join("");
+    sparkEl.innerHTML=days.map((d,i)=>{
+      /* DOM 顺序 CN→OTHER，配合 column-reverse 视觉自下而上 */
+      let lastR=null;RKEYS.forEach(r=>{if((d.rc[r]||0)>0)lastR=r;});
+      const segs=RKEYS.map(r=>{const c=d.rc[r]||0;return c?'<span class="spark-seg'+(r===lastR?' top':'')+'" data-region="'+r+'" style="flex-grow:'+c+'"></span>':'';}).join("");
+      const bk=RKEYS.map(r=>{const c=d.rc[r]||0;return c?REGIONS[r].label+' '+c:'';}).filter(Boolean).join(' · ');
+      return '<div class="spark-col'+(i===days.length-1?' today':'')+'" title="'+d.label+' · '+d.total+' 个'+(bk?'（'+bk+'）':'')+'">'
+        +'<div class="spark-bar" data-h="'+(d.total/smax*100)+'">'+segs+(d.total?'<span class="spark-total">'+d.total+'</span>':'')+'</div>'
+        +'<span class="spark-label">'+d.label+'</span></div>';
+    }).join("");
     requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
