@@ -8,7 +8,7 @@
   if(!panel)return;
   const $=id=>document.getElementById(id);
   const elName=$("coName"),elMono=$("coMono"),elRegions=$("coRegions"),
-        elCount=$("coCount"),elFresh=$("coFresh"),elMed=$("coMed"),elStale=$("coStale"),
+        elCount=$("coCount"),elFresh=$("coFresh"),elMed=$("coMed"),elMean=$("coMean"),
         elHist=$("coHist"),elAxisSec=$("coAxisSec"),elPlot=$("coPlot"),elScale=$("coScale"),
         elFoot=$("coFoot"),elClose=$("coClose");
   const BUCKETS=[
@@ -36,11 +36,11 @@
       '<span class="co-chip" data-region="'+k+'"><i></i>'+k+' '+regions[k]+'</span>').join("");
 
     /* ── KPI 四指标 ── */
-    const freshN=s.filter(d=>d<=7).length,staleN=s.filter(d=>d>=22).length;
+    const freshN=s.filter(d=>d<=7).length;
     elCount.textContent=n;
     elFresh.innerHTML=freshN+'<small>'+Math.round(freshN/n*100)+'%</small>';
     elMed.innerHTML=num(med)+'<small>天</small>';
-    elStale.innerHTML=staleN+'<small>'+Math.round(staleN/n*100)+'%</small>';
+    elMean.innerHTML=num(mean)+'<small>天</small>';
 
     /* ── 直方图（三层色彩编码）── */
     const counts=BUCKETS.map(b=>s.filter(d=>b.hit(d)).length),cmax=Math.max.apply(null,counts.concat(1));
@@ -72,47 +72,30 @@
     }
 
     /* ═══════════════════════════════════════════
-       分析引擎：多维度判读 + 招聘动量
+       客观数据摘要：只说事实，不做解读
        ═══════════════════════════════════════════ */
+    const pct=x=>Math.round(x*100)+"%";
     const skew=med>0?mean/med:1;
-    const fresh=s.filter(d=>d<=7).length/n,stale=s.filter(d=>d>=22).length/n,pct=x=>Math.round(x*100)+"%";
-    let momentum,momentumClass,title,body;
+    let note='';
 
     if(n<4){
-      momentum=null;momentumClass="";title="";body="";
-      body='<p class="co-note">仅 '+n+' 个职位，统计特征尚不明确，建议持续关注该机构后续招聘动态。</p>';
-    }else if(fresh>=.6){
-      momentum="high";momentumClass="mo-hi";title="招聘活跃";
-      body='<p class="co-note">'+pct(fresh)+' 的职位在 7 天内发布，中位仅 '+num(med)+' 天';
-      if(skew>1.3)body+='，个别长期未关闭的职位拉高了平均值，但整体招聘节奏紧凑';
-      body+='。该机构当前招聘需求旺盛，建议尽快投递。</p>';
-    }else if(fresh>=.35){
-      momentum="medium";momentumClass="mo-md";title="招聘平稳";
-      body='<p class="co-note">'+pct(fresh)+' 新发（1周内），'+pct(stale)+' 存量（3周+），中位 '+num(med)+' 天';
-      if(skew>1.3)body+='。分布右偏——少数职位长期未关闭，但大部分招聘周期正常';
-      else if(skew<.85)body+='。分布左偏——多数职位已挂较久，少量新职位拉低了中位数';
-      else body+='，分布接近对称，发布节奏稳定';
-      body+='。该机构保持适度招聘，关注新发职位即可。</p>';
+      note='<p class="co-note">样本较少（'+n+' 个职位），统计指标仅供参考。</p>';
     }else{
-      momentum="low";momentumClass="mo-lo";title="招聘放缓";
-      body='<p class="co-note">'+pct(stale)+' 的职位已挂满 15 天以上，中位 '+num(med)+' 天';
-      if(freshN>0)body+='，最近 7 天仅有 '+freshN+' 个新职位';
-      else body+='，最近 7 天无新发职位';
-      if(hi>60)body+='，部分职位超 '+num(hi)+' 天未关闭，可能为长期储备';
-      body+='。该机构招聘节奏偏慢，存量职位仍可能有面试机会，但建议同步关注其他活跃机构。</p>';
+      /* 分布概览：各段占比 + 中位/平均 + 偏态 */
+      const f1w=pct(freshN/n),f2w=pct(s.filter(d=>d>=8&&d<=14).length/n),f3w=pct(s.filter(d=>d>=15&&d<=21).length/n),f3wp=pct(s.filter(d=>d>=22).length/n);
+      note='<p class="co-note">1周内 '+f1w+'，2周内 '+f2w+'，3周内 '+f3w+'，3周+ '+f3wp+'。';
+      note+='中位 '+num(med)+' 天，平均 '+num(mean)+' 天';
+      if(skew>1.3)note+='（均值/中位='+num(skew)+'，分布右偏）。</p>';
+      else if(skew<.85)note+='（均值/中位='+num(skew)+'，分布左偏）。</p>';
+      else note+='（均值/中位='+num(skew)+'）。</p>';
     }
 
-    const momentumHTML=momentum
-      ?'<div class="co-momentum '+momentumClass+'"><span class="mo-dot"></span><span class="mo-label">'+title+'</span></div>'
-      :'';
-
-    elFoot.innerHTML=momentumHTML
-      +'<div class="co-facts">'
+    elFoot.innerHTML='<div class="co-facts">'
       +'<div class="co-fact"><span class="co-fact-k">最新</span><b>'+dayText(lo)+'</b></div>'
       +'<div class="co-fact"><span class="co-fact-k">最早</span><b>'+dayText(hi)+'</b></div>'
       +'<div class="co-fact"><span class="co-fact-k">中间 50%</span><b>'+num(q1)+' – '+num(q3)+' 天</b></div>'
       +'</div>'
-      +body;
+      +note;
 
     panel.classList.add("on");document.body.classList.add("co-open");
     requestAnimationFrame(()=>{
