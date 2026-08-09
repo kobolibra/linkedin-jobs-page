@@ -32,7 +32,7 @@
     /* ── 抬头 ── */
     if(elMono)elMono.textContent=monogram(comp);
     elName.textContent=comp;elName.title=comp;
-    elRegions.innerHTML=Object.keys(REGIONS).filter(k=>regions&&regions[k]).map(k=>
+    elRegions.innerHTML=["CN","SG","HK","OTHER"].filter(k=>regions&&regions[k]).map(k=>
       '<span class="co-chip" data-region="'+k+'"><i></i>'+k+' '+regions[k]+'</span>').join("");
 
     /* ── KPI 四指标 ── */
