@@ -130,8 +130,8 @@ fetch("jobs.json?_="+Date.now())
     distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
     requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
-    // DOM 顺序配合 column-reverse：CN 视觉最上、SG 居中、HK 最下
-    const RKEYS=["OTHER","HK","SG","CN"];
+    // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
+    const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};data.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=new Date(),days=[];
     for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
