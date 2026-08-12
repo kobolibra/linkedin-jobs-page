@@ -127,7 +127,7 @@ fetch("jobs.json?_="+Date.now())
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
     const regionOrder=["CN","HK","SG","OTHER"];
-    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;const w=rc[k]/rmax*100;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+w+'"></div></div><span class="dist-val tnum">'+rc[k]+'</span><span class="dist-pct tnum">'+pct+'%</span></div>';}).join("");
+    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;const w=rc[k]/rmax*100;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+w+'"></div></div><span class="dist-val tnum">'+rc[k]+'<span class="dist-pct"> &middot; '+pct+'%</span></span></div>';}).join("");
     requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
     // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
@@ -146,10 +146,11 @@ fetch("jobs.json?_="+Date.now())
         +'<span class="spark-label">'+d.label+'</span></div>';
     }).join("");
     requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
-    /* 趋势线：纯 SVG polyline 连接每日柱顶，无圆点杂讯 */
+    /* 趋势线：SVG overlay 覆盖完整的 spark 内容区域（top:8px → bottom:0），
+       与 spark-col 高度一致，因此 y = 100 - h*100 的映射是精确的 */
     const svgH=100,colW=100/7;
     const trendPts=days.map((d,i)=>{
-      const x=((colW*i+colW/2)/100*100).toFixed(1);
+      const x=((colW*i+colW/2)).toFixed(1);
       const y=(100-(d.total/smax*100)).toFixed(1);
       return x+','+y;
     }).join(' ');
