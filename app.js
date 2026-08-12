@@ -127,7 +127,7 @@ fetch("jobs.json?_="+Date.now())
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
     const regionOrder=["CN","HK","SG","OTHER"];
-    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;const w=rc[k]/rmax*100;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+w+'"></div></div><span class="dist-val tnum">'+rc[k]+'<span class="dist-pct"> &middot; '+pct+'%</span></span></div>';}).join("");
+    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
     requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
     // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
@@ -146,23 +146,6 @@ fetch("jobs.json?_="+Date.now())
         +'<span class="spark-label">'+d.label+'</span></div>';
     }).join("");
     requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
-    /* 趋势线：SVG overlay 覆盖完整的 spark 内容区域（top:8px → bottom:0），
-       与 spark-col 高度一致，因此 y = 100 - h*100 的映射是精确的 */
-    const svgH=100,colW=100/7;
-    const trendPts=days.map((d,i)=>{
-      const x=((colW*i+colW/2)).toFixed(1);
-      const y=(100-(d.total/smax*100)).toFixed(1);
-      return x+','+y;
-    }).join(' ');
-    const avg7=days.reduce((s,d)=>s+d.total,0)/7;
-    const avgY=(100-(avg7/smax*100)).toFixed(1);
-    const trendOverlay=document.createElement("div");
-    trendOverlay.className="spark-overlay";
-    trendOverlay.innerHTML='<svg viewBox="0 0 100 '+svgH+'" preserveAspectRatio="none" class="spark-svg">'
-      +'<line x1="0" y1="'+avgY+'" x2="100" y2="'+avgY+'" class="spark-avg"/>'
-      +'<polyline points="'+trendPts+'" class="spark-line"/>'
-      +'</svg>';
-    sparkEl.appendChild(trendOverlay);
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
