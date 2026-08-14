@@ -97,7 +97,8 @@ kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.tr
 kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();apply();});
 renderKw();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
-fetch("jobs.json?_="+Date.now())
+// n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
+fetch("jobs.json",{cache:"no-cache"})
   .then(r=>r.json())
   .then(data=>{
     if(!Array.isArray(data))data=[];
