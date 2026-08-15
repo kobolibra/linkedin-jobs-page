@@ -378,3 +378,103 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-density.density-3{filter:saturate(1.10);}
 #dist .region-density.density-4{filter:saturate(1.18) contrast(1.04);}
 
+
+/* =========================================================
+   Lieflat editorial system · PALM adaptation
+   One palette, three data families, no decorative gradients.
+   ========================================================= */
+:root{
+  --bg:#f0efeb; --surface:#f8f7f2; --surface-2:#e4e5dc;
+  --ink:#263128; --ink-soft:#68736a; --ink-faint:#9da59c;
+  --line:#d4d8cf; --line-strong:#b4bcb0;
+  --navy:#263128; --navy-2:#43593b; --navy-3:#77835a;
+  --accent:#d4a017; --accent-soft:rgba(212,160,23,.14);
+  --gold-hi:#f2d17e; --gold:#d4a017; --gold-deep:#9a7310;
+  --chart:#43593b; --chart-track:#dfe2d9;
+  --shadow:none; --shadow-strong:none; --hairline:none;
+  --cn:#43593b; --cn-bg:#e5ebe1;
+  --hk:#a4771c; --hk-bg:#f2ead5;
+  --sg:#77835a; --sg-bg:#e9ede1;
+  --other:#8d9589; --other-bg:#e8ebe5;
+  --radius:24px;
+}
+[data-theme="dark"]{
+  --bg:#20251f; --surface:#293129; --surface-2:#343d32;
+  --ink:#f0efeb; --ink-soft:#aeb7aa; --ink-faint:#7f8a7c;
+  --line:rgba(240,239,235,.14); --line-strong:rgba(240,239,235,.28);
+  --navy:#f0efeb; --navy-2:#b4c49b; --navy-3:#92a763;
+  --accent:#f2d17e; --accent-soft:rgba(242,209,126,.16);
+  --gold-hi:#f7dfa0; --gold:#f2d17e; --gold-deep:#f2d17e;
+  --chart:#d8dfc9; --chart-track:rgba(240,239,235,.13);
+  --cn:#b4c49b; --cn-bg:rgba(180,196,155,.15);
+  --hk:#f2d17e; --hk-bg:rgba(242,209,126,.14);
+  --sg:#92a763; --sg-bg:rgba(146,167,99,.15);
+  --other:#aeb7aa; --other-bg:rgba(174,183,170,.13);
+}
+body{letter-spacing:-.005em;}
+.shell{max-width:1120px;}
+.card,.analytics-card{border:0;box-shadow:none;background:var(--surface);}
+.card:hover{border-color:transparent;box-shadow:none;}
+.analytics{margin-top:40px;}
+.analytics-card{border-radius:24px;overflow:hidden;}
+.ac-col{padding:30px 32px 26px;}
+.ac-col+.ac-col{border-left:1px solid var(--line);}
+.card h3,.ac-col h3{font-size:9px;letter-spacing:.18em;color:var(--ink-soft);font-weight:700;}
+.masthead{border-bottom:1px solid var(--line-strong);}
+.masthead::before{height:2px;background:var(--ink);}
+.masthead h1{color:var(--ink);}
+.eyebrow{color:var(--gold-deep);}
+.stats{border-top:1px solid var(--line);}
+.stat{border-right:1px solid var(--line);}
+.stat .v{color:var(--ink);}
+
+/* Regional field: discrete value ladder, quiet ledger grid, high signal-to-ink. */
+#dist .region-time-svg{padding-right:0;}
+#dist .region-time-baseline{stroke:var(--line-strong);stroke-width:.7;opacity:.9;}
+#dist .region-month-boundary{stroke:var(--line-strong);stroke-width:.8;opacity:.9;}
+#dist .region-month-label{font-size:7px;letter-spacing:.2em;fill:var(--ink-soft);}
+#dist .region-time-name{font-weight:700;fill:var(--ink-soft);}
+#dist .region-time-count{fill:var(--ink);}
+#dist .region-time-count tspan{fill:var(--ink-faint);}
+#dist .region-density{filter:none!important;}
+#dist .region-density.cn{fill:#43593b;}
+#dist .region-density.hk{fill:#a4771c;}
+#dist .region-density.sg{fill:#77835a;}
+#dist .region-density.other{fill:#8d9589;}
+
+/* Seven-day field: vertical editorial columns instead of repeated horizontal rules. */
+.analytics-card .spark{height:136px;padding:20px 8px 18px;display:flex;align-items:stretch;gap:10px;position:relative;}
+.analytics-card .spark::before{content:"";position:absolute;left:8px;right:8px;top:20px;bottom:36px;background:repeating-linear-gradient(to bottom,transparent 0,transparent calc(25% - 1px),var(--line) calc(25% - 1px),var(--line) 25%);pointer-events:none;}
+.analytics-card .spark::after{display:none;}
+.analytics-card .spark-col{height:100%;display:flex;align-items:stretch;justify-content:flex-end;gap:7px;position:relative;z-index:1;}
+.analytics-card .spark-bar{height:0;min-height:0;flex:1 1 auto;width:100%;background:transparent;border-radius:0;}
+.analytics-card .spark-seg{min-height:0;background:var(--sg);}
+.analytics-card .spark-seg[data-region="CN"]{background:var(--cn);}
+.analytics-card .spark-seg[data-region="HK"]{background:var(--hk);}
+.analytics-card .spark-seg[data-region="SG"]{background:var(--sg);}
+.analytics-card .spark-seg[data-region="OTHER"]{background:var(--other);}
+.analytics-card .spark-seg.top{border-radius:0;}
+.analytics-card .spark-total{top:-15px;color:var(--ink);font-size:8px;font-weight:700;}
+.analytics-card .spark-label{font-size:8px;color:var(--ink-faint);letter-spacing:.13em;}
+.analytics-card .spark-col.today .spark-label{color:var(--gold-deep);}
+
+/* Toolbar and feed inherit the same paper ledger grammar. */
+.toolbar{background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:1px solid var(--line-strong);}
+.search input,select.ctrl,.segmented,.pill{border-color:var(--line);background:var(--surface);border-radius:12px;}
+.seg.active{background:var(--ink);}
+.job{border-bottom:1px solid var(--line);border-radius:0;}
+.job:hover{background:color-mix(in srgb,var(--surface-2) 58%,transparent);}
+.mono{border:0;border-radius:14px;background:var(--region-bg);}
+.job-title{color:var(--ink);}
+.tag{border:0;border-radius:4px;background:var(--region-bg);}
+.day-head{border-bottom:1px solid var(--ink);}
+.day-date{color:var(--ink);}
+.day-new{border-color:var(--gold);color:var(--gold-deep);border-radius:0;}
+.footer{border-top:1px solid var(--ink);}
+
+@media(max-width:720px){
+  .analytics{margin-top:28px;}
+  .ac-col{padding:24px 20px 22px;}
+  .analytics-card .spark{height:116px;gap:5px;padding-left:3px;padding-right:3px;}
+  .analytics-card .spark::before{left:3px;right:3px;}
+}
