@@ -422,3 +422,28 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .rhythm-value{fill:#f2c2b7;}
 [data-theme="dark"] .rhythm-axis-label{fill:#c6a19a;}
 [data-theme="dark"] .rhythm-axis-label:last-child{fill:#f08b73;}
+
+/* Monochrome data field · fluorescent orange focal point · rhythm chart only */
+.rhythm-baseline{stroke:#c9c9c4;}
+.rhythm-stick{stroke:#20211f;opacity:.24;}
+.rhythm-stick.weekend{stroke:#8c8d88;opacity:.22;}
+.rhythm-tick{stroke:#9c9d98;opacity:.62;}
+.rhythm-tick.weekend{opacity:.34;}
+.rhythm-line{stroke:#20211f;stroke-width:2.15;}
+.rhythm-node{fill:#20211f;stroke:#20211f;}
+.rhythm-node.weekend{fill:var(--surface);stroke:#20211f;}
+.rhythm-node.focus{fill:#ff5a1f;stroke:#20211f;stroke-width:1.7;}
+.rhythm-value{fill:#20211f;}
+.rhythm-axis-label{fill:#858681;}
+.rhythm-axis-label:last-child{fill:#ff5a1f;}
+[data-theme="dark"] .rhythm-baseline{stroke:rgba(242,242,237,.24);}
+[data-theme="dark"] .rhythm-stick{stroke:#f2f2ed;opacity:.24;}
+[data-theme="dark"] .rhythm-stick.weekend{stroke:#a6a7a1;opacity:.2;}
+[data-theme="dark"] .rhythm-tick{stroke:rgba(242,242,237,.38);}
+[data-theme="dark"] .rhythm-line{stroke:#f2f2ed;}
+[data-theme="dark"] .rhythm-node{fill:#f2f2ed;stroke:#f2f2ed;}
+[data-theme="dark"] .rhythm-node.weekend{fill:var(--surface);stroke:#f2f2ed;}
+[data-theme="dark"] .rhythm-node.focus{fill:#ff6b2c;stroke:#f2f2ed;}
+[data-theme="dark"] .rhythm-value{fill:#f2f2ed;}
+[data-theme="dark"] .rhythm-axis-label{fill:#a6a7a1;}
+[data-theme="dark"] .rhythm-axis-label:last-child{fill:#ff6b2c;}
