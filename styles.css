@@ -3,21 +3,21 @@
    字体分工：衬线=内容，等宽=数据，无衬线=控件
    ========================================================= */
 :root {
-  --bg:#F6F3EE; --surface:#FBFAF7; --surface-2:#E7E9E7;
-  --ink:#20315F; --ink-soft:rgba(32,49,95,.64); --ink-faint:rgba(32,49,95,.34);
-  --line:#D8DAD8; --line-strong:#20315F;
-  --navy:#081F5C; --navy-2:#334EAC; --navy-3:#7096D1;
-  --accent:#FF5A36; --accent-soft:rgba(255,90,54,.15);
-  --gold-hi:#D8C98B; --gold:#B8A867; --gold-deep:#8A7B45;
-  --chart:#334EAC; --chart-track:#D9E2EA;
-  --shadow:0 1px 2px rgba(32,49,95,.05), 0 2px 10px rgba(32,49,95,.04);
-  --shadow-strong:0 2px 6px rgba(32,49,95,.07), 0 10px 28px rgba(32,49,95,.06);
-  --hairline:inset 0 1px 0 rgba(255,255,255,.70);
-  /* 低饱和绿黄色区域色 */
-  --cn:#92A86F; --cn-bg:#EAF0E1;
-  --hk:#B7A866; --hk-bg:#F0EBD7;
-  --sg:#A5BBA0; --sg-bg:#E6EEE5;
-  --other:#9EA5A3; --other-bg:#E7E9E7;
+  --bg:#ece7dd; --surface:#f4f1e9; --surface-2:#e2dccd;
+  --ink:#1a1916; --ink-soft:#6b665c; --ink-faint:#9c9588;
+  --line:#d8d3c7; --line-strong:#1a1916;
+  --navy:#16395a; --navy-2:#1f4a72; --navy-3:#2e6090;
+  --accent:#c1923a; --accent-soft:rgba(193,146,58,.10);
+  --gold-hi:#d9ad55; --gold:#c1923a; --gold-deep:#8f6a22;
+  --chart:#16395a; --chart-track:#ddd6c6;
+  --shadow:0 1px 3px rgba(28,27,24,.06), 0 2px 8px rgba(28,27,24,.04);
+  --shadow-strong:0 2px 6px rgba(28,27,24,.08), 0 8px 24px rgba(28,27,24,.06);
+  --hairline:inset 0 1px 0 rgba(255,255,255,.55);
+  /* 原始区域色 */
+  --cn:#9c2a33; --cn-bg:#f9efec;
+  --hk:#b07c22; --hk-bg:#f9f3e6;
+  --sg:#6e8a46; --sg-bg:#f2f4ec;
+  --other:#357585; --other-bg:#eef3f1;
   --serif: "Source Serif 4", Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
   --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
@@ -28,20 +28,20 @@
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2320315F' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 [data-theme="dark"] {
-  --bg:#101A34; --surface:#14244A; --surface-2:#20315F;
-  --ink:#F6F3EE; --ink-soft:#BAD6EB; --ink-faint:#7096D1;
-  --line:rgba(246,243,238,.16); --line-strong:#F6F3EE;
-  --navy:#F6F3EE; --navy-2:#BAD6EB; --navy-3:#7096D1;
-  --accent:#FF6A48; --accent-soft:rgba(255,106,72,.20);
-  --gold-hi:#E8D99D; --gold:#D8C98B; --gold-deep:#B8A867;
-  --chart:#BAD6EB; --chart-track:#20315F;
-  --shadow:0 1px 3px rgba(0,0,0,.38), 0 4px 16px rgba(0,0,0,.30);
-  --shadow-strong:0 2px 8px rgba(0,0,0,.46), 0 16px 40px rgba(0,0,0,.38);
-  --hairline:inset 0 1px 0 rgba(255,255,255,.05);
-  --cn:#BFD49D; --cn-bg:rgba(191,212,157,.18);
-  --hk:#D8C98B; --hk-bg:rgba(216,201,139,.18);
-  --sg:#BFD3BA; --sg-bg:rgba(191,211,186,.18);
-  --other:#9EA5A3; --other-bg:rgba(158,165,163,.18);
+  --bg:#14130f; --surface:#1c1b16; --surface-2:#26241d;
+  --ink:#ece7dd; --ink-soft:#a39c8c; --ink-faint:#6b665a;
+  --line:#2e2c24; --line-strong:#3d3a30;
+  --navy:#ece7dd; --navy-2:#a39c8c; --navy-3:#7d7768;
+  --accent:#d9ad55; --accent-soft:rgba(217,173,85,.12);
+  --gold-hi:#e8c878; --gold:#d9ad55; --gold-deep:#b08a3a;
+  --chart:#a39c8c; --chart-track:#2e2c24;
+  --shadow:0 1px 3px rgba(0,0,0,.5), 0 4px 16px rgba(0,0,0,.4);
+  --shadow-strong:0 2px 8px rgba(0,0,0,.58), 0 16px 40px rgba(0,0,0,.5);
+  --hairline:inset 0 1px 0 rgba(255,255,255,.045);
+  --cn:#d4566a; --cn-bg:rgba(212,86,106,.14);
+  --hk:#d9ad55; --hk-bg:rgba(217,173,85,.13);
+  --sg:#a3c06e; --sg-bg:rgba(163,192,110,.13);
+  --other:#5ba8bc; --other-bg:rgba(91,168,188,.13);
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23BAD6EB' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 * { box-sizing:border-box; scrollbar-width:thin; scrollbar-color:var(--line-strong) transparent; }
