@@ -97,8 +97,7 @@ kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.tr
 kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();apply();});
 renderKw();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
-// n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
-fetch("jobs.json",{cache:"no-cache"})
+fetch("jobs.json?_="+Date.now())
   .then(r=>r.json())
   .then(data=>{
     if(!Array.isArray(data))data=[];
@@ -127,18 +126,9 @@ fetch("jobs.json",{cache:"no-cache"})
     const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
-    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,data.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
-    const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
-    const tMin=Math.min(...allTimes),tMax=Math.max(...allTimes),tSpan=Math.max(1,tMax-tMin);
-    const TW=520,TH=126,left=72,right=76,top=27,rowGap=27,plotW=TW-left-right,bins=40,cellW=plotW/bins;
-    const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
-    regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));bucketCounts[ri][bi]++;}));
-    const maxBucket=Math.max(1,...bucketCounts.flat());
-    const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();monthSegments.push('<line class="region-month-boundary" x1="'+x1.toFixed(1)+'" y1="'+(top-11)+'" x2="'+x1.toFixed(1)+'" y2="'+(top+rowGap*2+10)+'"/><text class="region-month-label" x="'+((x1+x2)/2).toFixed(1)+'" y="'+(TH-5)+'">'+label+'</text>');}monthSegments.push('<line class="region-month-boundary" x1="'+(left+plotW).toFixed(1)+'" y1="'+(top-11)+'" x2="'+(left+plotW).toFixed(1)+'" y2="'+(top+rowGap*2+10)+'"/>');const axisTicks=monthSegments.join('');
-    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=data.length?Math.round(rc[k]/data.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,alpha=n?(0.045+0.955*Math.pow(n/rowMax,0.68)):0;const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-6)+'" width="'+w.toFixed(2)+'" height="12" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<line class="region-time-baseline" x1="'+left+'" y1="'+y+'" x2="'+(left+plotW)+'" y2="'+y+'"/><text class="region-time-name" x="0" y="'+(y+3)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y+3)+'">'+rc[k].toLocaleString()+'<tspan> '+pct+'%</tspan></text>'+cells;}).join('');
-    distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="三条地区横向时间分布；色带深浅表示时间窗口内职位密度">'+axisTicks+rows+'</svg>';
+    const regionOrder=["CN","HK","SG","OTHER"];
+    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;const w=rc[k]/rmax*100;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+w+'"><span class="dist-pct">'+pct+'%</span></div></div><span class="dist-val tnum">'+rc[k]+'</span></div>';}).join("");
+    requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
     // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
     const RKEYS=["OTHER","SG","HK","CN"];
@@ -156,6 +146,27 @@ fetch("jobs.json",{cache:"no-cache"})
         +'<span class="spark-label">'+d.label+'</span></div>';
     }).join("");
     requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
+    /* SVG 趋势线叠加层：连接每日柱顶，加 7 日均线参考 */
+    const svgH=100,colW=100/7;
+    const avg7=days.reduce((s,d)=>s+d.total,0)/7;
+    const avgPct=(100-(avg7/smax*100)).toFixed(1);
+    const trendPts=days.map((d,i)=>{
+      const x=(colW*i+colW/2).toFixed(1);
+      const y=(100-(d.total/smax*100)).toFixed(1);
+      return x+','+y;
+    }).join(' ');
+    const dots=days.map((d,i)=>{
+      const x=(colW*i+colW/2).toFixed(1);
+      const y=(100-(d.total/smax*100)).toFixed(1);
+      return'<circle cx="'+x+'" cy="'+y+'" r="2.5" class="spark-dot'+(i===6?' spark-dot-today':'')+'"/>';
+    }).join('');
+    const overlay=document.createElement("div");
+    overlay.className="spark-overlay";
+    overlay.innerHTML='<svg viewBox="0 0 100 '+svgH+'" preserveAspectRatio="none" class="spark-svg">'
+      +'<line x1="0" y1="'+avgPct+'" x2="100" y2="'+avgPct+'" class="spark-avg"/>'
+      +'<polyline points="'+trendPts+'" class="spark-line"/>'
+      +dots+'</svg>';
+    sparkEl.appendChild(overlay);
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
