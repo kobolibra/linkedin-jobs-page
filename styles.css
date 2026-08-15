@@ -334,21 +334,3 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .ed-arc-day{font:600 7px var(--mono);fill:var(--ink-faint);text-anchor:middle;letter-spacing:.03em;}
 .ed-arc-day.today{fill:var(--ink);font-weight:800;}
 @media(max-width:720px){.ed-arc-market{font-size:7px}.ed-arc-total{font-size:8px}.ed-arc-value{font-size:6px}.ed-arc-day{font-size:6.5px}}
-
-/* firstSeen seven-day density windows: three horizontal regional rows */
-#dist{display:block!important;}
-.region-time-key{margin:-4px 0 8px;font:600 8px var(--mono);letter-spacing:.08em;color:var(--ink-faint);}
-.region-time-svg{display:block;width:100%;height:auto;overflow:visible;}
-.region-time-guide{stroke:var(--line);stroke-width:.7;stroke-dasharray:2 4;opacity:.72;}
-.region-time-label{font:600 7px var(--mono);fill:var(--ink-faint);text-anchor:middle;}
-.region-time-name{font:600 10px var(--sans);fill:var(--ink-soft);}
-.region-time-count{font:700 10px var(--mono);fill:var(--ink);text-anchor:end;}
-.region-time-count tspan{font-size:7px;font-weight:500;fill:var(--ink-faint);}
-.region-window-track{fill:var(--chart-track);opacity:.55;}
-.region-window-fill{opacity:.86;}
-.region-window-fill.cn{fill:var(--cn,var(--brick));}.region-window-fill.hk{fill:var(--hk,var(--gold));}.region-window-fill.sg{fill:var(--sg,var(--sage));}.region-window-fill.other{fill:var(--other,var(--ink-faint));}
-.region-field-legend-wrap{float:right;display:inline-flex;gap:8px;letter-spacing:0;}
-.region-field-legend{display:inline-flex;align-items:center;gap:3px;font:500 7px var(--mono);color:var(--ink-faint);letter-spacing:0;}
-.region-field-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;}
-.region-field-legend i.cn{background:var(--cn,var(--brick));}.region-field-legend i.hk{background:var(--hk,var(--gold));}.region-field-legend i.sg{background:var(--sg,var(--sage));}.region-field-legend i.other{background:var(--other,var(--ink-faint));}
-@media(max-width:720px){.region-time-key{font-size:7px}.region-time-label{font-size:6.5px}.region-time-name,.region-time-count{font-size:9px}.region-field-legend-wrap{gap:5px}.region-field-legend{font-size:6px}}
