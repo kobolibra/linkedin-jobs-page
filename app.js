@@ -103,7 +103,7 @@ function renderTop50(rows){
   rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(!name)return;const region=norm(j.location);if(!counts.has(name))counts.set(name,{total:0,CN:0,HK:0,SG:0});const item=counts.get(name);item.total++;if(item[region]!=null)item[region]++;});
   const top=[...counts.entries()].sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const maxCN=Math.max(1,...top.map(([,d])=>d.CN)),maxRight=Math.max(1,...top.map(([,d])=>d.HK+d.SG));
-  const W=840,H=448,left=220,right=768,center=494,topY=34,bottom=38,rowH=12.25;
+  const W=840,H=448,left=175,right=760,center=470,topY=34,bottom=38,rowH=12.25;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const colors={CN:'#9C2A33',HK:'#B07C22',SG:'#6E8A46'};
   const short=s=>s.length>26?s.slice(0,25)+'…':s;
