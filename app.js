@@ -100,21 +100,22 @@ function renderTop50(rows){
   const host=document.getElementById('top50');
   if(!host)return;
   const counts=new Map();
-  rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(name)counts.set(name,(counts.get(name)||0)+1);});
-  const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,20);
-  const max=top[0]?.[1]||1, W=760, H=352, left=164, right=42, topY=28, bottom=40, plotW=W-left-right, rowH=13.2, xMax=Math.ceil(max/50)*50;
+  rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(!name)return;const region=norm(j.location);if(!counts.has(name))counts.set(name,{total:0,CN:0,HK:0,SG:0});const item=counts.get(name);item.total++;if(item[region]!=null)item[region]++;});
+  const top=[...counts.entries()].sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,20);
+  const max=top[0]?.[1].total||1, W=760, H=352, left=164, right=42, topY=28, bottom=40, plotW=W-left-right, rowH=13.2, xMax=Math.ceil(max/50)*50;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const wireRamp=['#6B6A65','#7F7E78','#96958E','#AEADA5','#C6C5BE','#DAD9D2'];
-  const gray=i=>wireRamp[Math.min(wireRamp.length-1,Math.floor(i/4))];
+  const colors={CN:'#9C2A33',HK:'#B07C22',SG:'#6E8A46'};
   const short=s=>s.length>25?s.slice(0,24)+'…':s;
   const sx=v=>left+(v/xMax)*plotW;
   const ticks=Array.from({length:Math.floor(xMax/100)+1},(_,i)=>i*100);
   const grid=ticks.map(v=>{const x=sx(v);return '<line class="glance-grid" x1="'+x.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+x.toFixed(1)+'" y2="'+(topY+19*rowH)+'"/><text class="glance-axis" x="'+x.toFixed(1)+'" y="'+(H-bottom+12)+'" text-anchor="middle">'+v+'</text>';}).join('');
-  const rowsSvg=top.map(([name,count],i)=>{
-    const y=topY+i*rowH,x=sx(count),r=4.2+Math.sqrt(count/max)*4;
-    return '<g class="top20-row" data-company="'+escSvg(name)+'" data-count="'+count+'" style="--i:'+i+'"><line class="top20-lane" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+(W-right)+'" y2="'+y.toFixed(1)+'"/><text class="top20-company" x="'+(left-16)+'" y="'+(y+3).toFixed(1)+'">'+escSvg(short(name))+'</text><line class="top20-stem" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'"/><circle class="top20-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray(i)+'"><title>'+escSvg(name)+' · '+count+' 个职位</title></circle><text class="top20-value" x="'+(x+11).toFixed(1)+'" y="'+(y+3).toFixed(1)+'">'+count+'</text></g>';
+  const legend=['CN','HK','SG'].map((r,i)=>'<circle class="top20-legend-dot" cx="'+(W-116+i*35)+'" cy="10" r="3.2" fill="'+colors[r]+'"/><text class="top20-legend-label" x="'+(W-108+i*35)+'" y="13">'+r+'</text>').join('');
+  const rowsSvg=top.map(([name,item],i)=>{
+    const y=topY+i*rowH, totalX=sx(item.total), regions=['CN','HK','SG'];
+    const dots=regions.map((region,ri)=>{const value=item[region];if(!value)return '';const x=sx(value),dy=(ri-1)*3.2,r=2.7+Math.sqrt(value/max)*4.1;return '<circle class="top20-region-dot '+region.toLowerCase()+'" data-region="'+region+'" cx="'+x.toFixed(1)+'" cy="'+(y+dy).toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+colors[region]+'"><title>'+escSvg(name)+' · '+region+' · '+value+' 个职位</title></circle>';}).join('');
+    return '<g class="top20-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" style="--i:'+i+'"><line class="top20-lane" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+(W-right)+'" y2="'+y.toFixed(1)+'"/><text class="top20-company" x="'+(left-16)+'" y="'+(y+3).toFixed(1)+'">'+escSvg(short(name))+'</text><line class="top20-stem" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+totalX.toFixed(1)+'" y2="'+y.toFixed(1)+'"/>'+dots+'<text class="top20-value" x="'+(totalX+11).toFixed(1)+'" y="'+(y+3).toFixed(1)+'">'+item.total+'</text></g>';
   }).join('');
-  host.innerHTML='<svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 20 家公司散点图，横轴为职位数量">'+grid+rowsSvg+'</svg>';
+  host.innerHTML='<svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 20 家公司，按中国大陆、香港、新加坡区域拆分">'+grid+legend+rowsSvg+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
