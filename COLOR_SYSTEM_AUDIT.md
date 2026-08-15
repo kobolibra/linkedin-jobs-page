@@ -15,3 +15,7 @@ The current dynamic data snapshot is 4,512 jobs and 752 companies; the data file
 ## Consolidation pass
 
 The former top-level red/blue/green palette blocks and hard-coded regional literals were removed. The final color system now has one root token block and one dark-theme block at the top of `styles.css`; layout tokens such as radius, shadow, typography families, spacing, and caret remain intact. The old region literal scan is clean. Local visual regression still shows the three selected regional colors, the forest panel, and the Company Insight card with the intended text hierarchy.
+
+## Final online check
+
+The local final screenshot and live DOM show the expected values: background `#f1efe9`, ink `#3b443b`, CN `#d2a321`, HK `#78895f`, SG `#b4ad79`, and forest chart/Company Insight surface `rgb(63, 91, 60)`. The browser session used for visual inspection may retain the previous resource URL `region-colors-181-155-114`; the server-side deployment is versioned separately as `color-system-final-01`.
