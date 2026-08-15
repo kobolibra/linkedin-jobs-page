@@ -577,3 +577,33 @@ body{background:var(--bg);}
 .stat .v{color:var(--navy);}
 .seg.active{background:var(--navy);}
 [data-theme="dark"] .analytics-card .ac-col:nth-child(2){background:#31482f;}
+
+/* =========================================================
+   User-selected regional palette · 181 / 155 / 114 blocks
+   Three regions use one restrained family, not unrelated hues.
+   ========================================================= */
+:root{
+  --cn:#d2a321; --cn-bg:#f1e8c5;
+  --hk:#78895f; --hk-bg:#e4e9d9;
+  --sg:#b4ad79; --sg-bg:#ecebd8;
+  --other:#9ea392; --other-bg:#e8ebe1;
+  --region-181:#78895f; --region-155:#b4ad79; --region-114:#d2a321;
+}
+[data-theme="dark"]{
+  --cn:#e0b632; --cn-bg:rgba(224,182,50,.18);
+  --hk:#98aa79; --hk-bg:rgba(152,170,121,.16);
+  --sg:#c6c18d; --sg-bg:rgba(198,193,141,.16);
+  --other:#b3baa4; --other-bg:rgba(179,186,164,.14);
+  --region-181:#98aa79; --region-155:#c6c18d; --region-114:#e0b632;
+}
+.seg[data-region="CN"].active{background:var(--cn);color:#fff;}
+.seg[data-region="HK"].active{background:var(--hk);color:#fff;}
+.seg[data-region="SG"].active{background:var(--sg);color:#3b443b;}
+.seg[data-region="OTHER"].active{background:var(--other);color:#fff;}
+#dist .region-density.cn{fill:var(--cn);}
+#dist .region-density.hk{fill:var(--hk);}
+#dist .region-density.sg{fill:var(--sg);}
+#dist .region-density.other{fill:var(--other);}
+.tag{color:var(--region,var(--other));background:var(--region-bg);}
+.mono{color:var(--region,var(--navy));background:var(--region-bg);}
+.job:hover{background-color:color-mix(in srgb,var(--region,var(--surface-2)) 9%,transparent);}
