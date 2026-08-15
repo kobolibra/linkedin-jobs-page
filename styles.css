@@ -627,3 +627,10 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 
 /* final Top 20 paper alignment */
 .top50-chart{background:var(--surface);}
+
+/* expanded neutral grayscale for Top 20 */
+.top20-lane{stroke:rgba(107,106,101,.20);}
+.top20-stem{stroke:#C6C5BE;}
+.top20-company{fill:#6B6A65;}
+.top20-value{fill:#96958E;}
+.top20-dot{stroke:var(--surface);}
