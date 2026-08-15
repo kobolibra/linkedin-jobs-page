@@ -644,3 +644,6 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 /* bilateral regional scale for Top 50 */
 .top20-zero-axis{stroke:var(--line-strong);stroke-width:1.2;stroke-dasharray:2 3;vector-effect:non-scaling-stroke;}
 .top20-zero-label{font-family:var(--mono);font-size:7px;fill:#6B6A65;}
+
+.top20-legend-title{font-family:var(--mono);font-size:6px;letter-spacing:.12em;fill:#96958E;}
+.top20-legend-label{font-family:var(--mono);font-size:6.5px;fill:#96958E;letter-spacing:.04em;}
