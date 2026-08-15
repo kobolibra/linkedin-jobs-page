@@ -17,9 +17,9 @@
       const total=intText(col.querySelector('.spark-total')?.textContent),label=col.querySelector('.spark-label')?.textContent||'',today=col.classList.contains('today');
       const segs=[...col.querySelectorAll('.spark-seg')].map(seg=>({r:seg.dataset.region||'OTHER',v:parseFloat(seg.style.flexGrow)||1}));
       return '<div class="ed-day '+(today?'today':'')+'"><div class="ed-day-bar">'+segs.map(s=>'<i class="'+regionColor[s.r]+'" style="height:'+Math.max(10,Math.min(95,s.v/Math.max(total,1)*100))+'%"></i>').join('')+'</div><b>'+total+'</b><span>'+label+'</span></div>';
-    }).join('')+'</div><div class="ed-source">SEVEN-DAY FIELD · STACKED BY MARKET · LIVE POSTINGS</div>';
-    const heads=dist.closest('.ac-col')?.querySelector('h3');if(heads)heads.innerHTML='REGIONAL TICK ROWS <small>one mark = 50 postings</small>';
-    const sparkHead=spark.closest('.ac-col')?.querySelector('h3');if(sparkHead)sparkHead.innerHTML='SEVEN-DAY FIELD <small>stacked by market</small>';
+      }).join('')+'</div>';
+    const heads=dist.closest('.ac-col')?.querySelector('h3');if(heads)heads.textContent='REGIONAL DISTRIBUTION';
+    const sparkHead=spark.closest('.ac-col')?.querySelector('h3');if(sparkHead)sparkHead.textContent='SEVEN-DAY ACTIVITY';
     return true;
   }
   function enhanceCompany(){
