@@ -369,3 +369,12 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-month-label{font:700 7px var(--mono);letter-spacing:.16em;fill:var(--ink-soft);text-anchor:middle;}
 @media(max-width:720px){#dist .region-month-label{font-size:6px;letter-spacing:.11em;}}
 
+
+/* Discrete density scale: the data signal should read before the decoration. */
+#dist .region-density{stroke:none;}
+#dist .region-density.density-0{filter:saturate(.55);}
+#dist .region-density.density-1{filter:saturate(.92);}
+#dist .region-density.density-2{filter:saturate(1.02);}
+#dist .region-density.density-3{filter:saturate(1.10);}
+#dist .region-density.density-4{filter:saturate(1.18) contrast(1.04);}
+
