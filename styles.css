@@ -397,3 +397,28 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-density.hk{fill:#b77c22}
 #dist .region-density.sg{fill:#6f8e3c}
 #dist .region-density.other{fill:#6f7f86}
+
+/* Editorial red treatment · rhythm chart only */
+.rhythm-baseline{stroke:#d7c4bd;}
+.rhythm-stick{stroke:#8f2f3a;opacity:.28;}
+.rhythm-stick.weekend{stroke:#b79a95;opacity:.24;}
+.rhythm-tick{stroke:#c9aaa2;opacity:.72;}
+.rhythm-tick.weekend{opacity:.42;}
+.rhythm-line{stroke:#8f2f3a;}
+.rhythm-node{fill:#8f2f3a;stroke:#8f2f3a;}
+.rhythm-node.weekend{fill:var(--surface);stroke:#8f2f3a;}
+.rhythm-node.focus{fill:#c65345;stroke:#7b2430;}
+.rhythm-value{fill:#6f2530;}
+.rhythm-axis-label{fill:#9b7770;}
+.rhythm-axis-label:last-child{fill:#9f3b32;}
+[data-theme="dark"] .rhythm-baseline{stroke:rgba(231,201,193,.28);}
+[data-theme="dark"] .rhythm-stick{stroke:#d26a5d;}
+[data-theme="dark"] .rhythm-stick.weekend{stroke:#b58b84;}
+[data-theme="dark"] .rhythm-tick{stroke:rgba(231,201,193,.4);}
+[data-theme="dark"] .rhythm-line{stroke:#e07a6b;}
+[data-theme="dark"] .rhythm-node{fill:#e07a6b;stroke:#e07a6b;}
+[data-theme="dark"] .rhythm-node.weekend{fill:var(--surface);stroke:#e07a6b;}
+[data-theme="dark"] .rhythm-node.focus{fill:#f08b73;stroke:#f5b1a0;}
+[data-theme="dark"] .rhythm-value{fill:#f2c2b7;}
+[data-theme="dark"] .rhythm-axis-label{fill:#c6a19a;}
+[data-theme="dark"] .rhythm-axis-label:last-child{fill:#f08b73;}
