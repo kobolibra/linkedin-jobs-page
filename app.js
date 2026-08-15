@@ -101,30 +101,21 @@ function renderTop50(rows){
   if(!host)return;
   const counts=new Map();
   rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(name)counts.set(name,(counts.get(name)||0)+1);});
-  const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,50);
-  const max=top[0]?.[1]||1, total=top.reduce((s,d)=>s+d[1],0), W=760, H=300;
+  const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,20);
+  const max=top[0]?.[1]||1, W=760, H=382, left=172, right=42, topY=42, bottom=44, plotW=W-left-right, rowH=13.2, xMax=Math.ceil(max/50)*50;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  /* Wire rampAt, with the red hero tier intentionally removed for this black-gray chart. */
-  const gray=i=>{if(i===0)return '#22211F';const ramp=['#DBDAD3','#C0BFB7','#8F8E86','#22211F'];return ramp[Math.max(0,Math.min(3,3-Math.round((i-1)/Math.max(1,top.length-2)*3)))];};
-  const short=s=>s.length>15?s.slice(0,14)+'…':s;
-  const tip=(name,count,i)=>'<title>#'+(i+1)+' '+escSvg(name)+' · '+count+' 个职位</title>';
-  const scatter=()=>{
-    const pts=top.map(([name,count],i)=>{const x=38+(i/49)*684,y=64+(1-count/max)*170,r=2.8+Math.sqrt(count/max)*6;return '<circle class="glance-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray(i)+'">'+tip(name,count,i)+'</circle>'+(i<3?'<text class="glance-label" x="'+x.toFixed(1)+'" y="'+(y-r-6).toFixed(1)+'" text-anchor="middle">'+escSvg(short(name))+'</text>':'');}).join('');
-    return '<g class="glance-view scatter-view">'+grid()+pts+'<text class="glance-axis" x="38" y="265">RANK 01</text><text class="glance-axis" x="722" y="265" text-anchor="end">RANK 50</text></g>';
-  };
-  const bars=()=>{
-    const base=252, barW=10.5, gap=4, start=28, scale=168/max;
-    const bs=top.map(([name,count],i)=>{const h=Math.max(4,count*scale),x=start+i*(barW+gap),y=base-h;return '<rect class="glance-bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW+'" height="'+h.toFixed(1)+'" rx="1" fill="'+gray(i)+'">'+tip(name,count,i)+'</rect>'+(i<3?'<text class="glance-bar-value" x="'+(x+barW/2).toFixed(1)+'" y="'+Math.max(18,y-7).toFixed(1)+'" text-anchor="middle">'+count+'</text>':'');}).join('');
-    return '<g class="glance-view bars-view">'+grid()+'<line class="glance-floor" x1="20" y1="'+base+'" x2="740" y2="'+base+'"/>'+bs+'<text class="glance-axis" x="20" y="276">TOP 50 · DESCENDING</text></g>';
-  };
-  const arc=(cx,cy,r0,r1,a0,a1)=>{const big=a1-a0>Math.PI?1:0;const p=(r,a)=>[cx+r*Math.cos(a),cy+r*Math.sin(a)];const [x1,y1]=p(r1,a0),[x2,y2]=p(r1,a1),[x3,y3]=p(r0,a1),[x4,y4]=p(r0,a0);return 'M'+x1+' '+y1+' A'+r1+' '+r1+' 0 '+big+' 1 '+x2+' '+y2+' L'+x3+' '+y3+' A'+r0+' '+r0+' 0 '+big+' 0 '+x4+' '+y4+' Z';};
-  const ring=()=>{let a=-Math.PI/2;const cx=380,cy=154,r0=58,r1=103;const pieces=top.map(([name,count],i)=>{const da=(count/total)*Math.PI*2-.012,from=a;a+=da+.012;return '<path class="glance-slice" d="'+arc(cx,cy,r0,r1,from,from+da)+'" fill="'+gray(i)+'">'+tip(name,count,i)+'</path>';}).join('');return '<g class="glance-view ring-view">'+pieces+'<text class="glance-ring-total" x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle">'+total.toLocaleString()+'</text><text class="glance-ring-label" x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle">TOP 50 JOBS</text></g>';};
-  const grid=()=>'<line class="glance-grid" x1="38" y1="64" x2="722" y2="64"/><line class="glance-grid" x1="38" y1="149" x2="722" y2="149"/><line class="glance-grid" x1="38" y1="234" x2="722" y2="234"/>';
-  const labels=['SCATTER FIELD','RANKED BARS','SHARE RING'];let view=0;
-  const draw=()=>{host.innerHTML='<div class="glance-head"><span>ONE DATASET, THREE VIEWS</span><strong>'+labels[view]+'</strong><em>TOP 50 COMPANIES · '+rows.length.toLocaleString()+' JOBS</em></div><svg class="glance-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位最多的 50 家公司，三种视图">'+(view===0?scatter():view===1?bars():ring())+'</svg><div class="glance-foot">50 companies · click to change view · auto every 3s</div>';requestAnimationFrame(()=>host.classList.add('is-ready'));};
-  draw();
-  const timer=setInterval(()=>{view=(view+1)%3;host.classList.remove('is-ready');draw();},3000);
-  host.onclick=()=>{clearInterval(timer);view=(view+1)%3;host.classList.remove('is-ready');draw();};
+  const wireRamp=['#22211F','#22211F','#8F8E86','#8F8E86','#C0BFB7','#DBDAD3'];
+  const gray=i=>wireRamp[Math.min(wireRamp.length-1,Math.floor(i/4))];
+  const short=s=>s.length>24?s.slice(0,23)+'…':s;
+  const sx=v=>left+(v/xMax)*plotW;
+  const ticks=Array.from({length:Math.floor(xMax/100)+1},(_,i)=>i*100);
+  const grid=ticks.map(v=>{const x=sx(v);return '<line class="glance-grid" x1="'+x.toFixed(1)+'" y1="'+(topY-12)+'" x2="'+x.toFixed(1)+'" y2="'+(topY+19*rowH)+'"/><text class="glance-axis" x="'+x.toFixed(1)+'" y="'+(H-bottom+15)+'" text-anchor="middle">'+v+'</text>';}).join('');
+  const rowsSvg=top.map(([name,count],i)=>{
+    const y=topY+i*rowH,x=sx(count),r=4.4+Math.sqrt(count/max)*4.2;
+    return '<g class="top20-row" data-rank="'+(i+1)+'" data-company="'+escSvg(name)+'" data-count="'+count+'" style="--i:'+i+'"><line class="top20-lane" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+(W-right)+'" y2="'+y.toFixed(1)+'"/><text class="top20-rank" x="'+(left-38)+'" y="'+(y+3).toFixed(1)+'">'+String(i+1).padStart(2,'0')+'</text><text class="top20-company" x="'+(left-48)+'" y="'+(y+3).toFixed(1)+'">'+escSvg(short(name))+'</text><line class="top20-stem" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'"/><circle class="top20-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray(i)+'"><title>#'+(i+1)+' '+escSvg(name)+' · '+count+' 个职位</title></circle><text class="top20-value" x="'+(x+12).toFixed(1)+'" y="'+(y+3).toFixed(1)+'">'+count+'</text></g>';
+  }).join('');
+  host.innerHTML='<div class="glance-head"><span>TOP 20 COMPANIES · SCATTER FIELD</span><strong>JOB POSTINGS × RANK</strong><em>ONE DATASET · '+rows.length.toLocaleString()+' JOBS</em></div><svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 20 家公司散点图，横轴为职位数量，纵轴为排名">'+grid+rowsSvg+'<text class="top20-axis-title" x="'+(left+plotW/2)+'" y="'+(H-5)+'" text-anchor="middle">JOB POSTINGS</text><text class="top20-y-title" x="12" y="'+(topY+9*rowH)+'" transform="rotate(-90 12 '+(topY+9*rowH)+')" text-anchor="middle">RANKED BY POSTINGS</text></svg><div class="glance-foot">20 companies · each dot = one company · size follows job count</div>';
+  requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
