@@ -681,3 +681,5 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 
 .bubble-diagonal{stroke:#9A9891;stroke-width:1;stroke-dasharray:4 4;opacity:.72;vector-effect:non-scaling-stroke;}
 .bubble-diagonal-label{font-family:var(--mono);font-size:6.5px;letter-spacing:.08em;fill:#8F8E86;}
+
+.bubble-label-leader{stroke:#A9A79F;stroke-width:.7;stroke-dasharray:2 2;opacity:.75;vector-effect:non-scaling-stroke;pointer-events:none;}
