@@ -690,3 +690,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .top20-svg.bubble-svg{margin-top:0;}
 .bubble-label-leader{stroke:#A09E97;stroke-width:.65;stroke-dasharray:2 2;opacity:.62;}
 .bubble-company{font-size:7px;fill:#64635E;}
+
+.bubble-relation{font-family:var(--mono);font-size:6.5px;letter-spacing:.12em;fill:#8F8E88;pointer-events:none;}
+.bubble-relation-above{fill:#6B6A65;}
+.bubble-relation-below{fill:#8F8E88;}
