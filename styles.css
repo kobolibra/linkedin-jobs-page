@@ -647,3 +647,11 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 
 .top20-legend-title{font-family:var(--mono);font-size:6px;letter-spacing:.12em;fill:#96958E;}
 .top20-legend-label{font-family:var(--mono);font-size:6.5px;fill:#96958E;letter-spacing:.04em;}
+
+/* cumulative regional areas: grayscale fills, colored boundary points/lines */
+.top20-area{stroke:none;vector-effect:non-scaling-stroke;}
+.top20-area.cn{fill:#DAD9D2;fill-opacity:.78;}
+.top20-area.hk{fill:#C6C5BE;fill-opacity:.64;}
+.top20-area.sg{fill:#AEADA5;fill-opacity:.50;}
+.top20-boundary{fill:none;stroke-width:1.05;vector-effect:non-scaling-stroke;stroke-dasharray:1.5 2;opacity:.80;}
+.top20-boundary.cn{stroke:#9C2A33;}.top20-boundary.hk{stroke:#B07C22;}.top20-boundary.sg{stroke:#6E8A46;}
