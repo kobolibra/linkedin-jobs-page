@@ -357,3 +357,9 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-density.cn{fill:#b34b40;}#dist .region-density.hk{fill:#b18a3d;}#dist .region-density.sg{fill:#84966b;}#dist .region-density.other{fill:#7b8790;}
 #dist .region-time-svg{padding-right:4px;}
 #dist .region-time-count{font-size:10px;}
+
+/* Regional density ribbons: square edges and contiguous time windows. */
+#dist .region-time-svg,
+#dist .region-density{shape-rendering:crispEdges;}
+#dist .region-density{rx:0;}
+
