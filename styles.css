@@ -718,3 +718,10 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
   .analytics-card .ac-col{padding:14px 16px 12px;}
   .analytics-card .ac-col h3{margin-bottom:10px;}
 }
+
+/* 报头收紧后的右上角元素基线同步 */
+@media (min-width:721px){
+  .theme-toggle{top:24px;}
+  .mast-stack{top:90px;}
+  .mast-bg{top:54px;}
+}
