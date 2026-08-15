@@ -13,13 +13,16 @@
       return '<div class="ed-region-row" data-region="'+key+'"><span class="ed-region-label">'+label+'</span><span class="ed-ticks '+regionColor[key]+'">'+ticks(count,50)+'</span><span class="ed-region-value">'+count.toLocaleString()+'<small>'+pct+'</small></span></div>';
     }).join('');
     const cols=[...spark.querySelectorAll('.spark-col')];
+    const markets=['CN','HK','SG','OTHER'];
     spark.innerHTML='<div class="ed-week">'+cols.map(col=>{
       const total=intText(col.querySelector('.spark-total')?.textContent),label=col.querySelector('.spark-label')?.textContent||'',today=col.classList.contains('today');
-      const segs=[...col.querySelectorAll('.spark-seg')].map(seg=>({r:seg.dataset.region||'OTHER',v:parseFloat(seg.style.flexGrow)||1}));
-      return '<div class="ed-day '+(today?'today':'')+'"><div class="ed-day-bar">'+segs.map(s=>'<i class="'+regionColor[s.r]+'" style="height:'+Math.max(10,Math.min(95,s.v/Math.max(total,1)*100))+'%"></i>').join('')+'</div><b>'+total+'</b><span>'+label+'</span></div>';
+      const vals={};[...col.querySelectorAll('.spark-seg')].forEach(seg=>{vals[seg.dataset.region||'OTHER']=parseFloat(seg.style.flexGrow)||1;});
+      const max=Math.max(1,...markets.map(m=>vals[m]||0));
+      const cells=markets.map(m=>'<span class="ed-matrix-cell"><i class="'+regionColor[m]+'" style="width:'+Math.max(vals[m]?8:0,Math.min(100,(vals[m]||0)/max*100))+'%"></i></span>').join('');
+      return '<div class="ed-day '+(today?'today':'')+'"><b>'+total+'</b><div class="ed-day-matrix">'+cells+'</div><span>'+label+'</span></div>';
     }).join('')+'</div>';
     const heads=dist.closest('.ac-col')?.querySelector('h3');if(heads)heads.textContent='REGIONAL DISTRIBUTION';
-    const sparkHead=spark.closest('.ac-col')?.querySelector('h3');if(sparkHead)sparkHead.textContent='SEVEN-DAY ACTIVITY';
+    const sparkHead=spark.closest('.ac-col')?.querySelector('h3');if(sparkHead)sparkHead.innerHTML='SEVEN-DAY ACTIVITY <span class="ed-market-key"><i class="cn"></i>CN <i class="hk"></i>HK <i class="sg"></i>SG <i class="other"></i>OTHER</span>';
     return true;
   }
   function enhanceCompany(){
