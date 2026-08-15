@@ -102,16 +102,28 @@ function renderTop50(rows){
   const counts=new Map();
   rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(name)counts.set(name,(counts.get(name)||0)+1);});
   const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,50);
-  const max=top[0]?.[1]||1, W=760, H=394, colW=380, rowH=14, topY=28, nameX=36, trackX=178, trackW=128;
+  const max=top[0]?.[1]||1, total=top.reduce((s,d)=>s+d[1],0), W=760, H=300;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const title='<text class="top50-kicker" x="0" y="11">RANKED COMPANY FIELD · LIVE POSTINGS</text><text class="top50-scale" x="'+W+'" y="11" text-anchor="end">50 COMPANIES · '+rows.length.toLocaleString()+' JOBS</text>';
-  const columns=[0,1].map(ci=>top.slice(ci*25,ci*25+25).map((entry,ri)=>{
-    const idx=ci*25+ri,name=entry[0],count=entry[1],y=topY+ri*rowH,x=trackX+ci*colW,ratio=count/max,r=Math.max(2.2,Math.min(6.2,2.2+ratio*4));
-    const tone=idx<3?'hero':idx<10?'dark':'quiet';
-    return '<g class="top50-row '+tone+'" style="--i:'+idx+'"><text class="top50-rank" x="'+(x-28)+'" y="'+(y+3)+'">'+String(idx+1).padStart(2,'0')+'</text><text class="top50-name" x="'+(x-nameX)+'" y="'+(y+3)+'">'+escSvg(name.length>19?name.slice(0,18)+'…':name)+'</text><line class="top50-rail" x1="'+x+'" y1="'+y+'" x2="'+(x+trackW)+'" y2="'+y+'"/><circle class="top50-dot" cx="'+(x+ratio*trackW).toFixed(1)+'" cy="'+y+'" r="'+r.toFixed(1)+'"><title>#'+(idx+1)+' '+escSvg(name)+' · '+count+' 个职位</title></circle><text class="top50-count" x="'+(x+trackW+14)+'" y="'+(y+3)+'">'+count.toLocaleString()+'</text></g>';
-  }).join('')).join('');
-  host.innerHTML='<svg class="top50-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 50 家公司">'+title+columns+'</svg>';
-  requestAnimationFrame(()=>host.classList.add('is-ready'));
+  const gray=i=>{const v=Math.round(34+(i/49)*150).toString(16).padStart(2,'0');return '#'+v+v+v;};
+  const short=s=>s.length>15?s.slice(0,14)+'…':s;
+  const tip=(name,count,i)=>'<title>#'+(i+1)+' '+escSvg(name)+' · '+count+' 个职位</title>';
+  const scatter=()=>{
+    const pts=top.map(([name,count],i)=>{const x=38+(i/49)*684,y=64+(1-count/max)*170,r=2.8+Math.sqrt(count/max)*6;return '<circle class="glance-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray(i)+'">'+tip(name,count,i)+'</circle>'+(i<3?'<text class="glance-label" x="'+x.toFixed(1)+'" y="'+(y-r-6).toFixed(1)+'" text-anchor="middle">'+escSvg(short(name))+'</text>':'');}).join('');
+    return '<g class="glance-view scatter-view">'+grid()+pts+'<text class="glance-axis" x="38" y="265">RANK 01</text><text class="glance-axis" x="722" y="265" text-anchor="end">RANK 50</text></g>';
+  };
+  const bars=()=>{
+    const base=252, barW=10.5, gap=4, start=28, scale=168/max;
+    const bs=top.map(([name,count],i)=>{const h=Math.max(4,count*scale),x=start+i*(barW+gap),y=base-h;return '<rect class="glance-bar" x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW+'" height="'+h.toFixed(1)+'" rx="1" fill="'+gray(i)+'">'+tip(name,count,i)+'</rect>'+(i<3?'<text class="glance-bar-value" x="'+(x+barW/2).toFixed(1)+'" y="'+Math.max(18,y-7).toFixed(1)+'" text-anchor="middle">'+count+'</text>':'');}).join('');
+    return '<g class="glance-view bars-view">'+grid()+'<line class="glance-floor" x1="20" y1="'+base+'" x2="740" y2="'+base+'"/>'+bs+'<text class="glance-axis" x="20" y="276">TOP 50 · DESCENDING</text></g>';
+  };
+  const arc=(cx,cy,r0,r1,a0,a1)=>{const big=a1-a0>Math.PI?1:0;const p=(r,a)=>[cx+r*Math.cos(a),cy+r*Math.sin(a)];const [x1,y1]=p(r1,a0),[x2,y2]=p(r1,a1),[x3,y3]=p(r0,a1),[x4,y4]=p(r0,a0);return 'M'+x1+' '+y1+' A'+r1+' '+r1+' 0 '+big+' 1 '+x2+' '+y2+' L'+x3+' '+y3+' A'+r0+' '+r0+' 0 '+big+' 0 '+x4+' '+y4+' Z';};
+  const ring=()=>{let a=-Math.PI/2;const cx=380,cy=154,r0=58,r1=103;const pieces=top.map(([name,count],i)=>{const da=(count/total)*Math.PI*2-.012,from=a;a+=da+.012;return '<path class="glance-slice" d="'+arc(cx,cy,r0,r1,from,from+da)+'" fill="'+gray(i)+'">'+tip(name,count,i)+'</path>';}).join('');return '<g class="glance-view ring-view">'+pieces+'<text class="glance-ring-total" x="'+cx+'" y="'+(cy-4)+'" text-anchor="middle">'+total.toLocaleString()+'</text><text class="glance-ring-label" x="'+cx+'" y="'+(cy+12)+'" text-anchor="middle">TOP 50 JOBS</text></g>';};
+  const grid=()=>'<line class="glance-grid" x1="38" y1="64" x2="722" y2="64"/><line class="glance-grid" x1="38" y1="149" x2="722" y2="149"/><line class="glance-grid" x1="38" y1="234" x2="722" y2="234"/>';
+  const labels=['SCATTER FIELD','RANKED BARS','SHARE RING'];let view=0;
+  const draw=()=>{host.innerHTML='<div class="glance-head"><span>ONE DATASET, THREE VIEWS</span><strong>'+labels[view]+'</strong><em>TOP 50 COMPANIES · '+rows.length.toLocaleString()+' JOBS</em></div><svg class="glance-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位最多的 50 家公司，三种视图">'+(view===0?scatter():view===1?bars():ring())+'</svg><div class="glance-foot">50 companies · click to change view · auto every 3s</div>';requestAnimationFrame(()=>host.classList.add('is-ready'));};
+  draw();
+  const timer=setInterval(()=>{view=(view+1)%3;host.classList.remove('is-ready');draw();},3000);
+  host.onclick=()=>{clearInterval(timer);view=(view+1)%3;host.classList.remove('is-ready');draw();};
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
