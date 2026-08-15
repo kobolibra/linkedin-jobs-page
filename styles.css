@@ -334,19 +334,3 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .ed-arc-day{font:600 7px var(--mono);fill:var(--ink-faint);text-anchor:middle;letter-spacing:.03em;}
 .ed-arc-day.today{fill:var(--ink);font-weight:800;}
 @media(max-width:720px){.ed-arc-market{font-size:7px}.ed-arc-total{font-size:8px}.ed-arc-value{font-size:6px}.ed-arc-day{font-size:6.5px}}
-
-/* firstSeen daily vertical field */
-#dist{display:block!important;}
-.region-time-key{margin:-4px 0 8px;font:600 8px var(--mono);letter-spacing:.08em;color:var(--ink-faint);text-transform:none;}
-.region-time-svg{display:block;width:100%;height:auto;overflow:visible;}
-.region-time-baseline{stroke:var(--line);stroke-width:.8;}
-.region-time-guide{stroke:var(--line);stroke-width:.7;stroke-dasharray:2 4;opacity:.72;}
-.region-time-label{font:600 7px var(--mono);fill:var(--ink-faint);text-anchor:middle;}
-.region-record{stroke-width:1.05;stroke-linecap:round;opacity:.92;}
-.region-record.cn{stroke:var(--region-cn,var(--brick));}.region-record.hk{stroke:var(--region-hk,var(--steel));}.region-record.sg{stroke:var(--region-sg,var(--sage));}.region-record.other{stroke:var(--ink-faint);}
-.region-field-legend-wrap{float:right;display:inline-flex;gap:8px;letter-spacing:0;}
-.region-field-legend{display:inline-flex;align-items:center;gap:3px;font:500 7px var(--mono);color:var(--ink-faint);letter-spacing:0;}
-.region-field-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;}
-.region-field-legend i.cn{background:var(--region-cn,var(--brick));}.region-field-legend i.hk{background:var(--region-hk,var(--steel));}.region-field-legend i.sg{background:var(--region-sg,var(--sage));}.region-field-legend i.other{background:var(--ink-faint);}
-.region-day-total{font:700 7px var(--mono);fill:var(--ink);text-anchor:middle;}
-@media(max-width:720px){.region-time-key{font-size:7px}.region-time-label{font-size:6.5px}.region-record{stroke-width:1}.region-field-legend-wrap{gap:5px}.region-field-legend{font-size:6px}.region-field-legend i{width:6px;height:6px}}

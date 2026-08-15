@@ -125,17 +125,11 @@ fetch("jobs.json",{cache:"no-cache"})
     if(lastUpd){const d=new Date(lastUpd);if(!isNaN(d))document.getElementById("stat-updated").innerHTML='<span style="font-size:15px">'+d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})+'</span>';}
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
     const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
+    const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
-    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,data.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
-    const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
-    const tMin=Math.min(...allTimes),tMax=Math.max(...allTimes),tSpan=Math.max(1,tMax-tMin);
-    const TW=520,TH=126,left=72,right=48,top=27,rowGap=27,plotW=TW-left-right;
-    const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    const axisTicks=Array.from({length:5},(_,i)=>{const ratio=i/4,x=left+ratio*plotW,d=new Date(tMin+ratio*tSpan);return '<line class="region-time-guide" x1="'+x.toFixed(1)+'" y1="'+(top-11)+'" x2="'+x.toFixed(1)+'" y2="'+(top+rowGap*2+10)+'"/><text class="region-time-label" x="'+x.toFixed(1)+'" y="'+(TH-5)+'">'+escSvg(d.toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'}))+'</text>';}).join('');
-    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,items=regionRecords[k],pct=data.length?Math.round(rc[k]/data.length*100):0;const ticks=items.map((x,i)=>{const base=left+(x.t.getTime()-tMin)/tSpan*plotW,jitter=((i%5)-2)*.18,xx=Math.min(left+plotW,Math.max(left,base+jitter));return '<line class="region-record '+k.toLowerCase()+'" x1="'+xx.toFixed(2)+'" y1="'+(y-7)+'" x2="'+xx.toFixed(2)+'" y2="'+(y+7)+'"><title>'+escSvg(x.t.toLocaleString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · 1 个职位</title></line>';}).join('');return '<line class="region-time-baseline" x1="'+left+'" y1="'+y+'" x2="'+(left+plotW)+'" y2="'+y+'"/><text class="region-time-name" x="0" y="'+(y+3)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y+3)+'">'+rc[k].toLocaleString()+'<tspan> '+pct+'%</tspan></text>'+ticks;}).join('');
-    const legend=regionOrder.map(r=>'<span class="region-field-legend"><i class="'+r.toLowerCase()+'"></i>'+REGIONS[r].label+' '+rc[r].toLocaleString()+'</span>').join('');
-    distEl.innerHTML='<div class="region-time-key">首次发现时间 · 每条短刻度 = 1 个职位 <span class="region-field-legend-wrap">'+legend+'</span></div><svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="三条地区横向时间分布；每个短刻度代表一个职位">'+axisTicks+rows+'</svg>';
+    const regionOrder=["CN","HK","SG","OTHER"];
+    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
+    requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
     /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
     // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
     const RKEYS=["OTHER","SG","HK","CN"];
