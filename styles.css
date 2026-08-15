@@ -284,3 +284,8 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 /* override legacy spark frame for the attachment-faithful field */
 .analytics-card .spark{display:block;height:auto;min-height:0;padding:0;}
 .analytics-card .spark::after{display:none;}
+/* final editorial field spacing: keep total, day label, and source line distinct */
+.ed-day b{top:-22px;}
+.ed-day span{display:block;min-height:14px;line-height:1;}
+.ed-week{padding-top:24px;}
+.ed-source{clear:both;}
