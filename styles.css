@@ -522,3 +522,28 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .rhythm-value{fill:#F0F0EE;}
 [data-theme="dark"] .rhythm-axis-label{fill:#C0BFB7;}
 [data-theme="dark"] .rhythm-axis-label:last-child{fill:#F5572F;}
+
+/* Reference chart treatment · muted indigo vertical rhythm · rhythm chart only */
+.rhythm-baseline{stroke:#dedbd3;}
+.rhythm-stick{stroke:#aeb7d9;stroke-width:1.35;opacity:.78;}
+.rhythm-stick.weekend{stroke:#c7cce1;opacity:.68;}
+.rhythm-tick{stroke:#d2d4dd;opacity:.78;}
+.rhythm-tick.weekend{opacity:.5;}
+.rhythm-line{stroke:#6173bd;stroke-width:2.05;}
+.rhythm-node{fill:#6173bd;stroke:#6173bd;stroke-width:1.35;}
+.rhythm-node.weekend{fill:var(--surface);stroke:#8795c9;}
+.rhythm-node.focus{fill:#334697;stroke:#334697;stroke-width:1.55;}
+.rhythm-value{fill:#334697;}
+.rhythm-axis-label{fill:#9ba2bb;}
+.rhythm-axis-label:last-child{fill:#6173bd;}
+[data-theme="dark"] .rhythm-baseline{stroke:rgba(239,240,235,.2);}
+[data-theme="dark"] .rhythm-stick{stroke:#8e9bd2;opacity:.72;}
+[data-theme="dark"] .rhythm-stick.weekend{stroke:#7480ad;opacity:.6;}
+[data-theme="dark"] .rhythm-tick{stroke:rgba(239,240,235,.3);}
+[data-theme="dark"] .rhythm-line{stroke:#aab6e7;}
+[data-theme="dark"] .rhythm-node{fill:#aab6e7;stroke:#aab6e7;}
+[data-theme="dark"] .rhythm-node.weekend{fill:var(--surface);stroke:#8e9bd2;}
+[data-theme="dark"] .rhythm-node.focus{fill:#c3cdf7;stroke:#c3cdf7;}
+[data-theme="dark"] .rhythm-value{fill:#d2d9fa;}
+[data-theme="dark"] .rhythm-axis-label{fill:#9ca8cf;}
+[data-theme="dark"] .rhythm-axis-label:last-child{fill:#c3cdf7;}
