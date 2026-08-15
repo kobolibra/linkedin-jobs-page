@@ -19,3 +19,7 @@ The former top-level red/blue/green palette blocks and hard-coded regional liter
 ## Final online check
 
 The local final screenshot and live DOM show the expected values: background `#f1efe9`, ink `#3b443b`, CN `#d2a321`, HK `#78895f`, SG `#b4ad79`, and forest chart/Company Insight surface `rgb(63, 91, 60)`. The browser session used for visual inspection may retain the previous resource URL `region-colors-181-155-114`; the server-side deployment is versioned separately as `color-system-final-01`.
+
+## Hybrid ceramic-blue palette regression
+
+The new hybrid palette uses ceramic blue for typography and structure, muted green-yellow tones for CN/HK/SG, black-gray for density and scaffolding, and fluorescent orange only for peak/current/focus events. The real-data homepage and Quantcast Company Insight panel render with the same roles; company interaction remains functional.
