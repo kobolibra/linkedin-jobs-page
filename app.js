@@ -104,7 +104,8 @@ function renderTop50(rows){
   const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,50);
   const max=top[0]?.[1]||1, total=top.reduce((s,d)=>s+d[1],0), W=760, H=300;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const gray=i=>{const v=Math.round(34+(i/49)*150).toString(16).padStart(2,'0');return '#'+v+v+v;};
+  /* Wire rampAt, with the red hero tier intentionally removed for this black-gray chart. */
+  const gray=i=>{if(i===0)return '#22211F';const ramp=['#DBDAD3','#C0BFB7','#8F8E86','#22211F'];return ramp[Math.max(0,Math.min(3,3-Math.round((i-1)/Math.max(1,top.length-2)*3)))];};
   const short=s=>s.length>15?s.slice(0,14)+'…':s;
   const tip=(name,count,i)=>'<title>#'+(i+1)+' '+escSvg(name)+' · '+count+' 个职位</title>';
   const scatter=()=>{
