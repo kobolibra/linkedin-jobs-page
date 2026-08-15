@@ -16,12 +16,12 @@
 .segmented { display:inline-flex;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--radius);padding:3px;gap:2px; }
 .seg { border:0;background:transparent;font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);padding:5px 11px;border-radius:7px;cursor:pointer;transition:color .18s var(--ease),background-color .18s var(--ease);white-space:nowrap; }
 .seg:hover { color:var(--ink);background:var(--surface-2); }
-.seg.active { background:var(--navy);color:var(--bg);font-weight:700; }
-.seg[data-region="CN"].active { background:var(--cn);color:var(--bg); }
-.seg[data-region="HK"].active { background:var(--hk);color:var(--bg); }
-.seg[data-region="SG"].active { background:var(--sg);color:var(--bg); }
-.seg[data-region="OTHER"].active { background:var(--other);color:var(--bg); }
-[data-theme="dark"] .seg[data-region="all"].active { background:var(--accent);color:var(--navy); }
+.seg.active { background:var(--navy);color:#f4f1e9;font-weight:700; }
+.seg[data-region="CN"].active { background:var(--cn);color:#fff; }
+.seg[data-region="HK"].active { background:var(--hk);color:#fff; }
+.seg[data-region="SG"].active { background:var(--sg);color:#fff; }
+.seg[data-region="OTHER"].active { background:var(--other);color:#fff; }
+[data-theme="dark"] .seg[data-region="all"].active { background:var(--gold);color:#131210; }
 select.ctrl { appearance:none;-webkit-appearance:none;padding:8px 28px 8px 11px;border:1px solid var(--line-strong);border-radius:var(--radius);background-color:var(--surface);background-image:var(--caret);background-repeat:no-repeat;background-position:right 8px center;background-size:13px 13px;font-size:12.5px;color:var(--ink);font-family:var(--sans);max-width:190px;cursor:pointer;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),background-color .2s; }
 select.ctrl:hover { background-color:var(--surface-2); }
 select.ctrl:focus { outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-soft); }
@@ -60,9 +60,9 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .kw-form input { flex:1 1 240px;min-width:160px;padding:8px 11px;border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--surface);font-size:12.5px;color:var(--ink);font-family:var(--sans);transition:border-color .2s var(--ease),box-shadow .2s var(--ease); }
 .kw-form input::placeholder { color:var(--ink-faint); }
 .kw-form input:focus { outline:none;border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-soft); }
-.kw-form button { font-family:var(--sans);font-size:12.5px;font-weight:650;color:var(--bg);background:var(--navy);border:0;border-radius:var(--radius);padding:8px 17px;cursor:pointer;transition:background .15s;white-space:nowrap; }
+.kw-form button { font-family:var(--sans);font-size:12.5px;font-weight:650;color:#f4f1e9;background:var(--navy);border:0;border-radius:var(--radius);padding:8px 17px;cursor:pointer;transition:background .15s;white-space:nowrap; }
 .kw-form button:hover { background:var(--navy-2); }
-[data-theme="dark"] .kw-form button { color:var(--navy);background:var(--accent); }
+[data-theme="dark"] .kw-form button { color:#131210;background:var(--gold); }
 [data-theme="dark"] .kw-form button:hover { background:var(--gold-hi); }
 .kw-list { display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2); }
 .kw-empty { font-size:11.5px;color:var(--ink-faint); }
@@ -70,10 +70,10 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .comp-group.filtering select.ctrl { padding-right:26px;background-image:none; }
 .comp-clear { display:none;position:absolute;right:3px;top:50%;transform:translateY(-50%);align-items:center;justify-content:center;width:18px;height:18px;border:0;border-radius:4px;background:color-mix(in srgb,var(--gold) 20%,var(--surface));color:var(--gold-deep);cursor:pointer;padding:0;z-index:2;transition:color .15s,background .15s; }
 .comp-clear svg { width:9px;height:9px;display:block; }
-.comp-clear:hover { background:var(--gold);color:var(--bg); }
+.comp-clear:hover { background:var(--gold);color:#f4f1e9; }
 .comp-clear.show { display:flex; }
 [data-theme="dark"] .comp-clear { color:var(--gold-hi); }
-[data-theme="dark"] .comp-clear:hover { color:var(--navy); }
+[data-theme="dark"] .comp-clear:hover { color:#131210; }
 
 /* ---------- Day groups ---------- */
 .day { margin-top:var(--s7); }
@@ -140,11 +140,11 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .empty { display:none;text-align:center;padding:88px 20px;color:var(--ink-faint); }
 .empty.show { display:block; }
 .empty .big { font-family:var(--serif);font-optical-sizing:auto;font-size:21px;color:var(--ink-soft);margin-bottom:var(--s2);letter-spacing:-.02em; }
-.totop { position:fixed;right:20px;bottom:20px;width:36px;height:36px;border-radius:var(--radius);background:var(--navy);color:var(--bg);border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .2s,transform .2s,background .2s;box-shadow:var(--shadow-strong);z-index:30; }
+.totop { position:fixed;right:20px;bottom:20px;width:36px;height:36px;border-radius:var(--radius);background:var(--navy);color:#f4f1e9;border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .2s,transform .2s,background .2s;box-shadow:var(--shadow-strong);z-index:30; }
 .totop.show { opacity:1;pointer-events:auto;transform:none; }
 .totop svg { width:15px;height:15px; }
 .totop:hover { background:var(--navy-2); }
-[data-theme="dark"] .totop { background:var(--accent);color:var(--navy); }
+[data-theme="dark"] .totop { background:var(--gold);color:#131210; }
 [data-theme="dark"] .totop:hover { background:var(--gold-hi); }
 .footer { margin-top:var(--s8);padding-top:var(--s4);border-top:1px solid var(--navy);font-size:11px;color:var(--ink-faint);display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--s2);font-family:var(--mono);letter-spacing:.02em; }
 [data-theme="dark"] .footer { border-top-color:var(--line-strong); }
