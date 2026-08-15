@@ -363,3 +363,9 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-density{shape-rendering:crispEdges;}
 #dist .region-density{rx:0;}
 
+
+/* Monthly editorial axis: English labels centered inside explicit month intervals. */
+#dist .region-month-boundary{stroke:var(--line-strong);stroke-width:1;opacity:.92;vector-effect:non-scaling-stroke;shape-rendering:crispEdges;}
+#dist .region-month-label{font:700 7px var(--mono);letter-spacing:.16em;fill:var(--ink-soft);text-anchor:middle;}
+@media(max-width:720px){#dist .region-month-label{font-size:6px;letter-spacing:.11em;}}
+
