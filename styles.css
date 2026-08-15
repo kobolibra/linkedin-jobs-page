@@ -301,3 +301,24 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .ed-day.today:after{bottom:-13px;}
 .ed-source{display:none;}
 @media(max-width:720px){.ed-region-row{grid-template-columns:56px minmax(0,1fr) max-content;gap:5px}.ed-week{height:104px;padding-left:4px;padding-right:4px;padding-bottom:10px}.ed-day-bar{height:72px}}
+
+/* Lupi-inspired market matrix: weekday columns, fixed market rows */
+.analytics-card .ac-col h3 small{display:none;}
+.ed-region-row{grid-template-columns:64px max-content max-content;justify-content:start;gap:7px;margin:11px 0;}
+.ed-region-value{min-width:50px;text-align:left;}
+.ed-ticks{width:150px;}
+.ed-week{height:126px;align-items:stretch;gap:8px;padding:14px 10px 10px;border-bottom:0;}
+.ed-day{height:100%;justify-content:stretch;}
+.ed-day b{position:static;display:block;height:13px;line-height:1;text-align:center;transform:none;}
+.ed-day-matrix{display:flex;flex:1;min-height:0;flex-direction:column;justify-content:center;gap:4px;margin-top:3px;}
+.ed-matrix-cell{display:block;height:7px;width:100%;overflow:hidden;background:var(--chart-track);}
+.ed-matrix-cell i{display:block;height:100%;min-width:0;opacity:.95;}
+.ed-day span{padding-top:6px;min-height:12px;line-height:1;}
+.ed-day.today:after{bottom:-11px;}
+.ed-market-key{display:inline-flex;align-items:center;gap:5px;margin-left:auto;font:400 8px var(--mono);letter-spacing:.04em;text-transform:none;color:var(--ink-faint);}
+.ed-market-key i{display:inline-block;width:6px;height:6px;border-radius:50%;}
+.ed-market-key i.cn{background:var(--cn)}.ed-market-key i.hk{background:var(--hk)}.ed-market-key i.sg{background:var(--sg)}.ed-market-key i.other{background:var(--other)}
+.ed-source{display:none;}
+@media(max-width:720px){.ed-region-row{grid-template-columns:56px max-content max-content;gap:5px}.ed-ticks{width:118px}.ed-week{height:118px;gap:5px;padding-left:4px;padding-right:4px}.ed-day-matrix{gap:3px}.ed-market-key{gap:3px;font-size:7px}.ed-market-key i{width:5px;height:5px}}
+
+.ed-matrix-cell i.cn{background:var(--cn)}.ed-matrix-cell i.hk{background:var(--hk)}.ed-matrix-cell i.sg{background:var(--sg)}.ed-matrix-cell i.other{background:var(--other)}
