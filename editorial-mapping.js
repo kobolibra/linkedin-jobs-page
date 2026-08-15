@@ -29,15 +29,15 @@
       panel.dataset.editorial='1';
       const meta=document.getElementById('coRegions');
       if(meta)meta.insertAdjacentHTML('afterend','<p class="ed-contract">one tick = one live posting · age measured from first seen</p>');
+      const h=hist.closest('.co-sec')?.querySelector('.co-h');if(h)h.innerHTML='POSTING AGE PROFILE <span class="co-hint">click a band to filter</span>';
+      const ah=document.querySelector('#coAxisSec .co-h');if(ah)ah.innerHTML='POSTING AGE FIELD <span class="co-hint"><i class="co-sw co-sw-med"></i>median <i class="co-sw co-sw-mean"></i>mean</span>';
     }
-    const h=hist.closest('.co-sec')?.querySelector('.co-h');if(h)h.innerHTML='POSTING AGE PROFILE <span class="co-hint">click a band to filter</span>';
     hist.querySelectorAll('.co-bar').forEach(btn=>{
       if(btn.dataset.editorial==='1')return;
       btn.dataset.editorial='1';
       const label=btn.querySelector('.co-bar-l')?.textContent||'',count=intText(btn.querySelector('.co-bar-v')?.textContent),pct=btn.querySelector('.co-bar-p')?.textContent||'';
       btn.innerHTML='<span class="ed-age-label">'+label+'</span><span class="ed-age-ticks">'+ticks(count,2)+'</span><span class="ed-age-value">'+count+'</span><span class="ed-age-pct">'+pct+'</span>';
     });
-    const ah=document.querySelector('#coAxisSec .co-h');if(ah)ah.innerHTML='POSTING AGE FIELD <span class="co-hint"><i class="co-sw co-sw-med"></i>median <i class="co-sw co-sw-mean"></i>mean</span>';
   }
   const run=()=>{enhanceTop();enhanceCompany();};
   const obs=new MutationObserver(run);obs.observe(document.body,{childList:true,subtree:true});
