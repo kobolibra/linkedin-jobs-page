@@ -108,8 +108,8 @@ function renderTop50(rows){
   const colors={CN:'#9C2A33',HK:'#B07C22',SG:'#6E8A46'};
   const short=s=>s.length>26?s.slice(0,25)+'…':s;
   const leftMax=Math.ceil(maxCN/50)*50,rightMax=Math.ceil(maxRight/50)*50;
-  const symlog=v=>Math.asinh(v/12),extent=symlog(Math.max(leftMax,rightMax));
-  const xCN=v=>center-(center-left)*(symlog(v)/extent),xR=v=>center+(right-center)*(symlog(v)/extent);
+  const extent=Math.max(leftMax,rightMax);
+  const xCN=v=>center-(center-left)*(v/extent),xR=v=>center+(right-center)*(v/extent);
   const tickVals=[...new Set([...Array(Math.floor(leftMax/50)+1)].map((_,i)=>i*50),...[...Array(Math.floor(rightMax/50)+1)].map((_,i)=>i*50))];
   const grid=tickVals.map(v=>{const l=xCN(v),r=xR(v);return (v?'<line class="glance-grid" x1="'+l.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+l.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/>':'')+(v?'<line class="glance-grid" x1="'+r.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+r.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/>':'');}).join('');
   const legendY=topY+15*rowH;
