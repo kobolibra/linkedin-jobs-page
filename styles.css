@@ -351,3 +351,9 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-record{fill:none;stroke-width:1.8;stroke-linecap:round;vector-effect:non-scaling-stroke;opacity:.78;}
 #dist .region-record.cn{stroke:#b34b40;}#dist .region-record.hk{stroke:#b18a3d;}#dist .region-record.sg{stroke:#84966b;}
 @media(max-width:720px){#dist .region-time-key{font-size:7px;gap:6px}#dist .region-field-legend{font-size:6px}#dist .region-time-label{font-size:6px}#dist .region-time-name,#dist .region-time-count{font-size:9px}}
+
+/* regional density windows: same hue, darker where firstSeen density is higher */
+#dist .region-density{stroke:none;vector-effect:non-scaling-stroke;}
+#dist .region-density.cn{fill:#b34b40;}#dist .region-density.hk{fill:#b18a3d;}#dist .region-density.sg{fill:#84966b;}#dist .region-density.other{fill:#7b8790;}
+#dist .region-time-svg{padding-right:4px;}
+#dist .region-time-count{font-size:10px;}
