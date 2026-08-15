@@ -678,3 +678,6 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .bubble-svg .bubble-point:hover{stroke:var(--surface);}
 .bubble-svg .bubble-total{fill:var(--surface);}
 .bubble-svg .bubble-x-title,.bubble-svg .bubble-y-title{paint-order:stroke;stroke:var(--surface);stroke-width:2px;}
+
+.bubble-diagonal{stroke:#9A9891;stroke-width:1;stroke-dasharray:4 4;opacity:.72;vector-effect:non-scaling-stroke;}
+.bubble-diagonal-label{font-family:var(--mono);font-size:6.5px;letter-spacing:.08em;fill:#8F8E86;}

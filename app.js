@@ -115,27 +115,27 @@ function renderTop50(rows){
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const short=s=>s.length>25?s.slice(0,24)+'…':s;
-  const colors={CN:'#9C2A33',HK:'#B07C22',SG:'#6E8A46'};
-  const W=744,H=448,left=66,right=690,topY=42,bottom=46,plotTop=42,plotBottom=376;
-  const xMax=Math.max(10,Math.ceil(Math.max(...top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length))/10)*10);
-  const yMax=Math.max(10,Math.ceil(Math.max(...top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;}))/10)*10);
-  const x=v=>left+(right-left)*(v/xMax);
-  const y=v=>plotBottom-(plotBottom-plotTop)*(v/yMax);
-  const ticks=n=>Array.from({length:n+1},(_,i)=>i*(n===0?1:n));
-  const xTicks=Array.from({length:xMax/10+1},(_,i)=>i*10);
-  const yTicks=Array.from({length:yMax/10+1},(_,i)=>i*10);
+  const W=744,H=530,left=104,right=534,topY=42,bottom=48,plotTop=48,plotBottom=478;
+  const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
+  const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
+  const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians)/5)*5);
+  const xMin=0,xMax=domainMax,yMax=domainMax;
+  const x=v=>left+(right-left)*(v/domainMax);
+  const y=v=>plotBottom-(plotBottom-plotTop)*(v/domainMax);
+  const xTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
+  const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const grid=xTicks.map(v=>'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/><text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
     yTicks.map(v=>'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+right+'" y2="'+y(v).toFixed(1)+'"/><text class="bubble-axis" x="'+(left-9)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
-  const legendX=right-116,legendY=16;
-  const legend='<text class="bubble-legend-title" x="'+legendX+'" y="'+legendY+'" text-anchor="end">REGION</text>'+['CN','HK','SG'].map((r,i)=>'<circle class="bubble-legend-dot" cx="'+(legendX+12+i*28)+'" cy="'+(legendY-2)+'" r="3" fill="'+colors[r]+'"/><text class="bubble-legend-label" x="'+(legendX+18+i*28)+'" y="'+(legendY+1)+'">'+r+'</text>').join('');
+  const legendX=W-176,legendY=19;
+  const legend='<text class="bubble-legend-title" x="'+legendX+'" y="'+legendY+'" text-anchor="end">BUBBLE AREA · POSTINGS</text>'+[50,150,300].map((v,i)=>'<circle class="bubble-legend-dot" cx="'+(legendX+14+i*34)+'" cy="'+(legendY-3)+'" r="'+(3+i*2.2)+'" fill="#8E8D87"/><text class="bubble-legend-label" x="'+(legendX+20+i*34)+'" y="'+(legendY)+'">'+v+'</text>').join('');
   const placed=[];
   const overlaps=(a,b)=>a.x<b.x+b.w+3&&a.x+a.w+3>b.x&&a.y<b.y+b.h+3&&a.y+a.h+3>b.y;
   const points=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
     const median=n%2?ages[(n-1)/2]:(ages[n/2-1]+ages[n/2])/2;
-    const region=['CN','HK','SG'].sort((a,b)=>item[b]-item[a])[0];
-    const r=4+Math.sqrt(item.total/Math.max(1,top[0][1].total))*13;
+    const gray=['#C9C7C0','#B0AEA7','#96958E','#797873','#5C5B56'][Math.min(4,Math.floor((item.total/Math.max(1,top[0][1].total))*5))];
+    const r=3.5+Math.sqrt(item.total/Math.max(1,top[0][1].total))*10;
     const px=x(mean),py=y(median),label=short(name),w=Math.max(22,label.length*4.05),h=9;
     const candidates=[
       {x:px+r+5,y:py-4,anchor:'start'},
@@ -148,9 +148,10 @@ function renderTop50(rows){
     const labelX=chosen.x,labelY=chosen.y;
     const box={x:chosen.anchor==='end'?labelX-w:labelX,y:labelY-h/2,w,h};placed.push(box);
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><circle class="bubble-point '+region.toLowerCase()+'" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+colors[region]+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelX.toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="'+chosen.anchor+'">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
+    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelX.toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="'+chosen.anchor+'">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
-  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量气泡图">'+grid+'<text class="bubble-x-title" x="'+((left+right)/2)+'" y="'+(H-5)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="14" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 14 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+legend+points+'</svg>';
+  const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-diagonal-label" x="'+(x(domainMax)-4)+'" y="'+(y(domainMax)+13)+'" text-anchor="end">MEDIAN = MEAN</text>';
+  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量灰阶气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+right)/2)+'" y="'+(H-5)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="42" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 42 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+legend+points+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
