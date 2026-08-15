@@ -4,19 +4,19 @@
    ========================================================= */
 :root {
   /* single global color language */
-  --bg:#F0F0EE; --surface:#F0F0EE; --surface-2:#DBDAD3;
-  --ink:#1F1E1C; --ink-soft:rgba(31,30,28,.60); --ink-faint:rgba(31,30,28,.32);
-  --line:rgba(31,30,28,.16); --line-strong:#1F1E1C;
-  --navy:#1F1E1C; --navy-2:#22211F; --navy-3:#8F8E86;
-  --accent:#F5572F; --accent-soft:rgba(245,87,47,.14);
-  --gold-hi:#F5572F; --gold:#F5572F; --gold-deep:#F5572F;
-  --chart:#22211F; --chart-track:#DBDAD3;
-  --panel:#22211F; --panel-ink:#F0F0EE; --panel-muted:#C0BFB7; --panel-line:#55544F; --panel-focus:#F5572F;
-  --cn:#22211F; --cn-bg:#DBDAD3;
-  --hk:#6E6D66; --hk-bg:#C0BFB7;
-  --sg:#8F8E86; --sg-bg:#DBDAD3;
-  --other:#C0BFB7; --other-bg:#F0F0EE;
-  --region-181:#22211F; --region-155:#6E6D66; --region-114:#8F8E86;
+  --bg:#F4F0E9; --surface:#FBF8F2; --surface-2:#E5E6DF;
+  --ink:#18343A; --ink-soft:rgba(24,52,58,.62); --ink-faint:rgba(24,52,58,.35);
+  --line:#D9D8D0; --line-strong:#18343A;
+  --navy:#18343A; --navy-2:#214A4A; --navy-3:#39736D;
+  --accent:#D68B45; --accent-soft:rgba(214,139,69,.16);
+  --gold-hi:#E8C98A; --gold:#C3A45D; --gold-deep:#A6833F;
+  --chart:#39736D; --chart-track:#D5E1DB;
+  --panel:#214A4A; --panel-ink:#F4F0E9; --panel-muted:#A8C7BB; --panel-line:rgba(244,240,233,.30); --panel-focus:#D68B45;
+  --cn:#C27658; --cn-bg:#F1DDD3;
+  --hk:#C3A45D; --hk-bg:#EEE6CF;
+  --sg:#7FA69A; --sg-bg:#DCE9E4;
+  --other:#8C9690; --other-bg:#E5E6DF;
+  --region-181:#C27658; --region-155:#C3A45D; --region-114:#7FA69A;
   --shadow:none; --shadow-strong:none; --hairline:none;
   --serif: "Source Serif 4", Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
@@ -26,19 +26,19 @@
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8E86' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 [data-theme="dark"] {
-  --bg:#1F1E1C; --surface:#1F1E1C; --surface-2:#2E2D29;
-  --ink:#F0F0EE; --ink-soft:#8F8E86; --ink-faint:#55544F;
-  --line:#2E2D29; --line-strong:#F0F0EE;
-  --navy:#F0F0EE; --navy-2:#DBDAD3; --navy-3:#8F8E86;
-  --accent:#F5572F; --accent-soft:rgba(245,87,47,.18);
-  --gold-hi:#F5572F; --gold:#F5572F; --gold-deep:#F5572F;
-  --chart:#C0BFB7; --chart-track:#2E2D29;
-  --panel:#1F1E1C; --panel-ink:#F0F0EE; --panel-muted:#C0BFB7; --panel-line:#55544F; --panel-focus:#F5572F;
-  --cn:#F0F0EE; --cn-bg:rgba(240,240,238,.16);
-  --hk:#C0BFB7; --hk-bg:rgba(192,191,183,.16);
-  --sg:#8F8E86; --sg-bg:rgba(143,142,134,.16);
-  --other:#6E6D66; --other-bg:rgba(110,109,102,.16);
-  --region-181:#F0F0EE; --region-155:#C0BFB7; --region-114:#8F8E86;
+  --bg:#15282B; --surface:#18343A; --surface-2:#214A4A;
+  --ink:#F4F0E9; --ink-soft:#A8C7BB; --ink-faint:#7A8A86;
+  --line:rgba(244,240,233,.15); --line-strong:#F4F0E9;
+  --navy:#F4F0E9; --navy-2:#A8C7BB; --navy-3:#7FA69A;
+  --accent:#D68B45; --accent-soft:rgba(214,139,69,.20);
+  --gold-hi:#E8C98A; --gold:#C3A45D; --gold-deep:#C3A45D;
+  --chart:#A8C7BB; --chart-track:#2B4C4E;
+  --panel:#18343A; --panel-ink:#F4F0E9; --panel-muted:#A8C7BB; --panel-line:rgba(244,240,233,.30); --panel-focus:#D68B45;
+  --cn:#E8B39C; --cn-bg:rgba(232,179,156,.18);
+  --hk:#E8C98A; --hk-bg:rgba(232,201,138,.18);
+  --sg:#A8C7BB; --sg-bg:rgba(168,199,187,.18);
+  --other:#7A8A86; --other-bg:rgba(122,138,134,.18);
+  --region-181:#E8B39C; --region-155:#E8C98A; --region-114:#A8C7BB;
   --shadow:none; --shadow-strong:none; --hairline:none;
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8E88' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
