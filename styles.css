@@ -694,3 +694,5 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .bubble-relation{font-family:var(--mono);font-size:6.5px;letter-spacing:.12em;fill:#8F8E88;pointer-events:none;}
 .bubble-relation-above{fill:#6B6A65;}
 .bubble-relation-below{fill:#8F8E88;}
+
+.bubble-relation{font-size:5.6px;letter-spacing:.08em;}
