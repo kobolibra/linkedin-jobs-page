@@ -104,7 +104,7 @@ function renderTop50(rows){
   const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,20);
   const max=top[0]?.[1]||1, W=760, H=352, left=164, right=42, topY=28, bottom=40, plotW=W-left-right, rowH=13.2, xMax=Math.ceil(max/50)*50;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const wireRamp=['#22211F','#22211F','#8F8E86','#8F8E86','#C0BFB7','#DBDAD3'];
+  const wireRamp=['#6B6A65','#7F7E78','#96958E','#AEADA5','#C6C5BE','#DAD9D2'];
   const gray=i=>wireRamp[Math.min(wireRamp.length-1,Math.floor(i/4))];
   const short=s=>s.length>25?s.slice(0,24)+'…':s;
   const sx=v=>left+(v/xMax)*plotW;
@@ -114,7 +114,7 @@ function renderTop50(rows){
     const y=topY+i*rowH,x=sx(count),r=4.2+Math.sqrt(count/max)*4;
     return '<g class="top20-row" data-company="'+escSvg(name)+'" data-count="'+count+'" style="--i:'+i+'"><line class="top20-lane" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+(W-right)+'" y2="'+y.toFixed(1)+'"/><text class="top20-company" x="'+(left-16)+'" y="'+(y+3).toFixed(1)+'">'+escSvg(short(name))+'</text><line class="top20-stem" x1="'+left+'" y1="'+y.toFixed(1)+'" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'"/><circle class="top20-dot" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray(i)+'"><title>'+escSvg(name)+' · '+count+' 个职位</title></circle><text class="top20-value" x="'+(x+11).toFixed(1)+'" y="'+(y+3).toFixed(1)+'">'+count+'</text></g>';
   }).join('');
-  host.innerHTML='<svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 20 家公司散点图，横轴为职位数量">'+grid+rowsSvg+'<text class="top20-axis-title" x="'+(left+plotW/2)+'" y="'+(H-5)+'" text-anchor="middle">JOB POSTINGS</text></svg>';
+  host.innerHTML='<svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 20 家公司散点图，横轴为职位数量">'+grid+rowsSvg+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
