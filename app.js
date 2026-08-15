@@ -96,6 +96,23 @@ kwToggle.addEventListener("click",()=>{kwPanel.classList.toggle("open");if(kwPan
 kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.trim().toLowerCase();if(!v)return;blockedKw.add(v);saveBlockedKw();kwInput.value="";renderKw();apply();});
 kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();apply();});
 renderKw();
+function renderTop50(rows){
+  const host=document.getElementById('top50');
+  if(!host)return;
+  const counts=new Map();
+  rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(name)counts.set(name,(counts.get(name)||0)+1);});
+  const top=[...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,50);
+  const max=top[0]?.[1]||1, W=760, H=394, colW=380, rowH=14, topY=28, nameX=36, trackX=178, trackW=128;
+  const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const title='<text class="top50-kicker" x="0" y="11">RANKED COMPANY FIELD · LIVE POSTINGS</text><text class="top50-scale" x="'+W+'" y="11" text-anchor="end">50 COMPANIES · '+rows.length.toLocaleString()+' JOBS</text>';
+  const columns=[0,1].map(ci=>top.slice(ci*25,ci*25+25).map((entry,ri)=>{
+    const idx=ci*25+ri,name=entry[0],count=entry[1],y=topY+ri*rowH,x=trackX+ci*colW,ratio=count/max,r=Math.max(2.2,Math.min(6.2,2.2+ratio*4));
+    const tone=idx<3?'hero':idx<10?'dark':'quiet';
+    return '<g class="top50-row '+tone+'" style="--i:'+idx+'"><text class="top50-rank" x="'+(x-28)+'" y="'+(y+3)+'">'+String(idx+1).padStart(2,'0')+'</text><text class="top50-name" x="'+(x-nameX)+'" y="'+(y+3)+'">'+escSvg(name.length>19?name.slice(0,18)+'…':name)+'</text><line class="top50-rail" x1="'+x+'" y1="'+y+'" x2="'+(x+trackW)+'" y2="'+y+'"/><circle class="top50-dot" cx="'+(x+ratio*trackW).toFixed(1)+'" cy="'+y+'" r="'+r.toFixed(1)+'"><title>#'+(idx+1)+' '+escSvg(name)+' · '+count+' 个职位</title></circle><text class="top50-count" x="'+(x+trackW+14)+'" y="'+(y+3)+'">'+count.toLocaleString()+'</text></g>';
+  }).join('')).join('');
+  host.innerHTML='<svg class="top50-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="职位数量最多的 50 家公司">'+title+columns+'</svg>';
+  requestAnimationFrame(()=>host.classList.add('is-ready'));
+}
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
 fetch("jobs.json",{cache:"no-cache"})
@@ -155,6 +172,7 @@ fetch("jobs.json",{cache:"no-cache"})
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
+    renderTop50(data);
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});

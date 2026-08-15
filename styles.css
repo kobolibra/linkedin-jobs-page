@@ -547,3 +547,29 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .rhythm-value{fill:#d2d9fa;}
 [data-theme="dark"] .rhythm-axis-label{fill:#9ca8cf;}
 [data-theme="dark"] .rhythm-axis-label:last-child{fill:#c3cdf7;}
+
+/* Top 50 company field · glance-inspired ranked dot ladder */
+.ac-col-top50{grid-column:1 / -1;border-top:1px solid var(--line);padding-top:15px;margin-top:2px;}
+.top50-chart{width:100%;overflow-x:auto;opacity:0;transform:translateY(5px);transition:opacity .42s ease,transform .42s ease;}
+.top50-chart.is-ready{opacity:1;transform:none;}
+.top50-svg{display:block;width:100%;min-width:680px;height:auto;overflow:visible;}
+.top50-kicker{font-family:var(--mono);font-size:7px;letter-spacing:.13em;fill:var(--ink-soft);}
+.top50-scale{font-family:var(--mono);font-size:7px;letter-spacing:.08em;fill:var(--ink-faint);}
+.top50-row{animation:top50-rise .42s cubic-bezier(.23,1,.32,1) both;animation-delay:calc(var(--i) * 18ms);}
+.top50-rail{stroke:var(--line);stroke-width:.8;stroke-dasharray:1.5 3;}
+.top50-rank{font-family:var(--mono);font-size:7px;fill:var(--ink-faint);text-anchor:end;}
+.top50-name{font-family:var(--sans);font-size:8px;fill:var(--ink-soft);}
+.top50-count{font-family:var(--mono);font-size:8px;fill:var(--ink-soft);}
+.top50-dot{fill:#b7b7b0;stroke:var(--surface);stroke-width:1.1;transition:fill .2s ease,transform .2s ease;transform-box:fill-box;transform-origin:center;}
+.top50-row.dark .top50-dot{fill:#777873;}
+.top50-row.hero .top50-dot{fill:var(--navy);}
+.top50-row.hero .top50-name,.top50-row.hero .top50-count{fill:var(--navy);font-weight:700;}
+.top50-row:hover .top50-dot{fill:var(--accent);transform:scale(1.35);}
+.top50-row:hover .top50-name,.top50-row:hover .top50-count{fill:var(--ink);}
+[data-theme="dark"] .top50-rail{stroke:rgba(240,240,238,.18);}
+[data-theme="dark"] .top50-dot{fill:#8f8f88;stroke:var(--surface);}
+[data-theme="dark"] .top50-row.dark .top50-dot{fill:#b8b8b0;}
+[data-theme="dark"] .top50-row.hero .top50-dot{fill:#d9ad55;}
+[data-theme="dark"] .top50-row.hero .top50-name,[data-theme="dark"] .top50-row.hero .top50-count{fill:#f0efeb;}
+@keyframes top50-rise{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(max-width:720px){.top50-svg{min-width:680px}.ac-col-top50{overflow:hidden}.top50-chart{margin-right:-12px}}
