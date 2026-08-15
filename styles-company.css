@@ -172,3 +172,46 @@ body.compact .co-note { font-size:11px;line-height:1.6; }
 }
 
 @media print { .co-panel { display:none !important; } }
+
+/* =========================================================
+   Lieflat editorial company plate · unified PALM system
+   ========================================================= */
+.co-panel.on{background:transparent;border:0;border-radius:0;padding:0;}
+.co-card{background:var(--surface);border-radius:24px;padding:28px 28px 30px;}
+.co-close{top:18px;right:18px;}
+.co-name{font-family:var(--sans);font-size:20px;font-weight:750;letter-spacing:-.035em;color:var(--ink);}
+.co-meta{margin-top:12px;gap:6px 14px;}
+.co-chip{font-size:8px;letter-spacing:.12em;color:var(--ink-soft);}
+.co-chip i{width:6px;height:6px;border-radius:0;}
+.co-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 18px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line);}
+.co-kpi{min-width:0;}
+.co-k{font-size:8px;letter-spacing:.18em;color:var(--ink-faint);}
+.co-v{font-family:var(--sans);font-size:25px;font-weight:800;letter-spacing:-.05em;color:var(--ink);}
+.co-kpi-fresh .co-v{color:var(--cn);}
+.co-sec{margin-top:30px;}
+.co-h{font-size:8px;letter-spacing:.19em;color:var(--ink-soft);margin-bottom:14px;}
+.co-hint{font-size:7.5px;letter-spacing:.06em;}
+.co-bar{grid-template-columns:52px 1fr 24px 30px;gap:10px;padding:6px 0;}
+.co-bar-l{font-size:9px;color:var(--ink-soft);}
+.co-bar-t{height:8px;border-radius:0;background:var(--chart-track);}
+.co-bar-f{border-radius:0;}
+.co-bar.fresh .co-bar-f{background:var(--cn);opacity:1;}
+.co-bar.mid .co-bar-f{background:var(--hk);opacity:1;}
+.co-bar.stale .co-bar-f{background:var(--ink-faint);opacity:.72;}
+.co-bar.active::before{left:-14px;top:5px;bottom:5px;width:2px;border-radius:0;background:var(--gold);}
+.co-bar-v{font-size:10px;}
+.co-bar-p{font-size:8px;}
+.co-axis{margin-top:16px;}
+.co-plot{height:38px;border-bottom:1px solid var(--line-strong);}
+.co-band{top:9px;bottom:5px;border-radius:0;background:var(--accent-soft)!important;}
+.co-tick{top:12px;height:16px;width:1px;background:var(--ink)!important;opacity:.32;}
+.co-mk.co-med{border-left-color:var(--ink)!important;}
+.co-mk.co-mean{border-left-color:var(--gold)!important;}
+.co-scale{top:47px;font-size:7.5px;letter-spacing:.1em;}
+.co-foot{margin-top:30px;}
+.co-facts{gap:7px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+.co-fact-k{font-size:7.5px;letter-spacing:.18em;}
+.co-fact b{font-size:9.5px;}
+.co-note{font-family:var(--sans);font-size:11px;line-height:1.7;color:var(--ink-soft);}
+@media(min-width:900px){.co-panel.on{margin-top:40px;}.co-card{padding:30px 28px 32px;}}
+@media(max-width:420px){.co-card{padding:24px 20px 26px;}.co-kpis{gap:18px 14px;}}
