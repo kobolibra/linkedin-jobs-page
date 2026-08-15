@@ -369,24 +369,24 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-month-label{font:700 7px var(--mono);letter-spacing:.16em;fill:var(--ink-soft);text-anchor:middle;}
 @media(max-width:720px){#dist .region-month-label{font-size:6px;letter-spacing:.11em;}}
 
-/* =========================================================
-   Reference rhythm line · restrained editorial palette
-   ========================================================= */
-:root{
-  --bg:#f2f0eb; --surface:#fbfaf6; --surface-2:#e4e5df;
-  --ink:#28343a; --ink-soft:#717b7b; --ink-faint:#a6adaa;
-  --line:#d9ddd8; --line-strong:#b9c0bb;
-  --navy:#28343a; --navy-2:#3d5a57; --navy-3:#72857d;
-  --accent:#c79a27; --accent-soft:rgba(199,154,39,.13);
-  --gold-hi:#e6c35d; --gold:#c79a27; --gold-deep:#9b7413;
-  --chart:#3d5a57; --chart-track:#e2e5df;
-  --cn:#3d5a57; --cn-bg:#e4ebe6;
-  --hk:#9b7a2b; --hk-bg:#f0ead9;
-  --sg:#71847c; --sg-bg:#e7ece8;
-  --other:#9da6a1; --other-bg:#eaede9;
-}
-[data-theme="dark"]{
-/* Saturation-only adjustment for the existing first-chart ribbons. */
+.analytics-card .spark{height:154px;padding:0;display:block;position:relative;}
+.analytics-card .spark::before,.analytics-card .spark::after{display:none;}
+.rhythm-svg{display:block;width:100%;height:auto;overflow:visible;opacity:0;transform:translateY(4px);transition:opacity .45s ease,transform .45s ease;}
+.spark.is-ready .rhythm-svg{opacity:1;transform:none;}
+.rhythm-baseline{stroke:var(--line-strong);stroke-width:.8;}
+.rhythm-stick{stroke:var(--chart);stroke-width:1.35;opacity:.28;shape-rendering:crispEdges;}
+.rhythm-stick.weekend{stroke:var(--ink-faint);opacity:.17;}
+.rhythm-tick{stroke:var(--line-strong);stroke-width:.8;opacity:.7;shape-rendering:crispEdges;}
+.rhythm-tick.weekend{opacity:.34;}
+.rhythm-line{fill:none;stroke:var(--chart);stroke-width:2.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+.rhythm-node{fill:var(--chart);stroke:var(--chart);stroke-width:1.45;}
+.rhythm-node.weekend{fill:var(--surface);stroke:var(--chart);}
+.rhythm-node.focus{fill:var(--gold);stroke:var(--gold);stroke-width:1.5;}
+.rhythm-value{font-family:var(--mono);font-size:9px;font-weight:700;fill:var(--ink);letter-spacing:.02em;}
+.rhythm-axis-label{font-family:var(--mono);font-size:7px;letter-spacing:.12em;fill:var(--ink-faint);}
+.rhythm-axis-label:last-child{fill:var(--gold-deep);}
+@media(max-width:720px){.analytics-card .spark{height:134px;}.rhythm-svg{width:calc(100% + 4px);margin-left:-2px;}.rhythm-axis-label{font-size:6.5px;}}
+/* First-chart saturation only: no global color overrides. */
 #dist .region-field-legend i.cn{background:#a93636}
 #dist .region-field-legend i.hk{background:#b77c22}
 #dist .region-field-legend i.sg{background:#6f8e3c}
