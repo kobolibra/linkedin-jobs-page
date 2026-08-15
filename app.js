@@ -103,7 +103,7 @@ function renderTop50(rows){
   rows.forEach(j=>{const name=(j.company||'未知机构').trim();if(!name)return;const region=norm(j.location);if(!counts.has(name))counts.set(name,{total:0,CN:0,HK:0,SG:0});const item=counts.get(name);item.total++;if(item[region]!=null)item[region]++;});
   const top=[...counts.entries()].sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const maxCN=Math.max(1,...top.map(([,d])=>d.CN)),maxRight=Math.max(1,...top.map(([,d])=>d.HK+d.SG));
-  const W=840,H=448,left=175,right=760,center=470,topY=34,bottom=38,rowH=12.25;
+  const W=800,H=448,left=145,right=700,center=420,topY=34,bottom=38,rowH=12.25;
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const colors={CN:'#9C2A33',HK:'#B07C22',SG:'#6E8A46'};
   const short=s=>s.length>26?s.slice(0,25)+'…':s;
@@ -111,9 +111,9 @@ function renderTop50(rows){
   const symlog=v=>Math.asinh(v/12),extent=symlog(Math.max(leftMax,rightMax));
   const xCN=v=>center-(center-left)*(symlog(v)/extent),xR=v=>center+(right-center)*(symlog(v)/extent);
   const tickVals=[...new Set([...Array(Math.floor(leftMax/50)+1)].map((_,i)=>i*50),...[...Array(Math.floor(rightMax/50)+1)].map((_,i)=>i*50))];
-  const grid=tickVals.map(v=>{const l=xCN(v),r=xR(v);return (v?'<line class="glance-grid" x1="'+l.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+l.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/><text class="glance-axis" x="'+l.toFixed(1)+'" y="'+(H-bottom+12)+'" text-anchor="middle">−'+v+'</text>':'')+(v?'<line class="glance-grid" x1="'+r.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+r.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/><text class="glance-axis" x="'+r.toFixed(1)+'" y="'+(H-bottom+12)+'" text-anchor="middle">'+v+'</text>':'');}).join('');
+  const grid=tickVals.map(v=>{const l=xCN(v),r=xR(v);return (v?'<line class="glance-grid" x1="'+l.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+l.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/>':'')+(v?'<line class="glance-grid" x1="'+r.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+r.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/>':'');}).join('');
   const legendY=topY+15*rowH;
-  const legend='<text class="top20-legend-title" x="'+(W-54)+'" y="'+(legendY-22)+'" text-anchor="middle">REGION</text>'+['CN','HK','SG'].map((r,i)=>'<circle class="top20-legend-dot" cx="'+(W-54)+'" cy="'+(legendY+i*18)+'" r="3.2" fill="'+colors[r]+'"/><text class="top20-legend-label" x="'+(W-44)+'" y="'+(legendY+3+i*18)+'">'+r+'</text>').join('');
+  const legend='<text class="top20-legend-title" x="'+(W-40)+'" y="'+(legendY-22)+'" text-anchor="middle">REGION</text>'+['CN','HK','SG'].map((r,i)=>'<circle class="top20-legend-dot" cx="'+(W-40)+'" cy="'+(legendY+i*18)+'" r="3.2" fill="'+colors[r]+'"/><text class="top20-legend-label" x="'+(W-30)+'" y="'+(legendY+3+i*18)+'">'+r+'</text>').join('');
   const pts=top.map(([name,item],i)=>{const y=topY+i*rowH;return {name,item,y,cn:xCN(item.CN),hk:xR(item.HK),sg:xR(item.HK+item.SG)};});
   const pointString=key=>pts.map(p=>p[key].toFixed(1)+','+p.y.toFixed(1)).join(' ');
   const chain=(key,reverse=false)=>{const arr=reverse?pts.slice().reverse():pts;return arr.map(p=>p[key].toFixed(1)+','+p.y.toFixed(1)).join(' L ');};
@@ -122,7 +122,7 @@ function renderTop50(rows){
   const areaSG='M '+pts[0].hk.toFixed(1)+','+pts[0].y.toFixed(1)+' L '+chain('sg')+' L '+chain('hk',true)+' Z';
   const areas='<path class="top20-area cn" d="'+areaCN+'"/><path class="top20-area hk" d="'+areaHK+'"/><path class="top20-area sg" d="'+areaSG+'"/><polyline class="top20-boundary cn" points="'+pointString('cn')+'"/><polyline class="top20-boundary hk" points="'+pointString('hk')+'"/><polyline class="top20-boundary sg" points="'+pointString('sg')+'"/>';
   const rowSvg=pts.map((p,i)=>{const item=p.item;const dots=[['CN',p.cn,item.CN],['HK',p.hk,item.HK],['SG',p.sg,item.SG]].map(([region,x,value])=>value?'<circle class="top20-region-dot '+region.toLowerCase()+'" data-region="'+region+'" cx="'+x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="3.6" fill="'+colors[region]+'"><title>'+escSvg(p.name)+' · '+region+' · '+value+' 个职位</title></circle>':'').join('');return '<g class="top20-row" data-company="'+escSvg(p.name)+'" data-total="'+item.total+'" data-cn="'+item.CN+'" data-hk="'+item.HK+'" data-sg="'+item.SG+'" style="--i:'+i+'"><line class="top20-lane" x1="'+left+'" y1="'+p.y.toFixed(1)+'" x2="'+right+'" y2="'+p.y.toFixed(1)+'"/><text class="top20-company" x="'+(left-16)+'" y="'+(p.y+3).toFixed(1)+'">'+escSvg(short(p.name))+'</text>'+dots+'<text class="top20-value" x="'+(p.sg+11).toFixed(1)+'" y="'+(p.y+3).toFixed(1)+'">'+item.total+'</text></g>';}).join('');
-  host.innerHTML='<svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 公司按 CN、HK、SG 的累计职位面积图">'+grid+'<line class="top20-zero-axis" x1="'+center+'" y1="'+(topY-10)+'" x2="'+center+'" y2="'+(topY+29*rowH)+'"/>'+areas+legend+rowSvg+'<text class="top20-zero-label" x="'+center+'" y="'+(H-bottom+12)+'" text-anchor="middle">0</text></svg>';
+  host.innerHTML='<svg class="top20-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 公司按 CN、HK、SG 的累计职位面积图">'+grid+'<line class="top20-zero-axis" x1="'+center+'" y1="'+(topY-10)+'" x2="'+center+'" y2="'+(topY+29*rowH)+'"/>'+areas+legend+rowSvg+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
