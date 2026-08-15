@@ -215,3 +215,26 @@ body.compact .co-note { font-size:11px;line-height:1.6; }
 .co-note{font-family:var(--sans);font-size:11px;line-height:1.7;color:var(--ink-soft);}
 @media(min-width:900px){.co-panel.on{margin-top:40px;}.co-card{padding:30px 28px 32px;}}
 @media(max-width:420px){.co-card{padding:24px 20px 26px;}.co-kpis{gap:18px 14px;}}
+
+/* report-07 palette: Company Insight as a high-weight forest data surface */
+.co-card{background:#3f5b3c;color:#f1efe9;}
+.co-name{color:#f1efe9;}
+.co-eyebrow,.co-k,.co-h,.co-chip,.co-fact-k,.co-note,.co-hint{color:rgba(241,239,233,.68);}
+.co-chip i{background:#cbd5b4;}
+.co-kpis,.co-facts{border-color:rgba(241,239,233,.2);}
+.co-v,.co-fact b,.co-bar-v{color:#f1efe9;}
+.co-kpi-fresh .co-v{color:#e2c75d;}
+.co-bar-l,.co-bar-p{color:rgba(241,239,233,.68);}
+.co-bar-t{background:rgba(241,239,233,.18);}
+.co-bar.fresh .co-bar-f{background:#cbd5b4;}
+.co-bar.mid .co-bar-f{background:#a0a478;}
+.co-bar.stale .co-bar-f{background:rgba(241,239,233,.54);}
+.co-bar.active::before{background:#e2c75d;}
+.co-plot{border-color:rgba(241,239,233,.32);}
+.co-band{background:rgba(226,199,93,.18)!important;}
+.co-tick{background:#f1efe9!important;opacity:.48;}
+.co-mk.co-med{border-left-color:#cbd5b4!important;}
+.co-mk.co-mean{border-left-color:#e2c75d!important;}
+.co-scale{color:rgba(241,239,233,.6);}
+.co-close{color:rgba(241,239,233,.72);}
+.co-close:hover{color:#e2c75d;}
