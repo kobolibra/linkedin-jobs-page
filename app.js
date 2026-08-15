@@ -125,11 +125,19 @@ fetch("jobs.json",{cache:"no-cache"})
     if(lastUpd){const d=new Date(lastUpd);if(!isNaN(d))document.getElementById("stat-updated").innerHTML='<span style="font-size:15px">'+d.toLocaleString("zh-CN",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"})+'</span>';}
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
     const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
-    const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    const regionOrder=["CN","HK","SG","OTHER"];
-    distEl.innerHTML=regionOrder.filter(k=>rc[k]>0).map(k=>{const pct=data.length?Math.round(rc[k]/data.length*100):0;return'<div class="dist-row" data-region="'+k+'"><span class="dist-label">'+REGIONS[k].label+'</span><div class="dist-track"><div class="dist-fill" data-w="'+(rc[k]/rmax*100)+'"></div></div><span class="dist-val tnum">'+rc[k]+'<small>'+pct+'%</small></span></div>';}).join("");
-    requestAnimationFrame(()=>distEl.querySelectorAll(".dist-fill").forEach(f=>{f.style.width=f.dataset.w+"%";}));
+    const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
+    const dated={};data.forEach(j=>{const t=new Date(seenAt(j));if(isNaN(t))return;const r=norm(j.location);const day=new Date(t);day.setHours(0,0,0,0);const key=day.getTime();(dated[key]=dated[key]||{})[r]=(dated[key]?.[r]||0)+1;});
+    const allDates=data.map(j=>new Date(seenAt(j))).filter(d=>!isNaN(d));
+    const firstDay=new Date(Math.min(...allDates));firstDay.setHours(0,0,0,0);const lastDay=new Date(Math.max(...allDates));lastDay.setHours(0,0,0,0);
+    const windows=[];for(let d=new Date(firstDay);d<=lastDay;d.setDate(d.getDate()+7))windows.push(new Date(d));
+    const windowCounts=windows.map(start=>regionOrder.map(r=>{let n=0;for(let i=0;i<7;i++){const d=new Date(start);d.setDate(d.getDate()+i);n+=dated[d.getTime()]?.[r]||0;}return n;}));
+    const maxWindow=Math.max(1,...windowCounts.flat());
+    const TW=520,TH=126,left=72,right=48,top=27,rowGap=27,plotW=TW-left-right,cellW=plotW/windows.length;
+    const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const axis=windows.map((d,i)=>{const x=left+i*cellW;return '<line class="region-window-guide" x1="'+x.toFixed(1)+'" y1="'+(top-10)+'" x2="'+x.toFixed(1)+'" y2="'+(top+rowGap*2+9)+'"/><text class="region-window-label" x="'+(x+cellW/2).toFixed(1)+'" y="'+(TH-5)+'">'+escSvg(d.toLocaleDateString('zh-CN',{month:'numeric',day:'numeric'}))+'</text>';}).join('');
+    const rows=regionOrder.map((r,ri)=>{const y=top+ri*rowGap,pct=data.length?Math.round(rc[r]/data.length*100):0;const cells=windows.map((d,i)=>{const n=windowCounts[i][ri],x=left+i*cellW+2,w=cellW-4,fill=n?(n/maxWindow)*w:0;return '<rect class="region-window-track" x="'+x.toFixed(1)+'" y="'+(y-4)+'" width="'+w.toFixed(1)+'" height="8" rx="1"/><rect class="region-window-fill '+r.toLowerCase()+'" x="'+x.toFixed(1)+'" y="'+(y-4)+'" width="'+fill.toFixed(1)+'" height="8" rx="1"><title>'+escSvg(d.toLocaleDateString('zh-CN'))+'–'+escSvg(new Date(d.getTime()+6*86400000).toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[r].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<text class="region-time-name" x="0" y="'+(y+3)+'">'+escSvg(REGIONS[r].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y+3)+'">'+rc[r].toLocaleString()+'<tspan> '+pct+'%</tspan></text>'+cells;}).join('');
+    distEl.innerHTML='<div class="region-time-key">首次发现时间 · 每格 7 天 <span class="region-field-legend-wrap">'+regionOrder.map(r=>'<span class="region-field-legend"><i class="'+r.toLowerCase()+'"></i>'+REGIONS[r].label+' '+rc[r].toLocaleString()+'</span>').join('')+'</span></div><svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="三条地区横向时间分布；每格代表七天，色带长度表示职位数量">'+axis+rows+'</svg>';
     /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
     // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
     const RKEYS=["OTHER","SG","HK","CN"];
