@@ -696,3 +696,8 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .bubble-relation-below{fill:#8F8E88;}
 
 .bubble-relation{font-size:5.6px;letter-spacing:.08em;}
+
+.bubble-relation{font-size:5.1px;letter-spacing:.06em;}
+
+/* lieflat color-template dots: porcelain blue · palm olive · wire orange */
+.bubble-point,.bubble-svg .bubble-point,.bubble-svg .bubble-point:hover{stroke:none;stroke-width:0;}

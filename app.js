@@ -130,7 +130,8 @@ function renderTop50(rows){
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
     const median=n%2?ages[(n-1)/2]:(ages[n/2-1]+ages[n/2])/2;
-    const gray=['#C9C7C0','#B0AEA7','#96958E','#797873','#5C5B56'][Math.min(4,Math.floor((item.total/Math.max(1,top[0][1].total))*5))];
+    const share=item.total/Math.max(1,top[0][1].total);
+    const gray=share>=.42?'#F5572F':share>=.18?'#ACAD79':'#7096D1';
     const r=3.5+Math.sqrt(item.total/Math.max(1,top[0][1].total))*10;
     return {name,item,i,mean,median,gray,r,px:x(mean),py:y(median),label:short(name)};
   });
@@ -142,7 +143,7 @@ function renderTop50(rows){
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
     return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX+'" y2="'+ly.toFixed(1)+'"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+annotationX+'" y="'+ly.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
-  const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(11)+'" y="'+y(15)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(11)+'" y="'+y(7)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
+  const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(7)+'" y="'+y(11)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(7)+'" y="'+y(4)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
   host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量灰阶气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+right)/2)+'" y="'+(H-5)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="30" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 30 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
