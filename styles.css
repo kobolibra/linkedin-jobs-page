@@ -289,16 +289,3 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .ed-day span{display:block;min-height:14px;line-height:1;}
 .ed-week{padding-top:24px;}
 .ed-source{clear:both;}
-
-/* precision pass: editorial chart hierarchy and spacing */
-.analytics-card .ac-col h3 small{display:none;}
-.ed-region-row{grid-template-columns:64px minmax(0,1fr) max-content;gap:6px;margin:11px 0;}
-.ed-region-value{min-width:50px;}
-.ed-week{height:112px;padding:8px 10px 12px;border-bottom:0;}
-.ed-day-bar{height:78px;}
-.ed-day b{top:-12px;}
-.ed-day span{padding-top:6px;min-height:12px;}
-.ed-day.today:after{bottom:-13px;}
-.ed-source{display:none;}
-@media(max-width:720px){.ed-region-row{grid-template-columns:56px minmax(0,1fr) max-content;gap:5px}.ed-week{height:104px;padding-left:4px;padding-right:4px;padding-bottom:10px}.ed-day-bar{height:72px}}
-[data-theme="dark"] .analytics-card .ac-col h3 small{display:none;}
