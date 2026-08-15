@@ -655,3 +655,26 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .top20-area.sg{fill:#7E7F79;fill-opacity:.68;}
 .top20-boundary{fill:none;stroke-width:1.05;vector-effect:non-scaling-stroke;stroke-dasharray:1.5 2;opacity:.80;}
 .top20-boundary.cn{stroke:#9C2A33;}.top20-boundary.hk{stroke:#B07C22;}.top20-boundary.sg{stroke:#6E8A46;}
+
+/* Top 30 average-age bubble field */
+.bubble-svg{overflow:visible;}
+.bubble-grid{stroke:rgba(107,106,101,.18);stroke-width:.65;vector-effect:non-scaling-stroke;}
+.bubble-axis{font-family:var(--mono);font-size:7px;fill:#96958E;}
+.bubble-x-title,.bubble-y-title{font-family:var(--mono);font-size:6.5px;letter-spacing:.12em;fill:#8F8E86;}
+.bubble-point{stroke:var(--surface);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.88;transition:transform .18s ease,opacity .18s ease;transform-box:fill-box;transform-origin:center;}
+.bubble-point:hover{transform:scale(1.14);opacity:1;}
+.bubble-point.cn{fill:#9C2A33;}.bubble-point.hk{fill:#B07C22;}.bubble-point.sg{fill:#6E8A46;}
+.bubble-company{font-family:var(--sans);font-size:7.3px;fill:#6B6A65;dominant-baseline:middle;pointer-events:none;}
+.bubble-total{font-family:var(--mono);font-size:6.5px;fill:var(--surface);dominant-baseline:middle;pointer-events:none;}
+.bubble-legend-title{font-family:var(--mono);font-size:6px;letter-spacing:.12em;fill:#96958E;}
+.bubble-legend-label{font-family:var(--mono);font-size:6.5px;fill:#96958E;letter-spacing:.04em;}
+.bubble-legend-dot{stroke:none;}
+[data-theme="dark"] .bubble-grid{stroke:rgba(240,240,238,.15);}
+[data-theme="dark"] .bubble-axis,[data-theme="dark"] .bubble-x-title,[data-theme="dark"] .bubble-y-title,[data-theme="dark"] .bubble-company,[data-theme="dark"] .bubble-legend-title,[data-theme="dark"] .bubble-legend-label{fill:#C0BFB7;}
+.bubble-row{animation:top20-in .5s cubic-bezier(.23,1,.32,1) both;animation-delay:calc(var(--i) * 28ms);}
+.bubble-row:hover .bubble-company{fill:#22211F;}
+[data-theme="dark"] .bubble-row:hover .bubble-company{fill:#F0EFEB;}
+.bubble-svg .bubble-point{stroke:var(--surface);}
+.bubble-svg .bubble-point:hover{stroke:var(--surface);}
+.bubble-svg .bubble-total{fill:var(--surface);}
+.bubble-svg .bubble-x-title,.bubble-svg .bubble-y-title{paint-order:stroke;stroke:var(--surface);stroke-width:2px;}
