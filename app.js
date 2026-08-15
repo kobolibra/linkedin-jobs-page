@@ -139,23 +139,22 @@ fetch("jobs.json",{cache:"no-cache"})
     const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();monthSegments.push('<line class="region-month-boundary" x1="'+x1.toFixed(1)+'" y1="'+(top-11)+'" x2="'+x1.toFixed(1)+'" y2="'+(top+rowGap*2+10)+'"/><text class="region-month-label" x="'+((x1+x2)/2).toFixed(1)+'" y="'+(TH-5)+'">'+label+'</text>');}monthSegments.push('<line class="region-month-boundary" x1="'+(left+plotW).toFixed(1)+'" y1="'+(top-11)+'" x2="'+(left+plotW).toFixed(1)+'" y2="'+(top+rowGap*2+10)+'"/>');const axisTicks=monthSegments.join('');
     const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=data.length?Math.round(rc[k]/data.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,ratio=n/rowMax,level=n===0?0:ratio<=0.12?1:ratio<=0.32?2:ratio<=0.62?3:4,alpha=[0.12,0.26,0.52,0.80,1][level];const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density density-'+level+' '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-6)+'" width="'+w.toFixed(2)+'" height="12" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<line class="region-time-baseline" x1="'+left+'" y1="'+y+'" x2="'+(left+plotW)+'" y2="'+y+'"/><text class="region-time-name" x="0" y="'+(y+3)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y+3)+'">'+rc[k].toLocaleString()+'<tspan> '+pct+'%</tspan></text>'+cells;}).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="三条地区横向时间分布；色带深浅表示时间窗口内职位密度">'+axisTicks+rows+'</svg>';
-    /* 近 7 日新增 · 按地区堆叠（柱间连续，无缝隙） */
-    // DOM 顺序配合 column-reverse：CN 视觉最上、HK 居中、SG 最下
+    /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};data.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=new Date(),days=[];
-    for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({label:d.toLocaleDateString("en-US",{weekday:"short"}),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
-    const smax=Math.max(...days.map(d=>d.total),1);
+    for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
+    const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
+    const SW=520,SH=154,sLeft=28,sRight=22,sTop=16,sBase=118,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
+    const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
+    const sy=v=>sBase-(v/smax)*sPlotH;
+    const points=days.map((d,i)=>sx(i).toFixed(1)+','+sy(d.total).toFixed(1)).join(' ');
+    const sticks=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1);return '<line class="rhythm-stick'+(d.weekend?' weekend':'')+'" x1="'+x+'" y1="'+sBase+'" x2="'+x+'" y2="'+y+'"/><line class="rhythm-tick'+(d.weekend?' weekend':'')+'" x1="'+x+'" y1="'+(sBase+2)+'" x2="'+x+'" y2="'+(sBase+9)+'"/>';}).join('');
+    const nodes=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1),isPeak=d.total===peak,isCurrent=i===days.length-1,focus=isPeak||isCurrent;return '<circle class="rhythm-node '+(d.weekend?'weekend ':'')+(focus?'focus':'')+'" cx="'+x+'" cy="'+y+'" r="'+(focus?4.6:3.2)+'"><title>'+d.label+' · '+d.total+' 个职位</title></circle>'+(focus?'<text class="rhythm-value" x="'+x+'" y="'+(Math.max(10,sy(d.total)-10)).toFixed(1)+'" text-anchor="middle">'+d.total+'</text>':'');}).join('');
+    const axis=[0,14,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="'+(SH-8)+'" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML=days.map((d,i)=>{
-      let lastR=null;RKEYS.forEach(r=>{if((d.rc[r]||0)>0)lastR=r;});
-      const segs=RKEYS.map(r=>{const c=d.rc[r]||0;return c?'<span class="spark-seg'+(r===lastR?' top':'')+'" data-region="'+r+'" style="flex-grow:'+c+'"></span>':'';}).join("");
-      const bk=RKEYS.map(r=>{const c=d.rc[r]||0;return c?REGIONS[r].label+' '+c:'';}).filter(Boolean).join(' · ');
-      return '<div class="spark-col'+(i===days.length-1?' today':'')+'" title="'+d.label+' · '+d.total+' 个'+(bk?'（'+bk+'）':'')+'">'
-        +'<div class="spark-bar" data-h="'+(d.total/smax*100)+'">'+segs+(d.total?'<span class="spark-total">'+d.total+'</span>':'')+'</div>'
-        +'<span class="spark-label">'+d.label+'</span></div>';
-    }).join("");
-    requestAnimationFrame(()=>sparkEl.querySelectorAll(".spark-bar").forEach(b=>{b.style.height=b.dataset.h+"%";}));
+    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
+    requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
