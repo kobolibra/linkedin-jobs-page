@@ -334,3 +334,20 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .ed-arc-day{font:600 7px var(--mono);fill:var(--ink-faint);text-anchor:middle;letter-spacing:.03em;}
 .ed-arc-day.today{fill:var(--ink);font-weight:800;}
 @media(max-width:720px){.ed-arc-market{font-size:7px}.ed-arc-total{font-size:8px}.ed-arc-value{font-size:6px}.ed-arc-day{font-size:6.5px}}
+
+/* confirmed three-row firstSeen timeline */
+#dist .region-time-key{display:flex;align-items:center;gap:10px;margin:-2px 0 7px;font:600 8px var(--mono);letter-spacing:.06em;color:var(--ink-faint);white-space:nowrap;}
+#dist .region-field-legend-wrap{margin-left:auto;display:inline-flex;gap:8px;align-items:center;}
+#dist .region-field-legend{display:inline-flex;align-items:center;gap:3px;font:500 7px var(--mono);letter-spacing:0;color:var(--ink-faint);}
+#dist .region-field-legend i{width:6px;height:6px;border-radius:50%;display:inline-block;}
+#dist .region-field-legend i.cn{background:#b34b40;}#dist .region-field-legend i.hk{background:#b18a3d;}#dist .region-field-legend i.sg{background:#84966b;}
+#dist .region-time-svg{display:block;width:100%;height:auto;overflow:visible;}
+#dist .region-time-guide{stroke:var(--line);stroke-width:.7;stroke-dasharray:2 4;opacity:.72;}
+#dist .region-time-baseline{stroke:var(--line);stroke-width:.8;opacity:.85;}
+#dist .region-time-label{font:600 7px var(--mono);fill:var(--ink-faint);text-anchor:middle;}
+#dist .region-time-name{font:600 10px var(--sans);fill:var(--ink-soft);}
+#dist .region-time-count{font:700 10px var(--mono);fill:var(--ink);text-anchor:end;}
+#dist .region-time-count tspan{font-size:7px;font-weight:500;fill:var(--ink-faint);}
+#dist .region-record{fill:none;stroke-width:1.8;stroke-linecap:round;vector-effect:non-scaling-stroke;opacity:.78;}
+#dist .region-record.cn{stroke:#b34b40;}#dist .region-record.hk{stroke:#b18a3d;}#dist .region-record.sg{stroke:#84966b;}
+@media(max-width:720px){#dist .region-time-key{font-size:7px;gap:6px}#dist .region-field-legend{font-size:6px}#dist .region-time-label{font-size:6px}#dist .region-time-name,#dist .region-time-count{font-size:9px}}
