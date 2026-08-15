@@ -115,7 +115,7 @@ function renderTop50(rows){
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const short=s=>s.length>25?s.slice(0,24)+'…':s;
-  const W=744,H=530,left=104,right=534,topY=42,bottom=48,plotTop=48,plotBottom=478;
+  const W=720,H=500,left=90,right=500,topY=32,bottom=42,plotTop=42,plotBottom=452,annotationX=526;
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
   const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians)/5)*5);
@@ -126,8 +126,6 @@ function renderTop50(rows){
   const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const grid=xTicks.map(v=>'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/><text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
     yTicks.map(v=>'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+right+'" y2="'+y(v).toFixed(1)+'"/><text class="bubble-axis" x="'+(left-9)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
-  const legendX=W-176,legendY=19;
-  const legend='<text class="bubble-legend-title" x="'+legendX+'" y="'+legendY+'" text-anchor="end">BUBBLE AREA · POSTINGS</text>'+[50,150,300].map((v,i)=>'<circle class="bubble-legend-dot" cx="'+(legendX+14+i*34)+'" cy="'+(legendY-3)+'" r="'+(3+i*2.2)+'" fill="#8E8D87"/><text class="bubble-legend-label" x="'+(legendX+20+i*34)+'" y="'+(legendY)+'">'+v+'</text>').join('');
   const pointData=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
@@ -136,27 +134,16 @@ function renderTop50(rows){
     const r=3.5+Math.sqrt(item.total/Math.max(1,top[0][1].total))*10;
     return {name,item,i,mean,median,gray,r,px:x(mean),py:y(median),label:short(name)};
   });
-  const placed=[];
-  const overlaps=(a,b)=>a.x<b.x+b.w+3&&a.x+a.w+3>b.x&&a.y<b.y+b.h+3&&a.y+a.h+3>b.y;
-  const pointBoxes=pointData.map(p=>({x:p.px-p.r-3,y:p.py-p.r-3,w:p.r*2+6,h:p.r*2+6}));
+  const labelOrder=[...pointData].sort((a,b)=>a.py-b.py||a.px-b.px);
+  const labelY=new Map(labelOrder.map((p,i)=>[p.name,plotTop+10+i*((plotBottom-plotTop-20)/Math.max(1,labelOrder.length-1))]));
   const points=pointData.map((p)=>{
-    const {name,item,i,mean,median,gray,r,px,py,label}=p,w=Math.max(22,label.length*4.05),h=9;
-    const candidates=[
-      {x:px+r+7,y:py-4,anchor:'start'},
-      {x:px-r-7,y:py-4,anchor:'end'},
-      {x:px-w/2,y:py-r-10,anchor:'start'},
-      {x:px-w/2,y:py+r+12,anchor:'start'}
-    ];
-    const valid=c=>{const bx=c.anchor==='end'?c.x-w:c.x;const box={x:bx,y:c.y-h/2,w,h};const hitsPoint=pointBoxes.some((q,j)=>j!==i&&overlaps(box,q));return bx>=left+2&&bx+w<=right-2&&box.y>=plotTop+2&&box.y+h<=plotBottom-2&&!hitsPoint&&!placed.some(q=>overlaps(box,q));};
-    let chosen=candidates.find(valid);
-    if(!chosen)chosen=candidates.find(c=>{const bx=c.anchor==='end'?c.x-w:c.x;const box={x:bx,y:c.y-h/2,w,h};return bx>=left+2&&bx+w<=right-2&&box.y>=plotTop+2&&box.y+h<=plotBottom-2&&!placed.some(q=>overlaps(box,q));})||candidates[0];
-    const labelX=chosen.x,labelY=chosen.y,box={x:chosen.anchor==='end'?labelX-w:labelX,y:labelY-h/2,w,h};placed.push(box);
-    const edgeX=chosen.anchor==='end'?labelX+3:labelX-3,edgeY=labelY-1;
+    const {name,item,i,mean,median,gray,r,px,py,label}=p;
+    const ly=labelY.get(name),lineX=annotationX-7;
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+edgeX.toFixed(1)+'" y2="'+edgeY.toFixed(1)+'"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelX.toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="'+chosen.anchor+'">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
+    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX+'" y2="'+ly.toFixed(1)+'"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+annotationX+'" y="'+ly.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
   const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-diagonal-label" x="'+(x(domainMax)-4)+'" y="'+(y(domainMax)+13)+'" text-anchor="end">MEDIAN = MEAN</text>';
-  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量灰阶气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+right)/2)+'" y="'+(H-5)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="42" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 42 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+legend+points+'</svg>';
+  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量灰阶气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+right)/2)+'" y="'+(H-5)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="30" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 30 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
