@@ -128,27 +128,32 @@ function renderTop50(rows){
     yTicks.map(v=>'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+right+'" y2="'+y(v).toFixed(1)+'"/><text class="bubble-axis" x="'+(left-9)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
   const legendX=W-176,legendY=19;
   const legend='<text class="bubble-legend-title" x="'+legendX+'" y="'+legendY+'" text-anchor="end">BUBBLE AREA · POSTINGS</text>'+[50,150,300].map((v,i)=>'<circle class="bubble-legend-dot" cx="'+(legendX+14+i*34)+'" cy="'+(legendY-3)+'" r="'+(3+i*2.2)+'" fill="#8E8D87"/><text class="bubble-legend-label" x="'+(legendX+20+i*34)+'" y="'+(legendY)+'">'+v+'</text>').join('');
-  const placed=[];
-  const overlaps=(a,b)=>a.x<b.x+b.w+3&&a.x+a.w+3>b.x&&a.y<b.y+b.h+3&&a.y+a.h+3>b.y;
-  const points=top.map(([name,item],i)=>{
+  const pointData=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
     const median=n%2?ages[(n-1)/2]:(ages[n/2-1]+ages[n/2])/2;
     const gray=['#C9C7C0','#B0AEA7','#96958E','#797873','#5C5B56'][Math.min(4,Math.floor((item.total/Math.max(1,top[0][1].total))*5))];
     const r=3.5+Math.sqrt(item.total/Math.max(1,top[0][1].total))*10;
-    const px=x(mean),py=y(median),label=short(name),w=Math.max(22,label.length*4.05),h=9;
+    return {name,item,i,mean,median,gray,r,px:x(mean),py:y(median),label:short(name)};
+  });
+  const placed=[];
+  const overlaps=(a,b)=>a.x<b.x+b.w+3&&a.x+a.w+3>b.x&&a.y<b.y+b.h+3&&a.y+a.h+3>b.y;
+  const pointBoxes=pointData.map(p=>({x:p.px-p.r-3,y:p.py-p.r-3,w:p.r*2+6,h:p.r*2+6}));
+  const points=pointData.map((p)=>{
+    const {name,item,i,mean,median,gray,r,px,py,label}=p,w=Math.max(22,label.length*4.05),h=9;
     const candidates=[
-      {x:px+r+5,y:py-4,anchor:'start'},
-      {x:px-r-5,y:py-4-w/0.72,anchor:'end'},
-      {x:px-w/2,y:py-r-8,anchor:'start'},
-      {x:px-w/2,y:py+r+10,anchor:'start'}
+      {x:px+r+7,y:py-4,anchor:'start'},
+      {x:px-r-7,y:py-4,anchor:'end'},
+      {x:px-w/2,y:py-r-10,anchor:'start'},
+      {x:px-w/2,y:py+r+12,anchor:'start'}
     ];
-    let chosen=candidates.find(c=>{const bx=c.anchor==='end'?c.x-w:c.x;const box={x:bx,y:c.y-h/2,w,h};return bx>=left-2&&bx+w<=right+2&&box.y>=plotTop-2&&box.y+h<=plotBottom+2&&!placed.some(p=>overlaps(box,p));});
-    if(!chosen)chosen=candidates[0];
-    const labelX=chosen.x,labelY=chosen.y;
-    const box={x:chosen.anchor==='end'?labelX-w:labelX,y:labelY-h/2,w,h};placed.push(box);
+    const valid=c=>{const bx=c.anchor==='end'?c.x-w:c.x;const box={x:bx,y:c.y-h/2,w,h};const hitsPoint=pointBoxes.some((q,j)=>j!==i&&overlaps(box,q));return bx>=left+2&&bx+w<=right-2&&box.y>=plotTop+2&&box.y+h<=plotBottom-2&&!hitsPoint&&!placed.some(q=>overlaps(box,q));};
+    let chosen=candidates.find(valid);
+    if(!chosen)chosen=candidates.find(c=>{const bx=c.anchor==='end'?c.x-w:c.x;const box={x:bx,y:c.y-h/2,w,h};return bx>=left+2&&bx+w<=right-2&&box.y>=plotTop+2&&box.y+h<=plotBottom-2&&!placed.some(q=>overlaps(box,q));})||candidates[0];
+    const labelX=chosen.x,labelY=chosen.y,box={x:chosen.anchor==='end'?labelX-w:labelX,y:labelY-h/2,w,h};placed.push(box);
+    const edgeX=chosen.anchor==='end'?labelX+3:labelX-3,edgeY=labelY-1;
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelX.toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="'+chosen.anchor+'">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
+    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+edgeX.toFixed(1)+'" y2="'+edgeY.toFixed(1)+'"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelX.toFixed(1)+'" y="'+labelY.toFixed(1)+'" text-anchor="'+chosen.anchor+'">'+escSvg(label)+'</text><text class="bubble-total" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
   const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-diagonal-label" x="'+(x(domainMax)-4)+'" y="'+(y(domainMax)+13)+'" text-anchor="end">MEDIAN = MEAN</text>';
   host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量灰阶气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+right)/2)+'" y="'+(H-5)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="42" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 42 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+legend+points+'</svg>';
