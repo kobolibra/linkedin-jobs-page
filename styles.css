@@ -4,19 +4,19 @@
    ========================================================= */
 :root {
   /* single global color language */
-  --bg:#F7F2EB; --surface:#FCFBF8; --surface-2:#E8EEF6;
-  --ink:#081F5C; --ink-soft:rgba(8,31,92,.60); --ink-faint:rgba(8,31,92,.32);
-  --line:rgba(8,31,92,.16); --line-strong:rgba(8,31,92,.32);
-  --navy:#081F5C; --navy-2:#334EAC; --navy-3:#7096D1;
-  --accent:#334EAC; --accent-soft:rgba(51,78,172,.14);
-  --gold-hi:#D0E3FF; --gold:#334EAC; --gold-deep:#081F5C;
-  --chart:#334EAC; --chart-track:rgba(8,31,92,.12);
-  --panel:#081F5C; --panel-ink:#F7F2EB; --panel-muted:#7096D1; --panel-line:rgba(247,242,235,.32); --panel-focus:#D0E3FF;
-  --cn:#081F5C; --cn-bg:#D0E3FF;
-  --hk:#334EAC; --hk-bg:#BAD6EB;
-  --sg:#7096D1; --sg-bg:#E1EDF7;
-  --other:#9EB3CD; --other-bg:#EEF3F8;
-  --region-181:#081F5C; --region-155:#334EAC; --region-114:#7096D1;
+  --bg:#F0EFEB; --surface:#F0EFEB; --surface-2:#DEDDD6;
+  --ink:#1C1C1A; --ink-soft:#8F8E88; --ink-faint:#C6C5BF;
+  --line:#DEDDD6; --line-strong:#1C1C1A;
+  --navy:#1C1C1A; --navy-2:#4A4944; --navy-3:#8F8E88;
+  --accent:#1C1C1A; --accent-soft:rgba(28,28,26,.12);
+  --gold-hi:#1C1C1A; --gold:#1C1C1A; --gold-deep:#1C1C1A;
+  --chart:#4A4944; --chart-track:#D8D7D1;
+  --panel:#1C1C1A; --panel-ink:#F0EFEB; --panel-muted:#C6C5BF; --panel-line:#55554F; --panel-focus:#F0EFEB;
+  --cn:#1C1C1A; --cn-bg:#D8D7D1;
+  --hk:#6A6963; --hk-bg:#DEDDD6;
+  --sg:#B0AFA9; --sg-bg:#F0EFEB;
+  --other:#D8D7D1; --other-bg:#F0EFEB;
+  --region-181:#1C1C1A; --region-155:#6A6963; --region-114:#B0AFA9;
   --shadow:none; --shadow-strong:none; --hairline:none;
   --serif: "Source Serif 4", Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
@@ -26,21 +26,21 @@
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23737b70' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 [data-theme="dark"] {
-  --bg:#06163F; --surface:#0A245A; --surface-2:#12316F;
-  --ink:#F7F2EB; --ink-soft:rgba(247,242,235,.68); --ink-faint:rgba(247,242,235,.38);
-  --line:rgba(247,242,235,.16); --line-strong:rgba(247,242,235,.32);
-  --navy:#F7F2EB; --navy-2:#BAD6EB; --navy-3:#7096D1;
-  --accent:#7096D1; --accent-soft:rgba(112,150,209,.18);
-  --gold-hi:#D0E3FF; --gold:#7096D1; --gold-deep:#D0E3FF;
-  --chart:#BAD6EB; --chart-track:rgba(247,242,235,.14);
-  --panel:#081F5C; --panel-ink:#F7F2EB; --panel-muted:#BAD6EB; --panel-line:rgba(247,242,235,.32); --panel-focus:#D0E3FF;
-  --cn:#D0E3FF; --cn-bg:rgba(208,227,255,.18);
-  --hk:#BAD6EB; --hk-bg:rgba(186,214,235,.18);
-  --sg:#7096D1; --sg-bg:rgba(112,150,209,.18);
-  --other:#9EB3CD; --other-bg:rgba(158,179,205,.18);
-  --region-181:#D0E3FF; --region-155:#BAD6EB; --region-114:#7096D1;
+  --bg:#1C1C1A; --surface:#1C1C1A; --surface-2:#2E2D29;
+  --ink:#F0EFEB; --ink-soft:#8F8E88; --ink-faint:#55554F;
+  --line:#2E2D29; --line-strong:#F0EFEB;
+  --navy:#F0EFEB; --navy-2:#DCDAD2; --navy-3:#8F8E88;
+  --accent:#F0EFEB; --accent-soft:rgba(240,239,235,.14);
+  --gold-hi:#F0EFEB; --gold:#F0EFEB; --gold-deep:#F0EFEB;
+  --chart:#DCDAD2; --chart-track:#2E2D29;
+  --panel:#1C1C1A; --panel-ink:#F0EFEB; --panel-muted:#DCDAD2; --panel-line:#55554F; --panel-focus:#F0EFEB;
+  --cn:#F0EFEB; --cn-bg:rgba(240,239,235,.16);
+  --hk:#B0AFA9; --hk-bg:rgba(176,175,169,.16);
+  --sg:#8F8E88; --sg-bg:rgba(143,142,136,.16);
+  --other:#6A6963; --other-bg:rgba(106,105,99,.16);
+  --region-181:#F0EFEB; --region-155:#B0AFA9; --region-114:#8F8E88;
   --shadow:none; --shadow-strong:none; --hairline:none;
-  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23BAD6EB' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8E88' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 * { box-sizing:border-box; scrollbar-width:thin; scrollbar-color:var(--line-strong) transparent; }
 *::-webkit-scrollbar { width:10px;height:10px; }
