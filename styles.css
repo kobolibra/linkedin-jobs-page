@@ -624,3 +624,6 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .top20-dot{stroke:#1C1C1A;}
 [data-theme="dark"] .top20-company{fill:#F0EFEB;}
 [data-theme="dark"] .top20-rank,[data-theme="dark"] .top20-value,[data-theme="dark"] .top20-axis-title,[data-theme="dark"] .top20-y-title{fill:#C0BFB7;}
+
+/* final Top 20 paper alignment */
+.top50-chart{background:var(--surface);}
