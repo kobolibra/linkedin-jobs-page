@@ -111,8 +111,8 @@ function renderTop50(rows){
   const xCN=v=>center-(center-left)*(v/leftMax),xR=v=>center+(right-center)*(v/rightMax);
   const tickVals=[...new Set([...Array(Math.floor(leftMax/50)+1)].map((_,i)=>i*50),...[...Array(Math.floor(rightMax/50)+1)].map((_,i)=>i*50))];
   const grid=tickVals.map(v=>{const l=xCN(v),r=xR(v);return (v?'<line class="glance-grid" x1="'+l.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+l.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/>':'')+(v?'<line class="glance-grid" x1="'+r.toFixed(1)+'" y1="'+(topY-10)+'" x2="'+r.toFixed(1)+'" y2="'+(topY+29*rowH)+'"/>':'');}).join('');
-  const legendY=topY+15*rowH;
-  const legend='<text class="top20-legend-title" x="'+(W-22)+'" y="'+(legendY-22)+'" text-anchor="middle">REGION</text>'+['CN','HK','SG'].map((r,i)=>'<circle class="top20-legend-dot" cx="'+(W-22)+'" cy="'+(legendY+i*18)+'" r="3.2" fill="'+colors[r]+'"/><text class="top20-legend-label" x="'+(W-12)+'" y="'+(legendY+3+i*18)+'">'+r+'</text>').join('');
+  const legendY=16,legendX=W-118;
+  const legend='<text class="top20-legend-title" x="'+legendX+'" y="'+legendY+'" text-anchor="end">REGION</text>'+['CN','HK','SG'].map((r,i)=>'<circle class="top20-legend-dot" cx="'+(legendX+12+i*28)+'" cy="'+(legendY-2)+'" r="3.2" fill="'+colors[r]+'"/><text class="top20-legend-label" x="'+(legendX+18+i*28)+'" y="'+(legendY+1)+'">'+r+'</text>').join('');
   const pts=top.map(([name,item],i)=>{const y=topY+i*rowH;return {name,item,y,cn:xCN(item.CN),hk:xR(item.HK),sg:xR(item.HK+item.SG)};});
   const pointString=key=>pts.map(p=>p[key].toFixed(1)+','+p.y.toFixed(1)).join(' ');
   const chain=(key,reverse=false)=>{const arr=reverse?pts.slice().reverse():pts;return arr.map(p=>p[key].toFixed(1)+','+p.y.toFixed(1)).join(' L ');};
