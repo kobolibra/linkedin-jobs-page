@@ -683,3 +683,10 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .bubble-diagonal-label{font-family:var(--mono);font-size:6.5px;letter-spacing:.08em;fill:#8F8E86;}
 
 .bubble-label-leader{stroke:#A9A79F;stroke-width:.7;stroke-dasharray:2 2;opacity:.75;vector-effect:non-scaling-stroke;pointer-events:none;}
+
+/* compact final bubble field frame */
+.ac-col-top50{padding-top:9px;margin-top:0;}
+.top50-chart{padding:8px 10px 4px;}
+.top20-svg.bubble-svg{margin-top:0;}
+.bubble-label-leader{stroke:#A09E97;stroke-width:.65;stroke-dasharray:2 2;opacity:.62;}
+.bubble-company{font-size:7px;fill:#64635E;}
