@@ -4,41 +4,41 @@
    ========================================================= */
 :root {
   /* single global color language */
-  --bg:#F0EFEB; --surface:#F0EFEB; --surface-2:#DEDDD6;
-  --ink:#1C1C1A; --ink-soft:#8F8E88; --ink-faint:#C6C5BF;
-  --line:#DEDDD6; --line-strong:#1C1C1A;
-  --navy:#1C1C1A; --navy-2:#4A4944; --navy-3:#8F8E88;
-  --accent:#1C1C1A; --accent-soft:rgba(28,28,26,.12);
-  --gold-hi:#1C1C1A; --gold:#1C1C1A; --gold-deep:#1C1C1A;
-  --chart:#4A4944; --chart-track:#D8D7D1;
-  --panel:#1C1C1A; --panel-ink:#F0EFEB; --panel-muted:#C6C5BF; --panel-line:#55554F; --panel-focus:#F0EFEB;
-  --cn:#1C1C1A; --cn-bg:#D8D7D1;
-  --hk:#6A6963; --hk-bg:#DEDDD6;
-  --sg:#B0AFA9; --sg-bg:#F0EFEB;
-  --other:#D8D7D1; --other-bg:#F0EFEB;
-  --region-181:#1C1C1A; --region-155:#6A6963; --region-114:#B0AFA9;
+  --bg:#F0F0EE; --surface:#F0F0EE; --surface-2:#DBDAD3;
+  --ink:#1F1E1C; --ink-soft:rgba(31,30,28,.60); --ink-faint:rgba(31,30,28,.32);
+  --line:rgba(31,30,28,.16); --line-strong:#1F1E1C;
+  --navy:#1F1E1C; --navy-2:#22211F; --navy-3:#8F8E86;
+  --accent:#F5572F; --accent-soft:rgba(245,87,47,.14);
+  --gold-hi:#F5572F; --gold:#F5572F; --gold-deep:#F5572F;
+  --chart:#22211F; --chart-track:#DBDAD3;
+  --panel:#22211F; --panel-ink:#F0F0EE; --panel-muted:#C0BFB7; --panel-line:#55544F; --panel-focus:#F5572F;
+  --cn:#22211F; --cn-bg:#DBDAD3;
+  --hk:#6E6D66; --hk-bg:#C0BFB7;
+  --sg:#8F8E86; --sg-bg:#DBDAD3;
+  --other:#C0BFB7; --other-bg:#F0F0EE;
+  --region-181:#22211F; --region-155:#6E6D66; --region-114:#8F8E86;
   --shadow:none; --shadow-strong:none; --hairline:none;
   --serif: "Source Serif 4", Georgia, "Times New Roman", "Songti SC", "Noto Serif CJK SC", serif;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Roboto, Helvetica, Arial, sans-serif;
   --mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
   --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
   --radius:24px; --ease:cubic-bezier(.22,.61,.36,1); --mast-reserve:190px;
-  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23737b70' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8E86' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
 [data-theme="dark"] {
-  --bg:#1C1C1A; --surface:#1C1C1A; --surface-2:#2E2D29;
-  --ink:#F0EFEB; --ink-soft:#8F8E88; --ink-faint:#55554F;
-  --line:#2E2D29; --line-strong:#F0EFEB;
-  --navy:#F0EFEB; --navy-2:#DCDAD2; --navy-3:#8F8E88;
-  --accent:#F0EFEB; --accent-soft:rgba(240,239,235,.14);
-  --gold-hi:#F0EFEB; --gold:#F0EFEB; --gold-deep:#F0EFEB;
-  --chart:#DCDAD2; --chart-track:#2E2D29;
-  --panel:#1C1C1A; --panel-ink:#F0EFEB; --panel-muted:#DCDAD2; --panel-line:#55554F; --panel-focus:#F0EFEB;
-  --cn:#F0EFEB; --cn-bg:rgba(240,239,235,.16);
-  --hk:#B0AFA9; --hk-bg:rgba(176,175,169,.16);
-  --sg:#8F8E88; --sg-bg:rgba(143,142,136,.16);
-  --other:#6A6963; --other-bg:rgba(106,105,99,.16);
-  --region-181:#F0EFEB; --region-155:#B0AFA9; --region-114:#8F8E88;
+  --bg:#1F1E1C; --surface:#1F1E1C; --surface-2:#2E2D29;
+  --ink:#F0F0EE; --ink-soft:#8F8E86; --ink-faint:#55544F;
+  --line:#2E2D29; --line-strong:#F0F0EE;
+  --navy:#F0F0EE; --navy-2:#DBDAD3; --navy-3:#8F8E86;
+  --accent:#F5572F; --accent-soft:rgba(245,87,47,.18);
+  --gold-hi:#F5572F; --gold:#F5572F; --gold-deep:#F5572F;
+  --chart:#C0BFB7; --chart-track:#2E2D29;
+  --panel:#1F1E1C; --panel-ink:#F0F0EE; --panel-muted:#C0BFB7; --panel-line:#55544F; --panel-focus:#F5572F;
+  --cn:#F0F0EE; --cn-bg:rgba(240,240,238,.16);
+  --hk:#C0BFB7; --hk-bg:rgba(192,191,183,.16);
+  --sg:#8F8E86; --sg-bg:rgba(143,142,134,.16);
+  --other:#6E6D66; --other-bg:rgba(110,109,102,.16);
+  --region-181:#F0F0EE; --region-155:#C0BFB7; --region-114:#8F8E86;
   --shadow:none; --shadow-strong:none; --hairline:none;
   --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238F8E88' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
 }
