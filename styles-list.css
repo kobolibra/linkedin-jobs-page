@@ -228,6 +228,13 @@ body.compact .day-head { padding-bottom:6px; }
 }
 
 /* ---------- Print ---------- */
+/* Uniform base plane: avoid nested translucent slabs and horizontal color bands. */
+.masthead{border-bottom:0;}
+.top50-chart{background:transparent !important;border-radius:0;box-shadow:none !important;}
+.toolbar{background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;}
+.icon-btn{background:transparent;box-shadow:none;}
+.icon-btn:hover{background:rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);}
+
 /* Unified borderless glass controls and list surfaces. */
 .toolbar{background:color-mix(in srgb,var(--bg) 62%,transparent);border-bottom:0;box-shadow:0 8px 24px rgba(26,25,22,.045),inset 0 1px 0 rgba(255,255,255,.28);backdrop-filter:blur(18px) saturate(1.14);-webkit-backdrop-filter:blur(18px) saturate(1.14);}
 .search input,select.ctrl,.segmented,.pill,.kw-form input,.bl-chip{border:0;background:var(--glass-light,rgba(255,255,255,.30));box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 5px 16px rgba(26,25,22,.035);backdrop-filter:blur(12px) saturate(1.12);-webkit-backdrop-filter:blur(12px) saturate(1.12);}
@@ -240,6 +247,11 @@ body.compact .day-head { padding-bottom:6px; }
 .icon-btn{background:rgba(255,255,255,.10);}.icon-btn:hover{background:rgba(255,255,255,.26);}
 .day-new{border:0;background:rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.34);}
 [data-theme="dark"] .search input,[data-theme="dark"] select.ctrl,[data-theme="dark"] .segmented,[data-theme="dark"] .pill,[data-theme="dark"] .kw-form input,[data-theme="dark"] .bl-chip,[data-theme="dark"] .mono,[data-theme="dark"] .tag{background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 6px 18px rgba(0,0,0,.14);}
+
+/* Final plane normalization: controls float on one shared page surface. */
+.toolbar{background:transparent !important;box-shadow:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+.top50-chart{background:transparent !important;border-radius:0 !important;box-shadow:none !important;}
+.icon-btn{background:transparent !important;box-shadow:none !important;}
 
 @media print {
   body::before,.toolbar,.totop,.theme-toggle,.mast-stack,.analytics,.icon-btn,.blocked-bar,.kw-panel { display:none !important; }
