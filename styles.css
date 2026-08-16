@@ -746,3 +746,27 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 @media (prefers-reduced-motion: reduce) {
   .day .job { animation:none !important; }
 }
+
+/* Top 30 editorial region slider and expanded company rail */
+.top50-tabs{position:relative;display:inline-flex;align-items:stretch;gap:0;padding:2px;border:1px solid rgba(107,106,101,.28);border-radius:999px;background:transparent;isolation:isolate;overflow:hidden;}
+.top50-tabs::before{content:"";position:absolute;z-index:-1;left:2px;top:2px;bottom:2px;width:calc(25% - 1px);border-radius:999px;background:var(--top50-slider-color,rgba(107,106,101,.14)) !important;transform:translateX(var(--top50-slider-x,0%));transition:transform .28s var(--ease),background .28s var(--ease);}
+.top50-tabs[data-active="CN"]::before{transform:translateX(100%);background:rgba(156,42,51,.18);}
+.top50-tabs[data-active="HK"]::before{transform:translateX(200%);background:rgba(176,124,34,.20);}
+.top50-tabs[data-active="SG"]::before{transform:translateX(300%);background:rgba(110,138,70,.20);}
+.top50-tab,.top50-tab.active{position:relative;z-index:1;min-width:30px;border:0;background:transparent;color:var(--ink-faint);padding:5px 8px;border-radius:999px;transition:color .2s var(--ease);}
+.top50-tab:hover{border-color:transparent;color:var(--ink);}
+.top50-tab[data-top-region="all"].active{color:var(--navy);}
+.top50-tab[data-top-region="CN"].active{color:#9C2A33;}
+.top50-tab[data-top-region="HK"].active{color:#9A6A18;}
+.top50-tab[data-top-region="SG"].active{color:#5E783D;}
+[data-theme="dark"] .top50-tabs{border-color:rgba(240,240,238,.28);}
+[data-theme="dark"] .top50-tabs::before{background:rgba(240,240,238,.14);}
+[data-theme="dark"] .top50-tabs[data-active="CN"]::before{background:rgba(214,102,112,.24);}
+[data-theme="dark"] .top50-tabs[data-active="HK"]::before{background:rgba(212,160,23,.24);}
+[data-theme="dark"] .top50-tabs[data-active="SG"]::before{background:rgba(172,173,121,.24);}
+.bubble-company{font-size:7px;white-space:nowrap;}
+@media (min-width:721px){.bubble-svg{min-width:760px;}}
+@media (max-width:720px){.top50-tabs{width:100%;}.top50-tab{flex:1;}}
+#top50Tabs[data-active="CN"]::before{transform:translateX(100%) !important;background-color:rgba(156,42,51,.18) !important;}
+#top50Tabs[data-active="HK"]::before{transform:translateX(200%) !important;background-color:rgba(176,124,34,.20) !important;}
+#top50Tabs[data-active="SG"]::before{transform:translateX(300%) !important;background-color:rgba(110,138,70,.20) !important;}
