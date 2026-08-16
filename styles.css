@@ -809,3 +809,11 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .card{border:0 !important;box-shadow:var(--glass-shadow) !important;}
 .analytics-card.card{box-shadow:none !important;background:transparent !important;}
 .bubble-svg{min-width:0 !important;}
+
+/* Editorial glass v2: layered color and light, no expensive blur on the metric rail. */
+.stat{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;background:linear-gradient(155deg,rgba(255,255,255,.16) 0%,rgba(53,107,125,.66) 42%,rgba(53,107,125,.46) 100%) !important;border-color:rgba(255,255,255,.18) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 -1px 0 rgba(18,31,36,.2),0 5px 12px rgba(26,25,22,.055) !important;}
+.stat:nth-child(2){background:linear-gradient(155deg,rgba(255,255,255,.16) 0%,rgba(136,147,77,.68) 42%,rgba(136,147,77,.46) 100%) !important;}
+.stat:nth-child(3){background:linear-gradient(155deg,rgba(255,255,255,.16) 0%,rgba(184,93,81,.66) 42%,rgba(184,93,81,.44) 100%) !important;}
+.stat:nth-child(4){background:linear-gradient(155deg,rgba(255,255,255,.16) 0%,rgba(217,133,67,.68) 42%,rgba(217,133,67,.46) 100%) !important;}
+.stat::before{content:"";position:absolute;inset:1px 1px auto 1px;height:34%;background:linear-gradient(112deg,rgba(255,255,255,.2),rgba(255,255,255,0) 62%);border-radius:4px 4px 50% 50%;pointer-events:none;}
+.stat .v,.stat .k,.stat .live{position:relative;z-index:1;}

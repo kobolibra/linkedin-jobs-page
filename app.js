@@ -253,21 +253,18 @@ fetch("jobs.json",{cache:"no-cache"})
     orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx;});});
     let first=true;
     for(const[,g]of orderedGroups){
-      const sec=document.createElement("section");sec.className="day";sec._jobCards=[];daySections.push(sec);
-      const head=document.createElement("div");head.className="day-head";
-      head.innerHTML='<span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'');
-      sec.appendChild(head);
+      const sec=document.createElement("section");sec.className="day";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";daySections.push(sec);
+      const head='<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
+      const rows=[];
       g.items.forEach((job,idx)=>{
-        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company);
-        const a=document.createElement("article");a.className="job"+(reads.has(id)?" read":"");
-        if(first&&!reduce)a.style.animationDelay=Math.min(idx*.03,.45)+"s";
-        const _ad=ageDays(seenAt(job));a.dataset.region=r;a.dataset.comp=job.company||"";a.dataset.level=lvl;a.dataset.age=(_ad==null?"":_ad);a.dataset.id=id;
-        a.dataset.search=((job.title||"")+" "+(job.company||"")).toLowerCase();
-        a.dataset.title=(job.title||"").toLowerCase();
+        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job));
         const _coKey=job.company?job.company+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||1:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
-        a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?"今天":_ad<=7?"1周内":_ad<=14?"2周内":_ad<=21?"3周内":"3周+")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏" title="'+(favs.has(id)?"取消收藏":"收藏")+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div>';
-        sec.appendChild(a);sec._jobCards.push(a);jobCards.push(a);
+        const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.03,.45)+'s"':'';
+        rows.push('<article class="job'+(reads.has(id)?' read':'')+'" data-region="'+r+'" data-comp="'+esc(job.company||'')+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+(job.company||'')).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'><div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
       });
+      sec.innerHTML=head+rows.join('');
+      sec._jobCards=[...sec.querySelectorAll('.job')];
+      jobCards.push(...sec._jobCards);
       jobsEl.appendChild(sec);first=false;
     }
     regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=b.dataset.region;apply();});
