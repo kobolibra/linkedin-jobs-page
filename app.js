@@ -71,6 +71,15 @@ const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("em
 compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
 const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
 let activeRegion="all",favOnly=false,blockedOpen=false;
+let top50Mode="all",top50Rows=[];
+const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title");
+function setTop50Mode(mode){
+  top50Mode=mode;
+  top50Tabs?.querySelectorAll(".top50-tab").forEach(b=>{const active=b.dataset.topRegion===mode;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
+  if(top50Title)top50Title.textContent="Top 30 by postings · "+(mode==="all"?"ALL":mode);
+  if(top50Rows.length)renderTop50(top50Rows,top50Mode);
+}
+top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
 function setDensity(d){
   const c=d==="compact";
   document.body.classList.toggle("compact",c);
@@ -96,12 +105,13 @@ kwToggle.addEventListener("click",()=>{kwPanel.classList.toggle("open");if(kwPan
 kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.trim().toLowerCase();if(!v)return;blockedKw.add(v);saveBlockedKw();kwInput.value="";renderKw();apply();});
 kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();apply();});
 renderKw();
-function renderTop50(rows){
+function renderTop50(rows,mode="all"){
   const host=document.getElementById('top50');
   if(!host)return;
   const now=Date.now();
+  const scoped=mode==="all"?rows:rows.filter(j=>norm(j.location)===mode);
   const counts=new Map();
-  rows.forEach(j=>{
+  scoped.forEach(j=>{
     const name=(j.company||'未知机构').trim();
     if(!name)return;
     if(!counts.has(name))counts.set(name,{total:0,CN:0,HK:0,SG:0,ages:[]});
@@ -211,7 +221,8 @@ fetch("jobs.json",{cache:"no-cache"})
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
-    renderTop50(data);
+    top50Rows=data;
+    renderTop50(top50Rows,top50Mode);
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
