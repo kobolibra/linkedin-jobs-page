@@ -735,3 +735,14 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .top50-tab.active{color:var(--navy);background:var(--surface-2);border-color:var(--line-strong);}
 [data-theme="dark"] .top50-tab.active{color:var(--ink);background:var(--surface-2);}
 @media (max-width:720px){.top50-head{align-items:flex-start;flex-direction:column;gap:6px}.top50-tabs{width:100%;}.top50-tab{flex:1;}}
+
+/* Performance: defer off-screen job-day rendering without changing layout semantics. */
+.day { content-visibility:auto; contain-intrinsic-size:0 420px; }
+@media (max-width:680px) {
+  .day { contain-intrinsic-size:0 360px; }
+}
+
+/* Performance: avoid animating thousands of list descendants on reduced-motion devices. */
+@media (prefers-reduced-motion: reduce) {
+  .day .job { animation:none !important; }
+}
