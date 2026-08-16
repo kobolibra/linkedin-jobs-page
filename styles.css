@@ -725,3 +725,13 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
   .mast-stack{top:90px;}
   .mast-bg{top:54px;}
 }
+
+/* Top 30 地区视图切换 */
+.top50-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;}
+.top50-head h3{margin:0;white-space:nowrap;}
+.top50-tabs{display:flex;align-items:center;gap:3px;}
+.top50-tab{appearance:none;border:1px solid transparent;background:transparent;color:var(--ink-faint);font-family:var(--mono);font-size:8px;letter-spacing:.12em;line-height:1;padding:5px 6px;border-radius:4px;cursor:pointer;transition:background .2s var(--ease),color .2s var(--ease),border-color .2s var(--ease);}
+.top50-tab:hover{color:var(--ink);border-color:var(--line-strong);}
+.top50-tab.active{color:var(--navy);background:var(--surface-2);border-color:var(--line-strong);}
+[data-theme="dark"] .top50-tab.active{color:var(--ink);background:var(--surface-2);}
+@media (max-width:720px){.top50-head{align-items:flex-start;flex-direction:column;gap:6px}.top50-tabs{width:100%;}.top50-tab{flex:1;}}
