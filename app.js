@@ -85,8 +85,17 @@ const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementBy
 let activeRegion="all",favOnly=false,blockedOpen=false;
 let top50Mode="all",top50Rows=[];
 const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title");
+function updateTop50Slider(mode){
+  if(!top50Tabs)return;
+  const colors={all:'rgba(107,106,101,.14)',CN:'rgba(156,42,51,.18)',HK:'rgba(176,124,34,.20)',SG:'rgba(110,138,70,.20)'};
+  const offsets={all:0,CN:100,HK:200,SG:300};
+  top50Tabs.style.setProperty('--top50-slider-color',colors[mode]||colors.all);
+  top50Tabs.style.setProperty('--top50-slider-x',(offsets[mode]??0)+'%');
+}
+if(top50Tabs){top50Tabs.dataset.active=top50Mode;updateTop50Slider(top50Mode);}
 function setTop50Mode(mode){
   top50Mode=mode;
+  if(top50Tabs){top50Tabs.dataset.active=mode;updateTop50Slider(mode);}
   top50Tabs?.querySelectorAll(".top50-tab").forEach(b=>{const active=b.dataset.topRegion===mode;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
   if(top50Title)top50Title.textContent="Top 30 by postings · "+(mode==="all"?"ALL":mode);
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
@@ -136,8 +145,7 @@ function renderTop50(rows,mode="all"){
   });
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const short=s=>s.length>25?s.slice(0,24)+'…':s;
-  const W=660,H=470,left=70,right=500,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=516;
+  const W=760,H=470,left=70,right=500,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=516;
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
   const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians)/5)*5);
@@ -146,8 +154,8 @@ function renderTop50(rows,mode="all"){
   const y=v=>plotBottom-(plotBottom-plotTop)*(v/domainMax);
   const xTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
-  const grid=xTicks.map(v=>'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/><text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
-    yTicks.map(v=>'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+right+'" y2="'+y(v).toFixed(1)+'"/><text class="bubble-axis" x="'+(left-9)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
+  const grid=xTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
+    yTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+right+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-9)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
   const pointData=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
@@ -156,7 +164,7 @@ function renderTop50(rows,mode="all"){
     const palette=['#F5572F','#D4A017','#ACAD79','#7096D1','#334EAC','#081F5C'];
     const gray=palette[tier],labelInk=tier>=4?'#1C1C1A':'#F0EFEB';
     const r=3+Math.sqrt(item.total/Math.max(1,top[0][1].total))*8.2;
-    return {name,item,i,mean,median,gray,labelInk,r,px:x(mean),py:y(median),label:short(name)};
+      return {name,item,i,mean,median,gray,labelInk,r,px:x(mean),py:y(median),label:name};
   });
   const labelOrder=[...pointData].sort((a,b)=>a.py-b.py||a.px-b.px);
   const labelSlots=[];
