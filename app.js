@@ -69,6 +69,18 @@ const saveBlockedKw=()=>localStorage.setItem("blockedKw",JSON.stringify([...bloc
 (function(){if(localStorage.getItem("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();localStorage.setItem("favKeyV","2");})();
 const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");
 compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
+jobsEl.addEventListener("click",e=>{
+  const card=e.target.closest(".job");if(!card||!jobsEl.contains(card))return;
+  const id=card.dataset.id;
+  if(e.target.closest(".job-title")){reads.add(id);saveReads();card.classList.add("read");return;}
+  const star=e.target.closest(".star");
+  if(star){e.preventDefault();if(favs.has(id)){favs.delete(id);star.classList.remove("on");}else{favs.add(id);star.classList.add("on");}star.title=favs.has(id)?"取消收藏":"收藏";saveFavs();if(favOnly)apply();return;}
+  const ban=e.target.closest(".ban");
+  if(ban){e.preventDefault();const c=card.dataset.comp;if(c){blocked.add(c);saveBlocked();renderBlocked();apply();}return;}
+  const sub=e.target.closest(".job-sub-link");
+  if(sub){e.preventDefault();e.stopPropagation();const c=card.dataset.comp;if(c){companyEl.value=c;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});}}
+});
+jobsEl.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const sub=e.target.closest(".job-sub-link");if(!sub)return;e.preventDefault();const card=sub.closest(".job"),c=card?.dataset.comp;if(c){companyEl.value=c;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});}});
 const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
 let activeRegion="all",favOnly=false,blockedOpen=false;
 let top50Mode="all",top50Rows=[];
@@ -242,24 +254,6 @@ fetch("jobs.json",{cache:"no-cache"})
         a.dataset.title=(job.title||"").toLowerCase();
         const _coKey=job.company?job.company+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||1:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
         a.innerHTML='<div class="mono">'+esc(monogram(job.company))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'>'+esc(job.company||"未知机构")+_coHtml+'</div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?"今天":_ad<=7?"1周内":_ad<=14?"2周内":_ad<=21?"3周内":"3周+")+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?" on":"")+'" aria-label="收藏" title="'+(favs.has(id)?"取消收藏":"收藏")+'">'+IC.star+'</button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构">'+IC.ban+'</button></div>';
-        a.querySelector(".job-title").addEventListener("click",()=>{reads.add(id);saveReads();a.classList.add("read");});
-        const star=a.querySelector(".star");
-        star.addEventListener("click",e=>{
-          e.preventDefault();
-          if(favs.has(id)){favs.delete(id);star.classList.remove("on");}
-          else{favs.add(id);star.classList.add("on");}
-          star.title=favs.has(id)?"取消收藏":"收藏";
-          saveFavs();
-          if(favOnly)apply();
-        });
-        const ban=a.querySelector(".ban");
-        ban.addEventListener("click",e=>{e.preventDefault();const c=job.company;if(c){blocked.add(c);saveBlocked();renderBlocked();apply();}});
-        const subEl=a.querySelector(".job-sub");
-        if(job.company){
-          const openCompany=()=>{companyEl.value=job.company;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});};
-          subEl.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();openCompany();});
-          subEl.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openCompany();}});
-        }
         sec.appendChild(a);
       });
       jobsEl.appendChild(sec);first=false;
