@@ -783,3 +783,4 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .ac-col-top50{border-top:0 !important;}
 .top50-chart{background:var(--glass-soft) !important;border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);}
 .card{border:0 !important;box-shadow:var(--glass-shadow) !important;}
+.bubble-svg{min-width:0 !important;}
