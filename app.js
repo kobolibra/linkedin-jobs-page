@@ -145,7 +145,7 @@ function renderTop50(rows,mode="all"){
   });
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const W=760,H=470,left=70,right=500,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=516;
+  const W=690,H=470,left=70,right=500,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=516;
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
   const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians)/5)*5);

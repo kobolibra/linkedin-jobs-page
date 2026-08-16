@@ -765,8 +765,12 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .top50-tabs[data-active="HK"]::before{background:rgba(212,160,23,.24);}
 [data-theme="dark"] .top50-tabs[data-active="SG"]::before{background:rgba(172,173,121,.24);}
 .bubble-company{font-size:7px;white-space:nowrap;}
-@media (min-width:721px){.bubble-svg{min-width:760px;}}
+@media (min-width:721px){.bubble-svg{min-width:690px;}}
 @media (max-width:720px){.top50-tabs{width:100%;}.top50-tab{flex:1;}}
 #top50Tabs[data-active="CN"]::before{transform:translateX(100%) !important;background-color:rgba(156,42,51,.18) !important;}
 #top50Tabs[data-active="HK"]::before{transform:translateX(200%) !important;background-color:rgba(176,124,34,.20) !important;}
 #top50Tabs[data-active="SG"]::before{transform:translateX(300%) !important;background-color:rgba(110,138,70,.20) !important;}
+/* Borderless glass control: the regional color lives in the moving frosted pill. */
+.top50-tabs{border:0 !important;background:rgba(255,255,255,.10);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18),0 3px 14px rgba(26,25,22,.06);backdrop-filter:blur(10px) saturate(1.18);-webkit-backdrop-filter:blur(10px) saturate(1.18);}
+.top50-tabs::before{box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 0 -1px 0 rgba(26,25,22,.06),0 3px 10px rgba(26,25,22,.08);backdrop-filter:blur(10px) saturate(1.28);-webkit-backdrop-filter:blur(10px) saturate(1.28);}
+[data-theme="dark"] .top50-tabs{border:0 !important;background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.10),0 3px 14px rgba(0,0,0,.18);}
