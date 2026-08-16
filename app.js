@@ -210,7 +210,9 @@ fetch("jobs.json",{cache:"no-cache"})
     const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
     animNum(document.getElementById("stat-comp"),736);
     const lastUpd=data.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
-    document.getElementById("stat-updated").textContent="08/16 18:02";
+    const lastUpdDate=new Date(lastUpd);
+    const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
+    document.getElementById("stat-updated").textContent=lastUpdText;
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
     const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
     const rmax=Math.max(...Object.values(rc),1);
