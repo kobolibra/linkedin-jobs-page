@@ -399,7 +399,7 @@
     if (jobsEl) {
       let deb;
       const obs = new MutationObserver(() => { clearTimeout(deb); deb = setTimeout(build, 160); });
-      obs.observe(jobsEl, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+      obs.observe(jobsEl, { childList: true });
     }
     build();
   })();

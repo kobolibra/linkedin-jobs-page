@@ -267,17 +267,3 @@ body.compact .day-head { padding-bottom:6px; }
   .job-title { color:#000; }
   a[href^="http"]::after { content:" (" attr(href) ")";font-size:9px;color:#555; }
 }
-
-/* Next-level performance surface: preserve optical glass without full-width blur during scroll. */
-.toolbar{background:color-mix(in srgb,var(--bg) 86%,transparent) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 6px 18px rgba(26,25,22,.035) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
-.search input,select.ctrl,.segmented,.pill,.kw-form input,.bl-chip{background:color-mix(in srgb,var(--surface) 82%,transparent) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 3px 10px rgba(26,25,22,.025) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
-[data-theme="dark"] .toolbar{background:color-mix(in srgb,var(--bg) 90%,transparent) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 20px rgba(0,0,0,.14) !important;}
-[data-theme="dark"] .search input,[data-theme="dark"] select.ctrl,[data-theme="dark"] .segmented,[data-theme="dark"] .pill,[data-theme="dark"] .kw-form input,[data-theme="dark"] .bl-chip{background:rgba(255,255,255,.065) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 12px rgba(0,0,0,.12) !important;}
-.job,.day{contain:layout style paint;}
-@media (prefers-reduced-motion:reduce){.job{animation:none !important;}}
-
-/* Windowed paint for dated groups: keeps the document height while skipping far-off paint work. */
-.day{content-visibility:auto;contain:layout style paint;}
-
-/* The analytics shell is a layout surface, not a frosted pane: avoid full-width repaint on scroll. */
-.analytics-card{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
