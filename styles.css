@@ -85,7 +85,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .masthead h1 { font-family:var(--serif);font-optical-sizing:auto;font-weight:700;font-size:40px;line-height:1.06;letter-spacing:-.035em;margin:0;color:var(--navy);position:relative;z-index:1;padding-right:var(--mast-reserve); }
 .masthead .lede { margin:var(--s3) 0 0;color:var(--ink-soft);font-size:14.5px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;padding-right:var(--mast-reserve);position:relative;z-index:1; }
 .masthead .lede::-webkit-scrollbar { display:none; }
-.masthead .tagline { margin:var(--s2) 0 0;font-family:var(--serif);font-optical-sizing:auto;font-style:italic;font-size:14px;color:var(--ink-faint);padding-right:var(--mast-reserve);position:relative;z-index:1; }
+.masthead .tagline { margin:var(--s2) 0 0;font-family:var(--serif);font-optical-sizing:auto;font-style:italic;font-size:14px;color:#334EAC;padding-right:var(--mast-reserve);position:relative;z-index:1; }
 .theme-toggle { position:absolute;top:48px;right:0;z-index:7;display:flex;align-items:center;gap:var(--s2);background:none;border:0;padding:0;cursor:pointer; }
 .theme-toggle .tt-ic { display:grid;place-items:center;color:var(--ink-faint);transition:color .3s; }
 .theme-toggle .tt-ic svg { width:15px;height:15px;display:block; }
