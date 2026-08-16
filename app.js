@@ -190,9 +190,8 @@ jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-
 // n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
 fetch("jobs.json",{cache:"no-cache"})
   .then(r=>r.json())
-  .then(data=>{
+  .then(async data=>{
     if(!Array.isArray(data))data=[];
-    (function(){
       const norm2=s=>(s||"").trim().toLowerCase().replace(/\s+/g," ");
       const byKey=new Map();
       data.forEach(j=>{
@@ -204,7 +203,6 @@ fetch("jobs.json",{cache:"no-cache"})
         byKey.set(k,{rep:pt>=prev.pt?j:prev.rep,fs:Math.min(fs,prev.fs),pt:Math.max(pt,prev.pt)});
       });
       data=[...byKey.values()].map(v=>Object.assign({},v.rep,{firstSeen:isNaN(v.fs)?v.rep.firstSeen:new Date(v.fs).toISOString(),pushTime:isNaN(v.pt)?v.rep.pushTime:new Date(v.pt).toISOString()}));
-    })();
     const companyRegionCount=new Map();
     data.forEach(j=>{const k=(j.company||"")+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
     jobsEl.innerHTML="";
@@ -251,10 +249,13 @@ fetch("jobs.json",{cache:"no-cache"})
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
     orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx;});});
+    const renderGroups=[];
+    orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
     let first=true;
-    for(const[,g]of orderedGroups){
+    for(const[,g]of renderGroups){
+      if(!first)await new Promise(resolve=>setTimeout(resolve,0));
       const sec=document.createElement("section");sec.className="day";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";daySections.push(sec);
-      const head='<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
+      const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
         const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job));
