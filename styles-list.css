@@ -267,3 +267,17 @@ body.compact .day-head { padding-bottom:6px; }
   .job-title { color:#000; }
   a[href^="http"]::after { content:" (" attr(href) ")";font-size:9px;color:#555; }
 }
+
+/* Porcelain blue treatment for job-day chronology. */
+.day-head {
+  border-bottom-color:rgba(112,150,209,.62);
+}
+.day-date {
+  color:#334EAC;
+}
+[data-theme="dark"] .day-head {
+  border-bottom-color:rgba(112,150,209,.58);
+}
+[data-theme="dark"] .day-date {
+  color:#7096D1;
+}
