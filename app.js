@@ -254,9 +254,9 @@ fetch("jobs.json",{cache:"no-cache"})
     const renderGroups=[];
     orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
     let first=true;
-    for(const[,g]of renderGroups){
+    for(const[key,g]of renderGroups){
       if(!first)await new Promise(resolve=>setTimeout(resolve,0));
-      const sec=document.createElement("section");sec.className="day";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";daySections.push(sec);
+      const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";daySections.push(sec);
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
@@ -285,6 +285,7 @@ fetch("jobs.json",{cache:"no-cache"})
   .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
 function apply(){
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
+  daySections.forEach(sec=>sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove()));
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
   let visible=0;
@@ -302,6 +303,18 @@ function apply(){
     });
     const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shown+" 个职位";
     sec.style.display=shown?"":"none";visible+=shown;
+  });
+  const visibleDays=new Set();
+  daySections.forEach(sec=>{
+    const shown=sec.style.display!=="none";
+    const key=sec.dataset.dayKey;
+    if(!shown||visibleDays.has(key))return;
+    visibleDays.add(key);
+    if(!sec.querySelector('.day-head')){
+      const c=sec.querySelector('[data-role="daycount"]');
+      const count=c?c.textContent:"";
+      sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+esc(count)+'</span></div>');
+    }
   });
   countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
   emptyEl.classList.toggle("show",visible===0);
