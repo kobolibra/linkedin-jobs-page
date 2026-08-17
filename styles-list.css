@@ -287,3 +287,10 @@ body.compact .day-head { padding-bottom:6px; }
 .day-date { color:#2E4F8A; }
 [data-theme="dark"] .day-head { border-bottom-color:rgba(112,150,209,.52); }
 [data-theme="dark"] .day-date { color:#7096D1; }
+
+/* Filter-safe continuation chunks: same-day 120-row slices must read as one uninterrupted group. */
+.day[data-day-continuation="1"] { margin-top:0; }
+body.compact .day[data-day-continuation="1"] { margin-top:0; }
+@media (max-width:720px) {
+  .day[data-day-continuation="1"] { margin-top:0; }
+}
