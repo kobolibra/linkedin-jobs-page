@@ -221,7 +221,7 @@ fetch("jobs.json",{cache:"no-cache"})
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,data.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const tMin=Math.min(...allTimes),tMax=Math.max(...allTimes),tSpan=Math.max(1,tMax-tMin);
-    const TW=520,TH=126,left=54,right=8,top=27,rowGap=27,plotW=TW-left-right,bins=40,cellW=plotW/bins;
+    const TW=520,TH=126,left=28,right=22,top=27,rowGap=27,plotW=TW-left-right,bins=40,cellW=plotW/bins;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));bucketCounts[ri][bi]++;}));
