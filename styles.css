@@ -810,3 +810,19 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .card{border:0 !important;box-shadow:var(--glass-shadow) !important;}
 .analytics-card.card{box-shadow:none !important;background:transparent !important;}
 .bubble-svg{min-width:0 !important;}
+
+/* Final vertical rhythm pass: compact the first viewport without changing chart content. */
+.stats { margin-top:14px; }
+.stats .stat { height:56px;min-height:56px;max-height:56px;padding:7px 11px 6px; }
+.analytics { margin-top:20px; }
+.ac-col-top50 { margin-top:-6px;padding-top:8px; }
+.top50-chart { padding:10px 18px 6px; }
+.shell { padding-bottom:40px; }
+@media (max-width:720px) {
+  .stats { margin-top:12px; }
+  .stats .stat { height:48px;min-height:48px;max-height:48px;padding:6px 8px 5px; }
+  .analytics { margin-top:16px; }
+  .ac-col-top50 { margin-top:-4px;padding-top:7px; }
+  .top50-chart { padding:8px 12px 5px; }
+  .shell { padding-bottom:48px; }
+}
