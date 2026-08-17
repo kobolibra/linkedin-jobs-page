@@ -873,3 +873,8 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-month-label,
 #dist .region-time-pct { fill:var(--ink-faint) !important; }
 #dist .region-time-count { fill:var(--ink) !important; }
+
+/* Exact rhythm-chart color mapping for the regional axis and totals. */
+#dist .region-month-label { fill:var(--ink-faint) !important; }
+#dist .region-month-label.region-month-current { fill:var(--gold-deep) !important; }
+#dist .region-time-count { fill:var(--ink) !important; }
