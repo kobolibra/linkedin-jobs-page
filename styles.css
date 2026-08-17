@@ -152,8 +152,8 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
  .stat:nth-child(4) { background:#D4A017;color:#F7F2EB;box-shadow:0 8px 20px rgba(88,64,46,.12); }
  .stat::after { display:none; }
  .stat:hover { transform:translateY(-1px);box-shadow:0 11px 24px rgba(8,31,92,.16); }
- .stat .k { position:absolute;right:11px;bottom:8px;margin:0;color:currentColor;opacity:.82;font-family:var(--sans);font-size:8px;font-weight:650;letter-spacing:.02em;white-space:nowrap; }
- .stat .v { align-self:flex-start;margin:0;height:28px;display:flex;align-items:baseline;font-family:var(--mono);font-size:25px;font-weight:700;line-height:28px;letter-spacing:-.045em;color:currentColor;font-variant-numeric:tabular-nums;white-space:nowrap; }
+ .stat .k { position:absolute;right:11px;bottom:8px;margin:0;color:#F7F2EB;opacity:1;font-family:var(--sans);font-size:8px;font-weight:650;letter-spacing:.02em;white-space:nowrap; }
+ .stat .v { align-self:flex-start;margin:0;height:28px;display:flex;align-items:baseline;font-family:var(--mono);font-size:25px;font-weight:700;line-height:28px;letter-spacing:-.045em;color:#F7F2EB;font-variant-numeric:tabular-nums;white-space:nowrap; }
 .stat-status .v { font-family:var(--mono);font-size:18px;letter-spacing:-.02em; }
 .stat-meta .v { font-family:var(--mono);font-size:23px;letter-spacing:-.04em; }
 .stat-primary .v { font-size:28px; }
