@@ -281,3 +281,9 @@ body.compact .day-head { padding-bottom:6px; }
 [data-theme="dark"] .day-date {
   color:#7096D1;
 }
+
+/* Deeper Porcelain blue for chronology, with a restrained matching rule. */
+.day-head { border-bottom-color:rgba(46,79,138,.58); }
+.day-date { color:#2E4F8A; }
+[data-theme="dark"] .day-head { border-bottom-color:rgba(112,150,209,.52); }
+[data-theme="dark"] .day-date { color:#7096D1; }
