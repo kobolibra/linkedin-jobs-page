@@ -883,3 +883,12 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-month-label,
 #dist .region-month-label.region-month-current { fill:#7096D1 !important; }
 #dist .region-time-count { fill:#334EAC !important; }
+
+/* Editorial regional timeline: month ticks sit below the ribbons; no row baselines. */
+#dist .region-month-boundary {
+  stroke:var(--ink-faint);
+  stroke-width:1;
+  opacity:.52;
+  shape-rendering:crispEdges;
+}
+#dist .region-time-baseline { display:none !important; }
