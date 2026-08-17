@@ -812,7 +812,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .bubble-svg{min-width:0 !important;}
 
 /* Final vertical rhythm pass: compact the first viewport without changing chart content. */
-.stats { margin-top:14px; }
+.stats { margin-top:24px; }
 .stats .stat { height:56px;min-height:56px;max-height:56px;padding:7px 11px 6px; }
 .analytics { margin-top:20px; }
 .ac-col-top50 { margin-top:-6px;padding-top:8px; }
