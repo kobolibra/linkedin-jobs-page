@@ -826,3 +826,13 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
   .top50-chart { padding:8px 12px 5px; }
   .shell { padding-bottom:48px; }
 }
+
+/* Match regional axis and values to the 30-day rhythm chart typography. */
+#dist .region-month-label { font:500 7px var(--mono);letter-spacing:.12em;fill:var(--ink-faint); }
+#dist .region-time-count { font:700 9px var(--mono);letter-spacing:.02em;fill:var(--ink); }
+#dist .region-time-pct { font:500 7px var(--mono);letter-spacing:.02em;fill:var(--ink-faint); }
+@media(max-width:720px){
+  #dist .region-month-label { font-size:6.5px;letter-spacing:.10em; }
+  #dist .region-time-count { font-size:8px; }
+  #dist .region-time-pct { font-size:6.5px; }
+}
