@@ -878,3 +878,8 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-month-label { fill:var(--ink-faint) !important; }
 #dist .region-month-label.region-month-current { fill:var(--gold-deep) !important; }
 #dist .region-time-count { fill:var(--ink) !important; }
+
+/* Porcelain palette match for regional axis and totals. */
+#dist .region-month-label,
+#dist .region-month-label.region-month-current { fill:#7096D1 !important; }
+#dist .region-time-count { fill:#334EAC !important; }
