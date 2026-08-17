@@ -299,10 +299,10 @@ function apply(){
       const base=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
       const ok=base&&ageMatch(ageSel,age);
       if(base&&comp!=="all"&&age!=null){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
-      card.classList.toggle("hidden",!ok);if(ok)shown++;
+      card.classList.toggle("hidden",!ok);card.style.display=ok?"":"none";if(ok)shown++;
     });
     const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shown+" 个职位";
-    sec.style.display=shown?"":"none";visible+=shown;
+    sec.style.display=shown?"":"none";sec.style.height="auto";sec.style.minHeight="0";visible+=shown;
   });
   const visibleDays=new Set();
   daySections.forEach(sec=>{
