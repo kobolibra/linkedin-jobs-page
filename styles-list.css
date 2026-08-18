@@ -294,3 +294,11 @@ body.compact .day[data-day-continuation="1"] { margin-top:0; }
 @media (max-width:720px) {
   .day[data-day-continuation="1"] { margin-top:0; }
 }
+
+/* Final post-Top-30 rhythm: the list stylesheet loads after styles.css, so keep the toolbar gap here. */
+@media (min-width:721px){
+  .toolbar{margin-top:0 !important;}
+}
+@media (max-width:720px){
+  .toolbar{margin-top:8px !important;}
+}

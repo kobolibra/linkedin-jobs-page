@@ -971,3 +971,14 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 @media (max-width:420px){
   .masthead .mast-stack{top:34px;}
 }
+
+/* Final balance pass: restore cat image size and remove the real post-Top-30 gap. */
+@media (min-width:721px){
+  .mast-bg{top:38px;width:124px;height:124px;}
+  .masthead{padding-bottom:8px;}
+  .toolbar{margin-top:0;}
+}
+@media (max-width:720px){
+  .masthead{padding-bottom:12px;}
+  .toolbar{margin-top:8px;}
+}
