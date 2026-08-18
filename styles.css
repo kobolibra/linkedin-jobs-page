@@ -892,3 +892,82 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
   shape-rendering:crispEdges;
 }
 #dist .region-time-baseline { display:none !important; }
+
+/* Visible correction pass: make the requested first-viewport tightening perceptible. */
+@media (min-width:721px){
+  .mast-stack{top:70px;}
+  .mast-bg{top:54px;width:112px;height:112px;}
+  .stats{margin-top:10px;}
+  .stats .stat{height:44px;min-height:44px;max-height:44px;padding:5px 10px 4px;}
+  .stats .stat .v{height:24px;font-size:23px;line-height:24px;}
+  .stat-primary .v{font-size:26px;}
+  .stat .k{right:10px;bottom:6px;}
+  .analytics{margin-top:8px;}
+  .ac-col-top50{margin-top:-10px;padding-top:4px;padding-bottom:0;}
+  .top50-chart{padding-top:7px;padding-bottom:0;}
+}
+@media (max-width:720px){
+  .masthead .mast-stack{top:38px;}
+  .masthead .stats{margin-top:7px;}
+  .stats .stat{height:40px;min-height:40px;max-height:40px;padding:4px 7px 3px;}
+  .stats .stat .v,.stat-primary .v{height:20px;font-size:18px;line-height:20px;}
+  .stat .k{right:7px;bottom:5px;}
+  .analytics{margin-top:9px;}
+  .ac-col-top50{margin-top:-6px;padding-top:4px;padding-bottom:0;}
+  .top50-chart{padding-top:6px;padding-bottom:0;}
+}
+@media (max-width:420px){
+  .masthead .mast-stack{top:34px;}
+}
+
+
+/* Final first-viewport compression: lift the photo stack, slim metric rail, and trim lower Top 30 whitespace. */
+@media (min-width:721px){
+  .mast-stack{top:82px;}
+  .mast-bg{top:46px;}
+  .stats{margin-top:18px;}
+  .stats .stat{height:50px;min-height:50px;max-height:50px;padding-top:6px;padding-bottom:5px;}
+  .analytics{margin-top:14px;}
+  .ac-col-top50{margin-top:-8px;padding-top:6px;padding-bottom:2px;}
+  .top50-chart{padding-bottom:2px;}
+  .shell{padding-bottom:24px;}
+}
+@media (max-width:720px){
+  .masthead .mast-stack{top:44px;}
+  .masthead .stats{margin-top:10px;}
+  .stats .stat{height:44px;min-height:44px;max-height:44px;padding-top:5px;padding-bottom:4px;}
+  .analytics{margin-top:12px;}
+  .ac-col-top50{margin-top:-5px;padding-top:5px;padding-bottom:1px;}
+  .top50-chart{padding-bottom:2px;}
+  .shell{padding-bottom:36px;}
+}
+@media (max-width:420px){
+  .masthead .mast-stack{top:40px;}
+}
+
+/* Visible correction pass: make the requested first-viewport tightening perceptible. */
+@media (min-width:721px){
+  .mast-stack{top:70px;}
+  .mast-bg{top:54px;width:112px;height:112px;}
+  .stats{margin-top:10px;}
+  .stats .stat{height:44px;min-height:44px;max-height:44px;padding:5px 10px 4px;}
+  .stats .stat .v{height:24px;font-size:23px;line-height:24px;}
+  .stat-primary .v{font-size:26px;}
+  .stat .k{right:10px;bottom:6px;}
+  .analytics{margin-top:8px;}
+  .ac-col-top50{margin-top:-10px;padding-top:4px;padding-bottom:0;}
+  .top50-chart{padding-top:7px;padding-bottom:0;}
+}
+@media (max-width:720px){
+  .masthead .mast-stack{top:38px;}
+  .masthead .stats{margin-top:7px;}
+  .stats .stat{height:40px;min-height:40px;max-height:40px;padding:4px 7px 3px;}
+  .stats .stat .v,.stat-primary .v{height:20px;font-size:18px;line-height:20px;}
+  .stat .k{right:7px;bottom:5px;}
+  .analytics{margin-top:9px;}
+  .ac-col-top50{margin-top:-6px;padding-top:4px;padding-bottom:0;}
+  .top50-chart{padding-top:6px;padding-bottom:0;}
+}
+@media (max-width:420px){
+  .masthead .mast-stack{top:34px;}
+}
