@@ -206,9 +206,9 @@ fetch("jobs.json",{cache:"no-cache"})
     const companyRegionCount=new Map();
     data.forEach(j=>{const k=(j.company||"")+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
     jobsEl.innerHTML="";
-    animNum(document.getElementById("stat-total"),4485);
-    const companies=[...new Set(data.map(j=>j.company).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
-    animNum(document.getElementById("stat-comp"),736);
+    animNum(document.getElementById("stat-total"),data.length);
+    const companies=[...new Set(data.map(j=>j.company).map(c=>(c||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
+    animNum(document.getElementById("stat-comp"),companies.length);
     const lastUpd=data.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
     const lastUpdDate=new Date(lastUpd);
     const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
