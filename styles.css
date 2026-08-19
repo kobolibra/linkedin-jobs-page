@@ -997,3 +997,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
   align-self:stretch;
   padding-bottom:8px;
 }
+
+/* Bubu photo: a lighter, more translucent front card without changing the image asset. */
+.mast-stack.show .mp-1 { opacity: .82; }
+.mast-stack.show:hover .mp-1 { opacity: .82; }
