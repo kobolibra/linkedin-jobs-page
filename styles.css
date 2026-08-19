@@ -982,3 +982,12 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
   .masthead{padding-bottom:12px;}
   .toolbar{margin-top:8px;}
 }
+
+/* Lead-chart interior rhythm: prevent grid stretch from creating empty lower bands. */
+.analytics-card > .ac-col:not(.ac-col-top50){
+  align-self:start;
+  padding-bottom:8px;
+}
+@media(max-width:720px){
+  .analytics-card > .ac-col:not(.ac-col-top50){padding-bottom:8px;}
+}
