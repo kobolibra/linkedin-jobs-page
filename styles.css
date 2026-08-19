@@ -991,3 +991,9 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 @media(max-width:720px){
   .analytics-card > .ac-col:not(.ac-col-top50){padding-bottom:8px;}
 }
+
+/* Alignment correction: both lead-chart cards must share one bottom edge. */
+.analytics-card > .ac-col:not(.ac-col-top50){
+  align-self:stretch;
+  padding-bottom:8px;
+}
