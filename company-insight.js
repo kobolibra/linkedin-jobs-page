@@ -1,5 +1,5 @@
 /*
- * LinkedIn 金融职位精选 · 机构统计面板 Company Insight
+ * LinkedIn 金融职位 · 机构统计面板 Company Insight
  * 由 app.js 的 apply() 在每次筛选后调用：renderCo(company, ages, regions, ageSel)
  * 依赖 app.js 暴露的 REGIONS / monogram / companyEl / ageEl / apply
  */
