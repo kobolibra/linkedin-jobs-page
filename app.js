@@ -1,5 +1,5 @@
 /*
- * LinkedIn 金融职位精选 · 页面逻辑
+ * LinkedIn 金融职位 · 页面逻辑
  * 依赖：jobs.json
  */
 const IC={
