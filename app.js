@@ -189,7 +189,7 @@ function renderTop50(rows,mode="all"){
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
 fetch("jobs.json",{cache:"no-cache"})
-  .then(r=>r.json())
+  .then(r=>{if(!r.ok)throw new Error("jobs.json HTTP "+r.status);return r.json();})
   .then(async data=>{
     if(!Array.isArray(data))data=[];
       const norm2=s=>(s||"").trim().toLowerCase().replace(/\s+/g," ");
