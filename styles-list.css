@@ -302,3 +302,10 @@ body.compact .day[data-day-continuation="1"] { margin-top:0; }
 @media (max-width:720px){
   .toolbar{margin-top:8px !important;}
 }
+
+/* Filled favorite state: keep the default star outlined, but use a filled mask when saved. */
+.job .star.on::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='12 2.6 15.09 8.86 22 9.87 17 14.74 18.18 21.62 12 18.37 5.82 21.62 7 14.74 2 9.87 8.91 8.86 12 2.6' fill='white'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='12 2.6 15.09 8.86 22 9.87 17 14.74 18.18 21.62 12 18.37 5.82 21.62 7 14.74 2 9.87 8.91 8.86 12 2.6' fill='white'/%3E%3C/svg%3E");
+  background: var(--gold);
+}
