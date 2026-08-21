@@ -13,7 +13,11 @@
   .gb-fab:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.22); }
   .gb-fab svg { width:17px; height:17px; }
   [data-theme="dark"] .gb-fab { color:var(--navy); background:linear-gradient(180deg,var(--gold-hi),var(--gold)); }
-  @media (max-width:720px){ .gb-fab { left:22px; padding:0 16px 0 13px; } }
+  @media (max-width:720px){
+    .gb-fab { left:16px; bottom:max(16px,env(safe-area-inset-bottom)); width:40px; height:40px; justify-content:center; padding:0; border-color:color-mix(in srgb,var(--line-strong) 72%,transparent); }
+    .gb-fab svg { width:16px; height:16px; }
+    .gb-fab span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  }
   .gb-overlay { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(8,16,28,.46); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity .25s; }
   .gb-overlay.open { opacity:1; pointer-events:auto; }
   .gb-modal { position:relative; width:100%; max-width:480px; max-height:84vh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line-strong); border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.4); transform:translateY(14px) scale(.98); transition:transform .28s cubic-bezier(.34,1.4,.5,1); overflow:hidden; }
@@ -92,6 +96,7 @@
   const fab = document.createElement("button");
   fab.className = "gb-fab";
   fab.type = "button";
+  fab.setAttribute("aria-label", "留言");
   fab.innerHTML = BUBBLE + "<span>留言</span>";
   document.body.appendChild(fab);
 
