@@ -76,7 +76,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 [data-theme="dark"] .comp-clear:hover { color:#131210; }
 
 /* ---------- Day groups ---------- */
-.day { margin-top:var(--s7);contain:layout style; }
+.day { margin-top:var(--s7);contain:layout style;content-visibility:auto; }
 .day-head { display:flex;align-items:baseline;gap:var(--s3);padding-bottom:var(--s2);border-bottom:1px solid var(--navy);margin-bottom:var(--s1); }
 [data-theme="dark"] .day-head { border-bottom-color:var(--line-strong); }
 .day-date { font-family:var(--serif);font-optical-sizing:auto;font-size:19px;font-weight:700;color:var(--navy);letter-spacing:-.025em; }
