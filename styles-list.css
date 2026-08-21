@@ -309,3 +309,47 @@ body.compact .day[data-day-continuation="1"] { margin-top:0; }
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpolygon points='12 2.6 15.09 8.86 22 9.87 17 14.74 18.18 21.62 12 18.37 5.82 21.62 7 14.74 2 9.87 8.91 8.86 12 2.6' fill='white'/%3E%3C/svg%3E");
   background: var(--gold);
 }
+
+/* Stable region-filter selection state: active class and ARIA state stay visually synchronized. */
+#regions .seg.active,
+#regions .seg[aria-selected="true"] {
+  background:var(--navy) !important;
+  color:#f4f1e9 !important;
+  font-weight:700;
+  transition:none;
+}
+#regions .seg[data-region="CN"].active,
+#regions .seg[data-region="CN"][aria-selected="true"] {
+  background:var(--cn) !important;
+  color:#fff !important;
+}
+#regions .seg[data-region="HK"].active,
+#regions .seg[data-region="HK"][aria-selected="true"] {
+  background:var(--hk) !important;
+  color:#fff !important;
+}
+#regions .seg[data-region="SG"].active,
+#regions .seg[data-region="SG"][aria-selected="true"] {
+  background:var(--sg) !important;
+  color:#fff !important;
+}
+#regions .seg[data-region="OTHER"].active,
+#regions .seg[data-region="OTHER"][aria-selected="true"] {
+  background:var(--other) !important;
+  color:#fff !important;
+}
+[data-theme="dark"] #regions .seg[data-region="all"].active,
+[data-theme="dark"] #regions .seg[data-region="all"][aria-selected="true"] {
+  background:var(--gold) !important;
+  color:#131210 !important;
+}
+[data-theme="dark"] #regions .seg[data-region="CN"].active,
+[data-theme="dark"] #regions .seg[data-region="CN"][aria-selected="true"],
+[data-theme="dark"] #regions .seg[data-region="HK"].active,
+[data-theme="dark"] #regions .seg[data-region="HK"][aria-selected="true"],
+[data-theme="dark"] #regions .seg[data-region="SG"].active,
+[data-theme="dark"] #regions .seg[data-region="SG"][aria-selected="true"],
+[data-theme="dark"] #regions .seg[data-region="OTHER"].active,
+[data-theme="dark"] #regions .seg[data-region="OTHER"][aria-selected="true"] {
+  color:#132333 !important;
+}
