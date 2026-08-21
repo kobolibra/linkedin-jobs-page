@@ -146,10 +146,11 @@ function renderTop50(rows,mode="all"){
   });
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const H=470,left=70,plotRight=500,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=507;
+  const companyLabel=name=>String(name||'').trim().split(/\s+/).slice(0,6).join(' ');
+  const H=470,left=50,plotRight=560,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=568;
   const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?7.2:4.15),0);
-  const railWidth=Math.max(112,...top.map(([name])=>labelWidth(name)));
-  const W=Math.max(660,Math.min(860,annotationX+railWidth+14));
+  const railWidth=Math.max(96,...top.map(([name])=>labelWidth(companyLabel(name))));
+  const W=Math.max(660,Math.min(820,annotationX+railWidth+10));
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
   const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians)/5)*5);
@@ -168,7 +169,7 @@ function renderTop50(rows,mode="all"){
     const palette=['#F5572F','#D4A017','#ACAD79','#7096D1','#334EAC','#081F5C'];
     const gray=palette[tier],labelInk=tier>=4?'#1C1C1A':'#F0EFEB';
     const r=3+Math.sqrt(item.total/Math.max(1,top[0][1].total))*8.2;
-      return {name,item,i,mean,median,gray,labelInk,r,px:x(mean),py:y(median),label:name};
+      return {name,item,i,mean,median,gray,labelInk,r,px:x(mean),py:y(median),label:companyLabel(name)};
   });
   const labelOrder=[...pointData].sort((a,b)=>a.py-b.py||a.px-b.px);
   const labelSlots=[];
