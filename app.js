@@ -102,6 +102,26 @@ function setTop50Mode(mode){
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
 }
 top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
+const top50Host=document.getElementById("top50");
+function drillTop50Company(company){
+  const name=String(company||"").trim();
+  if(!name||![...companyEl.options].some(option=>option.value===name))return;
+  companyEl.value=name;
+  apply();
+  const toolbar=document.querySelector(".toolbar");
+  requestAnimationFrame(()=>toolbar?.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"}));
+}
+top50Host?.addEventListener("click",e=>{
+  const row=e.target.closest(".bubble-row[data-company]");
+  if(row&&top50Host.contains(row))drillTop50Company(row.dataset.company);
+});
+top50Host?.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const row=e.target.closest(".bubble-row[data-company]");
+  if(!row||!top50Host.contains(row))return;
+  e.preventDefault();
+  drillTop50Company(row.dataset.company);
+});
 function setDensity(d){
   const c=d==="compact";
   document.body.classList.toggle("compact",c);
@@ -181,7 +201,7 @@ function renderTop50(rows,mode="all"){
     const {name,item,i,mean,median,gray,labelInk,r,px,py,label}=p;
     const ly=labelY.get(name),lineX=annotationX-7;
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    return '<g class="bubble-row" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX+'" y2="'+ly.toFixed(1)+'"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+annotationX+'" y="'+ly.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
+    return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX+'" y2="'+ly.toFixed(1)+'"/><rect class="bubble-hit" x="'+(annotationX-4)+'" y="'+(ly-4).toFixed(1)+'" width="180" height="8" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+annotationX+'" y="'+ly.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
   const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(7)+'" y="'+y(11)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(7)+'" y="'+y(4)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
   host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量彩色气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+plotRight)/2)+'" y="'+(H-1)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="30" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 30 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
