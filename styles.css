@@ -271,6 +271,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .bubble-x-title,
 [data-theme="dark"] .bubble-y-title,
 [data-theme="dark"] .bubble-company { fill:#c0bfb7; }
+[data-theme="dark"] .bubble-total-deep { fill:#f7f2eb;stroke:rgba(8,31,92,.58);stroke-width:.55;paint-order:stroke; }
 [data-theme="dark"] .bubble-row:hover .bubble-company,
 [data-theme="dark"] .bubble-drill:focus-visible .bubble-company { fill:#f0efeb; }
 [data-theme="dark"] .bubble-drill:focus-visible .bubble-point { stroke:var(--gold-hi); }
