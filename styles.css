@@ -157,7 +157,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .mast-stack.show:hover .mp-2 { opacity:.94;transform:translate(-30px,-18px) rotate(11deg) scale(.99); }
 .mast-stack.show:hover .mp-3 { opacity:.84;transform:translate(-58px,12px) rotate(-14deg) scale(.97); }
 .mast-stack.show:hover .mp-4 { opacity:.72;transform:translate(-86px,-10px) rotate(21deg) scale(.95); }
-.mast-bg { position:absolute;z-index:0;top:var(--mast-bg-top,48px);right:var(--mast-bg-right,178px);display:flex;align-items:stretch;gap:2px;height:var(--mast-bg-height,112px);opacity:0;transition:opacity .8s ease,transform .8s var(--ease);pointer-events:none; }
+.mast-bg { position:absolute;z-index:0;top:var(--mast-bg-top,48px);right:var(--mast-bg-right,178px);display:flex;align-items:stretch;gap:1px;height:var(--mast-bg-height,112px);opacity:0;transition:opacity .8s ease,transform .8s var(--ease);pointer-events:none; }
 .mast-bg-frame { display:block;height:100%;min-width:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--gold) 18%,transparent);border-radius:5px;box-shadow:0 8px 22px rgba(26,25,22,.10);filter:saturate(.96) contrast(1.02); }
 .mast-bg-frame img { display:block;width:100%;height:100%;object-fit:fill; }
 .mast-bg.show { opacity:.78;transform:translateY(0); }
@@ -165,7 +165,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .mast-bg.show { opacity:.58; }
 
 /* ---------- Metric rail ---------- */
-.stats { position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);align-items:start;gap:6px;margin:10px 0 0;padding:0;border:0;background:none; }
+.stats { position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);align-items:start;gap:4px;margin:10px 0 0;padding:0;border:0;background:none; }
 .stat { position:relative;display:flex;align-self:start;flex-direction:column;justify-content:space-between;min-width:0;width:100%;height:44px;min-height:44px;max-height:44px;overflow:hidden;padding:5px 10px 4px;border:0;border-radius:5px;background:#334eac;color:var(--metric-ink);box-shadow:0 8px 20px rgba(8,31,92,.12);transition:transform .2s var(--ease),box-shadow .2s var(--ease); }
 .stat:nth-child(2) { background:#43593b; }
 .stat:nth-child(3) { background:#acad79;box-shadow:0 8px 20px rgba(67,89,59,.12); }
@@ -190,7 +190,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 /* ---------- Lead charts ---------- */
 .analytics { position:relative;z-index:1;margin-top:8px; }
 .card { border:0;background:var(--surface);box-shadow:var(--glass-shadow); }
-.analytics-card { display:grid;grid-template-columns:1fr 1fr;gap:14px;overflow:visible;border:0;border-radius:26px;background:transparent;box-shadow:none; }
+.analytics-card { display:grid;grid-template-columns:1fr 1fr;gap:10px;overflow:visible;border:0;border-radius:26px;background:transparent;box-shadow:none; }
 .analytics-card > .ac-col:not(.ac-col-top50) { align-self:stretch;min-width:0;padding:16px 18px 8px;border:1px solid var(--line);border-radius:18px;background:var(--surface);box-shadow:0 1px 2px rgba(23,50,77,.06),0 10px 24px rgba(23,50,77,.08),inset 0 1px 0 rgba(255,255,255,.42); }
 .analytics-card > .ac-col:not(.ac-col-top50) h3 { margin:0 0 12px; }
 .ac-col h3 { color:var(--ink-soft);font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase; }
