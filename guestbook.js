@@ -244,7 +244,7 @@
     if (!loaded) { loaded = true; load(); }
     setTimeout(() => textEl.focus(), 280);
   }
-  function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; }
+  function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; fab.focus({ preventScroll:true }); }
   fab.addEventListener("click", openModal);
   closeEl.addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
@@ -316,7 +316,16 @@
     }
     post("/like", { id: id, unlike: liked })
       .then(res => { if (m) { m.likes = res.likes; const n = listEl.querySelector('.gb-like[data-id="' + id + '"] .gb-likenum'); if (n) n.textContent = res.likes; } })
-      .catch(() => {});
+      .catch(() => {
+        if (m) m.likes = Math.max(0, (m.likes || 0) + (liked ? 1 : -1));
+        if (liked) likedSet.add(id); else likedSet.delete(id);
+        localStorage.setItem(LS_LIKES, JSON.stringify([...likedSet]));
+        if (btn) {
+          btn.classList.toggle("liked", liked);
+          const num = btn.querySelector(".gb-likenum"); if (num && m) num.textContent = m.likes;
+        }
+        toast("点赞暂时没有同步，请稍后再试～");
+      });
   }
   function doPin(id) {
     const m = findNode(messages, id); if (!m) return;
@@ -361,7 +370,11 @@
     function scrollableBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2; }
 
     function build() {
-      const days = jobsEl ? Array.prototype.slice.call(jobsEl.querySelectorAll(".day")).filter(d => d.style.display !== "none") : [];
+      const seenDays = new Set();
+      const days = jobsEl ? Array.prototype.slice.call(jobsEl.querySelectorAll(".day")).filter(d => {
+        if (d.style.display === "none" || seenDays.has(d.dataset.dayKey)) return false;
+        seenDays.add(d.dataset.dayKey); return true;
+      }) : [];
       targets = [{ el: null, label: "顶部·总览" }].concat(days.map(d => {
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
@@ -399,6 +412,7 @@
 
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
+    document.addEventListener("jobsfilterchange", build);
 
     if (jobsEl) {
       let deb;
