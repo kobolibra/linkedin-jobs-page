@@ -45,7 +45,9 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
   const candidates=backgrounds.filter(path=>path!==previous);
   const pic=candidates[Math.floor(Math.random()*candidates.length)];
   const im=new Image();
-  im.onload=()=>{bg.style.backgroundImage='url('+pic+')';bg.dataset.background=pic;bg.classList.add('show');sessionStorage.setItem(storageKey,pic);};
+  const setFrame=()=>{const height=innerWidth<=1000?104:112;bg.style.setProperty('--mast-bg-width',(height*(im.naturalWidth/im.naturalHeight))+'px');};
+  im.onload=()=>{setFrame();bg.style.backgroundImage='url('+pic+')';bg.dataset.background=pic;bg.classList.add('show');sessionStorage.setItem(storageKey,pic);};
+  addEventListener('resize',setFrame,{passive:true});
   im.onerror=()=>{bg.style.display='none';};
   im.src=pic;
 })();
