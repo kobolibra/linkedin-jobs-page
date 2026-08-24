@@ -306,7 +306,7 @@ fetch("jobs.json",{cache:"no-cache"})
   .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
 function apply(){
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
-  daySections.forEach(sec=>sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove()));
+  daySections.forEach(sec=>{sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;});
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
   let visible=0;
@@ -334,7 +334,7 @@ function apply(){
     if(!sec.querySelector('.day-head')){
       const c=sec.querySelector('[data-role="daycount"]');
       const count=c?c.textContent:"";
-      sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+esc(count)+'</span></div>');
+      sec.dataset.filterHead="true";sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+esc(count)+'</span></div>');
     }
   });
   countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
