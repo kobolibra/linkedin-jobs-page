@@ -33,23 +33,34 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
   const bg=document.getElementById('mastBg');
   if(!bg||matchMedia('(max-width:720px)').matches)return;
   const numbered=(prefix,count)=>Array.from({length:count},(_,index)=>'avatars/backgrounds/'+prefix+'-'+String(index+1).padStart(2,'0')+'.jpg');
-  const backgrounds=[
-    'avatars/2.jpeg','avatars/3.jpeg',
+  const cats=['avatars/2.jpeg','avatars/3.jpeg'];
+  const portraits=[
     ...numbered('mast-bg-cobalt-botanical',8),
     ...numbered('mast-bg-blue-ink-gold',6),
     ...numbered('mast-bg-sunrise-canopy',3),
     ...numbered('mast-bg-cobalt-canopy',6)
   ];
   const storageKey='mast-background-last';
-  const previous=sessionStorage.getItem(storageKey);
-  const candidates=backgrounds.filter(path=>path!==previous);
-  const pic=candidates[Math.floor(Math.random()*candidates.length)];
-  const im=new Image();
-  const setFrame=()=>{const height=innerWidth<=1000?104:112;bg.style.setProperty('--mast-bg-width',(height*(im.naturalWidth/im.naturalHeight))+'px');};
-  im.onload=()=>{setFrame();bg.style.backgroundImage='url('+pic+')';bg.dataset.background=pic;bg.classList.add('show');sessionStorage.setItem(storageKey,pic);};
-  addEventListener('resize',setFrame,{passive:true});
-  im.onerror=()=>{bg.style.display='none';};
-  im.src=pic;
+  const previous=(sessionStorage.getItem(storageKey)||'').split('|').filter(Boolean);
+  const choose=(pool,avoid)=>{const choices=pool.filter(path=>!avoid.includes(path));return choices[Math.floor(Math.random()*choices.length)]||pool[0];};
+  const showCats=Math.random()<cats.length/(cats.length+portraits.length/2);
+  const selected=showCats?[choose(cats,previous)]:[choose(portraits,previous)];
+  if(!showCats)selected.push(choose(portraits,[...previous,selected[0]]));
+  const preload=path=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=path;});
+  const fitGallery=()=>{
+    const masthead=bg.closest('.masthead'),eyebrow=masthead?.querySelector('.eyebrow'),stats=masthead?.querySelector('.stats');
+    if(!masthead||!eyebrow||!stats)return;
+    const mastRect=masthead.getBoundingClientRect(),eyebrowRect=eyebrow.getBoundingClientRect(),statsRect=stats.getBoundingClientRect();
+    const eyebrowLine=eyebrowRect.top+eyebrowRect.height/2;
+    const top=Math.ceil(eyebrowLine-mastRect.top+2),bottom=Math.floor(statsRect.top-mastRect.top-3),height=Math.max(1,bottom-top);
+    bg.style.setProperty('--mast-bg-top',top+'px');bg.style.setProperty('--mast-bg-height',height+'px');
+    bg.querySelectorAll('.mast-bg-frame').forEach(frame=>{const image=frame.querySelector('img');if(!image)return;const width=2+(height-2)*(image.naturalWidth/image.naturalHeight);frame.style.width=width.toFixed(3)+'px';});
+  };
+  Promise.all(selected.map(preload)).then(images=>{
+    bg.replaceChildren(...images.map(image=>{image.className='mast-bg-image';image.alt='';image.decoding='async';const frame=document.createElement('span');frame.className='mast-bg-frame';frame.append(image);return frame;}));
+    bg.classList.toggle('pair',images.length===2);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');sessionStorage.setItem(storageKey,selected.join('|'));
+    addEventListener('resize',fitGallery,{passive:true});
+  }).catch(()=>{bg.style.display='none';});
 })();
 document.getElementById('totop').innerHTML=IC.up;
 document.getElementById('favToggle').innerHTML=IC.star+'<span>收藏</span>';
