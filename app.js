@@ -31,10 +31,21 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
 })();
 (function(){
   const bg=document.getElementById('mastBg');
-  if(!bg)return;
-  const pic='avatars/'+(Math.random()<0.5?'2':'3')+'.jpeg';
+  if(!bg||matchMedia('(max-width:720px)').matches)return;
+  const numbered=(prefix,count)=>Array.from({length:count},(_,index)=>'avatars/backgrounds/'+prefix+'-'+String(index+1).padStart(2,'0')+'.jpg');
+  const backgrounds=[
+    'avatars/2.jpeg','avatars/3.jpeg',
+    ...numbered('mast-bg-cobalt-botanical',8),
+    ...numbered('mast-bg-blue-ink-gold',6),
+    ...numbered('mast-bg-sunrise-canopy',3),
+    ...numbered('mast-bg-cobalt-canopy',6)
+  ];
+  const storageKey='mast-background-last';
+  const previous=sessionStorage.getItem(storageKey);
+  const candidates=backgrounds.filter(path=>path!==previous);
+  const pic=candidates[Math.floor(Math.random()*candidates.length)];
   const im=new Image();
-  im.onload=()=>{bg.style.backgroundImage='url('+pic+')';bg.classList.add('show');};
+  im.onload=()=>{bg.style.backgroundImage='url('+pic+')';bg.dataset.background=pic;bg.classList.add('show');sessionStorage.setItem(storageKey,pic);};
   im.onerror=()=>{bg.style.display='none';};
   im.src=pic;
 })();
