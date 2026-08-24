@@ -157,9 +157,10 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .mast-stack.show:hover .mp-2 { opacity:.94;transform:translate(-30px,-18px) rotate(11deg) scale(.99); }
 .mast-stack.show:hover .mp-3 { opacity:.84;transform:translate(-58px,12px) rotate(-14deg) scale(.97); }
 .mast-stack.show:hover .mp-4 { opacity:.72;transform:translate(-86px,-10px) rotate(21deg) scale(.95); }
-.mast-bg { position:absolute;z-index:0;top:38px;right:172px;width:124px;height:124px;opacity:0;border-radius:8px;background-position:center;background-repeat:no-repeat;background-size:cover;filter:saturate(.92);-webkit-mask-image:radial-gradient(125% 125% at 50% 42%,#000 54%,transparent 100%);mask-image:radial-gradient(125% 125% at 50% 42%,#000 54%,transparent 100%);transition:opacity .8s ease;pointer-events:none; }
-.mast-bg.show { opacity:.88; }
-[data-theme="dark"] .mast-bg.show { opacity:.55; }
+.mast-bg { position:absolute;z-index:0;top:28px;right:174px;width:78px;height:136px;opacity:0;border:1px solid color-mix(in srgb,var(--gold) 18%,transparent);border-radius:5px;background-position:center;background-repeat:no-repeat;background-size:contain;background-color:color-mix(in srgb,var(--surface) 72%,transparent);box-shadow:0 8px 22px rgba(26,25,22,.10);filter:saturate(.96) contrast(1.02);transition:opacity .8s ease,transform .8s var(--ease);pointer-events:none; }
+.mast-bg.show { opacity:.78;transform:translateY(0); }
+[data-theme="dark"] .mast-bg { background-color:color-mix(in srgb,var(--surface-2) 70%,transparent);box-shadow:0 10px 26px rgba(0,0,0,.25); }
+[data-theme="dark"] .mast-bg.show { opacity:.58; }
 
 /* ---------- Metric rail ---------- */
 .stats { position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);align-items:start;gap:6px;margin:10px 0 0;padding:0;border:0;background:none; }
@@ -298,7 +299,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 /* ---------- Responsive final values ---------- */
 @media (max-width:1000px) {
   :root { --mast-reserve:150px; }
-  .mast-bg { right:150px;width:124px;height:124px; }
+  .mast-bg { right:150px;width:70px;height:122px; }
   .masthead h1 { font-size:34px; }
 }
 
