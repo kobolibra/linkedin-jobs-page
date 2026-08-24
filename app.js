@@ -102,6 +102,15 @@ function setTop50Mode(mode){
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
 }
 top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
+top50Tabs?.addEventListener("keydown",e=>{
+  const current=e.target.closest(".top50-tab");if(!current)return;
+  const tabs=[...top50Tabs.querySelectorAll(".top50-tab")];let next=null;
+  if(e.key==="ArrowRight")next=tabs[(tabs.indexOf(current)+1)%tabs.length];
+  else if(e.key==="ArrowLeft")next=tabs[(tabs.indexOf(current)-1+tabs.length)%tabs.length];
+  else if(e.key==="Home")next=tabs[0];
+  else if(e.key==="End")next=tabs[tabs.length-1];
+  if(!next)return;e.preventDefault();next.focus();setTop50Mode(next.dataset.topRegion);
+});
 const top50Host=document.getElementById("top50");
 function drillTop50Company(company){
   const name=String(company||"").trim();
@@ -291,7 +300,21 @@ fetch("jobs.json",{cache:"no-cache"})
       jobCards.push(...sec._jobCards);
       jobsEl.appendChild(sec);first=false;
     }
-    regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(!b)return;regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=b.dataset.region;apply();});
+    const setRegion=region=>{
+      const b=regionsEl.querySelector('.seg[data-region="'+region+'"]');if(!b)return;
+      regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
+      b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=region;apply();
+    };
+    regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(b)setRegion(b.dataset.region);});
+    regionsEl.addEventListener("keydown",e=>{
+      const current=e.target.closest(".seg");if(!current)return;
+      const tabs=[...regionsEl.querySelectorAll(".seg")];let next=null;
+      if(e.key==="ArrowRight")next=tabs[(tabs.indexOf(current)+1)%tabs.length];
+      else if(e.key==="ArrowLeft")next=tabs[(tabs.indexOf(current)-1+tabs.length)%tabs.length];
+      else if(e.key==="Home")next=tabs[0];
+      else if(e.key==="End")next=tabs[tabs.length-1];
+      if(!next)return;e.preventDefault();next.focus();setRegion(next.dataset.region);
+    });
     favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
     let _searchTimer=null;
     searchEl.addEventListener("input",()=>{
@@ -340,6 +363,7 @@ function apply(){
   countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
   emptyEl.classList.toggle("show",visible===0);
   if(typeof renderCo==="function")renderCo(comp==="all"?null:comp,coAges,coRegions,ageSel);
+  document.dispatchEvent(new CustomEvent("jobsfilterchange"));
 }
 document.addEventListener("keydown",e=>{
   const tag=(e.target.tagName||"").toLowerCase();
