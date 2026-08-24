@@ -43,9 +43,9 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
   const storageKey='mast-background-last';
   const previous=(sessionStorage.getItem(storageKey)||'').split('|').filter(Boolean);
   const choose=(pool,avoid)=>{const choices=pool.filter(path=>!avoid.includes(path));return choices[Math.floor(Math.random()*choices.length)]||pool[0];};
-  const showCats=Math.random()<cats.length/(cats.length+portraits.length/2);
-  const selected=showCats?[choose(cats,previous)]:[choose(portraits,previous)];
-  if(!showCats)selected.push(choose(portraits,[...previous,selected[0]]));
+  const showCats=Math.random()<cats.length/(cats.length+portraits.length/3);
+  const selected=showCats?[choose(cats,previous)]:[];
+  if(!showCats)for(let index=0;index<3;index++)selected.push(choose(portraits,[...previous,...selected]));
   const preload=path=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=path;});
   const fitGallery=()=>{
     const masthead=bg.closest('.masthead'),eyebrow=masthead?.querySelector('.eyebrow'),stats=masthead?.querySelector('.stats');
@@ -56,7 +56,7 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
   };
   Promise.all(selected.map(preload)).then(images=>{
     bg.replaceChildren(...images.map(image=>{image.className='mast-bg-image';image.alt='';image.decoding='async';const frame=document.createElement('span');frame.className='mast-bg-frame';frame.append(image);return frame;}));
-    bg.classList.toggle('pair',images.length===2);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');sessionStorage.setItem(storageKey,selected.join('|'));
+    bg.classList.toggle('triptych',images.length===3);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');sessionStorage.setItem(storageKey,selected.join('|'));
     document.fonts?.ready.then(fitGallery);addEventListener('resize',fitGallery,{passive:true});
   }).catch(()=>{bg.style.display='none';});
 })();

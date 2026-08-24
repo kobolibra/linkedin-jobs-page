@@ -157,7 +157,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .mast-stack.show:hover .mp-2 { opacity:.94;transform:translate(-30px,-18px) rotate(11deg) scale(.99); }
 .mast-stack.show:hover .mp-3 { opacity:.84;transform:translate(-58px,12px) rotate(-14deg) scale(.97); }
 .mast-stack.show:hover .mp-4 { opacity:.72;transform:translate(-86px,-10px) rotate(21deg) scale(.95); }
-.mast-bg { position:absolute;z-index:0;top:var(--mast-bg-top,48px);right:182px;display:flex;align-items:stretch;gap:5px;height:var(--mast-bg-height,112px);opacity:0;transition:opacity .8s ease,transform .8s var(--ease);pointer-events:none; }
+.mast-bg { position:absolute;z-index:0;top:var(--mast-bg-top,48px);right:182px;display:flex;align-items:stretch;gap:3px;height:var(--mast-bg-height,112px);opacity:0;transition:opacity .8s ease,transform .8s var(--ease);pointer-events:none; }
 .mast-bg-frame { display:block;height:100%;min-width:0;overflow:hidden;border:1px solid color-mix(in srgb,var(--gold) 18%,transparent);border-radius:5px;box-shadow:0 8px 22px rgba(26,25,22,.10);filter:saturate(.96) contrast(1.02); }
 .mast-bg-frame img { display:block;width:100%;height:100%;object-fit:fill; }
 .mast-bg.show { opacity:.78;transform:translateY(0); }
