@@ -108,8 +108,8 @@
         '<button class="gb-close" id="gbClose" type="button" aria-label="关闭">&times;</button></div>' +
       '<div class="gb-body">' +
         '<form class="gb-form" id="gbForm">' +
-          '<input class="gb-name" id="gbName" type="text" placeholder="昵称（可留空，默认匿名）" maxlength="40" autocomplete="off" />' +
-          '<textarea class="gb-text" id="gbText" placeholder="写点什么…（最多 500 字）" maxlength="500"></textarea>' +
+          '<input class="gb-name" id="gbName" type="text" aria-label="留言昵称" placeholder="昵称（可留空，默认匿名）" maxlength="40" autocomplete="off" />' +
+          '<textarea class="gb-text" id="gbText" aria-label="留言内容" placeholder="写点什么…（最多 500 字）" maxlength="500"></textarea>' +
           '<div class="gb-actions"><span class="gb-count" id="gbCount">0 / 500</span><button type="submit" class="gb-submit" id="gbSubmit">发布留言</button></div>' +
         '</form>' +
         '<div class="gb-list" id="gbList" role="log" aria-live="polite"><div class="gb-state">留言加载中…</div></div>' +
@@ -185,8 +185,8 @@
   // ===== 渲染 =====
   function replyFormHTML(id) {
     return '<form class="gb-rform" data-id="' + esc(id) + '">' +
-      '<input class="gb-rname" type="text" placeholder="昵称（可空）" maxlength="40" autocomplete="off" />' +
-      '<textarea class="gb-rtext" placeholder="回复…（最多 500 字）" maxlength="500"></textarea>' +
+      '<input class="gb-rname" type="text" aria-label="回复昵称" placeholder="昵称（可空）" maxlength="40" autocomplete="off" />' +
+      '<textarea class="gb-rtext" aria-label="回复内容" placeholder="回复…（最多 500 字）" maxlength="500"></textarea>' +
       '<div class="gb-ractions"><button type="button" class="gb-rcancel">取消</button><button type="submit" class="gb-rsubmit">回复</button></div>' +
       '</form>';
   }
@@ -248,6 +248,14 @@
   fab.addEventListener("click", openModal);
   closeEl.addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+  overlay.addEventListener("keydown", e => {
+    if (e.key !== "Tab" || !overlay.classList.contains("open")) return;
+    const focusable = Array.from(overlay.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href]')).filter(el => el.getClientRects().length);
+    if (!focusable.length) return;
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && overlay.classList.contains("open")) closeModal(); });
 
   textEl.addEventListener("input", () => { countEl.textContent = textEl.value.length + " / 500"; });
