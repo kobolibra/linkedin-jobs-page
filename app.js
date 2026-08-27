@@ -332,7 +332,7 @@ fetch("jobs.json",{cache:"no-cache"})
     const densityStart=densityDate.format(new Date(tMin)).replaceAll('/','.');
     const densityEnd=densityDate.format(new Date(tMax)).replaceAll('/','.').replace(/^\d{4}\./,'');
     const distNote=document.getElementById('distNote');
-    if(distNote)distNote.textContent='按首次发现：'+densityStart+'–'+densityEnd+'（共 '+densityWindowDays+' 天）';
+    if(distNote)distNote.textContent='统计口径为首次抓取日期：'+densityStart+'–'+densityEnd+'（共 '+densityWindowDays+' 天）';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};data.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
