@@ -203,21 +203,18 @@ function renderTop50(rows,mode="all"){
   });
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const companyLabel=name=>String(name||'').trim().split(/\s+/).slice(0,6).join(' ');
-  const H=470,left=50,plotRight=560,topY=12,bottom=28,plotTop=12,plotBottom=442,annotationX=568;
-  const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?7.2:4.15),0);
-  const railWidth=Math.max(96,...top.map(([name])=>labelWidth(companyLabel(name))));
-  const W=Math.max(660,Math.min(820,annotationX+railWidth+10));
+  const companyLabel=name=>{const short=String(name||'').trim().split(/\s+/).slice(0,6).join(' ');return short.length>30?short.slice(0,29)+'…':short;};
+  const W=720,H=570,left=54,plotRight=666,plotTop=32,plotBottom=528;
+  const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?7.5:4.45),0);
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
   const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians)/5)*5);
-  const xMin=0,xMax=domainMax,yMax=domainMax;
   const x=v=>left+(plotRight-left)*(v/domainMax);
   const y=v=>plotBottom-(plotBottom-plotTop)*(v/domainMax);
   const xTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const grid=xTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
-    yTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-9)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
+    yTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-10)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
   const pointData=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
@@ -225,23 +222,33 @@ function renderTop50(rows,mode="all"){
     const tier=Math.min(5,Math.floor(i/5));
     const palette=['#F5572F','#D4A017','#ACAD79','#7096D1','#334EAC','#081F5C'];
     const gray=palette[tier],labelInk=tier>=4?'#1C1C1A':'#F0EFEB',deepTone=tier>=4;
-    const r=3+Math.sqrt(item.total/Math.max(1,top[0][1].total))*8.2;
-      return {name,item,i,mean,median,gray,labelInk,deepTone,r,px:x(mean),py:y(median),label:companyLabel(name)};
+    const r=3+Math.sqrt(item.total/Math.max(1,top[0][1].total))*8.2,label=companyLabel(name);
+    return {name,item,i,mean,median,gray,labelInk,deepTone,r,px:x(mean),py:y(median),label,labelW:labelWidth(label)};
   });
-  const labelOrder=[...pointData].sort((a,b)=>a.py-b.py||a.px-b.px);
-  const labelSlots=[];
-  labelOrder.forEach((p,i)=>{const prev=labelSlots[i-1];labelSlots.push(Math.max(plotTop+5,p.py,prev==null?-Infinity:prev+7.8));});
-  const overflow=labelSlots[labelSlots.length-1]-(plotBottom-5);
-  if(overflow>0) for(let i=0;i<labelSlots.length;i++) labelSlots[i]-=overflow;
-  const labelY=new Map(labelOrder.map((p,i)=>[p.name,labelSlots[i]]));
+  const occupied=[];
+  const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+  const hitsBubble=(box,p)=>pointData.some(q=>{if(q===p)return false;const nearX=Math.max(box.x,Math.min(q.px,box.x+box.w)),nearY=Math.max(box.y,Math.min(q.py,box.y+box.h));return Math.hypot(q.px-nearX,q.py-nearY)<q.r+2;});
+  [...pointData].sort((a,b)=>b.r-a.r||a.py-b.py).forEach(p=>{
+    const preferred=p.px<((left+plotRight)/2)?1:-1,shifts=[0,-10,10,-20,20,-30,30,-42,42,-54,54,-68,68,-82,82,-98,98];
+    const candidates=[];
+    [preferred,-preferred].forEach((side,sideIndex)=>shifts.forEach((shift,shiftIndex)=>{
+      const baseline=Math.max(plotTop+8,Math.min(plotBottom-5,p.py+shift));
+      const lx=side===1?p.px+p.r+6:p.px-p.r-6-p.labelW,box={x:lx,y:baseline-7,w:p.labelW,h:11};
+      if(box.x<left+4||box.x+box.w>plotRight-4)return;
+      const collision=occupied.filter(other=>overlaps(box,other)).length+(hitsBubble(box,p)?1:0);
+      candidates.push({x:lx,y:baseline,w:p.labelW,h:8,side,collision,cost:collision*100+sideIndex*3+Math.abs(shift)+shiftIndex*.01});
+    }));
+    const best=candidates.sort((a,b)=>a.cost-b.cost)[0]||{x:Math.max(left+4,Math.min(plotRight-p.labelW-4,p.px+7)),y:Math.max(plotTop+8,Math.min(plotBottom-5,p.py)),w:p.labelW,h:8,side:1};
+    p.labelBox=best;occupied.push({x:best.x-2,y:best.y-7.5,w:best.w+4,h:12.5});
+  });
   const points=pointData.map((p)=>{
-    const {name,item,i,mean,median,gray,labelInk,deepTone,r,px,py,label}=p;
-    const ly=labelY.get(name),lineX=annotationX-7;
+    const {name,item,i,mean,median,gray,labelInk,deepTone,r,px,py,label,labelBox}=p;
+    const lineX=labelBox.side===1?labelBox.x-2:labelBox.x+labelBox.w+2;
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX+'" y2="'+ly.toFixed(1)+'"/><rect class="bubble-hit" x="'+(annotationX-4)+'" y="'+(ly-4).toFixed(1)+'" width="180" height="8" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+annotationX+'" y="'+ly.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total'+(deepTone?' bubble-total-deep':'')+'" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
+    return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX.toFixed(1)+'" y2="'+labelBox.y.toFixed(1)+'"/><rect class="bubble-hit" x="'+(labelBox.x-2).toFixed(1)+'" y="'+(labelBox.y-7).toFixed(1)+'" width="'+(labelBox.w+4).toFixed(1)+'" height="10" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelBox.x.toFixed(1)+'" y="'+labelBox.y.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total'+(deepTone?' bubble-total-deep':'')+'" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
   const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(7)+'" y="'+y(11)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(7)+'" y="'+y(4)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
-  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量彩色气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+plotRight)/2)+'" y="'+(H-1)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="30" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 30 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
+  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量彩色气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+plotRight)/2)+'" y="'+(H-1)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="31" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 31 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
   requestAnimationFrame(()=>host.classList.add('is-ready'));
 }
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
