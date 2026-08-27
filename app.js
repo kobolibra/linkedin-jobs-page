@@ -229,6 +229,7 @@ function renderTop50(rows,mode="all"){
   const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
   const bubbleDistance=(box,q)=>{const nearX=Math.max(box.x,Math.min(q.px,box.x+box.w)),nearY=Math.max(box.y,Math.min(q.py,box.y+box.h));return Math.hypot(q.px-nearX,q.py-nearY);};
   const boxDistance=(a,b)=>{const dx=Math.max(b.x-a.x-a.w,a.x-b.x-b.w,0),dy=Math.max(b.y-a.y-a.h,a.y-b.y-b.h,0);return Math.hypot(dx,dy);};
+  const segmentDistance=(point,a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,scale=dx*dx+dy*dy;if(!scale)return Math.hypot(point.x-a.x,point.y-a.y);const t=Math.max(0,Math.min(1,((point.x-a.x)*dx+(point.y-a.y)*dy)/scale));return Math.hypot(point.x-(a.x+t*dx),point.y-(a.y+t*dy));};
   const hitsBubble=(box,p)=>pointData.some(q=>q!==p&&bubbleDistance(box,q)<q.r+2);
   // Larger bubbles reserve space first; every company then evaluates left, right, above and below on exactly the same terms.
   [...pointData].sort((a,b)=>b.r-a.r||a.py-b.py).forEach(p=>{
@@ -250,22 +251,33 @@ function renderTop50(rows,mode="all"){
       const localClearance=Math.min(nearestBubbleClearance,nearestLabelClearance);
       // Leaders only clarify genuine separation; a close left-side label is equally valid.
       const leader=collision>0||edgeDistance>9;
+      const labelLeft=anchor==='middle'?lx-p.labelW/2:lx;
+      const lineX=placement==='right'?labelLeft-2:placement==='left'?labelLeft+p.labelW+2:lx;
+      const start={x:p.px,y:p.py},end={x:lineX,y:baseline};
+      const routeLength=route=>route.slice(1).reduce((sum,point,idx)=>sum+Math.hypot(point.x-route[idx].x,point.y-route[idx].y),0);
+      const routeClear=route=>!pointData.some(q=>q!==p&&route.slice(1).some((point,idx)=>segmentDistance({x:q.px,y:q.py},route[idx],point)<q.r+1.5));
+      // A leader may be direct or make one quiet 90° turn; diagram-spanning detours are visually worse than choosing another label position.
+      const routes=[[start,end],[start,{x:start.x,y:end.y},end],[start,{x:end.x,y:start.y},end]];
+      const route=leader?routes.filter(routeClear).sort((a,b)=>routeLength(a)-routeLength(b))[0]||null:[];
+      const routeLengthPenalty=route?routeLength(route)*1.25:0;
+      const crossedBubble=leader&&!route;
+      // Keep labels beside their own bubble first. Association clearance only resolves nearby candidates, never justifies a much longer label displacement.
+      const associationDeficit=Math.max(0,edgeDistance+1.5-nearestBubbleClearance);
       const crowdingPenalty=Math.max(0,18-localClearance)*.35;
-      candidates.push({x:lx,y:baseline,w:p.labelW,h:8,anchor,placement,collision,leader,edgeDistance,cost:collision*160+edgeDistance+crowdingPenalty+bias});
+      const remotePenalty=Math.max(0,edgeDistance-9)*18;
+      candidates.push({x:lx,y:baseline,w:p.labelW,h:8,anchor,placement,collision,leader,route,edgeDistance,cost:collision*1000000+crossedBubble*100000+remotePenalty+routeLengthPenalty+edgeDistance+associationDeficit*1.2+crowdingPenalty+bias});
     };
-    shifts.forEach((shift,index)=>addCandidate('right',shift,index));
-    shifts.forEach((shift,index)=>addCandidate('below',shift,index));
-    shifts.forEach((shift,index)=>addCandidate('above',shift,index));
-    shifts.forEach((shift,index)=>addCandidate('left',shift,index));
+    // Rotate only exact ties by company name, so candidate enumeration never introduces a global right-side preference.
+    const directions=['right','below','left','above'],rotation=[...p.name].reduce((sum,ch)=>sum+ch.codePointAt(0),0)%directions.length;
+    directions.map((_,index)=>directions[(index+rotation)%directions.length]).forEach(placement=>shifts.forEach((shift,index)=>addCandidate(placement,shift,index)));
     const best=candidates.sort((a,b)=>a.cost-b.cost)[0]||{x:Math.max(left+4,Math.min(plotRight-p.labelW-4,p.px+7)),y:Math.max(plotTop+8,Math.min(plotBottom-5,p.py)),w:p.labelW,h:8,anchor:'start',placement:'right',leader:true};
     p.labelBox=best;occupied.push({x:(best.anchor==='middle'?best.x-best.w/2:best.x)-2,y:best.y-7.5,w:best.w+4,h:12.5});
   });
   const points=pointData.map((p)=>{
     const {name,item,i,mean,median,gray,labelInk,deepTone,r,px,py,label,labelBox}=p;
     const labelLeft=labelBox.anchor==='middle'?labelBox.x-labelBox.w/2:labelBox.x;
-    const lineX=labelBox.placement==='right'?labelLeft-2:labelBox.placement==='left'?labelLeft+labelBox.w+2:labelBox.x;
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    const leader=labelBox.leader?'<line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX.toFixed(1)+'" y2="'+labelBox.y.toFixed(1)+'"/>':'';
+    const leader=labelBox.leader&&labelBox.route?'<polyline class="bubble-label-leader" fill="none" points="'+labelBox.route.map(point=>point.x.toFixed(1)+','+point.y.toFixed(1)).join(' ')+'"/>':'';
     return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位">'+leader+'<rect class="bubble-hit" x="'+(labelLeft-2).toFixed(1)+'" y="'+(labelBox.y-7).toFixed(1)+'" width="'+(labelBox.w+4).toFixed(1)+'" height="10" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelBox.x.toFixed(1)+'" y="'+labelBox.y.toFixed(1)+'" text-anchor="'+labelBox.anchor+'">'+escSvg(label)+'</text><text class="bubble-total'+(deepTone?' bubble-total-deep':'')+'" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
   const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(7)+'" y="'+y(11)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(7)+'" y="'+y(4)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
