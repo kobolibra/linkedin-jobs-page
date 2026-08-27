@@ -227,25 +227,46 @@ function renderTop50(rows,mode="all"){
   });
   const occupied=[];
   const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
-  const hitsBubble=(box,p)=>pointData.some(q=>{if(q===p)return false;const nearX=Math.max(box.x,Math.min(q.px,box.x+box.w)),nearY=Math.max(box.y,Math.min(q.py,box.y+box.h));return Math.hypot(q.px-nearX,q.py-nearY)<q.r+2;});
+  const bubbleDistance=(box,q)=>{const nearX=Math.max(box.x,Math.min(q.px,box.x+box.w)),nearY=Math.max(box.y,Math.min(q.py,box.y+box.h));return Math.hypot(q.px-nearX,q.py-nearY);};
+  const boxDistance=(a,b)=>{const dx=Math.max(b.x-a.x-a.w,a.x-b.x-b.w,0),dy=Math.max(b.y-a.y-a.h,a.y-b.y-b.h,0);return Math.hypot(dx,dy);};
+  const hitsBubble=(box,p)=>pointData.some(q=>q!==p&&bubbleDistance(box,q)<q.r+2);
+  // Larger bubbles reserve space first; every company then evaluates left, right, above and below on exactly the same terms.
   [...pointData].sort((a,b)=>b.r-a.r||a.py-b.py).forEach(p=>{
-    const preferred=p.px<((left+plotRight)/2)?1:-1,shifts=[0,-10,10,-20,20,-30,30,-42,42,-54,54,-68,68,-82,82,-98,98];
+    const shifts=[0,-9,9,-18,18,-28,28,-40,40,-54,54,-70,70,-88,88,-108,108];
     const candidates=[];
-    [preferred,-preferred].forEach((side,sideIndex)=>shifts.forEach((shift,shiftIndex)=>{
-      const baseline=Math.max(plotTop+8,Math.min(plotBottom-5,p.py+shift));
-      const lx=side===1?p.px+p.r+6:p.px-p.r-6-p.labelW,box={x:lx,y:baseline-7,w:p.labelW,h:11};
+    const addCandidate=(placement,offset,index,nudge=0,bias=0)=>{
+      const local=placement==='right'||placement==='left';
+      // Text boxes start 6 viewBox units from the bubble on every cardinal side before any collision-avoidance shift.
+      const baseline=Math.max(plotTop+8,Math.min(plotBottom-5,local?p.py+offset:(placement==='below'?p.py+p.r+13+offset:p.py-p.r-10-offset)));
+      const anchor=local?'start':'middle';
+      const lx=placement==='right'?p.px+p.r+6:placement==='left'?p.px-p.r-6-p.labelW:p.px+nudge;
+      const box={x:anchor==='middle'?lx-p.labelW/2:lx,y:baseline-7,w:p.labelW,h:11};
       if(box.x<left+4||box.x+box.w>plotRight-4)return;
-      const collision=occupied.filter(other=>overlaps(box,other)).length+(hitsBubble(box,p)?1:0);
-      candidates.push({x:lx,y:baseline,w:p.labelW,h:8,side,collision,cost:collision*100+sideIndex*3+Math.abs(shift)+shiftIndex*.01});
-    }));
-    const best=candidates.sort((a,b)=>a.cost-b.cost)[0]||{x:Math.max(left+4,Math.min(plotRight-p.labelW-4,p.px+7)),y:Math.max(plotTop+8,Math.min(plotBottom-5,p.py)),w:p.labelW,h:8,side:1};
-    p.labelBox=best;occupied.push({x:best.x-2,y:best.y-7.5,w:best.w+4,h:12.5});
+      const ownBubbleCollision=bubbleDistance(box,p)<p.r+2;
+      const collision=occupied.filter(other=>overlaps(box,other)).length+(hitsBubble(box,p)?1:0)+(ownBubbleCollision?1:0);
+      const edgeDistance=Math.max(0,bubbleDistance(box,p)-p.r);
+      const nearestBubbleClearance=Math.min(...pointData.filter(q=>q!==p).map(q=>bubbleDistance(box,q)-q.r));
+      const nearestLabelClearance=occupied.length?Math.min(...occupied.map(other=>boxDistance(box,other))):Infinity;
+      const localClearance=Math.min(nearestBubbleClearance,nearestLabelClearance);
+      // Leaders only clarify genuine separation; a close left-side label is equally valid.
+      const leader=collision>0||edgeDistance>9;
+      const crowdingPenalty=Math.max(0,18-localClearance)*.35;
+      candidates.push({x:lx,y:baseline,w:p.labelW,h:8,anchor,placement,collision,leader,edgeDistance,cost:collision*160+edgeDistance+crowdingPenalty+bias});
+    };
+    shifts.forEach((shift,index)=>addCandidate('right',shift,index));
+    shifts.forEach((shift,index)=>addCandidate('below',shift,index));
+    shifts.forEach((shift,index)=>addCandidate('above',shift,index));
+    shifts.forEach((shift,index)=>addCandidate('left',shift,index));
+    const best=candidates.sort((a,b)=>a.cost-b.cost)[0]||{x:Math.max(left+4,Math.min(plotRight-p.labelW-4,p.px+7)),y:Math.max(plotTop+8,Math.min(plotBottom-5,p.py)),w:p.labelW,h:8,anchor:'start',placement:'right',leader:true};
+    p.labelBox=best;occupied.push({x:(best.anchor==='middle'?best.x-best.w/2:best.x)-2,y:best.y-7.5,w:best.w+4,h:12.5});
   });
   const points=pointData.map((p)=>{
     const {name,item,i,mean,median,gray,labelInk,deepTone,r,px,py,label,labelBox}=p;
-    const lineX=labelBox.side===1?labelBox.x-2:labelBox.x+labelBox.w+2;
+    const labelLeft=labelBox.anchor==='middle'?labelBox.x-labelBox.w/2:labelBox.x;
+    const lineX=labelBox.placement==='right'?labelLeft-2:labelBox.placement==='left'?labelLeft+labelBox.w+2:labelBox.x;
     const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位"><line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX.toFixed(1)+'" y2="'+labelBox.y.toFixed(1)+'"/><rect class="bubble-hit" x="'+(labelBox.x-2).toFixed(1)+'" y="'+(labelBox.y-7).toFixed(1)+'" width="'+(labelBox.w+4).toFixed(1)+'" height="10" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelBox.x.toFixed(1)+'" y="'+labelBox.y.toFixed(1)+'" text-anchor="start">'+escSvg(label)+'</text><text class="bubble-total'+(deepTone?' bubble-total-deep':'')+'" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
+    const leader=labelBox.leader?'<line class="bubble-label-leader" x1="'+px.toFixed(1)+'" y1="'+py.toFixed(1)+'" x2="'+lineX.toFixed(1)+'" y2="'+labelBox.y.toFixed(1)+'"/>':'';
+    return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位">'+leader+'<rect class="bubble-hit" x="'+(labelLeft-2).toFixed(1)+'" y="'+(labelBox.y-7).toFixed(1)+'" width="'+(labelBox.w+4).toFixed(1)+'" height="10" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelBox.x.toFixed(1)+'" y="'+labelBox.y.toFixed(1)+'" text-anchor="'+labelBox.anchor+'">'+escSvg(label)+'</text><text class="bubble-total'+(deepTone?' bubble-total-deep':'')+'" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
   }).join('');
   const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(7)+'" y="'+y(11)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(7)+'" y="'+y(4)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
   host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量彩色气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+plotRight)/2)+'" y="'+(H-1)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="31" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 31 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
