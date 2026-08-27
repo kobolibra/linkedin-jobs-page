@@ -216,7 +216,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 #dist .region-month-label,
 #dist .region-month-label.region-month-current { fill:#7096d1;font:500 7px var(--mono);letter-spacing:.12em;text-anchor:middle; }
 #dist .region-time-baseline { display:none; }
-.region-density-note { min-height:11px;margin:1px 0 0;text-align:right;color:var(--ink-faint);font:500 8px/1.35 var(--sans);letter-spacing:0; }
+.region-density-note { min-height:11px;margin:8px 0 0 calc(48 / 520 * 100%);text-align:left;color:var(--ink-faint);font:500 8px/1.35 var(--sans);letter-spacing:0; }
 [data-theme="dark"] .region-density-note { color:#9ca8cf; }
 
 /* ---------- 30-day rhythm ---------- */
