@@ -43,14 +43,71 @@
     body.compact .job-meta-inline .lvl::before{margin-right:5px}
     body.compact .salary-ref{min-height:14px;padding:0 5px;font-size:8.7px}
 
+    /* Mobile: exactly two structural rows.
+       Row 1 uses the full content width for the title.
+       Row 2 splits into flowing company/level/salary on the left and fixed age/region/actions on the right. */
     @media(max-width:720px){
-      .job-sub{line-height:1.38}
-      .job-company-link{white-space:normal}
-      .job-meta-inline{gap:5px;margin-left:5px}
-      .job-meta-inline .lvl{font-size:9px}
-      .job-meta-inline .lvl::before{margin-right:5px}
-      .salary-ref{min-width:0;font-size:9px}
-      .job-right{grid-template-columns:auto auto 26px 26px;justify-content:start;margin-top:4px}
+      .job{
+        grid-template-columns:38px minmax(0,1fr) auto;
+        grid-template-rows:auto auto;
+        column-gap:var(--s3);
+        row-gap:3px;
+        align-items:center;
+        padding:11px 0;
+      }
+      .job .mono{grid-column:1;grid-row:1 / span 2;align-self:center}
+      .job-main{display:contents}
+      .job-title{
+        grid-column:2 / 4;
+        grid-row:1;
+        display:block;
+        min-width:0;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        line-height:1.28;
+      }
+      .job-sub{
+        grid-column:2;
+        grid-row:2;
+        display:block;
+        min-width:0;
+        margin-top:0;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        line-height:1.3;
+      }
+      .job-company-link{white-space:nowrap}
+      .job-meta-inline{display:inline-flex;flex-wrap:nowrap;gap:4px;margin-left:4px;max-width:100%;vertical-align:baseline}
+      .job-meta-inline .lvl{font-size:8.8px;letter-spacing:.065em}
+      .job-meta-inline .lvl::before{margin-right:4px}
+      .salary-ref{min-width:0;min-height:14px;padding:0 5px;border-radius:4px;font-size:8.7px}
+      .job-right{
+        grid-column:3;
+        grid-row:2;
+        grid-template-columns:auto auto 22px 22px;
+        justify-content:end;
+        align-items:center;
+        gap:5px;
+        margin-top:0;
+      }
+      .job-right>.age{min-width:0;text-align:right;font-size:9.3px}
+      .job-right>.tag{min-width:24px;height:15px;padding:0 5px;font-size:8.3px}
+      .job-right>.icon-btn{width:22px;height:22px}
+      .job-right>.icon-btn::before{width:13px;height:13px}
+
+      body.compact .job{
+        grid-template-columns:30px minmax(0,1fr) auto;
+        grid-template-rows:auto auto;
+        column-gap:var(--s2);
+        row-gap:1px;
+        padding:5px 0;
+      }
+      body.compact .job .mono{grid-column:1;grid-row:1 / span 2;align-self:center;margin-top:0}
+      body.compact .job-title{grid-column:2 / 4;grid-row:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      body.compact .job-sub{grid-column:2;grid-row:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      body.compact .job-right{grid-column:3;grid-row:2;margin-top:0;gap:4px;grid-template-columns:auto auto 20px 20px}
     }
   `;
   document.head.appendChild(style);
