@@ -1,4 +1,4 @@
-/* Remove inferred job levels and display optional WIP salary first in the existing right-side metadata rail. */
+/* Remove inferred job levels and display optional WIP salary in responsive positions. */
 (()=>{
   const host=document.getElementById('jobs');
   if(!host)return;
@@ -33,54 +33,101 @@
       color:var(--gold-hi);
       background:color-mix(in srgb,var(--gold) 10%,transparent);
     }
+    .salary-ref-mobile{display:none}
     body.compact .salary-ref{
       min-height:15px;
       padding:0 6px;
       font-size:8.7px;
     }
+
     @media(max-width:720px){
-      .salary-ref{
+      /* Preserve the original title/company wrapping; only split the company row into left and right. */
+      .job-sub{
+        display:flex;
+        align-items:baseline;
+        gap:8px;
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
+      }
+      .job-company-text{
+        flex:1 1 auto;
+        min-width:0;
+        white-space:normal;
+        overflow-wrap:break-word;
+      }
+      .salary-ref-desktop{display:none}
+      .salary-ref-mobile{
+        display:inline-flex;
+        flex:0 0 auto;
+        align-self:baseline;
+        margin-left:auto;
         min-width:0;
         min-height:15px;
         padding:0 6px;
         border-radius:4px;
         font-size:8.8px;
       }
+      body.compact .job-sub{white-space:normal;overflow:visible;text-overflow:clip}
+      body.compact .job-company-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      body.compact .salary-ref-mobile{min-height:14px;padding:0 5px;font-size:8.5px}
     }
   `;
   document.head.appendChild(style);
 
   let salaryById=new Map();
 
+  const ensureCompanyText=article=>{
+    const sub=article.querySelector('.job-sub');
+    if(!sub)return null;
+    let companyText=sub.querySelector(':scope > .job-company-text');
+    if(!companyText){
+      companyText=document.createElement('span');
+      companyText.className='job-company-text';
+      const nodes=[...sub.childNodes].filter(node=>!(node.nodeType===1&&node.classList.contains('salary-ref-mobile')));
+      nodes.forEach(node=>companyText.appendChild(node));
+      sub.prepend(companyText);
+    }
+    return {sub,companyText};
+  };
+
   const decorate=article=>{
     const right=article.querySelector('.job-right');
-    if(!right)return;
+    const company=ensureCompanyText(article);
+    if(!right||!company)return;
 
-    /* Remove inferred level everywhere while preserving the original row layout. */
+    /* Level remains removed everywhere. */
     right.querySelectorAll(':scope > .lvl').forEach(node=>node.remove());
 
     const link=article.querySelector('.job-title')?.href||'';
     const id=article.dataset.id||jobId(link);
     const salary=salaryById.get(id)||salaryById.get(jobId(link));
-    let badge=article.querySelector('.salary-ref');
+    let desktopBadge=article.querySelector('.salary-ref-desktop');
+    let mobileBadge=article.querySelector('.salary-ref-mobile');
 
     if(!salary){
-      badge?.remove();
+      desktopBadge?.remove();
+      mobileBadge?.remove();
       return;
     }
 
-    if(!badge){
-      badge=document.createElement('span');
-      badge.className='salary-ref';
+    if(!desktopBadge){
+      desktopBadge=document.createElement('span');
+      desktopBadge.className='salary-ref salary-ref-desktop';
+      const age=right.querySelector(':scope > .age');
+      const region=right.querySelector(':scope > .tag');
+      right.insertBefore(desktopBadge,age||region||right.firstChild);
+    }
+    if(!mobileBadge){
+      mobileBadge=document.createElement('span');
+      mobileBadge.className='salary-ref salary-ref-mobile';
+      company.sub.appendChild(mobileBadge);
     }
 
-    badge.textContent=salary;
-    badge.setAttribute('aria-label',`薪资 ${salary}`);
-
-    /* Required order: salary → posting age → region → actions. */
-    const age=right.querySelector(':scope > .age');
-    const region=right.querySelector(':scope > .tag');
-    right.insertBefore(badge,age||region||right.firstChild);
+    desktopBadge.textContent=salary;
+    mobileBadge.textContent=salary;
+    desktopBadge.setAttribute('aria-label',`薪资 ${salary}`);
+    mobileBadge.setAttribute('aria-label',`薪资 ${salary}`);
   };
 
   const decorateAll=()=>host.querySelectorAll('.job').forEach(decorate);
