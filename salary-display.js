@@ -13,17 +13,19 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    /* Keep the right rail structurally stable: region + favorite + block only. */
-    .job-right{grid-template-columns:auto 26px 26px;grid-auto-flow:column;align-items:center;gap:var(--s2)}
+    /* Keep posting age in its original right-side position; stabilize every remaining slot. */
+    .job-right{grid-template-columns:44px auto 26px 26px;grid-auto-flow:column;align-items:center;gap:var(--s2)}
+    .job-right>.age{grid-column:1}
+    .job-right>.tag{grid-column:2}
+    .job-right>.star{grid-column:3}
+    .job-right>.ban{grid-column:4}
 
-    /* Company remains the filter target; optional metadata flows naturally beside it. */
+    /* Company remains the filter target; optional level and salary flow naturally beside it. */
     .job-sub{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.45}
     .job-company-link{display:inline;white-space:nowrap}
     .job-meta-inline{display:inline-flex;align-items:center;flex-wrap:wrap;gap:7px;margin-left:7px;vertical-align:baseline}
-    .job-meta-inline .age,.job-meta-inline .lvl{min-width:0;text-align:left;line-height:1.25}
-    .job-meta-inline .age{font-size:10px;font-weight:500;color:var(--ink-faint);font-variant-numeric:tabular-nums}
-    .job-meta-inline .lvl{font-size:9.5px;font-weight:650;letter-spacing:.085em;color:var(--ink-faint)}
-    .job-meta-inline .age::before,.job-meta-inline .lvl::before{content:'·';margin-right:7px;color:var(--ink-faint);font-family:var(--sans);font-weight:400;letter-spacing:0}
+    .job-meta-inline .lvl{min-width:0;text-align:left;line-height:1.25;font-size:9.5px;font-weight:650;letter-spacing:.085em;color:var(--ink-faint)}
+    .job-meta-inline .lvl::before{content:'·';margin-right:7px;color:var(--ink-faint);font-family:var(--sans);font-weight:400;letter-spacing:0}
 
     /* Salary is the only emphasized optional datum, but remains quieter than the title. */
     .salary-ref{display:inline-flex;align-items:center;justify-content:center;min-height:16px;padding:0 6px;border-radius:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.015em;white-space:nowrap;color:var(--gold-deep);background:color-mix(in srgb,var(--gold) 9%,transparent);box-shadow:none}
@@ -37,19 +39,18 @@
 
     body.compact .job-right{gap:var(--s2)}
     body.compact .job-meta-inline{gap:5px;margin-left:5px}
-    body.compact .job-meta-inline .age{font-size:9.3px}
     body.compact .job-meta-inline .lvl{font-size:8.8px}
-    body.compact .job-meta-inline .age::before,body.compact .job-meta-inline .lvl::before{margin-right:5px}
+    body.compact .job-meta-inline .lvl::before{margin-right:5px}
     body.compact .salary-ref{min-height:14px;padding:0 5px;font-size:8.7px}
 
     @media(max-width:720px){
       .job-sub{line-height:1.38}
       .job-company-link{white-space:normal}
       .job-meta-inline{gap:5px;margin-left:5px}
-      .job-meta-inline .age,.job-meta-inline .lvl{font-size:9px}
-      .job-meta-inline .age::before,.job-meta-inline .lvl::before{margin-right:5px}
+      .job-meta-inline .lvl{font-size:9px}
+      .job-meta-inline .lvl::before{margin-right:5px}
       .salary-ref{min-width:0;font-size:9px}
-      .job-right{grid-template-columns:auto 26px 26px;justify-content:start;margin-top:4px}
+      .job-right{grid-template-columns:auto auto 26px 26px;justify-content:start;margin-top:4px}
     }
   `;
   document.head.appendChild(style);
@@ -83,9 +84,7 @@
       sub.appendChild(meta);
     }
 
-    const age=right.querySelector(':scope > .age');
     const level=right.querySelector(':scope > .lvl');
-    if(age)meta.appendChild(age);
     if(level)meta.appendChild(level);
     return meta;
   };
