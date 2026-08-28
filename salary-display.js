@@ -1,4 +1,4 @@
-/* Remove inferred job levels and display optional WIP salary first in the existing metadata rail. */
+/* Display optional WIP salary first in the existing right-side metadata rail. */
 (()=>{
   const host=document.getElementById('jobs');
   if(!host)return;
@@ -56,10 +56,6 @@
     const right=article.querySelector('.job-right');
     if(!right)return;
 
-    /* Level is intentionally removed on every viewport. */
-    right.querySelectorAll('.lvl').forEach(node=>node.remove());
-    article.querySelectorAll('.job-meta-inline').forEach(node=>node.remove());
-
     const link=article.querySelector('.job-title')?.href||'';
     const id=article.dataset.id||jobId(link);
     const salary=salaryById.get(id)||salaryById.get(jobId(link));
@@ -78,10 +74,11 @@
     badge.textContent=salary;
     badge.setAttribute('aria-label',`薪资 ${salary}`);
 
-    /* Required order: salary → posting age → region → actions. */
+    /* Preserve the original level exactly; only prepend salary to the existing rail. */
     const age=right.querySelector(':scope > .age');
+    const level=right.querySelector(':scope > .lvl');
     const region=right.querySelector(':scope > .tag');
-    right.insertBefore(badge,age||region||right.firstChild);
+    right.insertBefore(badge,age||level||region||right.firstChild);
   };
 
   const decorateAll=()=>host.querySelectorAll('.job').forEach(decorate);
