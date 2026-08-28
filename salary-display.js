@@ -30,13 +30,12 @@
     if(!badge){
       badge=document.createElement('span');
       badge.className='salary-ref';
-      badge.title='参考薪资（来源：WIP）';
       const right=article.querySelector('.job-right');
       if(!right)return;
       right.insertBefore(badge,right.firstChild);
     }
     badge.textContent=salary;
-    badge.setAttribute('aria-label',`参考薪资 ${salary}`);
+    badge.setAttribute('aria-label',`薪资 ${salary}`);
   };
   const decorateAll=()=>host.querySelectorAll('.job').forEach(decorate);
 
