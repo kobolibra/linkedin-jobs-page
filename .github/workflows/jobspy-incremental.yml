@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 2
       matrix:
         include:
           - key: hsbc
@@ -42,7 +43,7 @@ jobs:
             --company "${{ matrix.company }}" \
             --company-id "${{ matrix.company_id }}" \
             --hours-old 24 \
-            --results-per-company 100 \
+            --results-per-company 300 \
             --delay-min 2 \
             --delay-max 5 \
             --page-timeout 20 \
@@ -52,6 +53,7 @@ jobs:
           name: jobspy-${{ matrix.key }}
           path: data/jobspy/incremental/search/${{ matrix.key }}.json
           retention-days: 7
+          if-no-files-found: ignore
 
   details-and-publish:
     needs: search
@@ -97,6 +99,14 @@ jobs:
       - name: Publish immutable run metadata
         run: |
           date -u +%Y-%m-%dT%H:%M:%SZ > data/jobspy/incremental/latest.completed_at
+      - name: Upload short-term recovery artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jobspy-incremental-${{ github.run_id }}
+          path: |
+            data/jobspy/incremental/latest.json
+            data/jobspy/incremental/latest.completed_at
+          retention-days: 14
       - name: Commit incremental snapshot
         run: |
           git config user.name "github-actions[bot]"
