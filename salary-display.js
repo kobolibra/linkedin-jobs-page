@@ -60,7 +60,8 @@
       .salary-ref-mobile{
         display:inline-flex;
         flex:0 0 auto;
-        align-self:baseline;
+        align-self:center;
+        line-height:15px;
         margin-left:0;
         min-width:0;
         min-height:15px;
