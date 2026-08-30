@@ -89,7 +89,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
   contain:layout style;
   display:grid;
   grid-template-columns:44px 1fr auto;
-  align-items:center;
+  align-items:start;
   gap:var(--s4);
   padding:14px var(--s2) 14px 0;
   border-bottom:1px solid var(--line);
@@ -128,7 +128,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-jd[open] .job-jd-text { display:block;max-height:none;overflow:visible; }
 .co-count { font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-left:5px;font-variant-numeric:tabular-nums; }
 /* 右侧栏位固定宽度，使整列在纵向上对齐 */
-.job-right { display:grid;grid-auto-flow:column;align-items:center;gap:var(--s3); }
+.job-right { display:grid;grid-auto-flow:column;align-items:center;align-self:start;padding-top:2px;gap:var(--s3); }
 .lvl { font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap;min-width:56px;text-align:right; }
 .age { font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.02em;color:var(--ink-faint);white-space:nowrap;font-variant-numeric:tabular-nums;min-width:44px;text-align:right; }
 /* 地区标签：原设计的胶囊形 */
