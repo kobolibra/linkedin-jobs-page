@@ -23,7 +23,7 @@ jobs:
             company_id: "2235"
           - key: citi
             company: Citi
-            company_id: "1148"
+            company_id: "11448"
           - key: jpmorgan_chase
             company: JPMorgan Chase
             company_id: "1068"
