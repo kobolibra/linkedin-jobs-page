@@ -56,6 +56,11 @@ def merge_one(base: dict, src: dict, incremental: bool) -> tuple[dict,dict]:
         out["descriptionHtml"]=raw_html
         ch["jdHtmlUpdated"]=True
     raw=text(src.get("locationRaw"))
+    company=text(src.get("company") or out.get("company"))
+    # LinkedIn detail pages can expose the employer label in the location selector.
+    # Never persist a location that is identical to the company name.
+    if raw and company and raw.casefold()==company.casefold():
+        raw=""
     if raw:
         out["locationRaw"]=raw
         if city(raw):out["city"]=city(raw); ch["cityUpdated"]=True
