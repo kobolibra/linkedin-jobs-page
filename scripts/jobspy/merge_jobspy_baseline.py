@@ -31,7 +31,7 @@ def www(url: object) -> str:
     if p.netloc.casefold().endswith("linkedin.com"):p=p._replace(netloc="www.linkedin.com")
     return urlunsplit(p)
 def merge_one(base: dict, src: dict, incremental: bool) -> tuple[dict,dict]:
-    out=dict(base); ch={"firstSeenUpdated":False,"repostDetected":False,"jdUpdated":False,"cityUpdated":False}
+    out=dict(base); ch={"firstSeenUpdated":False,"repostDetected":False,"jdUpdated":False,"jdHtmlUpdated":False,"cityUpdated":False}
     sid=job_id(src.get("sourceJobId") or src.get("link"))
     if sid:out["sourceJobId"]=f"li-{sid}"
     if text(src.get("companyCanonical")):out["companyCanonical"]=text(src["companyCanonical"])
@@ -47,10 +47,14 @@ def merge_one(base: dict, src: dict, incremental: bool) -> tuple[dict,dict]:
         elif incremental and posted > old: out["jobspyLastPosted"]=posted; ch["repostDetected"]=True
         out["datePosted"]=posted
     desc=text(src.get("descriptionText") or src.get("description"))
+    raw_html=text(src.get("descriptionHtml"))
     if desc:
         out["descriptionText"]=desc
         if "description" in out:out["description"]=desc
         ch["jdUpdated"]=True
+    if raw_html:
+        out["descriptionHtml"]=raw_html
+        ch["jdHtmlUpdated"]=True
     raw=text(src.get("locationRaw"))
     if raw:
         out["locationRaw"]=raw
@@ -64,7 +68,7 @@ def main()->int:
     incoming_jobs = incoming if isinstance(incoming, list) else incoming.get("jobs", [])
     jobs=[dict(x) for x in existing_jobs]
     byid={job_id(x.get("sourceJobId") or x.get("link")):i for i,x in enumerate(jobs) if job_id(x.get("sourceJobId") or x.get("link"))}
-    st={"mode":"incremental" if a.incremental else "baseline","incoming":0,"matched":0,"added":0,"firstSeenUpdated":0,"repostDetected":0,"jdUpdated":0,"cityUpdated":0}
+    st={"mode":"incremental" if a.incremental else "baseline","incoming":0,"matched":0,"added":0,"firstSeenUpdated":0,"repostDetected":0,"jdUpdated":0,"jdHtmlUpdated":0,"cityUpdated":0}
     for src in incoming_jobs:
         sid=job_id(src.get("sourceJobId") or src.get("link"))
         if not sid:continue
