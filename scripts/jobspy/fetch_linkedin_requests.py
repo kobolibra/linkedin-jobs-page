@@ -17,10 +17,10 @@ LOG = logging.getLogger("linkedin-requests")
 BASE = "https://www.linkedin.com"
 SEARCH_URL = f"{BASE}/jobs-guest/jobs/api/seeMoreJobPostings/search"
 COMPANIES = {
-    "HSBC": {"canonical": "hsbc", "variants": ["hsbc", "the hongkong and shanghai banking corporation"]},
-    "Standard Chartered": {"canonical": "standard chartered", "variants": ["standard chartered", "渣打环球商业服务有限公司"]},
-    "Citi": {"canonical": "citi", "variants": ["citi", "citibank", "citigroup"]},
-    "JPMorgan Chase": {"canonical": "jpmorgan chase", "variants": ["jpmorgan chase", "jpmorganchase", "摩根大通亚洲咨询(北京)有限公司"]},
+    "HSBC": {"canonical": "hsbc", "company_id": "1241", "variants": ["hsbc", "the hongkong and shanghai banking corporation"]},
+    "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "渣打环球商业服务有限公司"]},
+    "Citi": {"canonical": "citi", "company_id": "11448", "variants": ["citi", "citibank", "citigroup"]},
+    "JPMorgan Chase": {"canonical": "jpmorgan chase", "company_id": "1068", "variants": ["jpmorgan chase", "jpmorganchase", "摩根大通亚洲咨询(北京)有限公司"]},
 }
 
 
@@ -144,7 +144,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--company", action="append", choices=list(COMPANIES), help="Repeat for selected companies; default all")
     parser.add_argument("--location", default="China")
-    parser.add_argument("--company-id", default=None, help="Optional LinkedIn Company ID, e.g. JPMorgan Chase=1068")
+    parser.add_argument("--company-id", default=None, help="Override Company ID for a single-company test; otherwise the configured strict ID is used")
     parser.add_argument("--results-per-company", type=int, default=1000)
     parser.add_argument("--hours-old", type=int, default=None)
     parser.add_argument("--fetch-description", action="store_true")
@@ -167,8 +167,9 @@ def main() -> int:
         start = 0
         while len(jobs_by_id) < args.results_per_company and start < 1000:
             params = {"keywords": company, "location": args.location, "distance": 50, "pageNum": 0, "start": start}
-            if args.company_id:
-                params["f_C"] = args.company_id
+            strict_company_id = args.company_id or COMPANIES[company]["company_id"]
+            if strict_company_id:
+                params["f_C"] = strict_company_id
             if args.hours_old is not None:
                 params["f_TPR"] = f"r{args.hours_old * 3600}"
             LOG.info("%s search start=%s", company, start)
