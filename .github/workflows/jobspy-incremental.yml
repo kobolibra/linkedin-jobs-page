@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: "30 */6 * * *"
 
+concurrency:
+  group: jobspy-incremental
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
@@ -86,16 +90,50 @@ jobs:
               raise SystemExit('No incremental jobs collected; do not publish an empty snapshot')
           print('search_jobs', len(rows))
           PY
+      - name: Select only new or JD-missing detail candidates
+        run: |
+          python - <<'PY'
+          import json, re
+          def jid(x):
+              s=str(x.get('sourceJobId') or x.get('link') or '')
+              m=re.search(r'(\d{7,})',s)
+              return m.group(1) if m else ''
+          existing=json.load(open('jobs.json',encoding='utf-8'))
+          existing=existing if isinstance(existing,list) else existing.get('jobs',[])
+          old={jid(x):x for x in existing if jid(x)}
+          incoming=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))['jobs']
+          todo=[x for x in incoming if jid(x) not in old or not str(old[jid(x)].get('descriptionText') or old[jid(x)].get('description') or '').strip()]
+          json.dump({'schemaVersion':'1.1','mode':'detail-candidates','jobs':todo},open('data/jobspy/incremental/detail_candidates.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
+          print('detail_candidates',len(todo),'search_jobs',len(incoming))
+          PY
       - name: Fetch only new detail candidates
         run: |
           python scripts/jobspy/fetch_details_parallel.py \
-            --input data/jobspy/incremental/search_combined.json \
-            --output data/jobspy/incremental/latest.json \
+            --input data/jobspy/incremental/detail_candidates.json \
+            --output data/jobspy/incremental/detail_results.json \
             --workers 3 \
             --timeout 15 \
             --attempts 3 \
             --delay-min 1 \
             --delay-max 3
+      - name: Combine search fields with fetched detail fields
+        run: |
+          python - <<'PY'
+          import json, re
+          def jid(x):
+              s=str(x.get('sourceJobId') or x.get('link') or '')
+              m=re.search(r'(\d{7,})',s)
+              return m.group(1) if m else s
+          base=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))
+          details=json.load(open('data/jobspy/incremental/detail_results.json',encoding='utf-8'))
+          detail_rows=details.get('jobs',[]) if isinstance(details,dict) else details
+          byid={jid(x):x for x in detail_rows if jid(x)}
+          for x in base['jobs']:
+              if jid(x) in byid: x.update(byid[jid(x)])
+          base['detailsFetchedAt']=details.get('detailsFetchedAt') if isinstance(details,dict) else None
+          json.dump(base,open('data/jobspy/incremental/latest.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
+          print('published_jobs',len(base['jobs']),'detail_results',len(detail_rows))
+          PY
       - name: Publish immutable run metadata
         run: |
           date -u +%Y-%m-%dT%H:%M:%SZ > data/jobspy/incremental/latest.completed_at
