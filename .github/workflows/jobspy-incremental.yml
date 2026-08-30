@@ -1,0 +1,102 @@
+name: JobSpy incremental
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: hsbc
+            company: HSBC
+            company_id: "1241"
+          - key: standard_chartered
+            company: Standard Chartered
+            company_id: "2235"
+          - key: citi
+            company: Citi
+            company_id: "1148"
+          - key: jpmorgan_chase
+            company: JPMorgan Chase
+            company_id: "1068"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install scraper dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Search last 48 hours
+        run: |
+          mkdir -p data/jobspy/incremental/search
+          python scripts/jobspy/fetch_linkedin_requests.py \
+            --company "${{ matrix.company }}" \
+            --company-id "${{ matrix.company_id }}" \
+            --hours-old 48 \
+            --results-per-company 100 \
+            --delay-min 2 \
+            --delay-max 5 \
+            --page-timeout 20 \
+            --output "data/jobspy/incremental/search/${{ matrix.key }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jobspy-${{ matrix.key }}
+          path: data/jobspy/incremental/search/${{ matrix.key }}.json
+          retention-days: 7
+
+  details-and-publish:
+    needs: search
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install scraper dependencies
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: jobspy-*
+          path: data/jobspy/incremental/search
+          merge-multiple: true
+      - name: Combine search results
+        run: |
+          python - <<'PY'
+          import json, glob
+          rows = {}
+          for p in glob.glob('data/jobspy/incremental/search/*.json'):
+              d = json.load(open(p, encoding='utf-8'))
+              for x in (d.get('jobs', []) if isinstance(d, dict) else d):
+                  rows[str(x.get('sourceJobId') or x.get('link'))] = x
+          out = {'schemaVersion':'1.1','mode':'incremental','hoursOld':48,'jobs':list(rows.values())}
+          json.dump(out, open('data/jobspy/incremental/search_combined.json','w',encoding='utf-8'), ensure_ascii=False, indent=2)
+          print('search_jobs', len(rows))
+          PY
+      - name: Fetch only new detail candidates
+        run: |
+          python scripts/jobspy/fetch_details_parallel.py \
+            --input data/jobspy/incremental/search_combined.json \
+            --output data/jobspy/incremental/latest.json \
+            --workers 3 \
+            --timeout 15 \
+            --attempts 3 \
+            --delay-min 1 \
+            --delay-max 3
+      - name: Publish immutable run metadata
+        run: |
+          date -u +%Y-%m-%dT%H:%M:%SZ > data/jobspy/incremental/latest.completed_at
+      - name: Commit incremental snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/jobspy/incremental/latest.json data/jobspy/incremental/latest.completed_at
+          git diff --cached --quiet || git commit -m "jobspy: publish 48h incremental snapshot"
+          git push
