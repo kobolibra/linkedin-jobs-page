@@ -61,7 +61,7 @@
         display:inline-flex;
         flex:0 0 auto;
         align-self:baseline;
-        margin-left:auto;
+        margin-left:0;
         min-width:0;
         min-height:15px;
         padding:0 6px;
@@ -94,6 +94,7 @@
   const decorate=article=>{
     const right=article.querySelector('.job-right');
     const company=ensureCompanyText(article);
+    const detail=article.querySelector('.job-detail-line');
     if(!right||!company)return;
 
     /* Level remains removed everywhere. */
@@ -121,7 +122,7 @@
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
       mobileBadge.className='salary-ref salary-ref-mobile';
-      company.sub.appendChild(mobileBadge);
+      (detail||company.sub).appendChild(mobileBadge);
     }
 
     desktopBadge.textContent=salary;
