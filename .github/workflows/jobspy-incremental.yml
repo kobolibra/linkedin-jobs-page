@@ -34,7 +34,8 @@ jobs:
           python-version: "3.11"
       - name: Install scraper dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Search last 48 hours
+      - name: Search last 24 hours
+        continue-on-error: true
         run: |
           mkdir -p data/jobspy/incremental/search
           python scripts/jobspy/fetch_linkedin_requests.py \
@@ -54,6 +55,7 @@ jobs:
 
   details-and-publish:
     needs: search
+    if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -78,6 +80,8 @@ jobs:
                   rows[str(x.get('sourceJobId') or x.get('link'))] = x
           out = {'schemaVersion':'1.1','mode':'incremental','hoursOld':24,'jobs':list(rows.values())}
           json.dump(out, open('data/jobspy/incremental/search_combined.json','w',encoding='utf-8'), ensure_ascii=False, indent=2)
+          if not rows:
+              raise SystemExit('No incremental jobs collected; do not publish an empty snapshot')
           print('search_jobs', len(rows))
           PY
       - name: Fetch only new detail candidates
