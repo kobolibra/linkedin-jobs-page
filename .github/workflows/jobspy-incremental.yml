@@ -183,6 +183,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/jobspy/incremental/latest.json data/jobspy/incremental/latest.completed_at
+          git add data/jobspy/incremental/latest.json data/jobspy/incremental/latest.completed_at data/jobspy/history/index.json
           git diff --cached --quiet || git commit -m "jobspy: publish 24h incremental snapshot"
           git push
