@@ -74,11 +74,14 @@ def main()->int:
             for k,v in ch.items():st[k]+=int(v)
         else:
             posted=date_cn(src.get("datePosted")); fetched=text(src.get("fetchedAt")); new={"title":text(src.get("title")),"link":www(src.get("link")),"company":src.get("company"),"location":"CN"}
-            # New jobs follow the production RSS convention: pushTime is the discovery time.
-            # firstSeen is the source posting date, normalized to the Beijing calendar date.
-            if fetched:new["pushTime"]=fetched
-            if posted:new["firstSeen"]=posted
-            jobs.append(merge_one(new,src,True)[0]);byid[sid]=len(jobs)-1;st["added"]+=1
+            # Baseline additions use the source posting date for both fields.
+            # Incremental additions use fetch time for pushTime so they appear on the discovery day.
+            if a.incremental:
+                if fetched:new["pushTime"]=fetched
+                if posted:new["firstSeen"]=posted
+            else:
+                if posted:new["pushTime"]=posted; new["firstSeen"]=posted
+            jobs.append(merge_one(new,src,a.incremental)[0]);byid[sid]=len(jobs)-1;st["added"]+=1
     if isinstance(existing, list):
         result=jobs
     else:
