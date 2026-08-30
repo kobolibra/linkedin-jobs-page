@@ -47,7 +47,7 @@ jobs:
             --company "${{ matrix.company }}" \
             --company-id "${{ matrix.company_id }}" \
             --hours-old 24 \
-            --results-per-company 300 \
+            --results-per-company 100 \
             --delay-min 2 \
             --delay-max 5 \
             --page-timeout 20 \
