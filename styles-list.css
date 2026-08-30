@@ -115,6 +115,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px; }
  .job-meta-line { display:flex;align-items:baseline;flex-wrap:wrap;column-gap:12px;row-gap:6px;min-width:0;margin-top:3px; }
 .job-detail-line { display:contents; }
+.job-right-mobile { display:none; }
 
 .job-sub { font-size:12.5px;color:var(--ink-soft);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .job-sub-link { cursor:pointer; }
@@ -217,25 +218,25 @@ body.compact .day-head { padding-bottom:6px; }
   .kw-form { flex-direction:column; }
   .kw-form button { width:100%; }
   .day { margin-top:var(--s6); }
-  .job { grid-template-columns:38px minmax(0,1fr) auto;gap:var(--s3);padding:12px 0; }
+  .job { grid-template-columns:38px 1fr;gap:var(--s3);padding:12px 0; }
   .job::before { left:-6px; }
-  .mono { width:38px;height:38px;font-size:15px;grid-column:1;grid-row:1;align-self:start; }
-  .job-main { grid-column:2;grid-row:1;min-width:0; }
+  .mono { width:38px;height:38px;font-size:15px; }
+  .job-main { min-width:0; }
   .job-title { font-size:15.5px; }
   .job-detail-line { display:flex;flex:0 0 100%;align-items:center;flex-wrap:nowrap;gap:8px 12px;min-width:0;margin-top:5px;line-height:17px; }
   .job-sub { white-space:normal; }
-  .job-right { grid-column:3;grid-row:1;grid-auto-flow:column;justify-content:end;align-items:center;align-self:end;margin:0 0 0;gap:6px;white-space:nowrap; }
-  .lvl,.age { min-width:0;text-align:left;line-height:17px; }
-  .job-right .icon-btn { width:22px;height:22px; }
+  .job-right { display:none; }
+  .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:6px;margin-left:auto;white-space:nowrap; }
+  .lvl,.age { min-width:0;text-align:left; }
   .day-meta { margin-left:0; }
   .footer span,.footer a { white-space:normal; }
   /* 手机紧凑模式：行高再压一半 */
-  body.compact .job { grid-template-columns:30px minmax(0,1fr) auto;gap:var(--s2);padding:5px 0; }
-  body.compact .mono { width:30px;height:30px;font-size:12.5px;border-radius:7px;align-self:start;margin-top:1px;grid-column:1;grid-row:1; }
-  body.compact .job-main { grid-column:2;grid-row:1; }
+  body.compact .job { grid-template-columns:30px 1fr;gap:var(--s2);padding:5px 0; }
+  body.compact .mono { width:30px;height:30px;font-size:12.5px;border-radius:7px;align-self:start;margin-top:1px; }
   body.compact .job-title { font-size:13.5px;line-height:1.25; }
   body.compact .job-sub { font-size:11.5px;margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-  body.compact .job-right { grid-column:3;grid-row:1;margin:0;align-self:end;gap:4px;white-space:nowrap; }
+  body.compact .job-right { display:none; }
+  body.compact .job-right-mobile { gap:4px; }
   body.compact .tag { height:15px;min-width:24px;padding:0 6px;font-size:8.5px; }
   body.compact .lvl { font-size:9px;letter-spacing:.08em; }
   body.compact .age { font-size:9.5px; }
