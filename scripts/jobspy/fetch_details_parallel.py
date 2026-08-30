@@ -34,6 +34,9 @@ def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: fl
             locs = soup.select("div.top-card-layout__card span.topcard__flavor")
             for loc in locs:
                 raw = loc.get_text(" ", strip=True)
+                company = str(out.get("company") or "").strip()
+                if raw and company and raw.casefold() == company.casefold():
+                    continue
                 if raw and ("," in raw or "china" in raw.casefold()):
                     out["locationRaw"] = raw; break
             out["detailStatus"] = "ok" if (out.get("descriptionText") or "").strip() else "empty"
@@ -51,7 +54,7 @@ def main() -> int:
     def save():
         result = rows if isinstance(doc, list) else {**doc, "jobs": rows, "count": len(rows), "detailsFetchedAt": datetime.now(timezone.utc).isoformat()}
         a.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    todo = [i for i,x in enumerate(rows) if not (x.get("descriptionText") or "").strip()]
+    todo = [i for i,x in enumerate(rows) if not (x.get("descriptionHtml") or "").strip()]
     print(f"total={len(rows)} todo_details={len(todo)} workers={a.workers}", flush=True)
     with ThreadPoolExecutor(max_workers=max(1, a.workers)) as pool:
         fs = {pool.submit(one, rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max): i for i in todo}
