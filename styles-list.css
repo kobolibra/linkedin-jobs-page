@@ -120,8 +120,12 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-city { flex:0 0 auto;color:var(--ink-faint);font-size:12px;white-space:nowrap; }
 .job-jd { margin-top:7px;max-width:72ch;color:var(--ink-soft);font-size:12px;line-height:1.5; }
 .job-jd summary { cursor:pointer;color:var(--region,var(--navy));font-size:11px;letter-spacing:.04em; }
-.job-jd-text { margin-top:4px;white-space:pre-line;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden; }
-.job-jd[open] .job-jd-text { display:block;max-height:18rem;overflow:auto; }
+.job-jd-text { margin-top:6px;white-space:normal; }
+.job-jd-text p { margin:0 0 9px; }
+.job-jd-text ul,.job-jd-text ol { margin:0 0 9px 20px;padding:0; }
+.job-jd-text li { margin:0 0 5px; }
+.job-jd-text h3,.job-jd-text h4 { margin:11px 0 5px;font-size:12px;font-weight:700;color:var(--ink); }
+.job-jd[open] .job-jd-text { display:block;max-height:none;overflow:visible; }
 .co-count { font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-left:5px;font-variant-numeric:tabular-nums; }
 /* 右侧栏位固定宽度，使整列在纵向上对齐 */
 .job-right { display:grid;grid-auto-flow:column;align-items:center;gap:var(--s3); }
