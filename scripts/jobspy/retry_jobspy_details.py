@@ -19,10 +19,15 @@ def fetch(s, item, timeout, attempts):
     if n<attempts: time.sleep(min(45,2**n+random.random())); continue
    r.raise_for_status(); soup=BeautifulSoup(r.text,"html.parser")
    block=soup.select_one("div.show-more-less-html__markup") or soup.select_one("div.description__text")
-   loc=soup.select_one("div.top-card-layout__card span.topcard__flavor")
+   locs=soup.select("div.top-card-layout__card span.topcard__flavor")
    if block:
     item["descriptionText"]=block.get_text("\n",strip=True); item["descriptionHtml"]=str(block)
-   if loc:item["locationRaw"]=loc.get_text(" ",strip=True)
+   company=str(item.get("company") or "").strip()
+   for loc in locs:
+    raw=loc.get_text(" ",strip=True)
+    if raw and company and raw.casefold()==company.casefold(): continue
+    if raw and ("," in raw or "china" in raw.casefold()):
+     item["locationRaw"]=raw; break
    item["status"]="ok" if item.get("descriptionText") else "empty"
    item["lastError"]=None; item["fetchedAt"]=datetime.now(timezone.utc).isoformat(); return
   except requests.RequestException as e:
@@ -33,7 +38,7 @@ def main():
  ap=argparse.ArgumentParser(); ap.add_argument("--queue",type=Path,required=True); ap.add_argument("--output",type=Path,required=True); ap.add_argument("--timeout",type=int,default=15); ap.add_argument("--attempts",type=int,default=3); ap.add_argument("--delay",type=float,default=3); a=ap.parse_args()
  d=json.loads(a.queue.read_text(encoding="utf-8")); items=d.get("jobs",[]); s=requests.Session(); s.headers.update({"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36","Accept-Language":"en-US,en;q=0.9"})
  for i,item in enumerate(items,1):
-  if item.get("status")=="ok" and item.get("descriptionText"): continue
+  if item.get("status")=="ok" and item.get("descriptionHtml"): continue
   print(f"detail {i}/{len(items)} {item.get('sourceJobId')}",flush=True); fetch(s,item,a.timeout,a.attempts); a.output.write_text(json.dumps({"schemaVersion":"1.1","generatedAt":datetime.now(timezone.utc).isoformat(),"count":len(items),"jobs":items},ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); time.sleep(a.delay+random.random()*2)
  print(json.dumps({"total":len(items),"ok":sum(x.get('status')=='ok' for x in items),"empty":sum(x.get('status')=='empty' for x in items),"failed":sum(x.get('status')=='failed' for x in items)},ensure_ascii=False))
 if __name__=='__main__':main()

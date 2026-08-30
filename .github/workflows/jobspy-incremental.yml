@@ -136,7 +136,7 @@ jobs:
           existing=existing if isinstance(existing,list) else existing.get('jobs',[])
           old={jid(x):x for x in existing if jid(x)}
           incoming=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))['jobs']
-          todo=[x for x in incoming if jid(x) not in old or not str(old[jid(x)].get('descriptionText') or old[jid(x)].get('description') or '').strip()]
+          todo=[x for x in incoming if jid(x) not in old or not str(old[jid(x)].get('descriptionHtml') or '').strip()]
           json.dump({'schemaVersion':'1.1','mode':'detail-candidates','jobs':todo},open('data/jobspy/incremental/detail_candidates.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
           print('detail_candidates',len(todo),'search_jobs',len(incoming))
           PY
