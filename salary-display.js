@@ -123,9 +123,14 @@
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
       mobileBadge.className='salary-ref salary-ref-mobile';
-      (detail||company.sub).appendChild(mobileBadge);
+      const anchor=detail?.querySelector('.job-jd')||detail?.querySelector('.job-right-mobile');
+      if(anchor) anchor.parentNode.insertBefore(mobileBadge,anchor); else (detail||company.sub).appendChild(mobileBadge);
     }
 
+    if(detail&&mobileBadge){
+      const anchor=detail.querySelector('.job-jd')||detail.querySelector('.job-right-mobile');
+      if(anchor && mobileBadge!==anchor) anchor.parentNode.insertBefore(mobileBadge,anchor);
+    }
     desktopBadge.textContent=salary;
     mobileBadge.textContent=salary;
     desktopBadge.setAttribute('aria-label',`薪资 ${salary}`);
