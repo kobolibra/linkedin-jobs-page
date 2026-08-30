@@ -127,6 +127,9 @@ def enrich_detail(session: requests.Session, job: dict, timeout: tuple[int, int]
             location_candidates = soup.select("div.top-card-layout__card span.topcard__flavor")
             for location in location_candidates:
                 raw = location.get_text(" ", strip=True)
+                company = clean(job.get("company"))
+                if raw and company and raw.casefold() == company.casefold():
+                    continue
                 if raw and ("," in raw or "china" in raw.casefold() or raw.casefold() in {"beijing", "shanghai", "shenzhen", "guangzhou", "xi'an"}):
                     job["locationRaw"] = raw
                     job["city"] = city_from_location(raw)
