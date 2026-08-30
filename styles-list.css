@@ -113,19 +113,22 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-main { min-width:0; }
 .job-title { font-family:var(--serif);font-optical-sizing:auto;font-size:16.5px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.3;letter-spacing:-.012em; }
 .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px; }
-.job-meta-line { display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;min-width:0;margin-top:3px; }
+.job-meta-line { display:flex;align-items:baseline;flex-wrap:wrap;column-gap:12px;row-gap:6px;min-width:0;margin-top:3px; }
 .job-sub { font-size:12.5px;color:var(--ink-soft);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .job-sub-link { cursor:pointer; }
 .job-sub-link:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .job-city { flex:0 0 auto;color:var(--ink-faint);font-size:12px;white-space:nowrap; }
 .job-jd { display:inline-flex;flex:0 0 auto;flex-wrap:wrap;align-items:baseline;max-width:100%;color:var(--ink-soft);font-size:12px;line-height:1.5; }
-.job-jd summary { cursor:pointer;color:var(--region,var(--navy));font-size:11px;letter-spacing:.04em; }
-.job-jd-text { flex-basis:100%;width:100%;margin-top:6px;white-space:normal; }
+.job-jd summary { display:inline-flex;align-items:center;gap:4px;cursor:pointer;color:var(--region,var(--navy));font-size:11px;letter-spacing:.04em;user-select:none; }
+.job-jd summary::-webkit-details-marker { display:none; }
+.job-jd summary::before { content:'›';display:inline-block;font-size:16px;line-height:10px;transform:rotate(0deg);transition:transform .24s ease; }
+.job-jd[open] summary::before { transform:rotate(90deg); }
+.job-jd-text { flex-basis:100%;width:100%;margin-top:6px;white-space:normal;max-height:0;overflow:hidden;opacity:0;transform:translateY(-3px);transition:max-height .42s ease,opacity .28s ease,transform .28s ease; }
+.job-jd[open] .job-jd-text { max-height:10000px;overflow:visible;opacity:1;transform:none; }
 .job-jd-text p { margin:0 0 9px; }
 .job-jd-text ul,.job-jd-text ol { margin:0 0 9px 20px;padding:0; }
 .job-jd-text li { margin:0 0 5px; }
 .job-jd-text h3,.job-jd-text h4 { margin:11px 0 5px;font-size:12px;font-weight:700;color:var(--ink); }
-.job-jd[open] .job-jd-text { display:block;max-height:none;overflow:visible; }
 .co-count { font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-left:5px;font-variant-numeric:tabular-nums; }
 /* 右侧栏位固定宽度，使整列在纵向上对齐 */
 .job-right { display:grid;grid-auto-flow:column;align-items:center;align-self:start;padding-top:2px;gap:var(--s3); }
