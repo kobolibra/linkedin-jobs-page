@@ -224,18 +224,19 @@ body.compact .day-head { padding-bottom:6px; }
   .mono { width:38px;height:38px;font-size:15px; }
   .job-main { min-width:0; }
   .job-title { font-size:15.5px; }
-  /* Meta row = one non-wrapping band: identity yields on the left, metadata and
-     controls stay fixed on the right so the right edge forms a vertical line. */
-  .job-meta-line { flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:4px; }
+  /* Three fixed rows: (1) title, (2) company left + age/region/star/ban right on
+     one line, (3) city / salary / JD arrow left, (4) JD body full width. */
+  .job-meta-line { display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:0;min-width:0;margin-top:3px; }
+  .job-meta-line::after { content:"";flex:1 1 100%;height:0;min-width:0;order:3; }
   .job-detail-line { display:contents;line-height:17px; }
-  .job-city { flex:0 6 auto;order:2;align-self:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .job-right-mobile { order:2;align-self:center; }
+  .job-city { flex:0 0 auto;order:4;align-self:center;min-width:0;max-width:100%;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-city:empty { display:none; }
-  .salary-ref-mobile { flex:0 0 auto;order:3;align-self:center;white-space:nowrap; }
+  .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
   .job-jd { display:contents; }
-  .job-jd summary { flex:0 0 auto;order:4;align-self:center;padding:2px 0; }
-  .job-right-mobile { order:5;align-self:center; }
-  .job-jd-text { flex:1 1 100%;order:6;width:100%;max-width:100%;min-width:0;margin-top:5px;overflow-wrap:anywhere; }
+  .job-jd summary { flex:0 0 auto;order:6;align-self:center;margin-top:5px;padding:2px 0; }
+  .job-jd-text { flex:1 1 100%;order:7;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
   .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-right { display:none; }
   .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:5px;margin-left:auto;white-space:nowrap; }
