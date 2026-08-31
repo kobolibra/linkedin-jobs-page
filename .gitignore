@@ -1,0 +1,13 @@
+# Local tooling
+.DS_Store
+node_modules/
+.wrangler/
+
+# Never commit credentials
+.dev.vars
+.env
+.env.*
+*.pem
+*.key
+token*.txt
+secrets*.json
