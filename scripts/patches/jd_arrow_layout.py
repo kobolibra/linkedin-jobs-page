@@ -1,25 +1,29 @@
 #!/usr/bin/env python3
-"""Keep the JD disclosure arrow in place and stop mobile JD overflow.
+"""Mobile job-meta layout, v2 -- one wrapping flex row instead of a grid.
 
-Desktop bug: .job-jd was a `flex:0 0 auto` item of .job-meta-line, and the JD
-body lived inside it with flex-basis:100%. Once expanded, the details element's
-max-content width became the whole JD paragraph, so flex-wrap pushed the entire
-block -- arrow included -- onto the line below the company name. display:contents
-makes <summary> its own inline flex item that never moves, while only
-.job-jd-text takes a full-width row starting at the far left.
+Why v1 failed on iOS Safari: the JD body used `width:0; min-width:100%` inside
+a grid to avoid inflating the max-content tracks it spanned. Percentage
+min-width against a grid area whose tracks are still being sized is a circular
+dependency, so WebKit resolved it as 0. The paragraph rendered at ~0 width and
+collapsed into one vertical column of letters, pushing the arrow off screen.
 
-Mobile bug: .job-jd-text spanned `grid-column:1 / -1` inside a grid whose first
-three tracks were max-content. A spanning item contributes its width to every
-intrinsic track it spans, so the JD body inflated the city / salary / arrow
-tracks: the row overflowed the viewport, the arrow was pushed off-screen (so it
-could not be collapsed again) and the four right-hand controls lost their
-right alignment. Fix: keep explicit grid slots for row 1 (city, salary, arrow,
-controls pinned right) and give the JD body `width:0; min-width:100%` so its
-intrinsic contribution to those tracks is exactly zero while it still renders
-at the full row width.
+v2 removes the grid entirely. On mobile .job-detail-line becomes
+`display:contents`, so .job-city, .salary-ref-mobile, <summary>,
+.job-right-mobile and .job-jd-text all become direct flex items of
+.job-meta-line, the same wrapping flex row that already holds the company name.
+That single change gives three guarantees for free:
 
-Desktop and mobile blocks are patched independently so neither can disturb the
-other.
+1. No city / salary / JD -> the four controls (age, region, star, ban) sit on
+   the company-name row itself, right-aligned by margin-left:auto.
+2. Salary with no city -> salary follows the company name directly; empty city
+   nodes are removed with :empty so they cannot leave a phantom column-gap.
+3. The JD body is `flex:1 1 100%` against a flex container with a definite
+   width, so it always takes one full-width row starting at the far left --
+   no zero-width collapse, no horizontal overflow. `order` keeps the controls
+   on the first row and the JD body last, so the arrow is always reachable.
+
+The desktop rules were already applied in the previous run and are re-checked
+idempotently here. Desktop and mobile blocks are patched independently.
 """
 from pathlib import Path
 
@@ -38,22 +42,24 @@ DESKTOP_NEW = """.job-jd { display:contents;color:var(--ink-soft);font-size:12px
 .job-jd[open] .job-jd-text { display:block;max-height:none;overflow:visible;opacity:1; }
 """
 
-MOBILE_OLD = """  .job-detail-line { display:grid;grid-template-columns:max-content max-content max-content minmax(0,1fr);align-items:center;column-gap:12px;row-gap:5px;min-width:0;margin-top:5px;line-height:17px; }
-  .job-city { grid-column:1;grid-row:1; }
-  .salary-ref-mobile { grid-column:2;grid-row:1; }
-  .job-jd { display:contents; }
-  .job-jd summary { grid-column:3;grid-row:1; }
-  .job-right-mobile { grid-column:4;grid-row:1;justify-self:end; }
-  .job-jd-text { grid-column:1 / -1;grid-row:2;width:auto;min-width:0;overflow-wrap:anywhere; }
-"""
-
-MOBILE_NEW = """  .job-detail-line { display:grid;width:100%;max-width:100%;grid-template-columns:max-content max-content max-content minmax(0,1fr);align-items:center;column-gap:10px;row-gap:5px;min-width:0;margin-top:5px;line-height:17px;overflow:hidden; }
+MOBILE_OLD = """  .job-detail-line { display:grid;width:100%;max-width:100%;grid-template-columns:max-content max-content max-content minmax(0,1fr);align-items:center;column-gap:10px;row-gap:5px;min-width:0;margin-top:5px;line-height:17px;overflow:hidden; }
   .job-city { grid-column:1;grid-row:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .salary-ref-mobile { grid-column:2;grid-row:1;min-width:0;white-space:nowrap; }
   .job-jd { display:contents; }
   .job-jd summary { grid-column:3;grid-row:1;flex:0 0 auto;align-self:center;padding:2px 0; }
   .job-right-mobile { grid-column:4;grid-row:1;justify-self:end;align-self:center; }
   .job-jd-text { grid-column:1 / -1;grid-row:2;width:0;min-width:100%;max-width:100%;margin-top:2px;overflow-wrap:anywhere;word-break:break-word; }
+"""
+
+MOBILE_NEW = """  .job-detail-line { display:contents;line-height:17px; }
+  .job-city { flex:0 0 auto;order:0;align-self:center;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .job-city:empty { display:none; }
+  .salary-ref-mobile { flex:0 0 auto;order:0;align-self:center;white-space:nowrap; }
+  .salary-ref-mobile:empty { display:none; }
+  .job-jd { display:contents; }
+  .job-jd summary { flex:0 0 auto;order:0;align-self:center;padding:2px 0; }
+  .job-right-mobile { order:1;align-self:center; }
+  .job-jd-text { flex:1 1 100%;order:2;width:100%;max-width:100%;min-width:0;margin-top:4px;overflow-wrap:anywhere; }
 """
 
 
