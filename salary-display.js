@@ -44,17 +44,17 @@
       /* Preserve the original title/company wrapping; only split the company row into left and right. */
       .job-sub{
         display:flex;
-        align-items:baseline;
-        gap:8px;
-        white-space:normal;
-        overflow:visible;
-        text-overflow:clip;
+        align-items:center;
+        gap:6px;
+        min-width:0;
+        overflow:hidden;
       }
       .job-company-text{
-        flex:1 1 auto;
+        flex:0 1 auto;
         min-width:0;
-        white-space:normal;
-        overflow-wrap:break-word;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
       }
       .salary-ref-desktop{display:none}
       .salary-ref-mobile{
@@ -69,7 +69,7 @@
         border-radius:4px;
         font-size:8.8px;
       }
-      body.compact .job-sub{white-space:normal;overflow:visible;text-overflow:clip}
+      body.compact .job-sub{overflow:hidden}
       body.compact .job-company-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       body.compact .salary-ref-mobile{min-height:14px;padding:0 5px;font-size:8.5px}
     }
