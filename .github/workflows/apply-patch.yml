@@ -1,0 +1,69 @@
+name: Apply patch script
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Path of the patch script to run"
+        required: true
+        default: "scripts/patches/jd_arrow_layout.py"
+      message:
+        description: "Commit message"
+        required: true
+        default: "Keep JD arrow in place and fix mobile JD overflow"
+
+concurrency:
+  group: apply-patch
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run patch script
+        env:
+          SCRIPT: ${{ inputs.script }}
+        run: |
+          test -f "$SCRIPT" || { echo "::error title=Patch failed::$SCRIPT not found"; exit 1; }
+          python "$SCRIPT"
+      - name: Commit and push
+        env:
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Patch produced no changes"
+            exit 0
+          fi
+          git --no-pager diff --cached --stat
+          git commit -m "$MESSAGE"
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "Pushed patch on attempt ${attempt}"
+              exit 0
+            fi
+            echo "Push rejected on attempt ${attempt}; rebasing onto latest ${GITHUB_REF_NAME}"
+            git fetch origin "${GITHUB_REF_NAME}"
+            if ! git rebase "origin/${GITHUB_REF_NAME}"; then
+              git rebase --abort || true
+              echo "::error title=Patch failed::Rebase onto ${GITHUB_REF_NAME} failed"
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "::error title=Patch failed::Unable to push after 3 attempts"
+          exit 1
+      - name: Redeploy GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
