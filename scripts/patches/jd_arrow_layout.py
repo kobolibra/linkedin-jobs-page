@@ -1,50 +1,67 @@
 #!/usr/bin/env python3
-"""Mobile job-card layout, v4 -- a deterministic three-row structure.
+"""JD arrow + job-card layout, v5 -- fixes the two real root causes.
 
-Target structure (mobile only):
-  row 1  job title                            (wraps freely, never truncated)
-  row 2  company - count            | age - region - star - ban   (one line)
-  row 3  city - salary - JD arrow                                 (left)
-  row 4  JD body, full width, only while expanded
+Root cause A: the arrow could never be controlled from CSS
+----------------------------------------------------------
+app.js renders `<summary aria-label="展开职位描述"></summary>` -- completely
+empty. The visible triangle is the browser's native disclosure marker, whose
+box metrics and rotation are decided by the UA. Its width differs between the
+closed and open state, which is what made it jump to the next line, and no
+amount of flex tuning on <summary> can change that.
 
-Why v2 and v3 were not enough
------------------------------
-Both relied on flex wrapping, so which row an element landed on depended on how
-long the text was. Short cards kept everything on one line, long cards pushed
-the four right-hand controls down, and the right edge of the list came out
-ragged. Row membership has to be a property of the design, not of the content.
+Fix: suppress the native marker (::marker and ::-webkit-details-marker), draw
+the triangle ourselves in summary::before, and give <summary> a fixed 14x14 box.
+A constant-size box makes reflow on toggle structurally impossible, and the
+open state is a pure `transform:rotate(90deg)`, so the arrow turns in place
+instead of moving.
 
-How row membership is forced
----------------------------
-All of .job-sub, .job-city, .salary-ref-mobile, <summary>, .job-right-mobile and
-.job-jd-text become flex items of .job-meta-line (via display:contents on
-.job-detail-line and .job-jd). Then:
+Root cause B: the company-name indent
+-------------------------------------
+.job-jd got `display:contents` but no `order`. When display:contents fails on
+<details> -- a known WebKit issue -- the element degrades into a regular flex
+item with the default order 0, while the company name carries order 1. The
+collapsed arrow box therefore lands *before* the company name, and together
+with the 8px column-gap it reads exactly like a small indent. Only jobs that
+have a JD render a <details>, which is why it affected many cards but not all.
 
-* .job-meta-line::after is a generated flex item with `flex:1 1 100%` and
-  `height:0`, carrying order:3. A full-width item cannot share a flex line, so
-  everything with a lower order is trapped on line 1 and everything with a
-  higher order is pushed below it. It is a structural line break that costs no
-  vertical space (row-gap is 0; each row carries its own margin-top).
-* order 1 = company, 2 = right-hand controls, 3 = break, 4/5/6 = city, salary,
-  arrow, 7 = JD body (also flex:1 1 100%, so it takes its own row).
+Fix: give .job-jd an explicit order so it is correctly placed in row 3 whether
+or not display:contents takes effect. This makes the layout independent of that
+engine behaviour instead of relying on it.
 
-Why row 2 can never wrap
-------------------------
-Row 2 holds only two items. .job-sub has min-width:0 with ellipsis, so its
-minimum contribution is 0, and the controls are a fixed ~130px. The sum can
-never exceed the container, so a wrap is arithmetically impossible rather than
-unlikely. .age carries a fixed min-width with right alignment, which is what
-turns the right-hand column into a true vertical line across all cards.
+Root cause C: an injected stylesheet was overriding the CSS file
+---------------------------------------------------------------
+salary-display.js appends a <style> to <head> at runtime, so it wins over
+styles-list.css at equal specificity. It forced .job-sub back to
+`white-space:normal; overflow:visible; text-overflow:clip`, cancelling the
+single-line ellipsis the row-2 design depends on. That injected rule is patched
+here too, and index.html's cache-busting query for the script is bumped so the
+new JS is actually fetched.
 
-Accepts either the v2 or the v3 mobile block as its starting point, and is
-idempotent. Desktop rules are verified but never modified; every declaration
-below lives inside @media (max-width:720px).
+All layout changes stay inside @media (max-width:720px) except the arrow rules,
+which are intentionally shared so desktop and mobile behave identically.
 """
 from pathlib import Path
 
 CSS_PATH = Path("styles-list.css")
+JS_PATH = Path("salary-display.js")
+HTML_PATH = Path("index.html")
 
-DESKTOP_GUARD = ".job-jd { display:contents;color:var(--ink-soft);font-size:12px;line-height:1.5; }"
+# ---------------------------------------------------------------- arrow (both)
+
+SUMMARY_OLD = (
+    ".job-jd summary { cursor:pointer;color:var(--region,var(--navy));"
+    "font-size:11px;letter-spacing:.04em;flex:0 0 auto;align-self:baseline; }\n"
+)
+
+SUMMARY_NEW = """.job-jd summary { cursor:pointer;color:var(--region,var(--navy));flex:0 0 auto;align-self:center;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;list-style:none;-webkit-tap-highlight-color:transparent; }
+.job-jd summary::-webkit-details-marker { display:none; }
+.job-jd summary::marker { content:""; }
+.job-jd summary::before { content:"";display:block;width:0;height:0;border-left:5px solid currentColor;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transform:rotate(0deg);transform-origin:center;transition:transform .18s var(--ease,ease); }
+.job-jd[open] summary::before { transform:rotate(90deg); }
+@media (prefers-reduced-motion:reduce) { .job-jd summary::before { transition:none; } }
+"""
+
+# ------------------------------------------------------------- mobile band
 
 BAND_V2 = """  .job-detail-line { display:contents;line-height:17px; }
   .job-city { flex:0 0 auto;order:0;align-self:center;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
@@ -71,7 +88,7 @@ BAND_V3 = """  /* Meta row = one non-wrapping band: identity yields on the left,
   .job-jd-text { flex:1 1 100%;order:6;width:100%;max-width:100%;min-width:0;margin-top:5px;overflow-wrap:anywhere; }
 """
 
-BAND_FINAL = """  /* Three fixed rows: (1) title, (2) company left + age/region/star/ban right on
+BAND_V4 = """  /* Three fixed rows: (1) title, (2) company left + age/region/star/ban right on
      one line, (3) city / salary / JD arrow left, (4) JD body full width. */
   .job-meta-line { display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:0;min-width:0;margin-top:3px; }
   .job-meta-line::after { content:"";flex:1 1 100%;height:0;min-width:0;order:3; }
@@ -83,6 +100,23 @@ BAND_FINAL = """  /* Three fixed rows: (1) title, (2) company left + age/region/
   .salary-ref-mobile:empty { display:none; }
   .job-jd { display:contents; }
   .job-jd summary { flex:0 0 auto;order:6;align-self:center;margin-top:5px;padding:2px 0; }
+  .job-jd-text { flex:1 1 100%;order:7;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
+"""
+
+BAND_FINAL = """  /* Three fixed rows: (1) title, (2) company left + age/region/star/ban right on
+     one line, (3) city / salary / JD arrow left, (4) JD body full width.
+     .job-jd carries an explicit order so the card is laid out correctly even if
+     display:contents does not take effect on <details>. */
+  .job-meta-line { display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:0;min-width:0;margin-top:3px; }
+  .job-meta-line::after { content:"";flex:1 1 100%;height:0;min-width:0;order:3; }
+  .job-detail-line { display:contents;line-height:17px; }
+  .job-right-mobile { order:2;align-self:center; }
+  .job-city { flex:0 0 auto;order:4;align-self:center;min-width:0;max-width:100%;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .job-city:empty { display:none; }
+  .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
+  .salary-ref-mobile:empty { display:none; }
+  .job-jd { display:contents;order:6;flex:0 1 auto;min-width:0;margin-top:5px; }
+  .job-jd summary { order:6;margin-top:5px; }
   .job-jd-text { flex:1 1 100%;order:7;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
 """
 
@@ -109,6 +143,49 @@ AGE_FINAL = (
     "  .age { min-width:42px;text-align:right; }\n"
 )
 
+# ------------------------------------------------- injected stylesheet in JS
+
+JS_SUB_OLD = """      .job-sub{
+        display:flex;
+        align-items:baseline;
+        gap:8px;
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
+      }
+      .job-company-text{
+        flex:1 1 auto;
+        min-width:0;
+        white-space:normal;
+        overflow-wrap:break-word;
+      }
+"""
+
+JS_SUB_NEW = """      .job-sub{
+        display:flex;
+        align-items:center;
+        gap:6px;
+        min-width:0;
+        overflow:hidden;
+      }
+      .job-company-text{
+        flex:0 1 auto;
+        min-width:0;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+"""
+
+JS_COMPACT_OLD = (
+    "      body.compact .job-sub{white-space:normal;overflow:visible;"
+    "text-overflow:clip}\n"
+)
+JS_COMPACT_NEW = "      body.compact .job-sub{overflow:hidden}\n"
+
+HTML_OLD = "salary-display.js?v=wip-salary-1"
+HTML_NEW = "salary-display.js?v=wip-salary-2"
+
 
 def apply_block(text: str, candidates: list[str], new: str, label: str) -> str:
     if new in text:
@@ -126,24 +203,36 @@ def apply_block(text: str, candidates: list[str], new: str, label: str) -> str:
 
 
 def main() -> int:
-    text = CSS_PATH.read_text(encoding="utf-8")
-    if DESKTOP_GUARD not in text:
-        raise SystemExit(
-            "desktop .job-jd is not in the expected display:contents state; aborting"
-        )
-    print("desktop .job-jd: verified, left untouched")
+    css = CSS_PATH.read_text(encoding="utf-8")
+    js = JS_PATH.read_text(encoding="utf-8")
+    html = HTML_PATH.read_text(encoding="utf-8")
+    before = (css, js, html)
 
-    original = text
-    text = apply_block(text, [BAND_V3, BAND_V2], BAND_FINAL, "mobile three-row band")
-    text = apply_block(text, [SUB_V2], SUB_FINAL, "mobile .job-sub")
-    text = apply_block(text, [RIGHT_V2], RIGHT_FINAL, "mobile .job-right-mobile")
-    text = apply_block(text, [AGE_V2], AGE_FINAL, "mobile .age alignment")
+    css = apply_block(css, [SUMMARY_OLD], SUMMARY_NEW, "self-drawn JD arrow")
+    css = apply_block(
+        css, [BAND_V4, BAND_V3, BAND_V2], BAND_FINAL, "mobile three-row band"
+    )
+    css = apply_block(css, [SUB_V2], SUB_FINAL, "mobile .job-sub")
+    css = apply_block(css, [RIGHT_V2], RIGHT_FINAL, "mobile .job-right-mobile")
+    css = apply_block(css, [AGE_V2], AGE_FINAL, "mobile .age alignment")
 
-    if text == original:
+    js = apply_block(js, [JS_SUB_OLD], JS_SUB_NEW, "injected .job-sub rule")
+    js = apply_block(js, [JS_COMPACT_OLD], JS_COMPACT_NEW, "injected compact rule")
+
+    html = apply_block(html, [HTML_OLD], HTML_NEW, "salary-display.js cache key")
+
+    if (css, js, html) == before:
         print("nothing to change")
         return 0
-    CSS_PATH.write_text(text, encoding="utf-8")
-    print("wrote styles-list.css")
+    if css != before[0]:
+        CSS_PATH.write_text(css, encoding="utf-8")
+        print("wrote styles-list.css")
+    if js != before[1]:
+        JS_PATH.write_text(js, encoding="utf-8")
+        print("wrote salary-display.js")
+    if html != before[2]:
+        HTML_PATH.write_text(html, encoding="utf-8")
+        print("wrote index.html")
     return 0
 
 
