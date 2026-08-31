@@ -224,13 +224,15 @@ body.compact .day-head { padding-bottom:6px; }
   .mono { width:38px;height:38px;font-size:15px; }
   .job-main { min-width:0; }
   .job-title { font-size:15.5px; }
-  .job-detail-line { display:grid;width:100%;max-width:100%;grid-template-columns:max-content max-content max-content minmax(0,1fr);align-items:center;column-gap:10px;row-gap:5px;min-width:0;margin-top:5px;line-height:17px;overflow:hidden; }
-  .job-city { grid-column:1;grid-row:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-  .salary-ref-mobile { grid-column:2;grid-row:1;min-width:0;white-space:nowrap; }
+  .job-detail-line { display:contents;line-height:17px; }
+  .job-city { flex:0 0 auto;order:0;align-self:center;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .job-city:empty { display:none; }
+  .salary-ref-mobile { flex:0 0 auto;order:0;align-self:center;white-space:nowrap; }
+  .salary-ref-mobile:empty { display:none; }
   .job-jd { display:contents; }
-  .job-jd summary { grid-column:3;grid-row:1;flex:0 0 auto;align-self:center;padding:2px 0; }
-  .job-right-mobile { grid-column:4;grid-row:1;justify-self:end;align-self:center; }
-  .job-jd-text { grid-column:1 / -1;grid-row:2;width:0;min-width:100%;max-width:100%;margin-top:2px;overflow-wrap:anywhere;word-break:break-word; }
+  .job-jd summary { flex:0 0 auto;order:0;align-self:center;padding:2px 0; }
+  .job-right-mobile { order:1;align-self:center; }
+  .job-jd-text { flex:1 1 100%;order:2;width:100%;max-width:100%;min-width:0;margin-top:4px;overflow-wrap:anywhere; }
   .job-sub { white-space:normal; }
   .job-right { display:none; }
   .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:6px;margin-left:auto;white-space:nowrap; }
