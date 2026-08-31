@@ -16,11 +16,17 @@ from bs4 import BeautifulSoup
 LOG = logging.getLogger("linkedin-requests")
 BASE = "https://www.linkedin.com"
 SEARCH_URL = f"{BASE}/jobs-guest/jobs/api/seeMoreJobPostings/search"
+USER_AGENTS = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+]
 COMPANIES = {
     "HSBC": {"canonical": "hsbc", "company_id": "1241", "variants": ["hsbc", "the hongkong and shanghai banking corporation"]},
-    "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "渣打环球商业服务有限公司"]},
+    "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "\u6e63\u6253\u73af\u7403\u5546\u4e1a\u670d\u52a1\u6709\u9650\u516c\u53f8"]},
     "Citi": {"canonical": "citi", "company_id": "11448", "variants": ["citi", "citibank", "citigroup"]},
-    "JPMorgan Chase": {"canonical": "jpmorgan chase", "company_id": "1068", "variants": ["jpmorgan chase", "jpmorganchase", "摩根大通亚洲咨询(北京)有限公司"]},
+    "JPMorgan Chase": {"canonical": "jpmorgan chase", "company_id": "1068", "variants": ["jpmorgan chase", "jpmorganchase", "\u6469\u6839\u5927\u901a\u4e9a\u6d32\u54a8\u8be2(\u5317\u4eac)\u6709\u9650\u516c\u53f8"]},
 }
 
 
@@ -65,6 +71,10 @@ def company_match(company: str, requested: str) -> bool:
     if actual == canonical(requested):
         return True
     return any(canonical(v) in actual or actual in canonical(v) for v in COMPANIES[requested]["variants"])
+
+
+def rotate_user_agent(session: requests.Session, attempt: int) -> None:
+    session.headers.update({"User-Agent": USER_AGENTS[attempt % len(USER_AGENTS)]})
 
 
 def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
@@ -156,18 +166,27 @@ def main() -> int:
     parser.add_argument("--detail-timeout", type=int, default=15)
     parser.add_argument("--delay-min", type=float, default=3)
     parser.add_argument("--delay-max", type=float, default=7)
+    parser.add_argument("--page-attempts", type=int, default=6, help="Attempts per search page before giving up on the company")
     args = parser.parse_args()
     if args.results_per_company < 1:
         raise SystemExit("--results-per-company must be >= 1")
+    page_attempts = max(1, args.page_attempts)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     session = requests.Session()
-    session.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"})
+    session.headers.update({
+        "User-Agent": USER_AGENTS[0],
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": f"{BASE}/jobs/search",
+    })
     all_jobs = []
+    status_summary = {}
     for company in args.company or list(COMPANIES):
         fetched_at = datetime.now(timezone.utc).isoformat()
         jobs_by_id = {}
         start = 0
+        blocked = False
         while len(jobs_by_id) < args.results_per_company and start < 1000:
             params = {"keywords": company, "location": args.location, "distance": 50, "pageNum": 0, "start": start}
             strict_company_id = args.company_id or COMPANIES[company]["company_id"]
@@ -178,28 +197,33 @@ def main() -> int:
             LOG.info("%s search start=%s", company, start)
             response = None
             last_error = ""
-            for page_attempt in range(1, 5):
+            for page_attempt in range(1, page_attempts + 1):
+                rotate_user_agent(session, page_attempt - 1)
                 try:
                     response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))
-                    if response.status_code == 429 or response.status_code >= 500:
+                    LOG.info("%s start=%s attempt=%s http=%s bytes=%s", company, start, page_attempt, response.status_code, len(response.content))
+                    if response.status_code in {403, 429, 999} or response.status_code >= 500:
                         last_error = f"HTTP {response.status_code}"
-                        if page_attempt < 4:
-                            wait = min(90, 8 * page_attempt + random.uniform(1, 4))
-                            LOG.warning("%s page rate-limited at start=%s; retry %s/4 in %.1fs", company, start, page_attempt + 1, wait)
+                        response = None
+                        if page_attempt < page_attempts:
+                            wait = min(180, 15 * page_attempt + random.uniform(1, 8))
+                            LOG.warning("%s throttled at start=%s (%s); retry %s/%s in %.1fs", company, start, last_error, page_attempt + 1, page_attempts, wait)
                             time.sleep(wait)
                             continue
+                        break
                     response.raise_for_status()
                     break
                 except requests.RequestException as exc:
                     last_error = str(exc)
-                    if page_attempt < 4:
-                        wait = min(90, 8 * page_attempt + random.uniform(1, 4))
-                        LOG.warning("%s page failed at start=%s; retry %s/4 in %.1fs: %s", company, start, page_attempt + 1, wait, exc)
+                    response = None
+                    if page_attempt < page_attempts:
+                        wait = min(180, 15 * page_attempt + random.uniform(1, 8))
+                        LOG.warning("%s page failed at start=%s; retry %s/%s in %.1fs: %s", company, start, page_attempt + 1, page_attempts, wait, exc)
                         time.sleep(wait)
-                    else:
-                        response = None
             if response is None:
-                LOG.error("%s search failed at start=%s after retries: %s", company, start, last_error)
+                LOG.error("%s search failed at start=%s after %s attempts: %s", company, start, page_attempts, last_error)
+                blocked = start == 0
+                status_summary[company] = f"failed@start={start}: {last_error}"
                 break
             page_jobs = parse_search(response.text, company, fetched_at)
             if not page_jobs:
@@ -211,6 +235,9 @@ def main() -> int:
             if len(jobs_by_id) < args.results_per_company:
                 time.sleep(random.uniform(args.delay_min, args.delay_max))
         company_jobs = list(jobs_by_id.values())[: args.results_per_company]
+        status_summary.setdefault(company, f"ok: {len(company_jobs)} jobs" if company_jobs else "empty")
+        if blocked and not company_jobs:
+            LOG.error("%s produced no jobs because the first search page was blocked", company)
         if args.fetch_description:
             for index, job in enumerate(company_jobs, 1):
                 LOG.info("%s detail %s/%s %s", company, index, len(company_jobs), job["sourceJobId"])
@@ -223,9 +250,10 @@ def main() -> int:
             time.sleep(random.uniform(args.delay_min, args.delay_max))
 
     unique = {job["sourceJobId"]: job for job in all_jobs}
-    output = {"schemaVersion": "1.1", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "China", "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "jobs": list(unique.values())}
+    output = {"schemaVersion": "1.1", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "China", "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
     args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     LOG.info("Wrote %s unique jobs to %s", len(unique), args.output)
+    LOG.info("status summary: %s", json.dumps(status_summary, ensure_ascii=False))
     return 0
 
 
