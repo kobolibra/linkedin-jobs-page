@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-"""Keep the JD disclosure arrow in place (desktop) and stop mobile JD overflow.
+"""Keep the JD disclosure arrow in place and stop mobile JD overflow.
 
 Desktop bug: .job-jd was a `flex:0 0 auto` item of .job-meta-line, and the JD
 body lived inside it with flex-basis:100%. Once expanded, the details element's
 max-content width became the whole JD paragraph, so flex-wrap pushed the entire
-block -- arrow included -- onto the next line. display:contents makes the
-<summary> its own inline flex item that never moves, while only .job-jd-text
-takes a full-width row below it.
+block -- arrow included -- onto the line below the company name. display:contents
+makes <summary> its own inline flex item that never moves, while only
+.job-jd-text takes a full-width row starting at the far left.
 
-Mobile bug: .job-detail-line was a grid with three max-content tracks, and
-.job-jd-text spanned `grid-column:1 / -1`. A spanning item contributes its
-width to the max-content tracks it spans, so the JD body inflated the city /
-salary / arrow tracks: the row overflowed the viewport, the arrow was pushed
-off-screen (impossible to collapse again) and the city squeezed the body to the
-right. A wrapping flex row removes the spanning contribution entirely.
+Mobile bug: .job-jd-text spanned `grid-column:1 / -1` inside a grid whose first
+three tracks were max-content. A spanning item contributes its width to every
+intrinsic track it spans, so the JD body inflated the city / salary / arrow
+tracks: the row overflowed the viewport, the arrow was pushed off-screen (so it
+could not be collapsed again) and the four right-hand controls lost their
+right alignment. Fix: keep explicit grid slots for row 1 (city, salary, arrow,
+controls pinned right) and give the JD body `width:0; min-width:100%` so its
+intrinsic contribution to those tracks is exactly zero while it still renders
+at the full row width.
 
 Desktop and mobile blocks are patched independently so neither can disturb the
 other.
@@ -44,13 +47,13 @@ MOBILE_OLD = """  .job-detail-line { display:grid;grid-template-columns:max-cont
   .job-jd-text { grid-column:1 / -1;grid-row:2;width:auto;min-width:0;overflow-wrap:anywhere; }
 """
 
-MOBILE_NEW = """  .job-detail-line { display:flex;flex:1 1 100%;flex-wrap:wrap;align-items:center;column-gap:12px;row-gap:5px;width:100%;min-width:0;margin-top:5px;line-height:17px; }
-  .job-city { flex:0 0 auto;order:0; }
-  .salary-ref-mobile { flex:0 0 auto;order:0; }
+MOBILE_NEW = """  .job-detail-line { display:grid;width:100%;max-width:100%;grid-template-columns:max-content max-content max-content minmax(0,1fr);align-items:center;column-gap:10px;row-gap:5px;min-width:0;margin-top:5px;line-height:17px;overflow:hidden; }
+  .job-city { grid-column:1;grid-row:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .salary-ref-mobile { grid-column:2;grid-row:1;min-width:0;white-space:nowrap; }
   .job-jd { display:contents; }
-  .job-jd summary { flex:0 0 auto;order:0;align-self:center; }
-  .job-right-mobile { flex:0 0 auto;order:0;margin-left:auto; }
-  .job-jd-text { flex:1 1 100%;order:1;width:100%;max-width:100%;min-width:0;margin-top:2px;overflow-wrap:anywhere;word-break:break-word; }
+  .job-jd summary { grid-column:3;grid-row:1;flex:0 0 auto;align-self:center;padding:2px 0; }
+  .job-right-mobile { grid-column:4;grid-row:1;justify-self:end;align-self:center; }
+  .job-jd-text { grid-column:1 / -1;grid-row:2;width:0;min-width:100%;max-width:100%;margin-top:2px;overflow-wrap:anywhere;word-break:break-word; }
 """
 
 
