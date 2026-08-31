@@ -1,4 +1,5 @@
-/* Remove inferred job levels and display optional WIP salary in responsive positions. */
+/* Remove inferred job levels, replace the native <details> JD disclosure with a
+   plain button so flex order is authoritative, and display optional WIP salary. */
 (()=>{
   const host=document.getElementById('jobs');
   if(!host)return;
@@ -40,6 +41,63 @@
       font-size:8.7px;
     }
 
+    /* JD disclosure. WebKit implements <details> with shadow DOM and wraps the
+       non-summary content in an anonymous slot box; with display:contents that
+       anonymous box is the one that participates in the parent flex layout, it
+       cannot be selected by CSS, and it keeps order:0. That produced the
+       leading indent on every card that has a JD and pushed the JD body above
+       the company row when open. The markup is rewritten below so no <details>
+       and no anonymous box exist, which makes order authoritative. */
+    .job-jd-toggle{
+      appearance:none;
+      -webkit-appearance:none;
+      background:none;
+      border:0;
+      padding:0;
+      margin:0;
+      cursor:pointer;
+      color:var(--region,var(--navy));
+      flex:0 0 auto;
+      align-self:center;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:14px;
+      height:14px;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .job-jd-toggle::before{
+      content:"";
+      display:block;
+      width:0;
+      height:0;
+      border-left:5px solid currentColor;
+      border-top:3.5px solid transparent;
+      border-bottom:3.5px solid transparent;
+      transform:rotate(0deg);
+      transform-origin:center;
+      transition:transform .18s ease;
+    }
+    .job-jd-toggle[aria-expanded="true"]::before{transform:rotate(90deg)}
+    @media (prefers-reduced-motion:reduce){
+      .job-jd-toggle::before{transition:none}
+    }
+    .job-jd-text{
+      display:none;
+      flex:1 1 100%;
+      order:9;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      margin-top:6px;
+      color:var(--ink-soft);
+      font-size:12px;
+      line-height:1.5;
+      white-space:normal;
+      overflow-wrap:anywhere;
+    }
+    .job-jd-toggle[aria-expanded="true"] ~ .job-jd-text{display:block}
+
     @media(max-width:720px){
       /* Preserve the original title/company wrapping; only split the company row into left and right. */
       .job-sub{
@@ -72,11 +130,42 @@
       body.compact .job-sub{overflow:hidden}
       body.compact .job-company-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       body.compact .salary-ref-mobile{min-height:14px;padding:0 5px;font-size:8.5px}
+      /* Row 3: city, salary, arrow. Row 4: JD body, full width, from the left. */
+      .job-jd-toggle{order:6;margin-top:5px}
+      .job-jd-text{order:9;margin-top:6px}
     }
   `;
   document.head.appendChild(style);
 
   let salaryById=new Map();
+
+  /* Rewrite <details class="job-jd"><summary/><div class="job-jd-text"/></details>
+     into a sibling pair: <button class="job-jd-toggle"/> + <div class="job-jd-text"/>.
+     Idempotent: once the <details> is gone there is nothing left to match. */
+  const upgradeJd=article=>{
+    const details=article.querySelector('details.job-jd');
+    if(!details)return;
+    const parent=details.parentNode;
+    if(!parent)return;
+    const body=details.querySelector('.job-jd-text');
+    const toggle=document.createElement('button');
+    toggle.type='button';
+    toggle.className='job-jd-toggle';
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','展开职位描述');
+    parent.insertBefore(toggle,details);
+    if(body)parent.insertBefore(body,details);
+    details.remove();
+  };
+
+  host.addEventListener('click',event=>{
+    const toggle=event.target?.closest?.('.job-jd-toggle');
+    if(!toggle||!host.contains(toggle))return;
+    event.preventDefault();
+    const open=toggle.getAttribute('aria-expanded')==='true';
+    toggle.setAttribute('aria-expanded',open?'false':'true');
+    toggle.setAttribute('aria-label',open?'展开职位描述':'收起职位描述');
+  });
 
   const ensureCompanyText=article=>{
     const sub=article.querySelector('.job-sub');
@@ -93,6 +182,7 @@
   };
 
   const decorate=article=>{
+    upgradeJd(article);
     const right=article.querySelector('.job-right');
     const company=ensureCompanyText(article);
     const detail=article.querySelector('.job-detail-line');
@@ -123,12 +213,12 @@
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
       mobileBadge.className='salary-ref salary-ref-mobile';
-      const anchor=detail?.querySelector('.job-jd')||detail?.querySelector('.job-right-mobile');
+      const anchor=detail?.querySelector('.job-jd-toggle')||detail?.querySelector('.job-right-mobile');
       if(anchor) anchor.parentNode.insertBefore(mobileBadge,anchor); else (detail||company.sub).appendChild(mobileBadge);
     }
 
     if(detail&&mobileBadge){
-      const anchor=detail.querySelector('.job-jd')||detail.querySelector('.job-right-mobile');
+      const anchor=detail.querySelector('.job-jd-toggle')||detail.querySelector('.job-right-mobile');
       if(anchor && mobileBadge!==anchor) anchor.parentNode.insertBefore(mobileBadge,anchor);
     }
     desktopBadge.textContent=salary;
