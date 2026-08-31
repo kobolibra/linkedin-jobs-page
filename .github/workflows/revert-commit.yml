@@ -1,0 +1,59 @@
+name: Revert commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Commit SHA to revert (default = last mobile/desktop layout change)"
+        required: true
+        default: "3bc93781d6b50d33eec2ee7d2029de6ba92e2778"
+
+concurrency:
+  group: revert-commit
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  revert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Revert the requested commit
+        env:
+          TARGET_SHA: ${{ inputs.sha }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          echo "Reverting:"
+          git log --oneline -1 "$TARGET_SHA"
+          if ! git revert --no-edit "$TARGET_SHA"; then
+            git revert --abort || true
+            echo "::error title=Revert failed::git revert hit a conflict for $TARGET_SHA; the files changed too much since that commit"
+            exit 1
+          fi
+          git --no-pager show --stat --oneline HEAD
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              echo "Pushed revert on attempt ${attempt}"
+              exit 0
+            fi
+            echo "Push rejected on attempt ${attempt}; rebasing onto latest ${GITHUB_REF_NAME}"
+            git fetch origin "${GITHUB_REF_NAME}"
+            if ! git rebase "origin/${GITHUB_REF_NAME}"; then
+              git rebase --abort || true
+              echo "::error title=Revert failed::Rebase onto ${GITHUB_REF_NAME} failed"
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "::error title=Revert failed::Unable to push revert after 3 attempts"
+          exit 1
+      - name: Redeploy GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
