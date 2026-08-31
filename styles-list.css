@@ -224,19 +224,25 @@ body.compact .day-head { padding-bottom:6px; }
   .mono { width:38px;height:38px;font-size:15px; }
   .job-main { min-width:0; }
   .job-title { font-size:15.5px; }
+  /* Meta row = one non-wrapping band: identity yields on the left, metadata and
+     controls stay fixed on the right so the right edge forms a vertical line. */
+  .job-meta-line { flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:4px; }
   .job-detail-line { display:contents;line-height:17px; }
-  .job-city { flex:0 0 auto;order:0;align-self:center;min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .job-city { flex:0 6 auto;order:2;align-self:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-city:empty { display:none; }
-  .salary-ref-mobile { flex:0 0 auto;order:0;align-self:center;white-space:nowrap; }
+  .salary-ref-mobile { flex:0 0 auto;order:3;align-self:center;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
   .job-jd { display:contents; }
-  .job-jd summary { flex:0 0 auto;order:0;align-self:center;padding:2px 0; }
-  .job-right-mobile { order:1;align-self:center; }
-  .job-jd-text { flex:1 1 100%;order:2;width:100%;max-width:100%;min-width:0;margin-top:4px;overflow-wrap:anywhere; }
-  .job-sub { white-space:normal; }
+  .job-jd summary { flex:0 0 auto;order:4;align-self:center;padding:2px 0; }
+  .job-right-mobile { order:5;align-self:center; }
+  .job-jd-text { flex:1 1 100%;order:6;width:100%;max-width:100%;min-width:0;margin-top:5px;overflow-wrap:anywhere; }
+  .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-right { display:none; }
-  .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:6px;margin-left:auto;white-space:nowrap; }
-  .lvl,.age { min-width:0;text-align:left; }
+  .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:5px;margin-left:auto;white-space:nowrap; }
+  .job-right-mobile .icon-btn { width:24px;height:24px; }
+  .job-right-mobile .icon-btn svg { width:14px;height:14px; }
+  .lvl { min-width:0;text-align:left; }
+  .age { min-width:42px;text-align:right; }
   .day-meta { margin-left:0; }
   .footer span,.footer a { white-space:normal; }
   /* 手机紧凑模式：行高再压一半 */
