@@ -239,8 +239,7 @@
     }
   }).observe(host,{childList:true,subtree:true});
 
-  fetch('jobs.json',{cache:'no-cache'})
-    .then(response=>{if(!response.ok)throw new Error(`jobs.json HTTP ${response.status}`);return response.json();})
+  Promise.resolve(window.__jobsDataPromise)
     .then(rows=>{
       salaryById=new Map();
       if(Array.isArray(rows)){
