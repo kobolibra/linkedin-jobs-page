@@ -118,7 +118,7 @@ jobsEl.addEventListener("click",e=>{
     e.preventDefault();e.stopPropagation();
     const key=groupToggle.dataset.groupKey,open=groupToggle.getAttribute("aria-expanded")==="true";
     jobsEl.querySelectorAll('.job[data-group-key]').forEach(card=>{
-      if(card.dataset.groupKey!==key||card.dataset.group-leader==='true')return;
+      if(card.dataset.groupKey!==key||card.dataset.groupLeader==='true')return;
       card.classList.toggle('group-collapsed',open);
       const visible=!open&&!card.classList.contains('hidden');
       card.style.display=visible?'':'none';
