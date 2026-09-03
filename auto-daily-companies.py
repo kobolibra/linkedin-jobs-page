@@ -144,7 +144,9 @@ def get_beijing_today():
     return datetime.now(BEIJING_TZ).strftime("%Y-%m-%d")
 
 
-def parse_push_time(s):
+def parse_push_time_dt(s):
+    """Parse pushTime string and return a timezone-aware datetime in Beijing time.
+    Returns None if parsing fails."""
     if not s:
         return None
     for fmt in ["%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z",
@@ -155,7 +157,7 @@ def parse_push_time(s):
             dt = datetime.strptime(s, fmt)
             if dt.tzinfo is None:
                 dt = dt.replace(tzinfo=timezone.utc)
-            return dt.astimezone(BEIJING_TZ).strftime("%Y-%m-%d")
+            return dt.astimezone(BEIJING_TZ)
         except ValueError:
             continue
     return None
@@ -199,6 +201,11 @@ def process_jobs(jobs, today):
                 print("[ERROR] No jobs list found")
                 sys.exit(1)
 
+    # Filter: past 24 hours in Beijing time
+    now_bj = datetime.now(BEIJING_TZ)
+    cutoff = now_bj - timedelta(hours=24)
+    print(f"[INFO] Filtering pushTime from {cutoff.strftime('%Y-%m-%d %H:%M')} to {now_bj.strftime('%Y-%m-%d %H:%M')} (Beijing time, past 24h)")
+
     target, excluded, seen, today_jobs = [], [], set(), []
     for job in jobs:
         if not isinstance(job, dict):
@@ -207,8 +214,8 @@ def process_jobs(jobs, today):
         if not cn:
             continue
         pt = job.get("pushTime") or job.get("push_time") or job.get("date")
-        pd = parse_push_time(str(pt)) if pt else None
-        if pd != today:
+        pt_dt = parse_push_time_dt(str(pt)) if pt else None
+        if not pt_dt or pt_dt < cutoff or pt_dt > now_bj:
             continue
         today_jobs.append(job)
         if cn in seen:
@@ -228,10 +235,11 @@ def process_jobs(jobs, today):
                           "reason": "not in blacklist",
                           "pushTime": str(pt)})
 
-    print(f"\n[INFO] Total jobs: {len(jobs)}, Today: {len(today_jobs)}")
+    print(f"\n[INFO] Total jobs: {len(jobs)}, Past 24h: {len(today_jobs)}")
     print(f"[INFO] Target: {len(target)}, Excluded: {len(excluded)}")
     return {
         "date": today,
+        "filter_window": f"{cutoff.strftime('%Y-%m-%d %H:%M')} ~ {now_bj.strftime('%Y-%m-%d %H:%M')} (Beijing)",
         "target_companies": target,
         "excluded_companies": excluded,
         "total_target": len(target),
@@ -276,7 +284,7 @@ def main():
     print(f"  DAILY COMPANIES REPORT - {today} (Beijing Time)")
     print("=" * 70)
     print(f"  Total jobs: {results['total_all_jobs']}")
-    print(f"  Today's jobs: {results['total_today_jobs']}")
+    print(f"  Today's jobs (past 24h): {results['total_today_jobs']}")
     print(f"  Target companies: {results['total_target']}")
     print(f"  Excluded companies: {results['total_excluded']}")
     print("-" * 70)
