@@ -325,6 +325,7 @@ window.__jobsDataPromise=jobsDataPromise;
 jobsDataPromise
   .then(async data=>{
     if(!Array.isArray(data))data=[];
+    // Use the deduplicated dataset as the single source for rendering and every statistic.
     data=keepLatestSameCityTitle(data);
     data.forEach(job=>{
       const id=jobId(job.link)||(job.title+"|"+job.company);
