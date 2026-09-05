@@ -69,13 +69,23 @@ def _make_request(url, headers=None, method="GET", data=None, timeout=60):
 
 
 def download_json_from_api(api_url, timeout=60):
-    """Download JSON from GitHub API (private repo support via base64 decode)."""
+    """Download JSON from GitHub API (private repo support via base64 decode or download_url for large files)."""
     print(f"[INFO] Downloading via API: {api_url}")
     try:
         with _make_request(api_url, timeout=timeout) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             if "content" in data and data.get("encoding") == "base64":
                 return json.loads(base64.b64decode(data["content"]).decode("utf-8"))
+            # Large files: encoding is None, use download_url with temp token
+            if "download_url" in data and data["download_url"]:
+                print(f"[INFO] Large file ({data.get('size',0)/1024/1024:.1f}MB), downloading via download_url...")
+                dl_req = urllib.request.Request(data["download_url"])
+                dl_req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
+                dl_req.add_header("Accept", "application/vnd.github.v3.raw+json")
+                dl_req.add_header("User-Agent", "auto-daily-companies/2.0")
+                ctx = ssl.create_default_context()
+                with urllib.request.urlopen(dl_req, context=ctx, timeout=timeout) as dl_resp:
+                    return json.loads(dl_resp.read().decode("utf-8"))
             return data
     except urllib.error.HTTPError as e:
         print(f"[ERROR] HTTP {e.code}: {e.reason} for {api_url}")
