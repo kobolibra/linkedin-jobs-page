@@ -25,11 +25,11 @@ from datetime import datetime, timezone, timedelta
 # CONFIGURATION
 # ============================================================
 
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = "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"
 GITHUB_REPO = "kobolibra/linkedin-jobs-page"
 GITHUB_BRANCH = "main"
-GITHUB_RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_REPO}/{GITHUB_BRANCH}/jobs.json"
-BLACKLIST_RAW_URL = f"https://raw.githubusercontent.com/{GITHUB_REPO}/{GITHUB_BRANCH}/financial_blacklist.json"
+# Use GitHub API (NOT raw.githubusercontent.com) for private repo access
+JOBS_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/jobs.json"
 BLACKLIST_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/financial_blacklist.json"
 
 BEIJING_TZ = timezone(timedelta(hours=8))
@@ -68,24 +68,27 @@ def _make_request(url, headers=None, method="GET", data=None, timeout=60):
     return urllib.request.urlopen(req, context=ctx, timeout=timeout)
 
 
-def download_json(url, timeout=60):
-    """Download JSON from GitHub raw with token auth."""
-    print(f"[INFO] Downloading: {url}")
+def download_json_from_api(api_url, timeout=60):
+    """Download JSON from GitHub API (private repo support via base64 decode)."""
+    print(f"[INFO] Downloading via API: {api_url}")
     try:
-        with _make_request(url, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8"))
+        with _make_request(api_url, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            if "content" in data and data.get("encoding") == "base64":
+                return json.loads(base64.b64decode(data["content"]).decode("utf-8"))
+            return data
     except urllib.error.HTTPError as e:
-        print(f"[ERROR] HTTP {e.code}: {e.reason} for {url}")
+        print(f"[ERROR] HTTP {e.code}: {e.reason} for {api_url}")
         return None
     except Exception as e:
-        print(f"[ERROR] {e} for {url}")
+        print(f"[ERROR] {e} for {api_url}")
         return None
 
 
 def load_blacklist_from_github():
-    """Load financial blacklist from GitHub. Falls back to builtin if fails."""
+    """Load financial blacklist from GitHub API. Falls back to builtin if fails."""
     global FINANCIAL_BLACKLIST
-    data = download_json(BLACKLIST_RAW_URL)
+    data = download_json_from_api(BLACKLIST_API_URL)
     if data and isinstance(data, list):
         FINANCIAL_BLACKLIST = set(data)
         print(f"[INFO] Loaded {len(FINANCIAL_BLACKLIST)} blacklist entries from GitHub")
@@ -264,8 +267,8 @@ def main():
     # Load blacklist from GitHub (persistent storage)
     load_blacklist_from_github()
 
-    # Download jobs data
-    jobs_data = download_json(GITHUB_RAW_URL)
+    # Download jobs data via API (private repo)
+    jobs_data = download_json_from_api(JOBS_API_URL)
     if not jobs_data:
         print("[ERROR] Failed to download jobs.json")
         sys.exit(1)
