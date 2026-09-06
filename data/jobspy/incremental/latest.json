@@ -18,13 +18,37 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:45.080519+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:45.080519+00:00",
+      "fetchedAt": "2026-09-06T15:26:00.274937+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:26:00.274937+00:00",
       "dataSources": [
         "jobspy"
       ],
       "jobspyFirstSeen": "2026-08-14",
       "jobspyRepost": true,
+      "jobspyLastPosted": "2026-09-05"
+    },
+    {
+      "source": "jobspy-requests",
+      "sourceSite": "linkedin",
+      "sourceJobId": "li-4444002003",
+      "requestedCompany": "Citi",
+      "company": "Citi",
+      "companyCanonical": "citi",
+      "title": "Services - Summer Analyst, China, 2027",
+      "link": "https://www.linkedin.com/jobs/view/services-summer-analyst-china-2027-at-citi-4444002003",
+      "location": "CN",
+      "locationRaw": "Shanghai, Shanghai, China",
+      "city": "Shanghai",
+      "datePosted": "2026-09-05",
+      "descriptionText": "",
+      "descriptionHtml": "",
+      "fetchedAt": "2026-09-06T15:26:00.274937+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:26:00.274937+00:00",
+      "dataSources": [
+        "jobspy"
+      ],
+      "jobspyFirstSeen": "2026-09-05",
+      "jobspyRepost": false,
       "jobspyLastPosted": "2026-09-05"
     },
     {
@@ -42,8 +66,8 @@
       "datePosted": "2026-09-06",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -66,8 +90,8 @@
       "datePosted": "2026-09-06",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -90,8 +114,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -114,8 +138,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -138,8 +162,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -162,8 +186,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -186,8 +210,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -210,8 +234,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -234,8 +258,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -258,8 +282,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -282,8 +306,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -306,32 +330,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "dataSources": [
-        "jobspy"
-      ],
-      "jobspyFirstSeen": "2026-08-28",
-      "jobspyRepost": true,
-      "jobspyLastPosted": "2026-09-05"
-    },
-    {
-      "source": "jobspy-requests",
-      "sourceSite": "linkedin",
-      "sourceJobId": "li-4441936525",
-      "requestedCompany": "HSBC",
-      "company": "HSBC",
-      "companyCanonical": "hsbc",
-      "title": "Consultant Specialist",
-      "link": "https://www.linkedin.com/jobs/view/consultant-specialist-at-hsbc-4441936525",
-      "location": "CN",
-      "locationRaw": "Xi'an, Shaanxi, China",
-      "city": "Xi'an",
-      "datePosted": "2026-09-05",
-      "descriptionText": "",
-      "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -354,8 +354,32 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "dataSources": [
+        "jobspy"
+      ],
+      "jobspyFirstSeen": "2026-08-28",
+      "jobspyRepost": true,
+      "jobspyLastPosted": "2026-09-05"
+    },
+    {
+      "source": "jobspy-requests",
+      "sourceSite": "linkedin",
+      "sourceJobId": "li-4441936525",
+      "requestedCompany": "HSBC",
+      "company": "HSBC",
+      "companyCanonical": "hsbc",
+      "title": "Consultant Specialist",
+      "link": "https://www.linkedin.com/jobs/view/consultant-specialist-at-hsbc-4441936525",
+      "location": "CN",
+      "locationRaw": "Xi'an, Shaanxi, China",
+      "city": "Xi'an",
+      "datePosted": "2026-09-05",
+      "descriptionText": "",
+      "descriptionHtml": "",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -378,8 +402,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -402,8 +426,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -426,8 +450,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -450,8 +474,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -474,8 +498,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -498,8 +522,8 @@
       "datePosted": "2026-09-05",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:30.424052+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:30.424052+00:00",
+      "fetchedAt": "2026-09-06T15:25:44.333589+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:25:44.333589+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -522,8 +546,8 @@
       "datePosted": "2026-09-06",
       "descriptionText": "",
       "descriptionHtml": "",
-      "fetchedAt": "2026-09-06T10:51:51.453769+00:00",
-      "jobspyFetchedAt": "2026-09-06T10:51:51.453769+00:00",
+      "fetchedAt": "2026-09-06T15:26:05.462444+00:00",
+      "jobspyFetchedAt": "2026-09-06T15:26:05.462444+00:00",
       "dataSources": [
         "jobspy"
       ],
@@ -532,5 +556,5 @@
       "jobspyLastPosted": "2026-09-06"
     }
   ],
-  "detailsFetchedAt": "2026-09-06T10:52:08.952770+00:00"
+  "detailsFetchedAt": "2026-09-06T15:26:24.131458+00:00"
 }
