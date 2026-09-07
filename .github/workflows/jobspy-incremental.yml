@@ -32,6 +32,21 @@ jobs:
           - key: jpmorgan_chase
             company: JPMorgan Chase
             company_id: "1068"
+          - key: bnp_paribas
+            company: BNP Paribas
+            company_id: "166278"
+          - key: societe_generale
+            company: Societe Generale
+            company_id: "1691"
+          - key: dbs_bank
+            company: DBS Bank
+            company_id: "163379"
+          - key: deutsche_bank
+            company: Deutsche Bank
+            company_id: "1262"
+          - key: goldman_sachs
+            company: Goldman Sachs
+            company_id: "1382"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -108,7 +123,7 @@ jobs:
       - name: Report empty search and stop publishing
         if: steps.combine.outputs.has_jobs != 'true'
         run: |
-          echo "::warning title=JobSpy incremental::LinkedIn returned zero jobs for all four companies in this window. The previous snapshot is left untouched and nothing was published."
+          echo "::warning title=JobSpy incremental::LinkedIn returned zero jobs for all configured companies in this window. The previous snapshot is left untouched and nothing was published."
           echo "Nothing to publish; existing data/jobspy/incremental/latest.json remains the newest good snapshot."
       - name: Update persistent JobSpy history
         if: steps.combine.outputs.has_jobs == 'true'

@@ -6,6 +6,7 @@ import logging
 import random
 import re
 import time
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -27,6 +28,11 @@ COMPANIES = {
     "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "\u6e63\u6253\u73af\u7403\u5546\u4e1a\u670d\u52a1\u6709\u9650\u516c\u53f8"]},
     "Citi": {"canonical": "citi", "company_id": "11448", "variants": ["citi", "citibank", "citigroup"]},
     "JPMorgan Chase": {"canonical": "jpmorgan chase", "company_id": "1068", "variants": ["jpmorgan chase", "jpmorganchase", "\u6469\u6839\u5927\u901a\u4e9a\u6d32\u54a8\u8be2(\u5317\u4eac)\u6709\u9650\u516c\u53f8"]},
+    "BNP Paribas": {"canonical": "bnp paribas", "company_id": "166278", "variants": ["bnp", "bnp paribas"]},
+    "Societe Generale": {"canonical": "societe generale", "company_id": "1691", "variants": ["societe generale", "société générale"]},
+    "DBS Bank": {"canonical": "dbs bank", "company_id": "163379", "variants": ["dbs", "dbs bank"]},
+    "Deutsche Bank": {"canonical": "deutsche bank", "company_id": "1262", "variants": ["deutsche bank"]},
+    "Goldman Sachs": {"canonical": "goldman sachs", "company_id": "1382", "variants": ["goldman sachs"]},
 }
 
 
@@ -35,7 +41,9 @@ def clean(value: object) -> str:
 
 
 def canonical(value: str) -> str:
-    return re.sub(r"[^a-z0-9]+", " ", clean(value).casefold()).strip()
+    folded = unicodedata.normalize("NFKD", clean(value).casefold())
+    folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]+", " ", folded).strip()
 
 
 def normalize_url(url: str) -> str:

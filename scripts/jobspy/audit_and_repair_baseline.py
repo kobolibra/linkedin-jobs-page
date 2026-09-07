@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit and repair a completed LinkedIn/JobSpy baseline without overwriting it."""
 from __future__ import annotations
-import argparse, json, re
+import argparse, json, re, unicodedata
 from collections import Counter
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
@@ -14,10 +14,21 @@ TARGETS = {
     "jpmorgan chase": "JPMorgan Chase",
     "jpmorgan chase & co.": "JPMorgan Chase",
     "摩根大通亚洲咨询(北京)有限公司": "JPMorgan Chase",
+    "bnp": "BNP Paribas",
+    "bnp paribas": "BNP Paribas",
+    "societe generale": "Societe Generale",
+    "société générale": "Societe Generale",
+    "sg": "Societe Generale",
+    "dbs": "DBS Bank",
+    "dbs bank": "DBS Bank",
+    "deutsche bank": "Deutsche Bank",
+    "goldman sachs": "Goldman Sachs",
 }
 
 def norm(v: object) -> str:
-    return re.sub(r"\s+", " ", str(v or "").strip().casefold())
+    raw = unicodedata.normalize("NFKD", str(v or "").strip().casefold())
+    raw = "".join(ch for ch in raw if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", raw)
 
 def canonical_company(v: object) -> str:
     raw = norm(v)
@@ -26,6 +37,11 @@ def canonical_company(v: object) -> str:
     if compact in {"standardchartered", "standardcharteredbank", "渣打环球商业服务有限公司"}: return "standard chartered"
     if compact in {"citi", "citibank", "citigroup"}: return "citi"
     if compact in {"jpmorganchase", "jpmorgan", "jpmorganchaseco", "摩根大通亚洲咨询北京有限公司"}: return "jpmorgan chase"
+    if compact in {"bnp", "bnpparibas"}: return "bnp paribas"
+    if compact in {"societegenerale", "sg"}: return "societe generale"
+    if compact in {"dbs", "dbsbank"}: return "dbs bank"
+    if compact == "deutschebank": return "deutsche bank"
+    if compact == "goldmansachs": return "goldman sachs"
     return raw
 
 def www_url(value: object) -> str:
@@ -52,7 +68,7 @@ def main() -> int:
         raw_location = norm(item.get("locationRaw"))
         if any(x in raw_location for x in ("hong kong", "hongkong", "macau", "macao", "澳门")):
             dropped.append(item); drop_counts["non_mainland:" + str(item.get("locationRaw", ""))] += 1; continue
-        target = TARGETS.get(actual, {"hsbc":"HSBC","standard chartered":"Standard Chartered","citi":"Citi","jpmorgan chase":"JPMorgan Chase"}.get(actual))
+        target = TARGETS.get(actual, {"hsbc":"HSBC","standard chartered":"Standard Chartered","citi":"Citi","jpmorgan chase":"JPMorgan Chase","bnp paribas":"BNP Paribas","societe generale":"Societe Generale","dbs bank":"DBS Bank","deutsche bank":"Deutsche Bank","goldman sachs":"Goldman Sachs"}.get(actual))
         if not target:
             dropped.append(item); drop_counts[item.get("company", "")] += 1; continue
         item["requestedCompany"] = target

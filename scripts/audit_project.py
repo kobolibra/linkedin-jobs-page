@@ -22,7 +22,7 @@ for p in sorted((ROOT/'data/jobspy').glob('*final.json')):
     report(p.name,load(p))
 print('--- target company rows in jobs.json ---')
 rows=load(ROOT/'jobs.json')
-for c in ['HSBC','Standard Chartered','Citi','JPMorganChase','JPMorgan Chase']:
+for c in ['HSBC','Standard Chartered','Citi','JPMorganChase','JPMorgan Chase','BNP Paribas','Societe Generale','DBS Bank','Deutsche Bank','Goldman Sachs']:
     r=[x for x in rows if x.get('company')==c]
     if r: report(c,r)
 print('--- invalid target IDs by independent files ---')
