@@ -74,8 +74,18 @@ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(!reduce)document.body.classList.add('anim');
 const REGIONS={CN:{label:"中国大陆"},HK:{label:"香港"},SG:{label:"新加坡"},OTHER:{label:"其他"}};
 const norm=loc=>{const u=(loc||"OTHER").toUpperCase();return REGIONS[u]?u:"OTHER";};
-const companyKey=name=>String(name||"").trim().toLowerCase().replace(/\s+/g,"");
-const canonicalCompany=name=>companyKey(name)==="jpmorganchase"?"JPMorgan Chase":String(name||"").trim();
+const companyKey=name=>String(name||"").trim().toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"");
+const canonicalCompany=name=>{
+  const raw=String(name||"").trim(),key=companyKey(raw);
+  const aliases={
+    jpmorganchase:"JPMorgan Chase",jpmorgan:"JPMorgan Chase",
+    bnp:"BNP Paribas",bnpparibas:"BNP Paribas",
+    societegenerale:"Societe Generale",
+    dbs:"DBS Bank",dbsbank:"DBS Bank",
+    deutschebank:"Deutsche Bank",goldmansachs:"Goldman Sachs"
+  };
+  return aliases[key]||raw;
+};
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function safeJdHtml(raw){
   const tpl=document.createElement("template");tpl.innerHTML=String(raw||"");
