@@ -34,7 +34,7 @@ jobs:
             company_id: "1068"
           - key: bnp_paribas
             company: BNP Paribas
-            company_id: "166278"
+            company_id: "166278,963211,256009,11092068,30590982,10070,18735883,98774,15245937,3683364,3880216,3625182,3627928,1519,281207,2642837,251838,1508"
           - key: societe_generale
             company: Societe Generale
             company_id: "1691"

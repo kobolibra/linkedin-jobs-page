@@ -19,7 +19,7 @@ expected = {
 }
 for name, company_id in expected.items():
     assert name in mod.COMPANIES, name
-    assert mod.COMPANIES[name]["company_id"] == company_id
+    assert mod.COMPANIES[name]["company_id"].split(",")[0] == company_id
     assert mod.company_match(name, name)
 assert mod.company_match("Société Générale", "Societe Generale")
 
