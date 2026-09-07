@@ -41,6 +41,7 @@ jobs:
             --company "DBS Bank" \
             --company "Deutsche Bank" \
             --company "Goldman Sachs" \
+            --company "BlackRock" \
             --results-per-company "${{ inputs.results_per_company }}" \
             --delay-min 2 \
             --delay-max 5 \
@@ -78,6 +79,7 @@ jobs:
               'DBS Bank': ('dbs_bank','163379'),
               'Deutsche Bank': ('deutsche_bank','1262'),
               'Goldman Sachs': ('goldman_sachs','1382'),
+              'BlackRock': ('blackrock','4764'),
           }
           for company,(key,company_id) in specs.items():
               selected=[x for x in rows if x.get('requestedCompany')==company]

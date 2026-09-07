@@ -3,7 +3,7 @@ name: JobSpy incremental
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 0,6,12,18 * * *"
+    - cron: "15 3,9,15,21 * * *"
 
 concurrency:
   group: jobspy-incremental
@@ -47,6 +47,9 @@ jobs:
           - key: goldman_sachs
             company: Goldman Sachs
             company_id: "1382"
+          - key: blackrock
+            company: BlackRock
+            company_id: "4764"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

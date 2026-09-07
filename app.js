@@ -82,7 +82,8 @@ const canonicalCompany=name=>{
     bnp:"BNP Paribas",bnpparibas:"BNP Paribas",
     societegenerale:"Societe Generale",
     dbs:"DBS Bank",dbsbank:"DBS Bank",
-    deutschebank:"Deutsche Bank",goldmansachs:"Goldman Sachs"
+    deutschebank:"Deutsche Bank",goldmansachs:"Goldman Sachs",
+    blackrock:"BlackRock",blackrockassetmanagement:"BlackRock"
   };
   return aliases[key]||raw;
 };

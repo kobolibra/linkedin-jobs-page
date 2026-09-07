@@ -16,6 +16,7 @@ expected = {
     "DBS Bank": "163379",
     "Deutsche Bank": "1262",
     "Goldman Sachs": "1382",
+    "BlackRock": "4764",
 }
 for name, company_id in expected.items():
     assert name in mod.COMPANIES, name
