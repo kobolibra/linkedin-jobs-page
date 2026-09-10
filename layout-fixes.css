@@ -1,12 +1,14 @@
-/* Restore original metadata order: company, city, JD arrow; expiry stays right-aligned. */
+/* Restore the pre-lifecycle metadata row: company · count, city and the JD arrow stay adjacent on the
+   left, and the lifecycle badge is right-aligned on that same line. No flex `order` is used here:
+   `.job-jd` relies on display:contents, so any order value moves the JD arrow out of sequence. */
 @media (min-width:721px) {
-  .job-meta-line { position:relative;display:flex;align-items:center;flex-wrap:nowrap;column-gap:8px;row-gap:0;min-width:0;padding-right:148px; }
-  .job-sub { flex:0 1 auto;min-width:0;max-width:min(52%,420px);order:1; }
-  .job-city { flex:0 0 auto;order:2; }
-  .job-jd summary { flex:0 0 auto;order:3;margin:0; }
-  .status-expired-company { position:absolute;inset:auto 0 auto auto;top:50%;transform:translateY(-50%);margin:0;z-index:2; }
+  .job-meta-line { align-items:center;column-gap:10px;row-gap:4px; }
+  .job-sub { flex:0 1 auto;min-width:0;max-width:min(58%,430px); }
+  .status-expired-company { position:static;inset:auto;flex:0 0 auto;margin:0 0 0 auto; }
 }
-@media (max-width:720px) { .status-expired-company { display:none; } }
+@media (max-width:720px) {
+  .status-expired-company { display:none; }
+}
 .bubble-position-leader { stroke:#9f9d96;stroke-width:.5;stroke-dasharray:1 2;opacity:.28;vector-effect:non-scaling-stroke;pointer-events:none; }
 .bubble-axis-break { fill:none;stroke:#8f8e86;stroke-width:1;vector-effect:non-scaling-stroke; }
-.bubble-outlier-note { fill:#8f8e86;font:600 6.4px var(--mono);letter-spacing:.08em; }
+.bubble-outlier-note { fill:#8f8e86;font:600 6.4px var(--mono,monospace);letter-spacing:.08em; }
