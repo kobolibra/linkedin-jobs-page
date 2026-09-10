@@ -257,12 +257,10 @@ function renderTop50(rows,mode="all"){
   const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?7.5:4.45),0);
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
-  const scaleValues=[...means,...medians].sort((a,b)=>a-b);
-  const p95=scaleValues.length?scaleValues[Math.min(scaleValues.length-1,Math.floor((scaleValues.length-1)*.95))]:40;
-  const domainMax=Math.max(40,Math.ceil(p95/5)*5);
-  const project=v=>Math.max(0,Math.min(domainMax,Number(v)||0));
-  const x=v=>left+(plotRight-left)*(project(v)/domainMax);
-  const y=v=>plotBottom-(plotBottom-plotTop)*(project(v)/domainMax);
+  const maxValue=Math.max(0,...means,...medians);
+  const domainMax=Math.max(50,Math.ceil(maxValue/10)*10);
+  const x=v=>left+(plotRight-left)*((Number(v)||0)/domainMax);
+  const y=v=>plotBottom-(plotBottom-plotTop)*((Number(v)||0)/domainMax);
   const xTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
   const grid=xTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
