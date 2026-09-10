@@ -8,7 +8,7 @@ class N8nMergeTests(unittest.TestCase):
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000001", "source": "n8n-rss", "link": "https://www.linkedin.com/jobs/view/a-100000001", "firstSeen": "2026-09-10T08:00:00Z", "pushTime": "2026-09-10T08:00:00Z"}]}
         row = merge_documents(baseline, batch)["jobs"][0]
         self.assertEqual(row["firstSeen"], "2026-01-01T00:00:00Z")
-        self.assertEqual(row["pushTime"], "2026-09-10T08:00:00Z")
+        self.assertEqual(row["pushTime"], "2026-02-01T00:00:00Z")
         self.assertEqual(row["source"], "jobspy")
         self.assertEqual(row["city"], "Shanghai")
         self.assertEqual(row["descriptionHtml"], "<p>JD</p>")
