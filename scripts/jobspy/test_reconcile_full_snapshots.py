@@ -51,6 +51,25 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(by_id["li-100000012"]["jobStatus"], "active")
         self.assertEqual(result["jobspySnapshot"]["scopeLocations"], ["CN"])
 
+    def test_new_job_gets_observation_push_time_and_posting_first_seen(self):
+        existing = {"jobs": []}
+        snapshot = {
+            "scopeLocations": ["CN"],
+            "jobs": [{
+                "sourceJobId": "li-100000013",
+                "company": "Acme",
+                "companyCanonical": "acme",
+                "datePosted": "2026-09-01",
+                "jobspyFirstSeen": "2026-08-28",
+            }],
+            "statusSummary": {"acme": "ok: 1 jobs"},
+            "companies": {"acme": "ok: 1 jobs"},
+        }
+        result = reconcile(existing, snapshot, "2026-09-10T02:00:00+00:00")
+        row = result["jobs"][0]
+        self.assertEqual(row["pushTime"], "2026-09-10T02:00:00+00:00")
+        self.assertEqual(row["firstSeen"], "2026-08-28")
+
 
 if __name__ == "__main__":
     unittest.main()
