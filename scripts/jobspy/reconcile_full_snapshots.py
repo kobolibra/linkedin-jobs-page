@@ -103,6 +103,11 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         for field in ("pushTime", "firstSeen"):
             if old.get(field) not in (None, ""):
                 merged[field] = old[field]
+        merged["dataSources"] = list(dict.fromkeys(
+            list(old.get("dataSources") or [])
+            + list(item.get("dataSources") or [])
+            + (["jobspy"] if item.get("source") == "jobspy-requests" else [])
+        ))
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
         # JobSpy observation time is the discovery/push time only when the
         # canonical row has no value yet.  Existing lifecycle timestamps stay
