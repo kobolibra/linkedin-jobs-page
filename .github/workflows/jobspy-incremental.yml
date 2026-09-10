@@ -64,9 +64,6 @@ jobs:
           python scripts/jobspy/fetch_linkedin_requests.py \
             --company "${{ matrix.company }}" \
             --company-id "${{ matrix.company_id }}" \
-            --location China \
-            --location "Hong Kong" \
-            --location Singapore \
             --results-per-company 1000 \
             --delay-min 2 \
             --delay-max 5 \
