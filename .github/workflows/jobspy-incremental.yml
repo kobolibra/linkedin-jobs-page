@@ -1,4 +1,4 @@
-name: JobSpy incremental
+name: JobSpy full company snapshots
 
 on:
   workflow_dispatch:
@@ -57,20 +57,10 @@ jobs:
           python-version: "3.11"
       - name: Install scraper dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Search last 24 hours
+      - name: Search full company listing
         continue-on-error: true
         run: |
           mkdir -p data/jobspy/incremental/search
-          python scripts/jobspy/fetch_linkedin_requests.py \
-            --company "${{ matrix.company }}" \
-            --company-id "${{ matrix.company_id }}" \
-            --hours-old 24 \
-            --results-per-company 100 \
-            --delay-min 2 \
-            --delay-max 5 \
-            --page-timeout 20 \
-            --output "data/jobspy/incremental/search/${{ matrix.key }}.json"
-          mkdir -p data/jobspy/incremental/search/full
           python scripts/jobspy/fetch_linkedin_requests.py \
             --company "${{ matrix.company }}" \
             --company-id "${{ matrix.company_id }}" \
@@ -78,13 +68,11 @@ jobs:
             --delay-min 2 \
             --delay-max 5 \
             --page-timeout 20 \
-            --output "data/jobspy/incremental/search/full/${{ matrix.key }}.json"
+            --output "data/jobspy/incremental/search/${{ matrix.key }}.json"
       - uses: actions/upload-artifact@v4
         with:
           name: jobspy-${{ matrix.key }}
-          path: |
-            data/jobspy/incremental/search/${{ matrix.key }}.json
-            data/jobspy/incremental/search/full/${{ matrix.key }}.json
+          path: data/jobspy/incremental/search/${{ matrix.key }}.json
           retention-days: 7
           if-no-files-found: ignore
 
@@ -126,12 +114,20 @@ jobs:
                   key = str(item.get('sourceJobId') or item.get('link') or '').strip()
                   if key:
                       rows[key] = item
-          out = {'schemaVersion': '1.1', 'mode': 'incremental', 'hoursOld': 24, 'jobs': list(rows.values())}
+          statuses = {}
+          for path in sorted(glob.glob('data/jobspy/incremental/search/*.json')):
+              try:
+                  doc = json.load(open(path, encoding='utf-8'))
+                  statuses.update(doc.get('statusSummary', {}) if isinstance(doc, dict) else {})
+              except Exception:
+                  pass
+          out = {'schemaVersion': '2.0', 'mode': 'full-company-snapshot', 'scopeLocations': ['CN'], 'jobs': list(rows.values()), 'statusSummary': statuses, 'companies': {k: v for k, v in statuses.items()}}
           json.dump(out, open('data/jobspy/incremental/search_combined.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
           print('per_company', json.dumps(per_company, ensure_ascii=False), flush=True)
           print('search_jobs', len(rows), flush=True)
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
-              fh.write('has_jobs=%s\n' % ('true' if rows else 'false'))
+              valid = any(str(value).startswith(('ok:', 'empty')) for value in statuses.values())
+              fh.write('has_jobs=%s\n' % ('true' if valid else 'false'))
               fh.write('search_jobs=%d\n' % len(rows))
           PY
       - name: Report empty search and stop publishing
@@ -139,28 +135,6 @@ jobs:
         run: |
           echo "::warning title=JobSpy incremental::LinkedIn returned zero jobs for all configured companies in this window. The previous snapshot is left untouched and nothing was published."
           echo "Nothing to publish; existing data/jobspy/incremental/latest.json remains the newest good snapshot."
-      - name: Combine full company listings for expiry comparison
-        id: fullcombine
-        run: |
-          python - <<'PY'
-          import glob, json, os
-          rows={}; successful=[]
-          for path in sorted(glob.glob('data/jobspy/incremental/search/full/*.json')):
-              key=os.path.basename(path).rsplit('.',1)[0]
-              try:
-                  doc=json.load(open(path,encoding='utf-8'))
-                  items=doc.get('jobs',[]) if isinstance(doc,dict) else doc
-              except Exception as exc:
-                  print('unreadable full listing',key,exc); continue
-              if items: successful.append(key.replace('_',' '))
-              for item in items:
-                  k=str(item.get('sourceJobId') or item.get('link') or '').strip()
-                  if k: rows[k]=item
-          json.dump({'jobs':list(rows.values())},open('/tmp/jobspy-full.json','w'),ensure_ascii=False)
-          json.dump(successful,open('/tmp/jobspy-successful.json','w'),ensure_ascii=False)
-          with open(os.environ['GITHUB_OUTPUT'],'a') as fh: fh.write('has_full=%s\n' % ('true' if successful else 'false'))
-          print('full_jobs',len(rows),'successful_companies',successful)
-          PY
       - name: Update persistent JobSpy history
         if: steps.combine.outputs.has_jobs == 'true'
         run: |
@@ -249,16 +223,19 @@ jobs:
               if jid(x) in byid: x.update(byid[jid(x)])
           base['detailsFetchedAt']=details.get('detailsFetchedAt') if isinstance(details,dict) else None
           json.dump(base,open('data/jobspy/incremental/latest.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
+          json.dump(base,open('data/jobspy/incremental/search_combined.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
           print('published_jobs',len(base['jobs']),'detail_results',len(detail_rows))
           PY
-      - name: Reconcile CN expiry states only
-        if: steps.fullcombine.outputs.has_full == 'true'
+      - name: Reconcile full snapshots and mark missing jobs expired
+        if: steps.combine.outputs.has_jobs == 'true'
         run: |
-          python scripts/jobspy/reconcile_cn_expiry.py \
-            --jobs jobs.json \
-            --full /tmp/jobspy-full.json \
-            --successful /tmp/jobspy-successful.json \
+          python scripts/jobspy/reconcile_full_snapshots.py \
+            --existing jobs.json \
+            --snapshot data/jobspy/incremental/search_combined.json \
             --output jobs.json
+      - name: Compact browser jobs payload
+        if: steps.combine.outputs.has_jobs == 'true'
+        run: python scripts/jobspy/compact_published_jobs.py
       - name: Publish immutable run metadata
         if: steps.combine.outputs.has_jobs == 'true'
         run: |
@@ -273,17 +250,16 @@ jobs:
             data/jobspy/incremental/latest.completed_at
           retention-days: 14
       - name: Commit incremental snapshot
-        if: steps.combine.outputs.has_jobs == 'true' || steps.fullcombine.outputs.has_full == 'true'
+        if: steps.combine.outputs.has_jobs == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/jobspy/incremental/latest.json data/jobspy/incremental/latest.completed_at data/jobspy/history/index.json
-          git add jobs.json
+          git add jobs.json data/jobspy/incremental/latest.json data/jobspy/incremental/latest.completed_at data/jobspy/history/index.json
           if git diff --cached --quiet; then
             echo "No snapshot changes to commit"
             exit 0
           fi
-          git commit -m "jobspy: publish 24h incremental snapshot"
+          git commit -m "jobspy: publish full company snapshot with expiry states"
           for attempt in 1 2 3 4 5; do
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then
               echo "Pushed snapshot on attempt ${attempt}"
