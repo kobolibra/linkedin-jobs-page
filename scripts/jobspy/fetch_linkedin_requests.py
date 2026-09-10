@@ -86,15 +86,6 @@ def rotate_user_agent(session: requests.Session, attempt: int) -> None:
     session.headers.update({"User-Agent": USER_AGENTS[attempt % len(USER_AGENTS)]})
 
 
-def region_from_location(raw: str) -> str:
-    value = clean(raw).casefold()
-    if any(token in value for token in ("hong kong", "香港", "hong kong sar")):
-        return "HK"
-    if any(token in value for token in ("singapore", "新加坡")):
-        return "SG"
-    return "CN"
-
-
 def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     jobs = []
@@ -113,7 +104,6 @@ def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
         title_tag = card.select_one("h3.base-search-card__title")
         location_tag = card.select_one("span.job-search-card__location")
         time_tag = card.select_one("time.job-search-card__listdate, time.job-search-card__listdate--new")
-        location_raw = location_tag.get_text(" ", strip=True) if location_tag else ""
         jobs.append({
             "source": "jobspy-requests",
             "sourceSite": "linkedin",
@@ -123,9 +113,9 @@ def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
             "companyCanonical": COMPANIES[requested]["canonical"],
             "title": title_tag.get_text(" ", strip=True) if title_tag else "",
             "link": url,
-            "location": region_from_location(location_raw),
-            "locationRaw": location_raw,
-            "city": city_from_location(location_raw),
+            "location": "CN",
+            "locationRaw": location_tag.get_text(" ", strip=True) if location_tag else "",
+            "city": city_from_location(location_tag.get_text(" ", strip=True) if location_tag else ""),
             "datePosted": date_only(time_tag.get("datetime", "") if time_tag else ""),
             "descriptionText": "",
             "descriptionHtml": "",
@@ -175,7 +165,7 @@ def enrich_detail(session: requests.Session, job: dict, timeout: tuple[int, int]
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--company", action="append", choices=list(COMPANIES), help="Repeat for selected companies; default all")
-    parser.add_argument("--location", action="append", default=None, help="Repeat for every discovery region; default China")
+    parser.add_argument("--location", default="China")
     parser.add_argument("--company-id", default=None, help="Override Company ID for a single-company test; otherwise the configured strict ID is used")
     parser.add_argument("--results-per-company", type=int, default=1000)
     parser.add_argument("--hours-old", type=int, default=None)
@@ -200,63 +190,63 @@ def main() -> int:
         "Referer": f"{BASE}/jobs/search",
     })
     all_jobs = []
-    locations = args.location or ["China"]
     status_summary = {}
     for company in args.company or list(COMPANIES):
         fetched_at = datetime.now(timezone.utc).isoformat()
         jobs_by_id = {}
-        location_status = []
-        for location in locations:
-            start = 0
-            blocked = False
-            while len(jobs_by_id) < args.results_per_company and start < 1000:
-                params = {"keywords": company, "location": location, "distance": 50, "pageNum": 0, "start": start}
-                strict_company_id = args.company_id or COMPANIES[company]["company_id"]
-                if strict_company_id:
-                    params["f_C"] = strict_company_id
-                if args.hours_old is not None:
-                    params["f_TPR"] = f"r{args.hours_old * 3600}"
-                LOG.info("%s location=%s search start=%s", company, location, start)
-                response = None
-                last_error = ""
-                for page_attempt in range(1, page_attempts + 1):
-                    rotate_user_agent(session, page_attempt - 1)
-                    try:
-                        response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))
-                        LOG.info("%s location=%s start=%s attempt=%s http=%s bytes=%s", company, location, start, page_attempt, response.status_code, len(response.content))
-                        if response.status_code in {403, 429, 999} or response.status_code >= 500:
-                            last_error = f"HTTP {response.status_code}"
-                            response = None
-                            if page_attempt < page_attempts:
-                                wait = min(180, 15 * page_attempt + random.uniform(1, 8))
-                                time.sleep(wait)
-                                continue
-                            break
-                        response.raise_for_status()
-                        break
-                    except requests.RequestException as exc:
-                        last_error = str(exc)
+        start = 0
+        blocked = False
+        while len(jobs_by_id) < args.results_per_company and start < 1000:
+            params = {"keywords": company, "location": args.location, "distance": 50, "pageNum": 0, "start": start}
+            strict_company_id = args.company_id or COMPANIES[company]["company_id"]
+            if strict_company_id:
+                params["f_C"] = strict_company_id
+            if args.hours_old is not None:
+                params["f_TPR"] = f"r{args.hours_old * 3600}"
+            LOG.info("%s search start=%s", company, start)
+            response = None
+            last_error = ""
+            for page_attempt in range(1, page_attempts + 1):
+                rotate_user_agent(session, page_attempt - 1)
+                try:
+                    response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))
+                    LOG.info("%s start=%s attempt=%s http=%s bytes=%s", company, start, page_attempt, response.status_code, len(response.content))
+                    if response.status_code in {403, 429, 999} or response.status_code >= 500:
+                        last_error = f"HTTP {response.status_code}"
                         response = None
                         if page_attempt < page_attempts:
-                            time.sleep(min(180, 15 * page_attempt + random.uniform(1, 8)))
-                if response is None:
-                    LOG.error("%s location=%s search failed at start=%s: %s", company, location, start, last_error)
-                    blocked = start == 0
+                            wait = min(180, 15 * page_attempt + random.uniform(1, 8))
+                            LOG.warning("%s throttled at start=%s (%s); retry %s/%s in %.1fs", company, start, last_error, page_attempt + 1, page_attempts, wait)
+                            time.sleep(wait)
+                            continue
+                        break
+                    response.raise_for_status()
                     break
-                page_jobs = parse_search(response.text, company, fetched_at)
-                if not page_jobs:
-                    break
-                for job in page_jobs:
-                    jobs_by_id.setdefault(job["sourceJobId"], job)
-                LOG.info("%s location=%s start=%s cards=%s accepted_total=%s", company, location, start, len(page_jobs), len(jobs_by_id))
-                start += 10
-                if len(jobs_by_id) < args.results_per_company:
-                    time.sleep(random.uniform(args.delay_min, args.delay_max))
-            location_status.append((location, not blocked))
+                except requests.RequestException as exc:
+                    last_error = str(exc)
+                    response = None
+                    if page_attempt < page_attempts:
+                        wait = min(180, 15 * page_attempt + random.uniform(1, 8))
+                        LOG.warning("%s page failed at start=%s; retry %s/%s in %.1fs: %s", company, start, page_attempt + 1, page_attempts, wait, exc)
+                        time.sleep(wait)
+            if response is None:
+                LOG.error("%s search failed at start=%s after %s attempts: %s", company, start, page_attempts, last_error)
+                blocked = start == 0
+                status_summary[company] = f"failed@start={start}: {last_error}"
+                break
+            page_jobs = parse_search(response.text, company, fetched_at)
+            if not page_jobs:
+                break
+            for job in page_jobs:
+                jobs_by_id.setdefault(job["sourceJobId"], job)
+            LOG.info("%s start=%s cards=%s accepted_total=%s", company, start, len(page_jobs), len(jobs_by_id))
+            start += 10
+            if len(jobs_by_id) < args.results_per_company:
+                time.sleep(random.uniform(args.delay_min, args.delay_max))
         company_jobs = list(jobs_by_id.values())[: args.results_per_company]
-        status_summary.setdefault(company, f"ok: {len(company_jobs)} jobs" if company_jobs and all(ok for _, ok in location_status) else f"failed: {location_status}")
-        if not company_jobs:
-            LOG.error("%s produced no jobs across discovery locations", company)
+        status_summary.setdefault(company, f"ok: {len(company_jobs)} jobs" if company_jobs else "empty")
+        if blocked and not company_jobs:
+            LOG.error("%s produced no jobs because the first search page was blocked", company)
         if args.fetch_description:
             for index, job in enumerate(company_jobs, 1):
                 LOG.info("%s detail %s/%s %s", company, index, len(company_jobs), job["sourceJobId"])
