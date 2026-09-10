@@ -86,6 +86,12 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
                       "detailFetchedAt", "detailError"):
             if item.get(field) not in (None, ""):
                 merged[field] = item[field]
+        # JobSpy is a lifecycle/status observer, not the feed that defines when
+        # a job was pushed to the site.  Never let a snapshot row carrying an
+        # incidental pushTime/firstSeen overwrite the canonical existing values.
+        for field in ("pushTime", "firstSeen"):
+            if old.get(field) not in (None, ""):
+                merged[field] = old[field]
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
         merged["jobStatus"] = "active"
         merged["lastSeenAt"] = observed_at
