@@ -397,3 +397,18 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
 [data-theme="dark"] #regions .seg[data-region="OTHER"][aria-selected="true"] {
   color:#132333 !important;
 }
+
+/* Explicit lifecycle state: expired jobs remain searchable and readable, but are visibly secondary. */
+.job.expired { opacity:.66; }
+.job.expired .job-title { color:var(--muted); text-decoration:line-through; text-decoration-thickness:1px; }
+.job.expired .mono { filter:grayscale(.75); }
+.status-expired {
+  display:inline-flex; align-items:center; height:18px; padding:0 7px; border:1px solid color-mix(in srgb, var(--muted) 42%, transparent);
+  border-radius:999px; color:var(--muted); background:color-mix(in srgb, var(--muted) 9%, transparent);
+  font-size:10px; letter-spacing:.01em; white-space:nowrap;
+}
+@media (max-width:720px) {
+  .status-expired { height:17px; padding:0 5px; font-size:9px; }
+  .job.expired .job-title { text-decoration-thickness:1px; }
+}
+[data-theme="dark"] .job.expired { opacity:.72; }
