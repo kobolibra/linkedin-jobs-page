@@ -117,7 +117,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-detail-line { display:contents; }
 .job-right-mobile { display:none; }
 
-.job-sub { flex:1 1 auto;min-width:0;font-size:12.5px;color:var(--ink-soft);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.job-sub { font-size:12.5px;color:var(--ink-soft);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .company-name { min-width:0; }
 .job-sub-link { cursor:pointer; }
 .job-sub-link:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
