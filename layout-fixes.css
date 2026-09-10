@@ -11,3 +11,4 @@
   .job-jd summary { order:5; }
   .job-jd-text { order:7; }
 }
+.bubble-position-leader { stroke:#9f9d96;stroke-width:.55;stroke-dasharray:1 2;opacity:.34;vector-effect:non-scaling-stroke;pointer-events:none; }
