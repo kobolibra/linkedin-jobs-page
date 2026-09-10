@@ -85,6 +85,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 [data-theme="dark"] .day-new { color:var(--gold); }
 
 /* ---------- Job row ---------- */
+/* Company metadata row keeps the lifecycle badge on its own second-line right edge. */
 .job {
   contain:layout style;
   display:grid;
