@@ -408,10 +408,8 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
   border-radius:999px; color:var(--muted); background:color-mix(in srgb, var(--muted) 9%, transparent);
   font-size:10px; letter-spacing:.01em; white-space:nowrap;
 }
-.status-expired-company { position:absolute;right:0;top:0;margin:0;flex:0 0 auto; }
-@media (min-width:721px) {
-  .job-sub:has(.status-expired-company) .company-name { padding-right:118px; }
-}
+.job-expired-line { display:flex;justify-content:flex-end;align-items:center;width:100%;min-height:18px;margin-top:2px; }
+.status-expired-company { flex:0 0 auto; }
 @media (max-width:720px) {
   .status-expired { height:17px; padding:0 5px; font-size:9px; }
   .status-expired-company { display:none; }
