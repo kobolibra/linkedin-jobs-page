@@ -1,0 +1,33 @@
+name: Restore canonical firstSeen once
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/restore-first-seen-once.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Restore immutable firstSeen
+        run: |
+          git show 80303549cec3822e1b84ad4ab9466c6caa553af4:jobs.json > /tmp/jobs-before-lifecycle.json
+          python scripts/jobspy/restore_first_seen.py --current jobs.json --baseline /tmp/jobs-before-lifecycle.json --output /tmp/jobs.repaired.json
+          mv /tmp/jobs.repaired.json jobs.json
+      - name: Commit restored data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add jobs.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: restore immutable firstSeen from pre-lifecycle baseline"
+          git push origin HEAD:main
