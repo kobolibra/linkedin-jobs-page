@@ -1,0 +1,13 @@
+/* Keep company, city, JD toggle and lifecycle state on one metadata line. */
+@media (min-width:721px) {
+  .job-meta-line { display:flex;align-items:center;flex-wrap:nowrap;column-gap:8px;row-gap:0;min-width:0; }
+  .job-sub { flex:0 1 auto;min-width:0;max-width:min(46%,360px);order:1; }
+  .job-city { order:2; }
+  .job-jd summary { order:3; }
+  .status-expired-company { position:static;inset:auto;order:4;flex:0 0 auto;margin:0 0 0 2px; }
+}
+@media (max-width:720px) {
+  .status-expired-company { display:inline-flex;position:static;inset:auto;order:6;flex:0 0 auto;margin-top:5px; }
+  .job-jd summary { order:5; }
+  .job-jd-text { order:7; }
+}
