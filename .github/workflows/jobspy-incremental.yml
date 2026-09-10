@@ -229,9 +229,16 @@ jobs:
       - name: Reconcile full snapshots and mark missing jobs expired
         if: steps.combine.outputs.has_jobs == 'true'
         run: |
+          python scripts/jobspy/verify_missing_job_status.py \
+            --existing jobs.json \
+            --snapshot data/jobspy/incremental/search_combined.json \
+            --output data/jobspy/incremental/missing_verification.json \
+            --workers 8 \
+            --timeout 15
           python scripts/jobspy/reconcile_full_snapshots.py \
             --existing jobs.json \
             --snapshot data/jobspy/incremental/search_combined.json \
+            --verification data/jobspy/incremental/missing_verification.json \
             --output jobs.json
       - name: Publish immutable run metadata
         if: steps.combine.outputs.has_jobs == 'true'
