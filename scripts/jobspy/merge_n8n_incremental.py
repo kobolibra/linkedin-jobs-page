@@ -9,6 +9,7 @@ COMPANY_ALIASES = {
     "socgen": "societe generale",
     "法国兴业银行(中国)有限公司": "societe generale",
     "渣打环球商业服务有限公司": "standard chartered",
+    "jpmorganchase": "jpmorgan chase",
     "摩根大通亚洲咨询(北京)有限公司": "jpmorgan chase",
 }
 TARGET_COMPANIES = {
