@@ -408,7 +408,7 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
   border-radius:999px; color:var(--muted); background:color-mix(in srgb, var(--muted) 9%, transparent);
   font-size:10px; letter-spacing:.01em; white-space:nowrap;
 }
-.status-expired-company { position:absolute;inset-inline-end:0;top:38px;margin:0;z-index:2; }
+.status-expired-company { position:absolute;inset-inline-end:8px;top:41px;margin:0;z-index:2; }
 @media (max-width:720px) {
   .status-expired { height:17px; padding:0 5px; font-size:9px; }
   .status-expired-company { display:none; }
