@@ -412,3 +412,4 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
   .job.expired .job-title { text-decoration-thickness:1px; }
 }
 [data-theme="dark"] .job.expired { opacity:.72; }
+.count-muted { color:var(--ink-faint); font-size:.9em; font-weight:400; }

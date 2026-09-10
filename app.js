@@ -108,6 +108,7 @@ const jobId=link=>{if(!link)return"";const path=String(link).split(/[?#]/)[0];co
 const keyOf=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const dayKey=iso=>{const d=new Date(iso);return isNaN(d)?"—":keyOf(d);};
 const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"});};
+const isActiveJob=job=>job?.jobStatus!=="expired";
 const seenAt=j=>j.firstSeen||j.pushTime;
 const placeAt=j=>j.pushTime||j.firstSeen;
 const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.max(0,Math.floor((Date.now()-d)/864e5));};
@@ -227,7 +228,8 @@ const keepLatestSameCityTitle=data=>{
     const key=jobGroupKey(job);
     if(!key){others.push(job);return;}
     const time=Date.parse(job.pushTime||job.firstSeen||"")||0,previous=selected.get(key);
-    if(!previous||time>previous.time)selected.set(key,{job,time});
+    const shouldReplace=!previous||(isActiveJob(job)&&!isActiveJob(previous.job))||(isActiveJob(job)===isActiveJob(previous.job)&&time>previous.time);
+    if(shouldReplace)selected.set(key,{job,time});
   });
   return [...others,...[...selected.values()].map(entry=>entry.job)];
 };
@@ -235,7 +237,7 @@ function renderTop50(rows,mode="all"){
   const host=document.getElementById('top50');
   if(!host)return;
   const now=Date.now();
-  const scoped=mode==="all"?rows:rows.filter(j=>norm(j.location)===mode);
+  const scoped=(mode==="all"?rows:rows.filter(j=>norm(j.location)===mode)).filter(isActiveJob);
   const counts=new Map();
   scoped.forEach(j=>{
     const name=canonicalCompany(j.company||'未知机构')||'未知机构';
@@ -342,36 +344,38 @@ jobsDataPromise
     if(!Array.isArray(data))data=[];
     // Use the deduplicated dataset as the single source for rendering and every statistic.
     data=keepLatestSameCityTitle(data);
+    const activeData=data.filter(isActiveJob);
     data.forEach(job=>{
       const id=jobId(job.link)||(job.title+"|"+job.company);
       const text=String(job.descriptionText||job.description||"").trim();
       if(id&&text)jdById.set(id,{html:job.descriptionHtml,text});
     });
     const companyRegionCount=new Map();
-    data.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
+    activeData.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
     jobsEl.innerHTML="";
-    animNum(document.getElementById("stat-total"),data.length);
+    animNum(document.getElementById("stat-total"),activeData.length);
     const companies=[...new Set(data.map(j=>canonicalCompany(j.company)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
-    animNum(document.getElementById("stat-comp"),companies.length);
-    const lastUpd=data.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
+    const activeCompanies=new Set(activeData.map(j=>canonicalCompany(j.company)).filter(Boolean));
+    animNum(document.getElementById("stat-comp"),activeCompanies.size);
+    const lastUpd=activeData.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
     const lastUpdDate=new Date(lastUpd);
     const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
     document.getElementById("stat-updated").textContent=lastUpdText;
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
-    const rc={CN:0,HK:0,SG:0,OTHER:0};data.forEach(j=>rc[norm(j.location)]++);
+    const rc={CN:0,HK:0,SG:0,OTHER:0};activeData.forEach(j=>rc[norm(j.location)]++);
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
     const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
-    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,data.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
+    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,activeData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
-    const tMin=Math.min(...allTimes),tMax=Math.max(...allTimes),tSpan=Math.max(1,tMax-tMin);
+    const tMin=allTimes.length?Math.min(...allTimes):Date.now(),tMax=allTimes.length?Math.max(...allTimes):tMin,tSpan=Math.max(1,tMax-tMin);
     const TW=520,TH=126,left=48,right=48,top=27,rowGap=27,plotW=TW-left-right,bins=40,cellW=plotW/bins;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));bucketCounts[ri][bi]++;}));
     const maxBucket=Math.max(1,...bucketCounts.flat());
     const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();monthSegments.push('<line class="region-month-boundary" x1="'+x1.toFixed(1)+'" y1="'+(TH-13)+'" x2="'+x1.toFixed(1)+'" y2="'+(TH-7)+'"/><text class="region-month-label'+(segEnd===tMax?' region-month-current':'')+'" x="'+((x1+x2)/2).toFixed(1)+'" y="'+(TH-5)+'">'+label+'</text>');}monthSegments.push('<line class="region-month-boundary" x1="'+(left+plotW).toFixed(1)+'" y1="'+(TH-13)+'" x2="'+(left+plotW).toFixed(1)+'" y2="'+(TH-7)+'"/>');const axisTicks=monthSegments.join('');
-    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=data.length?Math.round(rc[k]/data.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,ratio=n/rowMax,level=n===0?0:ratio<=0.12?1:ratio<=0.32?2:ratio<=0.62?3:4,alpha=[0.18,0.38,0.62,0.82,1][level];const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density density-'+level+' '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-8)+'" width="'+w.toFixed(2)+'" height="16" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<text class="region-time-name" x="0" y="'+(y+1)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y-3)+'">'+rc[k].toLocaleString()+'</text><text class="region-time-pct" x="'+(TW-1)+'" y="'+(y+8)+'">'+pct+'%</text>'+cells;}).join('');
+    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=activeData.length?Math.round(rc[k]/activeData.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,ratio=n/rowMax,level=n===0?0:ratio<=0.12?1:ratio<=0.32?2:ratio<=0.62?3:4,alpha=[0.18,0.38,0.62,0.82,1][level];const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density density-'+level+' '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-8)+'" width="'+w.toFixed(2)+'" height="16" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<text class="region-time-name" x="0" y="'+(y+1)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y-3)+'">'+rc[k].toLocaleString()+'</text><text class="region-time-pct" x="'+(TW-1)+'" y="'+(y+8)+'">'+pct+'%</text>'+cells;}).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="按首次发现日期统计的三条地区横向时间分布；色带深浅表示时间窗口内职位密度">'+axisTicks+rows+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -381,7 +385,7 @@ jobsDataPromise
     if(distNote)distNote.textContent='统计口径为首次抓取日期：'+densityStart+'–'+densityEnd+'（共 '+densityWindowDays+' 天）';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
-    const rcounts={};data.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
+    const rcounts={};activeData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=new Date(),days=[];
     for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
@@ -395,7 +399,7 @@ jobsDataPromise
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
-    top50Rows=data;
+    top50Rows=activeData;
     renderTop50(top50Rows,top50Mode);
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
@@ -407,11 +411,11 @@ jobsDataPromise
     for(const[key,g]of renderGroups){
       if(!first)await new Promise(resolve=>setTimeout(resolve,0));
       const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";daySections.push(sec);
-      const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.length+' 个职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
+      const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
         const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?"已失效 · "+dayKey(job.expiredAt):"";
-        const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||1:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
+        const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.03,.45)+'s"':'';
         const cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
         const jdText=String(job.descriptionText||job.description||'').trim();
@@ -454,21 +458,21 @@ function apply(){
   daySections.forEach(sec=>{sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;});
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
-  let visible=0;
+  let visible=0,displayed=0;
   const coAges=[],coRegions={};
   daySections.forEach(sec=>{
-    let shown=0;
+    let shown=0,shownActive=0;
     sec._jobCards.forEach(card=>{
       const age=card.dataset.age===""?null:+card.dataset.age;
-      /* base：除“发布时间”之外的全部筛选条件。机构统计以 base 为样本，
+      /* base：除“发布时间”之外的全部筛选条件。机构统计以 active base 为样本，
          因此选中某一时间区间时，分布图仍然完整，不会塌缩为单根柱子。 */
       const base=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
       const ok=base&&ageMatch(ageSel,age);
-      if(base&&comp!=="all"&&age!=null){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
-      card.classList.toggle("hidden",!ok);card.style.display=ok?"":"none";if(ok)shown++;
+      if(base&&comp!=="all"&&age!=null&&card.dataset.status!=="expired"){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
+      card.classList.toggle("hidden",!ok);card.style.display=ok?"":"none";if(ok){shown++;if(card.dataset.status!=="expired")shownActive++;}
     });
-    const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shown+" 个职位";
-    sec.style.display=shown?"":"none";sec.style.height="auto";sec.style.minHeight="0";visible+=shown;
+    const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shownActive+" 个有效职位";
+    sec.style.display=shown?"":"none";sec.style.height="auto";sec.style.minHeight="0";visible+=shownActive;displayed+=shown;
   });
   const visibleDays=new Set();
   daySections.forEach(sec=>{
@@ -482,8 +486,8 @@ function apply(){
       sec.dataset.filterHead="true";sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+esc(count)+'</span></div>');
     }
   });
-  countEl.innerHTML="显示 <b>"+visible+"</b> 个职位";
-  emptyEl.classList.toggle("show",visible===0);
+  countEl.innerHTML="有效 <b>"+visible+"</b> 个职位"+(displayed>visible?' <span class="count-muted">（含 '+(displayed-visible)+' 个已失效）</span>':'');
+  emptyEl.classList.toggle("show",displayed===0);
   if(typeof renderCo==="function")renderCo(comp==="all"?null:comp,coAges,coRegions,ageSel);
   document.dispatchEvent(new CustomEvent("jobsfilterchange"));
 }
