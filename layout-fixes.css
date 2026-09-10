@@ -1,10 +1,21 @@
 /* Restore the pre-lifecycle metadata row: company · count, city and the JD arrow stay adjacent on the
-   left, and the lifecycle badge is right-aligned on that same line. No flex `order` is used here:
-   `.job-jd` relies on display:contents, so any order value moves the JD arrow out of sequence. */
+   left. No flex `order` is used here: `.job-jd` relies on display:contents, so any order value moves
+   the JD arrow out of sequence.
+   The lifecycle badge is absolutely positioned by row-fixes.js so its right edge matches the
+   star/ban icons (column 3 of the `.job` grid), while staying vertically on the metadata line. */
 @media (min-width:721px) {
-  .job-meta-line { align-items:center;column-gap:10px;row-gap:4px; }
-  .job-sub { flex:0 1 auto;min-width:0;max-width:min(58%,430px); }
-  .status-expired-company { position:static;inset:auto;flex:0 0 auto;margin:0 0 0 auto; }
+  .job-meta-line { align-items:center;column-gap:10px;row-gap:4px;padding-right:0; }
+  .job-sub { flex:0 1 auto;min-width:0;max-width:min(52%,400px); }
+  .status-expired-company {
+    position:absolute;
+    right:8px;
+    inset-inline-start:auto;
+    top:41px;
+    margin:0;
+    flex:0 0 auto;
+    z-index:2;
+    pointer-events:none;
+  }
 }
 @media (max-width:720px) {
   .status-expired-company { display:none; }
