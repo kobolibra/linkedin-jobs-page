@@ -263,8 +263,8 @@ function renderTop50(rows,mode="all"){
   const y=v=>plotBottom-(plotBottom-plotTop)*(v/yDomain);
   const xTicks=Array.from({length:xDomain/10+1},(_,i)=>i*10);
   const yTicks=Array.from({length:yDomain/10+1},(_,i)=>i*10);
-  const grid=xTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
-    yTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-10)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
+  const grid=xTicks.map(v=>(v===xDomain?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
+    yTicks.map(v=>(v===yDomain?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-10)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
   const pointData=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
