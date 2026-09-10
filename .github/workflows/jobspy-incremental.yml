@@ -233,6 +233,9 @@ jobs:
             --existing jobs.json \
             --snapshot data/jobspy/incremental/search_combined.json \
             --output jobs.json
+      - name: Compact browser jobs payload
+        if: steps.combine.outputs.has_jobs == 'true'
+        run: python scripts/jobspy/compact_published_jobs.py
       - name: Publish immutable run metadata
         if: steps.combine.outputs.has_jobs == 'true'
         run: |
