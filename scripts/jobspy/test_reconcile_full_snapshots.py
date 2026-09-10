@@ -58,6 +58,14 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(second["jobs"][0]["jobStatus"], "expired")
         self.assertEqual(second["jobs"][0]["missingSnapshotCount"], 2)
 
+    def test_detail_page_active_overrides_search_snapshot_miss(self):
+        existing = {"jobs": [{"sourceJobId": "li-100000022", "company": "Acme", "companyCanonical": "acme", "firstSeen": "2026-09-01T00:00:00+00:00", "jobStatus": "active", "missingSnapshotCount": 1}]}
+        snapshot = {"jobs": [], "statusSummary": {"Acme": "ok: 53 jobs"}, "companies": {"Acme": "ok: 53 jobs"}}
+        verification = {"active": [{"sourceJobId": "100000022", "reason": "detail_page_open"}], "closed": []}
+        result = reconcile(existing, snapshot, "2026-09-10T02:30:00+00:00", verification)
+        self.assertEqual(result["jobs"][0]["jobStatus"], "active")
+        self.assertEqual(result["jobs"][0]["lastVerifiedStatus"], "active_detail_page")
+
 
 if __name__ == "__main__":
     unittest.main()

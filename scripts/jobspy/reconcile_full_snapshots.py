@@ -48,13 +48,16 @@ def parse_time(value):
         return None
 
 
-def reconcile(existing_doc, snapshot_doc, observed_at=None):
+def reconcile(existing_doc, snapshot_doc, observed_at=None, verification_doc=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
     incoming = [dict(x) for x in rows(snapshot_doc)]
     observed_at = now_iso(observed_at)
     by_id = {jid(x): x for x in existing if jid(x)}
     reactivated = 0
     snapshot_ids = {jid(x) for x in incoming if jid(x)}
+    verification = verification_doc or {}
+    verified_active = {str(x.get("sourceJobId")) for x in verification.get("active", [])}
+    verified_closed = {str(x.get("sourceJobId")) for x in verification.get("closed", [])}
     successful = {
         str(k).casefold(): v
         for k, v in (snapshot_doc.get("statusSummary", {}) if isinstance(snapshot_doc, dict) else {}).items()
@@ -97,12 +100,24 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         if company not in observed_companies or company not in successful:
             continue
         if key not in snapshot_ids:
+            if key in verified_active:
+                item["jobStatus"] = "active"
+                item["lastVerifiedAt"] = observed_at
+                item["lastVerifiedStatus"] = "active_detail_page"
+                item["missingSnapshotCount"] = 0
+                item.pop("expiredAt", None)
+                item.pop("expiredReason", None)
+                continue
+            if key in verified_closed:
+                item["lastVerifiedAt"] = observed_at
+                item["lastVerifiedStatus"] = "closed_detail_page"
+                item["missingSnapshotCount"] = max(2, int(item.get("missingSnapshotCount") or 0))
             first_seen = parse_time(item.get("firstSeen") or item.get("pushTime"))
             age_hours = ((parse_time(observed_at) or datetime.now(timezone.utc)) - first_seen).total_seconds() / 3600 if first_seen else None
             # LinkedIn's guest search can omit a listing intermittently. A newly
             # discovered job is especially vulnerable because it may be outside
             # the current ranking window; never kill it during its first 24h.
-            if age_hours is not None and age_hours < 24:
+            if key not in verified_closed and age_hours is not None and age_hours < 24:
                 item["jobStatus"] = "active"
                 item["missingSnapshotCount"] = 0
                 item.pop("expiredAt", None)
@@ -155,10 +170,12 @@ def main():
     parser.add_argument("--snapshot", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--observed-at")
+    parser.add_argument("--verification", type=Path)
     args = parser.parse_args()
     existing = json.loads(args.existing.read_text(encoding="utf-8"))
     snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
-    result = reconcile(existing, snapshot, args.observed_at)
+    verification = json.loads(args.verification.read_text(encoding="utf-8")) if args.verification else None
+    result = reconcile(existing, snapshot, args.observed_at, verification)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result["jobspySnapshot"], ensure_ascii=False, indent=2))
 
