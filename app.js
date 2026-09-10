@@ -461,6 +461,7 @@ function apply(){
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
   let visible=0,displayed=0;
+  const dayTotals=new Map();
   const coAges=[],coRegions={};
   daySections.forEach(sec=>{
     let shown=0,shownActive=0;
@@ -473,7 +474,9 @@ function apply(){
       if(base&&comp!=="all"&&age!=null&&card.dataset.status!=="expired"){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
       card.classList.toggle("hidden",!ok);card.style.display=ok?"":"none";if(ok){shown++;if(card.dataset.status!=="expired")shownActive++;}
     });
-    const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=shownActive+" 个有效职位";
+    const total=dayTotals.get(sec.dataset.dayKey)||{shown:0,active:0};
+    total.shown+=shown;total.active+=shownActive;dayTotals.set(sec.dataset.dayKey,total);
+    sec._filteredShown=shown;
     sec.style.display=shown?"":"none";sec.style.height="auto";sec.style.minHeight="0";visible+=shownActive;displayed+=shown;
   });
   const visibleDays=new Set();
@@ -482,11 +485,11 @@ function apply(){
     const key=sec.dataset.dayKey;
     if(!shown||visibleDays.has(key))return;
     visibleDays.add(key);
+    const dayTotal=dayTotals.get(key)||{active:0};
     if(!sec.querySelector('.day-head')){
-      const c=sec.querySelector('[data-role="daycount"]');
-      const count=c?c.textContent:"";
-      sec.dataset.filterHead="true";sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+esc(count)+'</span></div>');
+      sec.dataset.filterHead="true";sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+dayTotal.active+' 个有效职位</span></div>');
     }
+    const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=dayTotal.active+" 个有效职位";
   });
   countEl.innerHTML="有效 <b>"+visible+"</b> 个职位";
   emptyEl.classList.toggle("show",displayed===0);
