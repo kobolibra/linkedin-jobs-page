@@ -3,7 +3,7 @@
 
 GitHub is the sole publisher of jobs.json. n8n writes only the RSS staging
 snapshot. For an existing LinkedIn ID, RSS re-observation advances pushTime and
-reactivates the job while firstSeen remains immutable.
+reactivates the job while firstSeen and canonical source ownership stay stable.
 """
 import argparse
 import json
@@ -57,7 +57,7 @@ def merge_documents(baseline, batch_doc):
             current = rows[by_key[key]]
             merged = dict(current)
             for field, value in incoming.items():
-                if field == "firstSeen" or not nonempty(value):
+                if field in {"firstSeen", "source"} or not nonempty(value):
                     continue
                 merged[field] = value
             if nonempty(current.get("firstSeen")):
