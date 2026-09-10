@@ -117,8 +117,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-detail-line { display:contents; }
 .job-right-mobile { display:none; }
 
-.job-sub { flex:1 1 auto;min-width:0;font-size:12.5px;color:var(--ink-soft);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.company-name { min-width:0; }
+.job-sub { font-size:12.5px;color:var(--ink-soft);margin-top:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 .job-sub-link { cursor:pointer; }
 .job-sub-link:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .job-city { flex:0 0 auto;color:var(--ink-faint);font-size:12px;white-space:nowrap; }
@@ -399,19 +398,7 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
   color:#132333 !important;
 }
 
-/* Explicit lifecycle state: expired jobs remain searchable and readable, but are visibly secondary. */
-.job.expired { opacity:.66; }
-.job.expired .job-title { color:var(--muted); text-decoration:line-through; text-decoration-thickness:1px; }
-.job.expired .mono { filter:grayscale(.75); }
-.status-expired {
-  display:inline-flex; align-items:center; height:18px; padding:0 7px; border:1px solid color-mix(in srgb, var(--muted) 42%, transparent);
-  border-radius:999px; color:var(--muted); background:color-mix(in srgb, var(--muted) 9%, transparent);
-  font-size:10px; letter-spacing:.01em; white-space:nowrap;
-}
-.status-expired-company { float:right;margin-left:10px; }
-@media (max-width:720px) {
-  .status-expired { height:17px; padding:0 5px; font-size:9px; }
-  .status-expired-company { display:none; }
-  .job.expired .job-title { text-decoration-thickness:1px; }
-}
-[data-theme="dark"] .job.expired { opacity:.72; }
+/* Lifecycle marker only: confined to the existing company text row. */
+.status-expired-company { float:right; margin-left:12px; color:var(--ink-faint); font-family:var(--mono); font-size:10px; font-weight:500; white-space:nowrap; }
+.job.expired .job-title { color:var(--ink-faint); text-decoration:line-through; text-decoration-thickness:1px; }
+@media (max-width:760px) { .status-expired-company { display:none; } }
