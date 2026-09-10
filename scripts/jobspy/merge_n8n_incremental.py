@@ -55,11 +55,12 @@ def normalize_company(value):
     return aliases.get(compact, company)
 
 
-def normalize_title(value, company=""):
+def normalize_title(value, company="", strip_chinese=False):
     title = str(value or "")
     title = re.sub(r"^\s*(?:[a-z]{1,5}[-_]?)?\d{6,}\b[\s:|–—-]*", " ", title, flags=re.I)
     title = re.sub(r"\bID\s*\d{6}\b", " ", title, flags=re.I)
-    tokens = re.findall(r"[a-z0-9]+|[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]+", title.casefold(), flags=re.I)
+    pattern = r"[a-z0-9]+" if strip_chinese else r"[a-z0-9]+|[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]+"
+    tokens = re.findall(pattern, title.casefold(), flags=re.I)
     expanded = []
     for token in tokens:
         expanded.extend(TITLE_TOKEN_ALIASES.get(token, [token]))
@@ -89,20 +90,27 @@ def apply_salary_snapshot(rows, batch_doc):
     salary_rows = batch_doc.get("salaryRows") if isinstance(batch_doc, dict) else None
     if not isinstance(salary_rows, list) or not salary_rows:
         return 0, 0
-    salary_by_key = {}
+    salary_by_full_key = {}
+    salary_by_english_key = {}
     for row in salary_rows:
         company = normalize_company(row.get("Company"))
         title = normalize_title(row.get("Title"), company)
+        english_title = normalize_title(row.get("Title"), company, strip_chinese=True)
         salary = str(row.get("Location") or "").strip()
-        if company in TARGET_COMPANIES and title and salary:
-            salary_by_key[f"{company}|{title}"] = salary
+        if company in TARGET_COMPANIES and salary:
+            if title:
+                salary_by_full_key[f"{company}|{title}"] = salary
+            if english_title:
+                salary_by_english_key[f"{company}|{english_title}"] = salary
     matches = 0
     preserved = 0
     for job in rows:
         company = normalize_company(job.get("company"))
         if str(job.get("location") or "").upper() != "CN" or company not in TARGET_COMPANIES:
             continue
-        salary = salary_by_key.get(f"{company}|{normalize_title(job.get('title'), company)}")
+        full_key = f"{company}|{normalize_title(job.get('title'), company)}"
+        english_key = f"{company}|{normalize_title(job.get('title'), company, strip_chinese=True)}"
+        salary = salary_by_full_key.get(full_key) or salary_by_english_key.get(english_key)
         if salary:
             job["salary"] = salary
             matches += 1
