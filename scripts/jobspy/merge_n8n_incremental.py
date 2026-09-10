@@ -116,7 +116,7 @@ def merge_documents(baseline, batch_doc):
             current = rows[by_key[key]]
             merged = dict(current)
             for field, value in incoming.items():
-                if field in {"firstSeen", "source"} or not nonempty(value):
+                if field in {"firstSeen", "pushTime", "source"} or not nonempty(value):
                     continue
                 merged[field] = value
             if nonempty(current.get("firstSeen")):
@@ -151,7 +151,7 @@ def merge_documents(baseline, batch_doc):
         "mergedAt": observed_at, "batchJobs": len(batch), "mergedJobs": len(rows),
         "added": added, "updated": updated, "reactivated": reactivated,
         "salaryMatches": salary_matches, "source": "n8n RSS staging snapshot",
-        "firstSeenPolicy": "immutable-for-existing-id", "pushTimePolicy": "RSS-repost-may-advance",
+        "firstSeenPolicy": "immutable-for-existing-id", "pushTimePolicy": "immutable-for-existing-id",
     }
     return result
 
