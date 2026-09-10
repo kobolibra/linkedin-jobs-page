@@ -1,0 +1,67 @@
+name: Restore canonical source ownership once
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/restore-rss-source-once.yml]
+
+concurrency:
+  group: jobspy-incremental
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Restore source and verify firstSeen
+        run: |
+          set -euo pipefail
+          git show 32d4d3faf00fb0702dcb9ddee7349c19074161fc:jobs.json > /tmp/before-rss.json
+          python - <<'PY'
+          import json,re
+          def key(j):
+              raw=str(j.get('sourceJobId') or j.get('link') or '')
+              m=re.search(r'(?:li-|ln:)?(\d{7,})',raw)
+              return m.group(1) if m else raw
+          before=json.load(open('/tmp/before-rss.json'))
+          current=json.load(open('jobs.json'))
+          assert isinstance(before,dict) and isinstance(before.get('jobs'),list)
+          assert isinstance(current,dict) and isinstance(current.get('jobs'),list)
+          previous={key(j):j for j in before['jobs'] if key(j)}
+          mismatches=[]
+          restored=0
+          for row in current['jobs']:
+              old=previous.get(key(row))
+              if not old: continue
+              if old.get('firstSeen') != row.get('firstSeen'):
+                  mismatches.append(key(row))
+              if 'source' in old:
+                  if row.get('source') != old.get('source'): restored += 1
+                  row['source']=old['source']
+              else:
+                  if 'source' in row: restored += 1
+                  row.pop('source',None)
+          assert not mismatches, f'firstSeen changed for {len(mismatches)} existing IDs'
+          assert current.get('count') == len(current['jobs'])
+          json.dump(current,open('jobs.json','w'),ensure_ascii=False,separators=(',',':'))
+          open('jobs.json','a').write('\n')
+          print({'existingIdsChecked':len(previous),'sourceFieldsRestored':restored,'jobs':len(current['jobs'])})
+          PY
+          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py
+      - name: Commit restoration
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add jobs.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "fix: restore canonical source ownership after RSS migration"
+          git push
