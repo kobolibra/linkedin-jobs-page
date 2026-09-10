@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-"""Merge an n8n incremental array into the last full jobs snapshot.
-
-n8n's six-hour feed is incremental; it must never replace the lifecycle snapshot.
-This script preserves history/details/expired records and only upserts rows present
-in the n8n batch. Expiry decisions remain exclusively in the CN JobSpy full-snapshot
-workflow.
-"""
+"""Merge an n8n incremental array into the lifecycle snapshot without URL duplicates."""
 import argparse
 import json
+import re
 from pathlib import Path
 
 
 def job_key(job):
-    return str(job.get("sourceJobId") or job.get("link") or "").strip()
+    raw = str(job.get("sourceJobId") or job.get("link") or "").strip()
+    match = re.search(r"(?:li-|ln:)?(\d{7,})", raw)
+    return match.group(1) if match else raw
 
 
 def main():
@@ -37,16 +34,19 @@ def main():
             current = rows[by_key[key]]
             merged = dict(current)
             merged.update(incoming)
+            merged.setdefault("sourceJobId", current.get("sourceJobId") or f"li-{key}")
             merged["jobStatus"] = "active"
             merged.pop("expiredAt", None)
             rows[by_key[key]] = merged
         else:
             merged = dict(incoming)
+            merged.setdefault("sourceJobId", f"li-{key}")
             merged["jobStatus"] = "active"
             rows.append(merged)
             by_key[key] = len(rows) - 1
     result = dict(baseline)
     result["jobs"] = rows
+    result["count"] = len(rows)
     result["n8nIncrementalMerge"] = {
         "batchJobs": len(batch),
         "mergedJobs": len(rows),
