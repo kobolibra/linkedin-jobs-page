@@ -30,6 +30,15 @@ def company_key(item):
     return str(item.get("companyCanonical") or item.get("requestedCompany") or item.get("company") or "").strip().casefold()
 
 
+def location_key(item):
+    value = str(item.get("location") or "").strip().casefold()
+    if value in {"hk", "hong kong", "hong kong sar"}:
+        return "HK"
+    if value in {"sg", "singapore"}:
+        return "SG"
+    return "CN"
+
+
 def now_iso(value=None):
     return value or datetime.now(timezone.utc).isoformat()
 
@@ -44,7 +53,11 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     observed_at = now_iso(observed_at)
     by_id = {jid(x): x for x in existing if jid(x)}
     reactivated = 0
-    snapshot_ids = {jid(x) for x in incoming if jid(x)}
+    scope_locations = {
+        str(x).strip().upper()
+        for x in (snapshot_doc.get("scopeLocations", ["CN"]) if isinstance(snapshot_doc, dict) else ["CN"])
+    }
+    snapshot_ids = {jid(x) for x in incoming if jid(x) and location_key(x) in scope_locations}
     successful = {
         str(k).casefold(): v
         for k, v in (snapshot_doc.get("statusSummary", {}) if isinstance(snapshot_doc, dict) else {}).items()
@@ -58,7 +71,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     }
     for item in incoming:
         key = jid(item)
-        if not key:
+        if not key or location_key(item) not in scope_locations:
             continue
         old = by_id.get(key, {})
         if old.get("jobStatus") == "expired":
@@ -83,7 +96,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     expired = 0
     for key, item in by_id.items():
         company = company_key(item)
-        if company not in observed_companies or company not in successful:
+        if location_key(item) not in scope_locations or company not in observed_companies or company not in successful:
             continue
         if key not in snapshot_ids:
             if item.get("jobStatus") != "expired":
@@ -110,6 +123,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         "observedAt": observed_at,
         "successfulCompanies": sorted(successful),
         "incoming": len(snapshot_ids),
+        "scopeLocations": sorted(scope_locations),
         "expired": expired,
         "reactivated": reactivated,
     }

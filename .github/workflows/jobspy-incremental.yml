@@ -121,7 +121,7 @@ jobs:
                   statuses.update(doc.get('statusSummary', {}) if isinstance(doc, dict) else {})
               except Exception:
                   pass
-          out = {'schemaVersion': '2.0', 'mode': 'full-company-snapshot', 'jobs': list(rows.values()), 'statusSummary': statuses, 'companies': {k: v for k, v in statuses.items()}}
+          out = {'schemaVersion': '2.0', 'mode': 'full-company-snapshot', 'scopeLocations': ['CN'], 'jobs': list(rows.values()), 'statusSummary': statuses, 'companies': {k: v for k, v in statuses.items()}}
           json.dump(out, open('data/jobspy/incremental/search_combined.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
           print('per_company', json.dumps(per_company, ensure_ascii=False), flush=True)
           print('search_jobs', len(rows), flush=True)

@@ -39,6 +39,18 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(result["jobs"][0]["jobStatus"], "active")
         self.assertEqual(result["jobspySnapshot"]["expired"], 0)
 
+    def test_cn_snapshot_does_not_expire_hk_job(self):
+        existing = {"jobs": [
+            {"sourceJobId": "li-100000011", "company": "Acme", "companyCanonical": "acme", "location": "CN", "jobStatus": "active"},
+            {"sourceJobId": "li-100000012", "company": "Acme", "companyCanonical": "acme", "location": "HK", "jobStatus": "active"},
+        ]}
+        snapshot = {"scopeLocations": ["CN"], "jobs": [], "statusSummary": {"Acme": "ok: 0 jobs"}, "companies": {"Acme": "ok: 0 jobs"}}
+        result = reconcile(existing, snapshot, "2026-09-10T00:00:00+00:00")
+        by_id = {x["sourceJobId"]: x for x in result["jobs"]}
+        self.assertEqual(by_id["li-100000011"]["jobStatus"], "expired")
+        self.assertEqual(by_id["li-100000012"]["jobStatus"], "active")
+        self.assertEqual(result["jobspySnapshot"]["scopeLocations"], ["CN"])
+
 
 if __name__ == "__main__":
     unittest.main()
