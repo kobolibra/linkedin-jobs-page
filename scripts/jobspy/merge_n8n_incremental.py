@@ -33,10 +33,23 @@ def main():
         if key in by_key:
             current = rows[by_key[key]]
             merged = dict(current)
-            merged.update(incoming)
+            # n8n is an incremental detail/feed source.  Re-seeing an existing
+            # LinkedIn ID must not make the job look newly discovered or erase
+            # the JobSpy lifecycle snapshot.  In particular, preserve pushTime
+            # and firstSeen; only a genuinely new ID may take those fields from
+            # the incoming n8n row.
+            protected = {
+                "pushTime", "firstSeen", "jobStatus", "expiredAt",
+                "expiredReason", "lastSeenAt", "jobspyFetchedAt",
+                "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
+            }
+            merged.update({k: v for k, v in incoming.items() if k not in protected})
+            if current.get("dataSources") or incoming.get("dataSources"):
+                merged["dataSources"] = list(dict.fromkeys(
+                    list(current.get("dataSources") or [])
+                    + list(incoming.get("dataSources") or [])
+                ))
             merged.setdefault("sourceJobId", current.get("sourceJobId") or f"li-{key}")
-            merged["jobStatus"] = "active"
-            merged.pop("expiredAt", None)
             rows[by_key[key]] = merged
         else:
             merged = dict(incoming)
