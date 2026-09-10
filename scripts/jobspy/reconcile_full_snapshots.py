@@ -38,16 +38,6 @@ def status_ok(status):
     return str(status or "").startswith(("ok:", "empty"))
 
 
-def parse_time(value):
-    if not value:
-        return None
-    try:
-        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
-        return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed
-    except ValueError:
-        return None
-
-
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
     incoming = [dict(x) for x in rows(snapshot_doc)]
@@ -91,30 +81,11 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         by_id[key] = merged
 
     expired = 0
-    grace_recovered = 0
     for key, item in by_id.items():
         company = company_key(item)
         if company not in observed_companies or company not in successful:
             continue
         if key not in snapshot_ids:
-            first_seen = parse_time(item.get("firstSeen") or item.get("pushTime"))
-            age_hours = ((parse_time(observed_at) or datetime.now(timezone.utc)) - first_seen).total_seconds() / 3600 if first_seen else None
-            # LinkedIn's guest search can omit a listing intermittently. A newly
-            # discovered job is especially vulnerable because it may be outside
-            # the current ranking window; never kill it during its first 24h.
-            if age_hours is not None and age_hours < 24:
-                item["jobStatus"] = "active"
-                item["missingSnapshotCount"] = 0
-                item.pop("expiredAt", None)
-                item.pop("expiredReason", None)
-                grace_recovered += 1
-                continue
-            missing = int(item.get("missingSnapshotCount") or 0) + 1
-            item["missingSnapshotCount"] = missing
-            if missing < 2:
-                item["jobStatus"] = "active"
-                item["expiredReason"] = "missing_from_full_company_snapshot_pending_confirmation"
-                continue
             if item.get("jobStatus") != "expired":
                 item["expiredAt"] = observed_at
                 item["expiredReason"] = "missing_from_full_company_snapshot"
@@ -124,9 +95,6 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             item["jobStatus"] = "active"
             item.pop("expiredAt", None)
             item.pop("expiredReason", None)
-            item["missingSnapshotCount"] = 0
-        elif item.get("missingSnapshotCount"):
-            item["missingSnapshotCount"] = 0
         item.setdefault("lastSeenAt", observed_at if key in snapshot_ids else None)
 
     result = existing_doc if isinstance(existing_doc, dict) else None
@@ -144,7 +112,6 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         "incoming": len(snapshot_ids),
         "expired": expired,
         "reactivated": reactivated,
-        "graceRecovered": grace_recovered,
     }
     return result
 

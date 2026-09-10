@@ -7,7 +7,7 @@ class ReconcileTests(unittest.TestCase):
         existing = {
             "jobs": [
                 {"sourceJobId": "li-100000001", "company": "Acme", "companyCanonical": "acme", "title": "Old", "descriptionHtml": "<p>JD</p>", "jobStatus": "active"},
-                {"sourceJobId": "li-100000002", "company": "Acme", "companyCanonical": "acme", "title": "Gone", "firstSeen": "2026-09-01T00:00:00+00:00", "jobStatus": "active", "missingSnapshotCount": 1},
+                {"sourceJobId": "li-100000002", "company": "Acme", "companyCanonical": "acme", "title": "Gone", "jobStatus": "active"},
                 {"sourceJobId": "li-100000003", "company": "Blocked", "companyCanonical": "blocked", "title": "Keep", "jobStatus": "active"},
             ]
         }
@@ -38,25 +38,6 @@ class ReconcileTests(unittest.TestCase):
         result = reconcile(existing, snapshot, "2026-09-10T00:00:00+00:00")
         self.assertEqual(result["jobs"][0]["jobStatus"], "active")
         self.assertEqual(result["jobspySnapshot"]["expired"], 0)
-
-    def test_new_job_is_not_expired_by_one_transient_miss(self):
-        existing = {"jobs": [{"sourceJobId": "li-100000020", "company": "Acme", "companyCanonical": "acme", "firstSeen": "2026-09-10T00:00:00+00:00", "jobStatus": "active"}]}
-        snapshot = {"jobs": [], "statusSummary": {"Acme": "ok: 0 jobs"}, "companies": {"Acme": "ok: 0 jobs"}}
-        result = reconcile(existing, snapshot, "2026-09-10T02:30:00+00:00")
-        row = result["jobs"][0]
-        self.assertEqual(row["jobStatus"], "active")
-        self.assertEqual(row["missingSnapshotCount"], 0)
-        self.assertEqual(result["jobspySnapshot"]["graceRecovered"], 1)
-
-    def test_old_job_requires_two_successful_misses(self):
-        existing = {"jobs": [{"sourceJobId": "li-100000021", "company": "Acme", "companyCanonical": "acme", "firstSeen": "2026-09-01T00:00:00+00:00", "jobStatus": "active"}]}
-        snapshot = {"jobs": [], "statusSummary": {"Acme": "ok: 0 jobs"}, "companies": {"Acme": "ok: 0 jobs"}}
-        first = reconcile(existing, snapshot, "2026-09-10T02:30:00+00:00")
-        self.assertEqual(first["jobs"][0]["jobStatus"], "active")
-        self.assertEqual(first["jobs"][0]["missingSnapshotCount"], 1)
-        second = reconcile(first, snapshot, "2026-09-10T08:30:00+00:00")
-        self.assertEqual(second["jobs"][0]["jobStatus"], "expired")
-        self.assertEqual(second["jobs"][0]["missingSnapshotCount"], 2)
 
 
 if __name__ == "__main__":
