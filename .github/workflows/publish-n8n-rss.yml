@@ -1,0 +1,58 @@
+name: Publish n8n RSS into canonical jobs
+
+on:
+  push:
+    branches: [main]
+    paths: [data/n8n/rss-latest.json]
+  workflow_dispatch:
+
+concurrency:
+  group: jobspy-incremental
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: ${{ !contains(github.event.head_commit.message || '', '[rss-merged]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate merger
+        run: |
+          python -m py_compile scripts/jobspy/merge_n8n_incremental.py scripts/jobspy/compact_published_jobs.py
+          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py
+      - name: Merge and publish canonical jobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/jobspy/merge_n8n_incremental.py \
+              --baseline jobs.json \
+              --batch data/n8n/rss-latest.json \
+              --output /tmp/jobs.merged.json
+            mv /tmp/jobs.merged.json jobs.json
+            python scripts/jobspy/compact_published_jobs.py
+            git add jobs.json
+            if git diff --cached --quiet; then
+              echo "No canonical job changes"
+              exit 0
+            fi
+            git commit -m "[rss-merged] publish n8n RSS into lifecycle snapshot"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "Unable to publish canonical RSS merge" >&2
+          exit 1

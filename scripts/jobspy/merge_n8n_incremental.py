@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Merge an n8n RSS batch into the lifecycle snapshot.
+"""Merge an n8n RSS snapshot into the canonical lifecycle document.
 
-For an existing LinkedIn ID, RSS re-observation is authoritative for repost
-recency (pushTime) and active state, but never for the original firstSeen.
-Empty incoming values do not erase canonical fields.
+GitHub is the sole publisher of jobs.json. n8n writes only the RSS staging
+snapshot. For an existing LinkedIn ID, RSS re-observation advances pushTime and
+reactivates the job while firstSeen remains immutable.
 """
 import argparse
 import json
@@ -29,11 +29,19 @@ def merge_sources(current, incoming):
     ))
 
 
-def merge_documents(baseline, batch):
-    if not isinstance(batch, list):
-        raise ValueError("n8n batch must be a JSON array")
+def batch_rows(doc):
+    if isinstance(doc, list):
+        return doc
+    if isinstance(doc, dict) and isinstance(doc.get("jobs"), list):
+        return doc["jobs"]
+    raise ValueError("n8n RSS snapshot must be an array or an object with jobs[]")
+
+
+def merge_documents(baseline, batch_doc):
     if not isinstance(baseline, dict) or not isinstance(baseline.get("jobs"), list):
         raise ValueError("baseline must be the lifecycle snapshot object")
+    batch = batch_rows(batch_doc)
+    observed_at = batch_doc.get("generatedAt") if isinstance(batch_doc, dict) else None
 
     rows = [dict(row) for row in baseline["jobs"]]
     by_key = {job_key(row): i for i, row in enumerate(rows) if job_key(row)}
@@ -48,8 +56,6 @@ def merge_documents(baseline, batch):
         if key in by_key:
             current = rows[by_key[key]]
             merged = dict(current)
-            # firstSeen is immutable for an existing ID. RSS pushTime is allowed
-            # to advance because that is the website's repost/display contract.
             for field, value in incoming.items():
                 if field == "firstSeen" or not nonempty(value):
                     continue
@@ -71,7 +77,7 @@ def merge_documents(baseline, batch):
         else:
             merged = {k: v for k, v in incoming.items() if nonempty(v)}
             merged.setdefault("sourceJobId", f"li-{key}")
-            merged.setdefault("firstSeen", merged.get("pushTime"))
+            merged.setdefault("firstSeen", merged.get("pushTime") or observed_at)
             merged["dataSources"] = merge_sources({}, merged)
             merged["jobStatus"] = "active"
             merged["missingSnapshotCount"] = 0
@@ -83,9 +89,13 @@ def merge_documents(baseline, batch):
     result["jobs"] = rows
     result["count"] = len(rows)
     result["n8nIncrementalMerge"] = {
-        "batchJobs": len(batch), "mergedJobs": len(rows),
-        "added": added, "updated": updated, "reactivated": reactivated,
-        "source": "n8n RSS incremental feed",
+        "mergedAt": observed_at,
+        "batchJobs": len(batch),
+        "mergedJobs": len(rows),
+        "added": added,
+        "updated": updated,
+        "reactivated": reactivated,
+        "source": "n8n RSS staging snapshot",
         "firstSeenPolicy": "immutable-for-existing-id",
         "pushTimePolicy": "RSS-repost-may-advance",
     }
@@ -105,7 +115,8 @@ def main():
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
     Path(args.output).write_text(
-        json.dumps(result, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
+        json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
     )
 
 
