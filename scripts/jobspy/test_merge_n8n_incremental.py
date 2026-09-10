@@ -68,6 +68,29 @@ class N8nMergeTests(unittest.TestCase):
         self.assertEqual(result["jobs"][0]["salary"], "20-30k")
         self.assertEqual(result["n8nIncrementalMerge"]["salaryPreserved"], 1)
 
+    def test_title_matching_prefers_full_bilingual_then_english_only(self):
+        baseline = {"jobs": [
+            {"sourceJobId": "li-100000009", "company": "Standard Chartered", "title": "优先理财经理 Relationship Manager, Priority", "location": "CN"},
+            {"sourceJobId": "li-100000010", "company": "HSBC", "title": "FUND ACCOUNTANT(基金会计广州)", "location": "CN"},
+        ]}
+        batch = {"generatedAt": "2026-09-10T10:00:00Z", "jobs": [], "salaryRows": [
+            {"Company": "Standard Chartered", "Title": "优先理财经理 Relationship Manager, Priority", "Location": "15-30k"},
+            {"Company": "HSBC", "Title": "FUND ACCOUNTANT ID203488", "Location": "6-9k"},
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual([x.get("salary") for x in result["jobs"]], ["15-30k", "6-9k"])
+
+    def test_title_matching_falls_back_to_english_only_after_full_miss(self):
+        baseline = {"jobs": [{
+            "sourceJobId": "li-100000011", "company": "Standard Chartered",
+            "title": "优先理财经理 Relationship Manager, Priority", "location": "CN"
+        }]}
+        batch = {"generatedAt": "2026-09-10T10:00:00Z", "jobs": [], "salaryRows": [
+            {"Company": "Standard Chartered", "Title": "Relationship Manager, Priority", "Location": "15-30k"}
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual(result["jobs"][0]["salary"], "15-30k")
+
 
 if __name__ == "__main__":
     unittest.main()
