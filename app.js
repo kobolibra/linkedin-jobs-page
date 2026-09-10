@@ -252,19 +252,18 @@ function renderTop50(rows,mode="all"){
   });
   const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
   const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const companyLabel=name=>{const short=String(name||'').trim().split(/\s+/).slice(0,5).join(' ');return short.length>25?short.slice(0,24)+'…':short;};
-  const W=720,H=top.length>24?640:top.length>16?590:540,left=54,plotRight=666,plotTop=32,plotBottom=H-42;
-  const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?8.3:5.6),0)+3;
+  const companyLabel=name=>{const short=String(name||'').trim().split(/\s+/).slice(0,6).join(' ');return short.length>30?short.slice(0,29)+'…':short;};
+  const W=720,H=570,left=54,plotRight=666,plotTop=32,plotBottom=528;
+  const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?7.5:4.45),0);
   const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
   const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
-  const xDomain=Math.max(30,Math.ceil(Math.max(...means,0)/5)*5);
-  const yDomain=Math.max(30,Math.ceil(Math.max(...medians,0)/5)*5);
-  const x=v=>left+(plotRight-left)*(v/xDomain);
-  const y=v=>plotBottom-(plotBottom-plotTop)*(v/yDomain);
-  const xTicks=Array.from({length:xDomain/10+1},(_,i)=>i*10);
-  const yTicks=Array.from({length:yDomain/10+1},(_,i)=>i*10);
-  const grid=xTicks.map(v=>(v===xDomain?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
-    yTicks.map(v=>(v===yDomain?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-10)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
+  const domainMax=Math.max(50,Math.ceil(Math.max(...means,...medians,0)/5)*5);
+  const x=v=>left+(plotRight-left)*(v/domainMax);
+  const y=v=>plotBottom-(plotBottom-plotTop)*(v/domainMax);
+  const xTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
+  const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
+  const grid=xTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
+    yTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-10)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
   const pointData=top.map(([name,item],i)=>{
     const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
     const mean=ages.reduce((a,b)=>a+b,0)/n;
@@ -283,7 +282,7 @@ function renderTop50(rows,mode="all"){
   const hitsBubble=(box,p)=>pointData.some(q=>q!==p&&bubbleDistance(box,q)<q.r+2);
   // Larger bubbles reserve space first; every company then evaluates left, right, above and below on exactly the same terms.
   [...pointData].sort((a,b)=>b.r-a.r||a.py-b.py).forEach(p=>{
-    const shifts=[0,-9,9,-18,18,-28,28,-40,40,-54,54,-70,70,-88,88,-108,108,-132,132,-156,156];
+    const shifts=[0,-9,9,-18,18,-28,28,-40,40,-54,54,-70,70,-88,88,-108,108];
     const candidates=[];
     const addCandidate=(placement,offset,index,nudge=0,bias=0)=>{
       const local=placement==='right'||placement==='left';
