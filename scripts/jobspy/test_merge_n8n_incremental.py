@@ -43,6 +43,31 @@ class N8nMergeTests(unittest.TestCase):
         result = merge_documents(baseline, batch)
         self.assertEqual(result["jobs"][0]["salary"], "21-30k")
 
+    def test_historical_company_aliases_match_salary_rows(self):
+        baseline = {"jobs": [
+            {"sourceJobId": "li-100000005", "company": "摩根大通亚洲咨询(北京)有限公司", "title": "固收基金经理", "location": "CN"},
+            {"sourceJobId": "li-100000006", "company": "Black Rock", "title": "Analyst", "location": "CN"},
+            {"sourceJobId": "li-100000007", "company": "BNP", "title": "Head of Legal", "location": "CN"},
+        ]}
+        batch = {"generatedAt": "2026-09-10T10:00:00Z", "jobs": [], "salaryRows": [
+            {"Company": "JPMorgan Chase", "Title": "固收基金经理", "Location": "70-85k·20薪"},
+            {"Company": "BlackRock", "Title": "Analyst", "Location": "1-2k"},
+            {"Company": "BNP Paribas", "Title": "Head of Legal", "Location": "30-50k"},
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual([x.get("salary") for x in result["jobs"]], ["70-85k·20薪", "1-2k", "30-50k"])
+
+    def test_unmatched_salary_keeps_existing_value(self):
+        baseline = {"jobs": [{
+            "sourceJobId": "li-100000008", "company": "HSBC", "title": "Old title", "location": "CN", "salary": "20-30k"
+        }]}
+        batch = {"generatedAt": "2026-09-10T10:00:00Z", "jobs": [], "salaryRows": [
+            {"Company": "HSBC", "Title": "Different title", "Location": "40-50k"}
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual(result["jobs"][0]["salary"], "20-30k")
+        self.assertEqual(result["n8nIncrementalMerge"]["salaryPreserved"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
