@@ -27,6 +27,22 @@ class N8nMergeTests(unittest.TestCase):
         self.assertEqual(result["jobs"][0]["salary"], "20-30k")
         self.assertEqual(result["n8nIncrementalMerge"]["salaryMatches"], 1)
 
+    def test_salary_snapshot_matches_jpmorgan_chase_without_space(self):
+        baseline = {"jobs": [{
+            "sourceJobId": "li-100000004",
+            "company": "JPMorganChase",
+            "companyCanonical": "jpmorgan chase",
+            "title": "Asset Management - Middle Office Head - Vice President",
+            "location": "CN",
+        }]}
+        batch = {"generatedAt": "2026-09-10T10:00:00Z", "jobs": [], "salaryRows": [{
+            "Company": "JPMorgan Chase",
+            "Title": "Asset Management - Middle Office Head - Vice President",
+            "Location": "21-30k",
+        }]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual(result["jobs"][0]["salary"], "21-30k")
+
 
 if __name__ == "__main__":
     unittest.main()
