@@ -86,6 +86,14 @@ def rotate_user_agent(session: requests.Session, attempt: int) -> None:
     session.headers.update({"User-Agent": USER_AGENTS[attempt % len(USER_AGENTS)]})
 
 
+def looks_like_block_page(html: str) -> bool:
+    soup = BeautifulSoup(html, "html.parser")
+    if soup.select_one(".authwall, #challenge, form.login__form, input[name=session_key]"):
+        return True
+    text = soup.get_text(" ", strip=True).casefold()
+    return "captcha" in text or "security verification" in text
+
+
 def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     jobs = []
@@ -196,6 +204,8 @@ def main() -> int:
         jobs_by_id = {}
         start = 0
         blocked = False
+        empty_pages = 0
+        ended_cleanly = False
         while len(jobs_by_id) < args.results_per_company and start < 1000:
             params = {"keywords": company, "location": args.location, "distance": 50, "pageNum": 0, "start": start}
             strict_company_id = args.company_id or COMPANIES[company]["company_id"]
@@ -234,9 +244,21 @@ def main() -> int:
                 blocked = start == 0
                 status_summary[company] = f"failed@start={start}: {last_error}"
                 break
+            if looks_like_block_page(response.text):
+                status_summary[company] = f"failed@start={start}: HTTP 200 block/login page"
+                blocked = True
+                break
             page_jobs = parse_search(response.text, company, fetched_at)
             if not page_jobs:
-                break
+                empty_pages += 1
+                LOG.info("%s start=%s empty_page=%s/2", company, start, empty_pages)
+                start += 10
+                if empty_pages >= 2:
+                    ended_cleanly = True
+                    break
+                time.sleep(random.uniform(args.delay_min, args.delay_max))
+                continue
+            empty_pages = 0
             for job in page_jobs:
                 jobs_by_id.setdefault(job["sourceJobId"], job)
             LOG.info("%s start=%s cards=%s accepted_total=%s", company, start, len(page_jobs), len(jobs_by_id))
@@ -244,7 +266,15 @@ def main() -> int:
             if len(jobs_by_id) < args.results_per_company:
                 time.sleep(random.uniform(args.delay_min, args.delay_max))
         company_jobs = list(jobs_by_id.values())[: args.results_per_company]
-        status_summary.setdefault(company, f"ok: {len(company_jobs)} jobs" if company_jobs else "empty")
+        if company not in status_summary:
+            if ended_cleanly and company_jobs:
+                status_summary[company] = f"ok: {len(company_jobs)} jobs"
+            elif ended_cleanly:
+                status_summary[company] = "no-results-untrusted"
+            elif len(jobs_by_id) >= args.results_per_company or start >= 1000:
+                status_summary[company] = f"partial@cap: {len(company_jobs)} jobs"
+            else:
+                status_summary[company] = f"partial: {len(company_jobs)} jobs"
         if blocked and not company_jobs:
             LOG.error("%s produced no jobs because the first search page was blocked", company)
         if args.fetch_description:
