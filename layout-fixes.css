@@ -1,14 +1,12 @@
-/* Keep company, city, JD toggle and lifecycle state on one metadata line. */
+/* Restore original metadata order: company, city, JD arrow; expiry stays right-aligned. */
 @media (min-width:721px) {
-  .job-meta-line { display:flex;align-items:center;flex-wrap:nowrap;column-gap:8px;row-gap:0;min-width:0; }
-  .job-sub { flex:0 1 auto;min-width:0;max-width:min(46%,360px);order:1; }
-  .job-city { order:2; }
-  .job-jd summary { order:3; }
-  .status-expired-company { position:static;inset:auto;order:4;flex:0 0 auto;margin:0 0 0 2px; }
+  .job-meta-line { position:relative;display:flex;align-items:center;flex-wrap:nowrap;column-gap:8px;row-gap:0;min-width:0;padding-right:148px; }
+  .job-sub { flex:0 1 auto;min-width:0;max-width:min(52%,420px);order:1; }
+  .job-city { flex:0 0 auto;order:2; }
+  .job-jd summary { flex:0 0 auto;order:3;margin:0; }
+  .status-expired-company { position:absolute;inset:auto 0 auto auto;top:50%;transform:translateY(-50%);margin:0;z-index:2; }
 }
-@media (max-width:720px) {
-  .status-expired-company { display:inline-flex;position:static;inset:auto;order:6;flex:0 0 auto;margin-top:5px; }
-  .job-jd summary { order:5; }
-  .job-jd-text { order:7; }
-}
-.bubble-position-leader { stroke:#9f9d96;stroke-width:.55;stroke-dasharray:1 2;opacity:.34;vector-effect:non-scaling-stroke;pointer-events:none; }
+@media (max-width:720px) { .status-expired-company { display:none; } }
+.bubble-position-leader { stroke:#9f9d96;stroke-width:.5;stroke-dasharray:1 2;opacity:.28;vector-effect:non-scaling-stroke;pointer-events:none; }
+.bubble-axis-break { fill:none;stroke:#8f8e86;stroke-width:1;vector-effect:non-scaling-stroke; }
+.bubble-outlier-note { fill:#8f8e86;font:600 6.4px var(--mono);letter-spacing:.08em; }
