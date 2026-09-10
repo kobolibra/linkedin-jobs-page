@@ -3,18 +3,13 @@
 import argparse
 import json
 import re
+import unicodedata
 from pathlib import Path
 
-COMPANY_ALIASES = {
-    "socgen": "societe generale",
-    "法国兴业银行(中国)有限公司": "societe generale",
-    "渣打环球商业服务有限公司": "standard chartered",
-    "jpmorganchase": "jpmorgan chase",
-    "摩根大通亚洲咨询(北京)有限公司": "jpmorgan chase",
-}
 TARGET_COMPANIES = {
-    "ubs", "state street", "jpmorgan chase", "dbs", "morgan stanley", "anz",
-    "standard chartered", "hsbc", "citi", "deutsche bank", "societe generale", "bank of america",
+    "ubs", "state street", "jpmorgan chase", "dbs bank", "morgan stanley", "anz",
+    "standard chartered", "hsbc", "citi", "societe generale", "bnp paribas",
+    "deutsche bank", "goldman sachs", "blackrock", "bank of america",
 }
 TITLE_TOKEN_ALIASES = {
     "sr": ["senior"], "snr": ["senior"], "mgr": ["manager"],
@@ -36,20 +31,35 @@ def nonempty(value):
 
 
 def norm(value):
-    return str(value or "").strip().casefold()
+    raw = unicodedata.normalize("NFKD", str(value or "").strip().casefold())
+    return "".join(ch for ch in raw if not unicodedata.combining(ch))
 
 
 def normalize_company(value):
     company = re.sub(r"\s+", " ", norm(value))
-    return COMPANY_ALIASES.get(company, company)
+    compact = re.sub(r"[^a-z0-9\u3400-\u9fff]+", "", company)
+    aliases = {
+        "hsbc": "hsbc", "thehongkongandshanghaibankingcorporation": "hsbc",
+        "standardchartered": "standard chartered", "standardcharteredbank": "standard chartered",
+        "渣打环球商业服务有限公司": "standard chartered",
+        "citi": "citi", "citibank": "citi", "citigroup": "citi",
+        "jpmorganchase": "jpmorgan chase", "jpmorgan": "jpmorgan chase",
+        "jpmorganchaseco": "jpmorgan chase", "摩根大通亚洲咨询北京有限公司": "jpmorgan chase",
+        "bnpparibas": "bnp paribas", "bnp": "bnp paribas",
+        "societegenerale": "societe generale", "sg": "societe generale",
+        "dbs": "dbs bank", "dbsbank": "dbs bank",
+        "deutschebank": "deutsche bank", "goldmansachs": "goldman sachs",
+        "blackrock": "blackrock", "blackrockinc": "blackrock",
+        "morganstanley": "morgan stanley", "bankofamerica": "bank of america",
+    }
+    return aliases.get(compact, company)
 
 
 def normalize_title(value, company=""):
     title = str(value or "")
     title = re.sub(r"^\s*(?:[a-z]{1,5}[-_]?)?\d{6,}\b[\s:|–—-]*", " ", title, flags=re.I)
     title = re.sub(r"\bID\s*\d{6}\b", " ", title, flags=re.I)
-    title = re.sub(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]", " ", title)
-    tokens = re.sub(r"[^a-z0-9]+", " ", title, flags=re.I).strip().casefold().split()
+    tokens = re.findall(r"[a-z0-9]+|[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]+", title.casefold(), flags=re.I)
     expanded = []
     for token in tokens:
         expanded.extend(TITLE_TOKEN_ALIASES.get(token, [token]))
@@ -78,7 +88,7 @@ def batch_rows(doc):
 def apply_salary_snapshot(rows, batch_doc):
     salary_rows = batch_doc.get("salaryRows") if isinstance(batch_doc, dict) else None
     if not isinstance(salary_rows, list) or not salary_rows:
-        return 0
+        return 0, 0
     salary_by_key = {}
     for row in salary_rows:
         company = normalize_company(row.get("Company"))
@@ -87,8 +97,8 @@ def apply_salary_snapshot(rows, batch_doc):
         if company in TARGET_COMPANIES and title and salary:
             salary_by_key[f"{company}|{title}"] = salary
     matches = 0
+    preserved = 0
     for job in rows:
-        job.pop("salary", None)
         company = normalize_company(job.get("company"))
         if str(job.get("location") or "").upper() != "CN" or company not in TARGET_COMPANIES:
             continue
@@ -96,7 +106,9 @@ def apply_salary_snapshot(rows, batch_doc):
         if salary:
             job["salary"] = salary
             matches += 1
-    return matches
+        elif nonempty(job.get("salary")):
+            preserved += 1
+    return matches, preserved
 
 
 def merge_documents(baseline, batch_doc):
@@ -144,14 +156,15 @@ def merge_documents(baseline, batch_doc):
             rows.append(merged)
             by_key[key] = len(rows) - 1
             added += 1
-    salary_matches = apply_salary_snapshot(rows, batch_doc)
+    salary_matches, salary_preserved = apply_salary_snapshot(rows, batch_doc)
     result = dict(baseline)
     result["jobs"] = rows
     result["count"] = len(rows)
     result["n8nIncrementalMerge"] = {
         "mergedAt": observed_at, "batchJobs": len(batch), "mergedJobs": len(rows),
         "added": added, "updated": updated, "reactivated": reactivated,
-        "salaryMatches": salary_matches, "source": "n8n RSS staging snapshot",
+        "salaryMatches": salary_matches, "salaryPreserved": salary_preserved,
+        "source": "n8n RSS staging snapshot",
         "firstSeenPolicy": "immutable-for-existing-id", "pushTimePolicy": "RSS-repost-may-advance",
     }
     return result
