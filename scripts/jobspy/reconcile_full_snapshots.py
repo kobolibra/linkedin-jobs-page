@@ -93,6 +93,13 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             if old.get(field) not in (None, ""):
                 merged[field] = old[field]
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
+        # JobSpy observation time is the discovery/push time only when the
+        # canonical row has no value yet.  Existing lifecycle timestamps stay
+        # immutable; new rows get their historical posting date as firstSeen.
+        if not old.get("pushTime"):
+            merged["pushTime"] = observed_at
+        if not old.get("firstSeen"):
+            merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
         merged["jobStatus"] = "active"
         merged["lastSeenAt"] = observed_at
         merged.pop("expiredAt", None)
