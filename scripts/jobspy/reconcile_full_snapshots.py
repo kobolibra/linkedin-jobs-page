@@ -43,6 +43,17 @@ def now_iso(value=None):
     return value or datetime.now(timezone.utc).isoformat()
 
 
+def timestamp(value):
+    if not value:
+        return None
+    try:
+        text = str(value).replace("Z", "+00:00")
+        parsed = datetime.fromisoformat(text)
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+
+
 def status_ok(status):
     return str(status or "").startswith(("ok:", "empty"))
 
@@ -100,6 +111,9 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             merged["pushTime"] = observed_at
         if not old.get("firstSeen"):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
+        elif timestamp(item.get("datePosted")) and timestamp(old.get("firstSeen")):
+            if timestamp(item["datePosted"]) < timestamp(old["firstSeen"]):
+                merged["firstSeen"] = item["datePosted"]
         merged["jobStatus"] = "active"
         merged["lastSeenAt"] = observed_at
         merged.pop("expiredAt", None)
