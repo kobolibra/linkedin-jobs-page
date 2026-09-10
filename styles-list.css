@@ -113,7 +113,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-main { min-width:0; }
 .job-title { font-family:var(--serif);font-optical-sizing:auto;font-size:16.5px;font-weight:600;color:var(--ink);text-decoration:none;line-height:1.3;letter-spacing:-.012em; }
 .job-title:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px; }
- .job-meta-line { position:relative;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:12px;row-gap:6px;min-width:0;margin-top:3px; }
+ .job-meta-line { position:relative;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:12px;row-gap:6px;width:100%;min-width:0;margin-top:3px; }
 .job-detail-line { display:contents; }
 .job-right-mobile { display:none; }
 
@@ -407,7 +407,7 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
   border-radius:999px; color:var(--muted); background:color-mix(in srgb, var(--muted) 9%, transparent);
   font-size:10px; letter-spacing:.01em; white-space:nowrap;
 }
-.status-expired-company { position:absolute;right:0;top:0;margin:0; }
+.status-expired-company { position:absolute;inset-inline-end:0;top:0;margin:0;z-index:2; }
 @media (max-width:720px) {
   .status-expired { height:17px; padding:0 5px; font-size:9px; }
   .status-expired-company { display:none; }
