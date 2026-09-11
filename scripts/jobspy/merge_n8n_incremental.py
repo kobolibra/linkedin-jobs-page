@@ -205,7 +205,7 @@ def merge_documents(baseline, batch_doc):
         "salaryMatches": salary_matches, "salaryPreserved": salary_preserved,
         "source": "n8n RSS staging snapshot",
         "firstSeenPolicy": "immutable-for-existing-id",
-        "pushTimePolicy": "JobSpy-confirmed-same-day-repost-only",
+        "pushTimePolicy": "JobSpy-confirmed-repost-within-24-hours-only",
         "blocklistHardDelete": len(blocked),
     }
     return result
