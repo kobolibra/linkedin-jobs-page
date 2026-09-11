@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v10-adaptive-axis';
+  const MARK = 'accurate-v11-content-ceiling';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -62,8 +62,12 @@
 
     let knee = outlier ? Math.min(up(clusterMax + pad), up(maxValue) - step) : null;
     const clusterTop = outlier ? knee : maxValue;
-    let domainMin = down(minValue - pad);
-    let domainMax = outlier ? up(maxValue) : up(maxValue + pad);
+    // Snap to the nearest useful tick outside the observed values.  Do not
+    // add padding before rounding upward: 74 + 6 would round to 90 even
+    // though an 80-day ceiling is already sufficient.  That wasted band is
+    // exactly what makes an otherwise readable chart look compressed.
+    let domainMin = down(minValue);
+    let domainMax = up(maxValue);
     if (domainMax - domainMin < step * 3) domainMax = domainMin + step * 3;
     if (outlier && !(knee > domainMin + step * 2)) knee = null;
     const broken = outlier && knee != null;
