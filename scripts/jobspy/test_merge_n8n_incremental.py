@@ -26,6 +26,20 @@ class N8nMergeTests(unittest.TestCase):
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000002", "descriptionHtml": ""}]}
         self.assertEqual(merge_documents(baseline, batch)["jobs"][0]["descriptionHtml"], "<p>JD</p>")
 
+    def test_blocklist_physically_removes_existing_jobs(self):
+        baseline = {"jobs": [
+            {"sourceJobId": "li-100000012", "company": "民生通惠资产管理有限公司", "jobStatus": "active"},
+            {"sourceJobId": "li-100000013", "company": "HSBC", "jobStatus": "active"},
+        ]}
+        batch = {
+            "generatedAt": "2026-09-10T08:00:00Z",
+            "blocklist": ["民生通惠资产管理有限公司"],
+            "jobs": [],
+        }
+        result = merge_documents(baseline, batch)
+        self.assertEqual([row["sourceJobId"] for row in result["jobs"]], ["li-100000013"])
+        self.assertEqual(result["n8nIncrementalMerge"]["blocklistHardDelete"], 1)
+
     def test_wip_salary_snapshot_matches_existing_cn_jobs(self):
         baseline = {"jobs": [{"sourceJobId": "li-100000003", "company": "HSBC", "title": "Branch VRM Shanghai SHA Sub-branch", "location": "CN"}]}
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [], "salaryRows": [{"Company": "HSBC", "Title": "Branch VRM Shanghai SHA", "Location": "20-30k"}]}
