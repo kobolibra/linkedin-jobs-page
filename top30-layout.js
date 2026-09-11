@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v13-adaptive-radius';
+  const MARK = 'accurate-v14-editorial-bubble-scale';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -31,7 +31,7 @@
 
   // entries: [[name, {total, ages:[days]}], ...] already sorted by total desc, max 30
   const computeLayout = (entries) => {
-    const W = 820, H = 620, left = 58, plotRight = 762, plotTop = 36, plotBottom = 570;
+    const W = 820, H = 700, left = 58, plotRight = 762, plotTop = 42, plotBottom = 644;
     const stats = entries.map(([, d]) => {
       const ages = [...d.ages].sort((a, b) => a - b), n = ages.length;
       return {
@@ -97,10 +97,10 @@
     const maxTotal = Math.max(1, ...entries.map(([, d]) => d.total));
     const points = entries.map(([name, item], i) => {
       const s = stats[i];
-      // Keep area semantics monotonic with postings, but use a restrained
-      // radius range so nearby companies remain individually legible.
-      // The old 6–14px range created avoidable collisions in HK/SG/ALL.
-      const desiredR = 4.5 + Math.sqrt(item.total / maxTotal) * 5.5;
+      // Keep area semantics monotonic with postings.  Bubbles are deliberately
+      // editorial-sized: the previous collision-first rule reduced most points
+      // to 2.8–4.5 units, making the chart feel empty and visually timid.
+      const desiredR = 8 + Math.sqrt(item.total / maxTotal) * 8;
       const rawX = x(s.mean), rawY = y(s.median);
       return {
         name, total: item.total, i, mean: s.mean, median: s.median, desiredR,
@@ -120,9 +120,9 @@
         .map((q) => Math.hypot(p.px - q.px, p.py - q.py));
       const nearest = distances.length ? Math.min(...distances) : Infinity;
       p.r = nearest === 0
-        ? Math.min(p.desiredR, 3.4)
+        ? Math.min(p.desiredR, 5.8)
         : Number.isFinite(nearest)
-          ? Math.min(p.desiredR, Math.max(2.8, nearest * 0.46))
+          ? Math.min(p.desiredR, Math.max(6.5, nearest * 0.72))
           : p.desiredR;
       p.overlap = nearest < p.r * 2 + 1;
     });

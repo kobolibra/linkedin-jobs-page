@@ -25,7 +25,7 @@ from datetime import datetime, timezone, timedelta
 # CONFIGURATION
 # ============================================================
 
-GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "").strip()
+GITHUB_TOKEN = "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"
 GITHUB_REPO = "kobolibra/linkedin-jobs-page"
 GITHUB_BRANCH = "main"
 # Use GitHub API (NOT raw.githubusercontent.com) for private repo access
@@ -55,8 +55,6 @@ FINANCIAL_BLACKLIST = set()
 
 def _make_request(url, headers=None, method="GET", data=None, timeout=60):
     """Make an HTTP request with auth headers."""
-    if not GITHUB_TOKEN:
-        raise RuntimeError("GITHUB_TOKEN environment variable is required")
     req = urllib.request.Request(url, method=method)
     req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
     req.add_header("Accept", "application/vnd.github+json")
