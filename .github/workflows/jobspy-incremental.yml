@@ -2,6 +2,8 @@ name: JobSpy full company snapshots
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [run-jobspy]
   schedule:
     # n8n publishes around :03 UTC at 04, 10, 16 and 22 UTC.
     # Run JobSpy about five hours earlier. The larger gap absorbs GitHub
