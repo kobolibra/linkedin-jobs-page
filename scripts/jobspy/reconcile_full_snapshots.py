@@ -63,14 +63,11 @@ def status_ok(status):
 
 
 def within_repost_window(value, observed_at):
-    """Return whether observation is a plausible repost within 24 hours.
+    """Return whether the JobSpy observation qualifies as a repost.
 
-    JobSpy normally receives LinkedIn's ``datePosted`` as a calendar date,
-    not a clock timestamp.  Treat that date as Beijing midnight so a 00:00–
-    24-hour JobSpy window can recognize a listing posted on the previous
-    calendar date, while an older observation cannot be promoted merely
-    because the calendar date matches. Real timestamps use the same strict
-    elapsed-time rule.
+    The rule itself is the only repost test: observation must follow
+    ``datePosted`` and be no later than 24 hours after it. A separate
+    ``jobspyRepost`` flag is derived evidence, not an additional gate.
     """
     text = str(value or "").strip()
     if len(text) == 10:
@@ -138,13 +135,20 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             + (["jobspy"] if item.get("source") == "jobspy-requests" else [])
         ))
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
-        # JobSpy is the only source allowed to advance pushTime.  A repost is
-        # accepted only when observation follows datePosted within the
-        # bounded 24-hour rule; use JobSpy's datePosted as the canonical
+        # JobSpy is the only source allowed to advance pushTime. The repost
+        # decision is the 24-hour elapsed-time rule itself: observation must
+        # follow datePosted and be no later than 24 hours after it. Do not
+        # require a second jobspyRepost flag; that flag is derived evidence,
+        # not an additional gate. Use JobSpy's datePosted as canonical
         # pushTime rather than the later workflow runtime.
+        repost = bool(item.get("datePosted")) and within_repost_window(
+            item.get("datePosted"), observed_at
+        )
+        if item.get("datePosted"):
+            merged["jobspyRepost"] = repost
         if not old.get("pushTime"):
             merged["pushTime"] = observed_at
-        elif item.get("jobspyRepost") is True and within_repost_window(item.get("datePosted"), observed_at):
+        elif repost:
             merged["pushTime"] = item.get("datePosted")
         if not old.get("firstSeen"):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at

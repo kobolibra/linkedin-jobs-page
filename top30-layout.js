@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v12-low-overlap';
+  const MARK = 'accurate-v13-adaptive-radius';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -100,14 +100,31 @@
       // Keep area semantics monotonic with postings, but use a restrained
       // radius range so nearby companies remain individually legible.
       // The old 6–14px range created avoidable collisions in HK/SG/ALL.
-      const r = 4.5 + Math.sqrt(item.total / maxTotal) * 5.5;
+      const desiredR = 4.5 + Math.sqrt(item.total / maxTotal) * 5.5;
       const rawX = x(s.mean), rawY = y(s.median);
       return {
-        name, total: item.total, i, mean: s.mean, median: s.median, r,
+        name, total: item.total, i, mean: s.mean, median: s.median, desiredR,
         rawX, rawY, px: rawX, py: rawY,
         color: palette[Math.min(5, Math.floor(i / 5))],
         label: companyLabel(name), labelBox: null
       };
+    });
+
+    // Coordinates remain the exact data projection. Only the visual radius is
+    // adapted to nearby points, so dense views use less ink without lying
+    // about mean/median positions. Identical coordinates cannot be separated
+    // without introducing a false data position; those points get a small
+    // outlined marker so the overlap is visible rather than silently hidden.
+    points.forEach((p) => {
+      const distances = points.filter((q) => q !== p)
+        .map((q) => Math.hypot(p.px - q.px, p.py - q.py));
+      const nearest = distances.length ? Math.min(...distances) : Infinity;
+      p.r = nearest === 0
+        ? Math.min(p.desiredR, 3.4)
+        : Number.isFinite(nearest)
+          ? Math.min(p.desiredR, Math.max(2.8, nearest * 0.46))
+          : p.desiredR;
+      p.overlap = nearest < p.r * 2 + 1;
     });
 
     // Coordinates are data, not decoration: every visible bubble is locked to
@@ -193,9 +210,10 @@
           + '<text class="bubble-company" x="' + b.lx.toFixed(1) + '" y="' + b.ly.toFixed(1)
           + '" text-anchor="' + b.anchor + '">' + escSvg(p.label) + '</text>';
       }
+      const overlapClass = p.overlap ? ' bubble-point-overlap' : '';
       return '<g class="bubble-row bubble-drill" data-company="' + escSvg(p.name) + '" style="--i:' + p.i
         + '" role="button" tabindex="0">' + positionLeader + labelMarkup
-        + '<circle class="bubble-point" cx="' + p.px.toFixed(1) + '" cy="' + p.py.toFixed(1) + '" r="' + p.r.toFixed(1)
+        + '<circle class="bubble-point' + overlapClass + '" cx="' + p.px.toFixed(1) + '" cy="' + p.py.toFixed(1) + '" r="' + p.r.toFixed(1)
         + '" fill="' + p.color + '"><title>' + title + '</title></circle>'
         + '<text class="bubble-total' + (deep ? ' bubble-total-deep' : '') + '" fill="' + ink + '" x="' + p.px.toFixed(1)
         + '" y="' + (p.py + 2.5).toFixed(1) + '" text-anchor="middle">' + p.total + '</text></g>';
