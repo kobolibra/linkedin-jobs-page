@@ -102,8 +102,10 @@ class ReconcileTests(unittest.TestCase):
             "sourceJobId": "li-100000015", "company": "Acme", "companyCanonical": "acme",
             "datePosted": "2026-09-10", "jobspyRepost": True,
         }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
-        row = reconcile(existing, snapshot, "2026-09-10T22:00:00+00:00")["jobs"][0]
-        self.assertEqual(row["pushTime"], "2026-09-10T22:00:00+00:00")
+        # 2026-09-10 15:00 UTC = 2026-09-10 23:00 Beijing time: same
+        # calendar day as the LinkedIn datePosted value.
+        row = reconcile(existing, snapshot, "2026-09-10T15:00:00+00:00")["jobs"][0]
+        self.assertEqual(row["pushTime"], "2026-09-10T15:00:00+00:00")
 
     def test_normal_jobspy_reobservation_does_not_advance_push_time(self):
         existing = {"jobs": [{

@@ -141,7 +141,11 @@ def merge_documents(baseline, batch_doc):
                 # cannot by itself prove a LinkedIn repost.  Existing rows
                 # therefore keep their canonical pushTime; JobSpy is the
                 # only source allowed to advance it after confirming repost.
-                if field in {"firstSeen", "pushTime", "source"} or not nonempty(value):
+                if field in {
+                    "firstSeen", "pushTime", "source",
+                    "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
+                    "jobspyFetchedAt",
+                } or not nonempty(value):
                     continue
                 merged[field] = value
             if nonempty(current.get("firstSeen")):
