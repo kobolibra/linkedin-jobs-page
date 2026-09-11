@@ -86,6 +86,24 @@ def batch_rows(doc):
     raise ValueError("n8n RSS snapshot must be an array or an object with jobs[]")
 
 
+def blocklist_companies(doc):
+    """Return normalized companies that must be physically removed from jobs.json.
+
+    An absent blocklist is deliberately treated as an empty set so an older
+    staging payload cannot cause an accidental destructive purge.
+    """
+    raw = doc.get("blocklist") if isinstance(doc, dict) else None
+    if not isinstance(raw, list):
+        return set()
+    result = set()
+    for item in raw:
+        value = item.get("Company") if isinstance(item, dict) else item
+        name = normalize_company(value)
+        if name:
+            result.add(name)
+    return result
+
+
 def apply_salary_snapshot(rows, batch_doc):
     salary_rows = batch_doc.get("salaryRows") if isinstance(batch_doc, dict) else None
     if not isinstance(salary_rows, list) or not salary_rows:
@@ -124,7 +142,12 @@ def merge_documents(baseline, batch_doc):
         raise ValueError("baseline must be the lifecycle snapshot object")
     batch = batch_rows(batch_doc)
     observed_at = batch_doc.get("generatedAt") if isinstance(batch_doc, dict) else None
-    rows = [dict(row) for row in baseline["jobs"]]
+    blocked = blocklist_companies(batch_doc)
+    rows = [
+        dict(row)
+        for row in baseline["jobs"]
+        if normalize_company(row.get("company")) not in blocked
+    ]
     by_key = {job_key(row): i for i, row in enumerate(rows) if job_key(row)}
     added = updated = reactivated = 0
     for incoming in batch:
@@ -183,6 +206,7 @@ def merge_documents(baseline, batch_doc):
         "source": "n8n RSS staging snapshot",
         "firstSeenPolicy": "immutable-for-existing-id",
         "pushTimePolicy": "JobSpy-confirmed-same-day-repost-only",
+        "blocklistHardDelete": len(blocked),
     }
     return result
 
