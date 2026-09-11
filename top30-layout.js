@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v8-fixed-coordinates';
+  const MARK = 'accurate-v9-adaptive-domains';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -43,7 +43,11 @@
     const minValue = vals[0] || 0;
     const maxValue = vals[vals.length - 1] || 1;
     const q90 = vals[Math.max(0, Math.ceil(vals.length * 0.9) - 1)] || maxValue;
-    const outlier = maxValue > q90 * 1.8 && (maxValue - q90) > 25;
+    // Each tab is scaled from its own values.  A single high-age company
+    // should not force the other 29 companies into the lower-left corner;
+    // reserve a small, explicit broken-axis band for a genuine upper tail.
+    const robustGap = Math.max(10, (maxValue - minValue) * 0.18);
+    const outlier = maxValue > q90 + robustGap && (maxValue - q90) > 12;
     // Scale the tick step to the visible spread, not to the absolute maximum: a cluster
     // between 12 and 15 days must not be forced onto a 0..20 axis.
     const clusterMax = outlier ? q90 : maxValue;
@@ -60,7 +64,7 @@
     if (domainMax - domainMin < step * 3) domainMax = domainMin + step * 3;
     if (outlier && !(knee > domainMin + step * 2)) knee = null;
     const broken = outlier && knee != null;
-    const mainShare = 0.82;
+    const mainShare = 0.86;
 
     const unit = (value) => {
       const v = Math.max(domainMin, Math.min(domainMax, Number(value) || 0));
