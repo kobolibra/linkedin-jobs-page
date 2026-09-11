@@ -93,6 +93,30 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(row["firstSeen"], "2026-09-01T00:00:00+00:00")
         self.assertEqual(row["pushTime"], "2026-09-06T00:00:00+00:00")
 
+    def test_same_day_jobspy_repost_advances_push_time(self):
+        existing = {"jobs": [{
+            "sourceJobId": "li-100000015", "company": "Acme", "companyCanonical": "acme",
+            "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
+        }]}
+        snapshot = {"jobs": [{
+            "sourceJobId": "li-100000015", "company": "Acme", "companyCanonical": "acme",
+            "datePosted": "2026-09-10", "jobspyRepost": True,
+        }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
+        row = reconcile(existing, snapshot, "2026-09-10T22:00:00+00:00")["jobs"][0]
+        self.assertEqual(row["pushTime"], "2026-09-10T22:00:00+00:00")
+
+    def test_normal_jobspy_reobservation_does_not_advance_push_time(self):
+        existing = {"jobs": [{
+            "sourceJobId": "li-100000016", "company": "Acme", "companyCanonical": "acme",
+            "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
+        }]}
+        snapshot = {"jobs": [{
+            "sourceJobId": "li-100000016", "company": "Acme", "companyCanonical": "acme",
+            "datePosted": "2026-08-25",
+        }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
+        row = reconcile(existing, snapshot, "2026-09-10T22:00:00+00:00")["jobs"][0]
+        self.assertEqual(row["pushTime"], "2026-09-01T00:00:00+00:00")
+
 
 if __name__ == "__main__":
     unittest.main()

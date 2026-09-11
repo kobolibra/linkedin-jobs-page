@@ -137,7 +137,11 @@ def merge_documents(baseline, batch_doc):
             current = rows[by_key[key]]
             merged = dict(current)
             for field, value in incoming.items():
-                if field in {"firstSeen", "source"} or not nonempty(value):
+                # RSS is evidence that a listing is visible in the feed, but
+                # cannot by itself prove a LinkedIn repost.  Existing rows
+                # therefore keep their canonical pushTime; JobSpy is the
+                # only source allowed to advance it after confirming repost.
+                if field in {"firstSeen", "pushTime", "source"} or not nonempty(value):
                     continue
                 merged[field] = value
             if nonempty(current.get("firstSeen")):
@@ -173,7 +177,8 @@ def merge_documents(baseline, batch_doc):
         "added": added, "updated": updated, "reactivated": reactivated,
         "salaryMatches": salary_matches, "salaryPreserved": salary_preserved,
         "source": "n8n RSS staging snapshot",
-        "firstSeenPolicy": "immutable-for-existing-id", "pushTimePolicy": "RSS-repost-may-advance",
+        "firstSeenPolicy": "immutable-for-existing-id",
+        "pushTimePolicy": "JobSpy-confirmed-same-day-repost-only",
     }
     return result
 

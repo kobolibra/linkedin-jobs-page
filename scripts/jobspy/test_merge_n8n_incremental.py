@@ -3,12 +3,18 @@ from merge_n8n_incremental import merge_documents
 
 
 class N8nMergeTests(unittest.TestCase):
+    def test_existing_rss_observation_does_not_advance_push_time(self):
+        baseline = {"jobs": [{"sourceJobId": "li-100000000", "firstSeen": "2026-01-01T00:00:00Z", "pushTime": "2026-02-01T00:00:00Z"}]}
+        batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000000", "pushTime": "2026-09-10T08:00:00Z"}]}
+        row = merge_documents(baseline, batch)["jobs"][0]
+        self.assertEqual(row["pushTime"], "2026-02-01T00:00:00Z")
+
     def test_existing_repost_preserves_history_detail_and_source(self):
         baseline = {"jobs": [{"sourceJobId": "li-100000001", "source": "jobspy", "link": "https://www.linkedin.com/jobs/view/a-100000001", "firstSeen": "2026-01-01T00:00:00Z", "pushTime": "2026-02-01T00:00:00Z", "city": "Shanghai", "descriptionHtml": "<p>JD</p>", "jobStatus": "expired", "expiredAt": "2026-09-01T00:00:00Z"}]}
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000001", "source": "n8n-rss", "link": "https://www.linkedin.com/jobs/view/a-100000001", "firstSeen": "2026-09-10T08:00:00Z", "pushTime": "2026-09-10T08:00:00Z"}]}
         row = merge_documents(baseline, batch)["jobs"][0]
         self.assertEqual(row["firstSeen"], "2026-01-01T00:00:00Z")
-        self.assertEqual(row["pushTime"], "2026-09-10T08:00:00Z")
+        self.assertEqual(row["pushTime"], "2026-02-01T00:00:00Z")
         self.assertEqual(row["source"], "jobspy")
         self.assertEqual(row["city"], "Shanghai")
         self.assertEqual(row["descriptionHtml"], "<p>JD</p>")

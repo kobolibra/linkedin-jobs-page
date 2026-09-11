@@ -110,9 +110,9 @@ const dayKey=iso=>{const d=new Date(iso);return isNaN(d)?"—":keyOf(d);};
 const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"});};
 const isActiveJob=job=>job?.jobStatus!=="expired";
 const seenAt=j=>j.firstSeen||j.pushTime;
-// The list is ordered by first discovery, not RSS repost observation time.
-// pushTime remains the fallback for legacy rows that predate firstSeen.
-const placeAt=j=>j.firstSeen||j.pushTime;
+// pushTime is advanced only by JobSpy-confirmed same-day reposts; RSS merely
+// observes existing listings and must not move them to the top of the list.
+const placeAt=j=>j.pushTime||j.firstSeen;
 const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.max(0,Math.floor((Date.now()-d)/864e5));};
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel==="22+")return d>=22;const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
