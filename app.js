@@ -223,20 +223,16 @@ kwToggle.addEventListener("click",()=>{kwPanel.classList.toggle("open");if(kwPan
 kwForm.addEventListener("submit",e=>{e.preventDefault();const v=kwInput.value.trim().toLowerCase();if(!v)return;blockedKw.add(v);saveBlockedKw();kwInput.value="";renderKw();apply();});
 kwList.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(b.id==="kwClear"){blockedKw.clear();}else if(b.dataset.k!=null){blockedKw.delete(b.dataset.k);}saveBlockedKw();renderKw();apply();});
 renderKw();
-const jobGroupKey=job=>{
-  if(norm(job.location)!=="CN")return"";
-  const city=(job.city||((job.locationRaw||"").split(",")[0].trim())||"").trim();
-  const company=canonicalCompany(job.company),title=(job.title||"").trim();
-  if(!city||!company||!title)return"";
-  return [city,company,title].map(value=>value.toLowerCase().replace(/\s+/g," ")).join("|");
-};
 const keepLatestSameCityTitle=data=>{
+  // The canonical pipeline already deduplicates by LinkedIn job ID.  Never
+  // merge separate jobs merely because city, company and title are equal:
+  // one company can legitimately have several requisitions in one city.
   const selected=new Map(),others=[];
   data.forEach(job=>{
-    const key=jobGroupKey(job);
+    const key=jobId(job.link);
     if(!key){others.push(job);return;}
     const time=Date.parse(job.pushTime||job.firstSeen||"")||0,previous=selected.get(key);
-    const shouldReplace=!previous||(isActiveJob(job)&&!isActiveJob(previous.job))||(isActiveJob(job)===isActiveJob(previous.job)&&time>previous.time);
+    const shouldReplace=!previous||(!isActiveJob(previous.job)&&isActiveJob(job))||(isActiveJob(job)===isActiveJob(previous.job)&&time>previous.time);
     if(shouldReplace)selected.set(key,{job,time});
   });
   return [...others,...[...selected.values()].map(entry=>entry.job)];
