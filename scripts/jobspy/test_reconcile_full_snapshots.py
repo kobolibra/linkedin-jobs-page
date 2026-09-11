@@ -93,7 +93,7 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(row["firstSeen"], "2026-09-01T00:00:00+00:00")
         self.assertEqual(row["pushTime"], "2026-09-06T00:00:00+00:00")
 
-    def test_jobspy_repost_within_12_hours_uses_date_posted(self):
+    def test_jobspy_repost_within_24_hours_uses_date_posted(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000015", "company": "Acme", "companyCanonical": "acme",
             "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
@@ -103,11 +103,11 @@ class ReconcileTests(unittest.TestCase):
             "datePosted": "2026-09-10", "jobspyRepost": True,
         }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
         # datePosted without a clock is treated as 2026-09-10 00:00 Beijing;
-        # 03:00 UTC is 11:00 Beijing and is exactly inside the 12-hour rule.
+        # 03:00 UTC is 11:00 Beijing and is inside the 24-hour rule.
         row = reconcile(existing, snapshot, "2026-09-10T03:00:00+00:00")["jobs"][0]
         self.assertEqual(row["pushTime"], "2026-09-10")
 
-    def test_jobspy_repost_at_exactly_12_hours_is_accepted(self):
+    def test_jobspy_repost_at_exactly_24_hours_is_accepted(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000017", "company": "Acme", "companyCanonical": "acme",
             "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
@@ -116,11 +116,11 @@ class ReconcileTests(unittest.TestCase):
             "sourceJobId": "li-100000017", "company": "Acme", "companyCanonical": "acme",
             "datePosted": "2026-09-10", "jobspyRepost": True,
         }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
-        # 2026-09-10 04:00 UTC = 12:00 Beijing: exactly 12 hours.
-        row = reconcile(existing, snapshot, "2026-09-10T04:00:00+00:00")["jobs"][0]
+        # 2026-09-10 16:00 UTC = 2026-09-11 00:00 Beijing: exactly 24 hours.
+        row = reconcile(existing, snapshot, "2026-09-10T16:00:00+00:00")["jobs"][0]
         self.assertEqual(row["pushTime"], "2026-09-10")
 
-    def test_jobspy_repost_after_12_hours_is_rejected(self):
+    def test_jobspy_repost_after_24_hours_is_rejected(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000018", "company": "Acme", "companyCanonical": "acme",
             "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
@@ -129,7 +129,7 @@ class ReconcileTests(unittest.TestCase):
             "sourceJobId": "li-100000018", "company": "Acme", "companyCanonical": "acme",
             "datePosted": "2026-09-10", "jobspyRepost": True,
         }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
-        row = reconcile(existing, snapshot, "2026-09-10T12:01:00+00:00")["jobs"][0]
+        row = reconcile(existing, snapshot, "2026-09-10T16:01:00+00:00")["jobs"][0]
         self.assertEqual(row["pushTime"], "2026-09-01T00:00:00+00:00")
 
     def test_future_jobspy_date_posted_is_rejected(self):

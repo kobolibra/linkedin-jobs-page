@@ -63,13 +63,14 @@ def status_ok(status):
 
 
 def within_repost_window(value, observed_at):
-    """Return whether observation is a plausible repost within 12 hours.
+    """Return whether observation is a plausible repost within 24 hours.
 
     JobSpy normally receives LinkedIn's ``datePosted`` as a calendar date,
     not a clock timestamp.  Treat that date as Beijing midnight so a 00:00–
-    12:00 Beijing JobSpy run can recognize a previous-day listing, while a
-    later same-day run cannot be promoted merely because the calendar date
-    matches.  Real timestamps use the same strict elapsed-time rule.
+    24-hour JobSpy window can recognize a listing posted on the previous
+    calendar date, while an older observation cannot be promoted merely
+    because the calendar date matches. Real timestamps use the same strict
+    elapsed-time rule.
     """
     text = str(value or "").strip()
     if len(text) == 10:
@@ -82,7 +83,7 @@ def within_repost_window(value, observed_at):
     observed = timestamp(observed_at)
     if not posted or not observed or observed < posted:
         return False
-    return observed - posted <= timedelta(hours=12)
+    return observed - posted <= timedelta(hours=24)
 
 
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
@@ -139,7 +140,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
         # JobSpy is the only source allowed to advance pushTime.  A repost is
         # accepted only when observation follows datePosted within the
-        # bounded 12-hour rule; use JobSpy's datePosted as the canonical
+        # bounded 24-hour rule; use JobSpy's datePosted as the canonical
         # pushTime rather than the later workflow runtime.
         if not old.get("pushTime"):
             merged["pushTime"] = observed_at
