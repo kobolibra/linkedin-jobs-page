@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v9-adaptive-domains';
+  const MARK = 'accurate-v10-adaptive-axis';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -46,8 +46,11 @@
     // Each tab is scaled from its own values.  A single high-age company
     // should not force the other 29 companies into the lower-left corner;
     // reserve a small, explicit broken-axis band for a genuine upper tail.
-    const robustGap = Math.max(10, (maxValue - minValue) * 0.18);
-    const outlier = maxValue > q90 + robustGap && (maxValue - q90) > 12;
+    // Do not call a merely high-but-relevant value an outlier.  A broken axis
+    // is reserved for a clearly isolated tail: at least 24 days above the
+    // 90th percentile and at least 48% larger than that percentile.
+    const robustGap = Math.max(24, (maxValue - minValue) * 0.35);
+    const outlier = maxValue > q90 + robustGap && maxValue > q90 * 1.48;
     // Scale the tick step to the visible spread, not to the absolute maximum: a cluster
     // between 12 and 15 days must not be forced onto a 0..20 axis.
     const clusterMax = outlier ? q90 : maxValue;
@@ -156,7 +159,6 @@
     const axisBreaks = broken
       ? '<path class="bubble-axis-break" d="M ' + (breakX - 5) + ' ' + (plotBottom + 3) + ' l 4 -6 l 4 6 l 4 -6"/>'
         + '<path class="bubble-axis-break" d="M ' + (left - 3) + ' ' + (breakY + 5) + ' l 6 -4 l -6 -4 l 6 -4"/>'
-        + '<text class="bubble-outlier-note" x="' + (breakX + 10) + '" y="' + (plotBottom - 8) + '">OUTLIER RANGE</text>'
       : '';
 
     const diagStart = domainMin, diagEnd = broken ? knee : domainMax;
