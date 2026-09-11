@@ -4,9 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     # n8n publishes around :03 UTC at 04, 10, 16 and 22 UTC.
-    # Run JobSpy about two hours earlier so its commit normally lands before
-    # RSS ingestion, with a substantial GitHub Actions queue/startup buffer.
-    - cron: "0 2,8,14,20 * * *"
+    # Run JobSpy about five hours earlier. The larger gap absorbs GitHub
+    # Actions schedule/runner delays while the shared concurrency group keeps
+    # an overlapping RSS merge serialized behind the JobSpy run.
+    - cron: "0 23,5,11,17 * * *"
 
 concurrency:
   group: jobspy-incremental
