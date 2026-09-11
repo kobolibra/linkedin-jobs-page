@@ -12,6 +12,10 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+
+BEIJING_TZ = ZoneInfo("Asia/Shanghai")
 
 
 def rows(doc):
@@ -61,7 +65,12 @@ def status_ok(status):
 def same_calendar_day(value, observed_at):
     posted = timestamp(value)
     observed = timestamp(observed_at)
-    return bool(posted and observed and posted.date() == observed.date())
+    return bool(
+        posted
+        and observed
+        and posted.astimezone(BEIJING_TZ).date()
+        == observed.astimezone(BEIJING_TZ).date()
+    )
 
 
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
