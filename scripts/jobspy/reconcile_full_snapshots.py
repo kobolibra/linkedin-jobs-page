@@ -58,6 +58,12 @@ def status_ok(status):
     return str(status or "").startswith(("ok:", "empty"))
 
 
+def same_calendar_day(value, observed_at):
+    posted = timestamp(value)
+    observed = timestamp(observed_at)
+    return bool(posted and observed and posted.date() == observed.date())
+
+
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
     incoming = [dict(x) for x in rows(snapshot_doc)]
@@ -93,6 +99,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         for field in ("title", "link", "company", "companyCanonical", "requestedCompany",
                       "location", "locationRaw", "city", "datePosted", "source",
                       "sourceSite", "dataSources", "jobspyFetchedAt", "fetchedAt",
+                      "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
                       "descriptionText", "descriptionHtml", "detailStatus",
                       "detailFetchedAt", "detailError"):
             if item.get(field) not in (None, ""):
@@ -109,10 +116,14 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             + (["jobspy"] if item.get("source") == "jobspy-requests" else [])
         ))
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
-        # JobSpy observation time is the discovery/push time only when the
-        # canonical row has no value yet.  Existing lifecycle timestamps stay
-        # immutable; new rows get their historical posting date as firstSeen.
+        # JobSpy is the only source allowed to advance pushTime.  For an
+        # existing row, advance it only when JobSpy's datePosted is the same
+        # calendar day as this snapshot observation: this is the explicit
+        # same-day repost signal.  A normal JobSpy re-observation does not
+        # make an old listing look newly pushed.
         if not old.get("pushTime"):
+            merged["pushTime"] = observed_at
+        elif item.get("jobspyRepost") is True and same_calendar_day(item.get("datePosted"), observed_at):
             merged["pushTime"] = observed_at
         if not old.get("firstSeen"):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
