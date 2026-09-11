@@ -37,8 +37,19 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
+            if [[ -s data/jobspy/incremental/search_combined.json ]]; then
+              observed_at="$(cat data/jobspy/incremental/latest.completed_at 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)"
+              python scripts/jobspy/reconcile_full_snapshots.py \
+                --existing jobs.json \
+                --snapshot data/jobspy/incremental/search_combined.json \
+                --observed-at "$observed_at" \
+                --output /tmp/jobs.jobspy.json
+            else
+              echo "No JobSpy snapshot available; merging RSS against current canonical jobs only"
+              cp jobs.json /tmp/jobs.jobspy.json
+            fi
             python scripts/jobspy/merge_n8n_incremental.py \
-              --baseline jobs.json \
+              --baseline /tmp/jobs.jobspy.json \
               --batch data/n8n/rss-latest.json \
               --output /tmp/jobs.merged.json
             mv /tmp/jobs.merged.json jobs.json

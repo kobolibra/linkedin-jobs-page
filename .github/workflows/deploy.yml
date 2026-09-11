@@ -3,6 +3,13 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'jobs.json'
+      - 'index.html'
+      - '*.js'
+      - '*.css'
+      - '*.json'
+      - 'avatars/**'
 
 concurrency:
   group: pages

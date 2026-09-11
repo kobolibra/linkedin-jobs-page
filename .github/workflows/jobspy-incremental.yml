@@ -231,16 +231,6 @@ jobs:
           json.dump(base,open('data/jobspy/incremental/search_combined.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
           print('published_jobs',len(base['jobs']),'detail_results',len(detail_rows))
           PY
-      - name: Reconcile full snapshots and mark missing jobs expired
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          python scripts/jobspy/reconcile_full_snapshots.py \
-            --existing jobs.json \
-            --snapshot data/jobspy/incremental/search_combined.json \
-            --output jobs.json
-      - name: Compact browser jobs payload
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: python scripts/jobspy/compact_published_jobs.py
       - name: Publish immutable run metadata
         if: steps.combine.outputs.has_jobs == 'true'
         run: |
@@ -259,12 +249,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add jobs.json data/jobspy/incremental/latest.json data/jobspy/incremental/latest.completed_at data/jobspy/history/index.json
+          git add data/jobspy/incremental/latest.json data/jobspy/incremental/search_combined.json data/jobspy/incremental/latest.completed_at data/jobspy/history/index.json
           if git diff --cached --quiet; then
             echo "No snapshot changes to commit"
             exit 0
           fi
-          git commit -m "jobspy: publish full company snapshot with expiry states"
+          git commit -m "jobspy: publish snapshot for next canonical merge"
           for attempt in 1 2 3 4 5; do
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then
               echo "Pushed snapshot on attempt ${attempt}"
