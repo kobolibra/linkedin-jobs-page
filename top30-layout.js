@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v11-content-ceiling';
+  const MARK = 'accurate-v12-low-overlap';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -97,7 +97,10 @@
     const maxTotal = Math.max(1, ...entries.map(([, d]) => d.total));
     const points = entries.map(([name, item], i) => {
       const s = stats[i];
-      const r = 6 + Math.sqrt(item.total / maxTotal) * 8;
+      // Keep area semantics monotonic with postings, but use a restrained
+      // radius range so nearby companies remain individually legible.
+      // The old 6–14px range created avoidable collisions in HK/SG/ALL.
+      const r = 4.5 + Math.sqrt(item.total / maxTotal) * 5.5;
       const rawX = x(s.mean), rawY = y(s.median);
       return {
         name, total: item.total, i, mean: s.mean, median: s.median, r,
