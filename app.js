@@ -113,6 +113,12 @@ const seenAt=j=>j.firstSeen||j.pushTime;
 // pushTime is advanced only by JobSpy-confirmed same-day reposts; RSS merely
 // observes existing listings and must not move them to the top of the list.
 const placeAt=j=>j.pushTime||j.firstSeen;
+// Within one exact update batch, keep the requested editorial region order.
+// The timestamp remains the primary key, so a later batch always stays above
+// every earlier batch regardless of region.
+const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
+const displayRegionOf=j=>norm(j?.location);
+const displayRegionTieBreak=(a,b)=>(displayRegionRank[displayRegionOf(a)]??9)-(displayRegionRank[displayRegionOf(b)]??9);
 const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.max(0,Math.floor((Date.now()-d)/864e5));};
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel==="22+")return d>=22;const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
@@ -408,7 +414,7 @@ jobsDataPromise
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
-    orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx;});});
+    orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx||displayRegionTieBreak(x,y);});});
     const renderGroups=[];
     orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
     let first=true;
