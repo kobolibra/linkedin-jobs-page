@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'relaxed-v7-spacious';
+  const MARK = 'accurate-v8-fixed-coordinates';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -96,56 +96,10 @@
       };
     });
 
-    // Bubble separation.  The original 46px displacement cap kept dense
-    // regional views in a narrow island.  This is intentionally a spacious
-    // force layout: the leader line preserves the exact mean/median position,
-    // while the visible bubbles use the available plot area instead of
-    // stacking on top of one another.
-    for (let pass = 0; pass < 420; pass++) {
-      for (let i = 0; i < points.length; i++) {
-        for (let j = i + 1; j < points.length; j++) {
-          const a = points[i], b = points[j];
-          let dist = Math.hypot(b.px - a.px, b.py - a.py);
-          const min = a.r + b.r + 8;
-          const preferred = a.r + b.r + 34;
-          // Keep a soft personal space even after circles no longer touch;
-          // this is what turns a tight cloud into an editorially balanced field.
-          if (dist >= preferred) continue;
-          if (dist < 0.01) {
-            const angle = ((i + 1) * 37 + (j + 1) * 61) * Math.PI / 180;
-            b.px += Math.cos(angle); b.py += Math.sin(angle); dist = 1;
-          }
-          const strength = dist < min ? 0.5 : 0.11;
-          const push = (preferred - dist) * strength, ux = (b.px - a.px) / dist, uy = (b.py - a.py) / dist;
-          a.px -= ux * push; a.py -= uy * push; b.px += ux * push; b.py += uy * push;
-        }
-      }
-      points.forEach((p) => {
-        p.px += (p.rawX - p.px) * 0.012;
-        p.py += (p.rawY - p.py) * 0.012;
-        const maxShift = 132, dx = p.px - p.rawX, dy = p.py - p.rawY, d = Math.hypot(dx, dy);
-        if (d > maxShift) { p.px = p.rawX + dx / d * maxShift; p.py = p.rawY + dy / d * maxShift; }
-        p.px = Math.max(left + p.r, Math.min(plotRight - p.r, p.px));
-        p.py = Math.max(plotTop + p.r, Math.min(plotBottom - p.r, p.py));
-      });
-    }
-
-    // If the source values are genuinely tight, expand the collision-free
-    // cloud as a group.  This uses the otherwise empty canvas without
-    // pretending that the underlying mean/median values changed: leader lines
-    // still point back to the exact analytical coordinates.
-    const xs = points.map((p) => p.px), ys = points.map((p) => p.py);
-    const cloud = {
-      minX: Math.min(...xs), maxX: Math.max(...xs),
-      minY: Math.min(...ys), maxY: Math.max(...ys)
-    };
-    const cloudW = Math.max(1, cloud.maxX - cloud.minX), cloudH = Math.max(1, cloud.maxY - cloud.minY);
-    const expandX = Math.min(1.8, 560 / cloudW), expandY = Math.min(1.7, 410 / cloudH);
-    const cx = (cloud.minX + cloud.maxX) / 2, cy = (cloud.minY + cloud.maxY) / 2;
-    points.forEach((p) => {
-      p.px = Math.max(left + p.r, Math.min(plotRight - p.r, cx + (p.px - cx) * expandX));
-      p.py = Math.max(plotTop + p.r, Math.min(plotBottom - p.r, cy + (p.py - cy) * expandY));
-    });
+    // Coordinates are data, not decoration: every visible bubble is locked to
+    // the exact mean/median projection.  We deliberately do not jitter,
+    // relax, expand, or clamp the centers.  Labels are the only elements that
+    // may move around the points to resolve collisions.
 
     // Label slots: must clear every bubble and every placed label.
     const dirs = [
