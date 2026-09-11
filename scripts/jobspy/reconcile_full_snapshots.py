@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -62,15 +62,28 @@ def status_ok(status):
     return str(status or "").startswith(("ok:", "empty"))
 
 
-def same_calendar_day(value, observed_at):
-    posted = timestamp(value)
+def within_repost_window(value, observed_at):
+    """Return whether observation is a plausible repost within 24 hours.
+
+    JobSpy normally receives LinkedIn's ``datePosted`` as a calendar date,
+    not a clock timestamp.  Treat that date as Beijing midnight so a 00:00–
+    24-hour JobSpy window can recognize a listing posted on the previous
+    calendar date, while an older observation cannot be promoted merely
+    because the calendar date matches. Real timestamps use the same strict
+    elapsed-time rule.
+    """
+    text = str(value or "").strip()
+    if len(text) == 10:
+        try:
+            posted = datetime.fromisoformat(text).replace(tzinfo=BEIJING_TZ)
+        except ValueError:
+            posted = None
+    else:
+        posted = timestamp(value)
     observed = timestamp(observed_at)
-    return bool(
-        posted
-        and observed
-        and posted.astimezone(BEIJING_TZ).date()
-        == observed.astimezone(BEIJING_TZ).date()
-    )
+    if not posted or not observed or observed < posted:
+        return False
+    return observed - posted <= timedelta(hours=24)
 
 
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
@@ -125,15 +138,14 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             + (["jobspy"] if item.get("source") == "jobspy-requests" else [])
         ))
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
-        # JobSpy is the only source allowed to advance pushTime.  For an
-        # existing row, advance it only when JobSpy's datePosted is the same
-        # calendar day as this snapshot observation: this is the explicit
-        # same-day repost signal.  A normal JobSpy re-observation does not
-        # make an old listing look newly pushed.
+        # JobSpy is the only source allowed to advance pushTime.  A repost is
+        # accepted only when observation follows datePosted within the
+        # bounded 24-hour rule; use JobSpy's datePosted as the canonical
+        # pushTime rather than the later workflow runtime.
         if not old.get("pushTime"):
             merged["pushTime"] = observed_at
-        elif item.get("jobspyRepost") is True and same_calendar_day(item.get("datePosted"), observed_at):
-            merged["pushTime"] = observed_at
+        elif item.get("jobspyRepost") is True and within_repost_window(item.get("datePosted"), observed_at):
+            merged["pushTime"] = item.get("datePosted")
         if not old.get("firstSeen"):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
         elif timestamp(item.get("datePosted")) and timestamp(old.get("firstSeen")):
