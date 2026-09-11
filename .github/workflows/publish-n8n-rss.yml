@@ -12,6 +12,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   publish:
@@ -61,6 +62,8 @@ jobs:
             fi
             git commit -m "[rss-merged] publish n8n RSS into lifecycle snapshot"
             if git push origin HEAD:main; then
+              GH_TOKEN="${{ github.token }}" gh workflow run deploy.yml --ref main
+              echo "Dispatched exactly one Pages deployment for the canonical commit"
               exit 0
             fi
             sleep $((attempt * 5))

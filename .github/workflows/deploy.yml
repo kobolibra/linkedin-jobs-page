@@ -10,6 +10,7 @@ on:
       - '*.css'
       - '*.json'
       - 'avatars/**'
+  workflow_dispatch:
 
 concurrency:
   group: pages
