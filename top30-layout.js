@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v14-editorial-bubble-scale';
+  const MARK = 'accurate-v15-balanced-axis-frame';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -31,7 +31,9 @@
 
   // entries: [[name, {total, ages:[days]}], ...] already sorted by total desc, max 30
   const computeLayout = (entries) => {
-    const W = 820, H = 700, left = 58, plotRight = 762, plotTop = 42, plotBottom = 644;
+    // Compact editorial frame: reclaim the former outer whitespace for the
+    // data field while leaving a measured 20–22 unit title-to-axis rhythm.
+    const W = 820, H = 700, left = 46, plotRight = 774, plotTop = 28, plotBottom = 652;
     const stats = entries.map(([, d]) => {
       const ages = [...d.ages].sort((a, b) => a - b), n = ages.length;
       return {
@@ -120,9 +122,9 @@
         .map((q) => Math.hypot(p.px - q.px, p.py - q.py));
       const nearest = distances.length ? Math.min(...distances) : Infinity;
       p.r = nearest === 0
-        ? Math.min(p.desiredR, 5.8)
+        ? Math.min(p.desiredR, 6)
         : Number.isFinite(nearest)
-          ? Math.min(p.desiredR, Math.max(6.5, nearest * 0.72))
+          ? Math.min(p.desiredR, Math.max(6, nearest * 0.64))
           : p.desiredR;
       p.overlap = nearest < p.r * 2 + 1;
     });
@@ -222,10 +224,10 @@
     return '<svg class="top20-svg bubble-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Top 30 '
       + '\u673a\u6784\u5e73\u5747\u9996\u6b21\u53d1\u73b0\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
       + grid + axisBreaks + diagonal
-      + '<text class="bubble-x-title" x="' + ((left + plotRight) / 2) + '" y="' + (H - 2)
+      + '<text class="bubble-x-title" x="' + ((left + plotRight) / 2) + '" y="' + (plotBottom + 38)
       + '" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text>'
-      + '<text class="bubble-y-title" x="31" y="' + ((plotTop + plotBottom) / 2)
-      + '" text-anchor="middle" transform="rotate(-90 31 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS</text>'
+      + '<text class="bubble-y-title" x="16" y="' + ((plotTop + plotBottom) / 2)
+      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS</text>'
       + pointMarkup + '</svg>';
   };
 
