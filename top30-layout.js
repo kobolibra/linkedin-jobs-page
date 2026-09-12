@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v15-balanced-axis-frame';
+  const MARK = 'accurate-v17-monotonic-area-scale';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -102,7 +102,9 @@
       // Keep area semantics monotonic with postings.  Bubbles are deliberately
       // editorial-sized: the previous collision-first rule reduced most points
       // to 2.8–4.5 units, making the chart feel empty and visually timid.
-      const desiredR = 8 + Math.sqrt(item.total / maxTotal) * 8;
+      // Use a restrained area-like scale: the minimum remains legible, while
+      // volume differences are not flattened by an oversized base radius.
+      const desiredR = 6 + Math.sqrt(item.total / maxTotal) * 14;
       const rawX = x(s.mean), rawY = y(s.median);
       return {
         name, total: item.total, i, mean: s.mean, median: s.median, desiredR,
@@ -112,20 +114,17 @@
       };
     });
 
-    // Coordinates remain the exact data projection. Only the visual radius is
-    // adapted to nearby points, so dense views use less ink without lying
-    // about mean/median positions. Identical coordinates cannot be separated
-    // without introducing a false data position; those points get a small
-    // outlined marker so the overlap is visible rather than silently hidden.
+    // Coordinates remain the exact data projection. Radius is a visual encoding
+    // of posting volume and must therefore remain strictly monotonic with total.
+    // Never shrink one company's bubble just because a neighbour is nearby:
+    // that creates the exact false impression where a smaller company appears
+    // larger than a much larger one. Overlap is handled by alpha, stroke, and
+    // draw order instead; identical coordinates receive an outlined marker.
     points.forEach((p) => {
       const distances = points.filter((q) => q !== p)
         .map((q) => Math.hypot(p.px - q.px, p.py - q.py));
       const nearest = distances.length ? Math.min(...distances) : Infinity;
-      p.r = nearest === 0
-        ? Math.min(p.desiredR, 6)
-        : Number.isFinite(nearest)
-          ? Math.min(p.desiredR, Math.max(6, nearest * 0.64))
-          : p.desiredR;
+      p.r = p.desiredR;
       p.overlap = nearest < p.r * 2 + 1;
     });
 
@@ -191,7 +190,9 @@
     const diagonal = '<line class="bubble-diagonal" x1="' + x(diagStart).toFixed(1) + '" y1="' + y(diagStart).toFixed(1)
       + '" x2="' + x(diagEnd).toFixed(1) + '" y2="' + y(diagEnd).toFixed(1) + '"/>';
 
-    const pointMarkup = points.map((p) => {
+    // Paint smaller bubbles first so larger, higher-volume bubbles remain
+    // visually dominant when their true data circles overlap.
+    const pointMarkup = [...points].sort((a, b) => a.total - b.total || a.i - b.i).map((p) => {
       const deep = p.i >= 20, ink = deep ? '#F0EFEB' : '#1C1C1A';
       const displaced = Math.hypot(p.px - p.rawX, p.py - p.rawY) > 3;
       const positionLeader = displaced
