@@ -250,7 +250,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 [data-theme="dark"] .rhythm-axis-label:last-child { fill:#c3cdf7; }
 
 /* ---------- Top 30 bubble field ---------- */
-.top50-chart { width:100%;overflow-x:auto;padding:14px 14px 8px;border-radius:18px;background:var(--glass-soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.22);opacity:0;transform:translateY(5px);transition:opacity .28s ease,transform .42s ease; }
+.top50-chart { width:100%;overflow-x:auto;padding:8px 6px 4px;border-radius:18px;background:var(--glass-soft);box-shadow:inset 0 1px 0 rgba(255,255,255,.22);opacity:0;transform:translateY(5px);transition:opacity .28s ease,transform .42s ease; }
 .top50-chart.is-ready { opacity:1;transform:none; }
 .top20-svg,
 .bubble-svg { display:block;width:100%;height:auto;margin-top:0;overflow:visible; }
