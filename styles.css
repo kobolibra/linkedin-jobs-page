@@ -93,10 +93,13 @@
 }
 
 * { box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent; }
-*::-webkit-scrollbar { width:10px;height:10px; }
-*::-webkit-scrollbar-track { background:transparent; }
-*::-webkit-scrollbar-thumb { background:var(--line-strong);border:3px solid transparent;border-radius:999px;background-clip:content-box; }
-*::-webkit-scrollbar-thumb:hover { background:var(--ink-faint);background-clip:content-box; }
+/* The job list is extremely tall. Keep its position indicator visible instead
+   of letting a thin, low-contrast thumb collapse into pale marks. */
+html { scrollbar-width:auto;scrollbar-color:var(--navy) color-mix(in srgb,var(--bg) 72%,transparent); }
+html::-webkit-scrollbar { width:12px;height:10px; }
+html::-webkit-scrollbar-track { background:color-mix(in srgb,var(--bg) 72%,transparent); }
+html::-webkit-scrollbar-thumb { background:var(--navy);border:2px solid transparent;border-radius:999px;background-clip:content-box; }
+html::-webkit-scrollbar-thumb:hover { background:var(--gold);background-clip:content-box; }
 html { -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;scroll-padding-top:104px;text-rendering:optimizeLegibility; }
 @media (prefers-reduced-motion:no-preference) { html { scroll-behavior:smooth; } }
 body { margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;accent-color:var(--accent);caret-color:var(--accent);transition:background .3s,color .3s; }
