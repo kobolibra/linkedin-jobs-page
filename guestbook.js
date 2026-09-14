@@ -75,9 +75,9 @@
   .gb-toast { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); background:var(--navy); color:var(--surface); font-size:12.5px; padding:8px 16px; border-radius:8px; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.2)); opacity:0; transition:opacity .25s; pointer-events:none; z-index:5; white-space:nowrap; }
   .gb-toast.show { opacity:1; }
   [data-theme="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
-  .gb-scrollnav { position:fixed; left:11px; top:50%; transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
+  .gb-scrollnav { position:fixed; left:11px; top:50%; width:24px; height:clamp(210px,58vh,330px); transform:translateY(-50%); z-index:90; display:block; }
   .gb-scrollnav:not(.ready) { display:none; }
-  .gb-tick { position:relative; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; cursor:pointer; transition:background .18s ease-out, opacity .18s ease-out; }
+  .gb-tick { position:absolute; left:0; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; transform:translateY(-50%); cursor:pointer; transition:width .18s ease-out,background .18s ease-out,opacity .18s ease-out; }
   .gb-tick:hover { width:12px; opacity:.72; }
   .gb-tick.on { background:var(--gold); opacity:.9; }
   .gb-tick.cur { width:12px; background:var(--gold-deep); opacity:1; }
@@ -389,9 +389,12 @@
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
       }));
-      nav.innerHTML = targets.map((t, i) =>
-        '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>'
-      ).join("");
+      const n = targets.length;
+      nav.innerHTML = targets.map((t, i) => {
+        const f = n > 1 ? i / (n - 1) : 0;
+        const pos = (6 + f * 88).toFixed(2);
+        return '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '" style="top:' + pos + '%"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>';
+      }).join("");
       nav.classList.toggle("ready", targets.length > 1);
       update();
     }
