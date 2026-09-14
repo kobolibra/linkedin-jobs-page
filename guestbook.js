@@ -431,6 +431,10 @@
     document.scrollingElement?.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     window.addEventListener("load", scheduleUpdate, { once: true });
+    // Some embedded browsers update the scrolling element without dispatching
+    // a window scroll event. Keep the original event path, with a cheap
+    // position check as a compatibility fallback for wheel/touch scrolling.
+    window.setInterval(update, 120);
     document.addEventListener("jobsfilterchange", build);
 
     if (jobsEl) {
