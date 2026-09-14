@@ -75,12 +75,12 @@
   .gb-toast { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); background:var(--navy); color:var(--surface); font-size:12.5px; padding:8px 16px; border-radius:8px; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.2)); opacity:0; transition:opacity .25s; pointer-events:none; z-index:5; white-space:nowrap; }
   .gb-toast.show { opacity:1; }
   [data-theme="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
-  .gb-scrollnav { position:fixed; left:11px; top:50%; width:18px; height:min(70vh,560px); transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; justify-content:space-between; gap:0; align-items:flex-start; padding:6px 0; }
-  .gb-scrollnav::before { content:""; position:absolute; left:0; top:0; bottom:0; width:1px; background:color-mix(in srgb,var(--line-strong) 42%,transparent); pointer-events:none; }
-  .gb-tick { position:relative; width:10px; height:2px; flex:0 0 2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.58; cursor:pointer; transition:width .18s ease-out,background .18s ease-out,opacity .18s ease-out; }
-  .gb-tick:hover { width:14px; opacity:.9; }
-  .gb-tick.on { width:13px; background:var(--gold); opacity:1; box-shadow:0 0 0 1px color-mix(in srgb,var(--gold) 20%,transparent); }
-  .gb-tick.cur { width:18px; background:var(--navy); opacity:1; box-shadow:0 0 0 1px color-mix(in srgb,var(--navy) 22%,transparent); }
+  .gb-scrollnav { position:fixed; left:11px; top:50%; transform:translateY(-50%); z-index:90; display:flex; flex-direction:column; gap:9px; align-items:flex-start; }
+  .gb-scrollnav:not(.ready) { display:none; }
+  .gb-tick { position:relative; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; cursor:pointer; transition:background .18s ease-out, opacity .18s ease-out; }
+  .gb-tick:hover { width:12px; opacity:.72; }
+  .gb-tick.on { background:var(--gold); opacity:.9; }
+  .gb-tick.cur { width:12px; background:var(--gold-deep); opacity:1; }
   [data-theme="dark"] .gb-tick.cur { background:var(--gold-hi); }
   .gb-ticklabel { display:none; }
   @media (max-width:720px){ .gb-scrollnav { display:none; } }
@@ -392,6 +392,7 @@
       nav.innerHTML = targets.map((t, i) =>
         '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>'
       ).join("");
+      nav.classList.toggle("ready", targets.length > 1);
       update();
     }
 
