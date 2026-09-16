@@ -75,7 +75,7 @@
   .gb-toast { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); background:var(--navy); color:var(--surface); font-size:12.5px; padding:8px 16px; border-radius:8px; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.2)); opacity:0; transition:opacity .25s; pointer-events:none; z-index:5; white-space:nowrap; }
   .gb-toast.show { opacity:1; }
   [data-theme="dark"] .gb-toast { background:var(--gold); color:var(--navy); }
-  .gb-scrollnav { position:fixed; left:11px; top:50%; width:24px; height:clamp(210px,58vh,330px); transform:translateY(-50%); z-index:90; display:block; }
+  .gb-scrollnav { position:fixed; left:11px; top:50%; width:24px; height:min(720px,calc(100vh - 48px)); transform:translateY(-50%); z-index:90; display:block; }
   .gb-scrollnav:not(.ready) { display:none; }
   .gb-tick { position:absolute; left:0; width:12px; height:2px; padding:0; border:0; border-radius:2px; background:var(--line-strong); opacity:.45; transform:translateY(-50%); cursor:pointer; transition:width .18s ease-out,background .18s ease-out,opacity .18s ease-out; }
   .gb-tick:hover { width:12px; opacity:.72; }
@@ -385,18 +385,13 @@
         if (d.style.display === "none" || seenDays.has(d.dataset.dayKey)) return false;
         seenDays.add(d.dataset.dayKey); return true;
       }) : [];
-      if (days.length < 4) {
+      if (!days.length) {
         targets = [];
         nav.innerHTML = "";
         nav.classList.remove("ready");
         return;
       }
-      const maxMarkers = 24;
-      const markerDays = days.length <= maxMarkers - 1 ? days : Array.from({ length: maxMarkers - 1 }, (_, i) => {
-        const index = Math.round(i * (days.length - 1) / (maxMarkers - 2));
-        return days[index];
-      }).filter((d, i, a) => a.indexOf(d) === i);
-      targets = [{ el: null, label: "顶部·总览" }].concat(markerDays.map(d => {
+      targets = [{ el: null, label: "顶部·总览" }].concat(days.map(d => {
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
       }));
@@ -410,12 +405,30 @@
       update();
     }
 
+    function buildPreview(data) {
+      if (targets.length || !Array.isArray(data)) return;
+      const keys = [...new Set(data.map(j => j && (j.pushTime || j.firstSeen)).filter(Boolean).map(v => {
+        const d = new Date(v); return Number.isNaN(d.getTime()) ? "" : d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      }).filter(Boolean))].sort().reverse();
+      if (!keys.length) return;
+      targets = [{ el: null, label: "顶部·总览" }].concat(keys.map(key => ({ el: null, label: key })));
+      const n = targets.length;
+      nav.innerHTML = targets.map((t, i) => {
+        const f = n > 1 ? i / (n - 1) : 0;
+        const pos = (3 + f * 94).toFixed(2);
+        return '<button class="gb-tick" type="button" tabindex="-1" data-i="' + i + '" style="top:' + pos + '%"><span class="gb-ticklabel">' + esc(t.label) + '</span></button>';
+      }).join("");
+      nav.classList.add("ready");
+    }
+
     function update() {
       if (!targets.length) return;
       const off = offset();
       let active = 0;
       for (let i = 1; i < targets.length; i++) {
-        const el = targets[i].el; if (!el) continue;
+        const el = targets[i].el || (targets[i].label && jobsEl && jobsEl.querySelector('.day[data-day-key="' + targets[i].label + '"]'));
+        if (el) targets[i].el = el;
+        if (!el) continue;
         if (el.getBoundingClientRect().top - off <= 1) active = i; else break;
       }
       if (scrollableBottom()) active = targets.length - 1;
@@ -430,8 +443,11 @@
       const t = e.target.closest(".gb-tick"); if (!t) return;
       const i = +t.dataset.i;
       const tgt = targets[i];
-      if (!tgt || !tgt.el) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
-      const y = scrollTop() + tgt.el.getBoundingClientRect().top - offset();
+      const el = tgt && (tgt.el || (tgt.label && jobsEl && jobsEl.querySelector('.day[data-day-key="' + tgt.label + '"]')));
+      if (el) tgt.el = el;
+      if (!tgt || (!el && i === 0)) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      if (!el) return;
+      const y = scrollTop() + el.getBoundingClientRect().top - offset();
       window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     });
 
@@ -446,6 +462,7 @@
     window.addEventListener("resize", scheduleUpdate);
     window.addEventListener("load", scheduleUpdate, { once: true });
     document.addEventListener("jobsfilterchange", build);
+    if (window.__jobsDataPromise) window.__jobsDataPromise.then(buildPreview).catch(() => {});
 
     build();
     scheduleUpdate();
