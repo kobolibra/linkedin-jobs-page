@@ -385,7 +385,18 @@
         if (d.style.display === "none" || seenDays.has(d.dataset.dayKey)) return false;
         seenDays.add(d.dataset.dayKey); return true;
       }) : [];
-      targets = [{ el: null, label: "顶部·总览" }].concat(days.map(d => {
+      if (days.length < 4) {
+        targets = [];
+        nav.innerHTML = "";
+        nav.classList.remove("ready");
+        return;
+      }
+      const maxMarkers = 24;
+      const markerDays = days.length <= maxMarkers - 1 ? days : Array.from({ length: maxMarkers - 1 }, (_, i) => {
+        const index = Math.round(i * (days.length - 1) / (maxMarkers - 2));
+        return days[index];
+      }).filter((d, i, a) => a.indexOf(d) === i);
+      targets = [{ el: null, label: "顶部·总览" }].concat(markerDays.map(d => {
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
       }));
@@ -436,15 +447,6 @@
     window.addEventListener("load", scheduleUpdate, { once: true });
     document.addEventListener("jobsfilterchange", build);
 
-    if (jobsEl) {
-      let deb;
-      let firstMutation = true;
-      const obs = new MutationObserver(() => {
-        if (firstMutation) { firstMutation = false; build(); }
-        clearTimeout(deb); deb = setTimeout(build, 160);
-      });
-      obs.observe(jobsEl, { childList: true });
-    }
     build();
     scheduleUpdate();
   })();
