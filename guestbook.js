@@ -438,7 +438,11 @@
 
     if (jobsEl) {
       let deb;
-      const obs = new MutationObserver(() => { clearTimeout(deb); deb = setTimeout(build, 160); });
+      let firstMutation = true;
+      const obs = new MutationObserver(() => {
+        if (firstMutation) { firstMutation = false; build(); }
+        clearTimeout(deb); deb = setTimeout(build, 160);
+      });
       obs.observe(jobsEl, { childList: true });
     }
     build();
