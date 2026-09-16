@@ -378,6 +378,11 @@
     function offset() { return toolbarH() + 14; }
     function scrollTop() { return document.scrollingElement ? document.scrollingElement.scrollTop : window.scrollY; }
     function scrollableBottom() { return window.innerHeight + scrollTop() >= document.documentElement.scrollHeight - 2; }
+    function fitHeight(count) {
+      const viewportMax = Math.max(44, window.innerHeight - 48);
+      const desired = Math.max(44, (Math.max(1, count) - 1) * 12 + 24);
+      nav.style.height = Math.min(720, viewportMax, desired) + "px";
+    }
 
     function build() {
       const seenDays = new Set();
@@ -395,6 +400,7 @@
         const dd = d.querySelector(".day-date");
         return { el: d, label: dd ? dd.textContent.trim() : "" };
       }));
+      fitHeight(targets.length);
       const n = targets.length;
       nav.innerHTML = targets.map((t, i) => {
         const f = n > 1 ? i / (n - 1) : 0;
@@ -412,6 +418,7 @@
       }).filter(Boolean))].sort().reverse();
       if (!keys.length) return;
       targets = [{ el: null, label: "顶部·总览" }].concat(keys.map(key => ({ el: null, label: key })));
+      fitHeight(targets.length);
       const n = targets.length;
       nav.innerHTML = targets.map((t, i) => {
         const f = n > 1 ? i / (n - 1) : 0;
