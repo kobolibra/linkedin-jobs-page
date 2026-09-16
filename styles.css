@@ -5,7 +5,7 @@
    ========================================================= */
 
 :root {
-  --bg:#f4f1e9;
+  --bg:#ece7dd;
   --surface:#f4f1e9;
   --surface-2:#e2dccd;
   --ink:#1a1916;
@@ -57,7 +57,7 @@
 }
 
 [data-theme="dark"] {
-  --bg:#1a2b3a;
+  --bg:#132333;
   --surface:#1a2b3a;
   --surface-2:#263b4b;
   --ink:#f5f0e8;
