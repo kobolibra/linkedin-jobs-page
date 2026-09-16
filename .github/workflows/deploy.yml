@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'jobs.json'
+      - 'pv.json'
       - 'index.html'
       - '*.js'
       - '*.css'
@@ -20,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Refresh same-origin visitor count
+        run: python3 scripts/publish_pv.py pv.json
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
