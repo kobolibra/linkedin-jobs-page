@@ -9,7 +9,7 @@ from pathlib import Path
 TARGET_COMPANIES = {
     "ubs", "state street", "jpmorgan chase", "dbs bank", "morgan stanley", "anz",
     "standard chartered", "hsbc", "citi", "societe generale", "bnp paribas",
-    "deutsche bank", "goldman sachs", "blackrock", "bank of america",
+    "deutsche bank", "goldman sachs", "blackrock", "bbva", "natixis", "bank of america",
 }
 TITLE_TOKEN_ALIASES = {
     "sr": ["senior"], "snr": ["senior"], "mgr": ["manager"],
@@ -50,7 +50,8 @@ def normalize_company(value):
         "dbs": "dbs bank", "dbsbank": "dbs bank",
         "deutschebank": "deutsche bank", "goldmansachs": "goldman sachs",
         "blackrock": "blackrock", "blackrockinc": "blackrock",
-        "morganstanley": "morgan stanley", "bankofamerica": "bank of america",
+        "morganstanley": "morgan stanley", "bbva": "bbva", "natixis": "natixis",
+        "natixiscorporateinvestmentbanking": "natixis", "bankofamerica": "bank of america",
     }
     return aliases.get(compact, company)
 

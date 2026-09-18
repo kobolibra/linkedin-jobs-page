@@ -51,6 +51,12 @@ jobs:
           - key: morgan_stanley
             company: Morgan Stanley
             company_id: "497017"
+          - key: bbva
+            company: BBVA
+            company_id: "4860,35712,582186,163937,3837790,11115790,2539533,311274,18473960,70646,1320205,23514,3101077"
+          - key: natixis
+            company: Natixis
+            company_id: "79376776,11369861"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
