@@ -79,7 +79,7 @@ const cityOf=job=>{
   const city=String(job?.city||"").trim();
   if(city)return city;
   const raw=String(job?.locationRaw||"").split(",")[0].trim();
-  return raw||"未标注城市";
+  return raw||"N/A";
 };
 const companyKey=name=>String(name||"").trim().toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"");
 const canonicalCompany=name=>{
@@ -157,7 +157,7 @@ jobsEl.addEventListener("click",e=>{
 jobsEl.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const sub=e.target.closest(".job-sub-link");if(!sub)return;e.preventDefault();const card=sub.closest(".job"),c=card?.dataset.comp;if(c){companyEl.value=c;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});}});
 const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
 let activeRegion="all",activeCity="all",favOnly=false,blockedOpen=false,simpleFilterActive=true;
-let daySections=[],jobCards=[];
+let daySections=[],jobCards=[],filteredCards=new Set();
 const regionActiveTotals={CN:0,HK:0,SG:0,OTHER:0};
 let top50Mode="all",top50Rows=[];
 const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title");
@@ -428,7 +428,7 @@ jobsDataPromise
     let first=true;
     for(const[key,g]of renderGroups){
       if(!first)await new Promise(resolve=>setTimeout(resolve,0));
-      const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j))sec._regionActiveCounts[region]++;});daySections.push(sec);
+      const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};sec._activeCount=0;g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j)){sec._regionActiveCounts[region]++;sec._activeCount++;}});daySections.push(sec);
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
@@ -492,13 +492,13 @@ function apply(){
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
   const canFastFilter=!q&&comp==="all"&&ageSel==="all"&&kwArr.length===0&&!favOnly&&activeCity==="all"&&(activeRegion==="all"||REGIONS[activeRegion]);
   if(canFastFilter){
-    if(!simpleFilterActive)jobCards.forEach(card=>{card.classList.remove("hidden");card.style.display="";});
+    if(!simpleFilterActive){filteredCards.forEach(card=>{card.classList.remove("hidden");card.style.display="";card._filterVisible=true;});filteredCards.clear();}
     simpleFilterActive=true;
     if(activeRegion==="all")delete jobsEl.dataset.fastRegion;else jobsEl.dataset.fastRegion=activeRegion;
     let visible=0,displayed=0;const dayActive=new Map();
     daySections.forEach(sec=>{
       const shown=activeRegion==="all"?sec._jobCards.length:sec._regionCounts[activeRegion];
-      const active=activeRegion==="all"?sec._jobCards.filter(card=>card.dataset.status!=="expired").length:sec._regionActiveCounts[activeRegion];
+      const active=activeRegion==="all"?sec._activeCount:sec._regionActiveCounts[activeRegion];
       sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;sec._filteredShown=shown;sec.style.display=shown?"":"none";dayActive.set(sec.dataset.dayKey,(dayActive.get(sec.dataset.dayKey)||0)+active);visible+=active;displayed+=shown;
     });
     const visibleDays=new Set();
@@ -525,6 +525,7 @@ function apply(){
       if(base&&comp!=="all"&&age!=null&&card.dataset.status!=="expired"){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
       if(card._filterVisible!==ok){
         card._filterVisible=ok;
+        filteredCards.add(card);
         card.classList.toggle("hidden",!ok);
         card.style.display=ok?"":"none";
       }

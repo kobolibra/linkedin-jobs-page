@@ -22,7 +22,7 @@
 .seg[data-region="SG"].active { background:var(--sg);color:#fff; }
 .seg[data-region="OTHER"].active { background:var(--other);color:#fff; }
 [data-theme="dark"] .seg[data-region="all"].active { background:var(--gold);color:#131210; }
-.city-filter { appearance:none;-webkit-appearance:none;border:0;background:transparent;background-image:var(--caret);background-repeat:no-repeat;background-position:right 7px center;background-size:12px 12px;color:var(--ink-soft);font-family:var(--sans);font-size:12.5px;font-weight:600;min-width:112px;max-width:168px;padding:5px 24px 5px 9px;border-radius:7px;cursor:pointer;transition:color .18s var(--ease),background-color .18s var(--ease); }
+.city-filter { appearance:none;-webkit-appearance:none;box-sizing:border-box;border:0;background:transparent;background-image:var(--caret);background-repeat:no-repeat;background-position:right 7px center;background-size:12px 12px;color:var(--ink-soft);font-family:var(--sans);font-size:12.5px;font-weight:600;min-width:96px;width:132px;max-width:132px;padding:5px 24px 5px 9px;border-radius:7px;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 132px;transition:color .18s var(--ease),background-color .18s var(--ease); }
 .city-filter:hover { color:var(--ink);background-color:var(--surface-2); }
 .city-filter:focus { outline:none;box-shadow:0 0 0 3px var(--accent-soft); }
 .city-filter.on { color:var(--cn);background-color:color-mix(in srgb,var(--cn) 13%,transparent);font-weight:700; }
@@ -207,7 +207,7 @@ body.compact .day-head { padding-bottom:6px; }
   .search { width:100%;min-width:0; }
   .segmented { width:auto;min-width:0;white-space:nowrap; }
   .seg { padding-left:8px;padding-right:8px; }
-  .city-filter { min-width:122px;max-width:150px; }
+  .city-filter { min-width:96px;width:132px;max-width:132px; }
   #age { width:92px;min-width:92px;max-width:92px;padding-left:8px;padding-right:24px;background-position:right 6px center; }
   .comp-group { width:100%;min-width:0;max-width:145px; }
   .comp-group select.ctrl { width:100%;min-width:0;max-width:none;padding-left:8px; }
@@ -224,7 +224,7 @@ body.compact .day-head { padding-bottom:6px; }
   .search .s-key { display:none; }
   .segmented { width:100%; }
   .seg { flex:1;text-align:center;padding:6px 4px; }
-  .city-filter { flex:1;min-width:0;max-width:none;text-align:center;padding:6px 22px 6px 4px;background-position:right 6px center; }
+  .city-filter { flex:1 1 0;min-width:0;width:0;max-width:none;text-align:center;padding:6px 22px 6px 4px;background-position:right 6px center; }
   select.ctrl { flex:1 1 calc(50% - 4px);min-width:0;max-width:none;width:100%; }
   .comp-group { flex:1 1 calc(50% - 4px);min-width:0; }
   .comp-group select.ctrl { flex:1;min-width:0;max-width:none;width:auto; }
