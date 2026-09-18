@@ -448,11 +448,11 @@ jobsDataPromise
       if(!next)return;e.preventDefault();next.focus();setRegion(next.dataset.region);
     });
     favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
-    let _searchTimer=null;
+    let _searchTimer=null, _searchFrame=0;
     searchEl.addEventListener("input",()=>{
       clearTimeout(_searchTimer);
-      if(searchEl.value===""){apply();}
-      else{_searchTimer=setTimeout(apply,200);}
+      cancelAnimationFrame(_searchFrame);
+      _searchTimer=setTimeout(()=>{_searchFrame=requestAnimationFrame(()=>{_searchFrame=0;apply();});},180);
     });
     companyEl.addEventListener("change",apply);
     ageEl.addEventListener("change",apply);
@@ -476,12 +476,21 @@ function apply(){
       const base=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(comp==="all"||card.dataset.comp===comp)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
       const ok=base&&ageMatch(ageSel,age);
       if(base&&comp!=="all"&&age!=null&&card.dataset.status!=="expired"){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
-      card.classList.toggle("hidden",!ok);card.style.display=ok?"":"none";if(ok){shown++;if(card.dataset.status!=="expired")shownActive++;}
+      if(card._filterVisible!==ok){
+        card._filterVisible=ok;
+        card.classList.toggle("hidden",!ok);
+        card.style.display=ok?"":"none";
+      }
+      if(ok){shown++;if(card.dataset.status!=="expired")shownActive++;}
     });
     const total=dayTotals.get(sec.dataset.dayKey)||{shown:0,active:0};
     total.shown+=shown;total.active+=shownActive;dayTotals.set(sec.dataset.dayKey,total);
     sec._filteredShown=shown;
-    sec.style.display=shown?"":"none";sec.style.height="auto";sec.style.minHeight="0";visible+=shownActive;displayed+=shown;
+    const sectionVisible=shown>0;
+    if(sec._filterVisible!==sectionVisible){sec._filterVisible=sectionVisible;sec.style.display=sectionVisible?"":"none";}
+    if(sec.style.height!=="auto")sec.style.height="auto";
+    if(sec.style.minHeight!=="0px")sec.style.minHeight="0";
+    visible+=shownActive;displayed+=shown;
   });
   const visibleDays=new Set();
   daySections.forEach(sec=>{
