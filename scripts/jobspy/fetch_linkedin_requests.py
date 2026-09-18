@@ -34,6 +34,10 @@ COMPANIES = {
     "Deutsche Bank": {"canonical": "deutsche bank", "company_id": "1262", "variants": ["deutsche bank"]},
     "Goldman Sachs": {"canonical": "goldman sachs", "company_id": "1382", "variants": ["goldman sachs"]},
     "BlackRock": {"canonical": "blackrock", "company_id": "4764", "variants": ["blackrock", "black rock"]},
+    "Morgan Stanley": {"canonical": "morgan stanley", "company_id": "497017", "variants": ["morgan stanley"]},
+    "BBVA": {"canonical": "bbva", "company_id": "4860,35712,582186,163937,3837790,11115790,2539533,311274,18473960,70646,1320205,23514,3101077", "variants": ["bbva"]},
+    "Natixis": {"canonical": "natixis", "company_id": "79376776,11369861", "variants": ["natixis", "natixis corporate & investment banking"]},
+    "UBS": {"canonical": "ubs", "company_id": "1214", "variants": ["ubs", "ubs group"]},
 }
 
 

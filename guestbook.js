@@ -468,7 +468,15 @@
     document.scrollingElement?.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     window.addEventListener("load", scheduleUpdate, { once: true });
-    document.addEventListener("jobsfilterchange", build);
+    // Filtering can run several times while the user is typing. Rebuilding
+    // the scroll navigation synchronously on every keystroke adds a second
+    // full DOM pass on top of the job-card filter. Coalesce it into one frame.
+    let buildRaf = 0;
+    const scheduleBuild = () => {
+      if (buildRaf) return;
+      buildRaf = requestAnimationFrame(() => { buildRaf = 0; build(); });
+    };
+    document.addEventListener("jobsfilterchange", scheduleBuild);
     if (window.__jobsDataPromise) window.__jobsDataPromise.then(buildPreview).catch(() => {});
 
     build();
