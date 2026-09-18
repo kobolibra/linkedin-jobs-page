@@ -156,8 +156,9 @@ jobsEl.addEventListener("click",e=>{
 });
 jobsEl.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const sub=e.target.closest(".job-sub-link");if(!sub)return;e.preventDefault();const card=sub.closest(".job"),c=card?.dataset.comp;if(c){companyEl.value=c;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});}});
 const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
-let activeRegion="all",activeCity="all",favOnly=false,blockedOpen=false;
+let activeRegion="all",activeCity="all",favOnly=false,blockedOpen=false,simpleFilterActive=true;
 let daySections=[],jobCards=[];
+const regionActiveTotals={CN:0,HK:0,SG:0,OTHER:0};
 let top50Mode="all",top50Rows=[];
 const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title");
 function updateTop50Slider(mode){
@@ -375,7 +376,8 @@ jobsDataPromise
     const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
     document.getElementById("stat-updated").textContent=lastUpdText;
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
-    const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
+    activeData.forEach(j=>{const region=norm(j.location);if(regionActiveTotals[region]!=null)regionActiveTotals[region]++;});
+    const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>{if(a==="未标注城市")return 1;if(b==="未标注城市")return -1;return a.localeCompare(b,"zh-Hans-CN");});
     cities.forEach(city=>{const o=document.createElement("option");o.value=city;o.textContent=city;cityEl.appendChild(o);});
     const rc={CN:0,HK:0,SG:0,OTHER:0};activeData.forEach(j=>rc[norm(j.location)]++);
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
@@ -426,7 +428,7 @@ jobsDataPromise
     let first=true;
     for(const[key,g]of renderGroups){
       if(!first)await new Promise(resolve=>setTimeout(resolve,0));
-      const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";daySections.push(sec);
+      const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j))sec._regionActiveCounts[region]++;});daySections.push(sec);
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
@@ -485,10 +487,30 @@ jobsDataPromise
   .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
 function apply(){
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
-  daySections.forEach(sec=>{sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;});
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   cityEl.classList.toggle("on",activeCity!=="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
+  const canFastFilter=!q&&comp==="all"&&ageSel==="all"&&kwArr.length===0&&!favOnly&&activeCity==="all"&&(activeRegion==="all"||REGIONS[activeRegion]);
+  if(canFastFilter){
+    if(!simpleFilterActive)jobCards.forEach(card=>{card.classList.remove("hidden");card.style.display="";});
+    simpleFilterActive=true;
+    if(activeRegion==="all")delete jobsEl.dataset.fastRegion;else jobsEl.dataset.fastRegion=activeRegion;
+    let visible=0,displayed=0;const dayActive=new Map();
+    daySections.forEach(sec=>{
+      const shown=activeRegion==="all"?sec._jobCards.length:sec._regionCounts[activeRegion];
+      const active=activeRegion==="all"?sec._jobCards.filter(card=>card.dataset.status!=="expired").length:sec._regionActiveCounts[activeRegion];
+      sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;sec._filteredShown=shown;sec.style.display=shown?"":"none";dayActive.set(sec.dataset.dayKey,(dayActive.get(sec.dataset.dayKey)||0)+active);visible+=active;displayed+=shown;
+    });
+    const visibleDays=new Set();
+    daySections.forEach(sec=>{if(sec.style.display==="none"||visibleDays.has(sec.dataset.dayKey))return;visibleDays.add(sec.dataset.dayKey);const active=dayActive.get(sec.dataset.dayKey)||0;const head=sec.querySelector('.day-head');const c=head?.querySelector('[data-role="daycount"]');if(c)c.textContent=active+" 个有效职位";});
+    countEl.innerHTML="有效 <b>"+visible+"</b> 个职位";
+    emptyEl.classList.toggle("show",displayed===0);
+    if(typeof renderCo==="function")renderCo(null,[],{},ageSel);
+    document.dispatchEvent(new CustomEvent("jobsfilterchange"));
+    return;
+  }
+  if(simpleFilterActive){delete jobsEl.dataset.fastRegion;simpleFilterActive=false;}
+  daySections.forEach(sec=>{sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;});
   let visible=0,displayed=0;
   const dayTotals=new Map();
   const coAges=[],coRegions={};
