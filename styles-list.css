@@ -112,6 +112,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job:hover::before { opacity:1; }
 .job:last-child { border-bottom:0; }
 .job.hidden { display:none; }
+#jobs[data-fast-region="CN"] .job:not([data-region="CN"]),#jobs[data-fast-region="HK"] .job:not([data-region="HK"]),#jobs[data-fast-region="SG"] .job:not([data-region="SG"]),#jobs[data-fast-region="OTHER"] .job:not([data-region="OTHER"]) { display:none !important; }
 .job.read .job-title { color:var(--ink-faint);font-weight:400; }
 .job.read .mono { opacity:.45; }
 /* 首字母方块：原设计的地区色块 */
