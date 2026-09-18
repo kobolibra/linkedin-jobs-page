@@ -48,6 +48,9 @@ jobs:
           - key: blackrock
             company: BlackRock
             company_id: "4764"
+          - key: morgan_stanley
+            company: Morgan Stanley
+            company_id: "497017"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
