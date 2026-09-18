@@ -57,6 +57,9 @@ jobs:
           - key: natixis
             company: Natixis
             company_id: "79376776,11369861"
+          - key: ubs
+            company: UBS
+            company_id: "1214"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

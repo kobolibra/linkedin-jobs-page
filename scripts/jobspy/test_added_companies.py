@@ -20,6 +20,7 @@ expected = {
     "Morgan Stanley": "497017",
     "BBVA": "4860",
     "Natixis": "79376776",
+    "UBS": "1214",
 }
 for name, company_id in expected.items():
     assert name in mod.COMPANIES, name
