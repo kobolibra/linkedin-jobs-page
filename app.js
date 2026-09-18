@@ -377,7 +377,7 @@ jobsDataPromise
     document.getElementById("stat-updated").textContent=lastUpdText;
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
     activeData.forEach(j=>{const region=norm(j.location);if(regionActiveTotals[region]!=null)regionActiveTotals[region]++;});
-    const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>{if(a==="未标注城市")return 1;if(b==="未标注城市")return -1;return a.localeCompare(b,"zh-Hans-CN");});
+    const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>{if(a==="N/A")return 1;if(b==="N/A")return -1;return a.localeCompare(b,"zh-Hans-CN");});
     cities.forEach(city=>{const o=document.createElement("option");o.value=city;o.textContent=city;cityEl.appendChild(o);});
     const rc={CN:0,HK:0,SG:0,OTHER:0};activeData.forEach(j=>rc[norm(j.location)]++);
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
@@ -489,6 +489,7 @@ function apply(){
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   cityEl.classList.toggle("on",activeCity!=="all");
+  cityEl.classList.toggle("is-default",cityEl.value==="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
   const canFastFilter=!q&&comp==="all"&&ageSel==="all"&&kwArr.length===0&&!favOnly&&activeCity==="all"&&(activeRegion==="all"||REGIONS[activeRegion]);
   if(canFastFilter){
