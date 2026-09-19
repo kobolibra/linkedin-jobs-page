@@ -278,8 +278,10 @@ body.compact .day-head { padding-bottom:6px; }
   body.compact .day { margin-top:var(--s5); }
 }
 @media (max-width:420px) {
-  .day-head { flex-wrap:wrap;gap:4px var(--s2); }
-  .day-meta { margin-left:0; }
+  .day-head { display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:baseline;column-gap:var(--s2);row-gap:4px; }
+  .day-date { min-width:0; }
+  .day-meta { margin-left:0;text-align:right; }
+  .day-new { justify-self:end; }
 }
 
 /* ---------- Print ---------- */
