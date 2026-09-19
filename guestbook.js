@@ -4,12 +4,15 @@
   const API = "https://guestbook-api.claudecowork.workers.dev";
   const LS_LIKES = "gbLikes";
   const LS_ADMIN = "gbAdminKey";
+  const LS_SEEN_AT = "gbSeenAt";
 
   // ===== 样式 =====
   const css = `
   @keyframes gbFadeUp { from { opacity:0; transform:translateY(6px);} to { opacity:1; transform:none;} }
   @keyframes gbPop { 0%{transform:scale(1)} 40%{transform:scale(1.4)} 100%{transform:scale(1)} }
   .gb-fab { position:fixed; left:22px; bottom:22px; height:42px; z-index:120; display:inline-flex; align-items:center; gap:8px; padding:0 18px 0 15px; border:1px solid var(--line-strong); border-radius:999px; background:linear-gradient(180deg,var(--navy-2),var(--navy)); color:var(--surface); font-family:var(--sans); font-size:13px; font-weight:650; cursor:pointer; box-shadow:var(--shadow-strong,0 10px 28px rgba(0,0,0,.18)); transition:transform .18s, box-shadow .2s; }
+  .gb-unread { display:none; position:absolute; top:-5px; right:-5px; min-width:18px; height:18px; padding:0 5px; align-items:center; justify-content:center; border:2px solid var(--surface); border-radius:999px; background:#d94f63; color:#fff; font-family:var(--mono); font-size:10px; line-height:1; font-weight:700; font-variant-numeric:tabular-nums; box-shadow:0 3px 10px rgba(0,0,0,.22); }
+  .gb-unread.show { display:inline-flex; }
   .gb-fab:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.22); }
   .gb-fab svg { width:17px; height:17px; }
   [data-theme="dark"] .gb-fab { color:var(--navy); background:linear-gradient(180deg,var(--gold-hi),var(--gold)); }
@@ -17,6 +20,7 @@
     .gb-fab { left:16px; bottom:max(16px,env(safe-area-inset-bottom)); width:40px; height:40px; justify-content:center; padding:0; border-color:color-mix(in srgb,var(--line-strong) 72%,transparent); }
     .gb-fab svg { width:16px; height:16px; }
     .gb-fab span { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    .gb-fab .gb-unread { position:absolute; width:auto; height:18px; clip:auto; overflow:visible; white-space:nowrap; }
   }
   .gb-overlay { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(8,16,28,.46); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity .25s; }
   .gb-overlay.open { opacity:1; pointer-events:auto; }
@@ -97,7 +101,7 @@
   fab.className = "gb-fab";
   fab.type = "button";
   fab.setAttribute("aria-label", "留言");
-  fab.innerHTML = BUBBLE + "<span>留言</span>";
+  fab.innerHTML = BUBBLE + "<span>留言</span><b class=\"gb-unread\" id=\"gbUnread\" aria-label=\"新留言\"></b>";
   document.body.appendChild(fab);
 
   // ===== 弹窗 =====
@@ -129,11 +133,14 @@
   const submitEl = overlay.querySelector("#gbSubmit");
   const actionsEl = formEl.querySelector(".gb-actions");
   const toastEl = overlay.querySelector("#gbToast");
+  const unreadEl = fab.querySelector("#gbUnread");
 
   // ===== 状态 =====
   let messages = [];
   let replyOpen = null;
   let loaded = false;
+  let hasSeenBaseline = Number.isFinite(Number(localStorage.getItem(LS_SEEN_AT)));
+  let seenAt = Number(localStorage.getItem(LS_SEEN_AT)) || 0;
   const likedSet = new Set(JSON.parse(localStorage.getItem(LS_LIKES) || "[]"));
   // 管理员密钥改用 sessionStorage：仅在当前标签页会话内有效，关闭标签页后自动失效，降低长期明文留存的风险。
   let adminKey = sessionStorage.getItem(LS_ADMIN) || "";
@@ -181,6 +188,30 @@
       if (Array.isArray(n.replies) && n.replies.length) n.replies = removeNode(n.replies, id);
       return n;
     });
+  }
+  function messageTimes(list) {
+    const times = [];
+    (list || []).forEach(m => {
+      const time = Date.parse(m.time || "");
+      if (Number.isFinite(time)) times.push(time);
+      if (Array.isArray(m.replies)) times.push(...messageTimes(m.replies));
+    });
+    return times;
+  }
+  function latestMessageTime(list) {
+    return Math.max(0, ...messageTimes(list));
+  }
+  function updateUnread() {
+    const unread = hasSeenBaseline ? messageTimes(messages).filter(time => time > seenAt).length : 0;
+    unreadEl.textContent = unread > 99 ? "99+" : String(unread);
+    unreadEl.classList.toggle("show", unread > 0 && !overlay.classList.contains("open"));
+    fab.setAttribute("aria-label", unread > 0 ? "留言，有 " + unread + " 条新留言" : "留言");
+  }
+  function markSeen() {
+    const latest = latestMessageTime(messages);
+    if (latest > 0) { seenAt = latest; localStorage.setItem(LS_SEEN_AT, String(seenAt)); }
+    hasSeenBaseline = true;
+    updateUnread();
   }
 
   // ===== 渲染 =====
@@ -231,10 +262,20 @@
   }
 
   // ===== 加载 =====
-  function load() {
+  function load(options = {}) {
     fetch(API, { method: "GET" })
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(data => { messages = Array.isArray(data) ? data : []; render(); })
+      .then(data => {
+        const next = Array.isArray(data) ? data : [];
+        const newest = latestMessageTime(next);
+        if (!hasSeenBaseline) {
+          seenAt = newest; hasSeenBaseline = true;
+          if (newest > 0) localStorage.setItem(LS_SEEN_AT, String(newest));
+        }
+        messages = next;
+        if (options.render !== false) render();
+        updateUnread();
+      })
       .catch(() => { listEl.innerHTML = '<div class="gb-state">留言板暂时连接不上，请稍后再试～</div>'; });
   }
 
@@ -243,12 +284,19 @@
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
     if (!loaded) { loaded = true; load(); }
+    else { markSeen(); }
     setTimeout(() => textEl.focus(), 280);
   }
   function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; fab.focus({ preventScroll:true }); }
   fab.addEventListener("click", openModal);
   closeEl.addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+  function refreshUnread() {
+    if (!overlay.classList.contains("open")) load({ render: false });
+  }
+  setTimeout(refreshUnread, 1800);
+  setInterval(refreshUnread, 120000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshUnread(); });
   overlay.addEventListener("keydown", e => {
     if (e.key !== "Tab" || !overlay.classList.contains("open")) return;
     const focusable = Array.from(overlay.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), a[href]')).filter(el => el.getClientRects().length);
