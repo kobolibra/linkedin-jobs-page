@@ -261,7 +261,10 @@ body.compact .day-head { padding-bottom:6px; }
   .job-right-mobile .icon-btn svg { width:14px;height:14px; }
   .lvl { min-width:0;text-align:left; }
   .age { min-width:42px;text-align:right; }
-  .day-meta { margin-left:0; }
+  .day-head { display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:baseline;column-gap:var(--s2);row-gap:4px; }
+  .day-date { min-width:0; }
+  .day-meta { margin-left:0;text-align:right; }
+  .day-new { justify-self:end; }
   .footer span,.footer a { white-space:normal; }
   /* 手机紧凑模式：行高再压一半 */
   body.compact .job { grid-template-columns:30px 1fr;gap:var(--s2);padding:5px 0; }
