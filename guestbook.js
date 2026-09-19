@@ -274,7 +274,7 @@
         }
         messages = next;
         if (options.render !== false) render();
-        updateUnread();
+        if (options.markSeen) markSeen(); else updateUnread();
       })
       .catch(() => { listEl.innerHTML = '<div class="gb-state">留言板暂时连接不上，请稍后再试～</div>'; });
   }
@@ -283,7 +283,7 @@
   function openModal() {
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
-    if (!loaded) { loaded = true; load(); }
+    if (!loaded) { loaded = true; load({ markSeen: true }); }
     else { markSeen(); }
     setTimeout(() => textEl.focus(), 280);
   }
