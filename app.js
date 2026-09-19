@@ -428,9 +428,9 @@ jobsDataPromise
     orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx||displayRegionTieBreak(x,y);});});
     const renderGroups=[];
     orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
-    let first=true;
+    let first=true,batchJobs=0,batch=document.createDocumentFragment();
     for(const[key,g]of renderGroups){
-      if(!first)await new Promise(resolve=>setTimeout(resolve,0));
+      if(!first&&batchJobs>=1200){jobsEl.appendChild(batch);batch=document.createDocumentFragment();batchJobs=0;await new Promise(resolve=>setTimeout(resolve,0));}
       const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};sec._activeCount=0;g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j)){sec._regionActiveCounts[region]++;sec._activeCount++;}});daySections.push(sec);
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
@@ -445,8 +445,9 @@ jobsDataPromise
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
       jobCards.push(...sec._jobCards);
-      jobsEl.appendChild(sec);first=false;
+      batch.appendChild(sec);batchJobs+=g.items.length;first=false;
     }
+    if(batchJobs)jobsEl.appendChild(batch);
     const setRegion=region=>{
       const b=regionsEl.querySelector('.seg[data-region="'+region+'"]');if(!b)return;
       regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
