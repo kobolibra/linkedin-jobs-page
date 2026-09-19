@@ -295,7 +295,6 @@
     if (!overlay.classList.contains("open")) load({ render: false });
   }
   setTimeout(refreshUnread, 1800);
-  setInterval(refreshUnread, 120000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshUnread(); });
   overlay.addEventListener("keydown", e => {
     if (e.key !== "Tab" || !overlay.classList.contains("open")) return;
