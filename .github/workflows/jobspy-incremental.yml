@@ -13,53 +13,7 @@ permissions:
 jobs:
   search:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      max-parallel: 2
-      matrix:
-        include:
-          - key: hsbc
-            company: HSBC
-            company_id: "1241"
-          - key: standard_chartered
-            company: Standard Chartered
-            company_id: "2235"
-          - key: citi
-            company: Citi
-            company_id: "11448"
-          - key: jpmorgan_chase
-            company: JPMorgan Chase
-            company_id: "1068"
-          - key: bnp_paribas
-            company: BNP Paribas
-            company_id: "166278,963211,256009,11092068,30590982,10070,18735883,98774,15245937,3683364,3880216,3625182,3627928,1519,281207,2642837,251838,1508"
-          - key: societe_generale
-            company: Societe Generale
-            company_id: "1691"
-          - key: dbs_bank
-            company: DBS Bank
-            company_id: "163379"
-          - key: deutsche_bank
-            company: Deutsche Bank
-            company_id: "1262"
-          - key: goldman_sachs
-            company: Goldman Sachs
-            company_id: "1382"
-          - key: blackrock
-            company: BlackRock
-            company_id: "4764"
-          - key: morgan_stanley
-            company: Morgan Stanley
-            company_id: "497017"
-          - key: bbva
-            company: BBVA
-            company_id: "4860,35712,582186,163937,3837790,11115790,2539533,311274,18473960,70646,1320205,23514,3101077"
-          - key: natixis
-            company: Natixis
-            company_id: "79376776,11369861"
-          - key: ubs
-            company: UBS
-            company_id: "1214"
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -67,22 +21,19 @@ jobs:
           python-version: "3.11"
       - name: Install scraper dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Search full company listing
-        continue-on-error: true
+      - name: Search full company listings
         run: |
-          mkdir -p data/jobspy/incremental/search
-          python scripts/jobspy/fetch_linkedin_requests.py \
-            --company "${{ matrix.company }}" \
-            --company-id "${{ matrix.company_id }}" \
+          python scripts/jobspy/run_company_searches.py \
+            --output-dir data/jobspy/incremental/search \
             --results-per-company 1000 \
             --delay-min 2 \
             --delay-max 5 \
             --page-timeout 20 \
-            --output "data/jobspy/incremental/search/${{ matrix.key }}.json"
+            --max-workers 2
       - uses: actions/upload-artifact@v4
         with:
-          name: jobspy-${{ matrix.key }}
-          path: data/jobspy/incremental/search/${{ matrix.key }}.json
+          name: jobspy-search-results
+          path: data/jobspy/incremental/search/*.json
           retention-days: 7
           if-no-files-found: ignore
 
