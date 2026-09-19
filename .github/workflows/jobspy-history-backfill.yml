@@ -42,6 +42,8 @@ jobs:
             --company "Deutsche Bank" \
             --company "Goldman Sachs" \
             --company "BlackRock" \
+            --company "Bank of America" \
+            --company "Fidelity International" \
             --results-per-company "${{ inputs.results_per_company }}" \
             --delay-min 2 \
             --delay-max 5 \
@@ -80,6 +82,8 @@ jobs:
               'Deutsche Bank': ('deutsche_bank','1262'),
               'Goldman Sachs': ('goldman_sachs','1382'),
               'BlackRock': ('blackrock','4764'),
+              'Bank of America': ('bank_of_america','1123'),
+              'Fidelity International': ('fidelity_international','1313'),
           }
           for company,(key,company_id) in specs.items():
               selected=[x for x in rows if x.get('requestedCompany')==company]
