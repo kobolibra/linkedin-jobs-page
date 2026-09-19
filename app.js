@@ -159,9 +159,27 @@ jobsEl.addEventListener("click",e=>{
 });
 jobsEl.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const sub=e.target.closest(".job-sub-link");if(!sub)return;e.preventDefault();const card=sub.closest(".job"),c=card?.dataset.comp;if(c){companyEl.value=c;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});}});
 const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
-let activeRegion="all",activeCity="all",favOnly=false,blockedOpen=false,simpleFilterActive=true;
+let activeRegion="all",activeCity="all",favOnly=false,blockedOpen=false,simpleFilterActive=true,renderReady=false;
 let daySections=[],jobCards=[],filteredCards=new Set();
 const regionActiveTotals={CN:0,HK:0,SG:0,OTHER:0};
+const setRegion=region=>{
+  const b=regionsEl.querySelector('.seg[data-region="'+region+'"]');if(!b)return;
+    regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
+    b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=region;
+    if(region!=="CN"){activeCity="all";cityEl.value="all";}
+    regionsEl.dataset.pendingRegion=region;
+    if(renderReady)apply();
+  };
+  regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(b)setRegion(b.dataset.region);});
+  regionsEl.addEventListener("keydown",e=>{
+    const current=e.target.closest(".seg");if(!current)return;
+    const tabs=[...regionsEl.querySelectorAll(".seg")];let next=null;
+    if(e.key==="ArrowRight")next=tabs[(tabs.indexOf(current)+1)%tabs.length];
+    else if(e.key==="ArrowLeft")next=tabs[(tabs.indexOf(current)-1+tabs.length)%tabs.length];
+    else if(e.key==="Home")next=tabs[0];
+    else if(e.key==="End")next=tabs[tabs.length-1];
+    if(!next)return;e.preventDefault();next.focus();setRegion(next.dataset.region);
+  });
 let top50Mode="all",top50Rows=[];
 const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title");
 function updateTop50Slider(mode){
@@ -448,23 +466,6 @@ jobsDataPromise
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;
     }
     if(batchJobs)jobsEl.appendChild(batch);
-    const setRegion=region=>{
-      const b=regionsEl.querySelector('.seg[data-region="'+region+'"]');if(!b)return;
-      regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
-      b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=region;
-      if(region!=="CN"){activeCity="all";cityEl.value="all";}
-      apply();
-    };
-    regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(b)setRegion(b.dataset.region);});
-    regionsEl.addEventListener("keydown",e=>{
-      const current=e.target.closest(".seg");if(!current)return;
-      const tabs=[...regionsEl.querySelectorAll(".seg")];let next=null;
-      if(e.key==="ArrowRight")next=tabs[(tabs.indexOf(current)+1)%tabs.length];
-      else if(e.key==="ArrowLeft")next=tabs[(tabs.indexOf(current)-1+tabs.length)%tabs.length];
-      else if(e.key==="Home")next=tabs[0];
-      else if(e.key==="End")next=tabs[tabs.length-1];
-      if(!next)return;e.preventDefault();next.focus();setRegion(next.dataset.region);
-    });
     favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);apply();});
     let _searchTimer=null, _searchFrame=0;
     searchEl.addEventListener("input",()=>{
@@ -486,6 +487,8 @@ jobsDataPromise
       }
       apply();
     });
+    renderReady=true;
+    delete regionsEl.dataset.pendingRegion;
     apply();
   })
   .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
