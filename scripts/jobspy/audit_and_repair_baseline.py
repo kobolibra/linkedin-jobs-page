@@ -25,6 +25,12 @@ TARGETS = {
     "goldman sachs": "Goldman Sachs",
     "blackrock": "BlackRock",
     "black rock": "BlackRock",
+    "bank of america": "Bank of America",
+    "bankofamerica": "Bank of America",
+    "bofa": "Bank of America",
+    "bofa securities": "Bank of America",
+    "fidelity international": "Fidelity International",
+    "fil investment management": "Fidelity International",
 }
 
 def norm(v: object) -> str:
@@ -45,6 +51,8 @@ def canonical_company(v: object) -> str:
     if compact == "deutschebank": return "deutsche bank"
     if compact == "goldmansachs": return "goldman sachs"
     if compact in {"blackrock", "black rock"}: return "blackrock"
+    if compact in {"bankofamerica", "bankofamericacorporation", "bofa", "bofasecurities", "bankofamericamerrilllynch"}: return "bank of america"
+    if compact in {"fidelityinternational", "filinvestmentmanagement", "fidelityinvestmentmanagers"}: return "fidelity international"
     return raw
 
 def www_url(value: object) -> str:
@@ -71,7 +79,7 @@ def main() -> int:
         raw_location = norm(item.get("locationRaw"))
         if any(x in raw_location for x in ("hong kong", "hongkong", "macau", "macao", "澳门")):
             dropped.append(item); drop_counts["non_mainland:" + str(item.get("locationRaw", ""))] += 1; continue
-        target = TARGETS.get(actual, {"hsbc":"HSBC","standard chartered":"Standard Chartered","citi":"Citi","jpmorgan chase":"JPMorgan Chase","bnp paribas":"BNP Paribas","societe generale":"Societe Generale","dbs bank":"DBS Bank","deutsche bank":"Deutsche Bank","goldman sachs":"Goldman Sachs","blackrock":"BlackRock"}.get(actual))
+        target = TARGETS.get(actual, {"hsbc":"HSBC","standard chartered":"Standard Chartered","citi":"Citi","jpmorgan chase":"JPMorgan Chase","bnp paribas":"BNP Paribas","societe generale":"Societe Generale","dbs bank":"DBS Bank","deutsche bank":"Deutsche Bank","goldman sachs":"Goldman Sachs","blackrock":"BlackRock","bank of america":"Bank of America","fidelity international":"Fidelity International"}.get(actual))
         if not target:
             dropped.append(item); drop_counts[item.get("company", "")] += 1; continue
         item["requestedCompany"] = target

@@ -17,6 +17,8 @@ expected = {
     "Deutsche Bank": "1262",
     "Goldman Sachs": "1382",
     "BlackRock": "4764",
+    "Bank of America": "1123",
+    "Fidelity International": "1313",
     "Morgan Stanley": "497017",
     "BBVA": "4860",
     "Natixis": "79376776",
@@ -27,6 +29,10 @@ for name, company_id in expected.items():
     assert mod.COMPANIES[name]["company_id"].split(",")[0] == company_id
     assert mod.company_match(name, name)
 assert mod.company_match("Société Générale", "Societe Generale")
+assert mod.company_match("Bank of America", "Bank of America")
+assert mod.company_match("BofA Securities", "Bank of America")
+assert mod.company_match("Fidelity International", "Fidelity International")
+assert mod.company_match("FIL Investment Management", "Fidelity International")
 
 html = """<div class='base-search-card'>
 <a class='base-card__full-link' href='https://www.linkedin.com/jobs/view/4460000001/'></a>
