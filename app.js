@@ -104,14 +104,31 @@ function safeJdHtml(raw){
   clean(tpl.content);return tpl.innerHTML||esc(String(raw||""));
 }
 const jdById=new Map();
-function hydrateJd(card){
+let jdDetailsPromise=null;
+function loadJdDetails(){
+  if(!jdDetailsPromise){
+    jdDetailsPromise=fetch("jobs-details.json",{cache:"no-cache"})
+      .then(r=>{if(!r.ok)throw new Error("jobs-details.json HTTP "+r.status);return r.json();})
+      .then(doc=>{
+        const details=doc&&typeof doc.details==="object"?doc.details:{};
+        Object.entries(details).forEach(([id,entry])=>jdById.set(id,entry));
+        return jdById;
+      });
+  }
+  return jdDetailsPromise;
+}
+async function hydrateJd(card){
   const body=card.querySelector(".job-jd-text");
   if(!body||body.dataset.loaded==="true")return;
-  const entry=jdById.get(card.dataset.id);
-  if(!entry)return;
+  if(body.dataset.loading==="true")return;
+  body.dataset.loading="true";
+  let entry=jdById.get(card.dataset.id);
+  if(!entry){try{await loadJdDetails();entry=jdById.get(card.dataset.id);}catch(e){body.textContent="职位描述暂时无法加载，请稍后重试。";}}
+  if(!entry){delete body.dataset.loading;return;}
   const html=entry.descriptionHtml||"",text=entry.descriptionText||entry.description||jdPlainText(html);
   body.innerHTML=html?safeJdHtml(html):esc(text).replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
   body.dataset.loaded="true";
+  delete body.dataset.loading;
 }
 const monogram=n=>{const t=(n||"?").trim();return t?t[0].toUpperCase():"?";};
 const jobId=link=>{if(!link)return"";const path=String(link).split(/[?#]/)[0];const m=path.match(/(\d{5,})\/?$/)||String(link).match(/[?&]currentJobId=(\d+)/);return m?("ln:"+m[1]):path.replace(/\/+$/,"");};
@@ -370,9 +387,9 @@ function renderTop50(rows,mode="all"){
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
-const jobsDataPromise=fetch("jobs.json",{cache:"no-cache"})
-  .then(r=>{if(!r.ok)throw new Error("jobs.json HTTP "+r.status);return r.json();})
-  .then(data=>{const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);return rows.map(job=>({...job,company:canonicalCompany(job.company)}));});
+const jobsDataPromise=fetch("jobs-index.json",{cache:"no-cache"})
+  .then(r=>{if(!r.ok)throw new Error("jobs-index.json HTTP "+r.status);return r.json();})
+  .then(data=>{const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
 jobsDataPromise
   .then(async data=>{
@@ -380,11 +397,6 @@ jobsDataPromise
     // Use the deduplicated dataset as the single source for rendering and every statistic.
     data=keepLatestSameCityTitle(data);
     const activeData=data.filter(isActiveJob);
-    data.forEach(job=>{
-      const id=jobId(job.link)||(job.title+"|"+job.company);
-      const hasJd=String(job.descriptionText||job.description||job.descriptionHtml||"").trim();
-      if(id&&hasJd)jdById.set(id,job);
-    });
     const companyRegionCount=new Map();
     activeData.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
     jobsEl.innerHTML="";
@@ -444,6 +456,10 @@ jobsDataPromise
     // 8k-card list begins. This removes the perceived chained pause without
     // changing the data, ordering, or filter state.
     await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
+    const yieldToBrowser=()=>new Promise(resolve=>{
+      if("requestIdleCallback" in window)requestIdleCallback(()=>resolve(),{timeout:80});
+      else requestAnimationFrame(()=>resolve());
+    });
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
@@ -452,7 +468,7 @@ jobsDataPromise
     orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
     let first=true,batchJobs=0,batch=document.createDocumentFragment();
     for(const[key,g]of renderGroups){
-      if(!first&&batchJobs>=1200){jobsEl.appendChild(batch);batch=document.createDocumentFragment();batchJobs=0;await new Promise(resolve=>requestAnimationFrame(()=>resolve()));}
+      if(!first&&batchJobs>=600){jobsEl.appendChild(batch);batch=document.createDocumentFragment();batchJobs=0;await yieldToBrowser();}
       const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};sec._activeCount=0;g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j)){sec._regionActiveCounts[region]++;sec._activeCount++;}});daySections.push(sec);
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
@@ -461,7 +477,7 @@ jobsDataPromise
         const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
-        const hasJd=String(job.descriptionText||job.description||job.descriptionHtml||'').trim();
+        const hasJd=job.hasJd===true;
         rows.push('<article class="job'+(reads.has(id)?' read':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'><div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"></summary><div class="job-jd-text"></div></details>':'')+'<div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
       });
       sec.innerHTML=head+rows.join('');

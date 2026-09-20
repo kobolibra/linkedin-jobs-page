@@ -29,28 +29,40 @@
   };
 
   let queued = false;
-  const run = () => {
+  const run = (full = false) => {
     queued = false;
-    document.querySelectorAll('.job .status-expired-company').forEach((badge) => {
-      const job = badge.closest('.job');
+    const jobs = full ? document.querySelectorAll('.job .status-expired-company') : pending;
+    pending = new Set();
+    jobs.forEach((item) => {
+      const job = item.matches?.('.job') ? item : item.closest?.('.job');
       if (job) place(job);
     });
   };
-  const schedule = () => {
+  let pending = new Set();
+  const schedule = (items = [], full = false) => {
+    if (full) fullPending = true;
+    items.forEach((item) => {
+      if (item.nodeType !== 1) return;
+      if (item.matches?.('.job')) pending.add(item);
+      item.querySelectorAll?.('.job').forEach((job) => pending.add(job));
+    });
     if (queued) return;
     queued = true;
-    requestAnimationFrame(run);
+    const force = full || fullPending;
+    fullPending = false;
+    requestAnimationFrame(() => run(force));
   };
+  let fullPending = false;
 
   const start = () => {
     const list = document.getElementById('jobs');
-    schedule();
-    if (list) new MutationObserver(schedule).observe(list, { childList: true, subtree: true });
-    new MutationObserver(schedule).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    window.addEventListener('resize', schedule, { passive: true });
-    document.addEventListener('toggle', schedule, true);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule).catch(() => {});
-    [300, 1000, 2500].forEach((t) => setTimeout(schedule, t));
+    schedule([], true);
+    if (list) new MutationObserver((mutations) => schedule(mutations.flatMap((mutation) => [...mutation.addedNodes]))).observe(list, { childList: true, subtree: true });
+    new MutationObserver(() => schedule([], true)).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', () => schedule([], true), { passive: true });
+    document.addEventListener('toggle', (event) => schedule([event.target]), true);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => schedule([], true)).catch(() => {});
+    [300, 1000, 2500].forEach((t) => setTimeout(() => schedule([], true), t));
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();
