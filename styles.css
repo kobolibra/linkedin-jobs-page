@@ -122,7 +122,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .live { display:inline-block;width:6px;height:6px;margin-right:6px;vertical-align:middle;border-radius:50%;background:#6e8a46;box-shadow:0 0 0 3px rgba(110,138,70,.2); }
 .day { content-visibility:auto; contain-intrinsic-size:0 420px; }
 @media (prefers-reduced-motion:no-preference) {
-  body.anim .reveal { opacity:0;animation:fade-up .7s cubic-bezier(.2,.8,.2,1) forwards; }
+  body.anim .reveal { opacity:0;animation:fade-up .28s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:0s !important; }
   body.anim .day:first-child .job { animation:fade-up .3s cubic-bezier(.2,.8,.2,1) backwards; }
   .live { animation:pulse 1.8s ease-in-out infinite; }
 }
@@ -272,7 +272,7 @@ button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:no
 .bubble-relation { fill:#8f8e88;font-family:var(--mono);font-size:5.1px;letter-spacing:.06em;pointer-events:none; }
 .bubble-relation-above { fill:#6b6a65; }
 .bubble-relation-below { fill:#8f8e88; }
-.bubble-row { animation:bubble-rise .5s cubic-bezier(.23,1,.32,1) both;animation-delay:calc(var(--i) * 28ms); }
+.bubble-row { animation:bubble-rise .32s cubic-bezier(.23,1,.32,1) both;animation-delay:calc(var(--i) * 4ms); }
 .bubble-drill { cursor:pointer;outline:none; }
 .bubble-hit { fill:rgba(0,0,0,.001);pointer-events:all; }
 .bubble-drill:hover .bubble-company { fill:#22211f;text-decoration:underline; }
