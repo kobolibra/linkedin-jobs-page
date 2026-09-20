@@ -440,6 +440,10 @@ jobsDataPromise
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     top50Rows=activeData;
     renderTop50(top50Rows,top50Mode);
+    // Let the browser paint the stats and all three charts before the large
+    // 8k-card list begins. This removes the perceived chained pause without
+    // changing the data, ordering, or filter state.
+    await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
