@@ -5,6 +5,8 @@ on:
     branches: [ main ]
     paths:
       - 'jobs.json'
+      - 'jobs-index.json'
+      - 'jobs-details.json'
       - 'pv.json'
       - 'index.html'
       - '*.js'
