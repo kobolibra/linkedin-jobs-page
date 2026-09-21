@@ -314,12 +314,7 @@ body.compact .day-head { padding-bottom:6px; }
 .ac-col-top50{border-left:0 !important;}
 .icon-btn{background:transparent !important;box-shadow:none !important;}
 
-/* Ivory plane: restore a quiet glass lift on dense job rows and metadata chips. */
-.job {
-  background:linear-gradient(180deg,rgba(255,255,255,.42),rgba(255,255,255,.16));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 4px 14px rgba(37,37,34,.028);
-}
-.job:hover { background:linear-gradient(180deg,color-mix(in srgb,var(--region,var(--navy)) 8%,rgba(255,255,255,.56)),rgba(255,255,255,.22)); }
+/* Keep the job list on the shared page plane; only metadata badges float. */
 .mono {
   background:linear-gradient(145deg,
     color-mix(in srgb,var(--region-bg,var(--surface-2)) 90%,#fff),
