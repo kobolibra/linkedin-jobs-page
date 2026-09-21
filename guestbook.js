@@ -234,6 +234,7 @@
       '</form>';
   }
   function replyNodeHTML(r) {
+    const liked = likedSet.has(r.id);
     const replies = Array.isArray(r.replies) ? r.replies : [];
     let inner = replies.map(replyNodeHTML).join("");
     if (replyOpen === r.id) inner += replyFormHTML(r.id);
@@ -242,6 +243,7 @@
       '<span class="gb-mtime">' + esc(fmtTime(r.time)) + '</span>' +
       '<div class="gb-mtext">' + esc(r.text) + '</div>' +
       '<div class="gb-tools">' +
+        '<button class="gb-act gb-small gb-like' + (liked ? ' liked' : '') + '" data-act="like" data-id="' + esc(r.id) + '">' + HEART + '<span class="gb-likenum">' + (r.likes || 0) + '</span></button>' +
         '<button class="gb-act gb-small" data-act="reply" data-id="' + esc(r.id) + '">回复' + (replies.length ? ' · ' + replies.length : '') + '</button>' +
         (isAdmin ? '<button class="gb-act gb-small gb-del" data-act="del" data-id="' + esc(r.id) + '">删除</button>' : '') +
       '</div>' +
