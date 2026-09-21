@@ -5,6 +5,10 @@
   const LS_LIKES = "gbLikes";
   const LS_ADMIN = "gbAdminKey";
   const LS_SEEN_AT = "gbSeenAt";
+  // The unread badge is an owner-only local feature. It is deliberately
+  // opt-in: public visitors may read and post messages, but their browsers
+  // must never show the owner's new-message reminder by default.
+  const LS_OWNER_ALERTS = "gbOwnerAlertsEnabled";
 
   // ===== 样式 =====
   const css = `
@@ -139,6 +143,7 @@
   let messages = [];
   let replyOpen = null;
   let loaded = false;
+  const ownerAlertsEnabled = localStorage.getItem(LS_OWNER_ALERTS) === "1";
   let hasSeenBaseline = Number.isFinite(Number(localStorage.getItem(LS_SEEN_AT)));
   let seenAt = Number(localStorage.getItem(LS_SEEN_AT)) || 0;
   const likedSet = new Set(JSON.parse(localStorage.getItem(LS_LIKES) || "[]"));
@@ -202,6 +207,12 @@
     return Math.max(0, ...messageTimes(list));
   }
   function updateUnread() {
+    if (!ownerAlertsEnabled) {
+      unreadEl.textContent = "";
+      unreadEl.classList.remove("show");
+      fab.setAttribute("aria-label", "留言");
+      return;
+    }
     const unread = hasSeenBaseline ? messageTimes(messages).filter(time => time > seenAt).length : 0;
     unreadEl.textContent = unread > 99 ? "99+" : String(unread);
     unreadEl.classList.toggle("show", unread > 0 && !overlay.classList.contains("open"));
