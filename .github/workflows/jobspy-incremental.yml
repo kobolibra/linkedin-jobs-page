@@ -1,236 +1,29 @@
-name: JobSpy full company snapshots
+name: JobSpy public executor dispatcher
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 concurrency:
-  group: jobspy-incremental
+  group: jobspy-public-dispatch
   cancel-in-progress: false
 
-permissions:
-  contents: write
-
 jobs:
-  search:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install scraper dependencies
-        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - name: Search full company listings
-        run: |
-          python scripts/jobspy/run_company_searches.py \
-            --output-dir data/jobspy/incremental/search \
-            --results-per-company 1000 \
-            --delay-min 2 \
-            --delay-max 5 \
-            --page-timeout 20 \
-            --max-workers 2
-      - uses: actions/upload-artifact@v4
-        with:
-          name: jobspy-search-results
-          path: data/jobspy/incremental/search/*.json
-          retention-days: 7
-          if-no-files-found: ignore
-
-  details-and-publish:
-    needs: search
-    if: ${{ always() }}
+  dispatch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Abort stale workflow revision
+      - name: Dispatch public JobSpy executor
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_EXECUTOR_TOKEN }}
         run: |
-          git fetch origin main
-          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-            echo "::error title=JobSpy stale revision::main changed while this workflow was running; refusing to publish with an old scraper/merge script"
-            exit 1
-          fi
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install scraper dependencies
-        run: python -m pip install --disable-pip-version-check requests beautifulsoup4
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: jobspy-*
-          path: data/jobspy/incremental/search
-          merge-multiple: true
-      - name: Combine search results
-        id: combine
-        run: |
-          mkdir -p data/jobspy/incremental/search
-          python - <<'PY'
-          import glob, json, os
-          rows = {}
-          per_company = {}
-          for path in sorted(glob.glob('data/jobspy/incremental/search/*.json')):
-              name = os.path.basename(path)
-              try:
-                  doc = json.load(open(path, encoding='utf-8'))
-              except Exception as exc:
-                  print('unreadable', name, exc, flush=True)
-                  per_company[name] = 'unreadable'
-                  continue
-              items = doc.get('jobs', []) if isinstance(doc, dict) else doc
-              per_company[name] = len(items)
-              for item in items:
-                  key = str(item.get('sourceJobId') or item.get('link') or '').strip()
-                  if key:
-                      rows[key] = item
-          statuses = {}
-          for path in sorted(glob.glob('data/jobspy/incremental/search/*.json')):
-              try:
-                  doc = json.load(open(path, encoding='utf-8'))
-                  statuses.update(doc.get('statusSummary', {}) if isinstance(doc, dict) else {})
-              except Exception:
-                  pass
-          out = {'schemaVersion': '2.0', 'mode': 'full-company-snapshot', 'scopeLocations': ['CN'], 'jobs': list(rows.values()), 'statusSummary': statuses, 'companies': {k: v for k, v in statuses.items()}}
-          json.dump(out, open('data/jobspy/incremental/search_combined.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
-          print('per_company', json.dumps(per_company, ensure_ascii=False), flush=True)
-          print('search_jobs', len(rows), flush=True)
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
-              valid = any(str(value).startswith(('ok:', 'empty')) for value in statuses.values())
-              fh.write('has_jobs=%s\n' % ('true' if valid else 'false'))
-              fh.write('search_jobs=%d\n' % len(rows))
-          PY
-      - name: Report empty search and stop publishing
-        if: steps.combine.outputs.has_jobs != 'true'
-        run: |
-          echo "::warning title=JobSpy incremental::LinkedIn returned zero jobs for all configured companies in this window. The previous snapshot is left untouched and nothing was published."
-          echo "Nothing to publish; existing data/jobspy/incremental/latest.json remains the newest good snapshot."
-      - name: Update persistent JobSpy history
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          python - <<'PY'
-          import json, os, re
-          from datetime import datetime, timezone
-          def jid(x):
-              s=str(x.get('sourceJobId') or x.get('link') or '')
-              m=re.search(r'(\d{7,})',s)
-              return m.group(1) if m else s
-          def posted(x):
-              value=x.get('datePosted')
-              return str(value)[:10] if value else ''
-          hp='data/jobspy/history/index.json'
-          try: history=json.load(open(hp,encoding='utf-8'))
-          except FileNotFoundError: history={}
-          now=datetime.now(timezone.utc).isoformat()
-          doc=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))
-          for x in doc['jobs']:
-              k=jid(x)
-              if not k: continue
-              p=posted(x); old=history.get(k,{})
-              first=old.get('firstSeen') or p
-              if p and first and p < first: first=p
-              repost=bool(old.get('firstSeen') and p and p > old.get('firstSeen'))
-              x['jobspyFirstSeen']=first or None
-              x['jobspyRepost']=repost
-              x['jobspyLastPosted']=p or old.get('lastPosted')
-              history[k]={'firstSeen':first or None,'lastPosted':p or old.get('lastPosted'),'lastObservedAt':now,'observations':int(old.get('observations',0))+1}
-          os.makedirs(os.path.dirname(hp),exist_ok=True)
-          json.dump(history,open(hp,'w',encoding='utf-8'),ensure_ascii=False,indent=2)
-          json.dump(doc,open('data/jobspy/incremental/search_combined.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
-          print('history_entries',len(history))
-          PY
-      - name: Select only new or JD-missing detail candidates
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          python - <<'PY'
-          import json, re
-          def jid(x):
-              s=str(x.get('sourceJobId') or x.get('link') or '')
-              m=re.search(r'(\d{7,})',s)
-              return m.group(1) if m else ''
-          existing=json.load(open('jobs.json',encoding='utf-8'))
-          existing=existing if isinstance(existing,list) else existing.get('jobs',[])
-          old={jid(x):x for x in existing if jid(x)}
-          incoming=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))['jobs']
-          todo=[x for x in incoming if jid(x) not in old or not str(old[jid(x)].get('descriptionHtml') or '').strip()]
-          json.dump({'schemaVersion':'1.1','mode':'detail-candidates','jobs':todo},open('data/jobspy/incremental/detail_candidates.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
-          print('detail_candidates',len(todo),'search_jobs',len(incoming))
-          PY
-      - name: Fetch only new detail candidates
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          python scripts/jobspy/fetch_details_parallel.py \
-            --input data/jobspy/incremental/detail_candidates.json \
-            --output data/jobspy/incremental/detail_results.json \
-            --workers 3 \
-            --timeout 15 \
-            --attempts 3 \
-            --delay-min 1 \
-            --delay-max 3
-      - name: Combine search fields with fetched detail fields
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          python - <<'PY'
-          import json, os, re
-          def jid(x):
-              s=str(x.get('sourceJobId') or x.get('link') or '')
-              m=re.search(r'(\d{7,})',s)
-              return m.group(1) if m else s
-          base=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))
-          detail_path='data/jobspy/incremental/detail_results.json'
-          details={}
-          if os.path.exists(detail_path):
-              try:
-                  details=json.load(open(detail_path,encoding='utf-8'))
-              except Exception as exc:
-                  print('detail_results unreadable, publishing search fields only:',exc,flush=True)
-                  details={}
-          else:
-              print('detail_results missing (no detail candidates this run); publishing search fields only',flush=True)
-          detail_rows=details.get('jobs',[]) if isinstance(details,dict) else details
-          byid={jid(x):x for x in detail_rows if jid(x)}
-          for x in base['jobs']:
-              if jid(x) in byid: x.update(byid[jid(x)])
-          base['detailsFetchedAt']=details.get('detailsFetchedAt') if isinstance(details,dict) else None
-          json.dump(base,open('data/jobspy/incremental/latest.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
-          json.dump(base,open('data/jobspy/incremental/search_combined.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
-          print('published_jobs',len(base['jobs']),'detail_results',len(detail_rows))
-          PY
-      - name: Publish immutable run metadata
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          date -u +%Y-%m-%dT%H:%M:%SZ > data/jobspy/incremental/latest.completed_at
-      - name: Upload short-term recovery artifact
-        if: steps.combine.outputs.has_jobs == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: jobspy-incremental-${{ github.run_id }}
-          path: |
-            data/jobspy/incremental/latest.json
-            data/jobspy/incremental/latest.completed_at
-          retention-days: 14
-      - name: Commit incremental snapshot
-        if: steps.combine.outputs.has_jobs == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/jobspy/incremental/latest.json data/jobspy/incremental/search_combined.json data/jobspy/incremental/latest.completed_at data/jobspy/history/index.json
-          if git diff --cached --quiet; then
-            echo "No snapshot changes to commit"
-            exit 0
-          fi
-          git commit -m "jobspy: publish snapshot for next canonical merge"
-          for attempt in 1 2 3 4 5; do
-            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
-              echo "Pushed snapshot on attempt ${attempt}"
-              exit 0
-            fi
-            echo "Push rejected on attempt ${attempt}; rebasing onto latest ${GITHUB_REF_NAME}"
-            git fetch origin "${GITHUB_REF_NAME}"
-            if ! git rebase "origin/${GITHUB_REF_NAME}"; then
-              git rebase --abort || true
-              echo "::error title=JobSpy incremental::Rebase onto ${GITHUB_REF_NAME} failed; snapshot not published"
-              exit 1
-            fi
-            sleep $((attempt * 5))
-          done
-          echo "::error title=JobSpy incremental::Unable to push snapshot after 5 attempts"
-          exit 1
+          set -euo pipefail
+          test -n "$GH_TOKEN"
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            /repos/kobolibra/linkedin-jobs-executor/actions/workflows/run-jobspy.yml/dispatches \
+            -f ref=main
+          echo "Dispatched public JobSpy executor"
