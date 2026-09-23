@@ -34,6 +34,8 @@ def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -
         "--page-timeout", str(args.page_timeout),
         "--output", str(output),
     ]
+    for location in args.locations:
+        command.extend(["--location", location])
     LOG.info("starting %s (%s)", key, company)
     completed = subprocess.run(command, text=True, capture_output=True)
     if completed.stdout:
@@ -46,10 +48,14 @@ def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -
                 {
                     "schemaVersion": "1.1",
                     "generatedAt": "",
-                    "country": "China",
+                    "country": "Multi-region" if len(args.locations) > 1 else "CN",
+                    "scopeLocations": ["CN", "HK", "SG"] if len(args.locations) > 1 else ["CN"],
                     "descriptionFetchEnabled": False,
                     "count": 0,
-                    "statusSummary": {company: f"process-failed: exit={completed.returncode}"},
+                    "statusSummary": {
+                        f"{company}::{code}": f"process-failed: exit={completed.returncode}"
+                        for code in (["CN", "HK", "SG"] if len(args.locations) > 1 else ["CN"])
+                    },
                     "jobs": [],
                 },
                 ensure_ascii=False,
@@ -69,7 +75,16 @@ def main() -> int:
     parser.add_argument("--delay-max", type=float, default=5)
     parser.add_argument("--page-timeout", type=int, default=20)
     parser.add_argument("--max-workers", type=int, default=2)
+    parser.add_argument(
+        "--location",
+        dest="locations",
+        action="append",
+        choices=["China", "Hong Kong", "Singapore"],
+        default=None,
+        help="Search location; repeat for multiple regions (default: China)",
+    )
     args = parser.parse_args()
+    args.locations = args.locations or ["China"]
     args.output_dir.mkdir(parents=True, exist_ok=True)
     if args.max_workers < 1:
         parser.error("--max-workers must be >= 1")
