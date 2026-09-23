@@ -43,10 +43,6 @@ def location_key(item):
     return "CN"
 
 
-def company_location_key(company, location):
-    return f"{str(company).strip().casefold()}::{str(location).strip().upper()}"
-
-
 def now_iso(value=None):
     return value or datetime.now(timezone.utc).isoformat()
 
@@ -99,14 +95,14 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     }
     snapshot_ids = {jid(x) for x in incoming if jid(x) and location_key(x) in scope_locations}
     successful = {
-        company_location_key(*str(k).rsplit("::", 1)) if "::" in str(k) else company_location_key(k, "CN"): v
+        str(k).casefold(): v
         for k, v in (snapshot_doc.get("statusSummary", {}) if isinstance(snapshot_doc, dict) else {}).items()
         if status_ok(v)
     }
     # A company must be explicitly successful. Missing status is not safe enough
     # to expire anything (protects against partial artifact downloads).
     observed_companies = {
-        company_location_key(*str(k).rsplit("::", 1)) if "::" in str(k) else company_location_key(k, "CN")
+        str(k).casefold()
         for k in (snapshot_doc.get("companies", {}) if isinstance(snapshot_doc, dict) else {})
     }
     for item in incoming:
@@ -120,18 +116,13 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         # Listing fields are refreshed every run; detail fields are only present
         # for the incremental detail candidates and otherwise remain untouched.
         for field in ("title", "link", "company", "companyCanonical", "requestedCompany",
-                      "location", "locationRaw", "datePosted", "source",
+                      "location", "locationRaw", "city", "datePosted", "source",
                       "sourceSite", "dataSources", "jobspyFetchedAt", "fetchedAt",
-                      "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost"):
+                      "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
+                      "descriptionText", "descriptionHtml", "detailStatus",
+                      "detailFetchedAt", "detailError"):
             if item.get(field) not in (None, ""):
                 merged[field] = item[field]
-        # JD and city enrichment remain a CN-only pipeline. Preserve any
-        # existing HK/SG values and never let a lifecycle-only row add them.
-        if location_key(item) == "CN":
-            for field in ("city", "descriptionText", "descriptionHtml", "detailStatus",
-                          "detailFetchedAt", "detailError"):
-                if item.get(field) not in (None, ""):
-                    merged[field] = item[field]
         # JobSpy is a lifecycle/status observer, not the feed that defines when
         # a job was pushed to the site.  Never let a snapshot row carrying an
         # incidental pushTime/firstSeen overwrite the canonical existing values.
@@ -172,10 +163,8 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
 
     expired = 0
     for key, item in by_id.items():
-        location = location_key(item)
         company = company_key(item)
-        company_location = company_location_key(company, location)
-        if location not in scope_locations or company_location not in observed_companies or company_location not in successful:
+        if location_key(item) not in scope_locations or company not in observed_companies or company not in successful:
             continue
         if key not in snapshot_ids:
             if item.get("jobStatus") != "expired":
