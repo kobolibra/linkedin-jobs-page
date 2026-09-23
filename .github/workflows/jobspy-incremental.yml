@@ -5,7 +5,10 @@ on:
 
 concurrency:
   group: jobspy-incremental
-  cancel-in-progress: false
+  # A newer manual run supersedes an older scraper run. Cancelling before the
+  # publish phase prevents the stale-revision guard from surfacing as a false
+  # failure after a normal code/data push.
+  cancel-in-progress: true
 
 permissions:
   contents: write

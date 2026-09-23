@@ -53,7 +53,11 @@ def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -
                     "scopeLocations": ["CN", "HK", "SG"],
                     "descriptionFetchEnabled": False,
                     "count": 0,
-                    "statusSummary": {company: f"process-failed: exit={completed.returncode}"},
+                    "statusSummary": {
+                        f"{company}::CN": f"process-failed: exit={completed.returncode}",
+                        f"{company}::HK": f"process-failed: exit={completed.returncode}",
+                        f"{company}::SG": f"process-failed: exit={completed.returncode}",
+                    },
                     "jobs": [],
                 },
                 ensure_ascii=False,
