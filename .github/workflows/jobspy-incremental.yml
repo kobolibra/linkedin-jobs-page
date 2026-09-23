@@ -5,10 +5,9 @@ on:
 
 concurrency:
   group: jobspy-incremental
-  # A newer manual run supersedes an older scraper run. Cancelling before the
-  # publish phase prevents the stale-revision guard from surfacing as a false
-  # failure after a normal code/data push.
-  cancel-in-progress: true
+  # JobSpy and RSS publishing both write main. Queue newer runs so a long
+  # snapshot cannot be cancelled or fail merely because another writer ran.
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -46,12 +45,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Abort stale workflow revision
+      - name: Synchronize with latest main revision
         run: |
           git fetch origin main
           if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-            echo "::error title=JobSpy stale revision::main changed while this workflow was running; refusing to publish with an old scraper/merge script"
-            exit 1
+            echo "::warning title=JobSpy revision advanced::main changed while the search job was running; continuing from the latest main revision"
+            git reset --hard origin/main
           fi
       - uses: actions/setup-python@v5
         with:
