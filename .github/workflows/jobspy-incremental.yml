@@ -1,4 +1,4 @@
-name: JobSpy public executor dispatcher
+name: JobSpy full company snapshots
 
 on:
   workflow_dispatch:
