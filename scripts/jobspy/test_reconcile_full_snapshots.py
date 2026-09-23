@@ -51,42 +51,6 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(by_id["li-100000012"]["jobStatus"], "active")
         self.assertEqual(result["jobspySnapshot"]["scopeLocations"], ["CN"])
 
-    def test_hk_and_sg_snapshots_expire_only_missing_jobs_in_successful_region(self):
-        existing = {"jobs": [
-            {"sourceJobId": "li-100000020", "company": "Acme", "companyCanonical": "acme", "location": "HK", "jobStatus": "active"},
-            {"sourceJobId": "li-100000021", "company": "Acme", "companyCanonical": "acme", "location": "SG", "jobStatus": "active"},
-            {"sourceJobId": "li-100000022", "company": "Acme", "companyCanonical": "acme", "location": "SG", "jobStatus": "active"},
-        ]}
-        snapshot = {
-            "scopeLocations": ["HK", "SG"],
-            "jobs": [{"sourceJobId": "li-100000021", "company": "Acme", "companyCanonical": "acme", "location": "SG"}],
-            "statusSummary": {"Acme::HK": "ok: 0 jobs", "Acme::SG": "ok: 1 jobs"},
-            "companies": {"Acme::HK": "ok: 0 jobs", "Acme::SG": "ok: 1 jobs"},
-        }
-        result = reconcile(existing, snapshot, "2026-09-10T00:00:00+00:00")
-        by_id = {x["sourceJobId"]: x for x in result["jobs"]}
-        self.assertEqual(by_id["li-100000020"]["jobStatus"], "expired")
-        self.assertEqual(by_id["li-100000021"]["jobStatus"], "active")
-        self.assertEqual(by_id["li-100000022"]["jobStatus"], "expired")
-
-    def test_non_cn_observation_cannot_update_jd_or_city(self):
-        existing = {"jobs": [{
-            "sourceJobId": "li-100000023", "company": "Acme", "companyCanonical": "acme",
-            "location": "HK", "city": "Existing city", "descriptionHtml": "<p>Existing JD</p>",
-        }]}
-        snapshot = {
-            "scopeLocations": ["HK"],
-            "jobs": [{
-                "sourceJobId": "li-100000023", "company": "Acme", "companyCanonical": "acme",
-                "location": "HK", "city": "Should not apply", "descriptionHtml": "<p>Should not apply</p>",
-            }],
-            "statusSummary": {"Acme::HK": "ok: 1 jobs"},
-            "companies": {"Acme::HK": "ok: 1 jobs"},
-        }
-        row = reconcile(existing, snapshot, "2026-09-10T00:00:00+00:00")["jobs"][0]
-        self.assertEqual(row["city"], "Existing city")
-        self.assertEqual(row["descriptionHtml"], "<p>Existing JD</p>")
-
     def test_new_job_gets_observation_push_time_and_posting_first_seen(self):
         existing = {"jobs": []}
         snapshot = {

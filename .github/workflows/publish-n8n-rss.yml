@@ -8,8 +8,6 @@ on:
 
 concurrency:
   group: jobspy-incremental
-  # Share the same writer lock as the full JobSpy snapshot workflow.
-  # Queue instead of cancelling so canonical publishing remains deterministic.
   cancel-in-progress: false
 
 permissions:

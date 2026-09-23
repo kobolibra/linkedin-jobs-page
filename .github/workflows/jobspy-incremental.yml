@@ -5,8 +5,6 @@ on:
 
 concurrency:
   group: jobspy-incremental
-  # JobSpy and RSS publishing both write main. Queue newer runs so a long
-  # snapshot cannot be cancelled or fail merely because another writer ran.
   cancel-in-progress: false
 
 permissions:
@@ -45,12 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Synchronize with latest main revision
+      - name: Abort stale workflow revision
         run: |
           git fetch origin main
           if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-            echo "::warning title=JobSpy revision advanced::main changed while the search job was running; continuing from the latest main revision"
-            git reset --hard origin/main
+            echo "::error title=JobSpy stale revision::main changed while this workflow was running; refusing to publish with an old scraper/merge script"
+            exit 1
           fi
       - uses: actions/setup-python@v5
         with:
@@ -81,7 +79,7 @@ jobs:
               items = doc.get('jobs', []) if isinstance(doc, dict) else doc
               per_company[name] = len(items)
               for item in items:
-                  key = '%s|%s' % (str(item.get('sourceJobId') or item.get('link') or '').strip(), str(item.get('location') or 'CN').upper())
+                  key = str(item.get('sourceJobId') or item.get('link') or '').strip()
                   if key:
                       rows[key] = item
           statuses = {}
@@ -91,7 +89,7 @@ jobs:
                   statuses.update(doc.get('statusSummary', {}) if isinstance(doc, dict) else {})
               except Exception:
                   pass
-          out = {'schemaVersion': '2.0', 'mode': 'full-company-snapshot', 'scopeLocations': ['CN', 'HK', 'SG'], 'jobs': list(rows.values()), 'statusSummary': statuses, 'companies': {k: v for k, v in statuses.items()}}
+          out = {'schemaVersion': '2.0', 'mode': 'full-company-snapshot', 'scopeLocations': ['CN'], 'jobs': list(rows.values()), 'statusSummary': statuses, 'companies': {k: v for k, v in statuses.items()}}
           json.dump(out, open('data/jobspy/incremental/search_combined.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
           print('per_company', json.dumps(per_company, ensure_ascii=False), flush=True)
           print('search_jobs', len(rows), flush=True)
@@ -124,7 +122,7 @@ jobs:
           now=datetime.now(timezone.utc).isoformat()
           doc=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))
           for x in doc['jobs']:
-              k='%s|%s' % (jid(x), str(x.get('location') or 'CN').upper())
+              k=jid(x)
               if not k: continue
               p=posted(x); old=history.get(k,{})
               first=old.get('firstSeen') or p
@@ -151,7 +149,7 @@ jobs:
           existing=json.load(open('jobs.json',encoding='utf-8'))
           existing=existing if isinstance(existing,list) else existing.get('jobs',[])
           old={jid(x):x for x in existing if jid(x)}
-          incoming=[x for x in json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))['jobs'] if str(x.get('location') or 'CN').upper() == 'CN']
+          incoming=json.load(open('data/jobspy/incremental/search_combined.json',encoding='utf-8'))['jobs']
           todo=[x for x in incoming if jid(x) not in old or not str(old[jid(x)].get('descriptionHtml') or '').strip()]
           json.dump({'schemaVersion':'1.1','mode':'detail-candidates','jobs':todo},open('data/jobspy/incremental/detail_candidates.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
           print('detail_candidates',len(todo),'search_jobs',len(incoming))
