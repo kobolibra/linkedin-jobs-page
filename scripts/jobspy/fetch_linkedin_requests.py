@@ -75,6 +75,15 @@ def city_from_location(raw: str) -> str:
     return parts[0]
 
 
+def location_code(value: str) -> str:
+    normalized = canonical(value)
+    if normalized in {"hong kong", "hong kong sar", "hk"}:
+        return "HK"
+    if normalized in {"singapore", "sg"}:
+        return "SG"
+    return "CN"
+
+
 def date_only(value: str) -> str:
     value = clean(value)
     match = re.search(r"\d{4}-\d{2}-\d{2}", value)
@@ -100,7 +109,7 @@ def looks_like_block_page(html: str) -> bool:
     return "captcha" in text or "security verification" in text
 
 
-def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
+def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN") -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     jobs = []
     for card in soup.select("div.base-search-card"):
@@ -127,9 +136,10 @@ def parse_search(html: str, requested: str, fetched_at: str) -> list[dict]:
             "companyCanonical": COMPANIES[requested]["canonical"],
             "title": title_tag.get_text(" ", strip=True) if title_tag else "",
             "link": url,
-            "location": "CN",
+            "location": region,
             "locationRaw": location_tag.get_text(" ", strip=True) if location_tag else "",
-            "city": city_from_location(location_tag.get_text(" ", strip=True) if location_tag else ""),
+            # HK/SG rows are lifecycle observations only; JD and city remain CN-only.
+            "city": city_from_location(location_tag.get_text(" ", strip=True) if location_tag else "") if region == "CN" else "",
             "datePosted": date_only(time_tag.get("datetime", "") if time_tag else ""),
             "descriptionText": "",
             "descriptionHtml": "",
@@ -179,7 +189,8 @@ def enrich_detail(session: requests.Session, job: dict, timeout: tuple[int, int]
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--company", action="append", choices=list(COMPANIES), help="Repeat for selected companies; default all")
-    parser.add_argument("--location", default="China")
+    parser.add_argument("--location", action="append", default=None,
+                        help="Search location; repeat for multiple regions (default: China)")
     parser.add_argument("--company-id", default=None, help="Override Company ID for a single-company test; otherwise the configured strict ID is used")
     parser.add_argument("--results-per-company", type=int, default=1000)
     parser.add_argument("--hours-old", type=int, default=None)
@@ -283,7 +294,7 @@ def main() -> int:
                 status_summary[company] = f"partial: {len(company_jobs)} jobs"
         if blocked and not company_jobs:
             LOG.error("%s produced no jobs because the first search page was blocked", company)
-        if args.fetch_description:
+        if args.fetch_description and region == "CN":
             for index, job in enumerate(company_jobs, 1):
                 LOG.info("%s detail %s/%s %s", company, index, len(company_jobs), job["sourceJobId"])
                 enrich_detail(session, job, (10, args.detail_timeout))
@@ -295,7 +306,7 @@ def main() -> int:
             time.sleep(random.uniform(args.delay_min, args.delay_max))
 
     unique = {job["sourceJobId"]: job for job in all_jobs}
-    output = {"schemaVersion": "1.1", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "China", "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
+    output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
     args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     LOG.info("Wrote %s unique jobs to %s", len(unique), args.output)
     LOG.info("status summary: %s", json.dumps(status_summary, ensure_ascii=False))

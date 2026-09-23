@@ -316,12 +316,18 @@ body.compact .day-head { padding-bottom:6px; }
 .ac-col-top50{border-left:0 !important;}
 .icon-btn{background:transparent !important;box-shadow:none !important;}
 
-/* Keep the job list on the shared page plane; only metadata badges float. */
+/* Keep the job list on the shared page plane; only metadata badges float.
+   Hover is deliberately a solid tint: gradients made the row read as a bright
+   strip in dark mode and competed with the region rail. */
 .job:hover {
-  background:linear-gradient(180deg,
-    color-mix(in srgb,var(--region,var(--navy)) 8%,rgba(255,255,255,.56)),
-    rgba(255,255,255,.22));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.78),0 4px 14px rgba(37,37,34,.028);
+  background-color:color-mix(in srgb,var(--region,var(--navy)) 8%,var(--surface));
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--region,var(--navy)) 14%,transparent),
+    0 4px 14px rgba(37,37,34,.028);
+}
+[data-theme="dark"] .job:hover {
+  background-color:color-mix(in srgb,var(--region,var(--navy)) 13%,var(--surface));
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--region,var(--navy)) 20%,transparent),
+    0 4px 14px rgba(0,0,0,.20);
 }
 .mono {
   background:linear-gradient(145deg,
