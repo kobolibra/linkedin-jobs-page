@@ -9,10 +9,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+from linkedin_ids import linkedin_job_id
 
 
 BEIJING_TZ = ZoneInfo("Asia/Shanghai")
@@ -26,8 +27,7 @@ def rows(doc):
 
 def jid(item):
     raw = str(item.get("sourceJobId") or item.get("link") or "").strip()
-    match = re.search(r"(?:li-|ln:)?(\d{7,})", raw)
-    return match.group(1) if match else raw
+    return linkedin_job_id(raw) or raw
 
 
 def company_key(item):

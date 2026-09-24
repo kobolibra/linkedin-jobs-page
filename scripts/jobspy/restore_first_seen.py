@@ -2,8 +2,9 @@
 """Restore immutable firstSeen for IDs that existed before lifecycle rollout."""
 import argparse
 import json
-import re
 from pathlib import Path
+
+from linkedin_ids import linkedin_job_id
 
 
 def rows(doc):
@@ -12,8 +13,7 @@ def rows(doc):
 
 def jid(job):
     raw = str(job.get("sourceJobId") or job.get("link") or "").strip()
-    match = re.search(r"(?:li-|ln:)?(\d{7,})", raw)
-    return match.group(1) if match else raw
+    return linkedin_job_id(raw) or raw
 
 
 def main():

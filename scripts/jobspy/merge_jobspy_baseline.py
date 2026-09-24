@@ -5,12 +5,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 from zoneinfo import ZoneInfo
+from linkedin_ids import linkedin_job_id
 CN_TZ = ZoneInfo("Asia/Shanghai")
 def text(v: object) -> str: return str(v).strip() if v not in (None, "") else ""
 def job_id(v: object) -> str:
-    s = text(v)
-    m = re.search(r"/jobs/view/[^/?#]*?(\d{5,})(?:[/?#]|$)", s, re.I) or re.search(r"(?:currentJobId=|li-|ln:)(\d{5,})", s, re.I)
-    return m.group(1) if m else ""
+    return linkedin_job_id(v)
 def date_cn(v: object) -> str:
     s=text(v)
     if not s: return ""

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import argparse,json,re
+import argparse,json
 from pathlib import Path
+
+from linkedin_ids import linkedin_job_id
 
 def key(row):
     raw=str(row.get('sourceJobId') or row.get('link') or '').strip()
-    m=re.search(r'(?:li-|ln:)?(\d{7,})',raw)
-    return m.group(1) if m else raw
+    return linkedin_job_id(raw) or raw
 
 def score(row):
     return sum(bool(row.get(k)) for k in ('descriptionHtml','descriptionText','sourceJobId','companyCanonical','firstSeen','jobspyFirstSeen','fetchedAt','detailStatus'))

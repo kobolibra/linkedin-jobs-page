@@ -6,6 +6,8 @@ import re
 import unicodedata
 from pathlib import Path
 
+from linkedin_ids import linkedin_job_id
+
 TARGET_COMPANIES = {
     "ubs", "state street", "jpmorgan chase", "dbs bank", "morgan stanley", "anz",
     "standard chartered", "hsbc", "citi", "societe generale", "bnp paribas",
@@ -22,8 +24,7 @@ TITLE_TOKEN_ALIASES = {
 
 def job_key(job):
     raw = str(job.get("sourceJobId") or job.get("link") or "").strip()
-    match = re.search(r"(?:li-|ln:)?(\d{7,})", raw)
-    return match.group(1) if match else raw
+    return linkedin_job_id(raw) or raw
 
 
 def nonempty(value):

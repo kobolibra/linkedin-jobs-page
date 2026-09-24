@@ -4,17 +4,14 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
+
+from linkedin_ids import linkedin_job_id
 
 
 def job_id(link: object) -> str:
-    if not link:
-        return ""
-    text = str(link)
-    path = text.split("?", 1)[0].split("#", 1)[0]
-    match = re.search(r"(\d{5,})/?$", path) or re.search(r"[?&]currentJobId=(\d+)", text)
-    return f"ln:{match.group(1)}" if match else path.rstrip("/")
+    value = linkedin_job_id(link)
+    return f"ln:{value}" if value else ""
 
 
 def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
@@ -61,6 +58,8 @@ def self_test() -> None:
         assert index_doc["jobs"][0]["hasJd"] is True
         assert "descriptionHtml" not in index_doc["jobs"][0]
         assert detail_doc["details"]["ln:123456"]["descriptionHtml"] == "<p>JD</p>"
+        slug = "https://hk.linkedin.com/jobs/view/title-210740045-at-company-4468639951"
+        assert job_id(slug) == "ln:4468639951"
 
 
 def main() -> None:
