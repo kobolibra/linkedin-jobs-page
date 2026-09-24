@@ -25,7 +25,7 @@ from datetime import datetime, timezone, timedelta
 # CONFIGURATION
 # ============================================================
 
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = "${{ secrets.3Jl6ZeBenK5n7iV4M4jVS3wEQeI }}"
 GITHUB_REPO = "kobolibra/linkedin-jobs-page"
 GITHUB_BRANCH = "main"
 # Use GitHub API (NOT raw.githubusercontent.com) for private repo access
