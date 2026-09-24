@@ -25,7 +25,7 @@ from datetime import datetime, timezone, timedelta
 # CONFIGURATION
 # ============================================================
 
-GITHUB_TOKEN = "${{ secrets.3Jl6ZeBenK5n7iV4M4jVS3wEQeI }}"
+GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = "kobolibra/linkedin-jobs-page"
 GITHUB_BRANCH = "main"
 # Use GitHub API (NOT raw.githubusercontent.com) for private repo access
@@ -270,6 +270,10 @@ def main():
     print("=" * 70)
     print("  AUTO DAILY COMPANIES FILTER v2")
     print("=" * 70)
+
+    if not GITHUB_TOKEN:
+        print("[ERROR] GITHUB_TOKEN environment variable is not set")
+        sys.exit(1)
 
     today = get_beijing_today()
     print(f"[INFO] Today (Beijing): {today}")
