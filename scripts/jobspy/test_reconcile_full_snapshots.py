@@ -1,8 +1,36 @@
 import unittest
 from reconcile_full_snapshots import reconcile
+from linkedin_ids import linkedin_job_id
 
 
 class ReconcileTests(unittest.TestCase):
+    def test_slug_numbers_use_final_linkedin_job_id(self):
+        source = "li-international-private-bank-investor-210740045-at-jpmorganchase-4468639951"
+        link = "https://hk.linkedin.com/jobs/view/international-private-bank-investor-210740045-at-jpmorganchase-4468639951?position=4"
+        self.assertEqual(linkedin_job_id(source), "4468639951")
+        self.assertEqual(linkedin_job_id(link), "4468639951")
+
+    def test_reconcile_matches_slug_source_id_to_url_id(self):
+        existing = {"jobs": [{
+            "sourceJobId": "li-title-210740045-at-company-4468639951",
+            "link": "https://hk.linkedin.com/jobs/view/title-210740045-at-company-4468639951",
+            "company": "Acme", "companyCanonical": "acme", "location": "HK",
+            "jobStatus": "active",
+        }]}
+        snapshot = {
+            "scopeLocations": ["HK"],
+            "jobs": [{
+                "sourceJobId": "li-title-210740045-at-company-4468639951",
+                "link": "https://hk.linkedin.com/jobs/view/title-210740045-at-company-4468639951",
+                "title": "Updated", "company": "Acme", "companyCanonical": "acme", "location": "HK",
+            }],
+            "statusSummary": {"acme::HK": "ok: 1 jobs"},
+            "companies": {"acme::HK": "ok: 1 jobs"},
+        }
+        result = reconcile(existing, snapshot, "2026-09-23T00:00:00+00:00")
+        self.assertEqual(len(result["jobs"]), 1)
+        self.assertEqual(result["jobs"][0]["title"], "Updated")
+
     def test_expire_reactivate_and_preserve_detail(self):
         existing = {
             "jobs": [

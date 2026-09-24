@@ -2,13 +2,15 @@ import json, re, sys
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT/'scripts/jobspy'))
+from linkedin_ids import linkedin_job_id
+
 def load(p):
     d=json.loads(Path(p).read_text(encoding='utf-8'))
     return d if isinstance(d,list) else d.get('jobs',[])
 def jid(x):
     s=str(x.get('sourceJobId') or x.get('link') or '')
-    m=re.search(r'(\d{7,})',s)
-    return m.group(1) if m else ''
+    return linkedin_job_id(s) or s
 
 def report(label, rows):
     ids=[jid(x) for x in rows]

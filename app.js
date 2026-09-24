@@ -113,7 +113,7 @@ function loadJdDetails(){
         const details=doc&&typeof doc.details==="object"?doc.details:{};
         Object.entries(details).forEach(([id,entry])=>jdById.set(id,entry));
         return jdById;
-      });
+      }).catch(error=>{jdDetailsPromise=null;throw error;});
   }
   return jdDetailsPromise;
 }
@@ -131,7 +131,13 @@ async function hydrateJd(card){
   delete body.dataset.loading;
 }
 const monogram=n=>{const t=(n||"?").trim();return t?t[0].toUpperCase():"?";};
-const jobId=link=>{if(!link)return"";const path=String(link).split(/[?#]/)[0];const m=path.match(/(\d{5,})\/?$/)||String(link).match(/[?&]currentJobId=(\d+)/);return m?("ln:"+m[1]):path.replace(/\/+$/,"");};
+const jobId=link=>{
+  if(!link)return"";
+  const raw=String(link),path=raw.split(/[?#]/)[0],view=path.match(/\/jobs\/view\/([^/]+)\/?$/i),
+    slugMatches=view?.[1].match(/\d{7,}/g),query=raw.match(/[?&]currentJobId=(\d+)/);
+  const id=slugMatches?.at(-1)||query?.[1];
+  return id?("ln:"+id):path.replace(/\/+$/i,"");
+};
 const keyOf=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 const dayKey=iso=>{const d=new Date(iso);return isNaN(d)?"—":keyOf(d);};
 const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"});};
@@ -161,6 +167,15 @@ const saveBlockedKw=()=>localStorage.setItem("blockedKw",JSON.stringify([...bloc
 (function(){const values=[...blocked];blocked.clear();values.forEach(value=>blocked.add(canonicalCompany(value)));saveBlocked();})();
 (function(){if(localStorage.getItem("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();localStorage.setItem("favKeyV","2");})();
 const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),cityEl=document.getElementById("city"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");
+// `toggle` does not bubble, so capture it at the list root. The initial
+// index payload intentionally excludes JD text; only opening a details row
+// fetches jobs-details.json and hydrates that one card.
+jobsEl.addEventListener("toggle",event=>{
+  const details=event.target;
+  if(details instanceof HTMLDetailsElement&&details.matches("details.job-jd")&&details.open){
+    hydrateJd(details.closest(".job"));
+  }
+},true);
 compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
 jobsEl.addEventListener("click",e=>{
   const card=e.target.closest(".job");if(!card||!jobsEl.contains(card))return;
