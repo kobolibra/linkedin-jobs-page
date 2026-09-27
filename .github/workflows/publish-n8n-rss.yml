@@ -27,8 +27,8 @@ jobs:
           python-version: "3.11"
       - name: Validate merger
         run: |
-          python -m py_compile scripts/jobspy/merge_n8n_incremental.py scripts/jobspy/compact_published_jobs.py scripts/jobspy/build_frontend_payload.py
-          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py
+          python -m py_compile scripts/jobspy/merge_n8n_incremental.py scripts/jobspy/compact_published_jobs.py scripts/jobspy/build_frontend_payload.py scripts/jobspy/track_jd_changes.py
+          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py
       - name: Merge and publish canonical jobs
         shell: bash
         run: |
@@ -40,9 +40,14 @@ jobs:
             git reset --hard origin/main
             if [[ -s data/jobspy/incremental/search_combined.json ]]; then
               observed_at="$(cat data/jobspy/incremental/latest.completed_at 2>/dev/null || date -u +%Y-%m-%dT%H:%M:%SZ)"
-              python scripts/jobspy/reconcile_full_snapshots.py \
+              python scripts/jobspy/track_jd_changes.py \
                 --existing jobs.json \
                 --snapshot data/jobspy/incremental/search_combined.json \
+                --observed-at "$observed_at" \
+                --output /tmp/search_with_jd_changes.json
+              python scripts/jobspy/reconcile_full_snapshots.py \
+                --existing jobs.json \
+                --snapshot /tmp/search_with_jd_changes.json \
                 --observed-at "$observed_at" \
                 --output /tmp/jobs.jobspy.json
             else

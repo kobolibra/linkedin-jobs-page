@@ -99,7 +99,7 @@ const canonicalCompany=name=>{
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 function safeJdHtml(raw){
   const tpl=document.createElement("template");tpl.innerHTML=String(raw||"");
-  const allowed=new Set(["DIV","P","UL","OL","LI","STRONG","B","EM","I","BR","H3","H4","SPAN"]);
+  const allowed=new Set(["DIV","P","UL","OL","LI","STRONG","B","EM","I","BR","H3","H4","SPAN","INS","DEL"]);
   const clean=(node)=>{for(const child of [...node.childNodes]){if(child.nodeType===1){if(!allowed.has(child.tagName)){child.replaceWith(document.createTextNode(child.textContent||""));continue;}[...child.attributes].forEach(a=>child.removeAttribute(a.name));clean(child);}}};
   clean(tpl.content);return tpl.innerHTML||esc(String(raw||""));
 }
@@ -126,7 +126,12 @@ async function hydrateJd(card){
   if(!entry){try{await loadJdDetails();entry=jdById.get(card.dataset.id);}catch(e){body.textContent="职位描述暂时无法加载，请稍后重试。";}}
   if(!entry){delete body.dataset.loading;return;}
   const html=entry.descriptionHtml||"",text=entry.descriptionText||entry.description||jdPlainText(html);
-  body.innerHTML=html?safeJdHtml(html):esc(text).replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
+  const current=html?safeJdHtml(html):esc(text).replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
+  const tracked=entry.jdDiffHtml?safeJdHtml(entry.jdDiffHtml):"";
+  // Render one Word-like mixed revision: deleted source text remains visible
+  // with <del>, while inserted text appears inline with <ins>. Do not append
+  // a legend, explanatory copy, or a second "current version" block.
+  body.innerHTML=tracked||current;
   body.dataset.loaded="true";
   delete body.dataset.loading;
 }
