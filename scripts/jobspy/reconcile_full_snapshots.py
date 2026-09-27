@@ -129,7 +129,8 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         # existing HK/SG values and never let a lifecycle-only row add them.
         if location_key(item) == "CN":
             for field in ("city", "descriptionText", "descriptionHtml", "detailStatus",
-                          "detailFetchedAt", "detailError"):
+                          "detailFetchedAt", "detailError", "jdChangeStatus", "jdCheckedAt",
+                          "jdChangedAt", "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText"):
                 if item.get(field) not in (None, ""):
                     merged[field] = item[field]
         # JobSpy is a lifecycle/status observer, not the feed that defines when

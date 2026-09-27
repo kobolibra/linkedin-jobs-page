@@ -33,6 +33,14 @@ def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
         item["hasJd"] = bool(html or text)
         if item["hasJd"] and key:
             details[key] = {"descriptionHtml": html, "descriptionText": text}
+            if str(job.get("jdDiffHtml") or "").strip():
+                details[key].update({
+                    "jdDiffHtml": str(job["jdDiffHtml"]),
+                    "jdChangeStatus": job.get("jdChangeStatus") or "changed",
+                    "jdChangedAt": job.get("jdChangedAt") or "",
+                    "jdDiffPreviousText": job.get("jdDiffPreviousText") or "",
+                    "jdDiffCurrentText": job.get("jdDiffCurrentText") or "",
+                })
         index_rows.append(item)
 
     index_doc = {"schemaVersion": "1.0", "source": "jobs.json", "jobs": index_rows}

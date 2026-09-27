@@ -169,7 +169,8 @@ def merge_documents(baseline, batch_doc):
                 if field in {
                     "firstSeen", "pushTime", "source",
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
-                    "jobspyFetchedAt",
+                    "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
+                    "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
                 } or not nonempty(value):
                     continue
                 merged[field] = value
