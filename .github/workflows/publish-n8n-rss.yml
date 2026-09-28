@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install JobSpy dependencies
+        run: python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
       - name: Validate merger
         run: |
           python -m py_compile scripts/jobspy/merge_n8n_incremental.py scripts/jobspy/compact_published_jobs.py scripts/jobspy/build_frontend_payload.py scripts/jobspy/track_jd_changes.py
