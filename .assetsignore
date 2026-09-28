@@ -5,6 +5,7 @@
 scripts
 data
 .wrangler
+node_modules
 test-jev-worker.mjs
 wrangler.jsonc
 *.md
