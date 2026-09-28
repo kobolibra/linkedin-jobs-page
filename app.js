@@ -117,6 +117,91 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
+const JEV_CACHE_KEY="linkedin-jev-analysis-v1";
+// The browser deliberately never receives the JEV secret. A same-origin proxy
+// should implement this endpoint and keep the provider credential server-side.
+const JEV_API_ENDPOINT="/api/jev/analyze";
+const jevFunctionLabels={
+  client_commercial:"客户与商业",
+  markets_investment_research:"市场、投资与研究",
+  risk_compliance_legal:"风险、合规与法律",
+  operations_service:"运营与服务",
+  technology_engineering:"科技与工程",
+  data_ai_analytics:"数据、AI 与分析",
+  finance_accounting_treasury:"财务、会计与资金",
+  product_strategy_transformation:"产品、战略与转型",
+  people_marketing_corporate_services:"人力、市场与企业服务"
+};
+const jevSeniorityLabels={
+  executive_head:"高管 / 负责人",director:"董事 / 总监",vp_svp_avp:"VP / SVP / AVP",
+  manager_lead_principal:"经理 / Lead / Principal",senior_experienced_ic:"高级个人贡献者",
+  analyst_associate_consultant:"分析师 / Associate / 顾问",entry_early_career:"初级 / 早期职业",unclear:"未明确"
+};
+const jevValueLabel=value=>({yes:"是",no:"否",unknown:"未明确",clear:"清晰",partial:"部分披露",absent:"未披露",low:"低",medium:"中",high:"高"}[String(value||"").toLowerCase()]||String(value||"未明确"));
+const jevList=value=>Array.isArray(value)?value.filter(Boolean):value?[value]:[];
+function readJevCache(){try{const value=JSON.parse(localStorage.getItem(JEV_CACHE_KEY)||"{}");return value&&typeof value==="object"?value:{};}catch{return {};}}
+function writeJevCache(value){try{localStorage.setItem(JEV_CACHE_KEY,JSON.stringify(value));}catch{/* private mode or quota: analysis still works for this session */}}
+async function jdFingerprint(text){
+  if(window.crypto?.subtle){
+    const bytes=new TextEncoder().encode(String(text||""));
+    const digest=await crypto.subtle.digest("SHA-256",bytes);
+    return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,"0")).join("");
+  }
+  return String(text||"").slice(0,16000);
+}
+function jevPayload(raw){
+  const root=raw?.analysis||raw?.result||raw?.data||raw||{};
+  const classification=root.classification||{};
+  const management=root.management||{};
+  const leadership=root.leadership||{};
+  return {
+    function:root.function||classification.function||"unknown",
+    subFunctions:jevList(root.subFunctions||classification.subFunctions||root.primarySubFunction),
+    businessDomains:jevList(root.businessDomains||classification.businessDomains||root.industry),
+    seniorityBand:root.seniorityBand||classification.seniorityBand||root.seniority||"unclear",
+    responsibilityLevel:root.responsibilityLevel||classification.responsibilityLevel||"unknown",
+    isFormalPeopleManager:root.isFormalPeopleManager||management.isFormalPeopleManager||management.formalPeopleManager||"unknown",
+    directReportsRequired:root.directReportsRequired||management.directReportsRequired||"unknown",
+    teamLeadershipRequired:root.teamLeadershipRequired||leadership.teamLeadershipRequired||"unknown",
+    leadershipType:jevList(root.leadershipType||leadership.leadershipType),
+    riskFlags:Array.isArray(root.riskFlags)?root.riskFlags:[]
+  };
+}
+function jevTags(values){return jevList(values).map(value=>'<span class="jev-tag">'+esc(jevFunctionLabels[value]||jevSeniorityLabels[value]||String(value).replaceAll("_"," "))+'</span>').join("");}
+function renderJevResult(container,result,analyzedAt){
+  const r=jevPayload(result),risk=r.riskFlags;
+  const row=(label,value,html=false)=>'<div class="jev-field"><dt>'+label+'</dt><dd>'+(html?(value||'<span class="jev-muted">未明确</span>'):'<span>'+esc(jevValueLabel(value))+'</span>')+'</dd></div>';
+  container.innerHTML='<div class="jev-result-head"><span>JEV 分析结果</span><time>已缓存 · '+esc(new Date(analyzedAt||Date.now()).toLocaleString("zh-CN"))+'</time></div><dl class="jev-fields">'+row("主职能",jevFunctionLabels[r.function]||r.function)+row("细分方向",jevTags(r.subFunctions),true)+row("业务域",jevTags(r.businessDomains),true)+row("职位层级",jevSeniorityLabels[r.seniorityBand]||r.seniorityBand)+row("实际责任层级",r.responsibilityLevel)+row("正式管理岗位",r.isFormalPeopleManager)+row("需要直属下属",r.directReportsRequired)+row("需要带队",r.teamLeadershipRequired)+row("带队类型",jevTags(r.leadershipType),true)+'</dl>'+(risk.length?'<section class="jev-risks"><h4>需要进一步核实</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"结构性信号").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+(jevList(item.evidence).length?'<ul>'+jevList(item.evidence).map(e=>'<li>'+esc(e)+'</li>').join("")+'</ul>':'')+'</article>').join("")+'</section>':'<p class="jev-no-risk">未发现达到当前规则阈值的结构性风险。</p>');
+  container.hidden=false;
+}
+function addJevControls(body,card,entry,currentText){
+  if(body.querySelector(".jev-analysis-tools"))return;
+  const id=card.dataset.id||"";
+  const tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-action-row"><button type="button" class="jev-analyze-btn">JEV 分析此职位</button><span class="jev-action-status" aria-live="polite"></span></div><div class="jev-result" hidden></div>';
+  const button=tools.querySelector(".jev-analyze-btn"),status=tools.querySelector(".jev-action-status"),result=tools.querySelector(".jev-result");
+  const cache=readJevCache();
+  let inFlight=false;
+  const showCached=record=>{renderJevResult(result,record.result,record.analyzedAt);button.textContent="查看已缓存分析";button.classList.add("is-cached");status.textContent="本地缓存";};
+  const run=async()=>{
+    if(inFlight)return;
+    inFlight=true;
+    const text=currentText||jdPlainText(entry.descriptionHtml||entry.descriptionText||entry.description||"");
+    const fingerprint=await jdFingerprint(text),record=cache[id];
+    if(record?.jdFingerprint===fingerprint&&record.result){showCached(record);inFlight=false;return;}
+    if(!JEV_API_ENDPOINT){status.textContent="JEV 接口尚未配置";inFlight=false;return;}
+    button.disabled=true;button.classList.add("is-loading");status.textContent="正在分析此职位…";result.hidden=true;
+    try{
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
+      const response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text}),signal:controller.signal});
+      clearTimeout(timer);if(!response.ok)throw new Error("HTTP "+response.status);
+      const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
+      cache[id]={schemaVersion:1,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);showCached(cache[id]);
+    }catch(error){status.textContent=error.name==="AbortError"?"分析超时，请稍后重试":"分析暂时不可用（"+error.message+"）";}
+    finally{button.disabled=false;button.classList.remove("is-loading");inFlight=false;}
+  };
+  button.addEventListener("click",run);tools.addEventListener("click",event=>event.stopPropagation());body.appendChild(tools);
+  const existing=cache[id];if(existing?.result){jdFingerprint(currentText).then(fingerprint=>{if(existing.jdFingerprint===fingerprint)showCached(existing);});}
+}
 async function hydrateJd(card){
   const body=card.querySelector(".job-jd-text");
   if(!body||body.dataset.loaded==="true")return;
@@ -132,6 +217,7 @@ async function hydrateJd(card){
   // with <del>, while inserted text appears inline with <ins>. Do not append
   // a legend, explanatory copy, or a second "current version" block.
   body.innerHTML=tracked||current;
+  addJevControls(body,card,entry,text);
   body.dataset.loaded="true";
   delete body.dataset.loading;
 }
