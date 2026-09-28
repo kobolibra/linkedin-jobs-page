@@ -10,17 +10,23 @@ test('validates and bounds the browser payload', () => {
   assert.throws(() => validateRequest(null), /invalid_json/);
 });
 
-test('builds Requesty questions payload without credentials', () => {
+test('builds the official TypeSafe systemone payload without credentials', () => {
   const { url, model, payload } = buildProviderRequest({ jobId: 'li-1', title: 'Analyst', company: 'ACME', location: 'HK', description: 'A'.repeat(100) }, {});
-  assert.equal(url, 'https://router.requesty.ai/v1/chat/completions');
-  assert.equal(model, 'typesafe/jev-latest');
-  assert.equal(payload.response_format.type, 'questions');
-  assert.ok(payload.response_format.questions.function.criteria.client_commercial);
-  assert.equal(payload.messages[0].role, 'user');
+  assert.equal(url, 'https://api.typesafe.ai/v1/systemone');
+  assert.equal(model, 'jev-latest');
+  assert.equal(payload.model, 'jev-latest');
+  assert.equal(payload.state.company, 'ACME');
+  assert.equal(payload.questions.function.type, 'choice');
+  assert.ok(payload.questions.function.criteria.client_commercial);
 });
 
-test('normalizes a Requesty assistant JSON response to the frontend contract', () => {
-  const result = parseProviderResponse({ choices: [{ message: { content: JSON.stringify({ function: 'technology_engineering', businessDomain: 'banking', seniorityBand: 'manager_lead_principal', riskFlag: 'management_ambiguity' }) } }] });
+test('normalizes official TypeSafe answers to the frontend contract', () => {
+  const result = parseProviderResponse({ model: 'jev-latest', answers: {
+    function: { type: 'choice', choice: 'technology_engineering', confidence: 0.9 },
+    businessDomain: { type: 'choice', choice: 'banking', confidence: 0.8 },
+    seniorityBand: { type: 'choice', choice: 'manager_lead_principal', confidence: 0.8 },
+    riskFlag: { type: 'choice', choice: 'management_ambiguity', confidence: 0.7 },
+  } });
   assert.deepEqual(result.businessDomains, ['banking']);
   assert.equal(result.function, 'technology_engineering');
   assert.equal(result.riskFlags[0].code, 'management_ambiguity');

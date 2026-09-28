@@ -2,14 +2,15 @@
 
 ## 当前实现状态
 
-前端按钮调用同源 `POST /api/jev/analyze`。Cloudflare Worker 现在提供代理 handler；浏览器永远不会接触 JEV/Requesty key。Worker 默认适配 Requesty 的 TypeSafe Jev 兼容接口：
+前端按钮调用同源 `POST /api/jev/analyze`。Cloudflare Worker 现在提供代理 handler；浏览器永远不会接触 TypeSafe API key。Worker 默认使用 TypeSafe 官方 API：
 
-- URL：`https://router.requesty.ai/v1/chat/completions`
-- Model：`typesafe/jev-latest`
-- Authentication：`Authorization: Bearer <REQUESTY_API_KEY>`
-- Response format：`{"type":"questions","questions":{...}}`
+- URL：`https://api.typesafe.ai/v1/systemone`
+- Model：`jev-latest`
+- Authentication：`Authorization: Bearer <TYPESAFE_API_KEY>`
+- Request：`{"state": ..., "model": "jev-latest", "questions": {...}}`
+- Response：`{"model": "jev-latest", "answers": {...}}`
 
-上游 endpoint/model 可通过 Worker secrets/vars 覆盖：`JEV_API_URL`、`JEV_MODEL`、`JEV_API_KEY`。默认情况下使用 `REQUESTY_API_KEY`。推荐生产环境使用版本化模型（例如 `typesafe/jev-1.13.0`）完成回归评估后再固定。
+上游 endpoint/model 可通过 Worker secrets/vars 覆盖：`JEV_API_URL`、`JEV_MODEL`、`JEV_API_KEY`。默认情况下使用 `TYPESAFE_API_KEY`。如果显式把 `JEV_API_URL` 设置为 Requesty 的 chat completions endpoint，Worker 会启用兼容格式；这不是默认路径。推荐生产环境使用版本化模型完成回归评估后再固定。
 
 ## Endpoint
 
@@ -31,9 +32,9 @@ Accept: application/json
 在 Cloudflare Worker `linkedin` 上配置：
 
 ```text
-REQUESTY_API_KEY = <secret>
-# 可选：JEV_MODEL = typesafe/jev-1.13.0
-# 可选：JEV_API_URL = https://router.requesty.ai/v1/chat/completions
+TYPESAFE_API_KEY = <secret>
+# 可选：JEV_MODEL = jev-latest
+# 可选：JEV_API_URL = https://api.typesafe.ai/v1/systemone
 ```
 
 如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。仓库的 `.github/workflows/deploy-cloudflare.yml` 需要 GitHub Actions secrets：`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。
@@ -76,7 +77,7 @@ Worker 返回以下结构，前端也兼容 `analysis`、`result`、`data` 包�
 }
 ```
 
-Worker 将 Requesty assistant JSON 统一归一化为上面的 schema。
+Worker 将 TypeSafe `answers`（choice/noul/score）统一归一化为上面的前端 schema。
 
 ## 缓存策略
 
