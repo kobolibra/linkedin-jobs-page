@@ -19,6 +19,10 @@ test('builds the official TypeSafe systemone payload without credentials', () =>
   assert.equal(payload.questions.roleArchetype.type, 'choice');
   assert.ok(payload.questions.roleArchetype.criteria.client_relationship_coverage);
   assert.ok(payload.questions.primaryActivity.criteria.technology_build);
+  assert.ok(payload.questions.secondaryActivity1.criteria.data_analytics);
+  assert.ok(payload.questions.productContext1.criteria.cloud_platforms);
+  assert.ok(payload.questions.riskFlag3.criteria.seniority_ambiguity);
+  assert.ok(payload.questions.riskSeverity1.criteria.high);
   assert.equal(payload.questions.directReportsRequired, undefined);
 });
 
@@ -42,12 +46,46 @@ test('normalizes official TypeSafe answers to the frontend contract', () => {
   assert.equal(result.directReportsRequired, undefined);
 });
 
+test('normalizes the complete controlled v2.1 dimensions', () => {
+  const result = parseProviderResponse({ answers: {
+    roleArchetype: { type: 'choice', choice: 'data_ai_quantitative_analytics' },
+    primaryActivity: { type: 'choice', choice: 'data_analytics' },
+    secondaryActivity1: { type: 'choice', choice: 'technology_build' },
+    secondaryActivity2: { type: 'choice', choice: 'research_analysis' },
+    businessDomain: { type: 'choice', choice: 'capital_markets' },
+    productContext1: { type: 'choice', choice: 'data_platforms' },
+    productContext2: { type: 'choice', choice: 'trading_systems' },
+    productContext3: { type: 'choice', choice: 'none' },
+    roleLevel: { type: 'choice', choice: 'senior_individual_contributor' },
+    mandateScope: { type: 'choice', choice: 'workstream_or_project' },
+    decisionAuthority: { type: 'choice', choice: 'recommendation' },
+    leadershipLevel: { type: 'choice', choice: 'informal_influencer' },
+    riskFlag1: { type: 'choice', choice: 'seniority_ambiguity' },
+    riskFlag2: { type: 'choice', choice: 'title_scope_mismatch' },
+    riskFlag3: { type: 'choice', choice: 'none' },
+    riskSeverity1: { type: 'choice', choice: 'high' },
+    riskSeverity2: { type: 'choice', choice: 'low' },
+  } });
+  assert.equal(result.taxonomyVersion, 'jev-taxonomy-v2.1');
+  assert.deepEqual(result.workProfile.secondaryActivities, ['technology_build', 'research_analysis']);
+  assert.deepEqual(result.businessContext.productOrPlatformContext, ['data_platforms', 'trading_systems']);
+  assert.equal(result.mandate.roleLevel, 'senior_individual_contributor');
+  assert.deepEqual(result.roleRisk.riskFlags.map(item => item.severity), ['high', 'low']);
+});
+
 test('returns 503 instead of leaking a provider key when not configured', async () => {
   const request = new Request('https://linkedin.example/api/jev/analyze', { method: 'POST', headers: { 'content-type': 'application/json', 'origin': 'https://linkedin.example' }, body: JSON.stringify({ description: 'A'.repeat(100) }) });
   const assets = { fetch: async () => new Response('asset') };
   const response = await worker.fetch(request, { ASSETS: assets });
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), { error: 'provider_not_configured' });
+});
+
+test('rejects direct API calls without a same-origin browser Origin', async () => {
+  const request = new Request('https://linkedin.example/api/jev/analyze', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ description: 'A'.repeat(100) }) });
+  const response = await worker.fetch(request, { TYPESAFE_API_KEY: 'test-only-secret', ASSETS: { fetch: async () => new Response('asset') } });
+  assert.equal(response.status, 403);
+  assert.deepEqual(await response.json(), { error: 'origin_not_allowed' });
 });
 
 test('proxies official TypeSafe answers without exposing the key to the response', async () => {

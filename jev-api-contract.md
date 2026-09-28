@@ -2,7 +2,7 @@
 
 ## Current implementation
 
-The frontend calls the same-origin `POST /api/jev/analyze`. The Cloudflare Worker keeps the TypeSafe API key server-side and proxies the official TypeSafe systemone endpoint:
+The frontend calls the same-origin `POST /api/jev/analyze`. The Cloudflare Worker keeps the TypeSafe API key server-side and proxies the official TypeSafe systemone endpoint. The endpoint is intentionally discoverable as part of a public web application, but it is not an unauthenticated provider endpoint: direct requests without the page's same-origin `Origin` are rejected, and the provider key is never exposed.
 
 - URL: `https://api.typesafe.ai/v1/systemone`
 - Model: `jev-latest`
@@ -36,15 +36,16 @@ The Worker validates request size, same-origin access and rate limits. It return
 
 The description must contain at least 40 characters and is capped at 30,000 characters.
 
-## JEV v2 response
+## JEV v2.1 response
 
-The production taxonomy is defined in [`jev-taxonomy-v2.md`](./jev-taxonomy-v2.md).
+The production taxonomy is defined in [`jev-taxonomy-v2.md`](./jev-taxonomy-v2.md) and is identified at runtime as `jev-taxonomy-v2.1`.
 
 ```json
 {
   "schemaVersion": 2,
   "analysis": {
     "schemaVersion": 2,
+    "taxonomyVersion": "jev-taxonomy-v2.1",
     "roleArchetype": "platform_cloud_reliability_engineering",
     "workProfile": {
       "primaryActivity": "technology_build",
@@ -84,7 +85,7 @@ Leadership Responsibility
 Role Risk
 ```
 
-`directReports`, `location_ambiguity`, `jd_too_short`, and `placeholder_or_test_role` are not part of the user-facing JEV result. Requirements, evidence quality, compensation and candidate fit are also outside the core JEV role taxonomy.
+`directReports`, `location_ambiguity`, `jd_too_short`, and `placeholder_or_test_role` are not part of the user-facing JEV result. Requirements, evidence quality, compensation and candidate fit are also outside the core JEV role taxonomy. The current TypeSafe question interface supplies controlled risk codes and severity; explanatory risk reasons remain a future enrichment because the current typed question contract does not return free-text rationale.
 
 ## UI behavior
 
@@ -100,7 +101,7 @@ Role Risk
 The browser uses localStorage key:
 
 ```text
-linkedin-jev-analysis-v2
+linkedin-jev-analysis-v2.1
 ```
 
 The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp and v2 result. A changed JD fingerprint triggers a new analysis.

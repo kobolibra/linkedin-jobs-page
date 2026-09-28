@@ -117,7 +117,8 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v2";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v2.1";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v2.1";
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // should implement this endpoint and keep the provider credential server-side.
 const JEV_API_ENDPOINT="/api/jev/analyze";
@@ -133,9 +134,8 @@ const jevFunctionLabels={
   people_marketing_corporate_services:"People, Marketing & Corporate Services"
 };
 const jevSeniorityLabels={
-  executive_head:"Executive / Head",director:"Director / Senior Director",vp_svp_avp:"VP / SVP / AVP",
-  manager_lead_principal:"Manager / Lead / Principal",senior_experienced_ic:"Senior Individual Contributor",
-  analyst_associate_consultant:"Analyst / Associate / Consultant",entry_early_career:"Entry / Early Career",unclear:"Unknown"
+  entry:"Entry / Early Career",professional:"Professional",senior_individual_contributor:"Senior Individual Contributor",
+  manager_or_lead:"Manager / Lead",director_or_head:"Director / Head",executive:"Executive",unknown:"Unknown"
 };
 const jevValueLabel=value=>({yes:"Yes",no:"No",unknown:"Unknown",clear:"Clear",partial:"Partial",absent:"Not stated",low:"Low",medium:"Medium",high:"High"}[String(value||"").toLowerCase()]||String(value||"Unknown"));
 const jevList=value=>Array.isArray(value)?value.filter(Boolean):value?[value]:[];
@@ -158,6 +158,7 @@ function jevPayload(raw){
   const roleRisk=root.roleRisk||{};
   const allowedRiskCodes=new Set(["title_scope_mismatch","seniority_ambiguity","responsibility_ambiguity","leadership_ambiguity","function_context_mismatch","contradictory_scope"]);
   return {
+    taxonomyVersion:root.taxonomyVersion||JEV_TAXONOMY_VERSION,
     roleArchetype:root.roleArchetype||classification.roleArchetype||"other_unknown",
     primaryActivity:workProfile.primaryActivity||root.primaryActivity||"other_unknown",
     secondaryActivities:jevList(workProfile.secondaryActivities||root.secondaryActivities),
@@ -195,7 +196,7 @@ function addJevControls(body,card,entry,currentText){
     inFlight=true;
     const text=currentText||jdPlainText(entry.descriptionHtml||entry.descriptionText||entry.description||"");
     const fingerprint=await jdFingerprint(text),record=cache[id];
-    if(record?.jdFingerprint===fingerprint&&record.result){showCached(record);inFlight=false;return;}
+    if(record?.taxonomyVersion===JEV_TAXONOMY_VERSION&&record?.jdFingerprint===fingerprint&&record.result){showCached(record);inFlight=false;return;}
     if(!JEV_API_ENDPOINT){inFlight=false;return;}
     if(button){button.setAttribute("aria-busy","true");button.classList.add("is-loading");}result.hidden=true;
     try{
@@ -203,13 +204,13 @@ function addJevControls(body,card,entry,currentText){
       const response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text}),signal:controller.signal});
       clearTimeout(timer);if(!response.ok)throw new Error("HTTP "+response.status);
       const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
-      cache[id]={schemaVersion:1,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);showCached(cache[id]);
+      cache[id]={schemaVersion:2,taxonomyVersion:JEV_TAXONOMY_VERSION,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);showCached(cache[id]);
     }catch(error){if(button)button.title=error.name==="AbortError"?"Analysis timed out":"Analysis unavailable";}
     finally{if(button){button.removeAttribute("aria-busy");button.classList.remove("is-loading");}inFlight=false;}
   };
   if(button){button.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();run();});button.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();event.stopPropagation();run();}});}
   body.parentNode.insertBefore(tools,body);
-  const existing=cache[id];if(existing?.result){jdFingerprint(currentText).then(fingerprint=>{if(existing.jdFingerprint===fingerprint)showCached(existing);});}
+  const existing=cache[id];if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(currentText).then(fingerprint=>{if(existing.jdFingerprint===fingerprint)showCached(existing);});}
 }
 async function hydrateJd(card){
   const body=card.querySelector(".job-jd-text");
