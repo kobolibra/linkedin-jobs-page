@@ -194,7 +194,7 @@ function renderJevResult(container,result,analyzedAt){
 function addJevControls(body,card,entry,currentText){
   if(body.parentNode?.querySelector(".jev-analysis-tools"))return;
   const id=card.dataset.id||"";
-  const summary=card.querySelector(".job-jd summary"),button=summary?.querySelector(".job-jd-analytics");
+  const button=card.querySelector(".job-jd-toggle"),analytics=card.querySelector(".job-jd-analytics");
   const tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-result" hidden></div>';
   const result=tools.querySelector(".jev-result");
   const cache=readJevCache();
@@ -290,6 +290,7 @@ compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
 jobsEl.addEventListener("click",e=>{
   const card=e.target.closest(".job");if(!card||!jobsEl.contains(card))return;
   const id=card.dataset.id;
+  if(e.target.closest(".job-jd-toggle")){hydrateJd(card);return;}
 
   if(e.target.closest(".job-title")){reads.add(id);saveReads();card.classList.add("read");return;}
   const star=e.target.closest(".star");
