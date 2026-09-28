@@ -43,13 +43,15 @@ TYPESAFE_API_KEY = <secret>
 
 项目的实际发布链路不是由本仓库单独新增的 Cloudflare GitHub Actions workflow 驱动，而是：`main` 上的 **Deploy to GitHub Pages** workflow 发布 `gh-pages` 分支，Cloudflare Worker `linkedin` 再从该已配置的 Git 同步/部署来源更新。当前 `gh-pages` 已包含 `worker.js`、`wrangler.jsonc` 和 `.assetsignore`，线上 Worker 的更新时间也与该发布链路吻合，因此不应再维护一条重复的 `deploy-cloudflare.yml`。
 
+当前生产状态：`TYPESAFE_API_KEY` 已通过 Cloudflare API 绑定到 `linkedin` Worker；线上同源 `POST /api/jev/analyze` 已实测返回 `200`，并返回 `schemaVersion` 与 `analysis` 结构。密钥值不进入仓库、静态资源、前端代码或日志。
+
 首次配置或轮换 secret，需要在具备 Cloudflare 权限的环境执行：
 
 ```bash
 npx wrangler secret put TYPESAFE_API_KEY --name linkedin
 ```
 
-Cloudflare secret 的值不会通过 Worker bundle、Git 仓库或线上响应暴露。当前连接器支持读取 Worker 元数据和代码，但不提供读取该 Worker secret 名称/值的接口；线上 `POST /api/jev/analyze` 返回 `503 provider_not_configured` 已核实当前代码没有读到 `JEV_API_KEY`、`TYPESAFE_API_KEY` 或 `REQUESTY_API_KEY` 这三个候选变量中的任何一个。该命令只能由账户持有人在已授权的 Cloudflare 环境执行，不能把 key 写入仓库或 GitHub Actions 日志。
+Cloudflare secret 的值不会通过 Worker bundle、Git 仓库或线上响应暴露。Cloudflare API 可以核验绑定名称，但不会返回 secret 明文；当前已核验绑定名称为 `TYPESAFE_API_KEY`，并通过线上 `200` 响应确认 Worker 已实际使用该配置。该命令只能由账户持有人在已授权的 Cloudflare 环境执行，不能把 key 写入仓库或 GitHub Actions 日志。
 
 ## Request
 
