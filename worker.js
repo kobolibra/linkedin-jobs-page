@@ -11,8 +11,8 @@ const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 12;
 const recentRequests = new Map();
 
-const DEFAULT_PROVIDER_URL = "https://router.requesty.ai/v1/chat/completions";
-const DEFAULT_MODEL = "typesafe/jev-latest";
+const DEFAULT_PROVIDER_URL = "https://api.typesafe.ai/v1/systemone";
+const DEFAULT_MODEL = "jev-latest";
 
 const FUNCTION_CRITERIA = {
   client_commercial: "Client, sales, relationship management, commercial origination or business development.",
@@ -136,20 +136,7 @@ export function validateRequest(value) {
 export function buildProviderRequest(input, env) {
   const providerUrl = env.JEV_API_URL || DEFAULT_PROVIDER_URL;
   const model = env.JEV_MODEL || DEFAULT_MODEL;
-  const payload = {
-    model,
-    messages: [{
-      role: "user",
-      content: [
-        `Job ID: ${input.jobId || "unknown"}`,
-        `Title: ${input.title || "unknown"}`,
-        `Company: ${input.company || "unknown"}`,
-        `Location: ${input.location || "unknown"}`,
-        "Job description:",
-        input.description,
-      ].join("\n"),
-    }],
-    response_format: { type: "questions", questions: {
+  const questionMap = {
       function: questions.function,
       businessDomain: { type: "choice", instructions: "What is the primary business domain of the employer or role?", criteria: BUSINESS_CRITERIA },
       seniorityBand: questions.seniorityBand,
@@ -158,9 +145,19 @@ export function buildProviderRequest(input, env) {
       directReportsRequired: questions.directReportsRequired,
       teamLeadershipRequired: questions.teamLeadershipRequired,
       riskFlag: questions.riskFlag,
-    } },
   };
-  return { url: providerUrl, model, payload };
+  if (providerUrl.includes("router.requesty.ai")) {
+    return { url: providerUrl, model, payload: {
+      model: model.includes("/") ? model : `typesafe/${model}`,
+      messages: [{ role: "user", content: JSON.stringify({ ...input }) }],
+      response_format: { type: "questions", questions: questionMap },
+    } };
+  }
+  return { url: providerUrl, model, payload: {
+    state: { jobId: input.jobId, title: input.title, company: input.company, location: input.location, description: input.description },
+    model,
+    questions: questionMap,
+  } };
 }
 
 function parseJson(value) {
@@ -174,25 +171,32 @@ function parseJson(value) {
 
 export function parseProviderResponse(providerResponse) {
   const message = providerResponse?.choices?.[0]?.message;
-  const raw = parseJson(message?.content ?? message?.tool_calls?.[0]?.function?.arguments ?? providerResponse);
+  const raw = providerResponse?.answers || parseJson(message?.content ?? message?.tool_calls?.[0]?.function?.arguments ?? providerResponse);
   const root = raw.analysis || raw.result || raw.data || raw;
-  const risk = root.riskFlags || root.riskFlag;
+  const answerValue = (key, fallback) => {
+    const answer = raw?.[key];
+    if (!answer) return root?.[key] ?? fallback;
+    if (answer.type === "choice") return answer.choice ?? answer.value ?? fallback;
+    if (answer.type === "noul") return answer.value >= 0.5 ? "yes" : "no";
+    return answer.value ?? fallback;
+  };
+  const risk = answerValue("riskFlag", root.riskFlags || root.riskFlag || "none");
   return {
-    function: root.function || "unknown",
+    function: answerValue("function", root.function || "unknown"),
     subFunctions: Array.isArray(root.subFunctions) ? root.subFunctions : (root.subFunctions ? [root.subFunctions] : []),
-    businessDomains: Array.isArray(root.businessDomains) ? root.businessDomains : (root.businessDomain ? [root.businessDomain] : []),
-    seniorityBand: root.seniorityBand || "unclear",
-    responsibilityLevel: root.responsibilityLevel || "unknown",
-    isFormalPeopleManager: root.isFormalPeopleManager || "unknown",
-    directReportsRequired: root.directReportsRequired || "unknown",
-    teamLeadershipRequired: root.teamLeadershipRequired || "unknown",
+    businessDomains: [answerValue("businessDomain", root.businessDomain || root.businessDomains?.[0] || "other_unknown")],
+    seniorityBand: answerValue("seniorityBand", root.seniorityBand || "unclear"),
+    responsibilityLevel: answerValue("responsibilityLevel", root.responsibilityLevel || "unknown"),
+    isFormalPeopleManager: answerValue("isFormalPeopleManager", root.isFormalPeopleManager || "unknown"),
+    directReportsRequired: answerValue("directReportsRequired", root.directReportsRequired || "unknown"),
+    teamLeadershipRequired: answerValue("teamLeadershipRequired", root.teamLeadershipRequired || "unknown"),
     leadershipType: Array.isArray(root.leadershipType) ? root.leadershipType : [],
     riskFlags: risk && risk !== "none" ? (Array.isArray(risk) ? risk : [{ code: risk, severity: "medium" }]) : [],
   };
 }
 
 async function callProvider(input, env) {
-  const apiKey = env.JEV_API_KEY || env.REQUESTY_API_KEY;
+  const apiKey = env.JEV_API_KEY || env.TYPESAFE_API_KEY || env.REQUESTY_API_KEY;
   if (!apiKey) throw Object.assign(new Error("provider_not_configured"), { status: 503 });
   const request = buildProviderRequest(input, env);
   const controller = new AbortController();
@@ -207,7 +211,7 @@ async function callProvider(input, env) {
     const bodyText = await response.text();
     if (!response.ok) {
       console.error("JEV provider error", response.status, bodyText.slice(0, 500));
-      throw Object.assign(new Error("provider_error"), { status: response.status === 429 ? 429 : 502 });
+      throw Object.assign(new Error("provider_error"), { status: response.status === 429 || response.status === 529 ? response.status : 502 });
     }
     return parseProviderResponse(JSON.parse(bodyText));
   } catch (error) {
