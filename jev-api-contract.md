@@ -39,15 +39,17 @@ TYPESAFE_API_KEY = <secret>
 # 可选：JEV_API_URL = https://api.typesafe.ai/v1/systemone
 ```
 
-如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。仓库的 `.github/workflows/deploy-cloudflare.yml` 需要 GitHub Actions secrets：`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。
+如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。
 
-首次配置命令（在有 Cloudflare API 权限的环境执行）：
+项目的实际发布链路不是由本仓库单独新增的 Cloudflare GitHub Actions workflow 驱动，而是：`main` 上的 **Deploy to GitHub Pages** workflow 发布 `gh-pages` 分支，Cloudflare Worker `linkedin` 再从该已配置的 Git 同步/部署来源更新。当前 `gh-pages` 已包含 `worker.js`、`wrangler.jsonc` 和 `.assetsignore`，线上 Worker 的更新时间也与该发布链路吻合，因此不应再维护一条重复的 `deploy-cloudflare.yml`。
+
+首次配置或轮换 secret，需要在具备 Cloudflare 权限的环境执行：
 
 ```bash
 npx wrangler secret put TYPESAFE_API_KEY --name linkedin
 ```
 
-然后在 GitHub 仓库 Actions secrets 配置 `CLOUDFLARE_API_TOKEN`（Workers Scripts Edit 权限）和 `CLOUDFLARE_ACCOUNT_ID`。当前代码已推送，两个 secret 补齐后，推送任意匹配路径的提交或手动运行 `Deploy LinkedIn Worker to Cloudflare` 即可完成发布。
+Cloudflare secret 的值不会通过 Worker bundle、Git 仓库或线上响应暴露。当前连接器支持读取 Worker 元数据和代码，但不提供读取该 Worker secret 名称/值的接口；线上 `POST /api/jev/analyze` 返回 `503 provider_not_configured` 已核实当前代码没有读到 `JEV_API_KEY`、`TYPESAFE_API_KEY` 或 `REQUESTY_API_KEY` 这三个候选变量中的任何一个。该命令只能由账户持有人在已授权的 Cloudflare 环境执行，不能把 key 写入仓库或 GitHub Actions 日志。
 
 ## Request
 
