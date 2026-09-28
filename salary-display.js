@@ -134,9 +134,35 @@
 
   let salaryById=new Map();
 
-  // Keep the native <details> structure. app.js owns its toggle event so the
-  // JD body remains lazy-loaded and Analytics is visible only while expanded.
-  const upgradeJd=article=>{};
+  // Mobile-only bridge: native <details> creates an anonymous internal box on
+  // some mobile engines. Keep desktop unchanged, but use stable siblings on
+  // mobile so the arrow/body cannot be reordered when cached JEV tools mount.
+  const isMobile=()=>window.matchMedia?.('(max-width:720px)').matches===true;
+  const upgradeJd=article=>{
+    if(!isMobile())return;
+    const details=article.querySelector('details.job-jd');
+    if(!details)return;
+    const parent=details.parentNode;
+    if(!parent)return;
+    const body=details.querySelector('.job-jd-text');
+    details.querySelector('.job-jd-analytics')?.remove();
+    const toggle=document.createElement('button');
+    toggle.type='button';
+    toggle.className='job-jd-toggle';
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','展开职位描述');
+    parent.insertBefore(toggle,details);
+    if(body)parent.insertBefore(body,details);
+    details.remove();
+  };
+  host.addEventListener('click',event=>{
+    const toggle=event.target?.closest?.('.job-jd-toggle');
+    if(!toggle||!host.contains(toggle))return;
+    event.preventDefault();
+    const open=toggle.getAttribute('aria-expanded')==='true';
+    toggle.setAttribute('aria-expanded',open?'false':'true');
+    toggle.setAttribute('aria-label',open?'展开职位描述':'收起职位描述');
+  });
 
   const ensureCompanyText=article=>{
     const sub=article.querySelector('.job-sub');
@@ -184,12 +210,12 @@
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
       mobileBadge.className='salary-ref salary-ref-mobile';
-      const anchor=detail?.querySelector('.job-jd summary')||detail?.querySelector('.job-right-mobile');
+      const anchor=detail?.querySelector('.job-jd-toggle')||detail?.querySelector('.job-jd summary')||detail?.querySelector('.job-right-mobile');
       if(anchor) anchor.parentNode.insertBefore(mobileBadge,anchor); else (detail||company.sub).appendChild(mobileBadge);
     }
 
     if(detail&&mobileBadge){
-      const anchor=detail.querySelector('.job-jd summary')||detail.querySelector('.job-right-mobile');
+      const anchor=detail.querySelector('.job-jd-toggle')||detail.querySelector('.job-jd summary')||detail.querySelector('.job-right-mobile');
       if(anchor && mobileBadge!==anchor) anchor.parentNode.insertBefore(mobileBadge,anchor);
     }
     desktopBadge.textContent=salary;

@@ -192,6 +192,7 @@ function renderJevResult(container,result,analyzedAt){
   container.hidden=false;
 }
 function addJevControls(body,card,entry,currentText){
+  if(window.matchMedia?.("(max-width:720px)").matches)return;
   if(body.parentNode?.querySelector(".jev-analysis-tools"))return;
   const id=card.dataset.id||"";
   const summary=card.querySelector(".job-jd summary"),button=summary?.querySelector(".job-jd-analytics");
