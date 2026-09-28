@@ -5,10 +5,10 @@
 The frontend calls the same-origin `POST /api/jev/analyze`. The Cloudflare Worker keeps the TypeSafe API key server-side and proxies the official TypeSafe systemone endpoint. The endpoint is intentionally discoverable as part of a public web application, but it is not an unauthenticated provider endpoint: direct requests without the page's same-origin `Origin` are rejected, and the provider key is never exposed.
 
 - URL: `https://api.typesafe.ai/v1/systemone`
-- Model: `jev-latest`
+- Model: `jev-1.13.0`
 - Authentication: `Authorization: Bearer <TYPESAFE_API_KEY>`
-- Request: `{ "state": ..., "model": "jev-latest", "questions": {...} }`
-- Upstream response: `{ "model": "jev-latest", "answers": {...} }`
+- Request: `{ "state": ..., "model": "jev-1.13.0", "questions": {...} }`
+- Upstream response: `{ "model": "jev-1.13.0", "answers": {...} }`
 
 Reference: [TypeSafe API documentation](https://docs.typesafe.ai/api).
 
@@ -30,22 +30,30 @@ The Worker validates request size, same-origin access and rate limits. It return
   "title": "Investment Analyst",
   "company": "Schroders",
   "location": "CN",
-  "description": "Plain-text job description"
+      "description": "Plain-text job description",
+      "jevInput": {
+        "role_summary": "Structured role summary after conservative preprocessing",
+        "responsibilities": "Responsibilities only",
+        "requirements": "Requirements only",
+        "evidence_level": "adequate",
+        "evidence_flags": [],
+        "title_signals": {"normalized": "professional", "tags": []}
+      }
 }
 ```
 
 The description must contain at least 40 characters and is capped at 30,000 characters.
 
-## JEV v2.2 response
+## JEV v2.3 response
 
-The production taxonomy is defined in [`jev-taxonomy-v2.2.md`](./jev-taxonomy-v2.2.md) and is identified at runtime as `jev-taxonomy-v2.2`.
+The v2.2 taxonomy document is the baseline; the current implementation is identified at runtime as `jev-taxonomy-v2.3`.
 
 ```json
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "analysis": {
-    "schemaVersion": 2,
-    "taxonomyVersion": "jev-taxonomy-v2.2",
+    "schemaVersion": 3,
+    "taxonomyVersion": "jev-taxonomy-v2.3",
     "roleArchetype": "platform_cloud_reliability_engineering",
     "workProfile": {
       "primaryActivity": "technology_build",
@@ -55,12 +63,15 @@ The production taxonomy is defined in [`jev-taxonomy-v2.2.md`](./jev-taxonomy-v2
       "businessDomain": "wealth_private_banking",
       "businessProducts": ["payments"],
       "technologyPlatforms": ["apis_and_microservices"],
+      "servedBusinessLine": "global_markets",
+      "operatingContext": "onshore_bank_business_unit",
       "productOrPlatformContext": ["payments", "apis_and_microservices"]
     },
     "mandate": {
       "titleLevelSignal": "director_or_head",
       "roleLevel": "senior_individual_contributor",
-      "seniorityAlignment": "title_higher_than_scope",
+      "titleConventionTags": ["employer_band_convention"],
+      "seniorityAlignment": "employer_title_convention",
       "mandateScope": "workstream_or_project",
       "decisionAuthority": "ownership"
     },
@@ -89,7 +100,7 @@ Leadership Responsibility
 Role Risk
 ```
 
-`directReports`, `location_ambiguity`, `jd_too_short`, and `placeholder_or_test_role` are not part of the user-facing JEV result. Requirements, evidence quality, compensation and candidate fit are also outside the core JEV role taxonomy. Empty product/platform arrays mean `Not materially specified`; `unknown` is reserved for insufficient or contradictory evidence. The current TypeSafe question interface supplies controlled risk codes and severity; explanatory risk reasons remain a future enrichment because the current typed question contract does not return free-text rationale.
+Every major dimension may carry a `state`: `ok`, `low_confidence`, `not_stated`, `not_applicable` or `conflicting`, plus provider `confidence` and `probabilities` when available. Title level and title conventions are computed deterministically from title and employer context. `other_profession` is distinct from `insufficient_evidence`; requirements and employer boilerplate are not role evidence. Empty product/platform arrays mean `Not materially specified`; `not_stated` means the JD does not state authority or leadership.
 
 ## UI behavior
 
@@ -105,10 +116,10 @@ Role Risk
 The browser uses localStorage key:
 
 ```text
-linkedin-jev-analysis-v2.2
+linkedin-jev-analysis-v2.3
 ```
 
-The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp, taxonomy version and v2.2 result. A changed JD fingerprint or taxonomy version triggers a new analysis.
+The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp, taxonomy version, provider model and v2.3 result. A changed JD fingerprint, taxonomy version or provider model triggers a new analysis.
 
 ## Worker secret
 
@@ -121,7 +132,7 @@ TYPESAFE_API_KEY = <secret>
 Optional variables:
 
 ```text
-JEV_MODEL = jev-latest
+JEV_MODEL = jev-1.13.0
 JEV_API_URL = https://api.typesafe.ai/v1/systemone
 ```
 

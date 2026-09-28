@@ -117,8 +117,8 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v2.2";
-const JEV_TAXONOMY_VERSION="jev-taxonomy-v2.2";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v2.3";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v2.3";
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // should implement this endpoint and keep the provider credential server-side.
 const JEV_API_ENDPOINT="/api/jev/analyze";
@@ -156,34 +156,38 @@ function jevPayload(raw){
   const workProfile=root.workProfile||{};
   const businessContext=root.businessContext||{};
   const roleRisk=root.roleRisk||{};
-  const allowedRiskCodes=new Set(["title_scope_mismatch","seniority_ambiguity","responsibility_ambiguity","leadership_ambiguity","function_context_mismatch","contradictory_scope"]);
+  const allowedRiskCodes=new Set(["title_scope_mismatch","seniority_ambiguity","responsibility_ambiguity","leadership_ambiguity","function_context_mismatch","contradictory_scope","responsibilities_generic_or_template","title_inflation_by_convention","multiple_roles_in_one_jd","range_level_posting","bilingual_content_conflict","vendor_or_outsourced_ambiguity","location_or_entity_ambiguity","requirements_dominate_over_responsibilities","template_placeholder_text","machine_translation_or_encoding_issues","leadership_signals_conflict"]);
   return {
     taxonomyVersion:root.taxonomyVersion||JEV_TAXONOMY_VERSION,
     roleArchetype:root.roleArchetype||classification.roleArchetype||"other_unknown",
     primaryActivity:workProfile.primaryActivity||root.primaryActivity||"other_unknown",
     secondaryActivities:jevList(workProfile.secondaryActivities||root.secondaryActivities),
     businessDomain:businessContext.businessDomain||root.businessDomain||root.businessDomains?.[0]||"other_unknown",
+    servedBusinessLine:businessContext.servedBusinessLine||root.servedBusinessLine||"multi_line_unspecified",
+    operatingContext:businessContext.operatingContext||root.operatingContext||"not_stated",
     businessProducts:jevList(businessContext.businessProducts||root.businessProducts),
     technologyPlatforms:jevList(businessContext.technologyPlatforms||root.technologyPlatforms),
     productContext:jevList(businessContext.productOrPlatformContext||root.productOrPlatformContext),
     roleLevel:mandate.roleLevel||root.roleLevel||root.seniorityBand||"unknown",
     titleLevelSignal:mandate.titleLevelSignal||root.titleLevelSignal||"unknown",
     seniorityAlignment:mandate.seniorityAlignment||root.seniorityAlignment||"ambiguous",
+    titleConventionTags:jevList(mandate.titleConventionTags||root.titleConventionTags),
     mandateScope:mandate.mandateScope||root.mandateScope||root.responsibilityLevel||"unknown",
     decisionAuthority:mandate.decisionAuthority||root.decisionAuthority||"unknown",
     leadershipLevel:root.leadershipLevel||"unknown",
     function:root.function||classification.function||"unknown",
     subFunctions:jevList(root.subFunctions||classification.subFunctions||root.primarySubFunction),
     businessDomains:jevList(root.businessDomains||classification.businessDomains||root.industry),
-    riskFlags:(Array.isArray(roleRisk.riskFlags)?roleRisk.riskFlags:Array.isArray(root.riskFlags)?root.riskFlags:[]).filter(item=>allowedRiskCodes.has(item?.code))
+    riskFlags:(Array.isArray(roleRisk.riskFlags)?roleRisk.riskFlags:Array.isArray(root.riskFlags)?root.riskFlags:[]).filter(item=>allowedRiskCodes.has(item?.code)),
+    workMix:workProfile.workMix||root.workMix||{}, confidence:root.confidence||{}, states:root.states||{}, evidence:root.evidence||{level:"unknown",flags:[]}
   };
 }
 function jevTags(values){return jevList(values).map(value=>'<span class="jev-tag">'+esc(jevFunctionLabels[value]||jevSeniorityLabels[value]||String(value).replaceAll("_"," "))+'</span>').join("");}
 const jevText=value=>String(value||"Unknown").replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
 function renderJevResult(container,result,analyzedAt){
   const r=jevPayload(result),risk=r.riskFlags;
-  const row=(label,value,html=false)=>{const empty=html&&!value;return '<div class="jev-field"><dt>'+label+'</dt><dd>'+(empty?'<span class="jev-muted">Not materially specified</span>':(html?value:'<span>'+esc(jevValueLabel(value))+'</span>'))+'</dd></div>';};
-  container.innerHTML='<dl class="jev-fields">'+row("Role Archetype",jevText(r.roleArchetype))+row("Primary Activity",jevText(r.primaryActivity))+row("Secondary Activities",jevList(r.secondaryActivities).map(jevText).join(" · "),true)+row("Business Domain",jevText(r.businessDomain))+row("Business Products",jevList(r.businessProducts).map(jevText).join(" · "),true)+row("Technology Platforms",jevList(r.technologyPlatforms).map(jevText).join(" · "),true)+row("Title Level Signal",jevText(r.titleLevelSignal))+row("Role Level",jevText(r.roleLevel))+row("Title / JD Alignment",r.seniorityAlignment)+row("Mandate Scope",jevText(r.mandateScope))+row("Decision Authority",jevText(r.decisionAuthority))+row("Leadership Level",jevText(r.leadershipLevel))+'</dl>'+(risk.length?'<section class="jev-risks"><h4>Role Risk</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"Structural Signal").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+'</article>').join("")+'</section>':'');
+  const row=(label,value,html=false,key="")=>{const empty=html&&!value;const state=key&&r.states?.[key];const conf=key&&typeof r.confidence?.[key]?.confidence==="number"?` <small class="jev-confidence">${Math.round(r.confidence[key].confidence*100)}%</small>`:"";return '<div class="jev-field jev-state-'+esc(state||"")+'"><dt>'+label+'</dt><dd>'+(empty?'<span class="jev-muted">Not materially specified</span>':(html?value:'<span>'+esc(jevValueLabel(value))+'</span>'))+conf+(state&&state!=="ok"?'<small class="jev-state">'+esc(jevValueLabel(state))+'</small>':'')+'</dd></div>';};
+  container.innerHTML='<dl class="jev-fields">'+row("Role Archetype",jevText(r.roleArchetype),false,"roleArchetype")+row("Primary Activity",jevText(r.primaryActivity))+row("Business Line Served",jevText(r.servedBusinessLine),false,"servedBusinessLine")+row("Operating Context",jevText(r.operatingContext),false,"operatingContext")+row("Business Products",jevList(r.businessProducts).map(jevText).join(" · "),true)+row("Technology Platforms",jevList(r.technologyPlatforms).map(jevText).join(" · "),true)+row("Title Level Signal",jevText(r.titleLevelSignal))+row("Title Conventions",jevList(r.titleConventionTags).map(jevText).join(" · "),true)+row("Role Level",jevText(r.roleLevel),false,"roleLevel")+row("Title / JD Alignment",r.seniorityAlignment)+row("Mandate Scope",jevText(r.mandateScope),false,"mandateScope")+row("Decision Authority",jevText(r.decisionAuthority),false,"decisionAuthority")+row("Leadership Level",jevText(r.leadershipLevel),false,"leadershipLevel")+'</dl>'+(risk.length?'<section class="jev-risks"><h4>Role Risk</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"Structural Signal").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+'</article>').join("")+'</section>':'')+(r.evidence?.flags?.length?'<p class="jev-evidence-note">Evidence flags: '+esc(r.evidence.flags.join(", "))+'</p>':'');
   container.hidden=false;
 }
 function addJevControls(body,card,entry,currentText){
@@ -205,7 +209,7 @@ function addJevControls(body,card,entry,currentText){
     if(button){button.setAttribute("aria-busy","true");button.classList.add("is-loading");}result.hidden=true;
     try{
       const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
-      const response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text}),signal:controller.signal});
+      const response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text,jevInput:entry.jevInput||null}),signal:controller.signal});
       clearTimeout(timer);if(!response.ok)throw new Error("HTTP "+response.status);
       const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
       cache[id]={schemaVersion:2,taxonomyVersion:JEV_TAXONOMY_VERSION,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);showCached(cache[id]);

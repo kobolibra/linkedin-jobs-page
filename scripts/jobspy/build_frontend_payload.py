@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
+from jev_preprocess import preprocess
 
 
 def job_id(link: object) -> str:
@@ -32,7 +33,16 @@ def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
         text = str(job.get("descriptionText") or job.get("description") or "").strip()
         item["hasJd"] = bool(html or text)
         if item["hasJd"] and key:
-            details[key] = {"descriptionHtml": html, "descriptionText": text}
+            details[key] = {
+                "descriptionHtml": html,
+                "descriptionText": text,
+                "jevInput": preprocess(
+                    str(job.get("title") or ""),
+                    str(job.get("company") or ""),
+                    text,
+                    {k: job.get(k) for k in ("business", "jobFamily", "entity", "group") if job.get(k)},
+                ),
+            }
             if str(job.get("jdDiffHtml") or "").strip():
                 details[key].update({
                     "jdDiffHtml": str(job["jdDiffHtml"]),
@@ -43,8 +53,8 @@ def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
                 })
         index_rows.append(item)
 
-    index_doc = {"schemaVersion": "1.0", "source": "jobs.json", "jobs": index_rows}
-    details_doc = {"schemaVersion": "1.0", "source": "jobs.json", "details": details}
+    index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows}
+    details_doc = {"schemaVersion": "1.1", "source": "jobs.json", "details": details}
     index_out.write_text(json.dumps(index_doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     details_out.write_text(json.dumps(details_doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     return len(index_rows), len(details)
@@ -66,6 +76,7 @@ def self_test() -> None:
         assert index_doc["jobs"][0]["hasJd"] is True
         assert "descriptionHtml" not in index_doc["jobs"][0]
         assert detail_doc["details"]["ln:123456"]["descriptionHtml"] == "<p>JD</p>"
+        assert detail_doc["details"]["ln:123456"]["jevInput"]["evidence_level"] == "insufficient"
         slug = "https://hk.linkedin.com/jobs/view/title-210740045-at-company-4468639951"
         assert job_id(slug) == "ln:4468639951"
 
