@@ -129,18 +129,21 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-sub-link { cursor:pointer; }
 .job-sub-link:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .job-city { flex:0 0 auto;color:var(--ink-faint);font-size:12px;white-space:nowrap; }
-.job-jd-row { display:contents; }
-.job-jd-toggle { appearance:none;-webkit-appearance:none;background:none;border:0;padding:0;margin:0;cursor:pointer;color:var(--region,var(--navy));flex:0 0 auto;align-self:center;display:inline-flex;align-items:center;justify-content:center;width:14px;height:17px;-webkit-tap-highlight-color:transparent; }
-.job-jd-toggle::before { content:"";display:block;width:0;height:0;border-left:5px solid currentColor;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transform:rotate(0deg);transform-origin:center;transition:transform .18s var(--ease,ease); }
-.job-jd-toggle[aria-expanded="true"]::before { transform:rotate(90deg); }
+.job-jd { display:contents;color:var(--ink-soft);font-size:12px;line-height:1.5; }
+.job-jd summary { cursor:pointer;color:var(--region,var(--navy));flex:0 0 auto;align-self:center;display:inline-flex;align-items:center;gap:5px;width:auto;height:17px;list-style:none;-webkit-tap-highlight-color:transparent; }
+.job-jd summary::-webkit-details-marker { display:none; }
+.job-jd summary::marker { content:""; }
+.job-jd summary::before { content:"";display:block;width:0;height:0;border-left:5px solid currentColor;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;transform:rotate(0deg);transform-origin:center;transition:transform .18s var(--ease,ease); }
+.job-jd[open] summary::before { transform:rotate(90deg); }
 .job-jd-analytics { display:inline-block;color:var(--region,var(--navy));font:600 10.5px/1 var(--sans);letter-spacing:.02em;cursor:pointer;padding:2px 0; }
 .job-jd-analytics[hidden] { display:none; }
 .job-jd-analytics:hover { color:var(--ink);text-decoration:underline;text-underline-offset:3px; }
 .job-jd-analytics.is-loading { opacity:.55;cursor:wait; }
 .job-jd-analytics.is-cached { color:var(--ink); }
-@media (prefers-reduced-motion:reduce) { .job-jd-toggle::before { transition:none; } }
-.job-jd-text { display:none;flex:1 1 100%;width:100%;max-width:100%;min-width:0;margin-top:6px;white-space:normal;overflow-wrap:anywhere; }
-.job-jd-row.is-open .job-jd-text { display:block;max-height:none;overflow:visible;opacity:1; }
+@media (prefers-reduced-motion:reduce) { .job-jd summary::before { transition:none; } }
+.job-jd-text { flex:1 1 100%;width:100%;max-width:100%;min-width:0;margin-top:6px;white-space:normal;overflow-wrap:anywhere; }
+.job-jd:not([open]) .job-jd-text { display:none; }
+.job-jd[open] .job-jd-text { display:block;max-height:none;overflow:visible;opacity:1; }
 .job-jd-text p { margin:0 0 9px; }
 .job-jd-text ul,.job-jd-text ol { margin:0 0 9px 20px;padding:0; }
 .job-jd-text li { margin:0 0 5px; }
@@ -276,12 +279,10 @@ body.compact .day-head { padding-bottom:6px; }
   .job-city:empty { display:none; }
   .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
-  .job-jd-toggle { order:0;margin-top:0; }
-  /* Analytics is intentionally desktop-only. Mobile keeps only city + expand
-     arrow + JD body; no hidden clickable analysis control is exposed. */
+  .job-jd { display:contents;order:6;flex:0 1 auto;min-width:0;margin-top:5px; }
+  .job-jd summary { order:6;margin-top:5px; }
+  .job-jd-text { flex:1 1 100%;order:8;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
   .job-jd-analytics { display:none !important; }
-  .job-jd-text { order:2;flex:1 1 100%;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
-  .jev-analysis-tools { order:3; }
   .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-right { display:none; }
   .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:5px;margin-left:auto;white-space:nowrap; }

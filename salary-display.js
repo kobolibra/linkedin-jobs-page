@@ -41,58 +41,7 @@
       font-size:8.7px;
     }
 
-    /* Keep legacy arrow styles harmless; JD structure and open state belong to
-       app.js so Analytics can remain visible only while the JD is expanded. */
-    .job-jd-toggle{
-      appearance:none;
-      -webkit-appearance:none;
-      background:none;
-      border:0;
-      padding:0;
-      margin:0;
-      cursor:pointer;
-      color:var(--region,var(--navy));
-      flex:0 0 auto;
-      align-self:center;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:14px;
-      height:14px;
-      -webkit-tap-highlight-color:transparent;
-    }
-    .job-jd-toggle::before{
-      content:"";
-      display:block;
-      width:0;
-      height:0;
-      border-left:5px solid currentColor;
-      border-top:3.5px solid transparent;
-      border-bottom:3.5px solid transparent;
-      transform:rotate(0deg);
-      transform-origin:center;
-      transition:transform .18s ease;
-    }
-    .job-jd-toggle[aria-expanded="true"]::before{transform:rotate(90deg)}
-    @media (prefers-reduced-motion:reduce){
-      .job-jd-toggle::before{transition:none}
-    }
-    .job-jd-text{
-      display:none;
-      flex:1 1 100%;
-      order:9;
-      width:100%;
-      max-width:100%;
-      min-width:0;
-      margin-top:6px;
-      color:var(--ink-soft);
-      font-size:12px;
-      line-height:1.5;
-      white-space:normal;
-      overflow-wrap:anywhere;
-    }
-    .job-jd-toggle[aria-expanded="true"] ~ .job-jd-text{display:block}
-
+    /* JD arrow/body styles are owned by styles-list.css and native details. */
     @media(max-width:720px){
       /* Preserve the original title/company wrapping; only split the company row into left and right. */
       .job-sub{
@@ -126,7 +75,7 @@
       body.compact .job-company-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       body.compact .salary-ref-mobile{min-height:14px;padding:0 5px;font-size:8.5px}
       /* Row 3: city, salary, arrow. Row 4: JD body, full width, from the left. */
-      .job-jd-toggle{order:6;margin-top:5px}
+      .job-jd summary{order:6;margin-top:5px}
       .job-jd-text{order:9;margin-top:6px}
     }
   `;
@@ -184,12 +133,12 @@
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
       mobileBadge.className='salary-ref salary-ref-mobile';
-      const anchor=detail?.querySelector('.job-jd-toggle')||detail?.querySelector('.job-right-mobile');
+      const anchor=detail?.querySelector('.job-jd summary')||detail?.querySelector('.job-right-mobile');
       if(anchor) anchor.parentNode.insertBefore(mobileBadge,anchor); else (detail||company.sub).appendChild(mobileBadge);
     }
 
     if(detail&&mobileBadge){
-      const anchor=detail.querySelector('.job-jd-toggle')||detail.querySelector('.job-right-mobile');
+      const anchor=detail.querySelector('.job-jd summary')||detail.querySelector('.job-right-mobile');
       if(anchor && mobileBadge!==anchor) anchor.parentNode.insertBefore(mobileBadge,anchor);
     }
     desktopBadge.textContent=salary;
