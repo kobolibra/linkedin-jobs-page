@@ -12,28 +12,37 @@ const RATE_LIMIT = 12;
 const recentRequests = new Map();
 
 const DEFAULT_PROVIDER_URL = "https://api.typesafe.ai/v1/systemone";
-const DEFAULT_MODEL = "jev-latest";
-const TAXONOMY_VERSION = "jev-taxonomy-v2.2";
+const DEFAULT_MODEL = "jev-1.13.0";
+const TAXONOMY_VERSION = "jev-taxonomy-v2.3";
 
 const ROLE_ARCHETYPES = {
   client_relationship_coverage: "Owns client relationships, account coverage or relationship portfolios.",
-  sales_origination_distribution: "Generates, structures, sells or distributes business, products or revenue.",
-  customer_service_acquisition: "Performs customer service, contact-centre, frontline or customer-acquisition work.",
+  direct_sales_origination: "Acquires clients or originates revenue through direct sales and business development.",
+  product_sales_advisory: "Provides product expertise, product sales or specialist advisory without owning the product lifecycle.",
+  customer_service_frontline: "Performs customer service, contact-centre, branch or frontline acquisition work.",
   investment_research_strategy: "Produces investment, market, economic or sector research and strategy.",
-  portfolio_management_asset_allocation: "Makes or supports portfolio-management, asset-allocation or investment decisions.",
-  markets_sales_trading_structuring: "Works in markets sales, trading, structuring or market execution.",
-  credit_underwriting_risk: "Performs credit assessment, underwriting, credit monitoring or portfolio-risk work.",
-  risk_compliance_financial_crime: "Performs compliance, AML, sanctions, surveillance, investigations or control work.",
-  operations_settlement_servicing: "Performs settlement, clearing, fund, transaction, middle-office or servicing operations.",
+  portfolio_management: "Makes or owns portfolio-management, asset-allocation or investment decisions.",
+  markets_sales_trading: "Works in markets sales, trading, structuring or market execution.",
+  investment_banking_advisory: "Performs corporate finance, M&A, ECM, DCM or investment-banking advisory/underwriting.",
+  credit_underwriting: "Performs credit assessment, underwriting, credit monitoring or first-line credit risk.",
+  financial_crime_kyc_aml: "Performs KYC, CDD, AML, sanctions, fraud or financial-crime investigations and controls.",
+  compliance_regulatory: "Performs regulatory compliance, policy, advisory, monitoring or regulatory affairs.",
+  enterprise_risk: "Performs enterprise, operational, model, market or second-line risk management.",
+  internal_audit: "Performs independent internal audit and assurance.",
+  operations_settlement_servicing: "Performs transaction processing, settlement, middle-office or servicing operations.",
+  securities_services_fund_admin: "Performs custody, fund accounting, transfer agency or securities-services administration.",
   product_management_governance: "Owns product definition, lifecycle, governance or product outcomes.",
   software_application_engineering: "Builds and maintains business applications or software systems.",
   platform_cloud_reliability_engineering: "Builds platforms, cloud, infrastructure, SRE or production reliability capabilities.",
-  technology_architecture_delivery: "Owns solution architecture, technical delivery, programme delivery or technical design.",
-  data_ai_quantitative_analytics: "Performs data engineering, AI/ML, quantitative analysis or advanced analytics work.",
+  cybersecurity: "Owns cyber security engineering, operations, architecture or security assurance.",
+  technology_architecture: "Owns solution architecture, technical standards or technical design.",
+  data_ai_quantitative_analytics: "Performs data engineering, AI/ML, quantitative analysis or advanced analytics.",
+  business_analysis_delivery: "Performs business analysis, project, PMO or delivery management.",
+  strategy_transformation: "Drives enterprise strategy, transformation, change or programme execution.",
   finance_accounting_treasury_control: "Performs accounting, financial control, treasury, FP&A or actuarial-finance work.",
-  strategy_transformation_programme: "Drives enterprise strategy, transformation, change or programme execution.",
   people_marketing_corporate_services: "Performs HR, recruitment, marketing or corporate-services work.",
-  other_unknown: "Another role type or insufficient evidence.",
+  other_profession: "A clear profession that is outside the controlled taxonomy.",
+  insufficient_evidence: "The role evidence is too thin, generic or contradictory to classify.",
 };
 
 const ACTIVITIES = {
@@ -58,12 +67,37 @@ const TITLE_LEVELS = { entry: "Entry / early-career title signal.", professional
 const SENIORITY_ALIGNMENT = { aligned: "Title level and JD responsibility are materially aligned.", title_higher_than_scope: "Title signals a higher level than the responsibility supported by the JD.", title_lower_than_scope: "JD responsibility signals a higher level than the title.", ambiguous: "Title and JD contain materially conflicting or insufficient level evidence." };
 
 const RISK_CODES = {
-  none: "No material structural risk is evident in the JD.", title_scope_mismatch: "The title and actual responsibilities materially differ.", seniority_ambiguity: "The seniority signals are ambiguous or internally inconsistent.", responsibility_ambiguity: "The mandate, ownership boundary or expected outcomes are materially unclear.", leadership_ambiguity: "The JD mixes IC, team-lead and people-management signals.", function_context_mismatch: "The title, function and business context point to different role types.", contradictory_scope: "The JD combines narrow execution and broad ownership without explaining the relationship.",
+  none: "No material structural risk is evident in the JD.", title_scope_mismatch: "The title and actual responsibilities materially differ.", seniority_ambiguity: "The seniority signals are ambiguous or internally inconsistent.", responsibility_ambiguity: "The mandate, ownership boundary or expected outcomes are materially unclear.", leadership_ambiguity: "The JD mixes IC, team-lead and people-management signals.", function_context_mismatch: "The title, function and business context point to different role types.", contradictory_scope: "The JD combines narrow execution and broad ownership without explaining the relationship.", responsibilities_generic_or_template: "Role evidence is dominated by employer boilerplate or generic language.", title_inflation_by_convention: "Employer title convention makes the market title overstate role level.", multiple_roles_in_one_jd: "The posting combines multiple distinct roles or locations.", range_level_posting: "The title covers a hiring range rather than one level.", bilingual_content_conflict: "The bilingual versions contain materially different role evidence.", vendor_or_outsourced_ambiguity: "Employment or accountability boundary appears outsourced or vendor-based.", location_or_entity_ambiguity: "Location, legal entity or operating context is materially ambiguous.", requirements_dominate_over_responsibilities: "Requirements dominate while actual role responsibilities are thin.", template_placeholder_text: "The JD contains unresolved placeholders.", machine_translation_or_encoding_issues: "The JD contains likely translation or encoding defects.", leadership_signals_conflict: "Model leadership output conflicts with observable text evidence.",
 };
 const RISK_SEVERITIES = { low: "Limited structural concern.", medium: "Material concern for comparison or interpretation.", high: "Significant concern likely to mislead a reviewer.", unknown: "Severity cannot be determined." };
 
 const ROLE_LEVELS = { entry: "Intern, graduate, trainee, assistant or entry-level role.", professional: "Analyst, associate, consultant or established professional role.", senior_individual_contributor: "Senior or experienced individual contributor without clear people-management responsibility.", manager_or_lead: "Manager, senior manager, lead, principal or team lead.", director_or_head: "Director, associate director, head of a function or equivalent senior leader.", executive: "C-suite, country head, business head, managing director or executive leader.", unknown: "The role level cannot be determined from the description." };
 const BUSINESS_DOMAINS = { retail_banking: "Retail or consumer banking.", commercial_corporate_banking: "Commercial, corporate or wholesale banking.", wealth_private_banking: "Wealth management or private banking.", capital_markets: "Capital markets, securities, trading or investment banking.", asset_management: "Asset management, funds or institutional investing.", insurance: "Insurance or reinsurance.", fintech_payments: "Fintech, payments or financial infrastructure.", technology_services: "Technology or software services as the primary business context.", corporate_enterprise: "Enterprise corporate or shared-services context.", other_unknown: "Another context or insufficient evidence." };
+const SERVED_BUSINESS_LINES = { personal_retail: "Personal or retail banking.", wealth_premier: "Premier or retail wealth.", private_banking: "Private banking.", commercial_business: "Commercial banking.", corporate_institutional: "Corporate or institutional banking.", transaction_banking_payments_trade: "Transaction banking, payments or trade.", securities_services: "Securities services and fund administration.", global_markets: "Global markets.", investment_banking_advisory: "Investment banking and advisory.", asset_management_funds: "Asset management and funds.", insurance: "Insurance.", group_functions_enterprise: "Group or enterprise functions.", multi_line_unspecified: "Multiple lines or not specified." };
+const OPERATING_CONTEXTS = { onshore_bank_business_unit: "Onshore bank business unit.", shared_service_centre: "Shared service or operations centre.", technology_development_centre: "Technology development centre.", securities_or_ib_jv: "Securities or investment-banking joint venture.", asset_management_or_wealth_entity: "Asset-management or wealth entity.", insurance_entity: "Insurance entity.", consumer_finance_or_other: "Consumer finance or other entity.", not_stated: "Not stated." };
+const FIELD_STATES = { ok: "Evidence supports the value.", low_confidence: "A value exists but confidence is low.", not_stated: "The JD does not state this dimension.", not_applicable: "The dimension is not applicable to this role.", conflicting: "Evidence materially conflicts." };
+
+function deriveTitleSignals(title, company) {
+  const t = String(title || "").trim();
+  const low = t.toLowerCase();
+  const c = String(company || "").toLowerCase();
+  const tags = [];
+  if (/\b(associate director|director\s*\/\s*vp|associate\s*\/\s*vp|vp\s*\/\s*director)\b/i.test(low)) tags.push("range_title");
+  if (/\b(product owner|scrum master)\b/i.test(low)) tags.push("role_name_not_level");
+  if (/\b(fellow|distinguished engineer|staff engineer|principal engineer)\b/i.test(low)) tags.push("technical_ladder");
+  if (/\b(relationship|business development|sales|premier|wealth manager)\b/i.test(low)) tags.push("client_facing_title");
+  if (/\b(consultant specialist|senior consultant specialist)\b/i.test(low)) tags.push("opaque_generic_title");
+  if (c.includes("hsbc") && /\bpremier relationship director\b/i.test(low)) return { market: "director_or_head", normalized: "professional", tags: [...new Set([...tags, "client_facing_title"])], markers: ["premier_relationship_director"] };
+  if (c.includes("standard chartered") && /\bbusiness development executive\b/i.test(low)) return { market: "executive", normalized: "professional", tags: [...new Set([...tags, "client_facing_title"])], markers: ["business_development_executive"] };
+  let market = "unknown";
+  if (/\b(intern|graduate|trainee|assistant)\b|实习|管培/i.test(low)) market = "entry";
+  else if (/\b(chief|cso|cto|cfo|ceo|country head|business head|managing director)\b|首席|国家负责人/i.test(low)) market = "executive";
+  else if (/\b(director|head|executive director|ed)\b|总监|董事/i.test(low)) market = "director_or_head";
+  else if (/\b(vp|svp|avp|vice president|associate director)\b|副总裁/i.test(low)) market = "manager_or_lead";
+  else if (/\b(manager|lead|principal|staff|senior)\b|经理|主管|高级/i.test(low)) market = /\b(manager|lead)\b|经理|主管/i.test(low) ? "manager_or_lead" : "senior_individual_contributor";
+  else if (/\b(analyst|associate|consultant|specialist|officer|executive)\b|分析师|专员|主任/i.test(low)) market = "professional";
+  return { market, normalized: tags.includes("role_name_not_level") ? "unknown" : market, tags: [...new Set(tags)], markers: [] };
+}
 const MANDATE_SCOPES = { individual_delivery: "Primarily owns individual delivery.", workstream_or_project: "Owns a defined workstream, project, book of work or specialist area.", team_or_function: "Owns a team, function or major programme mandate.", business_unit_or_region: "Owns a business unit, country, region or material commercial mandate.", enterprise: "Owns an enterprise-wide or group-level mandate.", unknown: "Insufficient evidence." };
 const DECISION_AUTHORITIES = { execution: "Executes defined work without explicit decision ownership.", recommendation: "Provides recommendations, analysis or advice without final authority.", approval: "Has explicit approval, authorization or sign-off authority.", ownership: "Owns a business outcome, mandate or material decision domain.", unknown: "Insufficient evidence." };
 const LEADERSHIP_LEVELS = { individual_contributor: "Individual contributor with no explicit leadership ownership.", informal_influencer: "Mentors, coordinates or influences without owning a team.", team_lead: "Leads a squad, project team or workstream without clear formal people management.", people_manager: "Explicitly manages people, hiring or performance.", functional_leader: "Owns a function or multiple teams.", unknown: "Insufficient evidence." };
@@ -183,12 +217,21 @@ export function validateRequest(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("invalid_json");
   const description = text(value.description, MAX_DESCRIPTION_CHARS);
   if (!description || description.length < 40) throw new Error("description_required");
+  const rawInput = value.jevInput && typeof value.jevInput === "object" ? value.jevInput : null;
+  const jevInput = rawInput ? {
+    role_summary: text(rawInput.role_summary, 12_000), responsibilities: text(rawInput.responsibilities, 24_000),
+    requirements: text(rawInput.requirements, 16_000), employer_metadata: text(rawInput.employer_metadata, 4_000),
+    language: text(rawInput.language, 40), evidence_level: text(rawInput.evidence_level, 40),
+    evidence_flags: Array.isArray(rawInput.evidence_flags) ? rawInput.evidence_flags.slice(0, 30).map(x => text(x, 100)) : [],
+    title_signals: rawInput.title_signals && typeof rawInput.title_signals === "object" ? rawInput.title_signals : {},
+  } : null;
   return {
     jobId: text(value.jobId, 200),
     title: text(value.title, 300),
     company: text(value.company, 300),
     location: text(value.location, 120),
     description,
+    jevInput,
   };
 }
 
@@ -196,25 +239,38 @@ export function buildProviderRequest(input, env) {
   const providerUrl = env.JEV_API_URL || DEFAULT_PROVIDER_URL;
   const model = env.JEV_MODEL || DEFAULT_MODEL;
   const choice = (instructions, criteria) => ({ type: "choice", instructions, criteria });
+  const noul = instructions => ({ type: "noul", instructions });
   const evidence = (question, rules) => ({ title: input.title || "", description: input.description || "", company: input.company || "", location: input.location || "", question, rules });
+  const stateEvidence = (question, rules) => ({ title: input.title || "", role_summary: input.jevInput?.role_summary || "", responsibilities: input.jevInput?.responsibilities || input.description || "", requirements: input.jevInput?.requirements || "", employer_metadata: input.jevInput?.employer_metadata || "", question, rules });
   const questionMap = {
-    roleArchetype: choice("What single controlled role archetype best describes the profession being hired? Use dominant ownership and outputs, not the title alone.", ROLE_ARCHETYPES),
+    postingType: choice(stateEvidence("What kind of posting is this?", "Choose specific_role for one concrete job, programme_intake for internship/graduate/rotational intake, talent_pool_or_evergreen for a general talent pool, multiple_distinct_roles when materially different roles are combined, or not_a_job_posting when this is not a job description."), { specific_role: "One concrete role.", programme_intake: "Programme or intake.", talent_pool_or_evergreen: "Talent pool or evergreen posting.", multiple_distinct_roles: "Multiple distinct roles.", not_a_job_posting: "Not a job posting." }),
+    roleArchetype: choice(stateEvidence("What single controlled role archetype best describes the profession being hired? Use ownership, recurring responsibilities and outputs; ignore requirements and employer boilerplate.", "If core responsibilities are insufficient, choose insufficient_evidence. Choose other_profession only when a clear profession is outside the enum."), ROLE_ARCHETYPES),
     primaryActivity: choice("What is the single dominant work activity of this role? Rank explicit ownership, recurring responsibilities and outputs above supporting language.", ACTIVITIES),
     secondaryActivity1: choice("What is the most important secondary activity, if any? Do not repeat the primary activity.", ACTIVITIES),
     secondaryActivity2: choice("What is the second most important secondary activity, if any? Do not repeat the primary activity or the first secondary activity.", ACTIVITIES),
-    businessDomain: choice("What single business context does this role operate in? Distinguish business context from professional function.", {
+    servedBusinessLine: choice(stateEvidence("Which business line does this role serve? For technology, operations, risk and finance roles, classify the business served rather than the employee function.", "Use explicit business metadata and recurring role responsibilities; do not infer technology_services merely because the role is technical."), SERVED_BUSINESS_LINES),
+    operatingContext: choice(stateEvidence("What operating context or entity is this role in?", "Distinguish an onshore business unit from shared services, technology centre, joint venture and other entities."), OPERATING_CONTEXTS),
+    businessDomain: choice(stateEvidence("What single business context does this role operate in? Distinguish business context from professional function.", "Use role_summary and responsibilities, not requirements or benefits."), {
       retail_banking: "Retail or consumer banking.", commercial_corporate_banking: "Commercial, corporate or wholesale banking.", wealth_private_banking: "Wealth management or private banking.", capital_markets: "Capital markets, securities, trading or investment banking.", asset_management: "Asset management, funds or institutional investing.", insurance: "Insurance or reinsurance.", fintech_payments: "Fintech, payments or financial infrastructure.", technology_services: "Technology or software services as the primary business context.", corporate_enterprise: "Enterprise corporate or shared-services context.", other_unknown: "Another context or insufficient evidence.",
     }),
     businessProduct1: choice(evidence("Which single business product is materially worked on by this role? Choose none when the JD only names the employer's industry or mentions a product incidentally.", "Select only products that are recurring objects of the role's decisions, analysis, sales, operations or ownership."), BUSINESS_PRODUCTS),
     businessProduct2: choice(evidence("Which second business product, if any, is materially worked on by this role? Do not repeat the first choice.", "Choose none for incidental mentions, generic financial-services context or skills."), BUSINESS_PRODUCTS),
     technologyPlatform1: choice(evidence("Which single technology platform context is materially owned, engineered, operated or delivered by this role? Choose none when technologies are merely skills or tools.", "A programming language, vendor certification or ordinary software usage is not a platform context."), TECHNOLOGY_PLATFORMS),
     technologyPlatform2: choice(evidence("Which second technology platform context, if any, is materially owned, engineered, operated or delivered by this role? Do not repeat the first choice.", "Choose none for incidental technology mentions."), TECHNOLOGY_PLATFORMS),
-    titleLevelSignal: choice(evidence("What career level does the title itself signal, ignoring the body of the JD?", "Use title wording only. Treat Senior, Staff, Principal, Manager, Lead, Director, Head, Managing Director and Executive as signals, not proof of actual scope."), TITLE_LEVELS),
-    roleLevel: choice(evidence("What is the final controlled career level after jointly considering the title and the JD?", "Use the title as a prior, then test it against recurring responsibility, scope, decision authority and people leadership. If title and JD conflict, classify the level actually supported by the JD and let seniorityAlignment record the conflict. Do not upgrade from title prestige alone; do not downgrade a title when the JD explicitly supports its scope."), ROLE_LEVELS),
-    seniorityAlignment: choice(evidence("How do the title-level signal and the JD responsibility level relate?", "Use aligned only when they materially agree; use title_higher_than_scope when the title is inflated relative to the JD; use title_lower_than_scope when the JD supports more scope than the title; use ambiguous when evidence is insufficient or internally contradictory."), SENIORITY_ALIGNMENT),
+    roleLevel: choice(stateEvidence("What role level is supported by the title and the responsibilities together? Treat title as a prior and responsibilities, scope, authority and people leadership as decisive evidence. If evidence is insufficient, choose unknown.", "Do not infer authority from requirements, employer values or generic leadership language."), ROLE_LEVELS),
     mandateScope: choice("What is the broadest mandate explicitly supported by the JD?", { individual_delivery: "Primarily owns individual delivery.", workstream_or_project: "Owns a defined workstream, project, book of work or specialist area.", team_or_function: "Owns a team, function or major programme mandate.", business_unit_or_region: "Owns a business unit, country, region or material commercial mandate.", enterprise: "Owns an enterprise-wide or group-level mandate.", unknown: "Insufficient evidence." }),
-    decisionAuthority: choice("What is the highest decision authority explicitly supported by the JD? Do not infer approval or ownership from support language.", { execution: "Executes defined work without explicit decision ownership.", recommendation: "Provides recommendations, analysis or advice without final authority.", approval: "Has explicit approval, authorization or sign-off authority.", ownership: "Owns a business outcome, mandate or material decision domain.", unknown: "Insufficient evidence." }),
-    leadershipLevel: choice("What single leadership level is explicitly supported by the JD? Collaboration is not automatically leadership.", { individual_contributor: "Individual contributor with no explicit leadership ownership.", informal_influencer: "Mentors, coordinates or influences without owning a team.", team_lead: "Leads a squad, project team or workstream without clear formal people management.", people_manager: "Explicitly manages people, hiring or performance.", functional_leader: "Owns a function or multiple teams.", unknown: "Insufficient evidence." }),
+    decisionAuthority: choice(stateEvidence("What is the highest decision authority explicitly supported by the responsibilities?", "Do not count generic accountability, support, review or risk language."), { execution: "Execution only.", recommendation: "Recommendation or advice.", approval: "Explicit approval or sign-off.", ownership: "Explicit ownership of outcome or decision domain.", not_stated: "The JD does not state authority." }),
+    leadershipLevel: choice(stateEvidence("What leadership level is explicitly supported by the responsibilities?", "Collaboration is not leadership; absence of management language is not proof of IC status."), { individual_contributor: "Explicit IC role.", informal_influencer: "Mentors or influences without team ownership.", team_lead: "Leads a team or workstream without formal people management.", people_manager: "Explicit people management, hiring or performance ownership.", functional_leader: "Owns a function or multiple teams.", not_stated: "The JD does not state leadership." }),
+    hasExplicitPeopleManagement: noul(stateEvidence("Does the responsibilities text explicitly state people management, direct reports, hiring or performance management?", "Yes only for explicit evidence; absence is not proof of individual-contributor status.")),
+    hasExplicitApprovalAuthority: noul(stateEvidence("Does the responsibilities text explicitly state approval, authorization, sign-off or credit approval authority?", "Do not count generic accountability, support, review or risk language.")),
+    workMix_clientFacing: noul(stateEvidence("Is substantive client-facing relationship or advisory work part of the role?", "Use responsibilities only.")),
+    workMix_revenueAccountability: noul(stateEvidence("Does the role have explicit sales, revenue, budget or P&L accountability?", "Do not infer from commercial context alone.")),
+    workMix_technicalDelivery: noul(stateEvidence("Does the role personally build, test, deploy or operate technology?", "Requirements-only technology skills do not count.")),
+    workMix_analysis: noul(stateEvidence("Is producing analysis, research, modelling or recommendations a substantive output?", "Use recurring outputs in responsibilities.")),
+    workMix_controlAssurance: noul(stateEvidence("Is control, compliance, audit, assurance or risk oversight a substantive output?", "Exclude boilerplate risk language.")),
+    workMix_changeDelivery: noul(stateEvidence("Is change, project, programme or transformation delivery a substantive output?", "Exclude generic change-ready language.")),
+    workMix_peopleLeadership: noul(stateEvidence("Is leading, managing or developing people a substantive responsibility?", "Require explicit evidence.")),
+    workMix_trainingEnablement: noul(stateEvidence("Is training, enablement or knowledge transfer a substantive responsibility?", "Exclude generic collaboration.")),
     riskFlag1: choice("What is the most important structural risk in the JD? Choose none if the role description is sufficiently clear.", RISK_CODES),
     riskFlag2: choice("What is the second structural risk, if any? Choose none unless distinct and material.", RISK_CODES),
     riskFlag3: choice("What is the third structural risk, if any? Choose none unless distinct and material.", RISK_CODES),
@@ -230,7 +286,7 @@ export function buildProviderRequest(input, env) {
     } };
   }
   return { url: providerUrl, model, payload: {
-    state: { jobId: input.jobId, title: input.title, company: input.company, location: input.location, description: input.description },
+    state: { jobId: input.jobId, title: input.title, company: input.company, location: input.location, description: input.description, ...(input.jevInput || {}) },
     model,
     questions: questionMap,
   } };
@@ -245,7 +301,7 @@ function parseJson(value) {
   }
 }
 
-export function parseProviderResponse(providerResponse) {
+export function parseProviderResponse(providerResponse, input = {}) {
   const message = providerResponse?.choices?.[0]?.message;
   const raw = providerResponse?.answers || parseJson(message?.content ?? message?.tool_calls?.[0]?.function?.arguments ?? providerResponse);
   const root = raw.analysis || raw.result || raw.data || raw;
@@ -256,6 +312,13 @@ export function parseProviderResponse(providerResponse) {
     if (answer.type === "noul") return answer.value >= 0.5 ? "yes" : "no";
     return answer.value ?? fallback;
   };
+  const answerMeta = key => {
+    const answer = raw?.[key];
+    const confidence = typeof answer?.confidence === "number" ? answer.confidence : null;
+    const probabilities = answer?.probabilities && typeof answer.probabilities === "object" ? answer.probabilities : null;
+    const state = confidence !== null && confidence < 0.5 ? "low_confidence" : answer ? "ok" : "not_stated";
+    return { confidence, probabilities, state };
+  };
   const allowed = (value, map, fallback) => Object.prototype.hasOwnProperty.call(map, value) ? value : fallback;
   const distinctChoices = (keys, map, excluded = []) => [...new Set(keys.map(key => answerValue(key, "none")))]
     .filter(value => value !== "none" && Object.prototype.hasOwnProperty.call(map, value) && !excluded.includes(value));
@@ -263,32 +326,41 @@ export function parseProviderResponse(providerResponse) {
   const roleRisks = distinctChoices(["riskFlag1", "riskFlag2", "riskFlag3"], RISK_CODES);
   if (!roleRisks.length && typeof legacyRisk === "string" && legacyRisk !== "none" && Object.prototype.hasOwnProperty.call(RISK_CODES, legacyRisk)) roleRisks.push(legacyRisk);
   const riskFlags = roleRisks.map((code, index) => ({ code, severity: allowed(answerValue(`riskSeverity${index + 1}`, "medium"), RISK_SEVERITIES, "medium") }));
-  const roleArchetype = answerValue("roleArchetype", root.roleArchetype || "other_unknown");
+  const roleArchetype = answerValue("roleArchetype", root.roleArchetype || "insufficient_evidence");
   const primaryActivity = answerValue("primaryActivity", root.primaryActivity || "other_unknown");
   const businessDomain = answerValue("businessDomain", root.businessDomain || root.businessDomains?.[0] || "other_unknown");
+  const servedBusinessLine = answerValue("servedBusinessLine", root.servedBusinessLine || "multi_line_unspecified");
+  const operatingContext = answerValue("operatingContext", root.operatingContext || "not_stated");
   const secondaryActivities = distinctChoices(["secondaryActivity1", "secondaryActivity2"], ACTIVITIES, [primaryActivity]);
   const businessProducts = distinctChoices(["businessProduct1", "businessProduct2"], BUSINESS_PRODUCTS);
   const technologyPlatforms = distinctChoices(["technologyPlatform1", "technologyPlatform2"], TECHNOLOGY_PLATFORMS);
   const productOrPlatformContext = [...businessProducts, ...technologyPlatforms];
-  const titleLevelSignal = allowed(answerValue("titleLevelSignal", root.titleLevelSignal || "unknown"), TITLE_LEVELS, "unknown");
+  const titleSignals = input.title ? deriveTitleSignals(input.title, input.company) : (root.titleSignals || { market: "unknown", normalized: "unknown", tags: [], markers: [] });
+  const titleLevelSignal = allowed(titleSignals.normalized || titleSignals.market || "unknown", TITLE_LEVELS, "unknown");
   const rawRoleLevel = answerValue("roleLevel", root.mandate?.roleLevel || root.roleLevel || answerValue("seniorityBand", root.seniorityBand || "unknown"));
   const roleLevel = allowed(rawRoleLevel === "unknown" && titleLevelSignal !== "unknown" ? titleLevelSignal : rawRoleLevel, ROLE_LEVELS, "unknown");
-  const seniorityAlignment = allowed(answerValue("seniorityAlignment", root.seniorityAlignment || "ambiguous"), SENIORITY_ALIGNMENT, "ambiguous");
-  const leadershipLevel = answerValue("leadershipLevel", root.leadershipLevel || "unknown");
+  const modelLeadership = answerValue("leadershipLevel", root.leadershipLevel || "not_stated");
+  const peopleEvidence = answerValue("hasExplicitPeopleManagement", "no") === "yes";
+  const leadershipLevel = modelLeadership === "people_manager" && !peopleEvidence ? "not_stated" : modelLeadership;
+  const seniorityAlignment = titleSignals.tags?.includes("employer_band_convention") || titleSignals.tags?.includes("client_facing_title") ? "employer_title_convention" : (titleLevelSignal === roleLevel || titleLevelSignal === "unknown" ? "aligned" : "ambiguous");
+  const confidence = Object.fromEntries(["roleArchetype", "servedBusinessLine", "operatingContext", "roleLevel", "mandateScope", "decisionAuthority", "leadershipLevel"].map(key => [key, answerMeta(key)]));
+  const states = Object.fromEntries(Object.entries(confidence).map(([key, meta]) => [key, meta.state]));
+  const workMix = Object.fromEntries(["clientFacing", "revenueAccountability", "technicalDelivery", "analysis", "controlAssurance", "changeDelivery", "peopleLeadership", "trainingEnablement"].map(key => [key, answerValue(`workMix_${key}`, "unknown")]));
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     taxonomyVersion: TAXONOMY_VERSION,
-    roleArchetype: allowed(roleArchetype, ROLE_ARCHETYPES, "other_unknown"),
-    workProfile: { primaryActivity: allowed(primaryActivity, ACTIVITIES, "other_unknown"), secondaryActivities },
-    businessContext: { businessDomain: allowed(businessDomain, BUSINESS_DOMAINS, "other_unknown"), businessProducts, technologyPlatforms, productOrPlatformContext },
+    roleArchetype: allowed(roleArchetype, ROLE_ARCHETYPES, "insufficient_evidence"),
+    workProfile: { primaryActivity: allowed(primaryActivity, ACTIVITIES, "other_unknown"), secondaryActivities, workMix },
+    businessContext: { businessDomain: allowed(businessDomain, BUSINESS_DOMAINS, "other_unknown"), servedBusinessLine: allowed(servedBusinessLine, SERVED_BUSINESS_LINES, "multi_line_unspecified"), operatingContext: allowed(operatingContext, OPERATING_CONTEXTS, "not_stated"), businessProducts, technologyPlatforms, productOrPlatformContext },
     mandate: {
       roleLevel: allowed(roleLevel, ROLE_LEVELS, "unknown"),
       titleLevelSignal,
+      titleConventionTags: titleSignals.tags || [],
       seniorityAlignment,
       mandateScope: allowed(answerValue("mandateScope", root.mandateScope || root.responsibilityLevel || "unknown"), MANDATE_SCOPES, "unknown"),
-      decisionAuthority: allowed(answerValue("decisionAuthority", root.decisionAuthority || "unknown"), DECISION_AUTHORITIES, "unknown"),
+      decisionAuthority: allowed(answerValue("decisionAuthority", root.decisionAuthority || "not_stated"), { ...DECISION_AUTHORITIES, not_stated: "Not stated." }, "not_stated"),
     },
-    leadershipLevel: allowed(leadershipLevel, LEADERSHIP_LEVELS, "unknown"),
+    leadershipLevel: allowed(leadershipLevel, { ...LEADERSHIP_LEVELS, not_stated: "Not stated." }, "not_stated"),
     roleRisk: { riskFlags },
     // Compatibility aliases for older cached clients.
     function: answerValue("function", root.function || "unknown"),
@@ -297,6 +369,9 @@ export function parseProviderResponse(providerResponse) {
     seniorityBand: allowed(roleLevel, ROLE_LEVELS, "unknown"),
     responsibilityLevel: answerValue("responsibilityLevel", root.responsibilityLevel || "unknown"),
     riskFlags,
+    confidence,
+    states,
+    evidence: input.jevInput ? { level: input.jevInput.evidence_level || "unknown", flags: input.jevInput.evidence_flags || [] } : { level: "unknown", flags: [] },
   };
 }
 
@@ -318,7 +393,7 @@ async function callProvider(input, env) {
       console.error("JEV provider error", response.status, bodyText.slice(0, 500));
       throw Object.assign(new Error("provider_error"), { status: response.status === 429 || response.status === 529 ? response.status : 502 });
     }
-    return parseProviderResponse(JSON.parse(bodyText));
+    return parseProviderResponse(JSON.parse(bodyText), input);
   } catch (error) {
     if (error?.name === "AbortError") throw Object.assign(new Error("provider_timeout"), { status: 504 });
     throw error;
@@ -356,7 +431,7 @@ async function handleJev(request, env) {
     const status = error.message === "description_required" ? 422 : 400;
     return jsonResponse(status, { error: error.message || "invalid_request" });
   }
-  try { return jsonResponse(200, { schemaVersion: 2, analysis: await callProvider(input, env) }); }
+  try { return jsonResponse(200, { schemaVersion: 3, analysis: await callProvider(input, env) }); }
   catch (error) { return jsonResponse(error.status || 502, { error: error.message || "analysis_failed" }); }
 }
 

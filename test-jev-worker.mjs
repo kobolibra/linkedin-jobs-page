@@ -11,10 +11,10 @@ test('validates and bounds the browser payload', () => {
 });
 
 test('builds the official TypeSafe systemone payload without credentials', () => {
-  const { url, model, payload } = buildProviderRequest({ jobId: 'li-1', title: 'Analyst', company: 'ACME', location: 'HK', description: 'A'.repeat(100) }, {});
+  const { url, model, payload } = buildProviderRequest({ jobId: 'li-1', title: 'Analyst', company: 'ACME', location: 'HK', description: 'A'.repeat(100), jevInput: { role_summary: 'Role summary', responsibilities: 'Owns recurring analysis responsibilities', requirements: 'Relevant experience' } }, {});
   assert.equal(url, 'https://api.typesafe.ai/v1/systemone');
-  assert.equal(model, 'jev-latest');
-  assert.equal(payload.model, 'jev-latest');
+  assert.equal(model, 'jev-1.13.0');
+  assert.equal(payload.model, 'jev-1.13.0');
   assert.equal(payload.state.company, 'ACME');
   assert.equal(payload.questions.roleArchetype.type, 'choice');
   assert.ok(payload.questions.roleArchetype.criteria.client_relationship_coverage);
@@ -22,10 +22,15 @@ test('builds the official TypeSafe systemone payload without credentials', () =>
   assert.ok(payload.questions.secondaryActivity1.criteria.data_analytics);
   assert.ok(payload.questions.businessProduct1.criteria.payments);
   assert.ok(payload.questions.technologyPlatform1.criteria.cloud_platforms);
-  assert.ok(payload.questions.titleLevelSignal.criteria.director_or_head);
+  assert.ok(payload.questions.postingType.criteria.specific_role);
+  assert.ok(payload.questions.servedBusinessLine.criteria.global_markets);
+  assert.ok(payload.questions.operatingContext.criteria.shared_service_centre);
+  assert.ok(payload.questions.workMix_technicalDelivery.type === 'noul');
   assert.ok(payload.questions.roleLevel.instructions.title);
-  assert.ok(payload.questions.roleLevel.instructions.description);
-  assert.ok(payload.questions.seniorityAlignment.criteria.title_higher_than_scope);
+  assert.ok(payload.questions.roleLevel.instructions.role_summary);
+  assert.ok(payload.questions.roleLevel.instructions.responsibilities);
+  assert.equal(payload.questions.titleLevelSignal, undefined);
+  assert.equal(payload.questions.seniorityAlignment, undefined);
   assert.ok(payload.questions.riskFlag3.criteria.seniority_ambiguity);
   assert.ok(payload.questions.riskSeverity1.criteria.high);
   assert.equal(payload.questions.directReportsRequired, undefined);
@@ -51,7 +56,7 @@ test('normalizes official TypeSafe answers to the frontend contract', () => {
   assert.equal(result.directReportsRequired, undefined);
 });
 
-test('normalizes the complete controlled v2.2 dimensions', () => {
+test('normalizes the complete controlled v2.3 dimensions', () => {
   const result = parseProviderResponse({ answers: {
     roleArchetype: { type: 'choice', choice: 'data_ai_quantitative_analytics' },
     primaryActivity: { type: 'choice', choice: 'data_analytics' },
@@ -62,9 +67,9 @@ test('normalizes the complete controlled v2.2 dimensions', () => {
     businessProduct2: { type: 'choice', choice: 'none' },
     technologyPlatform1: { type: 'choice', choice: 'data_platforms' },
     technologyPlatform2: { type: 'choice', choice: 'trading_systems' },
-    titleLevelSignal: { type: 'choice', choice: 'director_or_head' },
     roleLevel: { type: 'choice', choice: 'senior_individual_contributor' },
-    seniorityAlignment: { type: 'choice', choice: 'title_higher_than_scope' },
+    servedBusinessLine: { type: 'choice', choice: 'global_markets' },
+    operatingContext: { type: 'choice', choice: 'onshore_bank_business_unit' },
     mandateScope: { type: 'choice', choice: 'workstream_or_project' },
     decisionAuthority: { type: 'choice', choice: 'recommendation' },
     leadershipLevel: { type: 'choice', choice: 'informal_influencer' },
@@ -73,15 +78,18 @@ test('normalizes the complete controlled v2.2 dimensions', () => {
     riskFlag3: { type: 'choice', choice: 'none' },
     riskSeverity1: { type: 'choice', choice: 'high' },
     riskSeverity2: { type: 'choice', choice: 'low' },
-  } });
-  assert.equal(result.taxonomyVersion, 'jev-taxonomy-v2.2');
+  } }, { title: 'Premier Relationship Director', company: 'HSBC' });
+  assert.equal(result.taxonomyVersion, 'jev-taxonomy-v2.3');
   assert.deepEqual(result.workProfile.secondaryActivities, ['technology_build', 'research_analysis']);
   assert.deepEqual(result.businessContext.businessProducts, ['fixed_income']);
   assert.deepEqual(result.businessContext.technologyPlatforms, ['data_platforms', 'trading_systems']);
   assert.deepEqual(result.businessContext.productOrPlatformContext, ['fixed_income', 'data_platforms', 'trading_systems']);
-  assert.equal(result.mandate.titleLevelSignal, 'director_or_head');
+  assert.equal(result.mandate.titleLevelSignal, 'professional');
   assert.equal(result.mandate.roleLevel, 'senior_individual_contributor');
-  assert.equal(result.mandate.seniorityAlignment, 'title_higher_than_scope');
+  assert.equal(result.mandate.seniorityAlignment, 'employer_title_convention');
+  assert.equal(result.businessContext.servedBusinessLine, 'global_markets');
+  assert.equal(result.businessContext.operatingContext, 'onshore_bank_business_unit');
+  assert.equal(result.schemaVersion, 3);
   assert.deepEqual(result.roleRisk.riskFlags.map(item => item.severity), ['high', 'low']);
 });
 
