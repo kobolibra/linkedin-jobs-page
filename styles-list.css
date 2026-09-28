@@ -278,9 +278,13 @@ body.compact .day-head { padding-bottom:6px; }
   .job-city:empty { display:none; }
   .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
-  .job-jd { display:contents;order:6;flex:0 1 auto;min-width:0;margin-top:5px; }
-  .job-jd summary { order:6;margin-top:5px; }
-  .job-jd-text { flex:1 1 100%;order:8;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
+  /* Do not use display:contents on <details> here. Mobile Safari/Chrome can
+     reparent an open details subtree when it is also a flex item with order,
+     which moves the city, arrow and Analytics to the bottom of the JD. Keep
+     details as an explicit wrapping flex item instead. */
+  .job-jd { display:flex;flex:0 1 auto;flex-wrap:wrap;align-items:center;order:6;min-width:0;margin-top:5px; }
+  .job-jd summary { order:0;margin-top:0; }
+  .job-jd-text { flex:1 1 100%;order:1;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
   .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-right { display:none; }
   .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:5px;margin-left:auto;white-space:nowrap; }
