@@ -1,18 +1,16 @@
-# JEV 分析接口契约
+# JEV Analysis API Contract
 
-## 当前实现状态
+## Current implementation
 
-前端按钮调用同源 `POST /api/jev/analyze`。Cloudflare Worker 现在提供代理 handler；浏览器永远不会接触 TypeSafe API key。Worker 默认使用 TypeSafe 官方 API：
+The frontend calls the same-origin `POST /api/jev/analyze`. The Cloudflare Worker keeps the TypeSafe API key server-side and proxies the official TypeSafe systemone endpoint:
 
-- URL：`https://api.typesafe.ai/v1/systemone`
-- Model：`jev-latest`
-- Authentication：`Authorization: Bearer <TYPESAFE_API_KEY>`
-- Request：`{"state": ..., "model": "jev-latest", "questions": {...}}`
-- Response：`{"model": "jev-latest", "answers": {...}}`
+- URL: `https://api.typesafe.ai/v1/systemone`
+- Model: `jev-latest`
+- Authentication: `Authorization: Bearer <TYPESAFE_API_KEY>`
+- Request: `{ "state": ..., "model": "jev-latest", "questions": {...} }`
+- Upstream response: `{ "model": "jev-latest", "answers": {...} }`
 
-上游 endpoint/model 可通过 Worker secrets/vars 覆盖：`JEV_API_URL`、`JEV_MODEL`、`JEV_API_KEY`。默认情况下使用 `TYPESAFE_API_KEY`。如果显式把 `JEV_API_URL` 设置为 Requesty 的 chat completions endpoint，Worker 会启用兼容格式；这不是默认路径。推荐生产环境使用版本化模型完成回归评估后再固定。
-
-协议依据：[TypeSafe 官方 API reference](https://docs.typesafe.ai/api)，其中明确规定 endpoint 为 `https://api.typesafe.ai/v1/systemone`、请求字段为 `state` / `model` / `questions`，答案位于 `answers`。
+Reference: [TypeSafe API documentation](https://docs.typesafe.ai/api).
 
 ## Endpoint
 
@@ -22,36 +20,7 @@ Content-Type: application/json
 Accept: application/json
 ```
 
-该地址由同源 Cloudflare Worker/API 代理实现。代理负责：
-
-1. 从服务端 secret 读取 JEV API key；
-2. 调用 TypeSafe/JEV 的真实 endpoint；
-3. 将结构化分析结果返回给浏览器；
-4. 校验请求体大小、来源和频率，避免 API key 被滥用。
-
-## Worker 部署要求
-
-在 Cloudflare Worker `linkedin` 上配置：
-
-```text
-TYPESAFE_API_KEY = <secret>
-# 可选：JEV_MODEL = jev-latest
-# 可选：JEV_API_URL = https://api.typesafe.ai/v1/systemone
-```
-
-如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。
-
-项目的实际发布链路不是由本仓库单独新增的 Cloudflare GitHub Actions workflow 驱动，而是：`main` 上的 **Deploy to GitHub Pages** workflow 发布 `gh-pages` 分支，Cloudflare Worker `linkedin` 再从该已配置的 Git 同步/部署来源更新。当前 `gh-pages` 已包含 `worker.js`、`wrangler.jsonc` 和 `.assetsignore`，线上 Worker 的更新时间也与该发布链路吻合，因此不应再维护一条重复的 `deploy-cloudflare.yml`。
-
-当前生产状态：`TYPESAFE_API_KEY` 已通过 Cloudflare API 绑定到 `linkedin` Worker；线上同源 `POST /api/jev/analyze` 已实测返回 `200`，并返回 `schemaVersion` 与 `analysis` 结构。密钥值不进入仓库、静态资源、前端代码或日志。
-
-首次配置或轮换 secret，需要在具备 Cloudflare 权限的环境执行：
-
-```bash
-npx wrangler secret put TYPESAFE_API_KEY --name linkedin
-```
-
-Cloudflare secret 的值不会通过 Worker bundle、Git 仓库或线上响应暴露。Cloudflare API 可以核验绑定名称，但不会返回 secret 明文；当前已核验绑定名称为 `TYPESAFE_API_KEY`，并通过线上 `200` 响应确认 Worker 已实际使用该配置。该命令只能由账户持有人在已授权的 Cloudflare 环境执行，不能把 key 写入仓库或 GitHub Actions 日志。
+The Worker validates request size, same-origin access and rate limits. It returns `503 provider_not_configured` when the server secret is missing; the browser never receives the secret.
 
 ## Request
 
@@ -61,67 +30,94 @@ Cloudflare secret 的值不会通过 Worker bundle、Git 仓库或线上响应�
   "title": "Investment Analyst",
   "company": "Schroders",
   "location": "CN",
-  "description": "当前职位的纯文本 JD"
+  "description": "Plain-text job description"
 }
 ```
 
-前端只有在用户点击 **JEV 分析此职位** 时发送请求，不会在页面加载、列表渲染或 JD 展开时调用。
+The description must contain at least 40 characters and is capped at 30,000 characters.
 
-Worker 限制：description 至少 40 个字符，最多 30,000 个字符；body 最多约 48 KB；同一 Worker isolate 对单一 IP 每分钟最多 12 次。请求只允许同源浏览器 origin。
+## JEV v2 response
 
-## Response
-
-Worker 返回以下结构，前端也兼容 `analysis`、`result`、`data` 包装层：
+The production taxonomy is defined in [`jev-taxonomy-v2.md`](./jev-taxonomy-v2.md).
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "analysis": {
-    "function": "markets_investment_research",
-    "subFunctions": [],
-    "businessDomains": ["asset_management_funds"],
-    "seniorityBand": "analyst_associate_consultant",
-    "responsibilityLevel": "individual_contributor",
-    "isFormalPeopleManager": "no",
-    "directReportsRequired": "no",
-    "teamLeadershipRequired": "no",
-    "leadershipType": [],
-    "riskFlags": []
+    "schemaVersion": 2,
+    "roleArchetype": "platform_cloud_reliability_engineering",
+    "workProfile": {
+      "primaryActivity": "technology_build",
+      "secondaryActivities": ["data_analytics", "operations_processing"]
+    },
+    "businessContext": {
+      "businessDomain": "wealth_private_banking",
+      "productOrPlatformContext": ["cloud_platforms", "apis_and_microservices"]
+    },
+    "mandate": {
+      "roleLevel": "senior_individual_contributor",
+      "mandateScope": "workstream_or_project",
+      "decisionAuthority": "ownership"
+    },
+    "leadershipLevel": "team_lead",
+    "roleRisk": {
+      "riskFlags": [
+        {
+          "code": "seniority_ambiguity",
+          "severity": "medium",
+          "reason": "The title and responsibility signals imply different seniority levels."
+        }
+      ]
+    }
   }
 }
 ```
 
-Worker 将 TypeSafe `answers`（choice/noul/score）统一归一化为上面的前端 schema。
-
-## 缓存策略
-
-浏览器使用 localStorage：
+The role-analysis dimensions are deliberately limited to:
 
 ```text
-linkedin-jev-analysis-v1
+Role Archetype
+Work Profile
+Business Context
+Mandate & Authority
+Leadership Responsibility
+Role Risk
 ```
 
-缓存键是职位 ID，记录包括：
+`directReports`, `location_ambiguity`, `jd_too_short`, and `placeholder_or_test_role` are not part of the user-facing JEV result. Requirements, evidence quality, compensation and candidate fit are also outside the core JEV role taxonomy.
 
-- `jobId`
-- 当前 JD 的 SHA-256 指纹
-- `analyzedAt`
-- 结构化分析结果
+## UI behavior
 
-同一职位、同一 JD 指纹再次点击时直接展示本地缓存，不发送请求。
+- A job card displays `Analytics` only when its JD is expanded.
+- `Analytics` is placed on the same summary row, immediately to the right of the expand arrow.
+- Clicking `Analytics` runs or retrieves the analysis.
+- The analysis result is inserted above the JD body, not below it.
+- `JEV Analysis`, `View Cached Analysis`, `Local cache`, timestamps and other explanatory cache labels are not displayed.
+- The Analytics marker is hidden whenever the JD is collapsed.
 
-如果 repost 后 JD 内容发生变化，指纹变化，前端会将它视为新的 JD 版本重新分析；旧缓存不会覆盖原始 JD，也不会影响 `datePosted`、`lastPosted`、`jobStatus` 或 repost 判断。
+## Cache
 
-## 为什么之前是 404
+The browser uses localStorage key:
 
-此前提交只新增了 `app.js` 的按钮和 `jev-api-contract.md`，但当前部署是纯静态 assets，既没有 Worker `fetch` handler，也没有 `/api/jev/analyze` 路由。静态资产系统对未存在路径直接返回 404，因此按钮必然失败。现在 `worker.js` 和 `wrangler.jsonc` 负责把 API route 与静态 assets 放在同一个 Worker 中。
+```text
+linkedin-jev-analysis-v2
+```
 
-## 安全边界
+The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp and v2 result. A changed JD fingerprint triggers a new analysis.
 
-不要把以下内容放入 `app.js`、HTML、静态 JSON、GitHub Actions 日志或浏览器 localStorage：
+## Worker secret
 
-- JEV API key
-- 上游 JEV 私有 endpoint 的认证 header
-- 任何长期有效的服务端 token
+Configure the Cloudflare Worker `linkedin` with:
 
-当前前端默认调用 `/api/jev/analyze`；代理实现已在 `worker.js`，不需要修改按钮、缓存和展示层。
+```text
+TYPESAFE_API_KEY = <secret>
+```
+
+Optional variables:
+
+```text
+JEV_MODEL = jev-latest
+JEV_API_URL = https://api.typesafe.ai/v1/systemone
+```
+
+The secret must never be committed to Git, bundled into static assets, written to localStorage or returned in an API response.
