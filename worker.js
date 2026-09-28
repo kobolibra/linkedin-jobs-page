@@ -13,7 +13,7 @@ const recentRequests = new Map();
 
 const DEFAULT_PROVIDER_URL = "https://api.typesafe.ai/v1/systemone";
 const DEFAULT_MODEL = "jev-latest";
-const TAXONOMY_VERSION = "jev-taxonomy-v2.1";
+const TAXONOMY_VERSION = "jev-taxonomy-v2.2";
 
 const ROLE_ARCHETYPES = {
   client_relationship_coverage: "Owns client relationships, account coverage or relationship portfolios.",
@@ -48,9 +48,14 @@ const ACTIVITIES = {
   other_unknown: "Another activity or insufficient evidence.", none: "No additional activity is materially supported by the JD.",
 };
 
-const PRODUCT_CONTEXT = {
-  deposits: "Deposits or deposit products.", mortgages: "Mortgages or home lending.", credit_cards: "Credit cards.", consumer_lending: "Consumer lending.", corporate_lending: "Corporate or commercial lending.", cash_management: "Cash management or transaction banking.", trade_finance: "Trade finance.", payments: "Payments.", foreign_exchange: "Foreign exchange or FX.", fixed_income: "Fixed income.", credit_products: "Credit products.", equities: "Equities.", derivatives: "Derivatives.", investment_funds: "Investment funds.", structured_products: "Structured products.", insurance_products: "Insurance products.", wealth_management: "Wealth management.", private_banking: "Private banking.", portfolio_management: "Portfolio management.", asset_allocation: "Asset allocation.", mutual_funds: "Mutual funds.", unit_trusts: "Unit trusts.", private_markets: "Private markets.", business_applications: "Business applications.", apis_and_microservices: "APIs or microservices as a material platform context.", cloud_platforms: "Cloud platforms.", platform_infrastructure: "Platform infrastructure.", data_platforms: "Data platforms.", ai_ml_platforms: "AI or ML platforms.", reliability_observability: "Reliability, observability or production operations.", trading_systems: "Trading systems.", none: "No material product or platform context is supported.",
+const BUSINESS_PRODUCTS = {
+  none: "The JD does not materially assign the role to a business product.", deposits: "Deposits or deposit products.", mortgages: "Mortgages or home lending.", credit_cards: "Credit cards.", consumer_lending: "Consumer lending.", corporate_lending: "Corporate or commercial lending.", cash_management: "Cash management or transaction banking.", trade_finance: "Trade finance.", payments: "Payments.", foreign_exchange: "Foreign exchange or FX.", fixed_income: "Fixed income.", credit_products: "Credit products.", equities: "Equities.", derivatives: "Derivatives.", investment_funds: "Investment funds.", structured_products: "Structured products.", insurance_products: "Insurance products.", wealth_management: "Wealth management.", private_banking: "Private banking.", portfolio_management: "Portfolio management.", asset_allocation: "Asset allocation.", mutual_funds: "Mutual funds.", unit_trusts: "Unit trusts.", private_markets: "Private markets.",
 };
+const TECHNOLOGY_PLATFORMS = {
+  none: "The JD does not materially assign the role to a technology platform.", business_applications: "Business applications owned or delivered by the role.", apis_and_microservices: "APIs, microservices or API platform owned or delivered by the role.", cloud_platforms: "Cloud platforms operated, engineered or owned by the role.", platform_infrastructure: "Infrastructure platforms, networks or shared technical foundations.", data_platforms: "Data platforms, warehouses, lakes or data delivery foundations.", ai_ml_platforms: "AI/ML platforms or model-serving foundations.", reliability_observability: "Reliability, observability or production operations platforms.", trading_systems: "Trading, order-management or market systems.",
+};
+const TITLE_LEVELS = { entry: "Entry / early-career title signal.", professional: "Professional title signal without a clear senior marker.", senior_individual_contributor: "Senior, staff, principal or equivalent IC title signal.", manager_or_lead: "Manager, lead or equivalent team-lead title signal.", director_or_head: "Director, head or equivalent senior leadership title signal.", executive: "Executive, managing director, business head or C-suite title signal.", unknown: "The title does not provide a reliable level signal." };
+const SENIORITY_ALIGNMENT = { aligned: "Title level and JD responsibility are materially aligned.", title_higher_than_scope: "Title signals a higher level than the responsibility supported by the JD.", title_lower_than_scope: "JD responsibility signals a higher level than the title.", ambiguous: "Title and JD contain materially conflicting or insufficient level evidence." };
 
 const RISK_CODES = {
   none: "No material structural risk is evident in the JD.", title_scope_mismatch: "The title and actual responsibilities materially differ.", seniority_ambiguity: "The seniority signals are ambiguous or internally inconsistent.", responsibility_ambiguity: "The mandate, ownership boundary or expected outcomes are materially unclear.", leadership_ambiguity: "The JD mixes IC, team-lead and people-management signals.", function_context_mismatch: "The title, function and business context point to different role types.", contradictory_scope: "The JD combines narrow execution and broad ownership without explaining the relationship.",
@@ -191,6 +196,7 @@ export function buildProviderRequest(input, env) {
   const providerUrl = env.JEV_API_URL || DEFAULT_PROVIDER_URL;
   const model = env.JEV_MODEL || DEFAULT_MODEL;
   const choice = (instructions, criteria) => ({ type: "choice", instructions, criteria });
+  const evidence = (question, rules) => ({ title: input.title || "", description: input.description || "", company: input.company || "", location: input.location || "", question, rules });
   const questionMap = {
     roleArchetype: choice("What single controlled role archetype best describes the profession being hired? Use dominant ownership and outputs, not the title alone.", ROLE_ARCHETYPES),
     primaryActivity: choice("What is the single dominant work activity of this role? Rank explicit ownership, recurring responsibilities and outputs above supporting language.", ACTIVITIES),
@@ -199,10 +205,13 @@ export function buildProviderRequest(input, env) {
     businessDomain: choice("What single business context does this role operate in? Distinguish business context from professional function.", {
       retail_banking: "Retail or consumer banking.", commercial_corporate_banking: "Commercial, corporate or wholesale banking.", wealth_private_banking: "Wealth management or private banking.", capital_markets: "Capital markets, securities, trading or investment banking.", asset_management: "Asset management, funds or institutional investing.", insurance: "Insurance or reinsurance.", fintech_payments: "Fintech, payments or financial infrastructure.", technology_services: "Technology or software services as the primary business context.", corporate_enterprise: "Enterprise corporate or shared-services context.", other_unknown: "Another context or insufficient evidence.",
     }),
-    productContext1: choice("What is the first material product or platform context? Choose none if the JD does not support one.", PRODUCT_CONTEXT),
-    productContext2: choice("What is the second material product or platform context? Choose none unless materially supported and do not repeat the first.", PRODUCT_CONTEXT),
-    productContext3: choice("What is the third material product or platform context? Choose none unless materially supported and do not repeat earlier choices.", PRODUCT_CONTEXT),
-    roleLevel: choice("What controlled career level is explicitly supported by the JD? Do not infer a higher level from title prestige alone.", ROLE_LEVELS),
+    businessProduct1: choice(evidence("Which single business product is materially worked on by this role? Choose none when the JD only names the employer's industry or mentions a product incidentally.", "Select only products that are recurring objects of the role's decisions, analysis, sales, operations or ownership."), BUSINESS_PRODUCTS),
+    businessProduct2: choice(evidence("Which second business product, if any, is materially worked on by this role? Do not repeat the first choice.", "Choose none for incidental mentions, generic financial-services context or skills."), BUSINESS_PRODUCTS),
+    technologyPlatform1: choice(evidence("Which single technology platform context is materially owned, engineered, operated or delivered by this role? Choose none when technologies are merely skills or tools.", "A programming language, vendor certification or ordinary software usage is not a platform context."), TECHNOLOGY_PLATFORMS),
+    technologyPlatform2: choice(evidence("Which second technology platform context, if any, is materially owned, engineered, operated or delivered by this role? Do not repeat the first choice.", "Choose none for incidental technology mentions."), TECHNOLOGY_PLATFORMS),
+    titleLevelSignal: choice(evidence("What career level does the title itself signal, ignoring the body of the JD?", "Use title wording only. Treat Senior, Staff, Principal, Manager, Lead, Director, Head, Managing Director and Executive as signals, not proof of actual scope."), TITLE_LEVELS),
+    roleLevel: choice(evidence("What is the final controlled career level after jointly considering the title and the JD?", "Use the title as a prior, then test it against recurring responsibility, scope, decision authority and people leadership. If title and JD conflict, classify the level actually supported by the JD and let seniorityAlignment record the conflict. Do not upgrade from title prestige alone; do not downgrade a title when the JD explicitly supports its scope."), ROLE_LEVELS),
+    seniorityAlignment: choice(evidence("How do the title-level signal and the JD responsibility level relate?", "Use aligned only when they materially agree; use title_higher_than_scope when the title is inflated relative to the JD; use title_lower_than_scope when the JD supports more scope than the title; use ambiguous when evidence is insufficient or internally contradictory."), SENIORITY_ALIGNMENT),
     mandateScope: choice("What is the broadest mandate explicitly supported by the JD?", { individual_delivery: "Primarily owns individual delivery.", workstream_or_project: "Owns a defined workstream, project, book of work or specialist area.", team_or_function: "Owns a team, function or major programme mandate.", business_unit_or_region: "Owns a business unit, country, region or material commercial mandate.", enterprise: "Owns an enterprise-wide or group-level mandate.", unknown: "Insufficient evidence." }),
     decisionAuthority: choice("What is the highest decision authority explicitly supported by the JD? Do not infer approval or ownership from support language.", { execution: "Executes defined work without explicit decision ownership.", recommendation: "Provides recommendations, analysis or advice without final authority.", approval: "Has explicit approval, authorization or sign-off authority.", ownership: "Owns a business outcome, mandate or material decision domain.", unknown: "Insufficient evidence." }),
     leadershipLevel: choice("What single leadership level is explicitly supported by the JD? Collaboration is not automatically leadership.", { individual_contributor: "Individual contributor with no explicit leadership ownership.", informal_influencer: "Mentors, coordinates or influences without owning a team.", team_lead: "Leads a squad, project team or workstream without clear formal people management.", people_manager: "Explicitly manages people, hiring or performance.", functional_leader: "Owns a function or multiple teams.", unknown: "Insufficient evidence." }),
@@ -258,17 +267,24 @@ export function parseProviderResponse(providerResponse) {
   const primaryActivity = answerValue("primaryActivity", root.primaryActivity || "other_unknown");
   const businessDomain = answerValue("businessDomain", root.businessDomain || root.businessDomains?.[0] || "other_unknown");
   const secondaryActivities = distinctChoices(["secondaryActivity1", "secondaryActivity2"], ACTIVITIES, [primaryActivity]);
-  const productOrPlatformContext = distinctChoices(["productContext1", "productContext2", "productContext3"], PRODUCT_CONTEXT);
-  const roleLevel = answerValue("roleLevel", root.mandate?.roleLevel || root.roleLevel || answerValue("seniorityBand", root.seniorityBand || "unknown"));
+  const businessProducts = distinctChoices(["businessProduct1", "businessProduct2"], BUSINESS_PRODUCTS);
+  const technologyPlatforms = distinctChoices(["technologyPlatform1", "technologyPlatform2"], TECHNOLOGY_PLATFORMS);
+  const productOrPlatformContext = [...businessProducts, ...technologyPlatforms];
+  const titleLevelSignal = allowed(answerValue("titleLevelSignal", root.titleLevelSignal || "unknown"), TITLE_LEVELS, "unknown");
+  const rawRoleLevel = answerValue("roleLevel", root.mandate?.roleLevel || root.roleLevel || answerValue("seniorityBand", root.seniorityBand || "unknown"));
+  const roleLevel = allowed(rawRoleLevel === "unknown" && titleLevelSignal !== "unknown" ? titleLevelSignal : rawRoleLevel, ROLE_LEVELS, "unknown");
+  const seniorityAlignment = allowed(answerValue("seniorityAlignment", root.seniorityAlignment || "ambiguous"), SENIORITY_ALIGNMENT, "ambiguous");
   const leadershipLevel = answerValue("leadershipLevel", root.leadershipLevel || "unknown");
   return {
     schemaVersion: 2,
     taxonomyVersion: TAXONOMY_VERSION,
     roleArchetype: allowed(roleArchetype, ROLE_ARCHETYPES, "other_unknown"),
     workProfile: { primaryActivity: allowed(primaryActivity, ACTIVITIES, "other_unknown"), secondaryActivities },
-    businessContext: { businessDomain: allowed(businessDomain, BUSINESS_DOMAINS, "other_unknown"), productOrPlatformContext },
+    businessContext: { businessDomain: allowed(businessDomain, BUSINESS_DOMAINS, "other_unknown"), businessProducts, technologyPlatforms, productOrPlatformContext },
     mandate: {
       roleLevel: allowed(roleLevel, ROLE_LEVELS, "unknown"),
+      titleLevelSignal,
+      seniorityAlignment,
       mandateScope: allowed(answerValue("mandateScope", root.mandateScope || root.responsibilityLevel || "unknown"), MANDATE_SCOPES, "unknown"),
       decisionAuthority: allowed(answerValue("decisionAuthority", root.decisionAuthority || "unknown"), DECISION_AUTHORITIES, "unknown"),
     },

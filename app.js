@@ -117,8 +117,8 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v2.1";
-const JEV_TAXONOMY_VERSION="jev-taxonomy-v2.1";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v2.2";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v2.2";
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // should implement this endpoint and keep the provider credential server-side.
 const JEV_API_ENDPOINT="/api/jev/analyze";
@@ -137,7 +137,7 @@ const jevSeniorityLabels={
   entry:"Entry / Early Career",professional:"Professional",senior_individual_contributor:"Senior Individual Contributor",
   manager_or_lead:"Manager / Lead",director_or_head:"Director / Head",executive:"Executive",unknown:"Unknown"
 };
-const jevValueLabel=value=>({yes:"Yes",no:"No",unknown:"Unknown",clear:"Clear",partial:"Partial",absent:"Not stated",low:"Low",medium:"Medium",high:"High"}[String(value||"").toLowerCase()]||String(value||"Unknown"));
+const jevValueLabel=value=>({yes:"Yes",no:"No",unknown:"Unknown",clear:"Clear",partial:"Partial",absent:"Not stated",low:"Low",medium:"Medium",high:"High",aligned:"Aligned",title_higher_than_scope:"Title higher than JD scope",title_lower_than_scope:"JD scope higher than title",ambiguous:"Ambiguous"}[String(value||"").toLowerCase()]||String(value||"Unknown"));
 const jevList=value=>Array.isArray(value)?value.filter(Boolean):value?[value]:[];
 function readJevCache(){try{const value=JSON.parse(localStorage.getItem(JEV_CACHE_KEY)||"{}");return value&&typeof value==="object"?value:{};}catch{return {};}}
 function writeJevCache(value){try{localStorage.setItem(JEV_CACHE_KEY,JSON.stringify(value));}catch{/* private mode or quota: analysis still works for this session */}}
@@ -163,8 +163,12 @@ function jevPayload(raw){
     primaryActivity:workProfile.primaryActivity||root.primaryActivity||"other_unknown",
     secondaryActivities:jevList(workProfile.secondaryActivities||root.secondaryActivities),
     businessDomain:businessContext.businessDomain||root.businessDomain||root.businessDomains?.[0]||"other_unknown",
+    businessProducts:jevList(businessContext.businessProducts||root.businessProducts),
+    technologyPlatforms:jevList(businessContext.technologyPlatforms||root.technologyPlatforms),
     productContext:jevList(businessContext.productOrPlatformContext||root.productOrPlatformContext),
     roleLevel:mandate.roleLevel||root.roleLevel||root.seniorityBand||"unknown",
+    titleLevelSignal:mandate.titleLevelSignal||root.titleLevelSignal||"unknown",
+    seniorityAlignment:mandate.seniorityAlignment||root.seniorityAlignment||"ambiguous",
     mandateScope:mandate.mandateScope||root.mandateScope||root.responsibilityLevel||"unknown",
     decisionAuthority:mandate.decisionAuthority||root.decisionAuthority||"unknown",
     leadershipLevel:root.leadershipLevel||"unknown",
@@ -178,8 +182,8 @@ function jevTags(values){return jevList(values).map(value=>'<span class="jev-tag
 const jevText=value=>String(value||"Unknown").replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
 function renderJevResult(container,result,analyzedAt){
   const r=jevPayload(result),risk=r.riskFlags;
-  const row=(label,value,html=false)=>'<div class="jev-field"><dt>'+label+'</dt><dd>'+(html?(value||'<span class="jev-muted">Unknown</span>'):'<span>'+esc(jevValueLabel(value))+'</span>')+'</dd></div>';
-  container.innerHTML='<dl class="jev-fields">'+row("Role Archetype",jevText(r.roleArchetype))+row("Primary Activity",jevText(r.primaryActivity))+row("Secondary Activities",jevList(r.secondaryActivities).map(jevText).join(" · "),true)+row("Business Domain",jevText(r.businessDomain))+row("Product / Platform Context",jevList(r.productContext).map(jevText).join(" · "),true)+row("Role Level",jevText(r.roleLevel))+row("Mandate Scope",jevText(r.mandateScope))+row("Decision Authority",jevText(r.decisionAuthority))+row("Leadership Level",jevText(r.leadershipLevel))+'</dl>'+(risk.length?'<section class="jev-risks"><h4>Role Risk</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"Structural Signal").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+'</article>').join("")+'</section>':'');
+  const row=(label,value,html=false)=>{const empty=html&&!value;return '<div class="jev-field"><dt>'+label+'</dt><dd>'+(empty?'<span class="jev-muted">Not materially specified</span>':(html?value:'<span>'+esc(jevValueLabel(value))+'</span>'))+'</dd></div>';};
+  container.innerHTML='<dl class="jev-fields">'+row("Role Archetype",jevText(r.roleArchetype))+row("Primary Activity",jevText(r.primaryActivity))+row("Secondary Activities",jevList(r.secondaryActivities).map(jevText).join(" · "),true)+row("Business Domain",jevText(r.businessDomain))+row("Business Products",jevList(r.businessProducts).map(jevText).join(" · "),true)+row("Technology Platforms",jevList(r.technologyPlatforms).map(jevText).join(" · "),true)+row("Title Level Signal",jevText(r.titleLevelSignal))+row("Role Level",jevText(r.roleLevel))+row("Title / JD Alignment",r.seniorityAlignment)+row("Mandate Scope",jevText(r.mandateScope))+row("Decision Authority",jevText(r.decisionAuthority))+row("Leadership Level",jevText(r.leadershipLevel))+'</dl>'+(risk.length?'<section class="jev-risks"><h4>Role Risk</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"Structural Signal").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+'</article>').join("")+'</section>':'');
   container.hidden=false;
 }
 function addJevControls(body,card,entry,currentText){
