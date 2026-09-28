@@ -277,7 +277,9 @@ body.compact .day-head { padding-bottom:6px; }
   .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
   .job-jd-toggle { order:0;margin-top:0; }
-  .job-jd-analytics { order:1;white-space:nowrap; }
+  /* Analytics is intentionally desktop-only. Mobile keeps only city + expand
+     arrow + JD body; no hidden clickable analysis control is exposed. */
+  .job-jd-analytics { display:none !important; }
   .job-jd-text { order:2;flex:1 1 100%;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
   .jev-analysis-tools { order:3; }
   .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
