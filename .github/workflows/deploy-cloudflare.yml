@@ -1,0 +1,37 @@
+name: Deploy LinkedIn Worker to Cloudflare
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'worker.js'
+      - 'wrangler.jsonc'
+      - '.assetsignore'
+      - 'index.html'
+      - '*.js'
+      - '*.css'
+      - 'avatars/**'
+      - 'jobs.json'
+      - 'jobs-index.json'
+      - 'jobs-details.json'
+      - 'pv.json'
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-linkedin
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          wranglerVersion: "4.142.0"
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy worker.js --config wrangler.jsonc --keep-vars
