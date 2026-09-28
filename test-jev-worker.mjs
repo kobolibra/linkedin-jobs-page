@@ -93,6 +93,21 @@ test('normalizes the complete controlled v2.3 dimensions', () => {
   assert.deepEqual(result.roleRisk.riskFlags.map(item => item.severity), ['high', 'low']);
 });
 
+test('does not duplicate insufficient evidence or trust unsupported placeholder risks', () => {
+  const result = parseProviderResponse({ answers: {
+    riskFlag1: { type: 'choice', choice: 'template_placeholder_text' },
+    riskSeverity1: { type: 'choice', choice: 'high' },
+  } }, { jevInput: { evidence_flags: ['insufficient_role_evidence'] } });
+  assert.deepEqual(result.evidence.flags, ['insufficient_role_evidence']);
+  assert.deepEqual(result.roleRisk.riskFlags, []);
+
+  const supported = parseProviderResponse({ answers: {
+    riskFlag1: { type: 'choice', choice: 'template_placeholder_text' },
+    riskSeverity1: { type: 'choice', choice: 'high' },
+  } }, { jevInput: { evidence_flags: ['template_placeholder_text'] } });
+  assert.equal(supported.roleRisk.riskFlags[0].severity, 'medium');
+});
+
 test('returns 503 instead of leaking a provider key when not configured', async () => {
   const request = new Request('https://linkedin.example/api/jev/analyze', { method: 'POST', headers: { 'content-type': 'application/json', 'origin': 'https://linkedin.example' }, body: JSON.stringify({ description: 'A'.repeat(100) }) });
   const assets = { fetch: async () => new Response('asset') };

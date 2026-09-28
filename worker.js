@@ -322,10 +322,19 @@ export function parseProviderResponse(providerResponse, input = {}) {
   const allowed = (value, map, fallback) => Object.prototype.hasOwnProperty.call(map, value) ? value : fallback;
   const distinctChoices = (keys, map, excluded = []) => [...new Set(keys.map(key => answerValue(key, "none")))]
     .filter(value => value !== "none" && Object.prototype.hasOwnProperty.call(map, value) && !excluded.includes(value));
+  const evidenceFlags = Array.isArray(input.jevInput?.evidence_flags) ? input.jevInput.evidence_flags : [];
   const legacyRisk = answerValue("riskFlag", root.riskFlags || root.riskFlag || "none");
-  const roleRisks = distinctChoices(["riskFlag1", "riskFlag2", "riskFlag3"], RISK_CODES);
+  const roleRisks = distinctChoices(["riskFlag1", "riskFlag2", "riskFlag3"], RISK_CODES)
+    .filter(code => code !== "template_placeholder_text" || evidenceFlags.includes("template_placeholder_text"));
   if (!roleRisks.length && typeof legacyRisk === "string" && legacyRisk !== "none" && Object.prototype.hasOwnProperty.call(RISK_CODES, legacyRisk)) roleRisks.push(legacyRisk);
-  const riskFlags = roleRisks.map((code, index) => ({ code, severity: allowed(answerValue(`riskSeverity${index + 1}`, "medium"), RISK_SEVERITIES, "medium") }));
+  const severityCap = { template_placeholder_text: "medium", responsibilities_generic_or_template: "medium", requirements_dominate_over_responsibilities: "medium", machine_translation_or_encoding_issues: "medium" };
+  const severityRank = { low: 1, medium: 2, high: 3, unknown: 0 };
+  const riskFlags = roleRisks.map((code, index) => {
+    const requested = allowed(answerValue(`riskSeverity${index + 1}`, "medium"), RISK_SEVERITIES, "medium");
+    const cap = severityCap[code];
+    const severity = cap && severityRank[requested] > severityRank[cap] ? cap : requested;
+    return { code, severity };
+  });
   const roleArchetype = answerValue("roleArchetype", root.roleArchetype || "insufficient_evidence");
   const primaryActivity = answerValue("primaryActivity", root.primaryActivity || "other_unknown");
   const businessDomain = answerValue("businessDomain", root.businessDomain || root.businessDomains?.[0] || "other_unknown");
@@ -371,7 +380,7 @@ export function parseProviderResponse(providerResponse, input = {}) {
     riskFlags,
     confidence,
     states,
-    evidence: input.jevInput ? { level: input.jevInput.evidence_level || "unknown", flags: input.jevInput.evidence_flags || [] } : { level: "unknown", flags: [] },
+    evidence: input.jevInput ? { level: input.jevInput.evidence_level || "unknown", flags: evidenceFlags } : { level: "unknown", flags: [] },
   };
 }
 
