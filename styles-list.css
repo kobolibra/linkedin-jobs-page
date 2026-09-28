@@ -274,7 +274,7 @@ body.compact .day-head { padding-bottom:6px; }
   .job-meta-line { display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:0;min-width:0;margin-top:3px; }
   .job-meta-line::after { content:"";flex:1 1 100%;height:0;min-width:0;order:3; }
   .job-detail-line { display:contents;line-height:17px; }
-  .job-jd-row { display:flex;flex:1 1 100%;order:4;align-items:center;gap:8px;min-width:0; }
+  .job-jd-row { display:flex;flex:1 1 100%;flex-wrap:wrap;order:4;align-items:center;gap:8px;min-width:0; }
   .job-right-mobile { order:2;align-self:center; }
   .job-city { flex:0 1 auto;order:0;align-self:center;min-width:0;max-width:calc(100% - 92px);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-city:empty { display:none; }
