@@ -81,3 +81,15 @@ test('does not send API requests for static assets', async () => {
   assert.equal(response.status, 200);
   assert.equal(called, true);
 });
+
+test('serves the deployed homepage asset with an uncacheable HTML shell', async () => {
+  let calls = 0;
+  const response = await worker.fetch(new Request('https://linkedin.example/'), {
+    ASSETS: { fetch: async () => { calls += 1; return new Response('<!doctype html>', { headers: { 'cache-control': 'public, max-age=0' } }); } },
+  });
+  assert.equal(calls, 1);
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('cache-control'), 'no-store, no-cache, must-revalidate');
+  assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(await response.text(), '<!doctype html>');
+});
