@@ -287,16 +287,30 @@ async function serveFreshIndex(request, env) {
     headers.set("x-content-type-options", "nosniff");
     return new Response(source.replace(legacy, current), { status: asset.status, statusText: asset.statusText, headers });
   }
+  if (pathname === "/salary-display.js") {
+    const asset = await env.ASSETS.fetch(request);
+    const source = await asset.text();
+    const start = source.indexOf("const upgradeJd=article=>{");
+    const marker = "\n  host.addEventListener('click'";
+    const stop = start < 0 ? -1 : source.indexOf(marker, start);
+    if (start < 0 || stop < 0) return asset;
+    const headers = new Headers(asset.headers);
+    headers.set("cache-control", "no-store, no-cache, must-revalidate");
+    headers.set("x-content-type-options", "nosniff");
+    return new Response(source.slice(0, start) + "const upgradeJd=article=>{};" + source.slice(stop), { status: asset.status, statusText: asset.statusText, headers });
+  }
   if (pathname !== "/") return env.ASSETS.fetch(request);
   // The repository is private, so raw.githubusercontent.com cannot be a
   // reliable runtime origin. Use the asset version that this deployment
   // actually published, then prevent the HTML shell from being retained at
   // the edge or by a browser between deployments.
   const asset = await env.ASSETS.fetch(request);
+  const source = await asset.text();
   const headers = new Headers(asset.headers);
   headers.set("cache-control", "no-store, no-cache, must-revalidate");
   headers.set("x-content-type-options", "nosniff");
-  return new Response(asset.body, { status: asset.status, statusText: asset.statusText, headers });
+  const html = source.replace(/app\.js\?v=jev-analysis-3/g, "app.js?v=legacy-jd-bridge-3");
+  return new Response(html, { status: asset.status, statusText: asset.statusText, headers });
 }
 
 const worker_default = {
