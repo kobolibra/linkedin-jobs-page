@@ -12,6 +12,8 @@
 
 上游 endpoint/model 可通过 Worker secrets/vars 覆盖：`JEV_API_URL`、`JEV_MODEL`、`JEV_API_KEY`。默认情况下使用 `TYPESAFE_API_KEY`。如果显式把 `JEV_API_URL` 设置为 Requesty 的 chat completions endpoint，Worker 会启用兼容格式；这不是默认路径。推荐生产环境使用版本化模型完成回归评估后再固定。
 
+协议依据：[TypeSafe 官方 API reference](https://docs.typesafe.ai/api)，其中明确规定 endpoint 为 `https://api.typesafe.ai/v1/systemone`、请求字段为 `state` / `model` / `questions`，答案位于 `answers`。
+
 ## Endpoint
 
 ```text
@@ -37,7 +39,19 @@ TYPESAFE_API_KEY = <secret>
 # 可选：JEV_API_URL = https://api.typesafe.ai/v1/systemone
 ```
 
-如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。仓库的 `.github/workflows/deploy-cloudflare.yml` 需要 GitHub Actions secrets：`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。
+如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。
+
+项目的实际发布链路不是由本仓库单独新增的 Cloudflare GitHub Actions workflow 驱动，而是：`main` 上的 **Deploy to GitHub Pages** workflow 发布 `gh-pages` 分支，Cloudflare Worker `linkedin` 再从该已配置的 Git 同步/部署来源更新。当前 `gh-pages` 已包含 `worker.js`、`wrangler.jsonc` 和 `.assetsignore`，线上 Worker 的更新时间也与该发布链路吻合，因此不应再维护一条重复的 `deploy-cloudflare.yml`。
+
+当前生产状态：`TYPESAFE_API_KEY` 已通过 Cloudflare API 绑定到 `linkedin` Worker；线上同源 `POST /api/jev/analyze` 已实测返回 `200`，并返回 `schemaVersion` 与 `analysis` 结构。密钥值不进入仓库、静态资源、前端代码或日志。
+
+首次配置或轮换 secret，需要在具备 Cloudflare 权限的环境执行：
+
+```bash
+npx wrangler secret put TYPESAFE_API_KEY --name linkedin
+```
+
+Cloudflare secret 的值不会通过 Worker bundle、Git 仓库或线上响应暴露。Cloudflare API 可以核验绑定名称，但不会返回 secret 明文；当前已核验绑定名称为 `TYPESAFE_API_KEY`，并通过线上 `200` 响应确认 Worker 已实际使用该配置。该命令只能由账户持有人在已授权的 Cloudflare 环境执行，不能把 key 写入仓库或 GitHub Actions 日志。
 
 ## Request
 

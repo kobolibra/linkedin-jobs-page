@@ -41,6 +41,30 @@ test('returns 503 instead of leaking a provider key when not configured', async 
   assert.deepEqual(await response.json(), { error: 'provider_not_configured' });
 });
 
+test('proxies official TypeSafe answers without exposing the key to the response', async () => {
+  const originalFetch = globalThis.fetch;
+  let upstreamRequest;
+  globalThis.fetch = async (url, init) => {
+    upstreamRequest = { url, init };
+    return new Response(JSON.stringify({ model: 'jev-latest', answers: {
+      function: { type: 'choice', choice: 'finance_accounting_treasury', confidence: 0.91 },
+      businessDomain: { type: 'choice', choice: 'banking', confidence: 0.88 },
+      seniorityBand: { type: 'choice', choice: 'analyst_associate_consultant', confidence: 0.85 },
+    } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  try {
+    const request = new Request('https://linkedin.example/api/jev/analyze', { method: 'POST', headers: { 'content-type': 'application/json', origin: 'https://linkedin.example' }, body: JSON.stringify({ jobId: 'li-1', description: 'A'.repeat(100) }) });
+    const response = await worker.fetch(request, { TYPESAFE_API_KEY: 'test-only-secret', ASSETS: { fetch: async () => new Response('asset') } });
+    const body = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(upstreamRequest.url, 'https://api.typesafe.ai/v1/systemone');
+    assert.equal(upstreamRequest.init.headers.authorization, 'Bearer test-only-secret');
+    assert.equal(body.analysis.function, 'finance_accounting_treasury');
+    assert.equal(body.analysis.businessDomains[0], 'banking');
+    assert.equal(JSON.stringify(body).includes('test-only-secret'), false);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test('does not send API requests for static assets', async () => {
   let called = false;
   const response = await worker.fetch(new Request('https://linkedin.example/'), { ASSETS: { fetch: async () => { called = true; return new Response('ok'); } } });
