@@ -145,6 +145,36 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-jd-text h3,.job-jd-text h4 { margin:11px 0 5px;font-size:12px;font-weight:700;color:var(--ink); }
 .job-jd-text ins { background:color-mix(in srgb,#2f8f5b 15%,transparent);color:var(--ink);text-decoration:underline;text-decoration-color:#2f8f5b;text-decoration-thickness:1.5px;text-underline-offset:2px; }
 .job-jd-text del { background:color-mix(in srgb,#b33a47 11%,transparent);color:var(--ink-soft);text-decoration-color:#b33a47;text-decoration-thickness:1.5px; }
+.jev-analysis-tools { margin-top:16px;padding-top:12px;border-top:1px solid var(--line); }
+.jev-action-row { display:flex;align-items:center;gap:9px;flex-wrap:wrap; }
+.jev-analyze-btn { border:1px solid color-mix(in srgb,var(--gold) 70%,var(--line-strong));border-radius:7px;background:color-mix(in srgb,var(--gold) 10%,var(--surface));color:var(--gold-deep);padding:6px 11px;font:650 11.5px/1.2 var(--sans);cursor:pointer;transition:background .18s,border-color .18s,color .18s; }
+.jev-analyze-btn:hover { background:var(--gold);border-color:var(--gold);color:#fff; }
+.jev-analyze-btn:focus-visible { outline:2px solid var(--gold);outline-offset:2px; }
+.jev-analyze-btn:disabled { opacity:.62;cursor:wait; }
+.jev-analyze-btn.is-cached { color:var(--ink-soft);border-color:var(--line-strong);background:var(--surface-2); }
+.jev-action-status { color:var(--ink-faint);font:10.5px var(--mono); }
+.jev-result { margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:8px;background:color-mix(in srgb,var(--surface-2) 55%,transparent); }
+.jev-result-head { display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px; }
+.jev-result-head span { color:var(--ink);font:700 12px var(--sans);letter-spacing:.02em; }
+.jev-result-head time { color:var(--ink-faint);font:10px var(--mono); }
+.jev-fields { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 18px;margin:0; }
+.jev-field { display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;align-items:start;min-width:0; }
+.jev-field dt { color:var(--ink-faint);font:10.5px/1.5 var(--sans); }
+.jev-field dd { margin:0;color:var(--ink);font:11.5px/1.5 var(--sans);min-width:0; }
+.jev-tag { display:inline-block;margin:0 4px 3px 0;padding:2px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--line-strong);font-size:10.5px; }
+.jev-muted,.jev-no-risk { color:var(--ink-faint); }
+.jev-risks { margin-top:12px;padding-top:10px;border-top:1px dashed var(--line-strong); }
+.jev-risks h4 { margin:0 0 7px;color:var(--ink);font:700 11px var(--sans); }
+.jev-risk { margin:0 0 7px;padding:8px 9px;border-left:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 7%,transparent); }
+.jev-risk-medium { border-left-color:#c88724; }
+.jev-risk-high { border-left-color:#b33a47;background:color-mix(in srgb,#b33a47 7%,transparent); }
+.jev-risk div { display:flex;align-items:center;gap:7px; }
+.jev-risk strong { color:var(--ink);font:650 11px var(--mono); }
+.jev-severity { color:var(--ink-faint);font:10px var(--sans); }
+.jev-risk p { margin:4px 0 0;color:var(--ink-soft);font-size:11px; }
+.jev-risk ul { margin:4px 0 0 16px;padding:0;color:var(--ink-soft);font-size:10.5px; }
+.jev-no-risk { margin:11px 0 0;font-size:10.5px; }
+@media (max-width:620px) { .jev-fields { grid-template-columns:1fr; } .jev-result-head { align-items:flex-start;flex-direction:column;gap:3px; } }
 .co-count { font-family:var(--mono);font-size:10px;color:var(--ink-faint);margin-left:5px;font-variant-numeric:tabular-nums; }
 /* 右侧栏位固定宽度，使整列在纵向上对齐 */
 .job-right { display:grid;grid-auto-flow:column;align-items:center;align-self:start;padding-top:2px;gap:var(--s3); }
