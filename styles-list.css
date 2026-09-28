@@ -280,11 +280,12 @@ body.compact .day-head { padding-bottom:6px; }
   .job-city:empty { display:none; }
   .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
-  /* Keep the control row independent from the expandable JD body. */
-  .job-jd { display:grid;grid-template-columns:max-content minmax(0,1fr);flex:1 1 auto;order:0;min-width:0;margin-top:5px; }
-  .job-jd summary { grid-column:1;order:0;margin-top:0;white-space:nowrap; }
-  .job-jd-text { grid-column:1 / -1;flex:0 0 auto;order:1;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
-  .jev-analysis-tools { grid-column:1 / -1; }
+  /* Mobile: keep only city + arrow in the control row; JD body starts below. */
+  .job-jd { display:contents;order:0;flex:0 0 auto;min-width:0;margin-top:5px; }
+  .job-jd summary { order:0;margin-top:0;white-space:nowrap; }
+  .job-jd-analytics { display:none !important; }
+  .job-jd-text { flex:1 1 100%;order:1;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
+  .jev-analysis-tools { flex:1 1 100%;order:2;width:100%;min-width:100%; }
   .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-right { display:none; }
   .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:5px;margin-left:auto;white-space:nowrap; }
