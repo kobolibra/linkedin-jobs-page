@@ -21,7 +21,11 @@ SECTION_HEADINGS = re.compile(
 FOOTER_MARKERS = re.compile(
     r"(?is)\b(?:equal\s+opportunity|reasonable\s+accommodation|privacy\s+notice|recruitment\s+assessments?|medical\s+and\s+life\s+insurance|flexible\s+working\s+options|visit\s+our\s+careers|we\s+are\s+an\s+equal)\b.*$"
 )
-PLACEHOLDER_RE = re.compile(r"\[[^\]]{1,80}\]|\{[^}]{1,80}\}")
+PLACEHOLDER_RE = re.compile(
+    r"(?:\[(?:tbd|todo|insert|placeholder|location|company|date|title|name|xxx)[^\]]*\]"
+    r"|\{(?:tbd|todo|insert|placeholder|location|company|date|title|name|xxx)[^}]*\})",
+    re.IGNORECASE,
+)
 
 @dataclass(frozen=True)
 class TitleSignals:
@@ -150,10 +154,10 @@ def preprocess(title: str, company: str, description: str, metadata: dict[str, A
     combined_core = "\n\n".join(x for x in (sections["role_summary"], sections["responsibilities"]) if x)
     combined_core = PLACEHOLDER_RE.sub(" ", combined_core)
     flags: list[str] = []
-    if len(combined_core) < 800:
-        flags.append("thin_role_evidence")
     if len(combined_core) < 300:
         flags.append("insufficient_role_evidence")
+    elif len(combined_core) < 800:
+        flags.append("thin_role_evidence")
     if PLACEHOLDER_RE.search(raw):
         flags.append("template_placeholder_text")
     if detect_language(raw) == "bilingual":
