@@ -12,6 +12,8 @@
 
 上游 endpoint/model 可通过 Worker secrets/vars 覆盖：`JEV_API_URL`、`JEV_MODEL`、`JEV_API_KEY`。默认情况下使用 `TYPESAFE_API_KEY`。如果显式把 `JEV_API_URL` 设置为 Requesty 的 chat completions endpoint，Worker 会启用兼容格式；这不是默认路径。推荐生产环境使用版本化模型完成回归评估后再固定。
 
+协议依据：[TypeSafe 官方 API reference](https://docs.typesafe.ai/api)，其中明确规定 endpoint 为 `https://api.typesafe.ai/v1/systemone`、请求字段为 `state` / `model` / `questions`，答案位于 `answers`。
+
 ## Endpoint
 
 ```text
@@ -38,6 +40,14 @@ TYPESAFE_API_KEY = <secret>
 ```
 
 如果 key 未配置，接口会返回 `503 {"error":"provider_not_configured"}`，而不是 404；这是可诊断的配置错误。仓库的 `.github/workflows/deploy-cloudflare.yml` 需要 GitHub Actions secrets：`CLOUDFLARE_API_TOKEN`、`CLOUDFLARE_ACCOUNT_ID`。
+
+首次配置命令（在有 Cloudflare API 权限的环境执行）：
+
+```bash
+npx wrangler secret put TYPESAFE_API_KEY --name linkedin
+```
+
+然后在 GitHub 仓库 Actions secrets 配置 `CLOUDFLARE_API_TOKEN`（Workers Scripts Edit 权限）和 `CLOUDFLARE_ACCOUNT_ID`。当前代码已推送，两个 secret 补齐后，推送任意匹配路径的提交或手动运行 `Deploy LinkedIn Worker to Cloudflare` 即可完成发布。
 
 ## Request
 
