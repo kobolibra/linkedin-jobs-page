@@ -13,6 +13,10 @@ const recentRequests = new Map();
 
 const DEFAULT_PROVIDER_URL = "https://api.typesafe.ai/v1/systemone";
 const DEFAULT_MODEL = "jev-latest";
+// The Worker asset cache can retain the HTML shell after a GitHub Pages
+// publish. Fetch the exact published shell by commit so new asset query
+// versions become visible without waiting for an edge purge.
+const INDEX_SOURCE_URL = "https://raw.githubusercontent.com/kobolibra/linkedin-jobs-page/ec08cf0a61e08d04a6b9ade63a178e3365c6d7fc/index.html";
 
 const FUNCTION_CRITERIA = {
   client_commercial: "Client, sales, relationship management, commercial origination or business development.",
@@ -271,11 +275,30 @@ async function handleJev(request, env) {
   catch (error) { return jsonResponse(error.status || 502, { error: error.message || "analysis_failed" }); }
 }
 
-export default {
+async function serveFreshIndex(request, env) {
+  if (new URL(request.url).pathname !== "/") return env.ASSETS.fetch(request);
+  try {
+    const upstream = await fetch(INDEX_SOURCE_URL, { cf: { cacheTtl: 0, cacheEverything: false } });
+    if (!upstream.ok) return env.ASSETS.fetch(request);
+    return new Response(upstream.body, {
+      status: upstream.status,
+      headers: {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-linkedin-index-source": "ec08cf0",
+      },
+    });
+  } catch {
+    return env.ASSETS.fetch(request);
+  }
+}
+
+const worker_default = {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === "/api/jev/analyze") return handleJev(request, env);
-    return env.ASSETS.fetch(request);
+    return serveFreshIndex(request, env);
   },
 };
 
