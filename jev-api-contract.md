@@ -36,16 +36,16 @@ The Worker validates request size, same-origin access and rate limits. It return
 
 The description must contain at least 40 characters and is capped at 30,000 characters.
 
-## JEV v2.1 response
+## JEV v2.2 response
 
-The production taxonomy is defined in [`jev-taxonomy-v2.md`](./jev-taxonomy-v2.md) and is identified at runtime as `jev-taxonomy-v2.1`.
+The production taxonomy is defined in [`jev-taxonomy-v2.2.md`](./jev-taxonomy-v2.2.md) and is identified at runtime as `jev-taxonomy-v2.2`.
 
 ```json
 {
   "schemaVersion": 2,
   "analysis": {
     "schemaVersion": 2,
-    "taxonomyVersion": "jev-taxonomy-v2.1",
+    "taxonomyVersion": "jev-taxonomy-v2.2",
     "roleArchetype": "platform_cloud_reliability_engineering",
     "workProfile": {
       "primaryActivity": "technology_build",
@@ -53,10 +53,14 @@ The production taxonomy is defined in [`jev-taxonomy-v2.md`](./jev-taxonomy-v2.m
     },
     "businessContext": {
       "businessDomain": "wealth_private_banking",
-      "productOrPlatformContext": ["cloud_platforms", "apis_and_microservices"]
+      "businessProducts": ["payments"],
+      "technologyPlatforms": ["apis_and_microservices"],
+      "productOrPlatformContext": ["payments", "apis_and_microservices"]
     },
     "mandate": {
+      "titleLevelSignal": "director_or_head",
       "roleLevel": "senior_individual_contributor",
+      "seniorityAlignment": "title_higher_than_scope",
       "mandateScope": "workstream_or_project",
       "decisionAuthority": "ownership"
     },
@@ -85,7 +89,7 @@ Leadership Responsibility
 Role Risk
 ```
 
-`directReports`, `location_ambiguity`, `jd_too_short`, and `placeholder_or_test_role` are not part of the user-facing JEV result. Requirements, evidence quality, compensation and candidate fit are also outside the core JEV role taxonomy. The current TypeSafe question interface supplies controlled risk codes and severity; explanatory risk reasons remain a future enrichment because the current typed question contract does not return free-text rationale.
+`directReports`, `location_ambiguity`, `jd_too_short`, and `placeholder_or_test_role` are not part of the user-facing JEV result. Requirements, evidence quality, compensation and candidate fit are also outside the core JEV role taxonomy. Empty product/platform arrays mean `Not materially specified`; `unknown` is reserved for insufficient or contradictory evidence. The current TypeSafe question interface supplies controlled risk codes and severity; explanatory risk reasons remain a future enrichment because the current typed question contract does not return free-text rationale.
 
 ## UI behavior
 
@@ -101,10 +105,10 @@ Role Risk
 The browser uses localStorage key:
 
 ```text
-linkedin-jev-analysis-v2.1
+linkedin-jev-analysis-v2.2
 ```
 
-The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp and v2 result. A changed JD fingerprint triggers a new analysis.
+The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp, taxonomy version and v2.2 result. A changed JD fingerprint or taxonomy version triggers a new analysis.
 
 ## Worker secret
 
