@@ -41,13 +41,8 @@
       font-size:8.7px;
     }
 
-    /* JD disclosure. WebKit implements <details> with shadow DOM and wraps the
-       non-summary content in an anonymous slot box; with display:contents that
-       anonymous box is the one that participates in the parent flex layout, it
-       cannot be selected by CSS, and it keeps order:0. That produced the
-       leading indent on every card that has a JD and pushed the JD body above
-       the company row when open. The markup is rewritten below so no <details>
-       and no anonymous box exist, which makes order authoritative. */
+    /* Keep legacy arrow styles harmless; JD structure and open state belong to
+       app.js so Analytics can remain visible only while the JD is expanded. */
     .job-jd-toggle{
       appearance:none;
       -webkit-appearance:none;
@@ -131,7 +126,7 @@
       body.compact .job-company-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       body.compact .salary-ref-mobile{min-height:14px;padding:0 5px;font-size:8.5px}
       /* Row 3: city, salary, arrow. Row 4: JD body, full width, from the left. */
-      .job-jd summary{order:6;margin-top:5px}
+      .job-jd-toggle{order:6;margin-top:5px}
       .job-jd-text{order:9;margin-top:6px}
     }
   `;
@@ -139,32 +134,9 @@
 
   let salaryById=new Map();
 
-  /* Rewrite native details into the stable sibling button/body pair. */
-  const upgradeJd=article=>{
-    const details=article.querySelector('details.job-jd');
-    if(!details)return;
-    const parent=details.parentNode;
-    if(!parent)return;
-    const body=details.querySelector('.job-jd-text');
-    const analytics=details.querySelector('.job-jd-analytics');
-    const toggle=document.createElement('button');
-    toggle.type='button';
-    toggle.className='job-jd-toggle';
-    toggle.setAttribute('aria-expanded','false');
-    toggle.setAttribute('aria-label','展开职位描述');
-    parent.insertBefore(toggle,details);
-    if(analytics)parent.insertBefore(analytics,details);
-    if(body)parent.insertBefore(body,details);
-    details.remove();
-  };
-  host.addEventListener('click',event=>{
-    const toggle=event.target?.closest?.('.job-jd-toggle');
-    if(!toggle||!host.contains(toggle))return;
-    event.preventDefault();
-    const open=toggle.getAttribute('aria-expanded')==='true';
-    toggle.setAttribute('aria-expanded',open?'false':'true');
-    toggle.setAttribute('aria-label',open?'展开职位描述':'收起职位描述');
-  });
+  // Keep the native <details> structure. app.js owns its toggle event so the
+  // JD body remains lazy-loaded and Analytics is visible only while expanded.
+  const upgradeJd=article=>{};
 
   const ensureCompanyText=article=>{
     const sub=article.querySelector('.job-sub');
