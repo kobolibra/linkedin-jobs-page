@@ -129,6 +129,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .job-sub-link { cursor:pointer; }
 .job-sub-link:hover { color:var(--region,var(--navy));text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .job-city { flex:0 0 auto;color:var(--ink-faint);font-size:12px;white-space:nowrap; }
+.job-jd-row { display:contents; }
 .job-jd { display:contents;color:var(--ink-soft);font-size:12px;line-height:1.5; }
 .job-jd summary { cursor:pointer;color:var(--region,var(--navy));flex:0 0 auto;align-self:center;display:inline-flex;align-items:center;gap:5px;width:auto;height:17px;list-style:none;-webkit-tap-highlight-color:transparent; }
 .job-jd summary::-webkit-details-marker { display:none; }
@@ -273,18 +274,17 @@ body.compact .day-head { padding-bottom:6px; }
   .job-meta-line { display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:0;min-width:0;margin-top:3px; }
   .job-meta-line::after { content:"";flex:1 1 100%;height:0;min-width:0;order:3; }
   .job-detail-line { display:contents;line-height:17px; }
+  .job-jd-row { display:flex;flex:1 1 100%;order:4;align-items:center;gap:8px;min-width:0; }
   .job-right-mobile { order:2;align-self:center; }
-  .job-city { flex:0 0 auto;order:4;align-self:center;min-width:0;max-width:100%;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+  .job-city { flex:0 1 auto;order:0;align-self:center;min-width:0;max-width:calc(100% - 92px);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-city:empty { display:none; }
   .salary-ref-mobile { flex:0 0 auto;order:5;align-self:center;margin-top:5px;white-space:nowrap; }
   .salary-ref-mobile:empty { display:none; }
-  /* Do not use display:contents on <details> here. Mobile Safari/Chrome can
-     reparent an open details subtree when it is also a flex item with order,
-     which moves the city, arrow and Analytics to the bottom of the JD. Keep
-     details as an explicit wrapping flex item instead. */
-  .job-jd { display:flex;flex:0 1 auto;flex-wrap:wrap;align-items:center;order:6;min-width:0;margin-top:5px; }
-  .job-jd summary { order:0;margin-top:0; }
-  .job-jd-text { flex:1 1 100%;order:1;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
+  /* Keep the control row independent from the expandable JD body. */
+  .job-jd { display:grid;grid-template-columns:max-content minmax(0,1fr);flex:1 1 auto;order:0;min-width:0;margin-top:5px; }
+  .job-jd summary { grid-column:1;order:0;margin-top:0;white-space:nowrap; }
+  .job-jd-text { grid-column:1 / -1;flex:0 0 auto;order:1;width:100%;max-width:100%;min-width:0;margin-top:6px;overflow-wrap:anywhere; }
+  .jev-analysis-tools { grid-column:1 / -1; }
   .job-sub { flex:1 1 auto;order:1;min-width:0;align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .job-right { display:none; }
   .job-right-mobile { display:flex;flex:0 0 auto;align-items:center;gap:5px;margin-left:auto;white-space:nowrap; }
