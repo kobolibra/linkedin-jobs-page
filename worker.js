@@ -301,5 +301,5 @@ const worker_default = {
     return serveFreshIndex(request, env);
   },
 };
-
+export default worker_default;
 export const __test = { handleJev, questions, DEFAULT_PROVIDER_URL, DEFAULT_MODEL };
