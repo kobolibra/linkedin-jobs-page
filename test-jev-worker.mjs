@@ -77,7 +77,7 @@ test('proxies official TypeSafe answers without exposing the key to the response
 
 test('does not send API requests for static assets', async () => {
   let called = false;
-  const response = await worker.fetch(new Request('https://linkedin.example/'), { ASSETS: { fetch: async () => { called = true; return new Response('ok'); } } });
+  const response = await worker.fetch(new Request('https://linkedin.example/app.js'), { ASSETS: { fetch: async () => { called = true; return new Response('ok'); } } });
   assert.equal(response.status, 200);
   assert.equal(called, true);
 });
