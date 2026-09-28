@@ -184,12 +184,12 @@
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
       mobileBadge.className='salary-ref salary-ref-mobile';
-      const anchor=detail?.querySelector('.job-jd summary')||detail?.querySelector('.job-right-mobile');
+      const anchor=detail?.querySelector('.job-jd-toggle')||detail?.querySelector('.job-right-mobile');
       if(anchor) anchor.parentNode.insertBefore(mobileBadge,anchor); else (detail||company.sub).appendChild(mobileBadge);
     }
 
     if(detail&&mobileBadge){
-      const anchor=detail.querySelector('.job-jd summary')||detail.querySelector('.job-right-mobile');
+      const anchor=detail.querySelector('.job-jd-toggle')||detail.querySelector('.job-right-mobile');
       if(anchor && mobileBadge!==anchor) anchor.parentNode.insertBefore(mobileBadge,anchor);
     }
     desktopBadge.textContent=salary;

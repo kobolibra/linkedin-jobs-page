@@ -194,7 +194,7 @@ function renderJevResult(container,result,analyzedAt){
 function addJevControls(body,card,entry,currentText){
   if(body.parentNode?.querySelector(".jev-analysis-tools"))return;
   const id=card.dataset.id||"";
-  const summary=card.querySelector(".job-jd summary"),button=summary?.querySelector(".job-jd-analytics");
+  const button=card.querySelector(".job-jd-toggle"),analytics=card.querySelector(".job-jd-analytics");
   const tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-result" hidden></div>';
   const result=tools.querySelector(".jev-result");
   const cache=readJevCache();
@@ -217,7 +217,7 @@ function addJevControls(body,card,entry,currentText){
     }catch(error){if(button)button.title=error.name==="AbortError"?"Analysis timed out":"Analysis unavailable";}
     finally{if(button){button.removeAttribute("aria-busy");button.classList.remove("is-loading");}inFlight=false;}
   };
-  if(button){button.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();run();});button.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();event.stopPropagation();run();}});}
+  if(analytics){analytics.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();run();});analytics.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();event.stopPropagation();run();}});}
   body.parentNode.insertBefore(tools,body);
   const existing=cache[id];if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(currentText).then(fingerprint=>{if(existing.jdFingerprint===fingerprint)showCached(existing);});}
 }
@@ -277,22 +277,22 @@ const saveBlockedKw=()=>localStorage.setItem("blockedKw",JSON.stringify([...bloc
 (function(){const values=[...blocked];blocked.clear();values.forEach(value=>blocked.add(canonicalCompany(value)));saveBlocked();})();
 (function(){if(localStorage.getItem("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();localStorage.setItem("favKeyV","2");})();
 const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),cityEl=document.getElementById("city"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");
-// `toggle` does not bubble, so capture it at the list root. The initial
-// index payload intentionally excludes JD text; only opening a details row
-// fetches jobs-details.json and hydrates that one card.
-jobsEl.addEventListener("toggle",event=>{
-  const details=event.target;
-  if(details instanceof HTMLDetailsElement&&details.matches("details.job-jd")){
-    const analytics=details.querySelector(".job-jd-analytics");
-    if(analytics)analytics.hidden=!details.open;
-    if(details.open)hydrateJd(details.closest(".job"));
-  }
-},true);
+// The JD control is an explicit button, not a native <details> element.
+// This keeps the control row independent from the expandable body on mobile.
+function setJdOpen(card,open){
+  const toggle=card?.querySelector(".job-jd-toggle"),analytics=card?.querySelector(".job-jd-analytics"),row=toggle?.closest(".job-jd-row");
+  if(!toggle)return;
+  toggle.setAttribute("aria-expanded",open?"true":"false");
+  toggle.setAttribute("aria-label",open?"收起职位描述":"展开职位描述");
+  if(analytics)analytics.hidden=!open;
+  row?.classList.toggle("is-open",open);
+  if(open)hydrateJd(card);
+}
 compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
 jobsEl.addEventListener("click",e=>{
   const card=e.target.closest(".job");if(!card||!jobsEl.contains(card))return;
   const id=card.dataset.id;
-  if(e.target.closest(".job-jd-toggle")){hydrateJd(card);return;}
+  if(e.target.closest(".job-jd-analytics"))return;if(e.target.closest(".job-jd-toggle")){const toggle=e.target.closest(".job-jd-toggle");setJdOpen(card,toggle.getAttribute("aria-expanded")!=="true");return;}
   if(e.target.closest(".job-title")){reads.add(id);saveReads();card.classList.add("read");return;}
   const star=e.target.closest(".star");
   if(star){e.preventDefault();if(favs.has(id)){favs.delete(id);star.classList.remove("on");}else{favs.add(id);star.classList.add("on");}star.title=favs.has(id)?"取消收藏":"收藏";saveFavs();if(favOnly)apply();return;}
@@ -609,7 +609,7 @@ jobsDataPromise
         // representation as JD-available so the lazy details loader and its
         // expand-only Analytics control remain reachable.
         const hasJd=job.hasJd===true||Boolean(job.descriptionHtml||job.descriptionText);
-        rows.push('<article class="job'+(reads.has(id)?' read':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'><div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line"><span class="job-jd-row">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics" hidden>Analytics</span></summary><div class="job-jd-text"></div></details>':'')+'</span><div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
+        rows.push('<article class="job'+(reads.has(id)?' read':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'><div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line"><span class="job-jd-row">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<button type="button" class="job-jd-toggle" aria-expanded="false" aria-label="展开职位描述"></button><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics" hidden>Analytics</span><div class="job-jd-text"></div>':'')+'</span><div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
