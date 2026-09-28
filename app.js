@@ -117,7 +117,7 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v1";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v2";
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // should implement this endpoint and keep the provider credential server-side.
 const JEV_API_ENDPOINT="/api/jev/analyze";
@@ -152,54 +152,63 @@ async function jdFingerprint(text){
 function jevPayload(raw){
   const root=raw?.analysis||raw?.result||raw?.data||raw||{};
   const classification=root.classification||{};
-  const management=root.management||{};
-  const leadership=root.leadership||{};
+  const mandate=root.mandate||{};
+  const workProfile=root.workProfile||{};
+  const businessContext=root.businessContext||{};
+  const roleRisk=root.roleRisk||{};
+  const allowedRiskCodes=new Set(["title_scope_mismatch","seniority_ambiguity","responsibility_ambiguity","leadership_ambiguity","function_context_mismatch","contradictory_scope"]);
   return {
+    roleArchetype:root.roleArchetype||classification.roleArchetype||"other_unknown",
+    primaryActivity:workProfile.primaryActivity||root.primaryActivity||"other_unknown",
+    secondaryActivities:jevList(workProfile.secondaryActivities||root.secondaryActivities),
+    businessDomain:businessContext.businessDomain||root.businessDomain||root.businessDomains?.[0]||"other_unknown",
+    productContext:jevList(businessContext.productOrPlatformContext||root.productOrPlatformContext),
+    roleLevel:mandate.roleLevel||root.roleLevel||root.seniorityBand||"unknown",
+    mandateScope:mandate.mandateScope||root.mandateScope||root.responsibilityLevel||"unknown",
+    decisionAuthority:mandate.decisionAuthority||root.decisionAuthority||"unknown",
+    leadershipLevel:root.leadershipLevel||"unknown",
     function:root.function||classification.function||"unknown",
     subFunctions:jevList(root.subFunctions||classification.subFunctions||root.primarySubFunction),
     businessDomains:jevList(root.businessDomains||classification.businessDomains||root.industry),
-    seniorityBand:root.seniorityBand||classification.seniorityBand||root.seniority||"unclear",
-    responsibilityLevel:root.responsibilityLevel||classification.responsibilityLevel||"unknown",
-    isFormalPeopleManager:root.isFormalPeopleManager||management.isFormalPeopleManager||management.formalPeopleManager||"unknown",
-    directReportsRequired:root.directReportsRequired||management.directReportsRequired||"unknown",
-    teamLeadershipRequired:root.teamLeadershipRequired||leadership.teamLeadershipRequired||"unknown",
-    leadershipType:jevList(root.leadershipType||leadership.leadershipType),
-    riskFlags:Array.isArray(root.riskFlags)?root.riskFlags:[]
+    riskFlags:(Array.isArray(roleRisk.riskFlags)?roleRisk.riskFlags:Array.isArray(root.riskFlags)?root.riskFlags:[]).filter(item=>allowedRiskCodes.has(item?.code))
   };
 }
 function jevTags(values){return jevList(values).map(value=>'<span class="jev-tag">'+esc(jevFunctionLabels[value]||jevSeniorityLabels[value]||String(value).replaceAll("_"," "))+'</span>').join("");}
+const jevText=value=>String(value||"Unknown").replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
 function renderJevResult(container,result,analyzedAt){
   const r=jevPayload(result),risk=r.riskFlags;
   const row=(label,value,html=false)=>'<div class="jev-field"><dt>'+label+'</dt><dd>'+(html?(value||'<span class="jev-muted">Unknown</span>'):'<span>'+esc(jevValueLabel(value))+'</span>')+'</dd></div>';
-  container.innerHTML='<div class="jev-result-head"><span>JEV Analysis</span><time>Cached · '+esc(new Date(analyzedAt||Date.now()).toLocaleString("en-US"))+'</time></div><dl class="jev-fields">'+row("Primary Function",jevFunctionLabels[r.function]||r.function)+row("Sub-functions",jevTags(r.subFunctions),true)+row("Business Domain",jevTags(r.businessDomains),true)+row("Seniority Band",jevSeniorityLabels[r.seniorityBand]||r.seniorityBand)+row("Responsibility Level",r.responsibilityLevel)+row("Formal People Manager",r.isFormalPeopleManager)+row("Direct Reports Required",r.directReportsRequired)+row("Team Leadership Required",r.teamLeadershipRequired)+row("Leadership Type",jevTags(r.leadershipType),true)+'</dl>'+(risk.length?'<section class="jev-risks"><h4>Review Flags</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"Structural Signal").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+(jevList(item.evidence).length?'<ul>'+jevList(item.evidence).map(e=>'<li>'+esc(e)+'</li>').join("")+'</ul>':'')+'</article>').join("")+'</section>':'<p class="jev-no-risk">No structural risks met the current review threshold.</p>');
+  container.innerHTML='<dl class="jev-fields">'+row("Role Archetype",jevText(r.roleArchetype))+row("Primary Activity",jevText(r.primaryActivity))+row("Secondary Activities",jevList(r.secondaryActivities).map(jevText).join(" · "),true)+row("Business Domain",jevText(r.businessDomain))+row("Product / Platform Context",jevList(r.productContext).map(jevText).join(" · "),true)+row("Role Level",jevText(r.roleLevel))+row("Mandate Scope",jevText(r.mandateScope))+row("Decision Authority",jevText(r.decisionAuthority))+row("Leadership Level",jevText(r.leadershipLevel))+'</dl>'+(risk.length?'<section class="jev-risks"><h4>Role Risk</h4>'+risk.map(item=>'<article class="jev-risk jev-risk-'+esc(item.severity||"medium")+'"><div><strong>'+esc(String(item.code||"Structural Signal").replaceAll("_"," "))+'</strong><span class="jev-severity">'+esc(jevValueLabel(item.severity||"medium"))+'</span></div>'+(item.reason?'<p>'+esc(item.reason)+'</p>':'')+'</article>').join("")+'</section>':'');
   container.hidden=false;
 }
 function addJevControls(body,card,entry,currentText){
-  if(body.querySelector(".jev-analysis-tools"))return;
+  if(body.parentNode?.querySelector(".jev-analysis-tools"))return;
   const id=card.dataset.id||"";
-  const tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-action-row"><button type="button" class="jev-analyze-btn">Analyze with JEV</button><span class="jev-action-status" aria-live="polite"></span></div><div class="jev-result" hidden></div>';
-  const button=tools.querySelector(".jev-analyze-btn"),status=tools.querySelector(".jev-action-status"),result=tools.querySelector(".jev-result");
+  const summary=card.querySelector(".job-jd summary"),button=summary?.querySelector(".job-jd-analytics");
+  const tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-result" hidden></div>';
+  const result=tools.querySelector(".jev-result");
   const cache=readJevCache();
   let inFlight=false;
-  const showCached=record=>{renderJevResult(result,record.result,record.analyzedAt);button.textContent="View Cached Analysis";button.classList.add("is-cached");status.textContent="Local cache";};
+  const showCached=record=>{renderJevResult(result,record.result,record.analyzedAt);button?.classList.add("is-cached");};
   const run=async()=>{
     if(inFlight)return;
     inFlight=true;
     const text=currentText||jdPlainText(entry.descriptionHtml||entry.descriptionText||entry.description||"");
     const fingerprint=await jdFingerprint(text),record=cache[id];
     if(record?.jdFingerprint===fingerprint&&record.result){showCached(record);inFlight=false;return;}
-    if(!JEV_API_ENDPOINT){status.textContent="JEV endpoint is not configured";inFlight=false;return;}
-    button.disabled=true;button.classList.add("is-loading");status.textContent="Analyzing this job…";result.hidden=true;
+    if(!JEV_API_ENDPOINT){inFlight=false;return;}
+    if(button){button.setAttribute("aria-busy","true");button.classList.add("is-loading");}result.hidden=true;
     try{
       const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
       const response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text}),signal:controller.signal});
       clearTimeout(timer);if(!response.ok)throw new Error("HTTP "+response.status);
       const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
       cache[id]={schemaVersion:1,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);showCached(cache[id]);
-    }catch(error){status.textContent=error.name==="AbortError"?"Analysis timed out. Please try again.":"Analysis unavailable ("+error.message+")";}
-    finally{button.disabled=false;button.classList.remove("is-loading");inFlight=false;}
+    }catch(error){if(button)button.title=error.name==="AbortError"?"Analysis timed out":"Analysis unavailable";}
+    finally{if(button){button.removeAttribute("aria-busy");button.classList.remove("is-loading");}inFlight=false;}
   };
-  button.addEventListener("click",run);tools.addEventListener("click",event=>event.stopPropagation());body.appendChild(tools);
+  if(button){button.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();run();});button.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();event.stopPropagation();run();}});}
+  body.parentNode.insertBefore(tools,body);
   const existing=cache[id];if(existing?.result){jdFingerprint(currentText).then(fingerprint=>{if(existing.jdFingerprint===fingerprint)showCached(existing);});}
 }
 async function hydrateJd(card){
@@ -584,7 +593,7 @@ jobsDataPromise
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
         const hasJd=job.hasJd===true;
-        rows.push('<article class="job'+(reads.has(id)?' read':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'><div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"></summary><div class="job-jd-text"></div></details>':'')+'<div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
+        rows.push('<article class="job'+(reads.has(id)?' read':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'><div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div><div class="job-main"><a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics">Analytics</span></summary><div class="job-jd-text"></div></details>':'')+'<div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
