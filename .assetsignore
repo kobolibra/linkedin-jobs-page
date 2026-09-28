@@ -1,6 +1,10 @@
 .assetsignore
 .gitignore
+.git
 .github
 scripts
+data
+.wrangler
+test-jev-worker.mjs
 wrangler.jsonc
 *.md
