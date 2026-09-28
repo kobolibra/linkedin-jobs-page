@@ -346,32 +346,6 @@ async function handleJev(request, env) {
 
 async function serveFreshIndex(request, env) {
   const pathname = new URL(request.url).pathname;
-  if (pathname === "/app.js") {
-    // Some existing asset deployments contain jobs.json snapshots without
-    // hasJd, while jobs-details.json still contains the matching JDs. Keep
-    // those deployments usable until the asset bundle is refreshed.
-    const asset = await env.ASSETS.fetch(request);
-    const source = await asset.text();
-    const legacy = "const hasJd=job.hasJd===true;";
-    const current = "const hasJd=job.hasJd===true||Boolean(job.descriptionHtml||job.descriptionText);";
-    if (!source.includes(legacy)) return asset;
-    const headers = new Headers(asset.headers);
-    headers.set("cache-control", "no-store, no-cache, must-revalidate");
-    headers.set("x-content-type-options", "nosniff");
-    return new Response(source.replace(legacy, current), { status: asset.status, statusText: asset.statusText, headers });
-  }
-  if (pathname === "/salary-display.js") {
-    const asset = await env.ASSETS.fetch(request);
-    const source = await asset.text();
-    const start = source.indexOf("const upgradeJd=article=>{");
-    const marker = "\n  host.addEventListener('click'";
-    const stop = start < 0 ? -1 : source.indexOf(marker, start);
-    if (start < 0 || stop < 0) return asset;
-    const headers = new Headers(asset.headers);
-    headers.set("cache-control", "no-store, no-cache, must-revalidate");
-    headers.set("x-content-type-options", "nosniff");
-    return new Response(source.slice(0, start) + "const upgradeJd=article=>{};" + source.slice(stop), { status: asset.status, statusText: asset.statusText, headers });
-  }
   if (pathname !== "/") return env.ASSETS.fetch(request);
   // The repository is private, so raw.githubusercontent.com cannot be a
   // reliable runtime origin. Use the asset version that this deployment
