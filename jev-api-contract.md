@@ -1,139 +1,124 @@
-# JEV Analysis API Contract
+# JEV Analysis API Contract — v3.0
 
-## Current implementation
+## Purpose
 
-The frontend calls the same-origin `POST /api/jev/analyze`. The Cloudflare Worker keeps the TypeSafe API key server-side and proxies the official TypeSafe systemone endpoint. The endpoint is intentionally discoverable as part of a public web application, but it is not an unauthenticated provider endpoint: direct requests without the page's same-origin `Origin` are rejected, and the provider key is never exposed.
+JEV classifies the role represented by a job description. It is evidence-led: responsibilities and outputs dominate; title is a weak prior; requirements and employer boilerplate are not role evidence.
 
-- URL: `https://api.typesafe.ai/v1/systemone`
+- Endpoint: same-origin `POST /api/jev/analyze`
+- Provider: `https://api.typesafe.ai/v1/systemone`
 - Model: `jev-1.13.0`
-- Authentication: `Authorization: Bearer <TYPESAFE_API_KEY>`
-- Request: `{ "state": ..., "model": "jev-1.13.0", "questions": {...} }`
-- Upstream response: `{ "model": "jev-1.13.0", "answers": {...} }`
-
-Reference: [TypeSafe API documentation](https://docs.typesafe.ai/api).
-
-## Endpoint
-
-```text
-POST /api/jev/analyze
-Content-Type: application/json
-Accept: application/json
-```
-
-The Worker validates request size, same-origin access and rate limits. It returns `503 provider_not_configured` when the server secret is missing; the browser never receives the secret.
+- Taxonomy: `jev-taxonomy-v3.0`
+- Response schema: `4`
+- Secret: Worker-only `TYPESAFE_API_KEY` / compatible configured secret
 
 ## Request
 
 ```json
 {
   "jobId": "ln:4470905602",
-  "title": "Investment Analyst",
-  "company": "Schroders",
-  "location": "CN",
-      "description": "Plain-text job description",
-      "jevInput": {
-        "role_summary": "Structured role summary after conservative preprocessing",
-        "responsibilities": "Responsibilities only",
-        "requirements": "Requirements only",
-        "evidence_level": "adequate",
-        "evidence_flags": [],
-        "title_signals": {"normalized": "professional", "tags": []}
-      }
-}
-```
-
-The description must contain at least 40 characters and is capped at 30,000 characters.
-
-## JEV v2.3 response
-
-The v2.2 taxonomy document is the baseline; the current implementation is identified at runtime as `jev-taxonomy-v2.3`.
-
-```json
-{
-  "schemaVersion": 3,
-  "analysis": {
-    "schemaVersion": 3,
-    "taxonomyVersion": "jev-taxonomy-v2.3",
-    "roleArchetype": "platform_cloud_reliability_engineering",
-    "workProfile": {
-      "primaryActivity": "technology_build",
-      "secondaryActivities": ["data_analytics", "operations_processing"]
-    },
-    "businessContext": {
-      "businessDomain": "wealth_private_banking",
-      "businessProducts": ["payments"],
-      "technologyPlatforms": ["apis_and_microservices"],
-      "servedBusinessLine": "global_markets",
-      "operatingContext": "onshore_bank_business_unit",
-      "productOrPlatformContext": ["payments", "apis_and_microservices"]
-    },
-    "mandate": {
-      "titleLevelSignal": "director_or_head",
-      "roleLevel": "senior_individual_contributor",
-      "titleConventionTags": ["employer_band_convention"],
-      "seniorityAlignment": "employer_title_convention",
-      "mandateScope": "workstream_or_project",
-      "decisionAuthority": "ownership"
-    },
-    "leadershipLevel": "team_lead",
-    "roleRisk": {
-      "riskFlags": [
-        {
-          "code": "seniority_ambiguity",
-          "severity": "medium",
-          "reason": "The title and responsibility signals imply different seniority levels."
-        }
-      ]
-    }
+  "title": "Senior Data Engineer",
+  "company": "Example Bank",
+  "location": "HK",
+  "description": "Plain-text job description",
+  "jevInput": {
+    "role_summary": "Structured role summary",
+    "responsibilities": "Responsibilities only",
+    "requirements": "Requirements only",
+    "employer_metadata": "Business: CTO Data Technology",
+    "language": "en_or_mixed",
+    "evidence_level": "adequate",
+    "evidence_flags": [],
+    "title_signals": {"title_level_market": "senior_individual_contributor", "convention_tags": []},
+    "servedBusinessLineHint": "group_functions_enterprise",
+    "operatingContextHint": "technology_development_centre"
   }
 }
 ```
 
-The role-analysis dimensions are deliberately limited to:
+Description must be at least 40 characters and is capped at 30,000 characters. The Worker also validates total request size, same-origin `Origin`, and rate limits.
 
-```text
-Role Archetype
-Work Profile
-Business Context
-Mandate & Authority
-Leadership Responsibility
-Role Risk
+## Response shape
+
+```json
+{
+  "schemaVersion": 4,
+  "analysis": {
+    "schemaVersion": 4,
+    "taxonomyVersion": "jev-taxonomy-v3.0",
+    "postingType": "specific_role",
+    "roleArchetype": "TE5",
+    "roleFamily": "TE",
+    "roleFamilyLabel": "Technology & Engineering",
+    "roleArchetypeLabel": "Data Engineering & Analytics",
+    "workProfile": {
+      "primaryActivity": "technology_build",
+      "secondaryActivities": ["research_analysis"],
+      "workMix": {"technicalDelivery": "yes", "analysis": "yes"}
+    },
+    "businessContext": {
+      "businessDomain": "other_unknown",
+      "servedBusinessLine": "group_functions_enterprise",
+      "operatingContext": "technology_development_centre",
+      "businessProducts": [],
+      "technologyPlatforms": ["data_platforms"],
+      "productOrPlatformContext": ["data_platforms"]
+    },
+    "mandate": {
+      "roleLevel": "senior_individual_contributor",
+      "titleLevelSignal": "senior_individual_contributor",
+      "titleConventionTags": [],
+      "seniorityAlignment": "aligned",
+      "mandateScope": "workstream_or_project",
+      "decisionAuthority": "recommendation"
+    },
+    "leadershipLevel": "individual_contributor",
+    "roleRisk": {"riskFlags": []},
+    "confidence": {},
+    "states": {},
+    "evidence": {"level": "adequate", "flags": []}
+  }
+}
 ```
 
-Every major dimension may carry a `state`: `ok`, `low_confidence`, `not_stated`, `not_applicable` or `conflicting`, plus provider `confidence` and `probabilities` when available. Title level and title conventions are computed deterministically from title and employer context. `other_profession` is distinct from `insufficient_evidence`; requirements and employer boilerplate are not role evidence. Empty product/platform arrays mean `Not materially specified`; `not_stated` means the JD does not state authority or leadership.
+## Six card fields
 
-## UI behavior
+The frontend displays only:
 
-- A job card displays `Analytics` only when its JD is expanded.
-- `Analytics` is placed on the same summary row, immediately to the right of the expand arrow.
-- Clicking `Analytics` runs or retrieves the analysis.
-- The analysis result is inserted above the JD body, not below it.
-- `JEV Analysis`, `View Cached Analysis`, `Local cache`, timestamps and other explanatory cache labels are not displayed.
-- The Analytics marker is hidden whenever the JD is collapsed.
+1. Role Archetype — family plus archetype label
+2. Primary Activity — derived from workMix noul scores
+3. Business Line Served
+4. Operating Context
+5. Business Products, or Business Products / Platforms when products are empty and platforms are present
+6. Leadership Level
+
+Internal fields remain available for audit and downstream analysis but are not rendered as card dimensions: title level, role level, title convention, seniority alignment, mandate scope, decision authority, platform list, confidence/state and evidence.
+
+## v3 question design
+
+The provider receives the full JD in `state` once. Question instructions are strings that refer to state fields and do not embed the JD. This prevents request size multiplying with question count.
+
+The provider is asked for:
+
+- posting type and one of 32 controlled role archetypes;
+- served business line and operating context;
+- role level, mandate scope and decision authority;
+- leadership level plus explicit people-management/team-lead noul gates;
+- ten workMix noul signals used to derive Primary Activity;
+- one noul per 14 business-product families and one per 8 technology-platform families;
+- up to three material structural risks.
+
+## State and confidence
+
+`ok`, `low_confidence`, `not_stated`, `not_applicable`, and `conflicting` are controlled states. Percentages are shown only for `ok`; conflicting/low-confidence dimensions show candidates instead. `thin_role_evidence` and `insufficient_role_evidence` are internal evidence flags, not user-facing Role Risk.
 
 ## Cache
 
-The browser uses localStorage key:
-
 ```text
-linkedin-jev-analysis-v2.3
+linkedin-jev-analysis-v3.0
 ```
 
-The cache is keyed by job ID and stores the JD SHA-256 fingerprint, timestamp, taxonomy version, provider model and v2.3 result. A changed JD fingerprint, taxonomy version or provider model triggers a new analysis.
+Each record is keyed by job ID and stores JD SHA-256 fingerprint, analysis timestamp, taxonomy version, provider model and normalized v3 result. A changed JD, model or taxonomy invalidates the record.
 
-## Worker secret
+## Security
 
-Configure the Cloudflare Worker `linkedin` with:
-
-```text
-TYPESAFE_API_KEY = <secret>
-```
-
-Optional variables:
-
-```text
-JEV_MODEL = jev-1.13.0
-JEV_API_URL = https://api.typesafe.ai/v1/systemone
-```
-
-The secret must never be committed to Git, bundled into static assets, written to localStorage or returned in an API response.
+The Worker rejects direct requests without a same-origin Origin, applies a per-IP rate limit, and never returns or stores the provider key. The provider key must not be committed, bundled into static assets or written to browser storage.
