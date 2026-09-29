@@ -33,12 +33,16 @@ def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
         # JobSpy/n8n records frequently retain the JD in HTML while
         # descriptionText is empty. JEV must preprocess the actual JD rather
         # than classifying an empty string as insufficient evidence.
-        text = str(job.get("descriptionText") or job.get("description") or html or "").strip()
-        item["hasJd"] = bool(html or text)
+        stored_text = str(job.get("descriptionText") or job.get("description") or "").strip()
+        text = stored_text or html
+        item["hasJd"] = bool(html or stored_text)
         if item["hasJd"] and key:
             details[key] = {
                 "descriptionHtml": html,
-                "descriptionText": text,
+                # Keep the browser payload compact: descriptionHtml is already
+                # the display source. HTML fallback is used for preprocessing
+                # but is not duplicated into descriptionText.
+                "descriptionText": stored_text,
                 "jevInput": preprocess(
                     str(job.get("title") or ""),
                     str(job.get("company") or ""),
