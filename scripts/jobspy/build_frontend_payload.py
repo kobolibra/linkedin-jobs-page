@@ -30,7 +30,10 @@ def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
         item = {key: job.get(key) for key in index_fields if key in job}
         key = job_id(job.get("link"))
         html = str(job.get("descriptionHtml") or "").strip()
-        text = str(job.get("descriptionText") or job.get("description") or "").strip()
+        # JobSpy/n8n records frequently retain the JD in HTML while
+        # descriptionText is empty. JEV must preprocess the actual JD rather
+        # than classifying an empty string as insufficient evidence.
+        text = str(job.get("descriptionText") or job.get("description") or html or "").strip()
         item["hasJd"] = bool(html or text)
         if item["hasJd"] and key:
             details[key] = {

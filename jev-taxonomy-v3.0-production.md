@@ -13,7 +13,7 @@
 
 以下字段仍保留在 API 内部用于解释、门控和兼容，但不作为卡片主维度展示：title level signal、role level、seniority alignment、mandate scope、decision authority、technology platforms、confidence、states、evidence、role risk。
 
-当前版本：`jev-taxonomy-v3.0`，外层 `schemaVersion: 4`。
+> **Historical baseline only.** Production is now [`jev-taxonomy-v3.1.md`](jev-taxonomy-v3.1.md), with `schemaVersion: 5`. This file is retained solely for migration history.
 
 ## 2. 证据原则
 
