@@ -44,6 +44,8 @@ class JEVInput:
     evidence_level: str
     evidence_flags: tuple[str, ...]
     title_signals: dict[str, Any]
+    servedBusinessLineHint: str
+    operatingContextHint: str
     original_characters: int
     core_characters: int
 
@@ -148,6 +150,25 @@ def title_signals(title: str, company: str) -> TitleSignals:
     return TitleSignals(market, normalized, tuple(dict.fromkeys(tags)), tuple(raw))
 
 
+def _context_hints(company: str, metadata: dict[str, Any] | None, text: str) -> tuple[str, str]:
+    blob = " ".join(str((metadata or {}).get(k) or "") for k in ("business", "jobFamily", "entity", "group")) + " " + str(company or "") + " " + text
+    low = blob.lower()
+    served = ""
+    if re.search(r"iwpb|wealth\s*(?:and|&)\s*premier|premier", low): served = "wealth_premier"
+    elif re.search(r"gts|gps|transaction\s*banking|payments|trade", low): served = "transaction_banking_payments_trade"
+    elif re.search(r"cto|group technology|enterprise technology|finance coo", low): served = "group_functions_enterprise"
+    elif re.search(r"hase|retail|consumer|branch|sub[- ]?branch|支行|网点", low): served = "personal_retail"
+    elif re.search(r"global markets|fx|rates|trading", low): served = "global_markets"
+    elif re.search(r"corporate|institutional|wholesale", low): served = "corporate_institutional"
+    operating = ""
+    if re.search(r"qianhai|securities|证券|investment banking joint venture", low): operating = "securities_or_ib_jv"
+    elif re.search(r"jintrust|asset management|investment management|基金", low): operating = "asset_management_or_wealth_entity"
+    elif re.search(r"life|insurance|人寿|保险", low): operating = "insurance_entity"
+    elif re.search(r"technology china|technology centre|technology center|gbs|global business services|solutions center|technology & operations", low): operating = "technology_development_centre"
+    elif re.search(r"shared service|operations centre|operations center", low): operating = "shared_service_centre"
+    elif re.search(r"sub[- ]?branch|支行|网点", low): operating = "onshore_bank_business_unit"
+    return served, operating
+
 def preprocess(title: str, company: str, description: str, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
     raw = clean_text(description)
     sections = split_sections(raw)
@@ -171,11 +192,13 @@ def preprocess(title: str, company: str, description: str, metadata: dict[str, A
     if re.search(r"medical and life insurance|equal opportunity|our values|what we offer", raw, re.I):
         flags.append("responsibilities_generic_or_template")
     evidence = "insufficient" if "insufficient_role_evidence" in flags else "thin" if "thin_role_evidence" in flags else "adequate"
+    served_hint, operating_hint = _context_hints(company, metadata, raw)
     return asdict(JEVInput(
         role_summary=sections["role_summary"], responsibilities=sections["responsibilities"], requirements=sections["requirements"],
         employer_metadata="\n".join([str((metadata or {}).get(k) or "") for k in ("business", "jobFamily", "entity", "group") if (metadata or {}).get(k)]),
         language=detect_language(raw), evidence_level=evidence, evidence_flags=tuple(dict.fromkeys(flags)),
-        title_signals=asdict(title_signals(title, company)), original_characters=len(raw), core_characters=len(combined_core),
+        title_signals=asdict(title_signals(title, company)), servedBusinessLineHint=served_hint, operatingContextHint=operating_hint,
+        original_characters=len(raw), core_characters=len(combined_core),
     ))
 
 __all__ = ["preprocess", "title_signals", "clean_text"]

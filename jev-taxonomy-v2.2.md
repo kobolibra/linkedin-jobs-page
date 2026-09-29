@@ -1,5 +1,7 @@
 # JEV v2.2 — Evidence-led Job Evaluation
 
+> **历史基线，不是当前生产 taxonomy。** 当前生产实现为 [`jev-taxonomy-v3.0-production.md`](jev-taxonomy-v3.0-production.md)，版本 `jev-taxonomy-v3.0` / schema 4；v2.2 仅用于追溯设计演进。
+
 ## 1. Purpose
 
 JEV classifies the **role represented by a job description**, not the candidate and not the employer alone. Every output must be:
