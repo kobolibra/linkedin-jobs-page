@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic, conservative JD preprocessing for JEV v2.3.
+"""Deterministic, conservative JD preprocessing for JEV v3.1.
 
 This module intentionally removes only high-confidence boilerplate and keeps the
 original text available for audit. It produces structured evidence; it does not
@@ -13,7 +13,7 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 BOILERPLATE_HEADINGS = re.compile(
-    r"(?im)^\s*(?:about\s+(?:us|the\s+company|standard\s+chartered|hsbc)|what\s+we\s+offer|what\s+we\s+offer\s+you|our\s+values|our\s+purpose|recruitment\s+assessments?|equal\s+opportunit|diversity|inclusion|benefits?|福利|公司介绍|关于我们|招聘流程)\s*:?\s*$"
+    r"(?im)^\s*(?:about\s+(?:us|the\s+company|standard\s+chartered|hsbc)|what\s+we\s+offer|what\s+we\s+offer\s+you|our\s+values|our\s+purpose|people\s*&\s*talent|regulatory\s*&\s*business\s+conduct|other\s+responsibilities|recruitment\s+assessments?|equal\s+opportunit|diversity|inclusion|benefits?|福利|公司介绍|关于我们|招聘流程)\s*:?\s*$"
 )
 SECTION_HEADINGS = re.compile(
     r"(?im)^\s*(?P<h>role\s+summary|summary|about\s+the\s+role|the\s+role|responsibilit(?:y|ies)|what\s+you(?:'ll|\s+will)\s+do|your\s+responsibilit(?:y|ies)|key\s+accountabilit(?:y|ies)|requirements?|qualifications?|what\s+you(?:'ll|\s+will)\s+bring|skills?|experience|教育背景|任职要求|岗位职责|职位描述|工作职责)\s*:?[ \t]*$"
@@ -44,8 +44,10 @@ class JEVInput:
     evidence_level: str
     evidence_flags: tuple[str, ...]
     title_signals: dict[str, Any]
+    # Deprecated compatibility fields; v3.1 leaves them empty and never uses them as parser overrides.
     servedBusinessLineHint: str
     operatingContextHint: str
+    entity_signals: tuple[str, ...]
     original_characters: int
     core_characters: int
 
@@ -150,24 +152,26 @@ def title_signals(title: str, company: str) -> TitleSignals:
     return TitleSignals(market, normalized, tuple(dict.fromkeys(tags)), tuple(raw))
 
 
-def _context_hints(company: str, metadata: dict[str, Any] | None, text: str) -> tuple[str, str]:
-    blob = " ".join(str((metadata or {}).get(k) or "") for k in ("business", "jobFamily", "entity", "group")) + " " + str(company or "") + " " + text
-    low = blob.lower()
-    served = ""
-    if re.search(r"iwpb|wealth\s*(?:and|&)\s*premier|premier", low): served = "wealth_premier"
-    elif re.search(r"gts|gps|transaction\s*banking|payments|trade", low): served = "transaction_banking_payments_trade"
-    elif re.search(r"cto|group technology|enterprise technology|finance coo", low): served = "group_functions_enterprise"
-    elif re.search(r"hase|retail|consumer|branch|sub[- ]?branch|支行|网点", low): served = "personal_retail"
-    elif re.search(r"global markets|fx|rates|trading", low): served = "global_markets"
-    elif re.search(r"corporate|institutional|wholesale", low): served = "corporate_institutional"
-    operating = ""
-    if re.search(r"qianhai|securities|证券|investment banking joint venture", low): operating = "securities_or_ib_jv"
-    elif re.search(r"jintrust|asset management|investment management|基金", low): operating = "asset_management_or_wealth_entity"
-    elif re.search(r"life|insurance|人寿|保险", low): operating = "insurance_entity"
-    elif re.search(r"technology china|technology centre|technology center|gbs|global business services|solutions center|technology & operations", low): operating = "technology_development_centre"
-    elif re.search(r"shared service|operations centre|operations center", low): operating = "shared_service_centre"
-    elif re.search(r"sub[- ]?branch|支行|网点", low): operating = "onshore_bank_business_unit"
-    return served, operating
+def _entity_signals(company: str, metadata: dict[str, Any] | None, text: str) -> tuple[str, ...]:
+    """Extract only explicit entity/business evidence; never infer from generic benefits text."""
+    metadata = metadata or {}
+    signals: list[str] = []
+    labels = {"business", "jobfamily", "job family", "entity", "group", "department", "legal entity"}
+    for key, value in metadata.items():
+        if value and str(key).lower().replace("_", " ") in labels:
+            signals.append(f"{key}: {str(value).strip()[:240]}")
+    for line in text.splitlines():
+        clean = re.sub(r"\s+", " ", line).strip()
+        if re.match(r"(?i)^(business|job|job family|entity|legal entity|department|group|division)\s*:", clean):
+            signals.append(clean[:300])
+    blob = " ".join([str(company or ""), *[str(v or "") for v in metadata.values()], text])
+    exact_entities = (
+        r"HSBC\s+Life|HSBC\s+Qianhai|HSBC\s+Jintrust|HSBC\s+晋信|汇丰人寿|汇丰前海|汇丰晋信|MSIMC?|BlackRock|DBS\s+Technology|DBS\s+Banking|SC\s+GBS|Standard Chartered\s+GBS|Global Business Services|Global Business Solutions|Technology China|Technology Centre|Technology Center"
+    )
+    for match in re.finditer(exact_entities, blob, re.I):
+        signals.append(f"Entity mention: {match.group(0)}")
+    # Stable order and no repeated snippets.
+    return tuple(dict.fromkeys(signals))
 
 def preprocess(title: str, company: str, description: str, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
     raw = clean_text(description)
@@ -183,21 +187,21 @@ def preprocess(title: str, company: str, description: str, metadata: dict[str, A
         flags.append("template_placeholder_text")
     if detect_language(raw) == "bilingual":
         flags.append("bilingual_content")
-    if re.search(r"\b(contract(or)?|outsourc|派遣|外包|第三方)\b", raw, re.I):
+    if re.search(r"(?i)\b(engaged|employed|managed|provided)\s+(through|by)\s+(a\s+)?(vendor|outsourc|third[- ]party)|派遣员工|外包人员", combined_core):
         flags.append("vendor_or_outsourced_ambiguity")
     if re.search(r"\b(and|/|及|兼任)\b", title, re.I) and len(re.findall(r"\b(head|director|manager|lead|负责人|总监|经理)\b", title, re.I)) >= 2:
         flags.append("multiple_roles_in_one_jd")
     if len(sections["requirements"]) > max(1, len(sections["responsibilities"]) * 2):
         flags.append("requirements_dominate_over_responsibilities")
-    if re.search(r"medical and life insurance|equal opportunity|our values|what we offer", raw, re.I):
+    if re.search(r"(?im)^\s*(?:our values|what we offer|equal opportunity|medical and life insurance)\s*:?[ \t]*$", sections["responsibilities"]):
         flags.append("responsibilities_generic_or_template")
     evidence = "insufficient" if "insufficient_role_evidence" in flags else "thin" if "thin_role_evidence" in flags else "adequate"
-    served_hint, operating_hint = _context_hints(company, metadata, raw)
+    entity_signals = _entity_signals(company, metadata, raw)
     return asdict(JEVInput(
         role_summary=sections["role_summary"], responsibilities=sections["responsibilities"], requirements=sections["requirements"],
         employer_metadata="\n".join([str((metadata or {}).get(k) or "") for k in ("business", "jobFamily", "entity", "group") if (metadata or {}).get(k)]),
         language=detect_language(raw), evidence_level=evidence, evidence_flags=tuple(dict.fromkeys(flags)),
-        title_signals=asdict(title_signals(title, company)), servedBusinessLineHint=served_hint, operatingContextHint=operating_hint,
+        title_signals=asdict(title_signals(title, company)), servedBusinessLineHint="", operatingContextHint="", entity_signals=entity_signals,
         original_characters=len(raw), core_characters=len(combined_core),
     ))
 

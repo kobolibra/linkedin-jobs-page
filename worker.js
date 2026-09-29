@@ -13,7 +13,7 @@ const recentRequests = new Map();
 
 const DEFAULT_PROVIDER_URL = "https://api.typesafe.ai/v1/systemone";
 const DEFAULT_MODEL = "jev-1.13.0";
-const TAXONOMY_VERSION = "jev-taxonomy-v3.0";
+const TAXONOMY_VERSION = "jev-taxonomy-v3.1";
 
 const ROLE_FAMILIES = {
   CS: "Client & Commercial", IR: "Investment, Markets & Research", RC: "Risk, Compliance & Assurance",
@@ -21,51 +21,86 @@ const ROLE_FAMILIES = {
   CF: "Corporate & Finance",
 };
 const ROLE_ARCHETYPE_LABELS = {
-  CS1: "Relationship Management & Coverage", CS2: "Sales & Origination", CS3: "Product Sales & Advisory", CS4: "Customer Service & Acquisition", CS5: "Investment Banking Advisory", CS6: "Markets Sales & Distribution",
-  IR1: "Investment Research & Strategy", IR2: "Portfolio Management & Asset Allocation", IR3: "Credit Underwriting",
-  RC1: "Enterprise & Operational Risk", RC2: "Financial Crime, KYC & AML", RC3: "Compliance & Regulatory Affairs", RC4: "Internal Audit & Assurance",
-  OP1: "Operations, Settlement & Servicing", OP2: "Securities Services & Fund Administration", OP3: "Service Delivery & Processing",
-  PS1: "Product Management & Governance", PS2: "Business Analysis & Delivery", PS3: "Strategy & Transformation", PS4: "Technology Architecture & Delivery",
-  TE1: "Software Application Engineering", TE2: "Platform, Cloud & Reliability Engineering", TE3: "Cybersecurity", TE4: "Technology Architecture", TE5: "Data Engineering & Analytics", TE6: "AI, Quantitative & Advanced Analytics",
-  CF1: "Finance, Accounting & Treasury", CF2: "People & Human Resources", CF3: "Marketing & Communications", CF4: "Legal & Corporate Affairs", CF5: "Procurement & Vendor Management", CF6: "Corporate Services",
-  other_profession: "Other Clear Profession", insufficient_evidence: "Insufficient Evidence", not_applicable: "Not Applicable",
+  CS1_relationship_management: "Relationship Management & Coverage",
+  CS2_acquisition_direct_sales: "Acquisition & Direct Sales",
+  CS3_product_specialist_advisory: "Product Specialist & Advisory",
+  CS4_customer_service_frontline: "Customer Service & Frontline",
+  CS5_investment_banking_advisory: "Investment Banking Advisory",
+  CS6_markets_sales_trading: "Markets Sales & Trading",
+  IR1_investment_research: "Investment Research",
+  IR2_portfolio_management: "Portfolio Management",
+  RC1_credit_risk: "Credit Risk",
+  RC2_financial_crime: "Financial Crime",
+  RC3_compliance_legal: "Compliance & Legal",
+  RC4_enterprise_risk: "Enterprise Risk",
+  RC5_internal_audit: "Internal Audit",
+  OP1_banking_operations: "Banking Operations",
+  OP2_securities_fund_services: "Securities & Fund Services",
+  PS1_product_management: "Product Management",
+  PS2_business_analysis_change: "Business Analysis & Change",
+  PS3_strategy_business_management: "Strategy & Business Management",
+  PS4_experience_design_research: "Experience Design & Research",
+  TE1_software_engineering: "Software Engineering",
+  TE2_platform_infrastructure_sre: "Platform, Infrastructure & SRE",
+  TE3_architecture: "Technology Architecture",
+  TE4_cyber_security: "Cybersecurity",
+  TE5_data_engineering_analytics: "Data Engineering & Analytics",
+  TE6_ai_ml_quant: "AI, ML & Quantitative Analytics",
+  TE7_technology_management_delivery: "Technology Management & Delivery",
+  CF1_finance_accounting: "Finance & Accounting",
+  CF2_treasury_alm: "Treasury & ALM",
+  CF3_hr_people: "HR & People",
+  CF4_marketing_communications: "Marketing & Communications",
+  CF5_corporate_services: "Corporate Services",
+  CF6_actuarial_insurance_technical: "Actuarial & Insurance Technical",
+  other_profession: "Other Clear Profession",
+  insufficient_evidence: "Insufficient Evidence",
+  not_applicable: "Not Applicable"
 };
 const ROLE_ARCHETYPES = {
-  CS1: "Owns an ongoing client, account or relationship portfolio and its coverage outcomes. NOT pure acquisition without an owned book (CS2) or product specialist support without relationship ownership (CS3).",
-  CS2: "Acquires, originates or distributes business and revenue through sales or business development. NOT ongoing account coverage (CS1) or product advice without origination ownership (CS3).",
-  CS3: "Provides specialist product expertise, solution advice or product sales support. NOT product lifecycle ownership (PS1) or a relationship portfolio owner (CS1).",
-  CS4: "Performs frontline customer service, contact-centre, branch or customer acquisition work. NOT specialist relationship coverage or enterprise service operations.",
-  CS5: "Performs corporate finance, M&A, ECM, DCM, underwriting or investment-banking advisory. NOT generic strategy or markets trading.",
-  CS6: "Sells, distributes, structures or executes market products for market-facing clients. NOT portfolio management or investment research.",
-  IR1: "Produces investment, market, economic or sector research and recommendations. NOT execution-only trading or portfolio ownership.",
-  IR2: "Owns or makes portfolio, asset-allocation or investment mandate decisions. NOT research-only or product advisory.",
-  IR3: "Assesses borrowers, underwrites credit, monitors credit exposure or owns first-line credit decisions. NOT second-line enterprise risk.",
-  RC1: "Performs enterprise, operational, model or market risk management and control oversight. NOT transaction-level credit underwriting (IR3) or compliance advisory (RC3).",
-  RC2: "Performs KYC, CDD, AML, sanctions, fraud or financial-crime investigations and controls. NOT general regulatory compliance.",
-  RC3: "Performs regulatory compliance, policy, monitoring, advisory or regulatory affairs. NOT financial-crime investigation as the dominant output (RC2).",
-  RC4: "Performs independent internal audit, assurance testing or audit reporting. NOT first/second-line risk or compliance control ownership.",
-  OP1: "Performs transaction processing, settlement, clearing, middle-office or operational servicing. NOT independent audit or client relationship ownership.",
-  OP2: "Performs custody, fund accounting, transfer agency or securities-services administration. NOT generic transaction operations without securities-services specialization.",
-  OP3: "Owns service delivery, case handling, administrative processing or operational support outcomes. NOT frontline customer acquisition (CS4).",
-  PS1: "Owns product definition, roadmap, lifecycle, governance or product outcomes. NOT product sales/advisory without lifecycle ownership (CS3).",
-  PS2: "Performs business analysis, project, PMO, delivery or requirements work for a defined change or technology outcome. NOT hands-on software engineering as the dominant output.",
-  PS3: "Drives enterprise strategy, transformation, change or programme execution. NOT a single project coordinator without transformation mandate.",
-  PS4: "Owns technical solution design, architecture or technology delivery governance. NOT hands-on application/platform engineering as the dominant output.",
-  TE1: "Builds, tests, deploys and maintains business applications or software systems. NOT platform operations, data-specialist or architecture governance as the dominant output.",
-  TE2: "Builds or operates cloud, infrastructure, SRE, platform or production reliability capabilities. NOT application feature engineering alone.",
-  TE3: "Owns cybersecurity engineering, security operations, architecture, threat or security assurance. NOT generic technology risk or compliance.",
-  TE4: "Owns technical architecture, standards and cross-system design. NOT delivery coordination without technical design ownership.",
-  TE5: "Performs data engineering, data platforms, BI or production analytics. NOT advanced AI/quantitative modelling as the dominant output (TE6).",
-  TE6: "Performs AI/ML, quantitative modelling, statistical science or advanced analytics as a primary output. NOT ordinary reporting or data engineering alone.",
-  CF1: "Performs accounting, financial control, treasury, tax, FP&A or actuarial-finance work.",
-  CF2: "Performs HR, recruitment, talent, reward or people operations work.",
-  CF3: "Performs marketing, communications, brand, content or customer communications work.",
-  CF4: "Performs legal, company secretarial, corporate affairs or legal advisory work.",
-  CF5: "Performs procurement, sourcing, vendor management or third-party commercial governance.",
-  CF6: "Performs corporate services outside the controlled professional families, such as workplace, administration or facilities services.",
-  other_profession: "A clear profession outside this controlled taxonomy. Do not use when evidence is merely thin.",
+  CS1_relationship_management: "Owns and develops a named client, account or relationship portfolio, including relationship managers, coverage bankers, private or premier relationship roles and portfolio-support roles. NOT acquisition-only, product-specialist support or customer service without portfolio ownership.",
+  CS2_acquisition_direct_sales: "Acquires new clients or revenue through direct sales, business development, channel or partnership development, tele-sales or distribution leadership without owning an established portfolio. NOT ongoing relationship coverage.",
+  CS3_product_specialist_advisory: "Provides specialist product expertise, product advice or product-led sales alongside relationship owners, such as transaction banking, wealth-product or investment specialists. NOT product lifecycle ownership.",
+  CS4_customer_service_frontline: "Provides on-demand customer, branch, contact-centre, complaint or frontline service without substantive sales or portfolio ownership. NOT acquisition, relationship coverage or back-office processing.",
+  CS5_investment_banking_advisory: "Delivers M&A, ECM, DCM, syndicated lending, structured finance or corporate-finance advisory and execution. NOT generic strategy or markets trading.",
+  CS6_markets_sales_trading: "Works on a Global Markets desk in sales, trading, structuring, execution or desk analysis for market products. NOT corporate-finance lending origination.",
+  IR1_investment_research: "Produces investment, market, economic or sector research, strategy, stewardship or proxy-voting recommendations. NOT portfolio ownership.",
+  IR2_portfolio_management: "Owns or makes portfolio, fund, FOF, discretionary mandate or asset-allocation investment decisions. NOT research-only or product advisory.",
+  RC1_credit_risk: "Performs borrower credit analysis, approval, underwriting, monitoring, restructuring, collections or credit portfolio risk. NOT enterprise operational risk.",
+  RC2_financial_crime: "Performs KYC, CDD, AML, sanctions, fraud, transaction monitoring, investigations or financial-crime controls, including second-line financial-crime work. NOT general compliance.",
+  RC3_compliance_legal: "Performs regulatory compliance advice, monitoring, regulatory affairs, legal or company-secretarial work. NOT financial-crime investigation or independent internal audit.",
+  RC4_enterprise_risk: "Performs enterprise, operational, resilience, model or non-financial risk management, control testing or assurance in the first or second line. NOT independent third-line internal audit.",
+  RC5_internal_audit: "Performs independent third-line internal audit, assurance testing, audit reporting or audit issue follow-up. NOT first- or second-line control ownership.",
+  OP1_banking_operations: "Performs banking operations such as payments, trade, lending, branch operations, transaction processing, settlement coordination or operational servicing. NOT securities/fund administration.",
+  OP2_securities_fund_services: "Performs custody, fund accounting, transfer agency or securities-services administration. NOT generic banking operations.",
+  PS1_product_management: "Owns digital, payments, wealth or other product definition, roadmap, lifecycle, governance and product outcomes. NOT product sales/advisory.",
+  PS2_business_analysis_change: "Performs business analysis, requirements, business-side change, project or delivery work for a defined outcome. NOT hands-on software engineering.",
+  PS3_strategy_business_management: "Drives enterprise strategy, transformation, COO-office, business management, PMO or programme execution, including technology COO-office roles. NOT a single delivery workstream only.",
+  PS4_experience_design_research: "Performs UX/UI, service design, user research or experience design as the principal work product. NOT product ownership alone.",
+  TE1_software_engineering: "Builds, tests, deploys and maintains applications or software systems, including hands-on technical leads and senior developers. NOT architecture governance or platform operations as the dominant output.",
+  TE2_platform_infrastructure_sre: "Builds or operates cloud, infrastructure, host, mainframe, middleware, DevOps, SRE, observability or production reliability platforms. NOT application feature engineering or AI/ML product work.",
+  TE3_architecture: "Owns enterprise, solution or technical architecture, standards and cross-system design governance without hands-on delivery as the dominant output. NOT a hands-on developer.",
+  TE4_cyber_security: "Owns cybersecurity engineering, security operations, cyber architecture, threat, identity or security assurance. NOT generic technology risk or compliance.",
+  TE5_data_engineering_analytics: "Builds data platforms, data pipelines, BI, reporting or production analytics. NOT advanced AI/ML or quantitative modelling as the dominant output.",
+  TE6_ai_ml_quant: "Performs AI/ML, GenAI, LLM/agent engineering, quantitative modelling, statistical science or advanced analytics as the primary output. NOT ordinary BI or infrastructure operations.",
+  TE7_technology_management_delivery: "Leads technology engineering teams, technical domains, delivery portfolios, IT service management, major-incident management or technology programme delivery. NOT a technical individual contributor whose main output is code or architecture.",
+  CF1_finance_accounting: "Performs accounting, financial control, regulatory reporting, product control, FP&A, tax or finance operations, including insurance-finance reporting. NOT treasury/ALM or actuarial modelling.",
+  CF2_treasury_alm: "Owns treasury, asset-liability management, capital, liquidity, funding, FTP or balance-sheet management. NOT ordinary financial control.",
+  CF3_hr_people: "Performs HR, recruitment, talent, reward, learning and development or people operations work.",
+  CF4_marketing_communications: "Performs marketing, brand, communications, content or customer communications work.",
+  CF5_corporate_services: "Performs procurement, sourcing, vendor management, administration, workplace, facilities, corporate real estate or other corporate-services work.",
+  CF6_actuarial_insurance_technical: "Performs actuarial pricing, valuation, reserving, capital or IFRS 17 modelling, or insurance underwriting, claims or reinsurance technical work. NOT insurance finance reporting alone.",
+  other_profession: "A clear profession outside the controlled taxonomy. Do not use when evidence is merely thin.",
   insufficient_evidence: "Core responsibilities are too thin, generic or contradictory to classify.",
-  not_applicable: "Not a substantive single job posting or evidence is not applicable.",
+  not_applicable: "Not a substantive single job posting or evidence is not applicable."
+};
+var ARCHETYPE_FAMILY = Object.fromEntries(Object.keys(ROLE_ARCHETYPES).map(key => [key, key.match(/^(CS|IR|RC|OP|PS|TE|CF)/)?.[1] || null]));
+var ARCHETYPE_PRIMARY_ACTIVITY = {
+  CS1_relationship_management: "client_relationships", CS2_acquisition_direct_sales: "sales_origination", CS3_product_specialist_advisory: "product_advisory", CS4_customer_service_frontline: "client_relationships", CS5_investment_banking_advisory: "research_analysis", CS6_markets_sales_trading: "trading_execution",
+  IR1_investment_research: "research_analysis", IR2_portfolio_management: "investment_decisions", RC1_credit_risk: "risk_control", RC2_financial_crime: "compliance_governance", RC3_compliance_legal: "compliance_governance", RC4_enterprise_risk: "risk_control", RC5_internal_audit: "control_assurance",
+  OP1_banking_operations: "operations_processing", OP2_securities_fund_services: "operations_processing", PS1_product_management: "product_ownership", PS2_business_analysis_change: "change_delivery", PS3_strategy_business_management: "strategy_transformation", PS4_experience_design_research: "experience_design",
+  TE1_software_engineering: "technology_build", TE2_platform_infrastructure_sre: "technology_build", TE3_architecture: "technology_architecture", TE4_cyber_security: "security_protection", TE5_data_engineering_analytics: "data_analytics", TE6_ai_ml_quant: "data_analytics", TE7_technology_management_delivery: "delivery_management",
+  CF1_finance_accounting: "finance_control", CF2_treasury_alm: "finance_control", CF3_hr_people: "people_leadership", CF4_marketing_communications: "other_unknown", CF5_corporate_services: "corporate_services", CF6_actuarial_insurance_technical: "actuarial_technical"
 };
 function deriveTitleSignals(title, company) {
   const t = String(title || "").trim();
@@ -88,9 +123,10 @@ function deriveTitleSignals(title, company) {
   else if (/\b(analyst|associate|consultant|specialist|officer|executive)\b|分析师|专员|主任/i.test(low)) market = "professional";
   return { market, normalized: tags.includes("role_name_not_level") ? "unknown" : market, tags: [...new Set(tags)], markers: [] };
 }
-function roleFamilyOf(value) { return String(value || "").match(/^(CS|IR|RC|OP|PS|TE|CF)/)?.[1] || null; }
-const LEGACY_ARCHETYPE_MAP = { client_relationship_coverage: "CS1", direct_sales_origination: "CS2", product_sales_advisory: "CS3", customer_service_frontline: "CS4", investment_research_strategy: "IR1", portfolio_management: "IR2", markets_sales_trading: "CS6", investment_banking_advisory: "CS5", credit_underwriting: "IR3", financial_crime_kyc_aml: "RC2", compliance_regulatory: "RC3", enterprise_risk: "RC1", internal_audit: "RC4", operations_settlement_servicing: "OP1", securities_services_fund_admin: "OP2", product_management_governance: "PS1", software_application_engineering: "TE1", platform_cloud_reliability_engineering: "TE2", cybersecurity: "TE3", technology_architecture: "TE4", data_ai_quantitative_analytics: "TE5", business_analysis_delivery: "PS2", strategy_transformation: "PS3", finance_accounting_treasury_control: "CF1", people_marketing_corporate_services: "CF6" };
-
+function roleFamilyOf(value) { return ARCHETYPE_FAMILY[value] || String(value || "").match(/^(CS|IR|RC|OP|PS|TE|CF)/)?.[1] || null; }
+const LEGACY_ARCHETYPE_MAP = {
+  client_relationship_coverage: "CS1_relationship_management", direct_sales_origination: "CS2_acquisition_direct_sales", product_sales_advisory: "CS3_product_specialist_advisory", customer_service_frontline: "CS4_customer_service_frontline", investment_banking_advisory: "CS5_investment_banking_advisory", markets_sales_trading: "CS6_markets_sales_trading", investment_research_strategy: "IR1_investment_research", portfolio_management: "IR2_portfolio_management", credit_underwriting: "RC1_credit_risk", enterprise_risk: "RC4_enterprise_risk", financial_crime_kyc_aml: "RC2_financial_crime", compliance_regulatory: "RC3_compliance_legal", internal_audit: "RC5_internal_audit", operations_settlement_servicing: "OP1_banking_operations", securities_services_fund_admin: "OP2_securities_fund_services", product_management_governance: "PS1_product_management", business_analysis_delivery: "PS2_business_analysis_change", strategy_transformation: "PS3_strategy_business_management", software_application_engineering: "TE1_software_engineering", platform_cloud_reliability_engineering: "TE2_platform_infrastructure_sre", technology_architecture_delivery: "TE3_architecture", technology_architecture: "TE3_architecture", cybersecurity: "TE4_cyber_security", data_ai_quantitative_analytics: "TE6_ai_ml_quant", finance_accounting_treasury_control: "CF1_finance_accounting", people_marketing_corporate_services: "CF5_corporate_services", CS1: "CS1_relationship_management", CS2: "CS2_acquisition_direct_sales", CS3: "CS3_product_specialist_advisory", CS4: "CS4_customer_service_frontline", CS5: "CS5_investment_banking_advisory", CS6: "CS6_markets_sales_trading", IR1: "IR1_investment_research", IR2: "IR2_portfolio_management", IR3: "RC1_credit_risk", RC1: "RC4_enterprise_risk", RC2: "RC2_financial_crime", RC3: "RC3_compliance_legal", RC4: "RC5_internal_audit", OP1: "OP1_banking_operations", OP2: "OP2_securities_fund_services", OP3: "OP1_banking_operations", PS1: "PS1_product_management", PS2: "PS2_business_analysis_change", PS3: "PS3_strategy_business_management", PS4: "TE3_architecture", TE1: "TE1_software_engineering", TE2: "TE2_platform_infrastructure_sre", TE3: "TE4_cyber_security", TE4: "TE3_architecture", TE5: "TE5_data_engineering_analytics", TE6: "TE6_ai_ml_quant", CF1: "CF1_finance_accounting", CF2: "CF3_hr_people", CF3: "CF4_marketing_communications", CF4: "RC3_compliance_legal", CF5: "CF5_corporate_services", CF6: "CF5_corporate_services"
+};
 
 const ACTIVITIES = {
   experience_design: "Performs user research, service design or experience design.",
@@ -114,9 +150,10 @@ const SENIORITY_ALIGNMENT = { aligned: "Title level and JD responsibility are ma
 
 const ROLE_LEVELS = { entry: "Intern, graduate, trainee, assistant or entry-level role.", professional: "Analyst, associate, consultant or established professional role.", senior_individual_contributor: "Senior or experienced individual contributor without clear people-management responsibility.", manager_or_lead: "Manager, senior manager, lead, principal or team lead.", director_or_head: "Director, head of a function or equivalent senior leader.", executive: "C-suite, country head, business head, managing director or executive leader.", unknown: "The role level cannot be determined." };
 const BUSINESS_DOMAINS = { other_unknown: "Retained compatibility field; the six-field card uses served business line and operating context." };
-const SERVED_BUSINESS_LINES = { personal_retail: "Personal or retail banking.", wealth_premier: "Premier or retail wealth.", private_banking: "Private banking.", commercial_business: "Commercial banking.", corporate_institutional: "Corporate or institutional banking.", transaction_banking_payments_trade: "Transaction banking, payments or trade.", securities_services: "Securities services and fund administration.", global_markets: "Global markets.", investment_banking_advisory: "Investment banking and advisory.", asset_management_funds: "Asset management and funds.", insurance: "Insurance.", group_functions_enterprise: "Group or enterprise functions.", multi_line: "Multiple explicitly served business lines.", multi_line_unspecified: "Multiple lines or not specified.", not_stated: "Not stated." };
+const SERVED_BUSINESS_LINES = { personal_retail: "Personal or retail banking.", wealth_premier: "Premier or retail wealth.", private_banking: "Private banking.", commercial_business: "Commercial banking.", corporate_institutional: "Corporate or institutional banking.", transaction_banking_payments_trade: "Transaction banking, payments or trade.", securities_services: "Securities services and fund administration.", global_markets: "Global markets.", investment_banking_advisory: "Investment banking and advisory.", asset_management_funds: "Asset management and funds.", insurance: "Insurance.", group_functions_enterprise: "Group or enterprise functions.", multi_line: "Multiple explicitly served business lines.", not_stated: "Not stated." };
 const OPERATING_CONTEXTS = { onshore_bank_business_unit: "Onshore bank business unit.", shared_service_centre: "Shared service or operations centre.", technology_development_centre: "Technology development centre.", securities_or_ib_jv: "Securities or investment-banking joint venture.", asset_management_or_wealth_entity: "Asset-management or wealth entity.", insurance_entity: "Insurance entity.", consumer_finance_or_other: "Consumer finance or other entity.", not_stated: "Not stated." };
 const RISK_CODES = { none: "No material structural risk.", title_scope_mismatch: "Title and actual responsibilities materially differ.", seniority_ambiguity: "Seniority signals are ambiguous or inconsistent.", responsibility_ambiguity: "Mandate, ownership boundary or outcomes are unclear.", leadership_ambiguity: "IC, team-lead and people-management signals conflict.", function_context_mismatch: "Title, function and business context point to different role types.", contradictory_scope: "Narrow execution and broad ownership are combined without explanation.", title_inflation_by_convention: "Employer title convention overstates market level.", multiple_roles_in_one_jd: "Multiple distinct roles or locations are combined.", range_level_posting: "Title covers a hiring range rather than one level.", bilingual_content_conflict: "Bilingual versions contain different role evidence.", vendor_or_outsourced_ambiguity: "Employment or accountability boundary appears outsourced.", location_or_entity_ambiguity: "Location, legal entity or operating context is ambiguous.", requirements_dominate_over_responsibilities: "Requirements dominate while role responsibilities are thin.", template_placeholder_text: "The JD contains unresolved placeholders.", machine_translation_or_encoding_issues: "Likely translation or encoding defects.", responsibilities_generic_or_template: "Responsibilities are dominated by generic/template language." };
+const STRUCTURAL_RISK_CODES = Object.fromEntries(Object.entries(RISK_CODES).filter(([key]) => !["template_placeholder_text", "responsibilities_generic_or_template", "requirements_dominate_over_responsibilities", "machine_translation_or_encoding_issues", "requirements_dominate_over_responsibilities"].includes(key)));
 const RISK_SEVERITIES = { low: "Limited structural concern.", medium: "Material concern for comparison.", high: "Significant concern likely to mislead.", unknown: "Severity cannot be determined." };
 const MANDATE_SCOPES = { individual_delivery: "Primarily owns individual delivery.", workstream_or_project: "Owns a defined workstream, project, book of work or specialist area.", team_or_function: "Owns a team, function or major programme mandate.", business_unit_or_region: "Owns a business unit, country, region or material commercial mandate.", enterprise: "Owns an enterprise-wide or group-level mandate.", unknown: "Insufficient evidence." };
 const DECISION_AUTHORITIES = { execution: "Executes defined work without explicit decision ownership.", recommendation: "Provides recommendations, analysis or advice without final authority.", approval: "Has explicit approval, authorization or sign-off authority.", ownership: "Owns a business outcome, mandate or material decision domain.", unknown: "Insufficient evidence." };
@@ -286,9 +323,8 @@ export function buildProviderRequest(input, env) {
     workMix_designResearch: noul(stateEvidence("Is design, user research or experience design a substantive output?", "Do not infer from product or technology work alone.")),
     ...Object.fromEntries(Object.keys(BUSINESS_PRODUCTS).filter(k => k !== "none").map(k => [`product_${k}`, noul(evidence(`Is \`${k}\` a repeated object of this role's decisions, sales, advice, analysis, operations or ownership?`, "No for employer industry, incidental mention or skills list."))])),
     ...Object.fromEntries(Object.keys(TECHNOLOGY_PLATFORMS).filter(k => k !== "none").map(k => [`platform_${k}`, noul(evidence(`Is \`${k}\` materially owned, engineered, operated or delivered by this role?`, "No for a programming language, tool, certification or incidental technology mention."))])),
-    riskFlag1: choice("What is the most important material structural risk in the JD? Choose none unless a human reviewer could be materially misled.", RISK_CODES),
-    riskFlag2: choice("What is the second distinct material structural risk? Choose none unless distinct and material.", RISK_CODES),
-    riskFlag3: choice("What is the third distinct material structural risk? Choose none unless distinct and material.", RISK_CODES),
+    riskFlag1: choice("What is the most important material structural risk in the JD? Choose none unless a human reviewer could be materially misled.", STRUCTURAL_RISK_CODES),
+    riskFlag2: choice("What is the second distinct material structural risk? Choose none unless distinct and material.", STRUCTURAL_RISK_CODES),
     riskSeverity1: choice("How severe is risk 1?", RISK_SEVERITIES), riskSeverity2: choice("How severe is risk 2?", RISK_SEVERITIES), riskSeverity3: choice("How severe is risk 3?", RISK_SEVERITIES),
   };
   if (providerUrl.includes("router.requesty.ai")) {
@@ -299,7 +335,7 @@ export function buildProviderRequest(input, env) {
     } };
   }
   return { url: providerUrl, model, payload: {
-    state: { jobId: input.jobId, title: input.title, company: input.company, location: input.location, description: input.description, ...(input.jevInput || {}) },
+    state: { jobId: input.jobId, title: input.title, company: input.company, location: input.location, ...(input.jevInput && Object.keys(input.jevInput).length ? (({ servedBusinessLineHint, operatingContextHint, ...structured }) => structured)(input.jevInput) : { description: input.description }) },
     model,
     questions: questionMap,
   } };
@@ -322,10 +358,10 @@ export function parseProviderResponse(providerResponse, input = {}) {
     const answer = raw?.[key];
     if (!answer) return root?.[key] ?? fallback;
     if (answer.type === "choice") return answer.choice ?? answer.value ?? fallback;
-    if (answer.type === "noul") return answer.value >= 0.5 ? "yes" : "no";
+    if (answer.type === "noul") { const score = typeof answer.noul === "number" ? answer.noul : answer.value; return typeof score === "number" ? (score >= 0.5 ? "yes" : "no") : fallback; }
     return answer.value ?? fallback;
   };
-  const answerScore = key => { const answer = raw?.[key]; if (typeof answer?.value === "number") return answer.value; if (typeof answer?.confidence === "number" && (answer?.choice === "yes" || answer?.value === "yes")) return answer.confidence; return answerValue(key, "no") === "yes" ? 1 : 0; };
+  const answerScore = key => { const answer = raw?.[key]; if (typeof answer?.noul === "number") return answer.noul; if (typeof answer?.value === "number") return answer.value; if (typeof answer?.confidence === "number" && (answer?.choice === "yes" || answer?.value === "yes")) return answer.confidence; return answerValue(key, "no") === "yes" ? 1 : 0; };
   const answerMeta = key => {
     const answer = raw?.[key];
     const confidence = typeof answer?.confidence === "number" ? answer.confidence : null;
@@ -341,7 +377,7 @@ export function parseProviderResponse(providerResponse, input = {}) {
     .filter(value => value !== "none" && Object.prototype.hasOwnProperty.call(map, value) && !excluded.includes(value));
   const evidenceFlags = Array.isArray(input.jevInput?.evidence_flags) ? input.jevInput.evidence_flags : [];
   const legacyRisk = answerValue("riskFlag", root.riskFlags || root.riskFlag || "none");
-  const roleRisks = distinctChoices(["riskFlag1", "riskFlag2", "riskFlag3"], RISK_CODES)
+  const roleRisks = distinctChoices(["riskFlag1", "riskFlag2"], STRUCTURAL_RISK_CODES)
     .filter(code => code !== "template_placeholder_text" || evidenceFlags.includes("template_placeholder_text"));
   if (!roleRisks.length && typeof legacyRisk === "string" && legacyRisk !== "none" && Object.prototype.hasOwnProperty.call(RISK_CODES, legacyRisk)) roleRisks.push(legacyRisk);
   const severityCap = { template_placeholder_text: "medium", responsibilities_generic_or_template: "medium", requirements_dominate_over_responsibilities: "medium", machine_translation_or_encoding_issues: "medium" };
@@ -352,29 +388,35 @@ export function parseProviderResponse(providerResponse, input = {}) {
     const severity = cap && severityRank[requested] > severityRank[cap] ? cap : requested;
     return { code, severity };
   });
+  const qualityRiskCodes = ["template_placeholder_text", "responsibilities_generic_or_template", "requirements_dominate_over_responsibilities", "machine_translation_or_encoding_issues"];
+  for (const code of qualityRiskCodes) if (evidenceFlags.includes(code) && !riskFlags.some(item => item.code === code)) riskFlags.push({ code, severity: "medium" });
   const postingType = answerValue("postingType", root.postingType || "specific_role");
   const archetypeRaw = answerValue("roleArchetype", root.roleArchetype || "insufficient_evidence");
   const normalizedArchetype = LEGACY_ARCHETYPE_MAP[archetypeRaw] || archetypeRaw;
-  const roleArchetype = postingType === "not_a_job_posting" ? "not_applicable" : (Object.prototype.hasOwnProperty.call(ROLE_ARCHETYPES, normalizedArchetype) ? normalizedArchetype : "insufficient_evidence");
+  const evidenceInsufficient = input.jevInput?.evidence_level === "insufficient";
+  const roleArchetype = postingType === "not_a_job_posting" ? "not_applicable" : (evidenceInsufficient ? "insufficient_evidence" : (Object.prototype.hasOwnProperty.call(ROLE_ARCHETYPES, normalizedArchetype) ? normalizedArchetype : "insufficient_evidence"));
   const mixKeys = { clientFacing: "client_relationships", revenueAccountability: "sales_origination", technicalDelivery: "technology_build", analysis: "research_analysis", controlAssurance: "risk_control", operationsProcessing: "operations_processing", changeDelivery: "strategy_transformation", productOwnership: "product_ownership", peopleLeadership: "people_leadership", designResearch: "experience_design" };
   const mixScores = Object.fromEntries(Object.entries(mixKeys).map(([key]) => [key, answerScore(`workMix_${key}`)]));
   const rankedMix = Object.entries(mixScores).filter(([,score]) => score >= 0.5).sort((a,b) => b[1]-a[1]);
-  const primaryActivity = rankedMix[0]?.[0] ? mixKeys[rankedMix[0][0]] : (root.primaryActivity || "other_unknown");
+  const peopleEvidence = answerScore("hasExplicitPeopleManagement") >= 0.5;
+  const archetypeActivity = ARCHETYPE_PRIMARY_ACTIVITY[roleArchetype] || "other_unknown";
+  const primaryActivity = answerScore("workMix_peopleLeadership") >= 0.8 && peopleEvidence ? "people_leadership" : (archetypeActivity !== "other_unknown" ? archetypeActivity : (rankedMix[0]?.[0] ? mixKeys[rankedMix[0][0]] : (root.primaryActivity || "other_unknown")));
   const secondaryActivities = rankedMix.slice(1).filter(([,score]) => score >= 0.65).slice(0, 2).map(([key]) => mixKeys[key]);
   const legacyBusinessDomain = answerValue("businessDomain", root.businessDomain || root.businessDomains?.[0] || "other_unknown");
-  const servedBusinessLine = input.jevInput?.servedBusinessLineHint || answerValue("servedBusinessLine", root.servedBusinessLine || "not_stated");
-  const operatingContext = input.jevInput?.operatingContextHint || answerValue("operatingContext", root.operatingContext || "not_stated");
-  const businessProducts = Object.keys(BUSINESS_PRODUCTS).filter(k => k !== "none").map(k => [k, answerScore(`product_${k}`)]).filter(([,score]) => score >= 0.65).sort((a,b) => b[1]-a[1]).slice(0,3).map(([k]) => k);
-  const technologyPlatforms = Object.keys(TECHNOLOGY_PLATFORMS).filter(k => k !== "none").map(k => [k, answerScore(`platform_${k}`)]).filter(([,score]) => score >= 0.65).sort((a,b) => b[1]-a[1]).map(([k]) => k);
+  const servedBusinessLine = postingType === "not_a_job_posting" ? "not_applicable" : answerValue("servedBusinessLine", root.servedBusinessLine || "not_stated");
+  const operatingContext = postingType === "not_a_job_posting" ? "not_applicable" : answerValue("operatingContext", root.operatingContext || "not_stated");
+  const businessProductThreshold = ["TE", "CF"].includes(roleFamilyOf(roleArchetype)) ? 0.8 : 0.65;
+  const platformThreshold = ["TE", "PS"].includes(roleFamilyOf(roleArchetype)) ? 0.65 : 0.8;
+  const businessProducts = Object.keys(BUSINESS_PRODUCTS).filter(k => k !== "none").map(k => [k, answerScore(`product_${k}`)]).filter(([,score]) => score >= businessProductThreshold).sort((a,b) => b[1]-a[1]).slice(0,3).map(([k]) => k);
+  const technologyPlatforms = Object.keys(TECHNOLOGY_PLATFORMS).filter(k => k !== "none").map(k => [k, answerScore(`platform_${k}`)]).filter(([,score]) => score >= platformThreshold).sort((a,b) => b[1]-a[1]).map(([k]) => k);
   const productOrPlatformContext = [...businessProducts, ...technologyPlatforms];
   const titleSignals = input.title ? deriveTitleSignals(input.title, input.company) : (root.titleSignals || { market: "unknown", normalized: "unknown", tags: [], markers: [] });
   const titleLevelSignal = allowed(titleSignals.normalized || titleSignals.market || "unknown", TITLE_LEVELS, "unknown");
   const rawRoleLevel = answerValue("roleLevel", root.mandate?.roleLevel || root.roleLevel || answerValue("seniorityBand", root.seniorityBand || "unknown"));
   const roleLevel = allowed(rawRoleLevel === "unknown" && titleLevelSignal !== "unknown" ? titleLevelSignal : rawRoleLevel, ROLE_LEVELS, "unknown");
   const modelLeadership = answerValue("leadershipLevel", root.leadershipLevel || "not_stated");
-  const peopleEvidence = answerScore("hasExplicitPeopleManagement") >= 0.5;
   const teamEvidence = answerScore("hasExplicitTeamLeadership") >= 0.5;
-  let leadershipLevel = modelLeadership === "informal_influencer" ? "informal_mentor_or_lead" : modelLeadership === "functional_leader" ? "manager_of_managers" : modelLeadership === "unknown" ? "not_stated" : modelLeadership;
+  let leadershipLevel = postingType === "not_a_job_posting" ? "not_applicable" : modelLeadership === "informal_influencer" ? "informal_mentor_or_lead" : modelLeadership === "functional_leader" ? "manager_of_managers" : modelLeadership === "unknown" ? "not_stated" : modelLeadership;
   if ((leadershipLevel === "people_manager" || leadershipLevel === "manager_of_managers") && !peopleEvidence) leadershipLevel = teamEvidence ? "team_lead" : "individual_contributor";
   if (leadershipLevel === "not_stated" && input.jevInput?.evidence_level !== "thin" && input.jevInput?.evidence_level !== "insufficient") leadershipLevel = teamEvidence ? "team_lead" : "individual_contributor";
   if (leadershipLevel === "individual_contributor" && teamEvidence) leadershipLevel = "team_lead";
@@ -384,7 +426,7 @@ export function parseProviderResponse(providerResponse, input = {}) {
   const candidates = Object.fromEntries(Object.entries(confidence).filter(([, meta]) => meta.candidates?.length).map(([key, meta]) => [key, meta.candidates]));
   const workMix = Object.fromEntries(["clientFacing", "revenueAccountability", "technicalDelivery", "analysis", "controlAssurance", "changeDelivery", "peopleLeadership", "designResearch"].map(key => [key, answerValue(`workMix_${key}`, "unknown")]));
   return {
-    schemaVersion: 4,
+    schemaVersion: 5,
     taxonomyVersion: TAXONOMY_VERSION,
     postingType,
     roleArchetype: allowed(roleArchetype, ROLE_ARCHETYPES, "insufficient_evidence"),
@@ -392,7 +434,7 @@ export function parseProviderResponse(providerResponse, input = {}) {
     roleFamilyLabel: ROLE_FAMILIES[roleFamilyOf(roleArchetype)] || "",
     roleArchetypeLabel: ROLE_ARCHETYPE_LABELS[roleArchetype] || ROLE_ARCHETYPE_LABELS.insufficient_evidence,
     workProfile: { primaryActivity: allowed(primaryActivity, ACTIVITIES, "other_unknown"), secondaryActivities, workMix },
-    businessContext: { businessDomain: "other_unknown", servedBusinessLine: allowed(servedBusinessLine, { ...SERVED_BUSINESS_LINES, multi_line: "Multiple business lines.", not_stated: "Not stated." }, "not_stated"), operatingContext: allowed(operatingContext, OPERATING_CONTEXTS, "not_stated"), businessProducts, technologyPlatforms, productOrPlatformContext },
+    businessContext: { businessDomain: "other_unknown", servedBusinessLine: allowed(servedBusinessLine, { ...SERVED_BUSINESS_LINES, multi_line: "Multiple business lines.", not_stated: "Not stated.", not_applicable: "Not applicable." }, "not_stated"), operatingContext: allowed(operatingContext, { ...OPERATING_CONTEXTS, not_applicable: "Not applicable." }, "not_stated"), businessProducts, technologyPlatforms, productOrPlatformContext },
     mandate: {
       roleLevel: allowed(roleLevel, ROLE_LEVELS, "unknown"),
       titleLevelSignal,
@@ -401,7 +443,7 @@ export function parseProviderResponse(providerResponse, input = {}) {
       mandateScope: allowed(answerValue("mandateScope", root.mandateScope || root.responsibilityLevel || "unknown"), MANDATE_SCOPES, "unknown"),
       decisionAuthority: allowed(answerValue("decisionAuthority", root.decisionAuthority || "not_stated"), { ...DECISION_AUTHORITIES, not_stated: "Not stated." }, "not_stated"),
     },
-    leadershipLevel: allowed(leadershipLevel, { ...LEADERSHIP_LEVELS, not_stated: "Not stated." }, "not_stated"),
+    leadershipLevel: allowed(leadershipLevel, { ...LEADERSHIP_LEVELS, not_stated: "Not stated.", not_applicable: "Not applicable." }, "not_stated"),
     roleRisk: { riskFlags },
     // Compatibility aliases for older cached clients.
     function: answerValue("function", root.function || "unknown"),
@@ -473,7 +515,7 @@ async function handleJev(request, env) {
     const status = error.message === "description_required" ? 422 : 400;
     return jsonResponse(status, { error: error.message || "invalid_request" });
   }
-  try { return jsonResponse(200, { schemaVersion: 4, analysis: await callProvider(input, env) }); }
+  try { return jsonResponse(200, { schemaVersion: 5, analysis: await callProvider(input, env) }); }
   catch (error) { return jsonResponse(error.status || 502, { error: error.message || "analysis_failed" }); }
 }
 
