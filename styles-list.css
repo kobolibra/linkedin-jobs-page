@@ -169,6 +169,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .jev-error { color:#9e303d; }
 .jev-retry { margin-top:7px;padding:4px 9px;border:1px solid var(--line-strong);border-radius:5px;background:var(--surface);color:var(--ink);font:10.5px var(--sans);cursor:pointer; }
 .jev-retry:hover { border-color:var(--gold);background:var(--surface-2); }
+.job-jd-analytics[hidden] { display:none !important; }
 .job-jd-analytics { display:inline-flex;align-items:center;margin-left:8px;padding:2px 6px;border:1px solid var(--line-strong);border-radius:4px;color:var(--ink-faint);font:700 9px var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;vertical-align:middle; }
 .job-jd-analytics:hover,.job-jd-analytics:focus-visible { color:var(--ink);border-color:var(--gold);outline:none; }
 .job-jd-analytics.is-loading { color:var(--gold);cursor:wait; }
