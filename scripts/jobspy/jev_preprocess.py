@@ -1,208 +1,160 @@
 #!/usr/bin/env python3
-"""Deterministic, conservative JD preprocessing for JEV v3.1.
-
-This module intentionally removes only high-confidence boilerplate and keeps the
-original text available for audit. It produces structured evidence; it does not
-classify the job.
+"""JEV v4.1 deterministic JD preprocessing.
+The preprocessor removes high-confidence boilerplate without assuming section headings.
 """
 from __future__ import annotations
+import html, re
+from collections import Counter, defaultdict
+from pathlib import Path
+from typing import Any, Iterable
 
-import html
-import re
-from dataclasses import asdict, dataclass
-from typing import Any
-
-BOILERPLATE_HEADINGS = re.compile(
-    r"(?im)^\s*(?:about\s+(?:us|the\s+company|standard\s+chartered|hsbc)|what\s+we\s+offer|what\s+we\s+offer\s+you|our\s+values|our\s+purpose|people\s*&\s*talent|regulatory\s*&\s*business\s+conduct|other\s+responsibilities|recruitment\s+assessments?|equal\s+opportunit|diversity|inclusion|benefits?|福利|公司介绍|关于我们|招聘流程)\s*:?\s*$"
-)
-SECTION_HEADINGS = re.compile(
-    r"(?im)^\s*(?P<h>role\s+summary|summary|about\s+the\s+role|the\s+role|responsibilit(?:y|ies)|what\s+you(?:'ll|\s+will)\s+do|your\s+responsibilit(?:y|ies)|key\s+accountabilit(?:y|ies)|requirements?|qualifications?|what\s+you(?:'ll|\s+will)\s+bring|skills?|experience|教育背景|任职要求|岗位职责|职位描述|工作职责)\s*:?[ \t]*$"
-)
-FOOTER_MARKERS = re.compile(
-    r"(?is)\b(?:equal\s+opportunity|reasonable\s+accommodation|privacy\s+notice|recruitment\s+assessments?|medical\s+and\s+life\s+insurance|flexible\s+working\s+options|visit\s+our\s+careers|we\s+are\s+an\s+equal)\b.*$"
-)
-PLACEHOLDER_RE = re.compile(
-    r"(?:\[(?:tbd|todo|insert|placeholder|location|company|date|title|name|xxx)[^\]]*\]"
-    r"|\{(?:tbd|todo|insert|placeholder|location|company|date|title|name|xxx)[^}]*\})",
-    re.IGNORECASE,
-)
-
-@dataclass(frozen=True)
-class TitleSignals:
-    title_level_market: str = "unknown"
-    title_level_employer_normalized: str = "unknown"
-    convention_tags: tuple[str, ...] = ()
-    raw_markers: tuple[str, ...] = ()
-
-@dataclass(frozen=True)
-class JEVInput:
-    role_summary: str
-    responsibilities: str
-    requirements: str
-    employer_metadata: str
-    language: str
-    evidence_level: str
-    evidence_flags: tuple[str, ...]
-    title_signals: dict[str, Any]
-    # Deprecated compatibility fields; v3.1 leaves them empty and never uses them as parser overrides.
-    servedBusinessLineHint: str
-    operatingContextHint: str
-    entity_signals: tuple[str, ...]
-    original_characters: int
-    core_characters: int
+SCHEMA = "jev-input-v4"
+_CJK = re.compile(r"[\u3400-\u9fff]")
+_INLINE_ENUM = re.compile(r"(?=(?:^|\s)(?:\(?\d{1,2}[.)]|[①②③④⑤⑥⑦⑧⑨⑩])\s+)")
+_TAIL = re.compile(r"^(about us|what we offer|job family group|benefits|equal opportunity|privacy notice|recruitment assessments?)\b", re.I)
+_RESUME = re.compile(r"^(about the team|the role|responsibilities|key responsibilities|what you(?:'ll| will) do|工作职责|岗位职责)\b", re.I)
+_STATIC = re.compile(r"equal opportunit(y|ies)|affirmative action|reasonable accommodation|pay transparency|privacy (statement|notice|policy)|^some careers have more impact|^if you.?re looking for a career|^about standard chartered|^what we offer|^recruitment assessments|^job family group|^other responsibilities assigned under group|^embed here for good|^medical and life insurance|^flexible working options|^people & talent|^regulatory & business conduct|平等机会雇主|多元共融|隐私声明", re.I)
+_META = re.compile(r"^(job family group|job family|business|division|department|entity|legal entity|group|time type|location)\s*:\s*(.{1,160})$", re.I)
+_DUTY_HEADING = re.compile(r"^(role summary|summary|about the role|the role|responsibilit(?:y|ies)|what you(?:'ll| will) do|your responsibilit(?:y|ies)|key accountabilit(?:y|ies)|岗位职责|工作职责|职位描述)\s*:?[ \t]*$", re.I)
+_REQ_HEADING = re.compile(r"^(requirements?|qualifications?|what you(?:'ll| will) bring|skills?|experience|任职要求|教育背景)\s*:?[ \t]*$", re.I)
+_REQ_CUE = re.compile(r"\b(require|requirements?|qualification|qualifications?|experience|skills?|preferred|must have|degree|knowledge)\b|任职|要求|经验|技能|学历", re.I)
+_DUTY_VERB = re.compile(r"^(own|lead|manage|build|develop|deliver|drive|provide|perform|execute|review|analyse|analyze|support|coordinate|partner|design|operate|monitor|assess|advise|负责|管理|建立|开发|交付|推动|提供|执行|审核|分析|支持|协调|设计|运营|监控|评估|开展)", re.I)
+_LINE_CUE = re.compile(r"\b(business|division|department|team|banking|technology|risk|finance|marketing|operations|wealth|markets|insurance|group)\b|业务|部门|团队|科技|风险|金融|运营", re.I)
 
 
-def clean_text(value: str) -> str:
-    value = html.unescape(value or "")
-    value = re.sub(r"<[^>]+>", "\n", value)
-    value = value.replace("\u00a0", " ").replace("\u200b", "")
-    value = re.sub(r"[ \t]+", " ", value)
-    value = re.sub(r"\n{3,}", "\n\n", value)
-    return value.strip()
+def html_to_blocks(source: str) -> list[str]:
+    s = str(source or "")
+    s = re.sub(r"<li\b[^>]*>", "\n- ", s, flags=re.I)
+    s = re.sub(r"</?(?:p|div|li|ul|ol|h[1-6]|tr|br)\b[^>]*>", "\n", s, flags=re.I)
+    s = re.sub(r"<[^>]+>", " ", s)
+    s = html.unescape(s).replace("\xa0", " ").replace("\u200b", "")
+    blocks: list[str] = []
+    for line in s.splitlines():
+        line = re.sub(r"\s+", " ", line).strip()
+        if not line:
+            continue
+        pieces = [p.strip() for p in _INLINE_ENUM.split(line) if p.strip()]
+        blocks.extend(pieces or [line])
+    return blocks
+
+
+def signature(block: str) -> str:
+    return re.sub(r"[^a-z0-9\u3400-\u9fff]", "", block.lower())[:240]
+
+
+def build_boilerplate_table(jobs: Iterable[tuple[str, str]], min_share: float = .15, min_count: int = 12) -> dict[str, Any]:
+    grouped: dict[str, list[list[str]]] = defaultdict(list)
+    for company, source in jobs:
+        grouped[str(company or "Unknown")].append(html_to_blocks(source))
+    result: dict[str, Any] = {}
+    for company, docs in grouped.items():
+        counts = Counter(signature(block) for doc in docs for block in doc if len(block) >= 30)
+        threshold = max(min_count, int(len(docs) * min_share + .999))
+        signatures = {sig: count for sig, count in counts.items() if count >= threshold}
+        samples = {}
+        for doc in docs:
+            for block in doc:
+                sig = signature(block)
+                if sig in signatures and sig not in samples:
+                    samples[sig] = block[:160]
+        result[company] = {"total": len(docs), "signatures": signatures, "samples": samples}
+    return result
+
+
+def _looks_like_heading(block: str) -> bool:
+    return len(block) <= 60 and (block.endswith(":") or not re.search(r"[.!?。！？]$", block))
+
+
+def clean_blocks(blocks: list[str], company_sigs: dict[str, Any] | None = None) -> tuple[list[str], dict[str, str], dict[str, int]]:
+    company_sigs = company_sigs or {}
+    signatures = set(company_sigs.get("signatures", company_sigs if isinstance(company_sigs, dict) else {}))
+    total = sum(len(x) for x in blocks) or 1
+    chars = 0
+    tail = False
+    seen: set[str] = set()
+    kept: list[str] = []
+    metadata: dict[str, str] = {}
+    removed = {"static": 0, "frequency": 0, "tail": 0, "duplicate": 0}
+    for block in blocks:
+        b = re.sub(r"\s+", " ", block).strip()
+        meta = _META.match(b)
+        if meta:
+            metadata[meta.group(1).lower()] = meta.group(2).strip()
+            continue
+        if chars >= total * .4 and len(b) <= 120 and _TAIL.search(b):
+            tail = True
+        if _RESUME.search(b):
+            tail = False
+        if tail:
+            removed["tail"] += len(b); continue
+        if _STATIC.search(b):
+            removed["static"] += len(b); continue
+        sig = signature(b)
+        if len(b) >= 30 and sig in signatures and not _looks_like_heading(b) and not (len(b) <= 600 and _LINE_CUE.search(b)):
+            removed["frequency"] += len(b); continue
+        if len(b) >= 30 and sig in seen:
+            removed["duplicate"] += len(b); continue
+        if len(sig) >= 30:
+            seen.add(sig)
+        kept.append(b); chars += len(b)
+    return kept, metadata, removed
 
 
 def detect_language(text: str) -> str:
-    zh = len(re.findall(r"[\u3400-\u9fff]", text))
-    latin = len(re.findall(r"[A-Za-z]", text))
-    if zh and latin and zh >= 80 and latin >= 80:
-        return "bilingual"
-    if zh >= max(40, latin * 1.5):
-        return "zh"
-    return "en_or_mixed"
+    zh = len(_CJK.findall(text)); latin = len(re.findall(r"[A-Za-z]", text))
+    if zh and latin and zh >= 80 and latin >= 80: return "mixed"
+    if zh >= max(40, latin * 1.5): return "zh"
+    return "en"
 
 
-def _dedupe_lines(text: str) -> str:
-    lines = [re.sub(r"\s+", " ", x).strip() for x in text.splitlines()]
-    out: list[str] = []
-    seen: set[str] = set()
-    for line in lines:
-        if not line:
+def evidence(blocks: list[str], text: str) -> tuple[str, list[str], dict[str, int]]:
+    duty = requirements = 0; mode = "duty"
+    for block in blocks:
+        b = block.strip(); cjk = len(_CJK.findall(b)); words = len(re.findall(r"[A-Za-z]+", b))
+        if len(b) <= 8 or (cjk < 8 and words < 6):
+            if _REQ_HEADING.match(b): mode = "requirement"
+            elif _DUTY_HEADING.match(b): mode = "duty"
             continue
-        key = re.sub(r"[^a-z0-9\u3400-\u9fff]", "", line.lower())
-        if len(key) >= 45 and key in seen:
-            continue
-        if len(key) >= 45:
-            seen.add(key)
-        out.append(line)
-    return "\n".join(out)
-
-
-def split_sections(text: str) -> dict[str, str]:
-    lines = text.splitlines()
-    sections = {"role_summary": [], "responsibilities": [], "requirements": [], "employer_metadata": []}
-    current = "role_summary"
-    for line in lines:
-        stripped = line.strip()
-        if not stripped:
-            continue
-        if BOILERPLATE_HEADINGS.match(stripped):
-            current = "employer_metadata"
-            continue
-        m = SECTION_HEADINGS.match(stripped)
-        if m:
-            h = m.group("h").lower()
-            current = "requirements" if any(x in h for x in ("require", "qualification", "skill", "experience", "任职", "教育")) else "responsibilities" if any(x in h for x in ("respons", "account", "what you", "岗位职责", "工作职责")) else "role_summary"
-            continue
-        if current == "employer_metadata" and FOOTER_MARKERS.search(stripped):
-            continue
-        sections[current].append(stripped)
-    # Conservative fallback: if headings are absent, keep the text as core rather than guessing.
-    if not any(sections["responsibilities"]):
-        sections["responsibilities"] = sections["role_summary"][:]
-    return {k: _dedupe_lines("\n".join(v)) for k, v in sections.items()}
-
-
-def title_signals(title: str, company: str) -> TitleSignals:
-    t = (title or "").strip()
-    low = t.lower()
-    tags: list[str] = []
-    raw: list[str] = []
-    if re.search(r"\b(associate\s+director|director\s*/\s*vp|associate\s*/\s*vp|vp\s*/\s*director)\b", low):
-        tags.append("range_title"); raw.append("range")
-    if re.search(r"\b(product\s+owner|scrum\s+master)\b", low):
-        tags.append("role_name_not_level")
-    if re.search(r"\b(fellow|distinguished\s+engineer|staff\s+engineer|principal\s+engineer)\b", low):
-        tags.append("technical_ladder")
-    if re.search(r"\b(relationship|business\s+development|sales|premier|wealth\s+manager)\b", low):
-        tags.append("client_facing_title")
-    if re.search(r"\b(consultant\s+specialist|senior\s+consultant\s+specialist)\b", low):
-        tags.append("opaque_generic_title")
-    c = (company or "").lower()
-    if "hsbc" in c and re.search(r"\b(associate\s+director|director)\b", low) and any(x in low for x in ("software", "engineering", "technology", "data")):
-        tags.append("employer_band_convention")
-    if "hsbc" in c and "premier relationship director" in low:
-        return TitleSignals("director_or_head", "professional", tuple(dict.fromkeys(tags + ["client_facing_title"])), tuple(raw))
-    if "standard chartered" in c and "business development executive" in low:
-        return TitleSignals("executive", "professional", tuple(dict.fromkeys(tags + ["client_facing_title"])), tuple(raw))
-    if re.search(r"\b(intern|graduate|trainee|assistant)\b|实习|管培", low):
-        market = "entry"
-    elif re.search(r"\b(chief|cso|cto|cfo|ceo|country head|business head|managing director)\b|董事总经理|首席|国家负责人", low):
-        market = "executive"
-    elif re.search(r"\b(director|head|executive director|ed)\b|总监|董事", low):
-        market = "director_or_head"
-    elif re.search(r"\b(vp|svp|avp|vice president|associate director)\b|副总裁", low):
-        market = "manager_or_lead"
-    elif re.search(r"\b(manager|lead|principal|staff|senior)\b|经理|主管|高级", low):
-        market = "manager_or_lead" if re.search(r"\b(manager|lead)\b|经理|主管", low) else "senior_individual_contributor"
-    elif re.search(r"\b(analyst|associate|consultant|specialist|officer|executive)\b|分析师|专员|主任", low):
-        market = "professional"
-    else:
-        market = "unknown"
-    normalized = "unknown" if "role_name_not_level" in tags else market
-    return TitleSignals(market, normalized, tuple(dict.fromkeys(tags)), tuple(raw))
-
-
-def _entity_signals(company: str, metadata: dict[str, Any] | None, text: str) -> tuple[str, ...]:
-    """Extract only explicit entity/business evidence; never infer from generic benefits text."""
-    metadata = metadata or {}
-    signals: list[str] = []
-    labels = {"business", "jobfamily", "job family", "entity", "group", "department", "legal entity"}
-    for key, value in metadata.items():
-        if value and str(key).lower().replace("_", " ") in labels:
-            signals.append(f"{key}: {str(value).strip()[:240]}")
-    for line in text.splitlines():
-        clean = re.sub(r"\s+", " ", line).strip()
-        if re.match(r"(?i)^(business|job|job family|entity|legal entity|department|group|division)\s*:", clean):
-            signals.append(clean[:300])
-    blob = " ".join([str(company or ""), *[str(v or "") for v in metadata.values()], text])
-    exact_entities = (
-        r"HSBC\s+Life|HSBC\s+Qianhai|HSBC\s+Jintrust|HSBC\s+晋信|汇丰人寿|汇丰前海|汇丰晋信|MSIMC?|BlackRock|DBS\s+Technology|DBS\s+Banking|SC\s+GBS|Standard Chartered\s+GBS|Global Business Services|Global Business Solutions|Technology China|Technology Centre|Technology Center"
-    )
-    for match in re.finditer(exact_entities, blob, re.I):
-        signals.append(f"Entity mention: {match.group(0)}")
-    # Stable order and no repeated snippets.
-    return tuple(dict.fromkeys(signals))
-
-def preprocess(title: str, company: str, description: str, metadata: dict[str, Any] | None = None) -> dict[str, Any]:
-    raw = clean_text(description)
-    sections = split_sections(raw)
-    combined_core = "\n\n".join(x for x in (sections["role_summary"], sections["responsibilities"]) if x)
-    combined_core = PLACEHOLDER_RE.sub(" ", combined_core)
+        if _REQ_HEADING.match(b): mode = "requirement"; continue
+        if _DUTY_HEADING.match(b): mode = "duty"; continue
+        sentences = [x for x in re.split(r"[.!?。！？]+", b) if len(re.findall(r"[A-Za-z]+", x)) >= 5 or len(_CJK.findall(x)) >= 8]
+        if mode == "requirement":
+            if _DUTY_VERB.match(b): duty += max(1, min(4, len(sentences) or 1))
+            else: requirements += 1
+        else:
+            duty += max(1, min(4, len(sentences) or 1))
     flags: list[str] = []
-    if len(combined_core) < 300:
-        flags.append("insufficient_role_evidence")
-    elif len(combined_core) < 800:
-        flags.append("thin_role_evidence")
-    if PLACEHOLDER_RE.search(raw):
-        flags.append("template_placeholder_text")
-    if detect_language(raw) == "bilingual":
-        flags.append("bilingual_content")
-    if re.search(r"(?i)\b(engaged|employed|managed|provided)\s+(through|by)\s+(a\s+)?(vendor|outsourc|third[- ]party)|派遣员工|外包人员", combined_core):
-        flags.append("vendor_or_outsourced_ambiguity")
-    if re.search(r"\b(and|/|及|兼任)\b", title, re.I) and len(re.findall(r"\b(head|director|manager|lead|负责人|总监|经理)\b", title, re.I)) >= 2:
-        flags.append("multiple_roles_in_one_jd")
-    if len(sections["requirements"]) > max(1, len(sections["responsibilities"]) * 2):
-        flags.append("requirements_dominate_over_responsibilities")
-    if re.search(r"(?im)^\s*(?:our values|what we offer|equal opportunity|medical and life insurance)\s*:?[ \t]*$", sections["responsibilities"]):
-        flags.append("responsibilities_generic_or_template")
-    evidence = "insufficient" if "insufficient_role_evidence" in flags else "thin" if "thin_role_evidence" in flags else "adequate"
-    entity_signals = _entity_signals(company, metadata, raw)
-    return asdict(JEVInput(
-        role_summary=sections["role_summary"], responsibilities=sections["responsibilities"], requirements=sections["requirements"],
-        employer_metadata="\n".join([str((metadata or {}).get(k) or "") for k in ("business", "jobFamily", "entity", "group") if (metadata or {}).get(k)]),
-        language=detect_language(raw), evidence_level=evidence, evidence_flags=tuple(dict.fromkeys(flags)),
-        title_signals=asdict(title_signals(title, company)), servedBusinessLineHint="", operatingContextHint="", entity_signals=entity_signals,
-        original_characters=len(raw), core_characters=len(combined_core),
-    ))
+    if requirements > max(1, duty * 2): flags.append("requirements_dominate_over_responsibilities")
+    if len(text) > 24000: flags.append("truncated")
+    if detect_language(text) == "mixed": flags.append("bilingual_content")
+    level = "insufficient" if duty <= 1 or (len(_CJK.findall(text)) < 80 and len(text) < 150) else "thin" if duty <= 3 else "adequate" if duty <= 8 else "rich"
+    return level, flags, {"duty_blocks": duty, "requirement_blocks": requirements}
 
-__all__ = ["preprocess", "title_signals", "clean_text"]
+
+def preprocess(title: str, company: str, source: str, metadata: dict[str, Any] | None = None, boilerplate: dict[str, Any] | None = None) -> dict[str, Any]:
+    raw = html_to_blocks(source)
+    company_sigs = (boilerplate or {}).get(str(company or ""), {})
+    kept, extracted, removed = clean_blocks(raw, company_sigs)
+    jd_text = "\n".join(kept)[:24000]
+    level, flags, stats = evidence(kept, jd_text)
+    if len(jd_text) < 40: level = "insufficient"
+    if len(jd_text) < 300 and "insufficient_role_evidence" not in flags: flags.append("insufficient_role_evidence")
+    metadata = metadata or {}
+    employer = {**extracted}
+    for key in ("business", "jobFamily", "entity", "group"):
+        if metadata.get(key): employer[key] = str(metadata[key])[:160]
+    out_stats = {"chars_in": len("\n".join(raw)), "chars_out": len(jd_text), "blocks_in": len(raw), "blocks_out": len(kept), "removed_chars": removed, **stats}
+    return {"schema": SCHEMA, "jd_text": jd_text, "language": detect_language(jd_text), "evidence_level": level, "evidence_flags": sorted(set(flags)), "employer_metadata": "\n".join(f"{k}: {v}" for k,v in employer.items()), "stats": out_stats}
+
+
+def self_test() -> None:
+    docs = [("Acme", "<p>Common employer marketing phrase repeated across postings.</p><h3>Key Responsibilities</h3><p>Build data services.</p>") for _ in range(40)]
+    table = build_boilerplate_table(docs)
+    out = preprocess("Data Engineer", "Acme", docs[0][1], boilerplate=table)
+    assert out["schema"] == SCHEMA and "Key Responsibilities" in out["jd_text"] and "Build data services" in out["jd_text"]
+    assert out["stats"]["blocks_in"] >= out["stats"]["blocks_out"]
+    print("jev_preprocess_v4_self_test_ok")
+
+
+if __name__ == "__main__": self_test()
+__all__ = ["SCHEMA", "preprocess", "build_boilerplate_table", "html_to_blocks", "signature", "clean_blocks", "detect_language", "evidence", "self_test"]

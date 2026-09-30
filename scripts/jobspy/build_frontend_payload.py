@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
-from jev_preprocess import preprocess
+from jev_preprocess import build_boilerplate_table, preprocess
 
 
 def job_id(link: object) -> str:
@@ -15,11 +15,16 @@ def job_id(link: object) -> str:
     return f"ln:{value}" if value else ""
 
 
-def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
+def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Path | None = None) -> tuple[int, int]:
     doc = json.loads(source.read_text(encoding="utf-8"))
     rows = doc if isinstance(doc, list) else doc.get("jobs", [])
     index_rows = []
     details = {}
+    source_pairs = [(str(job.get("company") or "Unknown"), str(job.get("descriptionText") or job.get("description") or job.get("descriptionHtml") or "")) for job in rows if isinstance(job, dict)]
+    boilerplate = build_boilerplate_table(source_pairs)
+    if boilerplate_out:
+        boilerplate_out.parent.mkdir(parents=True, exist_ok=True)
+        boilerplate_out.write_text(json.dumps({"schemaVersion": "1.0", "source": "jobs.json", "jevSchema": "jev-input-v4", "employers": boilerplate}, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     index_fields = (
         "title", "company", "link", "location", "locationRaw", "city",
         "jobStatus", "pushTime", "firstSeen", "expiredAt", "salary",
@@ -48,6 +53,7 @@ def build(source: Path, index_out: Path, details_out: Path) -> tuple[int, int]:
                     str(job.get("company") or ""),
                     text,
                     {k: job.get(k) for k in ("business", "jobFamily", "entity", "group") if job.get(k)},
+                    boilerplate=boilerplate,
                 ),
             }
             if str(job.get("jdDiffHtml") or "").strip():
@@ -83,7 +89,7 @@ def self_test() -> None:
         assert index_doc["jobs"][0]["hasJd"] is True
         assert "descriptionHtml" not in index_doc["jobs"][0]
         assert detail_doc["details"]["ln:123456"]["descriptionHtml"] == "<p>JD</p>"
-        assert detail_doc["details"]["ln:123456"]["jevInput"]["evidence_level"] == "insufficient"
+        assert detail_doc["details"]["ln:123456"]["jevInput"]["schema"] == "jev-input-v4"
         slug = "https://hk.linkedin.com/jobs/view/title-210740045-at-company-4468639951"
         assert job_id(slug) == "ln:4468639951"
 
@@ -93,13 +99,14 @@ def main() -> None:
     parser.add_argument("--source", type=Path, default=Path("jobs.json"))
     parser.add_argument("--index", type=Path, default=Path("jobs-index.json"))
     parser.add_argument("--details", type=Path, default=Path("jobs-details.json"))
+    parser.add_argument("--boilerplate", type=Path, default=Path("data/jev-boilerplate.json"))
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
         self_test()
         print("frontend_payload_test_ok")
         return
-    count, detail_count = build(args.source, args.index, args.details)
+    count, detail_count = build(args.source, args.index, args.details, args.boilerplate)
     print("frontend_index_jobs", count, "frontend_details", detail_count,
           "index_bytes", args.index.stat().st_size, "details_bytes", args.details.stat().st_size)
 

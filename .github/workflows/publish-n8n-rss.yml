@@ -28,7 +28,9 @@ jobs:
         run: python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
       - name: Validate merger
         run: |
-          python -m py_compile scripts/jobspy/merge_n8n_incremental.py scripts/jobspy/compact_published_jobs.py scripts/jobspy/build_frontend_payload.py scripts/jobspy/track_jd_changes.py
+          python -m py_compile scripts/jobspy/*.py
+          python scripts/jobspy/jev_preprocess.py
+          python scripts/jobspy/build_frontend_payload.py --self-test
           PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py
       - name: Merge and publish canonical jobs
         shell: bash
@@ -61,8 +63,8 @@ jobs:
               --output /tmp/jobs.merged.json
             mv /tmp/jobs.merged.json jobs.json
             python scripts/jobspy/compact_published_jobs.py
-            python scripts/jobspy/build_frontend_payload.py
-            git add jobs.json jobs-index.json jobs-details.json
+            python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
+            git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json
             if git diff --cached --quiet; then
               echo "No canonical job changes"
               exit 0
