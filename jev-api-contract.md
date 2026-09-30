@@ -1,4 +1,4 @@
-# JEV Analysis API Contract — v4.2
+# JEV Analysis API Contract — v4.3
 
 ## Runtime
 
@@ -35,7 +35,10 @@ The Worker sends one compact state object `{title, company, location, employer_m
 
 Business Line uses mutually distinguishable client/product boundaries. `corporate_banking` is for large-company or multinational corporate clients; `institutional_banking` is for financial institutions or public-sector institutions; `commercial_sme` is for SME or mid-market clients; `transaction_banking` wins only when payments, cash management, liquidity, trade finance, working capital or treasury products dominate the JD. The old combined `corporate_and_institutional_banking` code is no longer accepted.
 
-The response has `schemaVersion: 6`, `taxonomyVersion: "jev-taxonomy-v4.2"`, and an `analysis` object containing exactly five visible dimensions: **Role Archetype**, **Primary Activity**, **Business Line**, **Leadership Level**, and **Role Risk**. Internal `postingType`, title signals, evidence, nouls and usage are metadata rather than additional card dimensions. Every dimension carries bounded confidence/state/candidate metadata; leadership also carries explicit people/team evidence.
+
+Primary Activity is defined by the dominant recurring work product, not by title keywords. v4.3 separates relationship coverage from new-business sales, research from portfolio management, credit approval from broader risk, compliance monitoring from policy/legal advice, banking transaction operations from securities/fund operations, and data engineering from BI and quantitative/data-science modelling.
+
+The response has `schemaVersion: 6`, `taxonomyVersion: "jev-taxonomy-v4.3"`, and an `analysis` object containing exactly five visible dimensions: **Role Archetype**, **Primary Activity**, **Business Line**, **Leadership Level**, and **Role Risk**. Internal `postingType`, title signals, evidence, nouls and usage are metadata rather than additional card dimensions. Every dimension carries bounded confidence/state/candidate metadata; leadership also carries explicit people/team evidence.
 
 Non-job postings neutralise all dimensions. Insufficient evidence never becomes a confident profession guess. Primary Activity is a model judgement; archetype defaults are only a low-confidence fallback. Leadership is gated by explicit people/team evidence, not by Head/Director titles.
 
@@ -43,7 +46,7 @@ Non-job postings neutralise all dimensions. Insufficient evidence never becomes 
 
 - `400` invalid JSON/request; `422` missing or too-short description; `403` non-site origin; `405` wrong method; `413` request too large; `429` rate limit; `503` missing/invalid Worker secret; `502` provider error; `504` provider timeout.
 - Errors are rendered in the panel with a visible retry button and are never written to localStorage.
-- Successful cache entries use `linkedin-jev-analysis-v4.2`, are keyed by job ID plus SHA-256 JD fingerprint, and are written only after successful rendering.
+- Successful cache entries use `linkedin-jev-analysis-v4.3`, are keyed by job ID plus SHA-256 JD fingerprint, and are written only after successful rendering.
 
 ## Data pipeline
 
