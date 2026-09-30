@@ -160,6 +160,7 @@ function jevErrorMessage(status,body){
   if(status===422)return "The job description is too short or empty to analyse.";
   if(status===429)return `Too many analysis requests (maximum 12 per minute). Please retry in ${retry} seconds.`;
   if(status===403)return "The analysis service rejected this origin. Please retry from the site domain.";
+  if(status===402||body?.error==="provider_credits_required")return "JEV analysis is unavailable because the TypeSafe account has no available API credits.";
   if(status===503)return "The analysis service is unavailable or misconfigured.";
   if(status===529||body?.error==="provider_overloaded")return "The model service is busy. Please try again shortly.";
   if(status===504||body?.error==="provider_timeout")return "Analysis timed out. Please retry.";
