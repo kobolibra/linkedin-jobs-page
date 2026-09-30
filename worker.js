@@ -11,7 +11,7 @@ const RATE_WINDOW_MS = 60_000;
 const RATE_LIMIT = 12;
 const recentRequests = new Map();
 const DEFAULT_PROVIDER_URL = "https://api.typesafe.ai/v1/systemone";
-const DEFAULT_MODEL = "jev-1.13.0";
+const DEFAULT_MODEL = "jev-latest";
 const TAXONOMY_VERSION = "jev-taxonomy-v4.1";
 const SCHEMA_VERSION = 6;
 
