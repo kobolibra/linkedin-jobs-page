@@ -146,7 +146,7 @@ function renderJevResult(container,result,analyzedAt){
   const a=r.roleArchetype;
   const archetypeText=[a.familyLabel,a.label,a.specialisationLabel].filter(Boolean).join(" · ")||jevText(a.code);
   const risk=r.roleRisk;
-  const riskSection=r.flags.length?`<section class="jev-risks"><h4>Role Risk</h4>${r.flags.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}${typeof item.probability==="number"?` · ${Math.round(item.probability*100)}%`:""}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}</article>`).join("")}</section>`:"";
+  const riskSection=risk.flags.length?`<section class="jev-risks"><h4>Role Risk</h4>${risk.flags.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}${typeof item.probability==="number"?` · ${Math.round(item.probability*100)}%`:""}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}</article>`).join("")}</section>`:"";
   container.innerHTML=`<dl class="jev-fields">${row("Role Archetype",a,archetypeText)}${row("Primary Activity",r.primaryActivity,r.primaryActivity.label||jevText(r.primaryActivity.value))}${row("Business Line",r.businessLine,r.businessLine.label||jevText(r.businessLine.value))}${row("Leadership Level",r.leadershipLevel,r.leadershipLevel.label||jevText(r.leadershipLevel.value))}</dl>${riskSection}`;
   container.hidden=false;
 }
