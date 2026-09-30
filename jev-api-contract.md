@@ -28,7 +28,7 @@ The browser calls the same-origin Cloudflare Worker endpoint `POST /api/jev/anal
 
 ## Provider request
 
-The Worker sends one compact state object `{title, company, location, employer_metadata, jd_text}` to TypeSafe `https://api.typesafe.ai/v1/systemone` using model `jev-1.13.0`. It asks exactly 18 independent questions: five choices for posting/archetype/activity/business line/leadership, two nouls for people/team evidence, four nouls for structural risk signals, and seven family specialisation choices. No question cites another answer and no provider-side arithmetic or date comparison is requested.
+The Worker sends one compact state object `{title, company, location, employer_metadata, jd_text}` to TypeSafe `https://api.typesafe.ai/v1/systemone` using model `jev-latest`. It asks exactly 18 independent questions: five choices for posting/archetype/activity/business line/leadership, two nouls for people/team evidence, four nouls for structural risk signals, and seven family specialisation choices. No question cites another answer and no provider-side arithmetic or date comparison is requested.
 
 ## Output
 
