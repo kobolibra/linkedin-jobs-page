@@ -117,53 +117,102 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v3.1";
-const JEV_TAXONOMY_VERSION="jev-taxonomy-v3.1";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v4.1";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v4.1";
+const JEV_CACHE_MAX_ENTRIES=400;
 // The browser deliberately never receives the JEV secret. A same-origin proxy
-// should implement this endpoint and keep the provider credential server-side.
+// (worker.js) signs the provider request and returns the five-dimension card.
 const JEV_API_ENDPOINT="/api/jev/analyze";
-const jevFunctionLabels={client_relationships:"Client Relationships",sales_origination:"Sales & Origination",research_analysis:"Research & Analysis",investment_decisions:"Investment Decisions",trading_execution:"Trading & Execution",product_advisory:"Product Advisory",product_ownership:"Product Ownership",technology_build:"Technology Build",technology_architecture:"Technology Architecture",security_protection:"Security & Protection",data_analytics:"Data & Analytics",operations_processing:"Operations & Processing",risk_control:"Risk & Control",control_assurance:"Control & Assurance",compliance_governance:"Compliance & Governance",strategy_transformation:"Strategy & Transformation",change_delivery:"Change & Delivery",delivery_management:"Delivery Management",finance_control:"Finance Control",actuarial_technical:"Actuarial & Insurance Technical",corporate_services:"Corporate Services",people_leadership:"People Leadership",experience_design:"Experience Design",other_unknown:"Not materially specified"};
-const jevRoleFamilies={CS:"Client & Commercial",IR:"Investment, Markets & Research",RC:"Risk, Compliance & Assurance",OP:"Operations & Service",PS:"Product, Strategy & Transformation",TE:"Technology & Engineering",CF:"Corporate & Finance"};
-const jevArchetypeLabels={CS1_relationship_management:"Relationship Management & Coverage",CS2_acquisition_direct_sales:"Acquisition & Direct Sales",CS3_product_specialist_advisory:"Product Specialist & Advisory",CS4_customer_service_frontline:"Customer Service & Frontline",CS5_investment_banking_advisory:"Investment Banking Advisory",CS6_markets_sales_trading:"Markets Sales & Trading",IR1_investment_research:"Investment Research",IR2_portfolio_management:"Portfolio Management",RC1_credit_risk:"Credit Risk",RC2_financial_crime:"Financial Crime",RC3_compliance_legal:"Compliance & Legal",RC4_enterprise_risk:"Enterprise Risk",RC5_internal_audit:"Internal Audit",OP1_banking_operations:"Banking Operations",OP2_securities_fund_services:"Securities & Fund Services",PS1_product_management:"Product Management",PS2_business_analysis_change:"Business Analysis & Change",PS3_strategy_business_management:"Strategy & Business Management",PS4_experience_design_research:"Experience Design & Research",TE1_software_engineering:"Software Engineering",TE2_platform_infrastructure_sre:"Platform, Infrastructure & SRE",TE3_architecture:"Technology Architecture",TE4_cyber_security:"Cybersecurity",TE5_data_engineering_analytics:"Data Engineering & Analytics",TE6_ai_ml_quant:"AI, ML & Quantitative Analytics",TE7_technology_management_delivery:"Technology Management & Delivery",CF1_finance_accounting:"Finance & Accounting",CF2_treasury_alm:"Treasury & ALM",CF3_hr_people:"HR & People",CF4_marketing_communications:"Marketing & Communications",CF5_corporate_services:"Corporate Services",CF6_actuarial_insurance_technical:"Actuarial & Insurance Technical"};
-const jevValueLabel=value=>({yes:"Yes",no:"No",unknown:"Unknown",not_stated:"Not stated",not_applicable:"Not applicable",clear:"Clear",partial:"Partial",absent:"Not stated",low:"Low",medium:"Medium",high:"High",aligned:"Aligned",title_higher_than_scope:"Title higher than JD scope",title_lower_than_scope:"JD scope higher than title",ambiguous:"Ambiguous",employer_title_convention:"Employer title convention",low_confidence:"Low confidence",conflicting:"Conflicting evidence",template_placeholder_text:"Unresolved placeholder text",responsibilities_generic_or_template:"Generic/template responsibilities",requirements_dominate_over_responsibilities:"Requirements outweigh role evidence",machine_translation_or_encoding_issues:"Possible translation or encoding issue",thin_role_evidence:"Limited role evidence",insufficient_role_evidence:"Insufficient role evidence",bilingual_content:"Bilingual content"}[String(value||"").toLowerCase()]||String(value||"Unknown"));
-const jevList=value=>Array.isArray(value)?value.filter(Boolean):value?[value]:[];
 function readJevCache(){try{const value=JSON.parse(localStorage.getItem(JEV_CACHE_KEY)||"{}");return value&&typeof value==="object"?value:{};}catch{return {};}}
-function writeJevCache(value){try{localStorage.setItem(JEV_CACHE_KEY,JSON.stringify(value));}catch{}}
+function writeJevCache(value){try{const entries=Object.entries(value);if(entries.length>JEV_CACHE_MAX_ENTRIES){entries.sort((a,b)=>String(b[1]?.analyzedAt||"").localeCompare(String(a[1]?.analyzedAt||"")));value=Object.fromEntries(entries.slice(0,JEV_CACHE_MAX_ENTRIES));}localStorage.setItem(JEV_CACHE_KEY,JSON.stringify(value));}catch{}}
 async function jdFingerprint(text){if(window.crypto?.subtle){const bytes=new TextEncoder().encode(String(text||""));const digest=await crypto.subtle.digest("SHA-256",bytes);return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,"0")).join("");}return String(text||"").slice(0,16000);}
-function jevPayload(raw){const root=raw?.analysis||raw?.result||raw?.data||raw||{},classification=root.classification||{},mandate=root.mandate||{},workProfile=root.workProfile||{},businessContext=root.businessContext||{},roleRisk=root.roleRisk||{};const allowedRiskCodes=new Set(["title_scope_mismatch","seniority_ambiguity","responsibility_ambiguity","leadership_ambiguity","function_context_mismatch","contradictory_scope","title_inflation_by_convention","multiple_roles_in_one_jd","range_level_posting","bilingual_content_conflict","vendor_or_outsourced_ambiguity","location_or_entity_ambiguity","leadership_signals_conflict"]);return {taxonomyVersion:root.taxonomyVersion||JEV_TAXONOMY_VERSION,postingType:root.postingType||"specific_role",roleArchetype:root.roleArchetype||classification.roleArchetype||"insufficient_evidence",roleFamily:root.roleFamily||String(root.roleArchetype||"").match(/^(CS|IR|RC|OP|PS|TE|CF)/)?.[1]||"",roleFamilyLabel:root.roleFamilyLabel||"",roleArchetypeLabel:root.roleArchetypeLabel||jevArchetypeLabels[root.roleArchetype]||"Insufficient Evidence",primaryActivity:workProfile.primaryActivity||root.primaryActivity||"other_unknown",secondaryActivities:jevList(workProfile.secondaryActivities||root.secondaryActivities),businessDomain:businessContext.businessDomain||root.businessDomain||root.businessDomains?.[0]||"other_unknown",servedBusinessLine:businessContext.servedBusinessLine||root.servedBusinessLine||"not_stated",operatingContext:businessContext.operatingContext||root.operatingContext||"not_stated",businessProducts:jevList(businessContext.businessProducts||root.businessProducts),technologyPlatforms:jevList(businessContext.technologyPlatforms||root.technologyPlatforms),productContext:jevList(businessContext.productOrPlatformContext||root.productOrPlatformContext),roleLevel:mandate.roleLevel||root.roleLevel||root.seniorityBand||"unknown",titleLevelSignal:mandate.titleLevelSignal||root.titleLevelSignal||"unknown",seniorityAlignment:mandate.seniorityAlignment||root.seniorityAlignment||"ambiguous",titleConventionTags:jevList(mandate.titleConventionTags||root.titleConventionTags),mandateScope:mandate.mandateScope||root.mandateScope||root.responsibilityLevel||"unknown",decisionAuthority:mandate.decisionAuthority||root.decisionAuthority||"unknown",leadershipLevel:root.leadershipLevel||"not_stated",function:root.function||classification.function||"unknown",subFunctions:jevList(root.subFunctions||classification.subFunctions||root.primarySubFunction),businessDomains:jevList(root.businessDomains||classification.businessDomains||root.industry),riskFlags:(Array.isArray(roleRisk.riskFlags)?roleRisk.riskFlags:Array.isArray(root.riskFlags)?root.riskFlags:[]).filter(item=>allowedRiskCodes.has(item?.code)),workMix:workProfile.workMix||root.workMix||{},confidence:root.confidence||{},states:root.states||{},candidates:root.candidates||{},evidence:root.evidence||{level:"unknown",flags:[]}};}
+// Block-aware plain text: keeps one line per paragraph / bullet so the worker's fallback cleaner can recognise
+// headings and boilerplate paragraphs. (jdPlainText collapses everything onto one line and is only used for display.)
+function jdBlockText(html){const tpl=document.createElement("template");tpl.innerHTML=String(html||"").replace(/<li\b[^>]*>/gi,"\n- ").replace(/<\/?(p|div|li|ul|ol|h[1-6]|tr|br)\b[^>]*>/gi,"\n");const text=tpl.content.textContent||"";return text.split("\n").map(line=>line.replace(/\s+/g," ").trim()).filter(Boolean).join("\n");}
+// v4 request text: the preprocessed jd_text when the build produced one (schema jev-input-v4), otherwise the raw JD.
+function jevRequestText(entry){const input=entry?.jevInput;if(input&&input.schema==="jev-input-v4"&&typeof input.jd_text==="string"&&input.jd_text.trim().length>=40)return input.jd_text;return jdBlockText(entry?.descriptionHtml||"")||String(entry?.descriptionText||entry?.description||"");}
+function jevRequestMeta(entry){const input=entry?.jevInput;if(!input||input.schema!=="jev-input-v4")return null;return {schema:input.schema,language:input.language||"",evidence_level:input.evidence_level||"",evidence_flags:Array.isArray(input.evidence_flags)?input.evidence_flags:[],employer_metadata:input.employer_metadata||""};}
+function jevPayload(raw){const root=raw?.analysis&&typeof raw.analysis==="object"?raw.analysis:raw||{};const dim=(value,fallback)=>value&&typeof value==="object"?value:{value:fallback,label:fallback,confidence:null,state:"not_stated",candidates:[]};return {taxonomyVersion:root.taxonomyVersion||JEV_TAXONOMY_VERSION,model:root.model||"",postingType:root.postingType||{},roleArchetype:dim(root.roleArchetype,"insufficient_evidence"),primaryActivity:dim(root.primaryActivity,"not_determinable"),businessLine:dim(root.businessLine,"not_stated"),leadershipLevel:dim(root.leadershipLevel,"not_stated"),roleRisk:root.roleRisk&&typeof root.roleRisk==="object"?{flags:Array.isArray(root.roleRisk.flags)?root.roleRisk.flags:[],state:root.roleRisk.state||"none"}:{flags:[],state:"none"},evidence:root.evidence||{}};}
 const jevText=value=>String(value||"Unknown").replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
-function renderJevResult(container,result){const r=jevPayload(result),risk=r.riskFlags;const display=(value,kind="text")=>{if(kind==="archetype")return r.roleFamilyLabel?`${r.roleFamilyLabel} · ${r.roleArchetypeLabel}`:(jevArchetypeLabels[value]||jevText(value));if(kind==="activity")return jevFunctionLabels[value]||jevText(value);if(kind==="product")return jevProductLabels[value]||jevText(value);return jevValueLabel(value);};const row=(label,value,kind="text",key="")=>{const state=key&&r.states?.[key],meta=key&&r.confidence?.[key],candidate=key&&r.candidates?.[key];const confidence=state==="ok"&&typeof meta?.confidence==="number"?` <small class="jev-confidence">${Math.round(meta.confidence*100)}%</small>`:"";const candidates=state&&state!=="ok"&&candidate?`<small class="jev-state">Candidates: ${jevList(candidate).map(x=>esc(kind==="archetype"?(jevArchetypeLabels[x]||x):jevText(x))).join(" / ")}</small>`:"";return `<div class="jev-field jev-state-${esc(state||"")}"><dt>${label}</dt><dd><span>${esc(display(value,kind))}</span>${confidence}${candidates}</dd></div>`;};const products=jevList(r.businessProducts),platforms=jevList(r.technologyPlatforms),combined=products.length?products:platforms;const productLabel=products.length?"Business Products":(platforms.length?"Business Products / Platforms":"Business Products");const productKind=products.length?"product":"text";container.innerHTML=`<dl class="jev-fields">${row("Role Archetype",r.roleArchetype,"archetype","roleArchetype")}${row("Primary Activity",r.primaryActivity,"activity")}${row("Business Line Served",r.servedBusinessLine,"text","servedBusinessLine")}${row("Operating Context",r.operatingContext,"text","operatingContext")}${row(productLabel,combined.map(x=>display(x,productKind)).join(" · ")||"Not materially specified")}${row("Leadership Level",r.leadershipLevel,"text","leadershipLevel")}</dl>`+(risk.length?`<section class="jev-risks"><h4>Role Risk</h4>${risk.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(jevValueLabel(item.code||"Structural Signal"))}</strong><span class="jev-severity">${esc(jevValueLabel(item.severity||"medium"))}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}</article>`).join("")}</section>`:"");container.hidden=false;}
-
-function addJevControls(body,card,entry,currentText){
-  if(window.matchMedia?.("(max-width:720px)").matches)return;
-  if(body.parentNode?.querySelector(".jev-analysis-tools"))return;
-  const id=card.dataset.id||"";
-  const summary=card.querySelector(".job-jd summary"),button=summary?.querySelector(".job-jd-analytics");
-  const tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-result" hidden></div>';
-  const result=tools.querySelector(".jev-result");
-  const cache=readJevCache();
-  let inFlight=false;
-  const showCached=record=>{renderJevResult(result,record.result,record.analyzedAt);button?.classList.add("is-cached");};
-  const run=async()=>{
-    if(inFlight)return;
-    inFlight=true;
-    const text=currentText||jdPlainText(entry.descriptionHtml||entry.descriptionText||entry.description||"");
-    const fingerprint=await jdFingerprint(text),record=cache[id];
-    if(record?.taxonomyVersion===JEV_TAXONOMY_VERSION&&record?.jdFingerprint===fingerprint&&record.result){showCached(record);inFlight=false;return;}
-    if(!JEV_API_ENDPOINT){inFlight=false;return;}
-    if(button){button.setAttribute("aria-busy","true");button.classList.add("is-loading");}result.hidden=true;
-    try{
-      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
-      const response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text,jevInput:entry.jevInput||null}),signal:controller.signal});
-      clearTimeout(timer);if(!response.ok)throw new Error("HTTP "+response.status);
-      const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
-      cache[id]={schemaVersion:2,taxonomyVersion:JEV_TAXONOMY_VERSION,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);showCached(cache[id]);
-    }catch(error){if(button)button.title=error.name==="AbortError"?"Analysis timed out":"Analysis unavailable";}
-    finally{if(button){button.removeAttribute("aria-busy");button.classList.remove("is-loading");}inFlight=false;}
+const jevStateText={low_confidence:"Low confidence",conflicting:"Conflicting evidence",not_applicable:"Not applicable",not_stated:"Not stated"};
+function renderJevResult(container,result,analyzedAt){
+  const r=jevPayload(result);
+  const row=(label,dim,text)=>{
+    const state=dim.state||"ok";
+    const confidence=state==="ok"&&typeof dim.confidence==="number"?` <small class="jev-confidence">${Math.round(dim.confidence*100)}%</small>`:"";
+    const candidates=(state==="low_confidence"||state==="conflicting")&&Array.isArray(dim.candidates)&&dim.candidates.length?`<small class="jev-state">${esc(jevStateText[state])} · candidates: ${dim.candidates.slice(0,3).map(c=>esc(c.label||jevText(c.code))+(typeof c.p==="number"?` ${Math.round(c.p*100)}%`:"")).join(" / ")}</small>`:(state!=="ok"?`<small class="jev-state">${esc(jevStateText[state]||jevText(state))}</small>`:"");
+    return `<div class="jev-field jev-state-${esc(state)}"><dt>${label}</dt><dd><span>${esc(text)}</span>${confidence}${candidates}</dd></div>`;
   };
-  if(button){button.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();run();});button.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();event.stopPropagation();run();}});}
-  body.parentNode.insertBefore(tools,body);
-  const existing=cache[id];if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(currentText).then(fingerprint=>{if(existing.jdFingerprint===fingerprint)showCached(existing);});}
+  const a=r.roleArchetype;
+  const archetypeText=[a.familyLabel,a.label,a.specialisationLabel].filter(Boolean).join(" · ")||jevText(a.code);
+  const risk=r.roleRisk;
+  const riskHtml=risk.state==="not_applicable"?'<p class="jev-no-risk">Not applicable — this is not a single job posting.</p>'
+    :risk.flags.length?risk.flags.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}${typeof item.probability==="number"?` · ${Math.round(item.probability*100)}%`:""}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}</article>`).join("")
+    :'<p class="jev-no-risk">No structural risk detected — title, duties, level and posting type are consistent.</p>';
+  const evidenceLevel=r.evidence?.level?` · evidence ${esc(r.evidence.level)}`:"";
+  const when=analyzedAt?` · ${esc(String(analyzedAt).slice(0,10))}`:"";
+  container.innerHTML=`<dl class="jev-fields">${row("Role Archetype",a,archetypeText)}${row("Primary Activity",r.primaryActivity,r.primaryActivity.label||jevText(r.primaryActivity.value))}${row("Business Line",r.businessLine,r.businessLine.label||jevText(r.businessLine.value))}${row("Leadership Level",r.leadershipLevel,r.leadershipLevel.label||jevText(r.leadershipLevel.value))}</dl><section class="jev-risks"><h4>Role Risk</h4>${riskHtml}</section><p class="jev-meta">${esc(r.taxonomyVersion)}${r.model?` · ${esc(r.model)}`:""}${evidenceLevel}${when}</p>`;
+  container.hidden=false;
+}
+function jevErrorMessage(status,body){
+  const retry=Number(body?.retryAfter)||60;
+  if(status===413)return "This job description is too long for analysis.";
+  if(status===422)return "The job description is too short or empty to analyse.";
+  if(status===429)return `Too many analysis requests (maximum 12 per minute). Please retry in ${retry} seconds.`;
+  if(status===403)return "The analysis service rejected this origin. Please retry from the site domain.";
+  if(status===503)return "The analysis service is unavailable or misconfigured.";
+  if(status===529||body?.error==="provider_overloaded")return "The model service is busy. Please try again shortly.";
+  if(status===504||body?.error==="provider_timeout")return "Analysis timed out. Please retry.";
+  if(status===502||body?.error==="provider_error")return "The analysis service returned an error. Please retry.";
+  return `Analysis failed (HTTP ${status}${body?.error?` · ${body.error}`:""}).`;
+}
+function ensureJevPanel(card){
+  const body=card.querySelector(".job-jd-text");if(!body||!body.parentNode)return null;
+  let tools=body.parentNode.querySelector(".jev-analysis-tools");
+  if(!tools){tools=document.createElement("section");tools.className="jev-analysis-tools";tools.innerHTML='<div class="jev-result" hidden></div>';body.parentNode.insertBefore(tools,body);}
+  return tools.querySelector(".jev-result");
+}
+function showJevStatus(panel,message){if(!panel)return;panel.innerHTML=`<p class="jev-status" role="status">${esc(message)}</p>`;panel.hidden=false;}
+function showJevError(panel,message,retry){if(!panel)return;panel.innerHTML=`<p class="jev-error" role="alert">${esc(message)}</p>`;if(retry){const button=document.createElement("button");button.type="button";button.className="jev-retry";button.textContent="Retry";button.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();retry();});panel.appendChild(button);}panel.hidden=false;}
+const JEV_MAX_DESCRIPTION_CHARS=24000;// worker MAX_DESCRIPTION_CHARS; longest real jd_text in the corpus is 14.8k chars
+const jevRuns=new Set();
+// Every Analytics click goes through here (delegated from the list root), so a click always produces a visible
+// state — even before jobs-details.json has finished loading, and even when the request fails.
+async function runJevAnalysis(card){
+  const id=card?.dataset?.id||"";if(!id||jevRuns.has(id))return;jevRuns.add(id);
+  const button=card.querySelector(".job-jd-analytics");
+  const details=card.querySelector("details.job-jd");if(details&&!details.open)details.open=true;
+  if(button){button.setAttribute("aria-busy","true");button.classList.add("is-loading");}
+  let panel=ensureJevPanel(card);
+  showJevStatus(panel,"Loading job description…");
+  try{
+    let entry=jdById.get(id);
+    if(!entry){try{await loadJdDetails();}catch{}entry=jdById.get(id);}
+    if(!entry){showJevError(panel,"Job description could not be loaded. Please try again.",()=>runJevAnalysis(card));return;}
+    await hydrateJd(card);panel=ensureJevPanel(card)||panel;
+    const text=jevRequestText(entry).slice(0,JEV_MAX_DESCRIPTION_CHARS);
+    if(!text||text.trim().length<40){showJevError(panel,"This posting does not contain enough description text to analyse.");return;}
+    const fingerprint=await jdFingerprint(text),cache=readJevCache(),record=cache[id];
+    if(record?.taxonomyVersion===JEV_TAXONOMY_VERSION&&record.jdFingerprint===fingerprint&&record.result){renderJevResult(panel,record.result,record.analyzedAt);button?.classList.add("is-cached");return;}
+    showJevStatus(panel,"JEV is analysing the job description…");
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
+    let response;
+    try{response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text,jevInput:jevRequestMeta(entry)}),signal:controller.signal});}
+    finally{clearTimeout(timer);}
+    if(!response.ok){let body=null;try{body=await response.json();}catch{}showJevError(panel,jevErrorMessage(response.status,body),()=>runJevAnalysis(card));return;}
+    const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
+    renderJevResult(panel,normalized,analyzedAt);
+    // Cache only after a successful render, so a failure can never poison later clicks.
+    cache[id]={schemaVersion:3,taxonomyVersion:JEV_TAXONOMY_VERSION,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);button?.classList.add("is-cached");
+  }catch(error){
+    showJevError(panel,error?.name==="AbortError"?"Analysis timed out (45 seconds). Please retry.":"Network error. Could not reach the analysis service. Please retry.",()=>runJevAnalysis(card));
+  }finally{if(button){button.removeAttribute("aria-busy");button.classList.remove("is-loading");}jevRuns.delete(id);}
+}
+function addJevControls(body,card,entry){
+  if(window.matchMedia?.("(max-width:720px)").matches)return;
+  const panel=ensureJevPanel(card);if(!panel||panel.dataset.cachedChecked==="true")return;panel.dataset.cachedChecked="true";
+  const id=card.dataset.id||"",existing=readJevCache()[id];
+  if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(jevRequestText(entry)).then(fingerprint=>{if(existing.jdFingerprint===fingerprint&&panel.hidden){renderJevResult(panel,existing.result,existing.analyzedAt);card.querySelector(".job-jd-analytics")?.classList.add("is-cached");}});}
 }
 async function hydrateJd(card){
   const body=card.querySelector(".job-jd-text");
@@ -171,7 +220,7 @@ async function hydrateJd(card){
   if(body.dataset.loading==="true")return;
   body.dataset.loading="true";
   let entry=jdById.get(card.dataset.id);
-  if(!entry){try{await loadJdDetails();entry=jdById.get(card.dataset.id);}catch(e){body.textContent="职位描述暂时无法加载，请稍后重试。";}}
+  if(!entry){try{await loadJdDetails();entry=jdById.get(card.dataset.id);}catch(e){body.textContent="Job description could not be loaded. Please try again.";}}
   if(!entry){delete body.dataset.loading;return;}
   const html=entry.descriptionHtml||"",text=entry.descriptionText||entry.description||jdPlainText(html);
   const current=html?safeJdHtml(html):esc(text).replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
@@ -180,7 +229,7 @@ async function hydrateJd(card){
   // with <del>, while inserted text appears inline with <ins>. Do not append
   // a legend, explanatory copy, or a second "current version" block.
   body.innerHTML=tracked||current;
-  addJevControls(body,card,entry,text);
+  addJevControls(body,card,entry);
   body.dataset.loaded="true";
   delete body.dataset.loading;
 }
@@ -233,9 +282,16 @@ jobsEl.addEventListener("toggle",event=>{
   }
 },true);
 compClear.addEventListener("click",()=>{companyEl.value="all";apply();});
+jobsEl.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const button=e.target.closest?.(".job-jd-analytics");
+  if(!button||!jobsEl.contains(button))return;
+  e.preventDefault();e.stopPropagation();runJevAnalysis(button.closest(".job"));
+},true);
 jobsEl.addEventListener("click",e=>{
   const card=e.target.closest(".job");if(!card||!jobsEl.contains(card))return;
   const id=card.dataset.id;
+  if(e.target.closest(".job-jd-analytics")){e.preventDefault();e.stopPropagation();runJevAnalysis(card);return;}
   if(e.target.closest(".job-jd-toggle")){hydrateJd(card);return;}
   if(e.target.closest(".job-title")){reads.add(id);saveReads();card.classList.add("read");return;}
   const star=e.target.closest(".star");
