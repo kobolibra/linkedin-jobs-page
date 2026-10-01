@@ -717,7 +717,10 @@ function refreshFavoriteFilterView(){
   jobsEl.classList.toggle("fav-only",favOnly);
   const regionFilter=jobsEl.dataset.fastRegion||"";
   let displayed=0,active=0;
+  const dayVisibleTotals=new Map();
   daySections.forEach(sec=>{
+    sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());
+    delete sec.dataset.filterHead;
     let shown=0,shownActive=0;
     sec._jobCards.forEach(card=>{
       const baseVisible=(!regionFilter||card.dataset.region===regionFilter)&&card.style.display!=="none"&&!card.classList.contains("hidden");
@@ -725,11 +728,24 @@ function refreshFavoriteFilterView(){
       if(visible){shown++;if(card.dataset.status!=="expired")shownActive++;}
     });
     sec.style.display=shown?"":"none";
-    const count=sec.querySelector('[data-role="daycount"]');
-    if(count)count.textContent=shownActive+" 个有效职位";
+    const dayTotal=dayVisibleTotals.get(sec.dataset.dayKey)||{shown:0,active:0};
+    dayTotal.shown+=shown;dayTotal.active+=shownActive;dayVisibleTotals.set(sec.dataset.dayKey,dayTotal);
     displayed+=shown;active+=shownActive;
   });
-  countEl.innerHTML="有效 <b>"+active+"</b> 个职位";
+  const visibleDays=new Set();
+  daySections.forEach(sec=>{
+    const key=sec.dataset.dayKey;
+    if(sec.style.display==="none"||visibleDays.has(key))return;
+    visibleDays.add(key);
+    const dayTotal=dayVisibleTotals.get(key)||{active:0};
+    if(!sec.querySelector('.day-head')){
+      sec.dataset.filterHead="true";
+      sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+dayTotal.active+' 个有效职位</span></div>');
+    }
+    const count=sec.querySelector('[data-role="daycount"]');
+    if(count)count.textContent=dayTotal.active+" 个有效职位";
+  });
+  countEl.innerHTML="有效 <b>"+active+" 个职位";
   emptyEl.classList.toggle("show",displayed===0);
 }
 document.addEventListener("keydown",e=>{
