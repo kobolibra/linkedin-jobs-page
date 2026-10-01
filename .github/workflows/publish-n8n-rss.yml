@@ -31,7 +31,7 @@ jobs:
           python -m py_compile scripts/jobspy/*.py
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
-          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py
+          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py scripts/jobspy/test_liveness.py
       - name: Merge and publish canonical jobs
         shell: bash
         run: |
@@ -56,6 +56,13 @@ jobs:
             else
               echo "No JobSpy snapshot available; merging RSS against current canonical jobs only"
               cp jobs.json /tmp/jobs.jobspy.json
+            fi
+            if [[ -s data/jobspy/incremental/liveness.json ]]; then
+              python scripts/jobspy/apply_liveness.py \
+                --jobs /tmp/jobs.jobspy.json \
+                --liveness data/jobspy/incremental/liveness.json \
+                --output /tmp/jobs.liveness.json
+              mv /tmp/jobs.liveness.json /tmp/jobs.jobspy.json
             fi
             python scripts/jobspy/merge_n8n_incremental.py \
               --baseline /tmp/jobs.jobspy.json \

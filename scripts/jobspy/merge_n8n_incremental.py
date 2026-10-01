@@ -13,6 +13,9 @@ TARGET_COMPANIES = {
     "standard chartered", "hsbc", "citi", "societe generale", "bnp paribas",
     "deutsche bank", "goldman sachs", "blackrock", "bbva", "natixis", "bank of america",
 }
+LIVENESS_EXPIRED_REASONS = {
+    "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
+}
 TITLE_TOKEN_ALIASES = {
     "sr": ["senior"], "snr": ["senior"], "mgr": ["manager"],
     "rep": ["representative"], "asst": ["assistant"], "assoc": ["associate"],
@@ -151,7 +154,7 @@ def merge_documents(baseline, batch_doc):
         if normalize_company(row.get("company")) not in blocked
     ]
     by_key = {job_key(row): i for i, row in enumerate(rows) if job_key(row)}
-    added = updated = reactivated = 0
+    added = updated = reactivated = liveness_kept_expired = 0
     for incoming in batch:
         if not isinstance(incoming, dict):
             continue
@@ -161,6 +164,7 @@ def merge_documents(baseline, batch_doc):
         if key in by_key:
             current = rows[by_key[key]]
             merged = dict(current)
+            keep_liveness_expired = current.get("jobStatus") == "expired" and current.get("expiredReason") in LIVENESS_EXPIRED_REASONS
             for field, value in incoming.items():
                 # RSS is evidence that a listing is visible in the feed, but
                 # cannot by itself prove a LinkedIn repost.  Existing rows
@@ -179,11 +183,14 @@ def merge_documents(baseline, batch_doc):
             elif nonempty(incoming.get("firstSeen")):
                 merged["firstSeen"] = incoming["firstSeen"]
             merged["dataSources"] = merge_sources(current, incoming)
-            if current.get("jobStatus") == "expired":
+            if current.get("jobStatus") == "expired" and not keep_liveness_expired:
                 reactivated += 1
-            merged["jobStatus"] = "active"
-            merged.pop("expiredAt", None)
-            merged.pop("expiredReason", None)
+            if keep_liveness_expired:
+                liveness_kept_expired += 1
+            else:
+                merged["jobStatus"] = "active"
+                merged.pop("expiredAt", None)
+                merged.pop("expiredReason", None)
             merged["missingSnapshotCount"] = 0
             merged.setdefault("sourceJobId", current.get("sourceJobId") or f"li-{key}")
             rows[by_key[key]] = merged
@@ -210,6 +217,7 @@ def merge_documents(baseline, batch_doc):
         "firstSeenPolicy": "immutable-for-existing-id",
         "pushTimePolicy": "JobSpy-confirmed-repost-within-24-hours-only",
         "blocklistHardDelete": len(blocked),
+        "livenessKeptExpired": liveness_kept_expired,
     }
     return result
 

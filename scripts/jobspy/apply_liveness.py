@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+"""Apply liveness observations to canonical jobs idempotently."""
+from __future__ import annotations
+import argparse, json
+from pathlib import Path
+from job_liveness import apply_observation, jid, in_scope
+
+def main():
+    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); args=ap.parse_args()
+    doc=json.loads(Path(args.jobs).read_text(encoding="utf-8")); out=dict(doc) if isinstance(doc,dict) else {"jobs":doc}
+    try: live=json.loads(Path(args.liveness).read_text(encoding="utf-8"))
+    except (FileNotFoundError,json.JSONDecodeError):
+        Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); return
+    if not isinstance(live,dict) or live.get("schemaVersion")!="1.0" or live.get("mode")!="cn-job-liveness" or not isinstance(live.get("observations"),list):
+        Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); return
+    by={jid(row):row for row in out.get("jobs",[]) if isinstance(row,dict) and jid(row)}; stats={"open":0,"reactivated":0,"expired_closed":0,"expired_not_accepting":0,"expired_gone":0,"pending":0,"unknown":0,"skipped_out_of_scope":0}
+    for obs in live["observations"]:
+        row=by.get(str(obs.get("jobId") or "")) or by.get(jid(obs)); result=obs.get("result")
+        if not row or not in_scope(row,"CN"): stats["skipped_out_of_scope"]+=1; continue
+        before=row.get("jobStatus"); apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours)
+        if result=="open": stats["open"]+=1; stats["reactivated"]+=int(before=="expired" and row.get("jobStatus")=="active")
+        elif result=="closed": stats["expired_closed"]+=int(row.get("expiredReason")=="linkedin_closed")
+        elif result=="gone": stats["expired_gone"]+=int(row.get("expiredReason")=="linkedin_removed"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_removed")
+        elif result=="not_accepting": stats["expired_not_accepting"]+=int(row.get("expiredReason")=="linkedin_not_accepting"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_not_accepting")
+        else: stats["unknown"]+=1
+    out["jobs"]=list(by.values()); out["count"]=len(out["jobs"]); out["liveness"]={"observedAt":live.get("observedAt"),**stats}
+    Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(json.dumps(out["liveness"],ensure_ascii=False))
+if __name__ == "__main__": main()
