@@ -21,6 +21,21 @@ class N8nMergeTests(unittest.TestCase):
         self.assertEqual(row["jobStatus"], "active")
         self.assertNotIn("expiredAt", row)
 
+    def test_liveness_expired_row_stays_expired_when_rss_reobserves_it(self):
+        baseline = {"jobs": [{
+            "sourceJobId": "li-100000020", "company": "Small Co", "location": "CN",
+            "jobStatus": "expired", "expiredAt": "2026-09-10T00:00:00Z",
+            "expiredReason": "linkedin_closed",
+        }]}
+        batch = {"generatedAt": "2026-09-11T00:00:00Z", "jobs": [{
+            "sourceJobId": "li-100000020", "company": "Small Co", "location": "CN",
+        }]}
+        result = merge_documents(baseline, batch)
+        row = result["jobs"][0]
+        self.assertEqual(row["jobStatus"], "expired")
+        self.assertEqual(row["expiredReason"], "linkedin_closed")
+        self.assertEqual(result["n8nIncrementalMerge"]["livenessKeptExpired"], 1)
+
     def test_empty_values_do_not_erase_existing_fields(self):
         baseline = {"jobs": [{"sourceJobId": "li-100000002", "descriptionHtml": "<p>JD</p>"}]}
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000002", "descriptionHtml": ""}]}
