@@ -7,7 +7,7 @@ class LivenessTests(unittest.TestCase):
     def row(self, **kw): return {"sourceJobId":"li-123456789","company":"Small Co","companyCanonical":"small co","location":"CN","jobStatus":"active",**kw}
     def test_classification(self):
         base='<link rel="canonical" href="https://www.linkedin.com/jobs/view/123456789"><h1 class="top-card-layout__title">A</h1><div class="show-more-less-html__markup">JD</div>'
-        self.assertEqual(classify(200,base+'<a data-tracking-control-name="public_jobs_apply-onsite">Apply</a>','123456789'),'open')
+        self.assertEqual(classify(200,base+'<a data-tracking-control-name="public_jobs_apply-link-onsite">Apply</a>','123456789'),'open')
         self.assertEqual(classify(200,base+'<figure class="closed-job">No longer accepting applications</figure>','123456789'),'closed')
         self.assertEqual(classify(200,base,'123456789'),'not_accepting')
         self.assertEqual(classify(404,'','123456789'),'gone')
