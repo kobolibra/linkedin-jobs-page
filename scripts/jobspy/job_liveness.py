@@ -116,8 +116,9 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12):
         row["liveStatus"] = "closed"
         row["liveMissCount"] = int(row.get("liveMissCount") or 0) + 1
         row["jobStatus"] = "expired"
-        row["expiredAt"] = observed_at
-        row["expiredReason"] = "linkedin_closed"
+        if row.get("expiredReason") != "linkedin_closed" or not row.get("expiredAt"):
+            row["expiredAt"] = observed_at
+            row["expiredReason"] = "linkedin_closed"
         return row
     reason = "linkedin_removed" if result == "gone" else "linkedin_not_accepting"
     first = parse_time(row.get("liveFirstMissAt"))
@@ -130,8 +131,9 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12):
     row["liveStatus"] = result
     if when and (when - first).total_seconds() >= gone_confirm_hours * 3600:
         row["jobStatus"] = "expired"
-        row["expiredAt"] = observed_at
-        row["expiredReason"] = reason
+        if row.get("expiredReason") != reason or not row.get("expiredAt"):
+            row["expiredAt"] = observed_at
+            row["expiredReason"] = reason
     return row
 
 __all__ = ["COVERED", "LIVENESS_EXPIRED_REASONS", "apply_observation", "classify", "in_scope", "select_candidates", "jid"]

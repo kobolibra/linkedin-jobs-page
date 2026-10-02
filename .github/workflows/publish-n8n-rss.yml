@@ -61,6 +61,7 @@ jobs:
               python scripts/jobspy/apply_liveness.py \
                 --jobs /tmp/jobs.jobspy.json \
                 --liveness data/jobspy/incremental/liveness.json \
+                --delete-after-days 30 \
                 --output /tmp/jobs.liveness.json
               mv /tmp/jobs.liveness.json /tmp/jobs.jobspy.json
             fi
