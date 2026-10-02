@@ -1,915 +1,663 @@
 {
   "schemaVersion": "1.0",
   "mode": "cn-job-liveness",
-  "observedAt": "2026-10-01T21:34:22.529194+00:00",
+  "observedAt": "2026-10-02T03:34:16.893327+00:00",
   "observations": [
     {
-      "sourceJobId": "li-4459835633",
-      "jobId": "4459835633",
+      "sourceJobId": "li-4444045675",
+      "jobId": "4444045675",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4444061832",
+      "jobId": "4444061832",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443498102",
+      "jobId": "4443498102",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443827548",
+      "jobId": "4443827548",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4442984055",
+      "jobId": "4442984055",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443996542",
+      "jobId": "4443996542",
       "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-middle-office-senior-associate-at-state-street-4459185463",
-      "jobId": "4459185463",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4457719479",
-      "jobId": "4457719479",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-agentic-ai-engineer-avp-at-state-street-4459127056",
-      "jobId": "4459127056",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-investment-performance-analysis-associate-1-at-state-street-4459165666",
-      "jobId": "4459165666",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4457913692",
-      "jobId": "4457913692",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4459194888",
-      "jobId": "4459194888",
+      "sourceJobId": "li-4443122000",
+      "jobId": "4443122000",
       "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-middle-office-senior-associate-at-state-street-4459114873",
-      "jobId": "4459114873",
+      "sourceJobId": "li-4441924887",
+      "jobId": "4441924887",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443909119",
+      "jobId": "4443909119",
+      "result": "gone",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4442968688",
+      "jobId": "4442968688",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4438621568",
+      "jobId": "4438621568",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443357876",
+      "jobId": "4443357876",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443320863",
+      "jobId": "4443320863",
+      "result": "gone",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4443340045",
+      "jobId": "4443340045",
+      "result": "gone",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-manager-security-products-and-solutions-at-mastercard-4440187435",
+      "jobId": "4440187435",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-senior-technical-specialist-at-lseg-4454969993",
-      "jobId": "4454969993",
+      "sourceJobId": "li-4440196210",
+      "jobId": "4440196210",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-manager-products-and-solutions-at-mastercard-4440186479",
+      "jobId": "4440186479",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-senior-software-engineer-c%2B%2B-at-lseg-4439126646",
-      "jobId": "4439126646",
+      "sourceJobId": "li-4440191333",
+      "jobId": "4440191333",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-vice-president-products-and-solutions-at-mastercard-4440182609",
+      "jobId": "4440182609",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-fund-accountant-at-apex-group-ltd-4446616648",
-      "jobId": "4446616648",
+      "sourceJobId": "li-manager-products-and-solutions-agent-pay-tokenized-ecommerce-solutions-at-mastercard-4440193241",
+      "jobId": "4440193241",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4458745458",
-      "jobId": "4458745458",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4458746373",
-      "jobId": "4458746373",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4458741780",
-      "jobId": "4458741780",
+      "sourceJobId": "li-director-specialist-sales-consumer-acquisition-engagement-at-mastercard-4440196243",
+      "jobId": "4440196243",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-investment-performance-analysis-senior-associate-at-state-street-4458592755",
-      "jobId": "4458592755",
+      "sourceJobId": "li-4440192284",
+      "jobId": "4440192284",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4440184558",
+      "jobId": "4440184558",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4440198035",
+      "jobId": "4440198035",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4442571603",
+      "jobId": "4442571603",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4442034478",
+      "jobId": "4442034478",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4442716911",
+      "jobId": "4442716911",
+      "result": "gone",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4441790817",
+      "jobId": "4441790817",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4442592222",
+      "jobId": "4442592222",
+      "result": "gone",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4441946136",
+      "jobId": "4441946136",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4439654636",
+      "jobId": "4439654636",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4439643782",
+      "jobId": "4439643782",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4441459401",
+      "jobId": "4441459401",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4439289259",
+      "jobId": "4439289259",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4439782004",
+      "jobId": "4439782004",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-product-management-professional-at-china-construction-bank-asia-4457448335",
-      "jobId": "4457448335",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456561437",
-      "jobId": "4456561437",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4458174216",
-      "jobId": "4458174216",
+      "sourceJobId": "li-4439292115",
+      "jobId": "4439292115",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4409264775",
-      "jobId": "4409264775",
+      "sourceJobId": "li-4439291142",
+      "jobId": "4439291142",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4455048852",
-      "jobId": "4455048852",
+      "sourceJobId": "li-4439281683",
+      "jobId": "4439281683",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4455074003",
-      "jobId": "4455074003",
+      "sourceJobId": "li-4438781945",
+      "jobId": "4438781945",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-senior-software-engineer-at-lseg-4331592697",
-      "jobId": "4331592697",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4447518038",
-      "jobId": "4447518038",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4457318414",
-      "jobId": "4457318414",
+      "sourceJobId": "li-4440955897",
+      "jobId": "4440955897",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4454678776",
-      "jobId": "4454678776",
+      "sourceJobId": "li-4441940747",
+      "jobId": "4441940747",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4319122511",
-      "jobId": "4319122511",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4457082277",
-      "jobId": "4457082277",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-c%2B%2B-software-engineer-at-citadel-securities-4281724238",
-      "jobId": "4281724238",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-manager-solution-architect-tech-partnership-at-visa-4457304598",
-      "jobId": "4457304598",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4446988000",
-      "jobId": "4446988000",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4455261886",
-      "jobId": "4455261886",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450311305",
-      "jobId": "4450311305",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456474315",
-      "jobId": "4456474315",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-sr-director-business-development-tech-partnerships-at-visa-4456771078",
-      "jobId": "4456771078",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456707866",
-      "jobId": "4456707866",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-at-pamo-jiangsu-branch-at-manulife-4455607259",
-      "jobId": "4455607259",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4453829742",
-      "jobId": "4453829742",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4454972970",
-      "jobId": "4454972970",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4436506750",
-      "jobId": "4436506750",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4453828679",
-      "jobId": "4453828679",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456130426",
-      "jobId": "4456130426",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4453438927",
-      "jobId": "4453438927",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456302089",
-      "jobId": "4456302089",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456156488",
-      "jobId": "4456156488",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4456124399",
-      "jobId": "4456124399",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-international-investment-leadership-opportunities-at-cooper-fitch-4452853634",
-      "jobId": "4452853634",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4455710798",
-      "jobId": "4455710798",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4454254394",
-      "jobId": "4454254394",
+      "sourceJobId": "li-4439810713",
+      "jobId": "4439810713",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4454213530",
-      "jobId": "4454213530",
+      "sourceJobId": "li-4440739778",
+      "jobId": "4440739778",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4452159374",
-      "jobId": "4452159374",
+      "sourceJobId": "li-4441496407",
+      "jobId": "4441496407",
+      "result": "gone",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4439487257",
+      "jobId": "4439487257",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4440657614",
+      "jobId": "4440657614",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4438454209",
+      "jobId": "4438454209",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4439965319",
+      "jobId": "4439965319",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4451774034",
-      "jobId": "4451774034",
+      "sourceJobId": "li-4440508076",
+      "jobId": "4440508076",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4451754339",
-      "jobId": "4451754339",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4454516060",
-      "jobId": "4454516060",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4265088557",
-      "jobId": "4265088557",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4451501600",
-      "jobId": "4451501600",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450870176",
-      "jobId": "4450870176",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4451627608",
-      "jobId": "4451627608",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-principal-software-engineer-at-lseg-4451172545",
-      "jobId": "4451172545",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450856303",
-      "jobId": "4450856303",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-director-services-business-development-at-mastercard-4450806590",
-      "jobId": "4450806590",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-accountant-manager-private-equity-rmb-fund-at-apex-group-ltd-4422272093",
-      "jobId": "4422272093",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450428981",
-      "jobId": "4450428981",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4452185402",
-      "jobId": "4452185402",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450012995",
-      "jobId": "4450012995",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-equity-indexes-corporate-actions-senior-associate-at-msci-inc-4450117815",
-      "jobId": "4450117815",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4453094134",
-      "jobId": "4453094134",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4452352043",
-      "jobId": "4452352043",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4449456481",
-      "jobId": "4449456481",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4452428823",
-      "jobId": "4452428823",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4452472606",
-      "jobId": "4452472606",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4451671092",
-      "jobId": "4451671092",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-marketing-executive-at-schroders-4451515209",
-      "jobId": "4451515209",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4451511384",
-      "jobId": "4451511384",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4451504451",
-      "jobId": "4451504451",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4449287193",
-      "jobId": "4449287193",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450537571",
-      "jobId": "4450537571",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450313295",
-      "jobId": "4450313295",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450305856",
-      "jobId": "4450305856",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450322158",
-      "jobId": "4450322158",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4450234698",
-      "jobId": "4450234698",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4449360956",
-      "jobId": "4449360956",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448172268",
-      "jobId": "4448172268",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-manager-transfer-solutions-at-mastercard-4447399155",
-      "jobId": "4447399155",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4449629904",
-      "jobId": "4449629904",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4449490736",
-      "jobId": "4449490736",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4449635811",
-      "jobId": "4449635811",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448596466",
-      "jobId": "4448596466",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-strategist-at-morgan-mckinley-4448968285",
-      "jobId": "4448968285",
+      "sourceJobId": "li-4439160239",
+      "jobId": "4439160239",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4447313875",
-      "jobId": "4447313875",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448979200",
-      "jobId": "4448979200",
+      "sourceJobId": "li-4362074602",
+      "jobId": "4362074602",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4447331275",
-      "jobId": "4447331275",
+      "sourceJobId": "li-4438306460",
+      "jobId": "4438306460",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4446661690",
-      "jobId": "4446661690",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448690718",
-      "jobId": "4448690718",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4446622807",
-      "jobId": "4446622807",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448687772",
-      "jobId": "4448687772",
+      "sourceJobId": "li-director-%E2%80%93-migrations-project-management-at-vistra-4435916679",
+      "jobId": "4435916679",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4448852763",
-      "jobId": "4448852763",
+      "sourceJobId": "li-4438201468",
+      "jobId": "4438201468",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4448816037",
-      "jobId": "4448816037",
+      "sourceJobId": "li-4436304941",
+      "jobId": "4436304941",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4448277621",
-      "jobId": "4448277621",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448692525",
-      "jobId": "4448692525",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4447695539",
-      "jobId": "4447695539",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448166855",
-      "jobId": "4448166855",
+      "sourceJobId": "li-manager-deal-management-strategic-finance-partner-at-mastercard-4434827866",
+      "jobId": "4434827866",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4448166854",
-      "jobId": "4448166854",
+      "sourceJobId": "li-4438190902",
+      "jobId": "4438190902",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4436768327",
+      "jobId": "4436768327",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-ao-avp-fixed-income-trader-at-alliancebernstein-4436736605",
+      "jobId": "4436736605",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4448166186",
-      "jobId": "4448166186",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4448140152",
-      "jobId": "4448140152",
+      "sourceJobId": "li-4410452812",
+      "jobId": "4410452812",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445873161",
-      "jobId": "4445873161",
+      "sourceJobId": "li-4436712509",
+      "jobId": "4436712509",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445581203",
-      "jobId": "4445581203",
+      "sourceJobId": "li-4436719197",
+      "jobId": "4436719197",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445829304",
-      "jobId": "4445829304",
+      "sourceJobId": "li-4436702883",
+      "jobId": "4436702883",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445817538",
-      "jobId": "4445817538",
+      "sourceJobId": "li-4436722031",
+      "jobId": "4436722031",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445588143",
-      "jobId": "4445588143",
+      "sourceJobId": "li-4436703895",
+      "jobId": "4436703895",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4446985153",
-      "jobId": "4446985153",
+      "sourceJobId": "li-4436714462",
+      "jobId": "4436714462",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4446495345",
-      "jobId": "4446495345",
+      "sourceJobId": "li-4435553591",
+      "jobId": "4435553591",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4432798924",
+      "jobId": "4432798924",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4436321197",
+      "jobId": "4436321197",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-china-industry-specialist-ai-e-commerce-gaming-at-capital-group-4435017135",
+      "jobId": "4435017135",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445577179",
-      "jobId": "4445577179",
+      "sourceJobId": "li-quantitative-researcher-at-man-group-4433353137",
+      "jobId": "4433353137",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4447299740",
-      "jobId": "4447299740",
+      "sourceJobId": "li-4435574190",
+      "jobId": "4435574190",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4447285956",
-      "jobId": "4447285956",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4446969416",
-      "jobId": "4446969416",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4445077986",
-      "jobId": "4445077986",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4447265978",
-      "jobId": "4447265978",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4446048045",
-      "jobId": "4446048045",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4446738765",
-      "jobId": "4446738765",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4443216670",
-      "jobId": "4443216670",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4446749263",
-      "jobId": "4446749263",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442617421",
-      "jobId": "4442617421",
+      "sourceJobId": "li-4434390935",
+      "jobId": "4434390935",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4446723211",
-      "jobId": "4446723211",
+      "sourceJobId": "li-4400839927",
+      "jobId": "4400839927",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-vp-investment-manager-pam-multi-asset-fi-at-alliancebernstein-4419416879",
+      "jobId": "4419416879",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-senior-investment-consultant-manager-at-mirae-asset-securities-hk-4428920470",
+      "jobId": "4428920470",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4412634774",
+      "jobId": "4412634774",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4432560691",
+      "jobId": "4432560691",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4371121612",
+      "jobId": "4371121612",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4400832996",
+      "jobId": "4400832996",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4424523179",
+      "jobId": "4424523179",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4431713586",
+      "jobId": "4431713586",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4397545800",
+      "jobId": "4397545800",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4374870309",
+      "jobId": "4374870309",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4420735669",
+      "jobId": "4420735669",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4401960724",
+      "jobId": "4401960724",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4353191531",
+      "jobId": "4353191531",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4403354171",
+      "jobId": "4403354171",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4415014464",
+      "jobId": "4415014464",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4446731515",
-      "jobId": "4446731515",
+      "sourceJobId": "li-4432995983",
+      "jobId": "4432995983",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4433088644",
+      "jobId": "4433088644",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4417906894",
+      "jobId": "4417906894",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4417916281",
+      "jobId": "4417916281",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4432998847",
+      "jobId": "4432998847",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4390152012",
+      "jobId": "4390152012",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4427911877",
+      "jobId": "4427911877",
       "result": "open",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4214774235",
-      "jobId": "4214774235",
-      "result": "gone",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4444111126",
-      "jobId": "4444111126",
+      "sourceJobId": "li-4380258525",
+      "jobId": "4380258525",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4385648752",
-      "jobId": "4385648752",
+      "sourceJobId": "li-4432235789",
+      "jobId": "4432235789",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4443654888",
-      "jobId": "4443654888",
+      "sourceJobId": "li-4377910734",
+      "jobId": "4377910734",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4443658919",
-      "jobId": "4443658919",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4436513529",
-      "jobId": "4436513529",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4445422745",
-      "jobId": "4445422745",
+      "sourceJobId": "li-4429510760",
+      "jobId": "4429510760",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445141255",
-      "jobId": "4445141255",
+      "sourceJobId": "li-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E5%AE%B6-at-shanghai-yanfu-investments-co-ltd-4338917596",
+      "jobId": "4338917596",
+      "result": "open",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4427493476",
+      "jobId": "4427493476",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4357639742",
+      "jobId": "4357639742",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-research-analyst-china-coverage-at-william-blair-4385702296",
+      "jobId": "4385702296",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4443212690",
-      "jobId": "4443212690",
+      "sourceJobId": "li-4401772784",
+      "jobId": "4401772784",
+      "result": "closed",
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
+    },
+    {
+      "sourceJobId": "li-4419819412",
+      "jobId": "4419819412",
       "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4445130328",
-      "jobId": "4445130328",
+      "sourceJobId": "li-4416489747",
+      "jobId": "4416489747",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     },
     {
-      "sourceJobId": "li-4427711047",
-      "jobId": "4427711047",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4444941591",
-      "jobId": "4444941591",
+      "sourceJobId": "li-4415532146",
+      "jobId": "4415532146",
       "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442809718",
-      "jobId": "4442809718",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442372436",
-      "jobId": "4442372436",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442397021",
-      "jobId": "4442397021",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442397042",
-      "jobId": "4442397042",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442344096",
-      "jobId": "4442344096",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4443097581",
-      "jobId": "4443097581",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4441855905",
-      "jobId": "4441855905",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4441864316",
-      "jobId": "4441864316",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4442618414",
-      "jobId": "4442618414",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4444346363",
-      "jobId": "4444346363",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4445200901",
-      "jobId": "4445200901",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4441590031",
-      "jobId": "4441590031",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4444925318",
-      "jobId": "4444925318",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
-    },
-    {
-      "sourceJobId": "li-4444062812",
-      "jobId": "4444062812",
-      "result": "closed",
-      "checkedAt": "2026-10-01T21:34:22.529194+00:00"
+      "checkedAt": "2026-10-02T03:34:16.893327+00:00"
     }
   ],
   "stats": {
-    "probed": 150,
-    "open": 8,
-    "closed": 88,
-    "not_accepting": 42,
-    "gone": 12,
+    "probed": 108,
+    "open": 9,
+    "closed": 75,
+    "not_accepting": 16,
+    "gone": 8,
     "unknown": 0,
     "circuitOpen": false,
     "selectorGuardTripped": false
