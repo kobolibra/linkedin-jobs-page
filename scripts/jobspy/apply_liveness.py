@@ -2,11 +2,12 @@
 """Apply liveness observations to canonical jobs idempotently."""
 from __future__ import annotations
 import argparse, json
+from datetime import datetime, timezone
 from pathlib import Path
-from job_liveness import apply_observation, jid, in_scope
+from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=30); args=ap.parse_args()
     doc=json.loads(Path(args.jobs).read_text(encoding="utf-8")); out=dict(doc) if isinstance(doc,dict) else {"jobs":doc}
     try: live=json.loads(Path(args.liveness).read_text(encoding="utf-8"))
     except (FileNotFoundError,json.JSONDecodeError):
@@ -23,7 +24,15 @@ def main():
         elif result=="gone": stats["expired_gone"]+=int(row.get("expiredReason")=="linkedin_removed"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_removed")
         elif result=="not_accepting": stats["expired_not_accepting"]+=int(row.get("expiredReason")=="linkedin_not_accepting"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_not_accepting")
         else: stats["unknown"]+=1
-    out["jobs"]=list(by.values()); out["count"]=len(out["jobs"]); out["liveness"]={"observedAt":live.get("observedAt"),**stats}
+    now=datetime.now(timezone.utc); kept=[]; deleted=0
+    for row in by.values():
+        expired_at=parse_time(row.get("expiredAt"))
+        eligible=(in_scope(row,"CN") and row.get("jobStatus")=="expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and expired_at and (now-expired_at).total_seconds() >= args.delete_after_days*24*3600)
+        if eligible:
+            deleted += 1
+        else:
+            kept.append(row)
+    out["jobs"]=kept; out["count"]=len(kept); out["liveness"]={"observedAt":live.get("observedAt"),"deleted_after_days":deleted,**stats}
     Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(out["liveness"],ensure_ascii=False))
 if __name__ == "__main__": main()
