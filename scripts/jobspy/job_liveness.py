@@ -12,7 +12,7 @@ LIVENESS_EXPIRED_REASONS = {
     "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
 }
 COVERED = {str(spec.get("canonical", "")).strip().casefold() for spec in COMPANIES.values()}
-_APPLY_CONTROL = re.compile(r'data-tracking-control-name\s*=\s*["\']public_jobs_apply-link-(?:offsite|onsite)["\']', re.I)
+_APPLY_CONTROL = re.compile(r'data-tracking-control-name\s*=\s*["\']public_jobs_apply-link-(?:offsite|onsite)', re.I)
 _CANONICAL = re.compile(r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)', re.I)
 
 def parse_time(value):
