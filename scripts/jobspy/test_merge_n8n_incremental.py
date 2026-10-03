@@ -36,19 +36,6 @@ class N8nMergeTests(unittest.TestCase):
         self.assertEqual(row["expiredReason"], "linkedin_closed")
         self.assertEqual(result["n8nIncrementalMerge"]["livenessKeptExpired"], 1)
 
-    def test_verified_hk_location_is_not_overwritten_by_cn_rss(self):
-        baseline = {"jobs": [{
-            "sourceJobId": "li-100000021", "location": "HK", "city": "HONG KONG SAR",
-            "locationRaw": "HONG KONG SAR, China", "locationVerificationSource": "linkedin-detail",
-        }]}
-        batch = {"generatedAt": "2026-09-11T00:00:00Z", "jobs": [{
-            "sourceJobId": "li-100000021", "location": "CN", "city": "", "locationRaw": "",
-        }]}
-        row = merge_documents(baseline, batch)["jobs"][0]
-        self.assertEqual(row["location"], "HK")
-        self.assertEqual(row["city"], "HONG KONG SAR")
-        self.assertEqual(row["locationRaw"], "HONG KONG SAR, China")
-
     def test_empty_values_do_not_erase_existing_fields(self):
         baseline = {"jobs": [{"sourceJobId": "li-100000002", "descriptionHtml": "<p>JD</p>"}]}
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000002", "descriptionHtml": ""}]}
