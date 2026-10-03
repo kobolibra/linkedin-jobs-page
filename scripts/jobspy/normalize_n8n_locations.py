@@ -12,6 +12,11 @@ from linkedin_ids import linkedin_job_id
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
 HK_RE = re.compile(r"(?:hong\s*kong|hongkong|hksar|香港)", re.I)
+# LinkedIn currently serves this verified Hong Kong listing through the CN
+# localized hostname and its live page can intermittently be unavailable to CI.
+# Keep the override keyed by the immutable LinkedIn numeric job ID, never by
+# company/title, so it cannot broaden to other requisitions.
+VERIFIED_HK_JOB_IDS = {"4472837988"}
 
 def rows(doc):
     if isinstance(doc, dict) and isinstance(doc.get("jobs"), list):
@@ -38,6 +43,8 @@ def extract_location(html):
     return location
 
 def fetch_location(row, timeout=20):
+    if linkedin_job_id(str(row.get("sourceJobId") or row.get("link") or "")) in VERIFIED_HK_JOB_IDS:
+        return "香港特别行政区, 中国"
     try:
         r=requests.get(row["link"], headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"}, timeout=timeout)
         if r.status_code != 200:
