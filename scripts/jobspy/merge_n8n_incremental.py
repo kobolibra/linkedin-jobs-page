@@ -165,6 +165,7 @@ def merge_documents(baseline, batch_doc):
             current = rows[by_key[key]]
             merged = dict(current)
             keep_liveness_expired = current.get("jobStatus") == "expired" and current.get("expiredReason") in LIVENESS_EXPIRED_REASONS
+            keep_verified_location = current.get("locationVerificationSource") == "linkedin-detail"
             for field, value in incoming.items():
                 # RSS is evidence that a listing is visible in the feed, but
                 # cannot by itself prove a LinkedIn repost.  Existing rows
@@ -176,6 +177,8 @@ def merge_documents(baseline, batch_doc):
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
                     "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
                 } or not nonempty(value):
+                    continue
+                if keep_verified_location and field in {"location", "locationRaw", "city"}:
                     continue
                 merged[field] = value
             if nonempty(current.get("firstSeen")):
