@@ -62,7 +62,10 @@
     window.addEventListener('resize', () => schedule([], true), { passive: true });
     document.addEventListener('toggle', (event) => schedule([event.target]), true);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => schedule([], true)).catch(() => {});
-    [300, 1000, 2500].forEach((t) => setTimeout(() => schedule([], true), t));
+    // Added cards, toggle, resize and font readiness already cover every
+    // layout-changing event. Repeated full-list scans at 300/1000/2500 ms
+    // caused avoidable getBoundingClientRect work on thousands of expired rows
+    // during the first load.
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
   else start();

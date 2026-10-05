@@ -29,9 +29,10 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
   if(front){front.addEventListener('load',()=>stack.classList.add('show'));front.addEventListener('error',()=>{stack.style.display='none';});}
   stack.querySelectorAll('.mast-avatar').forEach(im=>{im.src='avatars/1.jpg';});
 })();
-(function(){
+(()=>{
   const bg=document.getElementById('mastBg');
   if(!bg||matchMedia('(max-width:1100px)').matches)return;
+  const start=()=>{
   const numbered=(prefix,count)=>Array.from({length:count},(_,index)=>'avatars/backgrounds/'+prefix+'-'+String(index+1).padStart(2,'0')+'.jpg');
   const cats=['avatars/2.jpeg','avatars/3.jpeg'];
   const portraits=[
@@ -46,7 +47,7 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
   const showCats=Math.random()<cats.length/(cats.length+portraits.length/3);
   const selected=showCats?[choose(cats,previous)]:[];
   if(!showCats)for(let index=0;index<3;index++)selected.push(choose(portraits,[...previous,...selected]));
-  const preload=path=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=path;});
+  const preload=path=>new Promise((resolve,reject)=>{const image=new Image();image.decoding='async';image.fetchPriority='low';image.onload=()=>resolve(image);image.onerror=reject;image.src=path;});
   const fitGallery=()=>{
     const masthead=bg.closest('.masthead'),eyebrow=masthead?.querySelector('.eyebrow'),stats=masthead?.querySelector('.stats'),stack=masthead?.querySelector('#mastStack');
     if(!masthead||!eyebrow||!stats||!stack)return;
@@ -67,6 +68,11 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
     bg.classList.toggle('triptych',images.length===3);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');sessionStorage.setItem(storageKey,selected.join('|'));
     document.fonts?.ready.then(fitGallery);setTimeout(fitGallery,760);addEventListener('resize',fitGallery,{passive:true});
   }).catch(()=>{bg.style.display='none';});
+  };
+  // These images are decorative only. Start them after the first data paint so
+  // the 4–6 MB gallery cannot compete with jobs-index.json and list rendering.
+  if('requestIdleCallback' in window)requestIdleCallback(start,{timeout:1800});
+  else setTimeout(start,900);
 })();
 document.getElementById('totop').innerHTML=IC.up;
 document.getElementById('favToggle').innerHTML=IC.star+'<span>收藏</span>';
