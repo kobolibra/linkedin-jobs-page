@@ -290,11 +290,20 @@ def main():
     # Process jobs
     results = process_jobs(jobs_data, today)
 
-    # Save results
+    # Save results as JSON
     filepath = os.path.join(OUTPUT_DIR, f"today-companies-{today}.json")
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
     print(f"\n[INFO] Results saved to: {filepath}")
+
+    # Save target companies as TSV (tab-separated) for easy copy-paste into Excel
+    tsv_path = os.path.join(OUTPUT_DIR, f"today-target-companies-{today}.tsv")
+    with open(tsv_path, "w", encoding="utf-8-sig") as f:
+        # UTF-8 BOM so Excel opens Chinese correctly
+        f.write("序号\t公司名\t备注\n")
+        for i, c in enumerate(results["target_companies"], 1):
+            f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
+    print(f"[INFO] TSV table saved to: {tsv_path}")
 
     # Print summary
     print("\n" + "=" * 70)
@@ -305,10 +314,17 @@ def main():
     print(f"  Target companies: {results['total_target']}")
     print(f"  Excluded companies: {results['total_excluded']}")
     print("-" * 70)
+
+    # TARGET COMPANIES — printed as tab-separated table
+    # Copy the block below and paste into Excel / Google Sheets / WPS to get columns automatically
     if results["target_companies"]:
-        print("\n  [TARGET COMPANIES]")
+        print("\n  [TARGET COMPANIES] — copy-paste block below into Excel:")
+        print("  " + "-" * 60)
+        print("  序号\t公司名\t备注")
         for i, c in enumerate(results["target_companies"], 1):
-            print(f"  {i:3d}. {c['company']}")
+            print(f"  {i}\t{c['company']}\t{c.get('reason', '')}")
+        print("  " + "-" * 60)
+
     if results["excluded_companies"]:
         print("\n  [EXCLUDED COMPANIES]")
         for i, c in enumerate(results["excluded_companies"], 1):
