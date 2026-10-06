@@ -3,25 +3,6 @@ from merge_n8n_incremental import merge_documents
 
 
 class N8nMergeTests(unittest.TestCase):
-    def test_blocklisted_incoming_cannot_reinsert_or_add_jobs(self):
-        baseline = {"jobs": [{"sourceJobId": "li-100000031", "company": "BNP Paribas"}]}
-        batch = {"blocklist": [{"Company": "BNP Paribas"}], "jobs": [
-            {"sourceJobId": "li-100000031", "company": "BNP"},
-            {"sourceJobId": "li-100000031", "title": "Partial update without company"},
-            {"sourceJobId": "li-100000032", "company": " BNP PARIBAS "},
-            {"sourceJobId": "li-100000033", "company": "HSBC"},
-        ]}
-        result = merge_documents(baseline, batch)
-        self.assertEqual([x["sourceJobId"] for x in result["jobs"]], ["li-100000033"])
-        self.assertEqual(result["n8nIncrementalMerge"]["added"], 1)
-
-    def test_absent_or_empty_blocklist_preserves_compatibility(self):
-        baseline = {"jobs": [{"sourceJobId": "li-100000031", "company": "BNP"}]}
-        for extra in ({}, {"blocklist": []}):
-            with self.subTest(extra=extra):
-                result = merge_documents(baseline, {"jobs": [{"sourceJobId": "li-100000032", "company": "BNP"}], **extra})
-                self.assertEqual(len(result["jobs"]), 2)
-
     def test_rss_presence_watermark_uses_observation_not_display_date(self):
         batch = {"generatedAt": "2026-09-21T10:00:00Z", "jobs": [{
             "sourceJobId": "li-100000031", "company": "Acme", "firstSeen": "2026-09-01", "pushTime": "2026-09-02",

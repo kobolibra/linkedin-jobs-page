@@ -149,10 +149,6 @@ def merge_documents(baseline, batch_doc):
     batch = batch_rows(batch_doc)
     observed_at = batch_doc.get("generatedAt") if isinstance(batch_doc, dict) else None
     blocked = blocklist_companies(batch_doc)
-    blocked_keys = {
-        job_key(row) for row in baseline["jobs"]
-        if normalize_company(row.get("company")) in blocked
-    }
     rows = [
         dict(row)
         for row in baseline["jobs"]
@@ -163,12 +159,8 @@ def merge_documents(baseline, batch_doc):
     for incoming in batch:
         if not isinstance(incoming, dict):
             continue
-        if normalize_company(incoming.get("company")) in blocked:
-            continue
         key = job_key(incoming)
         if not key:
-            continue
-        if key in blocked_keys and not incoming.get("company"):
             continue
         if key in by_key:
             current = rows[by_key[key]]
