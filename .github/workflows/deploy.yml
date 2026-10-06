@@ -12,6 +12,10 @@ on:
       - '*.js'
       - '*.css'
       - 'avatars/**'
+      - 'wrangler.jsonc'
+      - 'scripts/visitor-counter.mjs'
+      - 'scripts/verify_visitor_counter.py'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 concurrency:
@@ -30,8 +34,6 @@ jobs:
         run: python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
       - name: Build frontend payloads from canonical jobs
         run: python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-      - name: Refresh same-origin visitor count
-        run: python3 scripts/publish_pv.py pv.json
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -44,3 +46,5 @@ jobs:
           accountId: "\u0024\u007B\u007B secrets.CLOUDFLARE_ACCOUNT_ID \u007D\u007D"
           wranglerVersion: "4.143.0"
           command: deploy --config wrangler.jsonc
+      - name: Verify production live visitor counter
+        run: python scripts/verify_visitor_counter.py
