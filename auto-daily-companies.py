@@ -305,6 +305,14 @@ def main():
             f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
     print(f"[INFO] TSV table saved to: {tsv_path}")
 
+    # Save excluded companies as TSV too
+    excl_tsv_path = os.path.join(OUTPUT_DIR, f"today-excluded-companies-{today}.tsv")
+    with open(excl_tsv_path, "w", encoding="utf-8-sig") as f:
+        f.write("序号\t公司名\t排除原因\n")
+        for i, c in enumerate(results["excluded_companies"], 1):
+            f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
+    print(f"[INFO] Excluded TSV table saved to: {excl_tsv_path}")
+
     # Print summary
     print("\n" + "=" * 70)
     print(f"  DAILY COMPANIES REPORT - {today} (Beijing Time)")
@@ -313,23 +321,27 @@ def main():
     print(f"  Today's jobs (past 24h): {results['total_today_jobs']}")
     print(f"  Target companies: {results['total_target']}")
     print(f"  Excluded companies: {results['total_excluded']}")
-    print("-" * 70)
-
-    # TARGET COMPANIES — printed as tab-separated table
-    # Copy the block below and paste into Excel / Google Sheets / WPS to get columns automatically
-    if results["target_companies"]:
-        print("\n  [TARGET COMPANIES] — copy-paste block below into Excel:")
-        print("  " + "-" * 60)
-        print("  序号\t公司名\t备注")
-        for i, c in enumerate(results["target_companies"], 1):
-            print(f"  {i}\t{c['company']}\t{c.get('reason', '')}")
-        print("  " + "-" * 60)
-
-    if results["excluded_companies"]:
-        print("\n  [EXCLUDED COMPANIES]")
-        for i, c in enumerate(results["excluded_companies"], 1):
-            print(f"  {i:3d}. {c['company']} - {c['reason']}")
     print("=" * 70)
+
+    # TARGET COMPANIES — clean TSV block (no leading spaces, no separator lines in data)
+    # Select and copy ONLY the lines between the markers, then paste into Excel/WPS/Google Sheets
+    if results["target_companies"]:
+        print("\n[TARGET COMPANIES] — copy the TSV block below (between markers) into Excel:")
+        print("---BEGIN TSV---")
+        print("序号\t公司名\t备注")
+        for i, c in enumerate(results["target_companies"], 1):
+            print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
+        print("---END TSV---")
+
+    # EXCLUDED COMPANIES — clean TSV block
+    if results["excluded_companies"]:
+        print("\n[EXCLUDED COMPANIES] — copy the TSV block below (between markers) into Excel:")
+        print("---BEGIN TSV---")
+        print("序号\t公司名\t排除原因")
+        for i, c in enumerate(results["excluded_companies"], 1):
+            print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
+        print("---END TSV---")
+    print("\n" + "=" * 70)
 
     return results, filepath
 
