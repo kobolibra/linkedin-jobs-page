@@ -7,6 +7,12 @@ on:
       - 'requirements-jobspy.txt'
       - 'worker.js'
       - 'test-jev-worker.mjs'
+      - 'visitor-count.js'
+      - 'wrangler.jsonc'
+      - 'scripts/visitor-counter.mjs'
+      - 'scripts/test_visitor_counter_integration.py'
+      - 'index.html'
+      - 'scripts/test_visitor_count.mjs'
       - '.github/workflows/**'
   workflow_dispatch:
 
@@ -37,5 +43,9 @@ jobs:
           python -m unittest discover -s scripts/jobspy -p 'test_*.py'
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
-      - name: Test JEV Worker
-        run: node --test test-jev-worker.mjs
+      - name: Test JEV Worker and visitor counter
+        run: node --test test-jev-worker.mjs scripts/test_visitor_count.mjs
+      - name: Test persistent visitor counter in Cloudflare runtime
+        run: |
+          npm install --no-save wrangler@4.143.0
+          python scripts/test_visitor_counter_integration.py
