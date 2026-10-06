@@ -91,6 +91,15 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
     incoming = [dict(x) for x in rows(snapshot_doc)]
     observed_at = now_iso(observed_at)
+    observed_time = timestamp(observed_at)
+    if observed_time is None:
+        raise ValueError("snapshot observed_at must be a valid timestamp")
+    previous_snapshot = existing_doc.get("jobspySnapshot", {}) if isinstance(existing_doc, dict) else {}
+    previous_time = timestamp(previous_snapshot.get("observedAt"))
+    # RSS merges can run several times against one immutable JobSpy snapshot.
+    # Replaying it must not undo discoveries or status changes made afterwards.
+    if previous_time and observed_time <= previous_time:
+        return {**existing_doc, "jobs": existing}
     by_id = {jid(x): x for x in existing if jid(x)}
     reactivated = 0
     scope_locations = {
@@ -179,6 +188,13 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         if location not in scope_locations or company_location not in observed_companies or company_location not in successful:
             continue
         if key not in snapshot_ids:
+            # RSS observation time is separate from firstSeen/datePosted, which
+            # may be backfilled. Retain legacy timestamps for older records.
+            presence_times = [timestamp(item.get(field)) for field in (
+                "rssObservedAt", "observedAt", "lastSeenAt", "liveVerifiedAt", "firstSeen",
+            )]
+            if any(when is not None and when >= observed_time for when in presence_times):
+                continue
             if item.get("jobStatus") != "expired":
                 item["expiredAt"] = observed_at
                 item["expiredReason"] = "missing_from_full_company_snapshot"

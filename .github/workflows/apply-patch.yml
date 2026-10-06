@@ -18,6 +18,7 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   patch:
@@ -62,8 +63,7 @@ jobs:
           done
           echo "::error title=Patch failed::Unable to push after 3 attempts"
           exit 1
-      - name: Redeploy GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+      - name: Dispatch complete site deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref "$GITHUB_REF_NAME"

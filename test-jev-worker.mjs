@@ -20,3 +20,69 @@ test('returns 503 without leaking provider credentials',async()=>{const res=awai
 test('rejects direct API calls without same-origin Origin',async()=>{const res=await worker.fetch(new Request('https://linkedin.example/api/jev/analyze',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(input())}),{TYPESAFE_API_KEY:'test-secret',ASSETS:{fetch:async()=>new Response('asset')}});assert.equal(res.status,403);});
 test('proxies provider response without exposing key and serves assets',async()=>{const old=globalThis.fetch;let req;globalThis.fetch=async(url,init)=>{req={url,init};return new Response(JSON.stringify({answers:{roleArchetype:{type:'choice',choice:'CF1_finance_accounting'},primaryActivity:{type:'choice',choice:'finance_accounting_and_control'}}}),{status:200});};try{const res=await worker.fetch(new Request('https://linkedin.example/api/jev/analyze',{method:'POST',headers:{'content-type':'application/json',origin:'https://linkedin.example'},body:JSON.stringify(input())}),{TYPESAFE_API_KEY:'test-secret',ASSETS:{fetch:async()=>new Response('asset')}});const body=await res.json();assert.equal(res.status,200);assert.equal(req.url,'https://api.typesafe.ai/v1/systemone');assert.equal(req.init.headers.authorization,'Bearer test-secret');assert.equal(body.analysis.roleArchetype.value,'CF1_finance_accounting');assert.doesNotMatch(JSON.stringify(body),/test-secret/);}finally{globalThis.fetch=old;}});
 test('serves homepage uncached and static assets normally',async()=>{const asset=new Response('<!doctype html>',{headers:{'cache-control':'public,max-age=3600'}});const res=await worker.fetch(new Request('https://linkedin.example/'),{ASSETS:{fetch:async()=>asset}});assert.equal(res.status,200);assert.match(res.headers.get('cache-control'),/no-store/);});
+
+test('all gated dimensions keep code, value and label consistent',()=>{
+  const choice=value=>({type:'choice',choice:value,confidence:.95});
+  const answers={postingType:choice('specific_role'),roleArchetype:choice('TE1_software_engineering'),primaryActivity:choice('software_engineering'),businessLine:choice('global_markets'),leadershipLevel:choice('people_manager'),hasExplicitPeopleManagement:{type:'noul',noul:.1},hasExplicitTeamLeadership:{type:'noul',noul:.8}};
+  const cases=[
+    {answers,level:'adequate',role:'TE1_software_engineering',lead:'team_lead'},
+    {answers:{...answers,hasExplicitTeamLeadership:{type:'noul',noul:.1}},level:'adequate',role:'TE1_software_engineering',lead:'individual_contributor'},
+    {answers:{...answers,postingType:choice('not_a_job_posting')},level:'adequate',role:'not_applicable',lead:'not_applicable'},
+    {answers,level:'insufficient',role:'insufficient_evidence',lead:'not_applicable'},
+    {answers:{...answers,leadershipLevel:choice('not_stated'),hasExplicitPeopleManagement:{type:'noul',noul:.9}},level:'adequate',role:'TE1_software_engineering',lead:'people_manager'},
+  ];
+  for(const c of cases){
+    const r=parseProviderResponse({answers:c.answers},input({jevInput:{...v4,evidence_level:c.level}}));
+    assert.equal(r.roleArchetype.value,c.role);
+    assert.equal(r.leadershipLevel.value,c.lead);
+    for(const key of ['postingType','roleArchetype','primaryActivity','businessLine','leadershipLevel']){
+      assert.equal(r[key].code,r[key].value,key);
+      assert.ok(r[key].label,key);
+    }
+  }
+});
+
+test('HTTP success without any usable provider answers returns an uncached error',async()=>{
+  const old=globalThis.fetch;
+  const cases=[{},null,[],{usage:{total_tokens:123}},{answers:{}},{answers:{roleArchetype:{}}},{answers:{roleArchetype:{type:'choice',choice:'unknown_code'}}},{answers:{riskNonPermanent:{type:'noul',noul:2}}},{choices:[{message:{content:'No answer available'}}]},{choices:[{message:{content:'{}'}}]}];
+  try{
+    for(const [i,payload] of cases.entries()){
+      globalThis.fetch=async()=>new Response(JSON.stringify(payload),{status:200});
+      const request=new Request('https://linkedin.example/api/jev/analyze',{method:'POST',headers:{'content-type':'application/json',origin:'https://linkedin.example','CF-Connecting-IP':`empty-case-${i}`},body:JSON.stringify(input({jevInput:v4}))});
+      const res=await worker.fetch(request,{TYPESAFE_API_KEY:'test-secret'});
+      assert.equal(res.status,502,JSON.stringify(payload));
+      assert.deepEqual(await res.json(),{error:'provider_error'});
+      assert.equal(res.headers.get('cache-control'),'no-store');
+    }
+  }finally{globalThis.fetch=old;}
+});
+
+test('supported direct, wrapped and partial provider answers remain successful',async()=>{
+  const old=globalThis.fetch;
+  const answers={roleArchetype:{type:'choice',choice:'TE1_software_engineering',confidence:.9}};
+  const cases=[answers,{answers},{analysis:answers},{result:answers},{choices:[{message:{content:JSON.stringify({answers})}}]},{choices:[{message:{tool_calls:[{function:{arguments:JSON.stringify({answers})}}]}}]}];
+  try{
+    for(const [i,payload] of cases.entries()){
+      globalThis.fetch=async()=>new Response(JSON.stringify(payload),{status:200});
+      const request=new Request('https://linkedin.example/api/jev/analyze',{method:'POST',headers:{'content-type':'application/json',origin:'https://linkedin.example','CF-Connecting-IP':`valid-case-${i}`},body:JSON.stringify(input({jevInput:v4}))});
+      const res=await worker.fetch(request,{TYPESAFE_API_KEY:'test-secret'});
+      assert.equal(res.status,200,JSON.stringify(payload));
+      const body=await res.json();
+      assert.equal(body.analysis.roleArchetype.code,'TE1_software_engineering');
+      assert.equal(body.analysis.leadershipLevel.code,body.analysis.leadershipLevel.value);
+    }
+  }finally{globalThis.fetch=old;}
+});
+
+test('provider HTTP failures and malformed JSON keep their error behavior',async()=>{
+  const old=globalThis.fetch;
+  try{
+    for(const [status,body,expected] of [[200,'not JSON',502],[500,'{}',502],[402,'{}',402],[429,'{}',429],[401,'{}',503]]){
+      globalThis.fetch=async()=>new Response(body,{status});
+      const request=new Request('https://linkedin.example/api/jev/analyze',{method:'POST',headers:{'content-type':'application/json',origin:'https://linkedin.example','CF-Connecting-IP':`failure-case-${status}`},body:JSON.stringify(input())});
+      const res=await worker.fetch(request,{TYPESAFE_API_KEY:'test-secret'});
+      assert.equal(res.status,expected);
+      assert.equal((await res.json()).analysis,undefined);
+    }
+  }finally{globalThis.fetch=old;}
+});

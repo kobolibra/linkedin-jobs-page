@@ -5,6 +5,54 @@ from job_liveness import apply_observation, classify, in_scope, select_candidate
 from apply_liveness import main as apply_main
 class LivenessTests(unittest.TestCase):
     def row(self, **kw): return {"sourceJobId":"li-123456789","company":"Small Co","companyCanonical":"small co","location":"CN","jobStatus":"active",**kw}
+    def test_expired_jobs_obey_72_hours_even_with_pending_marker(self):
+        now = datetime(2026, 10, 6, 12, tzinfo=timezone.utc)
+        for hours in (6, 21, 24, 71.999, 72, 73):
+            for pending in (False, True):
+                with self.subTest(hours=hours, pending=pending):
+                    row = self.row(jobStatus='expired', expiredReason='linkedin_closed', expiredAt=(now-timedelta(days=5)).isoformat(), liveCheckedAt=(now-timedelta(hours=hours)).isoformat())
+                    if pending:
+                        row['liveFirstMissAt'] = (now-timedelta(days=6)).isoformat()
+                    self.assertEqual(bool(select_candidates([row], now=now)), hours >= 72)
+
+    def test_expired_window_and_missing_check_time(self):
+        now = datetime(2026, 10, 6, 12, tzinfo=timezone.utc)
+        for days, expected in ((2, False), (3, True), (30, True), (30.001, False)):
+            with self.subTest(days=days):
+                row = self.row(jobStatus='expired', expiredReason='linkedin_removed', expiredAt=(now-timedelta(days=days)).isoformat())
+                self.assertEqual(bool(select_candidates([row], now=now)), expected)
+        row = self.row(jobStatus='expired', expiredReason='linkedin_removed', expiredAt='invalid', liveCheckedAt=(now-timedelta(hours=73)).isoformat())
+        self.assertEqual(select_candidates([row], now=now), [row])
+        row.pop('liveCheckedAt')
+        self.assertEqual(select_candidates([row], now=now), [])
+
+    def test_active_rules_and_candidate_budget_remain_intact(self):
+        now = datetime(2026, 10, 6, 12, tzinfo=timezone.utc)
+        pending = self.row(sourceJobId='li-100000001', liveCheckedAt=(now-timedelta(hours=6)).isoformat(), liveFirstMissAt=(now-timedelta(hours=13)).isoformat())
+        never = self.row(sourceJobId='li-100000002')
+        due = self.row(sourceJobId='li-100000003', liveCheckedAt=(now-timedelta(hours=20)).isoformat())
+        recent = self.row(sourceJobId='li-100000004', liveCheckedAt=(now-timedelta(hours=19)).isoformat())
+        expired = self.row(sourceJobId='li-100000005', jobStatus='expired', expiredReason='linkedin_closed', expiredAt=(now-timedelta(days=5)).isoformat(), liveCheckedAt=(now-timedelta(hours=73)).isoformat())
+        rows = [expired, recent, due, never, pending]
+        self.assertEqual(select_candidates(rows, now=now), [pending, never, due, expired])
+        self.assertEqual(select_candidates(rows, now=now, max_probes=2), [pending, never])
+        self.assertEqual(select_candidates(rows, now=now, max_probes=0), [])
+
+    def test_confirmation_ends_pending_and_recheck_preserves_expiry(self):
+        for result in ('gone', 'not_accepting', 'closed'):
+            with self.subTest(result=result):
+                row = self.row(liveFirstMissAt='2026-10-01T00:00:00Z')
+                apply_observation(row, result, '2026-10-01T12:00:00Z')
+                self.assertEqual(row['jobStatus'], 'expired')
+                self.assertNotIn('liveFirstMissAt', row)
+                expired_at = row['expiredAt']
+                apply_observation(row, result, '2026-10-04T12:00:00Z')
+                self.assertEqual(row['expiredAt'], expired_at)
+                self.assertNotIn('liveFirstMissAt', row)
+                apply_observation(row, 'open', '2026-10-07T12:00:00Z')
+                self.assertEqual(row['jobStatus'], 'active')
+                self.assertNotIn('expiredAt', row)
+
     def test_classification(self):
         base='<link rel="canonical" href="https://www.linkedin.com/jobs/view/123456789"><h1 class="top-card-layout__title">A</h1><div class="show-more-less-html__markup">JD</div>'
         self.assertEqual(classify(200,base+'<a data-tracking-control-name="public_jobs_apply-link-onsite">Apply</a>','123456789'),'open')

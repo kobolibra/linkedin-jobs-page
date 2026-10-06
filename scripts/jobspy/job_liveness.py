@@ -73,17 +73,25 @@ def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gon
         last = _last(row)
         age_hours = (now - last).total_seconds() / 3600 if last else None
         first_miss = parse_time(row.get("liveFirstMissAt"))
-        pending = bool(first_miss and age_hours is not None and (now - first_miss).total_seconds() >= gone_confirm_hours * 3600)
         status = row.get("jobStatus")
-        expired_recheck = status == "expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and age_hours is not None and age_hours >= recheck_expired_hours and (now - parse_time(row.get("expiredAt") or row.get("liveCheckedAt"))).total_seconds() <= recheck_expired_days * 24 * 3600
-        if pending:
+        # Expired jobs have their own clock, including legacy rows with a
+        # leftover first-miss marker. They must not enter active-job branches.
+        if status == "expired":
+            expired_at = parse_time(row.get("expiredAt")) or last
+            checked_at = last or expired_at
+            if expired_at is None or checked_at is None:
+                continue
+            expired_age = (now - expired_at).total_seconds() / 3600
+            check_age = (now - checked_at).total_seconds() / 3600
+            if not (0 <= expired_age <= recheck_expired_days * 24 and check_age >= recheck_expired_hours):
+                continue
+            rank = 3
+        elif first_miss and age_hours is not None and (now - first_miss).total_seconds() >= gone_confirm_hours * 3600:
             rank = 0
         elif last is None:
             rank = 1
         elif age_hours >= min_interval_hours:
             rank = 2
-        elif expired_recheck:
-            rank = 3
         else:
             continue
         priorities.append((rank, last or datetime.min.replace(tzinfo=timezone.utc), parse_time(row.get("firstSeen")) or datetime.min.replace(tzinfo=timezone.utc), row))
@@ -116,11 +124,18 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12):
         row["liveStatus"] = "closed"
         row["liveMissCount"] = int(row.get("liveMissCount") or 0) + 1
         row["jobStatus"] = "expired"
+        row.pop("liveFirstMissAt", None)
         if row.get("expiredReason") != "linkedin_closed" or not row.get("expiredAt"):
             row["expiredAt"] = observed_at
             row["expiredReason"] = "linkedin_closed"
         return row
     reason = "linkedin_removed" if result == "gone" else "linkedin_not_accepting"
+    if row.get("jobStatus") == "expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS:
+        # A repeat negative result is a recheck, not a new pending confirmation.
+        row["liveStatus"] = result
+        row["liveMissCount"] = int(row.get("liveMissCount") or 0) + 1
+        row.pop("liveFirstMissAt", None)
+        return row
     first = parse_time(row.get("liveFirstMissAt"))
     if not first:
         row["liveFirstMissAt"] = observed_at
@@ -131,6 +146,7 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12):
     row["liveStatus"] = result
     if when and (when - first).total_seconds() >= gone_confirm_hours * 3600:
         row["jobStatus"] = "expired"
+        row.pop("liveFirstMissAt", None)
         if row.get("expiredReason") != reason or not row.get("expiredAt"):
             row["expiredAt"] = observed_at
             row["expiredReason"] = reason
