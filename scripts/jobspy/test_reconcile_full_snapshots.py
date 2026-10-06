@@ -1,9 +1,66 @@
 import unittest
+from copy import deepcopy
 from reconcile_full_snapshots import reconcile
 from linkedin_ids import linkedin_job_id
+from merge_n8n_incremental import merge_documents
 
 
 class ReconcileTests(unittest.TestCase):
+    def snapshot(self):
+        return {
+            "scopeLocations": ["CN"],
+            "jobs": [{"sourceJobId": "li-100000001", "company": "Acme", "location": "CN"}],
+            "statusSummary": {"Acme": "ok: 1 jobs"},
+            "companies": {"Acme": "ok: 1 jobs"},
+        }
+
+    def test_repeated_snapshot_cannot_expire_later_rss_discovery(self):
+        snapshot = self.snapshot()
+        baseline = reconcile({"jobs": []}, snapshot, "2026-09-21T03:36:04Z")
+        batch = {"generatedAt": "2026-09-21T10:02:26.605Z", "jobs": [{
+            "sourceJobId": "li-100000002", "company": "Acme", "location": "CN",
+            "firstSeen": "2026-09-01", "descriptionHtml": "<p>Current JD</p>",
+        }]}
+        baseline = merge_documents(baseline, batch)
+        before = deepcopy(baseline)
+        repeated = reconcile(baseline, snapshot, "2026-09-21T03:36:04+00:00")
+        self.assertEqual(repeated, before)
+        final = merge_documents(repeated, {"generatedAt": "2026-09-21T16:20:18Z", "jobs": []})
+        self.assertEqual(final["jobs"][1]["jobStatus"], "active")
+        self.assertEqual(baseline, before)
+
+    def test_new_snapshot_cannot_expire_even_newer_presence(self):
+        baseline = reconcile({"jobs": []}, self.snapshot(), "2026-09-21T00:00:00Z")
+        baseline = merge_documents(baseline, {"generatedAt": "2026-09-21T10:00:00Z", "jobs": [{
+            "sourceJobId": "li-100000002", "company": "Acme", "location": "CN", "firstSeen": "2026-09-01",
+        }]})
+        protected = reconcile(baseline, self.snapshot(), "2026-09-21T06:00:00Z")
+        self.assertEqual(protected["jobs"][1]["jobStatus"], "active")
+        # A genuinely later successful observation may expire it normally.
+        fresh = reconcile(protected, self.snapshot(), "2026-09-21T12:00:00Z")
+        self.assertEqual(fresh["jobs"][1]["jobStatus"], "expired")
+        self.assertEqual(fresh["jobs"][1]["expiredAt"], "2026-09-21T12:00:00Z")
+
+    def test_legacy_presence_timestamps_protect_newer_jobs(self):
+        for field in ("observedAt", "lastSeenAt", "liveVerifiedAt", "firstSeen"):
+            with self.subTest(field=field):
+                baseline = {"jobs": [{"sourceJobId": "li-100000002", "company": "Acme", "jobStatus": "active", field: "2026-09-21T10:00:00Z"}]}
+                result = reconcile(baseline, self.snapshot(), "2026-09-21T03:36:04Z")
+                self.assertEqual(result["jobs"][0]["jobStatus"], "active")
+
+    def test_older_snapshot_cannot_reactivate_or_overwrite_current_job(self):
+        baseline = reconcile({"jobs": []}, self.snapshot(), "2026-09-21T12:00:00Z")
+        baseline["jobs"][0].update(jobStatus="expired", expiredAt="2026-09-21T13:00:00Z", title="Current title", descriptionHtml="<p>Current JD</p>")
+        old_snapshot = self.snapshot()
+        old_snapshot["jobs"][0].update(title="Old title", descriptionHtml="<p>Old JD</p>")
+        self.assertEqual(reconcile(baseline, old_snapshot, "2026-09-21T06:00:00Z"), baseline)
+
+    def test_invalid_snapshot_time_fails_before_changing_records(self):
+        baseline = {"jobs": [{"sourceJobId": "li-100000002", "company": "Acme", "jobStatus": "active"}]}
+        with self.assertRaises(ValueError):
+            reconcile(baseline, self.snapshot(), "invalid")
+        self.assertEqual(baseline["jobs"][0]["jobStatus"], "active")
+
     def test_slug_numbers_use_final_linkedin_job_id(self):
         source = "li-international-private-bank-investor-210740045-at-jpmorganchase-4468639951"
         link = "https://hk.linkedin.com/jobs/view/international-private-bank-investor-210740045-at-jpmorganchase-4468639951?position=4"

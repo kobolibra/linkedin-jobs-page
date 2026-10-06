@@ -3,6 +3,39 @@ from merge_n8n_incremental import merge_documents
 
 
 class N8nMergeTests(unittest.TestCase):
+    def test_blocklisted_incoming_cannot_reinsert_or_add_jobs(self):
+        baseline = {"jobs": [{"sourceJobId": "li-100000031", "company": "BNP Paribas"}]}
+        batch = {"blocklist": [{"Company": "BNP Paribas"}], "jobs": [
+            {"sourceJobId": "li-100000031", "company": "BNP"},
+            {"sourceJobId": "li-100000031", "title": "Partial update without company"},
+            {"sourceJobId": "li-100000032", "company": " BNP PARIBAS "},
+            {"sourceJobId": "li-100000033", "company": "HSBC"},
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual([x["sourceJobId"] for x in result["jobs"]], ["li-100000033"])
+        self.assertEqual(result["n8nIncrementalMerge"]["added"], 1)
+
+    def test_absent_or_empty_blocklist_preserves_compatibility(self):
+        baseline = {"jobs": [{"sourceJobId": "li-100000031", "company": "BNP"}]}
+        for extra in ({}, {"blocklist": []}):
+            with self.subTest(extra=extra):
+                result = merge_documents(baseline, {"jobs": [{"sourceJobId": "li-100000032", "company": "BNP"}], **extra})
+                self.assertEqual(len(result["jobs"]), 2)
+
+    def test_rss_presence_watermark_uses_observation_not_display_date(self):
+        batch = {"generatedAt": "2026-09-21T10:00:00Z", "jobs": [{
+            "sourceJobId": "li-100000031", "company": "Acme", "firstSeen": "2026-09-01", "pushTime": "2026-09-02",
+        }]}
+        result = merge_documents({"jobs": []}, batch)
+        self.assertEqual(result["jobs"][0]["rssObservedAt"], batch["generatedAt"])
+        older = {"generatedAt": "2026-09-21T12:00:00Z", "jobs": [{
+            "sourceJobId": "li-100000031", "observedAt": "2026-09-21T06:00:00Z",
+        }]}
+        updated = merge_documents(result, older)["jobs"][0]
+        self.assertEqual(updated["rssObservedAt"], "2026-09-21T10:00:00Z")
+        self.assertEqual(updated["firstSeen"], "2026-09-01")
+        self.assertEqual(updated["pushTime"], "2026-09-02")
+
     def test_existing_rss_observation_does_not_advance_push_time(self):
         baseline = {"jobs": [{"sourceJobId": "li-100000000", "firstSeen": "2026-01-01T00:00:00Z", "pushTime": "2026-02-01T00:00:00Z"}]}
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000000", "pushTime": "2026-09-10T08:00:00Z"}]}
