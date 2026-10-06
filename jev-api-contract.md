@@ -42,10 +42,13 @@ The response has `schemaVersion: 6`, `taxonomyVersion: "jev-taxonomy-v4.3"`, and
 
 Non-job postings neutralise all dimensions. Insufficient evidence never becomes a confident profession guess. Primary Activity is a model judgement; archetype defaults are only a low-confidence fallback. Leadership is gated by explicit people/team evidence, not by Head/Director titles.
 
+After these rules are applied, each dimension's `code` equals its final `value`; its label describes that same final category. Provider candidates remain evidence metadata, not the final classification.
+
 ## Error semantics
 
 - `400` invalid JSON/request; `422` missing or too-short description; `403` non-site origin; `405` wrong method; `413` request too large; `429` rate limit; `503` missing/invalid Worker secret; `502` provider error; `504` provider timeout.
 - Errors are rendered in the panel with a visible retry button and are never written to localStorage.
+- A provider HTTP 200 response must contain at least one usable answer to a requested question. Empty, error-only or unrecognizable answer envelopes return `502 provider_error`, rather than a successful default analysis. Supported partial answers and direct/chat/tool-call envelopes remain accepted; missing dimensions keep their existing conservative fallbacks.
 - Successful cache entries use `linkedin-jev-analysis-v4.3`, are keyed by job ID plus SHA-256 JD fingerprint, and are written only after successful rendering.
 
 ## Data pipeline

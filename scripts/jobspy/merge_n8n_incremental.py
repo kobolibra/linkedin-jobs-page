@@ -7,6 +7,7 @@ import unicodedata
 from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
+from reconcile_full_snapshots import timestamp
 
 TARGET_COMPANIES = {
     "ubs", "state street", "jpmorgan chase", "dbs bank", "morgan stanley", "anz",
@@ -175,6 +176,7 @@ def merge_documents(baseline, batch_doc):
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
                     "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
+                    "rssObservedAt",
                 } or not nonempty(value):
                     continue
                 merged[field] = value
@@ -205,6 +207,13 @@ def merge_documents(baseline, batch_doc):
             rows.append(merged)
             by_key[key] = len(rows) - 1
             added += 1
+        # Keep the latest RSS presence evidence independently of display dates.
+        # Re-reading an older batch must never move this watermark backwards.
+        seen = incoming.get("observedAt") or observed_at
+        seen_time = timestamp(seen)
+        previous_seen = timestamp(merged.get("rssObservedAt"))
+        if seen_time and (previous_seen is None or seen_time > previous_seen):
+            merged["rssObservedAt"] = seen
     salary_matches, salary_preserved = apply_salary_snapshot(rows, batch_doc)
     result = dict(baseline)
     result["jobs"] = rows

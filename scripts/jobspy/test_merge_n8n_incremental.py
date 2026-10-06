@@ -3,6 +3,20 @@ from merge_n8n_incremental import merge_documents
 
 
 class N8nMergeTests(unittest.TestCase):
+    def test_rss_presence_watermark_uses_observation_not_display_date(self):
+        batch = {"generatedAt": "2026-09-21T10:00:00Z", "jobs": [{
+            "sourceJobId": "li-100000031", "company": "Acme", "firstSeen": "2026-09-01", "pushTime": "2026-09-02",
+        }]}
+        result = merge_documents({"jobs": []}, batch)
+        self.assertEqual(result["jobs"][0]["rssObservedAt"], batch["generatedAt"])
+        older = {"generatedAt": "2026-09-21T12:00:00Z", "jobs": [{
+            "sourceJobId": "li-100000031", "observedAt": "2026-09-21T06:00:00Z",
+        }]}
+        updated = merge_documents(result, older)["jobs"][0]
+        self.assertEqual(updated["rssObservedAt"], "2026-09-21T10:00:00Z")
+        self.assertEqual(updated["firstSeen"], "2026-09-01")
+        self.assertEqual(updated["pushTime"], "2026-09-02")
+
     def test_existing_rss_observation_does_not_advance_push_time(self):
         baseline = {"jobs": [{"sourceJobId": "li-100000000", "firstSeen": "2026-01-01T00:00:00Z", "pushTime": "2026-02-01T00:00:00Z"}]}
         batch = {"generatedAt": "2026-09-10T08:00:00Z", "jobs": [{"sourceJobId": "li-100000000", "pushTime": "2026-09-10T08:00:00Z"}]}
