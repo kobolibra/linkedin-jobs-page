@@ -46,5 +46,5 @@ jobs:
           accountId: "\u0024\u007B\u007B secrets.CLOUDFLARE_ACCOUNT_ID \u007D\u007D"
           wranglerVersion: "4.143.0"
           command: deploy --config wrangler.jsonc
-      - name: Verify production live visitor counter
+      - name: Verify production visitor counter assets
         run: python scripts/verify_visitor_counter.py
