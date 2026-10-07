@@ -1,8 +1,10 @@
-# JEV Analysis API Contract — v4.3
+# JEV Analysis API Contract — v4.4
 
-## Runtime
+## Runtime and compatibility
 
-The browser calls the same-origin Cloudflare Worker endpoint `POST /api/jev/analyze`. The provider key remains server-side in the existing Cloudflare Worker secret binding `TYPESAFE_API_KEY`; it is never stored in GitHub, browser code, or job payloads.
+The browser calls the same-origin Cloudflare Worker `POST /api/jev/analyze`. The provider key remains server-side in the existing `TYPESAFE_API_KEY` / `JEV_API_KEY` binding. The existing Worker, ASSETS binding, endpoint, request limits, timeouts and deployment workflow remain in use.
+
+The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
 
 ## Input
 
@@ -12,49 +14,59 @@ The browser calls the same-origin Cloudflare Worker endpoint `POST /api/jev/anal
   "title": "Senior Data Engineer",
   "company": "Example Bank",
   "location": "HK",
-  "description": "Fallback full JD text",
+  "description": "Block-aware description text",
   "jevInput": {
     "schema": "jev-input-v4",
-    "jd_text": "De-boilerplated, block-aware job description",
     "language": "en",
-    "evidence_level": "rich",
+    "evidence_level": "adequate",
     "evidence_flags": [],
-    "employer_metadata": "Business: Corporate and Institutional Banking"
+    "employer_metadata": "Business: Corporate Banking",
+    "jd_text": "Optional preprocessed JD text"
   }
 }
 ```
 
-`description` is the safe fallback. The browser uses the preprocessed `jevInput.jd_text` when available, otherwise it reconstructs block-aware text from the JD HTML. The Worker validates the payload, enforces a 96 KB body limit, truncates description input to 30,000 characters, checks same-origin `Origin`, and applies a 12 requests/minute per-client rate limit.
+The frontend sends its preprocessed JD in `description`, with preprocessing metadata in `jevInput`; `jd_text` is optional and falls back to `description`. Raw fallback HTML is converted to blocks. The Worker checks same-origin Origin, enforces a 96 KB body limit / 30,000-character description limit and a 12 requests/minute per-client limit. It assesses duty evidence when valid preprocessing evidence metadata is absent; qualification-only text does not count as job duties.
 
 ## Provider request
 
-The Worker sends one compact state object `{title, company, location, employer_metadata, jd_text}` to TypeSafe `https://api.typesafe.ai/v1/systemone` using model `jev-latest`. It asks exactly 11 independent questions: five choices for posting/archetype/activity/business line/leadership, two nouls for people/team evidence, and four nouls for structural risk signals. No question cites another answer and no provider-side arithmetic or date comparison is requested.
+One call to TypeSafe `https://api.typesafe.ai/v1/systemone`, model `jev-latest` (or configured model), using only supported Choice and Noul primitives. Shared state is `{title, company, location, employer_metadata, jd_blocks}`. Source passages occur once in state, not repeated in every question. At most 120 block IDs are offered; overflow is retained in the final block rather than dropping tail employment terms.
 
-## Output
+Twenty independent questions:
 
+- Five classification choices: posting, archetype, activity, business line, leadership.
+- Three explicit-authority nouls: people management, team/workstream leadership, manager-of-managers.
+- Four structural-risk nouls: title mismatch, unclear overloaded scope, employment terms, sparse/template evidence.
+- Eight evidence-selection choices: four visible classification dimensions and four risks (posting evidence covers the pooled-vacancy risk). Whole-description evidence quality is assessed separately.
 
-Business Line uses mutually distinguishable client/product boundaries. `corporate_banking` is for large-company or multinational corporate clients; `institutional_banking` is for financial institutions or public-sector institutions; `commercial_sme` is for SME or mid-market clients; `transaction_banking` wins only when payments, cash management, liquidity, trade finance, working capital or treasury products dominate the JD. The old combined `corporate_and_institutional_banking` code is no longer accepted.
+Evidence choices select a block ID or `none`; employment/posting evidence may also select explicit title terms. No question reads another answer in the same call. The server resolves the selected ID to the actual input text, so the provider cannot invent a quotation. Passage selection itself remains a model judgment and can be wrong. No free-text generation primitive is assumed.
 
+## Classification and uncertainty
 
-Primary Activity is defined by the dominant recurring work product, not by title keywords. v4.3 separates relationship coverage from new-business sales, research from portfolio management, credit approval from broader risk, compliance monitoring from policy/legal advice, banking transaction operations from securities/fund operations, and data engineering from BI and quantitative/data-science modelling.
+`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
 
-The response has `schemaVersion: 6`, `taxonomyVersion: "jev-taxonomy-v4.3"`, and an `analysis` object containing exactly five visible dimensions: **Role Archetype**, **Primary Activity**, **Business Line**, **Leadership Level**, and **Role Risk**. Internal `postingType`, title signals, evidence, nouls and usage are metadata rather than additional card dimensions. Every dimension carries bounded confidence/state/candidate metadata; leadership also carries explicit people/team evidence.
+- **Role Archetype:** occupational mandate, with inclusion/exclusion boundaries. v4.4 separates markets sales/trading; compliance/legal; data engineering/BI; ML/financial quant; actuarial/underwriting/claims. It also adds independent model validation, nontechnical change delivery and client onboarding.
+- **Primary Activity:** the recurring output, independently judged. Never filled from archetype defaults. An otherwise valid answer without confidence is preserved as uncertain instead of overwritten. Confidence below 0.35 abstains.
+- **Business Line:** directly served product/service line first, then client segment. Employer brand is not evidence. Internal department without coverage is `not_stated`; an explicit group mandate is `enterprise_wide`. `other_business_line` handles explicit businesses outside banking.
+- **Leadership:** current authority rather than title grade. Team/people/hierarchical management requires a selected source passage and supporting nouls >= 0.8. Manager-of-managers also needs people-management support. Missing/weak evidence does not turn into IC. A substituted classification clears the rejected confidence and remains visibly conflicting.
+- **Role Risk:** source-supported clarification points, not a rating of the employer or a conclusion that workload is unrealistic. Employment/pooled risks require both model support and an actual selected source. Contract/vendor keywords and alternative locations do not trigger flags automatically. Missing/unsupported risk assessment is `not_stated`, distinct from `none`.
 
-Non-job postings neutralise all dimensions. Insufficient evidence never becomes a confident profession guess. Primary Activity is a model judgement; archetype defaults are only a low-confidence fallback. Leadership is gated by explicit people/team evidence, not by Head/Director titles.
+Evidence selections require confidence >= 0.55. Invalid/nonfinite/out-of-range confidence and probability values are ignored, and candidates are restricted to valid categories and displayed using readable labels. Close alternatives are marked conflicting. These thresholds are engineering gates, not a measured accuracy claim.
 
-After these rules are applied, each dimension's `code` equals its final `value`; its label describes that same final category. Provider candidates remain evidence metadata, not the final classification.
+Non-job content clears all dimensions, evidence and candidates. Insufficient duties suppress occupation, activity and leadership guesses, while explicitly evidenced business context can remain. `not_applicable` is reserved for non-job content; real underspecified jobs use `not_stated`, `not_determinable`, or `insufficient_evidence`.
 
-## Error semantics
+The five ambiguous role codes from v4.3 are retired: `CS6_markets_sales_trading`, `RC3_compliance_legal`, `TE5_data_engineering_analytics`, `TE6_ai_ml_quant`, `CF6_actuarial_insurance_technical`. They are not silently mapped into narrower professions. Other valid codes remain accepted.
 
-- `400` invalid JSON/request; `422` missing or too-short description; `403` non-site origin; `405` wrong method; `413` request too large; `429` rate limit; `503` missing/invalid Worker secret; `502` provider error; `504` provider timeout.
-- Errors are rendered in the panel with a visible retry button and are never written to localStorage.
-- A provider HTTP 200 response must contain at least one usable answer to a requested question. Empty, error-only or unrecognizable answer envelopes return `502 provider_error`, rather than a successful default analysis. Supported partial answers and direct/chat/tool-call envelopes remain accepted; missing dimensions keep their existing conservative fallbacks.
-- Successful cache entries use `linkedin-jev-analysis-v4.3`, are keyed by job ID plus SHA-256 JD fingerprint, and are written only after successful rendering.
+## Frontend and cache
 
-## Data pipeline
+The card keeps its five dimensions, with compact labels and escaped source excerpts (full excerpt in title). Risk rows contain a specific clarification question/action plus their supporting source. Empty risk results distinguish unassessed from no supported flags. Rendering never inserts JD evidence as HTML.
 
-`scripts/jobspy/jev_preprocess.py` and the Worker fallback use block-aware HTML parsing, static boilerplate removal, employer-frequency template removal at the fixed `15% / 12 jobs / 30 characters` threshold, duplicate removal, metadata extraction, and evidence assessment. `build_frontend_payload.py` writes `jevInput` for every JD and `data/jev-boilerplate.json` for auditability without changing the existing display JD fields.
+Successful entries use `linkedin-jev-analysis-v4.4`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
 
-## Deployment invariant
+## Errors and validation
 
-The existing `deploy.yml` publishes the same `linkedin` Worker with the existing `ASSETS` binding and Cloudflare credentials. No second Cloudflare deployment workflow is created. Rollback is a single git revert because the Worker, frontend, tests, and data contract are versioned together.
+Existing error semantics remain: 400 invalid request, 422 short description, 403 Origin mismatch, 405 wrong method, 413 oversized request, 429 rate limit, 503 missing/invalid provider configuration, 502 provider error, 504 timeout. Empty/error-only HTTP-200 provider envelopes do not become cacheable analyses. Supported direct/chat/tool-call and partial responses remain accepted with conservative unknown states. Errors show an explicit retry and are never cached.
+
+Runtime regression tests cover misleading title grades, hierarchy gates, missing answers/confidence, invalid scores, contract/vendor false positives, pooled versus same-role openings, source bounds, bilingual duties, source HTML escaping, non-job neutralisation, document drift and API failures. These deterministic tests validate application safeguards, not model accuracy; real-JD spot checks are reported separately.
+
+No changes to JobSpy, lifecycle statuses, blacklist logic, company statistics, visitor counts or cursor styling are required. Rollback is a git revert of the coordinated Worker/taxonomy/frontend change.
