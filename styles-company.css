@@ -180,3 +180,18 @@ body.compact .co-note { font-size:11px;line-height:1.6; }
 [data-theme="dark"] .co-close,[data-theme="dark"] .co-bar-t{background:rgba(255,255,255,.08);}
 
 @media print { .co-panel { display:none !important; } }
+/* Availability is separate from record age: include both states in every bar. */
+.co-status { display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px;font-size:11px;color:var(--ink-soft); }
+.co-status b { font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums; }
+.co-status-active { color:var(--sg); }
+.co-status-expired { color:var(--ink-faint); }
+.co-legend { display:flex;gap:14px;margin:0 0 8px;font-size:9px;color:var(--ink-faint); }
+.co-legend span { display:inline-flex;align-items:center;gap:5px; }
+.co-legend i { width:10px;height:4px;border-radius:2px; }
+.co-key-active,.co-segment-active { background:var(--sg); }
+.co-key-expired,.co-segment-expired { background:var(--ink-faint);opacity:.65; }
+.co-bar-f.co-bar-stack { display:flex;background:none;opacity:1; }
+.co-bar-stack > span { display:block;flex:none;height:100%; }
+.co-note + .co-note { margin-top:9px; }
+.co-scope { margin:14px 0 0;font-size:9px;line-height:1.65;color:var(--ink-faint); }
+.co-kpis,body.compact .co-kpis { column-gap:12px; }
