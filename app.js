@@ -603,7 +603,7 @@ jobsDataPromise
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+(first?'<span class="day-new">Latest</span>':'')+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
-        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?"已失效 · "+dayKey(job.expiredAt):"",expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" title="职位已从最近一次完整公司职位列表中消失">'+esc(expiredText)+'</span>':'';
+        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?"关闭 · "+dayKey(job.expiredAt):"",expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" title="职位状态：关闭">'+esc(expiredText)+'</span>':'';
         const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
@@ -681,7 +681,7 @@ function apply(){
     let shown=0,shownActive=0;
     sec._jobCards.forEach(card=>{
       const age=card.dataset.age===""?null:+card.dataset.age;
-      /* base：除“发布时间”之外的全部筛选条件。机构统计包含 base 下的有效与失效记录，
+      /* base：除“发布时间”之外的全部筛选条件。机构统计包含 base 下的有效与关闭记录，
          因此选中某一时间区间时，分布图仍然完整，不会塌缩为单根柱子。 */
       const base=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(activeCity==="all"||card.dataset.city===activeCity)&&(comp==="all"||card.dataset.comp===comp)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
       const ok=base&&ageMatch(ageSel,age);
