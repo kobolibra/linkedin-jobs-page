@@ -180,7 +180,7 @@ body.compact .co-note { font-size:11px;line-height:1.6; }
 [data-theme="dark"] .co-close,[data-theme="dark"] .co-bar-t{background:rgba(255,255,255,.08);}
 
 @media print { .co-panel { display:none !important; } }
-/* Cohorts share a percentage scale; completed durations never drive age filters. */
+/* Original active-job visual hierarchy, with compact closure statistics. */
 .co-status { display:flex;flex-wrap:wrap;gap:5px 16px;margin-top:10px;font-size:12px;color:var(--ink-soft); }
 .co-status b { font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums; }
 .co-status-active { color:var(--sg); }
@@ -191,19 +191,18 @@ body.compact .co-note { font-size:11px;line-height:1.6; }
 .co-table thead th { font-size:10px;color:var(--ink-faint);border-bottom:1px solid var(--line); }
 .co-table th:first-child { text-align:left;width:32%; }
 .co-table td { font-family:var(--mono);color:var(--ink); }
-.co-metrics tbody tr:first-child td { font-weight:700;font-size:15px;color:var(--navy); }
-.co-legend { display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 8px;font-size:10px;color:var(--ink-soft); }
-.co-legend span { display:inline-flex;align-items:center;gap:5px; }
-.co-legend i { width:10px;height:4px;border-radius:2px; }
-.co-key-active,.co-track .open { background:var(--sg); }
-.co-key-expired,.co-track .closed { background:var(--ink-faint); }
-.co-duration-row { display:grid;grid-template-columns:58px 1fr;align-items:center;gap:8px;padding:5px 0;font-size:11px;color:var(--ink-soft); }
-.co-pair { display:grid;gap:4px; }
-.co-duration-line { display:grid;grid-template-columns:1fr 74px;align-items:center;gap:6px; }
-.co-duration-line > .tnum { text-align:right;font-size:10px; }
-.co-duration-line small { display:inline-block;min-width:32px;font-size:9px;color:var(--ink-faint); }
-.co-track { display:block;height:4px;background:var(--line);border-radius:2px;overflow:hidden; }
-.co-track i { display:block;height:100%; }
+.co-kpis,body.compact .co-kpis { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:10px; }
+.co-k { letter-spacing:.04em; }
+.co-close-metrics { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0; }
+.co-close-metrics dt { font-size:10px;color:var(--ink-faint); }
+.co-close-metrics dd { margin:5px 0 0;font-family:var(--mono);font-size:16px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums; }
+.co-range { margin:9px 0 0;font-size:10px;color:var(--ink-faint);font-variant-numeric:tabular-nums; }
+.co-history { margin-top:14px; }
+.co-history summary { cursor:pointer;font-size:11px;color:var(--ink-soft);padding:5px 0; }
+.co-history summary:focus-visible { outline:1.5px solid var(--gold);outline-offset:3px; }
+.co-history[open] summary { margin-bottom:6px; }
+.co-panel [hidden] { display:none !important; }
+@media (max-width:420px) { .co-kpis,body.compact .co-kpis { grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px; } }
 .co-note + .co-note { margin-top:10px; }
 .co-quality { margin:12px 0 0;font-size:10px;line-height:1.6;color:var(--ink-faint); }
 .co-quality:empty { display:none; }

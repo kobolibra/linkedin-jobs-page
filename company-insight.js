@@ -4,7 +4,13 @@
  */
 (function(){
   const DAY=864e5;
-  const BINS=[{label:'<7 天',min:0,max:7},{label:'7–14 天',min:7,max:14},{label:'14–30 天',min:14,max:30},{label:'30–60 天',min:30,max:60},{label:'≥60 天',min:60,max:Infinity}];
+  const BINS=[
+    {v:'0',label:'今天',min:0,max:1,tier:'fresh'},
+    {v:'1-7',label:'1–7 天',min:1,max:8,tier:'fresh'},
+    {v:'8-14',label:'8–14 天',min:8,max:15,tier:'mid'},
+    {v:'15-21',label:'15–21 天',min:15,max:22,tier:'stale'},
+    {v:'22+',label:'22 天+',min:22,max:Infinity,tier:'stale'}
+  ];
   const time=value=>typeof value==='string'&&value.trim()?Date.parse(value):NaN;
   const quant=(a,p)=>{if(!a.length)return null;const i=(a.length-1)*p,lo=Math.floor(i);return a[lo]+(a[Math.ceil(i)]-a[lo])*(i-lo);};
   const num=n=>n==null?'—':String(Math.round(n*10)/10);
@@ -12,8 +18,7 @@
   const signed=n=>(n>0?'+':'')+n;
   function stats(values){
     const a=[...values].sort((x,y)=>x-y);
-    return {n:a.length,values:a,median:quant(a,.5),mean:a.length?a.reduce((s,n)=>s+n,0)/a.length:null,q1:quant(a,.25),q3:quant(a,.75),
-      buckets:BINS.map(b=>({...b,count:a.filter(n=>n>=b.min&&n<b.max).length}))};
+    return {n:a.length,values:a,median:quant(a,.5),mean:a.length?a.reduce((s,n)=>s+n,0)/a.length:null,q1:quant(a,.25),q3:quant(a,.75)};
   }
   function summarize(records,now=Date.now()){
     const s={total:0,active:0,expired:0,regions:{},missingStart:0,missingEnd:0,invalidOrder:0,
@@ -41,6 +46,7 @@
       }
     }
     s.open=stats(active);s.close=stats(closed);
+    s.open.buckets=BINS.map(b=>({...b,count:active.filter(n=>n>=b.min&&n<b.max).length}));
     s.weeks=s.weeks.map(w=>({...w,balance:w.added-w.closed,close:stats(w.durations)}));
     s.oldActive=active.filter(d=>d>=30).length;
     s.beyondQ3=s.close.n?active.filter(d=>d>s.close.q3).length:0;
@@ -81,21 +87,39 @@
   const $=id=>document.getElementById(id),panel=$('coPanel');
   if(!panel)return;
   const days=n=>num(n)+(n==null?'':' 天');
-  function render(comp,records){
+  function render(comp,records,ageSel){
     const s=summarize(records);
     if(!comp||!s.total){panel.classList.remove('on','in');document.body.classList.remove('co-open');return;}
     $('coName').textContent=comp;$('coName').title=comp;
     $('coRegions').innerHTML=['CN','HK','SG','OTHER'].filter(k=>s.regions[k]).map(k=>'<span class="co-chip" data-region="'+k+'"><i></i>'+k+' '+s.regions[k]+'</span>').join('');
     $('coStatus').innerHTML='<span class="co-status-active">在招 <b>'+s.active+'</b></span><span class="co-status-expired">失效 <b>'+s.expired+'</b></span>';
-    const row=(label,a,b)=>'<tr><th scope="row">'+label+'</th><td>'+a+'</td><td>'+b+'</td></tr>';
-    const range=c=>c.n?num(c.q1)+'–'+num(c.q3)+' 天':'—';
-    $('coMetrics').innerHTML='<thead><tr><th scope="col">时长</th><th scope="col" title="当前时间减首次记录日期；尚未关闭，不计入关闭用时">在招已挂出</th><th scope="col" title="标记失效日期减首次记录日期；首次日期可能来自平台发布日期或首次收录，重新发布不重置起点。衡量观测到的职位存续时间，不是完成招聘时间">失效前挂出</th></tr></thead><tbody>'
-      +row('中位数',days(s.open.median),days(s.close.median))+row('平均数',days(s.open.mean),days(s.close.mean))
-      +row('中间50%',range(s.open),range(s.close))+row('可用样本',s.open.n+' / '+s.active,s.close.n+' / '+s.expired)+'</tbody>';
-    $('coHist').innerHTML=BINS.map((bin,i)=>{
-      const a=s.open.buckets[i].count,c=s.close.buckets[i].count;
-      return '<div class="co-duration-row"><span>'+bin.label+'</span><div class="co-pair">'+[[a,s.open.n,'open','在招'],[c,s.close.n,'closed','失效']].map(([n,total,cls,label])=>'<div class="co-duration-line" title="'+label+'：'+n+' / '+total+' 个，'+pct(n,total)+'；区间含下限、不含上限"><span class="co-track"><i class="'+cls+'" style="width:'+(total?n/total*100:0)+'%"></i></span><span class="tnum">'+n+' <small>'+pct(n,total)+'</small></span></div>').join('')+'</div></div>';
+    $('coCount').textContent=s.active;
+    $('coFresh').textContent=s.weeks[0].added;
+    $('coMed').innerHTML=num(s.open.median)+(s.open.n?'<small>天</small>':'');
+    $('coMean').innerHTML=num(s.open.mean)+(s.open.n?'<small>天</small>':'');
+    $('coHistSec').hidden=!s.open.n;
+    const max=Math.max(1,...s.open.buckets.map(b=>b.count));
+    $('coHist').innerHTML=s.open.buckets.map(b=>{
+      const selected=ageSel===b.v;
+      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="在招 '+b.count+' 个；按此发布时间筛选职位列表">'
+        +'<span class="co-bar-l">'+b.label+'</span><span class="co-bar-t"><span class="co-bar-f" data-w="'+b.count/max*100+'"></span></span>'
+        +'<span class="co-bar-v tnum">'+b.count+'</span><span class="co-bar-p tnum">'+pct(b.count,s.open.n)+'</span></button>';
     }).join('');
+    $('coAxisSec').hidden=s.open.n<3;
+    if(s.open.n>=3){
+      const span=Math.max(s.open.values[s.open.n-1],1),pos=d=>d/span*100,groups=new Map();
+      for(const d of s.open.values){const age=Math.floor(d);groups.set(age,(groups.get(age)||0)+1);}
+      $('coPlot').innerHTML='<span class="co-band" style="left:'+pos(s.open.q1)+'%;width:'+(pos(s.open.q3)-pos(s.open.q1))+'%"></span>'
+        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="已挂出 '+age+' 天：'+n+' 个在招职位"></span>').join('')
+        +'<span class="co-mk co-mean" style="left:'+pos(s.open.mean)+'%"></span><span class="co-mk co-med" style="left:'+pos(s.open.median)+'%"></span>';
+      $('coScale').innerHTML='<span>0 天</span><span>'+num(span)+' 天</span>';
+    }
+    $('coOpenRange').textContent=s.open.n?'中间50%：'+num(s.open.q1)+'–'+num(s.open.q3)+' 天':'';
+    $('coCloseSec').hidden=!s.expired;
+    $('coCloseSample').textContent=s.close.n+' / '+s.expired+' 个';
+    $('coCloseMed').textContent=days(s.close.median);
+    $('coCloseMean').textContent=days(s.close.mean);
+    $('coCloseRange').textContent=s.close.n?'中间50%：'+num(s.close.q1)+'–'+num(s.close.q3)+' 天':'';
     $('coRhythm').innerHTML='<thead><tr><th scope="col">时间窗口</th><th scope="col">新增</th><th scope="col">失效</th><th scope="col" title="当前保留记录中的新增数减失效数；不是有效职位库存的实际变化，重开及已清理历史不在事件统计内">差额</th></tr></thead><tbody>'
       +s.weeks.map((w,i)=>'<tr><th scope="row">'+['近7天','前7天','14–21天前','21–28天前'][i]+'</th><td>'+w.added+'</td><td>'+w.closed+'</td><td>'+signed(w.balance)+'</td></tr>').join('')+'</tbody>';
     $('coFoot').innerHTML=insights(s).map(note=>'<p class="co-note">'+note+'</p>').join('');
@@ -105,8 +129,14 @@
     if(s.invalidOrder)gaps.push(s.invalidOrder+' 条起止日期倒置');
     $('coQuality').textContent=gaps.length?'未纳入对应时长计算：'+gaps.join('；')+'。':'';
     $('coStatus').title='失效来源：LinkedIn关闭/移除 '+s.reasons.confirmed+'；完整抓取中消失 '+s.reasons.snapshot+'；其他或未记录 '+s.reasons.other;
-    panel.classList.add('on');document.body.classList.add('co-open');requestAnimationFrame(()=>panel.classList.add('in'));
+    panel.classList.add('on');document.body.classList.add('co-open');
+    requestAnimationFrame(()=>{panel.classList.add('in');$('coHist').querySelectorAll('.co-bar-f').forEach(f=>{f.style.width=f.dataset.w+'%';});});
   }
+  $('coHist').addEventListener('click',e=>{
+    const b=e.target.closest('.co-bar');
+    if(!b||b.disabled||b.classList.contains('empty'))return;
+    ageEl.value=ageEl.value===b.dataset.age?'all':b.dataset.age;apply();
+  });
   $('coClose').addEventListener('click',()=>{companyEl.value='all';apply();});
   window.renderCo=render;
 })();

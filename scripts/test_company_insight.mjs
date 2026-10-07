@@ -41,10 +41,10 @@ test('means and interpolated quartiles are computed separately with weighted dup
   assert.equal(s.close.q1,2);assert.equal(s.close.q3,3);
   assert.match(insights(s).join(' '),/长周期职位拉高了平均数/);
 });
-test('both distributions use exact nonoverlapping duration boundaries and separate denominators',()=>{
-  const s=summarize([0,6.99,7,14,30,60].map(d=>record(d+1,'expired','HK',ago(1))).concat([record(2)]),NOW);
-  assert.deepEqual(Array.from(s.close.buckets,b=>b.count),[2,1,1,1,1]);
-  assert.equal(s.open.buckets[0].count,1);assert.equal(s.close.n,6);assert.equal(s.open.n,1);
+test('original active age buckets retain exact list-filter boundaries and exclude expired roles',()=>{
+  const s=summarize([0,.99,1,7.99,8,14.99,15,21.99,22].map(d=>record(d)).concat([record(40,'expired','HK',ago(1))]),NOW);
+  assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[2,2,2,2,1]);
+  assert.equal(s.close.median,39);assert.equal(s.close.buckets,undefined);
 });
 test('rolling weekly windows are equal and boundary events are not double counted',()=>{
   const s=summarize([0,6.999,7,13.999,14,21,28].map(d=>record(d)),NOW);
@@ -83,21 +83,41 @@ test('expiry source attribution stays separate from inferred hiring outcomes',()
 });
 test('expired-only panel renders closed duration and empty active metrics',()=>{
   const u=ui();u.render('ACME',[record(30,'expired','CN',ago(20))]);
-  assert.ok(u.get('coPanel').classList.contains('on'));assert.match(u.get('coMetrics').innerHTML,/<td>—<\/td><td>10 天/);
+  assert.ok(u.get('coPanel').classList.contains('on'));assert.equal(u.get('coCloseMed').textContent,'10 天');
+  assert.equal(u.get('coMed').innerHTML,'—');assert.equal(u.get('coHistSec').hidden,true);assert.equal(u.get('coAxisSec').hidden,true);
   assert.match(u.get('coFoot').innerHTML,/当前没有有效职位/);
 });
 test('no-date panel shows unavailable stats and explicit missing counts, never fake zero durations',()=>{
   const u=ui();u.render('ACME',[{date:null,status:'expired'}]);
-  assert.match(u.get('coMetrics').innerHTML,/<td>—<\/td><td>—<\/td>/);
+  assert.equal(u.get('coMed').innerHTML,'—');assert.equal(u.get('coCloseMed').textContent,'—');
   assert.match(u.get('coQuality').textContent,/1 条缺有效起始日期；1 条缺有效失效日期/);
-  assert.doesNotMatch([...['coMetrics','coHist','coFoot','coRhythm'].map(k=>u.get(k).innerHTML)].join(''),/NaN|Infinity|undefined/);
+  assert.doesNotMatch([...['coMed','coHist','coFoot','coRhythm'].map(k=>u.get(k).innerHTML)].join(''),/NaN|Infinity|undefined/);
 });
-test('duration distribution is not wired to unrelated list-age filtering',()=>{
-  const u=ui();u.render('ACME',[record(2),record(30,'expired','HK',ago(28))]);
-  assert.equal(u.get('coHist').events.click,undefined);
-  assert.doesNotMatch(u.get('coHist').innerHTML,/button|data-age|aria-pressed/);
-  assert.match(u.get('coHist').innerHTML,/在招：1 \/ 1 个，100%/);
-  assert.match(u.get('coHist').innerHTML,/失效：1 \/ 1 个，100%/);
+test('only active histogram renders; closed duration remains a compact summary',()=>{
+  const u=ui();u.render('ACME',[record(2),record(30,'expired','HK',ago(28))],'1-7');
+  assert.equal((u.get('coHist').innerHTML.match(/<button/g)||[]).length,5);
+  assert.match(u.get('coHist').innerHTML,/在招 1 个/);assert.doesNotMatch(u.get('coHist').innerHTML,/失效|closed|co-pair/);
+  assert.match(u.get('coHist').innerHTML,/aria-pressed="true"/);
+  assert.equal(u.get('coCloseMed').textContent,'2 天');assert.equal(u.get('coCloseSample').textContent,'1 / 1 个');
+});
+test('original histogram click toggles the matching posting-age filter',()=>{
+  const u=ui();let calls=0;u.context.apply=()=>{calls++;};
+  const button={dataset:{age:'1-7'},classList:classList()};
+  const click=()=>u.get('coHist').events.click({target:{closest:()=>button}});
+  click();assert.equal(u.context.ageEl.value,'1-7');click();assert.equal(u.context.ageEl.value,'all');assert.equal(calls,2);
+  button.disabled=true;click();assert.equal(calls,2);
+});
+test('active axis aggregates equal ages and never includes expired ages or lifetimes',()=>{
+  const u=ui();u.render('ACME',[...Array.from({length:100},()=>record(4)),record(100,'expired','HK',ago(90))]);
+  assert.equal((u.get('coPlot').innerHTML.match(/class="co-tick"/g)||[]).length,1);
+  assert.match(u.get('coPlot').innerHTML,/4 天：100 个在招职位/);
+  assert.doesNotMatch(u.get('coPlot').innerHTML,/100 天|10 天/);
+  assert.equal(u.get('coCloseMed').textContent,'10 天');
+});
+test('active-only company has no empty closure section and 7-day additions include expired rows',()=>{
+  const u=ui();u.render('ACME',[record(2),record(8)]);assert.equal(u.get('coCloseSec').hidden,true);
+  u.render('ACME',[record(2),record(3,'expired','HK',ago(1))]);
+  assert.equal(u.get('coCloseSec').hidden,false);assert.equal(u.get('coCount').textContent,1);assert.equal(u.get('coFresh').textContent,2);
 });
 test('company names are text and generic footer boilerplate is removed',()=>{
   const u=ui(),name='<img src=x onerror=alert(1)>';u.render(name,[record(1)]);
