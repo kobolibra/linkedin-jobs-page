@@ -1,32 +1,39 @@
-"""Read-only production verification: health checks must never add page views."""
-from datetime import datetime
-import json
-import time
+"""Read-only asset verification; never register synthetic page views."""
+import os
+from pathlib import Path
+from urllib.error import HTTPError
 from urllib.request import urlopen
 
-BASE = "https://linkedin.claudecowork.workers.dev"
-error = None
-for attempt in range(6):
+BASE = 'https://linkedin.claudecowork.workers.dev'
+
+
+def verify(fetch=urlopen, report=print):
     try:
-        with urlopen(BASE + "/api/visits", timeout=15) as response:
-            data = json.load(response)
-            assert response.status == 200
-            assert "no-store" in response.headers.get("cache-control", "")
-        assert data["source"] == "first-party-live"
-        assert type(data["site_pv"]) is int and data["site_pv"] >= 0
-        datetime.fromisoformat(data["startedAt"].replace("Z", "+00:00"))
-        with urlopen(BASE + "/", timeout=15) as response:
+        with fetch(BASE + '/', timeout=15) as response:
             html = response.read().decode()
-            assert "visitor-count.js?v=first-party-live-1" in html
-            assert "busuanzi.ibruce.info" not in html
-        with urlopen(BASE + "/visitor-count.js?v=first-party-live-1", timeout=15) as response:
+            assert response.status == 200
+            assert 'visitor-count.js?v=counter-live-2' in html, 'unexpected homepage version'
+            assert 'no-store' in response.headers.get('cache-control', ''), 'homepage may be stale'
+        with fetch(BASE + '/visitor-count.js?v=counter-live-2', timeout=15) as response:
             script = response.read().decode()
-            assert "first-party-live" in script and "pv.json" not in script
-        print("Production live counter verified (GET only; no synthetic page views):", json.dumps(data))
-        break
-    except Exception as exc:
-        error = exc
-        if attempt < 5:
-            time.sleep(5)
-else:
-    raise RuntimeError(f"Production live counter verification failed: {error}")
+            assert response.status == 200
+            assert 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_Live' in script, 'live counter missing'
+            assert 'pv.json' not in script and '/api/visits' not in script, 'unexpected counter source'
+    except HTTPError as exc:
+        body = exc.read(4096).decode('utf-8', 'replace')
+        # This known Cloudflare client block is not a failed Worker publication.
+        # Record that verification was NOT performed; do not bypass the protection.
+        if exc.code == 403 and 'error code: 1010' in body.lower():
+            report('::warning::Cloudflare 1010 blocked this automated client. Live asset verification NOT performed; successful publication is reported by Wrangler. No security settings were changed.')
+            return False
+        raise
+    report('Production homepage and live counter assets verified (GET only; no synthetic page views).')
+    return True
+
+
+if __name__ == '__main__':
+    verified = verify()
+    summary = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary:
+        with Path(summary).open('a') as file:
+            file.write('\nVisitor counter asset check: ' + ('verified.' if verified else '**NOT VERIFIED**: Cloudflare 1010 blocks this automated client; check recorded as a warning, not a publication failure.') + '\n')

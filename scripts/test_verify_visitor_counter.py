@@ -1,0 +1,46 @@
+import io
+import unittest
+from urllib.error import HTTPError
+from verify_visitor_counter import verify
+
+class Response(io.BytesIO):
+    status = 200
+    headers = {'cache-control': 'no-store'}
+
+class VerificationTests(unittest.TestCase):
+    def test_published_assets_are_checked_without_counting_visits(self):
+        requests = []
+        def fetch(url, **kwargs):
+            requests.append(url)
+            text = ('visitor-count.js?v=counter-live-2' if url.endswith('/') else
+                    'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_Live')
+            return Response(text.encode())
+        self.assertTrue(verify(fetch, lambda _: None))
+        self.assertEqual(len(requests), 2)
+        self.assertTrue(all('ibruce.info' not in url and '/api/visits' not in url for url in requests))
+
+    def test_known_cloudflare_client_block_is_explicitly_unverified(self):
+        reports = []
+        def fetch(url, **kwargs):
+            raise HTTPError(url, 403, 'Forbidden', {}, io.BytesIO(b'error code: 1010'))
+        self.assertFalse(verify(fetch, reports.append))
+        self.assertIn('NOT performed', reports[0])
+        self.assertIn('::warning::', reports[0])
+
+    def test_unrelated_http_errors_still_fail(self):
+        for code, body in [(403, b'access forbidden'), (404, b'not found'), (502, b'bad gateway')]:
+            def fetch(url, **kwargs):
+                raise HTTPError(url, code, 'Failed', {}, io.BytesIO(body))
+            with self.assertRaises(HTTPError):
+                verify(fetch, lambda _: None)
+
+    def test_wrong_or_stale_published_assets_still_fail(self):
+        with self.assertRaises(AssertionError):
+            verify(lambda *args, **kwargs: Response(b'old homepage'), lambda _: None)
+        def fetch(url, **kwargs):
+            return Response(b'visitor-count.js?v=counter-live-2' if url.endswith('/') else b'old counter code')
+        with self.assertRaises(AssertionError):
+            verify(fetch, lambda _: None)
+
+if __name__ == '__main__':
+    unittest.main()
