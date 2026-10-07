@@ -616,7 +616,7 @@ jobsDataPromise
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
-      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:seenAt(job),expiredAt:job.expiredAt,status:card.dataset.status,region:card.dataset.region};});
+      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:seenAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;
     }
