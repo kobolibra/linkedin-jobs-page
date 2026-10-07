@@ -123,8 +123,8 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v4.3";
-const JEV_TAXONOMY_VERSION="jev-taxonomy-v4.3";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v4.4";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v4.4";
 const JEV_CACHE_MAX_ENTRIES=400;
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // (worker.js) signs the provider request and returns the five-dimension card.
@@ -143,16 +143,17 @@ const jevText=value=>String(value||"Unknown").replaceAll("_"," ").replace(/\b\w/
 const jevStateText={low_confidence:"Low confidence",conflicting:"Conflicting evidence",not_applicable:"Not applicable",not_stated:"Not stated"};
 function renderJevResult(container,result,analyzedAt){
   const r=jevPayload(result);
+  const sourceNote=evidence=>Array.isArray(evidence)&&evidence[0]?.quote?`<small class="jev-state" title="${esc(evidence[0].quote)}">${evidence[0].source==="title"?"Title":"JD"}: “${esc(evidence[0].quote.length>240?evidence[0].quote.slice(0,237)+"…":evidence[0].quote)}”</small>`:"";
   const row=(label,dim,text)=>{
     const state=dim.state||"ok";
     const confidence=state==="ok"&&typeof dim.confidence==="number"?` <small class="jev-confidence">${Math.round(dim.confidence*100)}%</small>`:"";
     const candidates=(state==="low_confidence"||state==="conflicting")&&Array.isArray(dim.candidates)&&dim.candidates.length?`<small class="jev-state">${esc(jevStateText[state])} · candidates: ${dim.candidates.slice(0,3).map(c=>esc(c.label||jevText(c.code))+(typeof c.p==="number"?` ${Math.round(c.p*100)}%`:"")).join(" / ")}</small>`:(state!=="ok"?`<small class="jev-state">${esc(jevStateText[state]||jevText(state))}</small>`:"");
-    return `<div class="jev-field jev-state-${esc(state)}"><dt>${label}</dt><dd><span>${esc(text)}</span>${confidence}${candidates}</dd></div>`;
+    return `<div class="jev-field jev-state-${esc(state)}"><dt>${label}</dt><dd><span>${esc(text)}</span>${confidence}${candidates}${sourceNote(dim.evidence)}</dd></div>`;
   };
   const a=r.roleArchetype;
   const archetypeText=[a.familyLabel,a.label,a.specialisationLabel].filter(Boolean).join(" · ")||jevText(a.code);
   const risk=r.roleRisk;
-  const riskSection=risk.flags.length?`<section class="jev-risks"><h4>Role Risk</h4>${risk.flags.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}${typeof item.probability==="number"?` · ${Math.round(item.probability*100)}%`:""}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}</article>`).join("")}</section>`:"";
+  const riskSection=risk.flags.length?`<section class="jev-risks"><h4>Role Risk</h4>${risk.flags.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}${typeof item.probability==="number"?` · ${Math.round(item.probability*100)}%`:""}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}${sourceNote(item.evidence)}</article>`).join("")}</section>`:`<section class="jev-risks"><h4>Role Risk</h4><small class="jev-state">${risk.state==="not_applicable"?"Not applicable":risk.state==="not_stated"?"Insufficient evidence to assess role risks":"No supported structural flags"}</small></section>`;
   container.innerHTML=`<dl class="jev-fields">${row("Role Archetype",a,archetypeText)}${row("Primary Activity",r.primaryActivity,r.primaryActivity.label||jevText(r.primaryActivity.value))}${row("Business Line",r.businessLine,r.businessLine.label||jevText(r.businessLine.value))}${row("Leadership Level",r.leadershipLevel,r.leadershipLevel.label||jevText(r.leadershipLevel.value))}</dl>${riskSection}`;
   container.hidden=false;
 }
@@ -206,7 +207,7 @@ async function runJevAnalysis(card){
     const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
     renderJevResult(panel,normalized,analyzedAt);
     // Cache only after a successful render, so a failure can never poison later clicks.
-    cache[id]={schemaVersion:3,taxonomyVersion:JEV_TAXONOMY_VERSION,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);button?.classList.add("is-cached");
+    if(normalized.taxonomyVersion===JEV_TAXONOMY_VERSION){cache[id]={schemaVersion:3,taxonomyVersion:normalized.taxonomyVersion,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);button?.classList.add("is-cached");}
   }catch(error){
     showJevError(panel,error?.name==="AbortError"?"Analysis timed out (45 seconds). Please retry.":"Network error. Could not reach the analysis service. Please retry.",()=>runJevAnalysis(card));
   }finally{if(button){button.removeAttribute("aria-busy");button.classList.remove("is-loading");}jevRuns.delete(id);}
