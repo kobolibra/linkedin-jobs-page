@@ -62,14 +62,14 @@
     const notes=[],a=s.weeks[0],b=s.weeks[1];
     if(!s.active)notes.push('当前没有有效职位。');
     if(!s.missingStart&&!s.missingEnd&&!s.invalidOrder&&a.added+a.closed+b.added+b.closed===0){
-      notes.push('近14天未记录到新增或失效，近期没有可见的职位流转。');
+      notes.push('近14天未记录到新增或关闭，近期没有可见的职位流转。');
     }else{
-      const flow=a.balance>0?'新增多于失效 '+a.balance+' 个':a.balance<0?'失效多于新增 '+(-a.balance)+' 个':'新增与失效数量相当';
-      notes.push('发布节奏：近7天新增 '+a.added+' 个，'+change(a.added,b.added)+'；失效 '+a.closed+' 个，'+change(a.closed,b.closed)+'。'+flow+'。');
+      const flow=a.balance>0?'新增多于关闭 '+a.balance+' 个':a.balance<0?'关闭多于新增 '+(-a.balance)+' 个':'新增与关闭数量相当';
+      notes.push('发布节奏：近7天新增 '+a.added+' 个，'+change(a.added,b.added)+'；关闭 '+a.closed+' 个，'+change(a.closed,b.closed)+'。'+flow+'。');
     }
     if(a.close.n>=5&&b.close.n>=5){
       const d=a.close.median-b.close.median;
-      notes.push('关闭用时：近7天失效的 '+a.close.n+' 个职位，中位 '+num(a.close.median)+' 天；前7天 '+b.close.n+' 个，中位 '+num(b.close.median)+' 天，'+(Math.abs(d)<.05?'基本持平':(d>0?'延长 ':'缩短 ')+num(Math.abs(d))+' 天')+'。');
+      notes.push('关闭用时：近7天关闭的 '+a.close.n+' 个职位，中位 '+num(a.close.median)+' 天；前7天 '+b.close.n+' 个，中位 '+num(b.close.median)+' 天，'+(Math.abs(d)<.05?'基本持平':(d>0?'延长 ':'缩短 ')+num(Math.abs(d))+' 天')+'。');
     }else if(s.close.n){
       notes.push('关闭用时变化：近两周可用样本分别为 '+a.close.n+' / '+b.close.n+' 个，暂不足以比较速度变化。');
     }
@@ -77,8 +77,8 @@
       notes.push('长周期职位拉高了平均数：比中位数高 '+num(s.close.mean-s.close.median)+' 天；典型关闭用时更宜参考中位数。');
     }
     if(s.open.n){
-      let note='在招存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）已挂出至少30天。';
-      if(s.close.n>=10)note+=s.beyondQ3+' 个在招职位已超过历史关闭用时的75%分位（'+num(s.close.q3)+' 天）。';
+      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）已挂出至少30天。';
+      if(s.close.n>=10)note+=s.beyondQ3+' 个有效职位已超过历史关闭用时的75%分位（'+num(s.close.q3)+' 天）。';
       notes.push(note);
     }
     return notes;
@@ -92,7 +92,7 @@
     if(!comp||!s.total){panel.classList.remove('on','in');document.body.classList.remove('co-open');return;}
     $('coName').textContent=comp;$('coName').title=comp;
     $('coRegions').innerHTML=['CN','HK','SG','OTHER'].filter(k=>s.regions[k]).map(k=>'<span class="co-chip" data-region="'+k+'"><i></i>'+k+' '+s.regions[k]+'</span>').join('');
-    $('coStatus').innerHTML='<span class="co-status-active">在招 <b>'+s.active+'</b></span><span class="co-status-expired">失效 <b>'+s.expired+'</b></span>';
+    $('coStatus').innerHTML='<span class="co-status-active">有效 <b>'+s.active+'</b></span><span class="co-status-expired">关闭 <b>'+s.expired+'</b></span>';
     $('coCount').textContent=s.active;
     $('coFresh').textContent=s.weeks[0].added;
     $('coMed').innerHTML=num(s.open.median)+(s.open.n?'<small>天</small>':'');
@@ -101,7 +101,7 @@
     const max=Math.max(1,...s.open.buckets.map(b=>b.count));
     $('coHist').innerHTML=s.open.buckets.map(b=>{
       const selected=ageSel===b.v;
-      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="在招 '+b.count+' 个；按此发布时间筛选职位列表">'
+      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="有效 '+b.count+' 个；按此发布时间筛选职位列表">'
         +'<span class="co-bar-l">'+b.label+'</span><span class="co-bar-t"><span class="co-bar-f" data-w="'+b.count/max*100+'"></span></span>'
         +'<span class="co-bar-v tnum">'+b.count+'</span><span class="co-bar-p tnum">'+pct(b.count,s.open.n)+'</span></button>';
     }).join('');
@@ -110,7 +110,7 @@
       const span=Math.max(s.open.values[s.open.n-1],1),pos=d=>d/span*100,groups=new Map();
       for(const d of s.open.values){const age=Math.floor(d);groups.set(age,(groups.get(age)||0)+1);}
       $('coPlot').innerHTML='<span class="co-band" style="left:'+pos(s.open.q1)+'%;width:'+(pos(s.open.q3)-pos(s.open.q1))+'%"></span>'
-        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="已挂出 '+age+' 天：'+n+' 个在招职位"></span>').join('')
+        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="已挂出 '+age+' 天：'+n+' 个有效职位"></span>').join('')
         +'<span class="co-mk co-mean" style="left:'+pos(s.open.mean)+'%"></span><span class="co-mk co-med" style="left:'+pos(s.open.median)+'%"></span>';
       $('coScale').innerHTML='<span>0 天</span><span>'+num(span)+' 天</span>';
     }
@@ -120,15 +120,15 @@
     $('coCloseMed').textContent=days(s.close.median);
     $('coCloseMean').textContent=days(s.close.mean);
     $('coCloseRange').textContent=s.close.n?'中间50%：'+num(s.close.q1)+'–'+num(s.close.q3)+' 天':'';
-    $('coRhythm').innerHTML='<thead><tr><th scope="col">时间窗口</th><th scope="col">新增</th><th scope="col">失效</th><th scope="col" title="当前保留记录中的新增数减失效数；不是有效职位库存的实际变化，重开及已清理历史不在事件统计内">差额</th></tr></thead><tbody>'
+    $('coRhythm').innerHTML='<thead><tr><th scope="col">时间窗口</th><th scope="col">新增</th><th scope="col">关闭</th><th scope="col" title="当前保留记录中的新增数减关闭数；不是有效职位库存的实际变化，重开及已清理历史不在事件统计内">差额</th></tr></thead><tbody>'
       +s.weeks.map((w,i)=>'<tr><th scope="row">'+['近7天','前7天','14–21天前','21–28天前'][i]+'</th><td>'+w.added+'</td><td>'+w.closed+'</td><td>'+signed(w.balance)+'</td></tr>').join('')+'</tbody>';
     $('coFoot').innerHTML=insights(s).map(note=>'<p class="co-note">'+note+'</p>').join('');
     const gaps=[];
-    if(s.missingStart)gaps.push(s.missingStart+' 条缺有效起始日期');
-    if(s.missingEnd)gaps.push(s.missingEnd+' 条缺有效失效日期');
+    if(s.missingStart)gaps.push(s.missingStart+' 条缺可用起始日期');
+    if(s.missingEnd)gaps.push(s.missingEnd+' 条缺可用关闭日期');
     if(s.invalidOrder)gaps.push(s.invalidOrder+' 条起止日期倒置');
     $('coQuality').textContent=gaps.length?'未纳入对应时长计算：'+gaps.join('；')+'。':'';
-    $('coStatus').title='失效来源：LinkedIn关闭/移除 '+s.reasons.confirmed+'；完整抓取中消失 '+s.reasons.snapshot+'；其他或未记录 '+s.reasons.other;
+    $('coStatus').title='关闭依据：LinkedIn关闭/移除 '+s.reasons.confirmed+'；完整抓取中消失 '+s.reasons.snapshot+'；其他或未记录 '+s.reasons.other;
     panel.classList.add('on');document.body.classList.add('co-open');
     requestAnimationFrame(()=>{panel.classList.add('in');$('coHist').querySelectorAll('.co-bar-f').forEach(f=>{f.style.width=f.dataset.w+'%';});});
   }
