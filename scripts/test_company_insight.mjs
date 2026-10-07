@@ -74,7 +74,7 @@ test('weekly closure comparison uses completed cohorts and requires five in each
 test('active stock exceeding closure upper quartile is not labelled a hiring delay',()=>{
   const rows=Array.from({length:10},()=>record(11,'expired','HK',ago(1))).concat([record(30),record(3)]);
   const s=summarize(rows,NOW);assert.equal(s.beyondQ3,1);assert.equal(s.oldActive,1);
-  assert.match(insights(s).join(' '),/1 个在招职位已超过历史关闭用时/);
+  assert.match(insights(s).join(' '),/1 个有效职位已超过历史关闭用时/);
   assert.doesNotMatch(insights(s).join(' '),/堆积|招聘困难|招满|点击|链接/);
 });
 test('expiry source attribution stays separate from inferred hiring outcomes',()=>{
@@ -90,13 +90,13 @@ test('expired-only panel renders closed duration and empty active metrics',()=>{
 test('no-date panel shows unavailable stats and explicit missing counts, never fake zero durations',()=>{
   const u=ui();u.render('ACME',[{date:null,status:'expired'}]);
   assert.equal(u.get('coMed').innerHTML,'—');assert.equal(u.get('coCloseMed').textContent,'—');
-  assert.match(u.get('coQuality').textContent,/1 条缺有效起始日期；1 条缺有效失效日期/);
+  assert.match(u.get('coQuality').textContent,/1 条缺可用起始日期；1 条缺可用关闭日期/);
   assert.doesNotMatch([...['coMed','coHist','coFoot','coRhythm'].map(k=>u.get(k).innerHTML)].join(''),/NaN|Infinity|undefined/);
 });
 test('only active histogram renders; closed duration remains a compact summary',()=>{
   const u=ui();u.render('ACME',[record(2),record(30,'expired','HK',ago(28))],'1-7');
   assert.equal((u.get('coHist').innerHTML.match(/<button/g)||[]).length,5);
-  assert.match(u.get('coHist').innerHTML,/在招 1 个/);assert.doesNotMatch(u.get('coHist').innerHTML,/失效|closed|co-pair/);
+  assert.match(u.get('coHist').innerHTML,/有效 1 个/);assert.doesNotMatch(u.get('coHist').innerHTML,/关闭|closed|co-pair/);
   assert.match(u.get('coHist').innerHTML,/aria-pressed="true"/);
   assert.equal(u.get('coCloseMed').textContent,'2 天');assert.equal(u.get('coCloseSample').textContent,'1 / 1 个');
 });
@@ -110,7 +110,7 @@ test('original histogram click toggles the matching posting-age filter',()=>{
 test('active axis aggregates equal ages and never includes expired ages or lifetimes',()=>{
   const u=ui();u.render('ACME',[...Array.from({length:100},()=>record(4)),record(100,'expired','HK',ago(90))]);
   assert.equal((u.get('coPlot').innerHTML.match(/class="co-tick"/g)||[]).length,1);
-  assert.match(u.get('coPlot').innerHTML,/4 天：100 个在招职位/);
+  assert.match(u.get('coPlot').innerHTML,/4 天：100 个有效职位/);
   assert.doesNotMatch(u.get('coPlot').innerHTML,/100 天|10 天/);
   assert.equal(u.get('coCloseMed').textContent,'10 天');
 });
