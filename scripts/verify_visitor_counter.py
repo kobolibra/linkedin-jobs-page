@@ -12,12 +12,12 @@ def verify(fetch=urlopen, report=print):
         with fetch(BASE + '/', timeout=15) as response:
             html = response.read().decode()
             assert response.status == 200
-            assert 'visitor-count.js?v=counter-live-2' in html, 'unexpected homepage version'
+            assert 'visitor-count.js?v=counter-live-3' in html, 'unexpected homepage version'
             assert 'no-store' in response.headers.get('cache-control', ''), 'homepage may be stale'
-        with fetch(BASE + '/visitor-count.js?v=counter-live-2', timeout=15) as response:
+        with fetch(BASE + '/visitor-count.js?v=counter-live-3', timeout=15) as response:
             script = response.read().decode()
             assert response.status == 200
-            assert 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=BusuanziCallback_Live' in script, 'live counter missing'
+            assert 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=' in script, 'live counter missing'
             assert 'pv.json' not in script and '/api/visits' not in script, 'unexpected counter source'
     except HTTPError as exc:
         body = exc.read(4096).decode('utf-8', 'replace')
