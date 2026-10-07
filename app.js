@@ -616,6 +616,7 @@ jobsDataPromise
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
+      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:seenAt(job),expiredAt:job.expiredAt,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;
     }
@@ -667,7 +668,7 @@ function apply(){
     daySections.forEach(sec=>{if(sec.style.display==="none"||visibleDays.has(sec.dataset.dayKey))return;visibleDays.add(sec.dataset.dayKey);const active=dayActive.get(sec.dataset.dayKey)||0;const head=sec.querySelector('.day-head');const c=head?.querySelector('[data-role="daycount"]');if(c)c.textContent=active+" 个有效职位";});
     countEl.innerHTML="有效 <b>"+visible+"</b> 个职位";
     emptyEl.classList.toggle("show",displayed===0);
-    if(typeof renderCo==="function")renderCo(null,[],{},ageSel);
+    if(typeof renderCo==="function")renderCo(null,[],ageSel);
     document.dispatchEvent(new CustomEvent("jobsfilterchange"));
     return;
   }
@@ -675,16 +676,16 @@ function apply(){
   daySections.forEach(sec=>{sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;});
   let visible=0,displayed=0;
   const dayTotals=new Map();
-  const coAges=[],coRegions={};
+  const coRecords=[];
   daySections.forEach(sec=>{
     let shown=0,shownActive=0;
     sec._jobCards.forEach(card=>{
       const age=card.dataset.age===""?null:+card.dataset.age;
-      /* base：除“发布时间”之外的全部筛选条件。机构统计以 active base 为样本，
+      /* base：除“发布时间”之外的全部筛选条件。机构统计包含 base 下的有效与失效记录，
          因此选中某一时间区间时，分布图仍然完整，不会塌缩为单根柱子。 */
       const base=!blocked.has(card.dataset.comp)&&(kwArr.length===0||!kwArr.some(k=>card.dataset.title.includes(k)))&&(activeRegion==="all"||card.dataset.region===activeRegion)&&(activeCity==="all"||card.dataset.city===activeCity)&&(comp==="all"||card.dataset.comp===comp)&&(!favOnly||favs.has(card.dataset.id))&&(!q||card.dataset.search.includes(q));
       const ok=base&&ageMatch(ageSel,age);
-      if(base&&comp!=="all"&&age!=null&&card.dataset.status!=="expired"){coAges.push(age);coRegions[card.dataset.region]=(coRegions[card.dataset.region]||0)+1;}
+      if(base&&comp!=="all")coRecords.push(card._coData);
       if(card._filterVisible!==ok){
         card._filterVisible=ok;
         filteredCards.add(card);
@@ -716,11 +717,12 @@ function apply(){
   });
   countEl.innerHTML="有效 <b>"+visible+"</b> 个职位";
   emptyEl.classList.toggle("show",displayed===0);
-  if(typeof renderCo==="function")renderCo(comp==="all"?null:comp,coAges,coRegions,ageSel);
+  if(typeof renderCo==="function")renderCo(comp==="all"?null:comp,coRecords,ageSel);
   document.dispatchEvent(new CustomEvent("jobsfilterchange"));
 }
 function refreshFavoriteFilterView(){
   jobsEl.classList.toggle("fav-only",favOnly);
+  if(companyEl.value!=="all"){apply();return;}
   const regionFilter=jobsEl.dataset.fastRegion||"";
   let displayed=0,active=0;
   const dayVisibleTotals=new Map();
