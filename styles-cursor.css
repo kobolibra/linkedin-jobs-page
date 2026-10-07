@@ -1,0 +1,13 @@
+/* Cursor artwork only. No layout, hover decoration, motion or event changes.
+   Native fallbacks preserve touch and forced-color accessibility behavior. */
+@media (hover: hover) and (pointer: fine) and (forced-colors: none) {
+  :root {
+    --cursor-action: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2228%22%20viewBox%3D%220%200%2024%2028%22%3E%3Cpath%20d%3D%22M4%203v18l4.5-4.3%203.6%207.3%203.2-1.6-3.6-7.2H18Z%22%20fill%3D%22%2329343b%22%20stroke%3D%22%23f5f3eb%22%20stroke-width%3D%221.25%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22m10.1%2018.2%202.1%204.2%22%20fill%3D%22none%22%20stroke%3D%22%23bd9858%22%20stroke-width%3D%221.3%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E") 4 3, pointer;
+  }
+  [data-theme="dark"] {
+    --cursor-action: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2228%22%20viewBox%3D%220%200%2024%2028%22%3E%3Cpath%20d%3D%22M4%203v18l4.5-4.3%203.6%207.3%203.2-1.6-3.6-7.2H18Z%22%20fill%3D%22%23e9e5da%22%20stroke%3D%22%2329343b%22%20stroke-width%3D%221.25%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22m10.1%2018.2%202.1%204.2%22%20fill%3D%22none%22%20stroke%3D%22%23c5a365%22%20stroke-width%3D%221.3%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E") 4 3, pointer;
+  }
+  body :is(a[href], button, select, summary, [role="button"], [role="tab"], [role="switch"]):not(:disabled):not([aria-disabled="true"]):not([aria-busy="true"]):not(.empty):not(.is-loading) {
+    cursor: var(--cursor-action) !important;
+  }
+}
