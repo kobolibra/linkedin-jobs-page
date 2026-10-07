@@ -16,67 +16,93 @@ function ui(){
   return {context,get,...context.window.CompanyInsight,render:context.window.renderCo};
 }
 const {summarize,insights}=ui();
-test('total, regions and every date statistic include expired positions',()=>{
-  const s=summarize([record(0),record(10,'expired','CN',ago(1)),record(30,'expired','SG',ago(2))],NOW);
-  assert.equal(s.total,3);assert.equal(s.active,1);assert.equal(s.expired,2);assert.equal(s.median,10);assert.equal(s.mean,40/3);
-  assert.equal(s.regions.CN,1);assert.equal(s.regions.SG,1);
-  assert.equal(s.buckets.reduce((n,b)=>n+b.total,0),3);assert.equal(s.buckets[4].expired,1);
+test('expired lifetime stops at expiry while active exposure continues',()=>{
+  const rows=[record(10),record(30,'expired','CN',ago(20))];
+  const a=summarize(rows,NOW),b=summarize(rows,NOW+15*DAY);
+  assert.equal(a.close.mean,10);assert.equal(b.close.mean,10);
+  assert.equal(a.open.mean,10);assert.equal(b.open.mean,25);
+  assert.equal(a.active,1);assert.equal(a.expired,1);assert.equal(a.regions.CN,1);
 });
-test('recent and previous periods are exactly seven days with no overlap',()=>{
-  const s=summarize([record(0),record(6.999),record(7),record(13.999),record(14)],NOW);
-  assert.equal(s.recent,2);assert.equal(s.previous,2);
-  assert.equal(s.recentActive,2);assert.equal(s.recentExpired,0);
+test('unfinished active roles never enter closure statistics',()=>{
+  const s=summarize([record(1000),record(10,'expired','HK',ago(2))],NOW);
+  assert.equal(s.close.n,1);assert.equal(s.close.median,8);assert.equal(s.open.median,1000);
 });
-test('missing, invalid and future dates remain in totals but never become recent',()=>{
-  const s=summarize([{date:null,status:'expired',region:'HK'},{date:'invalid',status:'active',region:'CN'},record(-1)],NOW);
-  assert.equal(s.total,3);assert.equal(s.missingDates,3);assert.equal(s.recent,0);
-  assert.equal(s.mean,null);assert.equal(s.median,null);assert.equal(s.q1,null);
-  assert.match(insights(s).join(' '),/计入总量和状态统计，未计入日期分析/);
+test('duration keeps sub-day precision before averaging and includes same-instant closure',()=>{
+  const s=summarize([record(1.75,'expired','HK',ago(1)),record(2,'expired','HK',ago(2))],NOW);
+  assert.equal(s.close.mean,.375);assert.equal(s.close.n,2);
 });
-test('expired date is not confused with posting date or a hiring outcome',()=>{
-  const s=summarize([record(80,'expired','HK',ago(2)),record(20,'expired','HK',ago(7)),record(3,'expired','HK',ago(5)),record(2,'expired','HK',ago(-1))],NOW);
-  assert.equal(s.expiredRecent,1);assert.equal(s.missingExpiryDates,2);
-  const note=insights(s).join(' ');assert.match(note,/近7日有 1 个职位被标记失效/);
-  assert.doesNotMatch(note,/招聘活跃|招聘节奏|严重堆积|系统性|招满|招聘周期/);
+test('reposting or push timestamps cannot reset the original lifetime',()=>{
+  const s=summarize([{...record(30,'expired','HK',ago(1)),datePosted:ago(2),pushTime:ago(2)}],NOW);
+  assert.equal(s.close.median,29);assert.equal(s.weeks[0].added,0);
 });
-test('old expired rows do not inflate the age profile of active opportunities',()=>{
-  const s=summarize([record(1),record(30),record(500,'expired','HK',ago(2)),{date:null,status:'active',region:'HK'}],NOW);
-  assert.equal(s.active,3);assert.equal(s.activeDated,2);assert.equal(s.activeOld,1);
-  assert.match(insights(s).join(' '),/1 \/ 2 个（50%）/);
+test('means and interpolated quartiles are computed separately with weighted duplicates',()=>{
+  const rows=[1,2,2,3,92].map(d=>record(d+1,'expired','HK',ago(1)));
+  const s=summarize(rows,NOW);assert.equal(s.close.mean,20);assert.equal(s.close.median,2);
+  assert.equal(s.close.q1,2);assert.equal(s.close.q3,3);
+  assert.match(insights(s).join(' '),/长周期职位拉高了平均数/);
 });
-test('recent availability and regional concentration use the right denominators',()=>{
-  const s=summarize([record(1),record(2),record(3,'expired','SG',ago(1))],NOW);
-  assert.equal(s.recent,3);assert.equal(s.recentActive,2);assert.equal(s.recentExpired,1);
-  assert.match(insights(s).join(' '),/有效职位集中在 HK：2 \/ 2 个（100%）/);
+test('both distributions use exact nonoverlapping duration boundaries and separate denominators',()=>{
+  const s=summarize([0,6.99,7,14,30,60].map(d=>record(d+1,'expired','HK',ago(1))).concat([record(2)]),NOW);
+  assert.deepEqual(Array.from(s.close.buckets,b=>b.count),[2,1,1,1,1]);
+  assert.equal(s.open.buckets[0].count,1);assert.equal(s.close.n,6);assert.equal(s.open.n,1);
 });
-test('only expired positions still render an informative panel',()=>{
-  const u=ui();u.render('ACME',[record(2,'expired','HK',ago(1)),record(30,'expired','CN',ago(0))],'all');
-  assert.equal(u.get('coCount').textContent,2);assert.ok(u.get('coPanel').classList.contains('on'));
-  assert.match(u.get('coStatus').innerHTML,/有效 <b>0/);assert.match(u.get('coStatus').innerHTML,/失效 <b>2/);
-  assert.match(u.get('coFoot').innerHTML,/均已失效/);
+test('rolling weekly windows are equal and boundary events are not double counted',()=>{
+  const s=summarize([0,6.999,7,13.999,14,21,28].map(d=>record(d)),NOW);
+  assert.deepEqual(Array.from(s.weeks,w=>w.added),[2,2,1,1]);
 });
-test('no-date companies render totals without NaN, fake averages or a broken axis',()=>{
-  const u=ui();u.render('ACME',[{date:null,status:'expired',region:'HK'}],'all');
-  assert.equal(u.get('coCount').textContent,1);assert.equal(u.get('coMed').innerHTML,'—');
-  assert.equal(u.get('coFresh').innerHTML,'—');assert.equal(u.get('coAxisSec').style.display,'none');
-  assert.doesNotMatch(u.get('coFoot').innerHTML+u.get('coHist').innerHTML,/NaN|Infinity|undefined/);
+test('closure rhythm follows end date independently from the start date',()=>{
+  const s=summarize([record(80,'expired','HK',ago(2)),record(20,'expired','HK',ago(7)),record(3)],NOW);
+  assert.equal(s.weeks[0].closed,1);assert.equal(s.weeks[1].closed,1);
+  assert.equal(s.weeks[0].added,1);assert.equal(s.weeks[0].balance,0);
+  assert.equal(s.weeks[0].close.median,78);
 });
-test('histogram stacks active and expired counts and uses dated records for percentages',()=>{
-  const u=ui();u.render('ACME',[record(1),record(1,'expired','HK',ago(0)),{date:null,status:'active',region:'HK'}],'1-7');
-  assert.match(u.get('coHist').innerHTML,/1–7 天 · 2 个：有效 1，失效 1/);
-  assert.match(u.get('coHist').innerHTML,/co-segment-active" style="width:50%/);
-  assert.match(u.get('coHist').innerHTML,/aria-pressed="true"/);
-  assert.equal(u.get('coCount').textContent,3);
+test('missing, future, reversed dates cannot fabricate durations or event counts',()=>{
+  const rows=[{date:null,status:'expired',expiredAt:ago(1)},record(3,'expired','HK',ago(5)),record(2,'expired','HK',ago(-1)),record(-1),{date:'bad',status:'active'}];
+  const s=summarize(rows,NOW);assert.equal(s.total,5);assert.equal(s.close.n,0);assert.equal(s.open.n,0);
+  assert.equal(s.missingStart,3);assert.equal(s.missingEnd,1);assert.equal(s.invalidOrder,1);
+  assert.equal(s.weeks[0].closed,1);assert.equal(s.close.mean,null);
 });
-test('identical ages aggregate on the axis without changing quantiles or counts',()=>{
-  const u=ui(),rows=Array.from({length:100},()=>record(4));u.render('ACME',rows,'all');
-  assert.equal((u.get('coPlot').innerHTML.match(/class="co-tick"/g)||[]).length,1);
-  assert.match(u.get('coPlot').innerHTML,/有效 100，失效 0/);assert.equal(u.summarize(rows,NOW).median,4);
+test('zero previous counts produce absolute changes instead of infinite growth',()=>{
+  const s=summarize([record(1)],NOW),notes=insights(s).join(' ');
+  assert.match(notes,/增加 1 个/);assert.doesNotMatch(notes,/Infinity|100%|加速|扩招/);
 });
-test('rendering treats company names as text and hides genuinely empty results',()=>{
-  const u=ui(),name='<img src=x onerror=alert(1)>';u.render(name,[record(1)],'all');
-  assert.equal(u.get('coName').textContent,name);assert.doesNotMatch(u.get('coFoot').innerHTML,/<img/);
-  u.render(name,[],'all');assert.equal(u.get('coPanel').classList.contains('on'),false);
+test('weekly closure comparison uses completed cohorts and requires five in each',()=>{
+  const rows=[...Array.from({length:5},()=>record(11,'expired','HK',ago(1))),...Array.from({length:5},()=>record(28,'expired','HK',ago(8)))];
+  assert.match(insights(summarize(rows,NOW)).join(' '),/缩短 10 天/);
+  assert.doesNotMatch(insights(summarize(rows.slice(1),NOW)).join(' '),/缩短/);
+});
+test('active stock exceeding closure upper quartile is not labelled a hiring delay',()=>{
+  const rows=Array.from({length:10},()=>record(11,'expired','HK',ago(1))).concat([record(30),record(3)]);
+  const s=summarize(rows,NOW);assert.equal(s.beyondQ3,1);assert.equal(s.oldActive,1);
+  assert.match(insights(s).join(' '),/1 个在招职位已超过历史关闭用时/);
+  assert.doesNotMatch(insights(s).join(' '),/堆积|招聘困难|招满|点击|链接/);
+});
+test('expiry source attribution stays separate from inferred hiring outcomes',()=>{
+  const rows=['linkedin_closed','linkedin_removed','missing_from_full_company_snapshot',null].map(expiredReason=>({...record(5,'expired','HK',ago(1)),expiredReason}));
+  const u=ui();u.render('ACME',rows);assert.match(u.get('coStatus').title,/关闭\/移除 2；完整抓取中消失 1；其他或未记录 1/);
+});
+test('expired-only panel renders closed duration and empty active metrics',()=>{
+  const u=ui();u.render('ACME',[record(30,'expired','CN',ago(20))]);
+  assert.ok(u.get('coPanel').classList.contains('on'));assert.match(u.get('coMetrics').innerHTML,/<td>—<\/td><td>10 天/);
+  assert.match(u.get('coFoot').innerHTML,/当前没有有效职位/);
+});
+test('no-date panel shows unavailable stats and explicit missing counts, never fake zero durations',()=>{
+  const u=ui();u.render('ACME',[{date:null,status:'expired'}]);
+  assert.match(u.get('coMetrics').innerHTML,/<td>—<\/td><td>—<\/td>/);
+  assert.match(u.get('coQuality').textContent,/1 条缺有效起始日期；1 条缺有效失效日期/);
+  assert.doesNotMatch([...['coMetrics','coHist','coFoot','coRhythm'].map(k=>u.get(k).innerHTML)].join(''),/NaN|Infinity|undefined/);
+});
+test('duration distribution is not wired to unrelated list-age filtering',()=>{
+  const u=ui();u.render('ACME',[record(2),record(30,'expired','HK',ago(28))]);
+  assert.equal(u.get('coHist').events.click,undefined);
+  assert.doesNotMatch(u.get('coHist').innerHTML,/button|data-age|aria-pressed/);
+  assert.match(u.get('coHist').innerHTML,/在招：1 \/ 1 个，100%/);
+  assert.match(u.get('coHist').innerHTML,/失效：1 \/ 1 个，100%/);
+});
+test('company names are text and generic footer boilerplate is removed',()=>{
+  const u=ui(),name='<img src=x onerror=alert(1)>';u.render(name,[record(1)]);
+  assert.equal(u.get('coName').textContent,name);assert.doesNotMatch(u.get('coFoot').innerHTML,/<img|co-scope|点击|核对原招聘链接|不随时间区间/);
+  u.render(name,[]);assert.equal(u.get('coPanel').classList.contains('on'),false);
 });
 
 // Execute the real app filtering functions, not a reimplementation of their scope.
