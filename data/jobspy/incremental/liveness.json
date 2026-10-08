@@ -1,304 +1,118 @@
 {
   "schemaVersion": "1.0",
   "mode": "cn-job-liveness",
-  "observedAt": "2026-10-08T03:34:28.010356+00:00",
+  "observedAt": "2026-10-08T09:45:29.735712+00:00",
   "observations": [
     {
-      "sourceJobId": "li-investment-director-senior-director-at-beyond-partners-limited-4475155358",
-      "jobId": "4475155358",
+      "sourceJobId": "li-tech-solutions-lead-mobile-at-%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4473472016",
+      "jobId": "4473472016",
+      "result": "unknown",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-digital-design-lead-design-uiux-at-%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4473456664",
+      "jobId": "4473456664",
       "result": "not_accepting",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
     },
     {
-      "sourceJobId": "li-fi-rm-at-%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4473450808",
-      "jobId": "4473450808",
+      "sourceJobId": "li-%E9%9B%86%E5%9B%A2%E8%B4%A2%E5%8A%A1%E5%89%AF%E6%80%BB%E7%9B%91-at-%E4%B8%AD%E4%BA%A4%E9%9B%84%E5%AE%89%E8%9E%8D%E8%B5%84%E7%A7%9F%E8%B5%81%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4474809262",
+      "jobId": "4474809262",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-hong-kong-institutional-sales-head-ky-hkle-at-kaiyiee-global-talent-4473474192",
+      "jobId": "4473474192",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-ai-engineer-at-millennium-4455670044",
+      "jobId": "4455670044",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-4454254394",
+      "jobId": "4454254394",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-4265088557",
+      "jobId": "4265088557",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-accountant-manager-private-equity-rmb-fund-at-apex-group-ltd-4422272093",
+      "jobId": "4422272093",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-4452185402",
+      "jobId": "4452185402",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-4450012995",
+      "jobId": "4450012995",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-marketing-executive-at-schroders-4451515209",
+      "jobId": "4451515209",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-manager-transfer-solutions-at-mastercard-4447399155",
+      "jobId": "4447399155",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-4446495345",
+      "jobId": "4446495345",
+      "result": "open",
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
+    },
+    {
+      "sourceJobId": "li-4443216670",
+      "jobId": "4443216670",
       "result": "not_accepting",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
     },
     {
-      "sourceJobId": "li-cyber-graduate-china-at-targetjobs-uk-4473874111",
-      "jobId": "4473874111",
+      "sourceJobId": "li-4445422745",
+      "jobId": "4445422745",
       "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
     },
     {
-      "sourceJobId": "li-quant-research-analyst-intern-at-man-group-4468563119",
-      "jobId": "4468563119",
+      "sourceJobId": "li-4444346363",
+      "jobId": "4444346363",
       "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
     },
     {
-      "sourceJobId": "li-quant-research-analyst-intern-at-man-group-4405629462",
-      "jobId": "4405629462",
+      "sourceJobId": "li-4444925318",
+      "jobId": "4444925318",
       "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-solution-architect-at-thomson-reuters-4466874307",
-      "jobId": "4466874307",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-director-product-management-customer-acquisition-and-engagement-at-mastercard-4466903836",
-      "jobId": "4466903836",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-analyst-marketing-at-mastercard-4466920000",
-      "jobId": "4466920000",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-analyst-marketing-at-mastercard-4466916051",
-      "jobId": "4466916051",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-content-analyst-korean-at-lseg-4467551116",
-      "jobId": "4467551116",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-senior-associate-at-state-street-4469131966",
-      "jobId": "4469131966",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-analyst-account-management-launch-graduate-program-2027-%E2%80%93-beijing-china-at-mastercard-4460236853",
-      "jobId": "4460236853",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-membership-director-china-at-cfa-institute-4467976968",
-      "jobId": "4467976968",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-manager-area-marketing-strategy-innovation-greater-china-at-mastercard-4465541086",
-      "jobId": "4465541086",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-director-tech-partnerships-at-visa-4467722218",
-      "jobId": "4467722218",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-director-east-asia-exchange-management-at-lseg-4379189333",
-      "jobId": "4379189333",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-prestige-relationship-manager1-at-hang-seng-bank-4465620524",
-      "jobId": "4465620524",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-fund-accountant-at-apex-group-ltd-4463959896",
-      "jobId": "4463959896",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-avp-senior-test-manager-itd-at-hong-kong-exchanges-and-clearing-limited-hkex-4464444480",
-      "jobId": "4464444480",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-%E6%8A%95%E8%B5%84%E8%80%85%E5%85%B3%E7%B3%BB-at-baidu-inc-4464176454",
-      "jobId": "4464176454",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-kyc-policy-implementation-manager-52852-at-%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4464964272",
-      "jobId": "4464964272",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-officer-at-computershare-4463248778",
-      "jobId": "4463248778",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-associate-2-at-state-street-4463341425",
-      "jobId": "4463341425",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-fund-accountant-at-apex-group-ltd-4410194462",
-      "jobId": "4410194462",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4462436996",
-      "jobId": "4462436996",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-consultant-launch-graduate-program-2027-beijing-china-at-mastercard-4460258421",
-      "jobId": "4460258421",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-consultant-launch-graduate-program-2027-shanghai-china-at-mastercard-4460242419",
-      "jobId": "4460242419",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-sales-specialist-analytics-ai-solutions-at-lseg-4440405905",
-      "jobId": "4440405905",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-director-tech-partnerships-at-visa-4461703938",
-      "jobId": "4461703938",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-sr-manager-tech-partnerships-at-visa-4461722542",
-      "jobId": "4461722542",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-analyst-account-management-launch-graduate-program-2027-%E2%80%93-shanghai-china-at-mastercard-4460246646",
-      "jobId": "4460246646",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4446052029",
-      "jobId": "4446052029",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-team-leader-pse-gzu-at-hang-seng-bank-4422680381",
-      "jobId": "4422680381",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4460186061",
-      "jobId": "4460186061",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4459871972",
-      "jobId": "4459871972",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-middle-office-senior-associate-at-state-street-4459185463",
-      "jobId": "4459185463",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-agentic-ai-engineer-avp-at-state-street-4459127056",
-      "jobId": "4459127056",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-technical-specialist-at-lseg-4454969993",
-      "jobId": "4454969993",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-fund-accountant-at-apex-group-ltd-4446616648",
-      "jobId": "4446616648",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-software-engineer-at-lseg-4331592697",
-      "jobId": "4331592697",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4447518038",
-      "jobId": "4447518038",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-c%2B%2B-software-engineer-at-citadel-securities-4281724238",
-      "jobId": "4281724238",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-manager-solution-architect-tech-partnership-at-visa-4457304598",
-      "jobId": "4457304598",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4450311305",
-      "jobId": "4450311305",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4456474315",
-      "jobId": "4456474315",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-sr-director-business-development-tech-partnerships-at-visa-4456771078",
-      "jobId": "4456771078",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-at-pamo-jiangsu-branch-at-manulife-4455607259",
-      "jobId": "4455607259",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
-    },
-    {
-      "sourceJobId": "li-4453438927",
-      "jobId": "4453438927",
-      "result": "open",
-      "checkedAt": "2026-10-08T03:34:28.010356+00:00"
+      "checkedAt": "2026-10-08T09:45:29.735712+00:00"
     }
   ],
   "stats": {
-    "probed": 48,
-    "open": 46,
+    "probed": 17,
+    "open": 14,
     "closed": 0,
     "not_accepting": 2,
     "gone": 0,
-    "unknown": 0,
+    "unknown": 1,
     "circuitOpen": false,
     "selectorGuardTripped": false
   }
