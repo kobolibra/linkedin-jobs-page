@@ -1,5 +1,5 @@
 // One source of truth for provider criteria, display labels and generated docs.
-export const TAXONOMY_VERSION = 'jev-taxonomy-v4.4.4';
+export const TAXONOMY_VERSION = 'jev-taxonomy-v4.4.5';
 export const ROLE_FAMILIES = { CS:'Client & Commercial', IR:'Investment, Markets & Research', RC:'Risk, Compliance & Audit', OP:'Operations & Securities Services', PS:'Product, Change, Strategy & Design', TE:'Technology & Engineering', CF:'Corporate Functions & Insurance Technical' };
 
 // Each entry names an occupational mandate, its output and its nearest exclusion.
@@ -107,12 +107,12 @@ const business = {
   corporate_banking:['Corporate Banking','Corporate coverage/lending for large companies or multinational corporates. Not the financial industry of an incidental counterparty.'],
   institutional_banking:['Institutional Banking','Coverage/banking for financial institutions or public-sector institutions: banks, insurers, asset managers, sovereigns. Product lines take precedence when explicit.'],
   transaction_banking:['Transaction Banking','Payments, cash management, trade finance, working capital or client treasury services as the dominant product line, regardless of client size. Not own-bank Treasury/ALM.'],
-  securities_services:['Securities Services','Custody, clearing, settlement, client-fund administration/accounting or asset servicing. Not management of the fund’s investment portfolio.'],
+  securities_services:['Securities Services','Custody, clearing, settlement or outsourced fund administration/accounting supplied to clients as a securities/asset-servicing business. Internal accounting/operations of an explicitly assigned asset-management business remain asset_management; fund accounting alone does not prove the employer business.'],
   global_markets:['Global Markets','Traded-product sales, trading, structuring, markets research or directly supporting a named markets desk/business.'],
   investment_banking:['Investment Banking','M&A, ECM, DCM, leveraged finance or corporate-finance deal advisory/origination.'],
   asset_management:['Asset Management','Investment portfolios/funds/mandates as the explicitly employing or supported business. Not a fund administrator merely serving asset managers.'],
   insurance:['Insurance','Insurance underwriting, broking, claims or explicitly supported insurance operations.'],
-  enterprise_wide:['Enterprise-wide','Own-institution corporate/shared-control mandate: the bank’s own finance, treasury, HR, internal audit, employee misconduct investigations or group compliance controls. A country/regional remit still qualifies when the object is the institution itself. Generic internal technology or client-facing credit risk without a stated mandate is insufficient.'],
+  enterprise_wide:['Corporate & Shared Functions','Own-institution corporate/shared-control mandate: the bank’s own finance, treasury, HR, internal audit, employee misconduct investigations or group compliance controls. A country/regional remit still qualifies when the object is the institution itself. Generic internal technology or client-facing credit risk without a stated mandate is insufficient.'],
   multi_line:['Multiple Business Lines','At least two distinct, explicit and material served lines with no dominant one. Lists of collaborators or company marketing do not qualify.'],
   other_business_line:['Other Explicit Business','A clearly stated non-listed business, such as industrial/manufacturing or professional-services work. Do not force it into a banking line.'],
   not_stated:['Not Stated','The JD does not establish the directly served line. Use only when role-specific client segment and product/service mandate remain unclear. Do not abstain merely because the English business-line name is absent; employer brand or incidental stakeholders alone are insufficient.'],
@@ -120,7 +120,7 @@ const business = {
 };
 export const BUSINESS_LINES = Object.fromEntries(Object.entries(business).map(([k,v])=>[k,v[0]]));
 export const BUSINESS_LINE_CRITERIA = Object.fromEntries(Object.entries(business).map(([k,v])=>[k,v[1]]));
-export const BUSINESS_LINE_GUIDANCE = 'Classify the business that this role directly serves, independently of its profession. Product/service mandate first, client segment second: Transaction banking, securities services, markets, investment banking and asset management must be separated by outputs. A fund accountant serving an asset manager is securities services, not automatically asset management. A software engineer for a named markets desk is global_markets. Credit portfolio data does not by itself establish corporate versus retail banking. An explicit role title or assigned team naming a business/product/client mandate is valid direct evidence; the English business-line name need not appear in duties. Distinguish this from a generic grade, profession or ambiguous department. Do not infer from employer brand, marketing, industry of counterparties or a list of stakeholders. Own-institution corporate/shared-control duties => enterprise_wide, including local employee investigations/internal audit; generic internal IT without stated mandate => not_stated. Multi-line requires material responsibility for multiple lines, not occasional collaboration.';
+export const BUSINESS_LINE_GUIDANCE = 'Classify the business that this role directly serves, independently of its profession. Identify the role’s directly assigned commercial business, independently of profession, activity and employer brand. Product/service business first when directly assigned; use client-segment banking only when that is the actual coverage mandate. This priority does not move an asset-manager’s internal operations into an external service provider business: Transaction banking, securities services, markets, investment banking and asset management must be separated by outputs. Separate an external fund administrator’s client service (securities_services) from operations inside an explicitly assigned investment/asset-management business (asset_management). NAV calculation is an activity, not sufficient by itself to identify the business. A software engineer for a named markets desk is global_markets. Credit portfolio data does not by itself establish corporate versus retail banking. An explicit role title or assigned team naming a business/product/client mandate is valid direct evidence; the English business-line name need not appear in duties. Distinguish this from a generic grade, profession or ambiguous department. Do not infer from employer brand, marketing, industry of counterparties or a list of stakeholders. Own-institution corporate/shared-control duties => enterprise_wide, including local employee investigations/internal audit; generic internal IT without stated mandate => not_stated. Multi-line requires material responsibility for multiple lines, not occasional collaboration.';
 
 export const LEADERSHIP_LABELS = {individual_contributor:'Individual Contributor',informal_mentor_or_lead:'Mentor / Informal Lead',team_lead:'Team / Workstream Lead',people_manager:'People Manager',manager_of_managers:'Manager of Managers',not_stated:'Not Stated',not_applicable:'Not Applicable'};
 export const LEADERSHIP_LEVELS = {
@@ -141,3 +141,18 @@ export const RISK_FLAGS = {
   non_permanent_or_outsourced:{label:'Fixed-term / Contingent Employment',severity:'medium',threshold:.85,question:'riskNonPermanent',evidence:'riskEmploymentEvidence',rule:'This advertised job itself has fixed-term, temporary, contractor, agency/payroll or secondment terms. Contract drafting, vendor/outsourcing oversight, ordinary employment contracts and past contractor experience are not evidence. Explicit permanent employment or negation rules this out.',action:'Confirm duration, employing entity and renewal/conversion terms.'},
   thin_or_template_jd:{label:'Limited Role-specific Evidence',severity:'low',threshold:.85,question:'riskGenericTemplate',rule:'Responsibilities are too sparse, vague or template-dominated to establish the actual mandate. Specific short descriptions can be sufficient; benefits/EEO boilerplate alongside clear duties is not itself a risk.',action:'Request concrete responsibilities and expected outputs.'}
 };
+
+// Literal named business mandates only; occupations such as Fund Accountant are not business lines.
+export const EXPLICIT_BUSINESS_TITLE_RULES={
+    private_banking:/\bprivate bank(?:ing)?\b|私人银行|私行/i,
+    wealth_and_affluent_banking:/\b(?:wealth management|affluent banking|premier banking|treasures)\b|丰盛理财|卓越理财|财富管理/i,
+    commercial_sme:/\b(?:SME banking|commercial bank(?:ing)?|business banking)\b|中小企业银行/i,
+    corporate_banking:/\bcorporate bank(?:ing)?\b|公司银行/i,
+    institutional_banking:/\binstitutional bank(?:ing)?\b|金融机构银行/i,
+    transaction_banking:/\b(?:transaction bank(?:ing)?|cash management|trade finance|global payments solutions)\b|交易银行|贸易融资|现金管理/i,
+    securities_services:/\b(?:securities services|fund administration|custody operations)\b|证券服务|基金行政/i,
+    global_markets:/\b(?:global (?:financial )?markets|sales (?:&|and) trading)\b|环球金融市场|全球金融市场/i,
+    investment_banking:/\binvestment bank(?:ing)?\b|投资银行/i,
+    asset_management:/^(?!.*\b(?:software|hardware|IT) asset management\b).*?(?:\basset management\b|资产管理)/i,
+    insurance:/\binsurance\b|保险/i
+  };
