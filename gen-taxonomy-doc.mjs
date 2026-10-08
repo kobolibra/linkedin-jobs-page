@@ -25,6 +25,8 @@ export function taxonomyMarkdown(){
   for(const [code,r] of Object.entries(RISK_FLAGS))lines.push(`| \`${code}\` | ${r.label} | ${r.severity} | ${r.threshold} | ${cell(r.rule)} | ${r.action} |`);
   lines.push('','## Runtime safeguards','',
     '- Each classification has a short label and, when supported, a source passage selected from the actual JD. Evidence selections use existing Choice primitives, not generated explanations. Source selection is itself a model judgement, not proof that a label is correct.',
+    '- Business-line assignment requires explicit-context support >= 0.8 and a non-conflicting classification >= 0.5. Multi-line also requires independent support for multiple materially served lines; KYC/credit/portfolio objects do not establish multiple lines.',
+    '- Evidence-selection confidence measures which passage to cite; it does not replace independent classification confidence. Several valid source passages can split the selection probabilities. Only a valid selected source ID with a finite positive confidence is used.',
     '- Missing/invalid answers and probabilities stay unknown; neither a missing answer nor a 0.5 noul is affirmative evidence.',
     '- No archetype-to-activity default. Weak activity answers below 0.35 abstain; other low-confidence/close alternatives remain visibly uncertain.',
     '- Leadership claims require a selected source passage plus explicit evidence nouls at least 0.8. Manager-of-managers also requires people-management support. Downgrades clear the rejected confidence.',
@@ -33,7 +35,7 @@ export function taxonomyMarkdown(){
     '- Unknown risk assessment is distinct from no supported structural flags. Flags are questions to clarify, not conclusions about employer quality, actual workload or legal status.',
     '- Non-job content neutralises all dimensions and removes their evidence/candidates. Insufficient duties suppress profession/activity/leadership guesses; a directly evidenced business line can remain.',
     '- Thresholds are conservative engineering gates, not measured accuracy guarantees. Model quality must be evaluated separately on labelled real JDs.',
-    '- v4.4 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
+    '- v4.4.1 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
   return lines.join('\n');
 }
 if(process.argv[1]&&new URL(import.meta.url).pathname===process.argv[1])writeFileSync(`${TAXONOMY_VERSION}.md`,taxonomyMarkdown());
