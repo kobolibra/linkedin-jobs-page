@@ -35,7 +35,7 @@ export function taxonomyMarkdown(){
     '- Unknown risk assessment is distinct from no supported structural flags. Flags are questions to clarify, not conclusions about employer quality, actual workload or legal status.',
     '- Non-job content neutralises all dimensions and removes their evidence/candidates. Insufficient duties suppress profession/activity/leadership guesses; a directly evidenced business line can remain.',
     '- Thresholds are conservative engineering gates, not measured accuracy guarantees. Model quality must be evaluated separately on labelled real JDs.',
-    '- v4.4.2 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
+    '- v4.4.3 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
   return lines.join('\n');
 }
 if(process.argv[1]&&new URL(import.meta.url).pathname===process.argv[1])writeFileSync(`${TAXONOMY_VERSION}.md`,taxonomyMarkdown());

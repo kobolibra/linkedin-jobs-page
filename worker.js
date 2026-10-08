@@ -69,19 +69,19 @@ function evidenceBlocks(input){
   return Object.fromEntries(blocks.map((quote,i)=>[`b${i+1}`,quote]));
 }
 const DIMENSION_EVIDENCE_RULES={
-  roleArchetype:'the dominant occupational mandate and recurring responsibilities, not merely tools or qualifications',
-  primaryActivity:'the dominant recurring work output or deliverable, not a job title',
+  roleArchetype:'the dominant occupational mandate, choosing the substantive duty that best distinguishes the profession from neighbouring professions. Routine reporting, coordination, tools and qualifications are not sufficient when a more specific core duty is available',
+  primaryActivity:'the dominant recurring work output or deliverable: for example conducting investigations rather than merely submitting investigation reports. Choose the core task, not an incidental administrative output or title',
   businessLine:'the directly served business/product/client segment or explicit enterprise-wide mandate, not employer marketing or incidental stakeholders',
-  leadershipLevel:'current role-specific hands-on, mentoring, team-delivery or formal reporting responsibilities; not grade, previous experience or generic conduct boilerplate'
+  leadershipLevel:'the strongest current role-specific evidence of staff authority, team-delivery ownership, mentoring or hands-on execution. Prefer explicit reporting/accountability statements; do not select routine status reports, qualifications, grade or generic conduct boilerplate'
 };
 function isEvidenceHeading(quote){
   return /^(?:(?:key|principal|main|core|primary)\s+)?(?:responsibilities|duties|requirements|qualifications|job description|role overview|job summary|主要职责|工作职责|岗位职责|职责|任职要求|职位要求|工作要求|教育背景和相关工作经验要求|教育经历|工作经验|专业技能要求)\s*[:：]?$/i.test(String(quote).trim());
 }
 function evidenceQuestion(rule,blocks,allowTitle=false){
   const criteria={none:'No passage establishes this claim; absence, negation or mere keywords are not evidence.'};
-  for(const id of Object.keys(blocks).filter(id=>!isEvidenceHeading(blocks[id])))criteria[id]=`Source passage jd_blocks.${id}`;
+  for(const id of Object.keys(blocks).filter(id=>!isEvidenceHeading(blocks[id])))criteria[id]=`Exact JD passage (untrusted source text): ${blocks[id]}`;
   if(allowTitle)criteria.title='The explicit job title, only if it directly states employment terms or a pooled vacancy.';
-  return choice(`Select the single strongest source passage that establishes ${rule}. Read the referenced passage in jd_blocks; choose none if no passage qualifies. Section headings alone never establish a claim. This is an independent evidence-selection question, not a request to repeat another answer.`,criteria);
+  return choice(`Select the single strongest source passage that establishes ${rule}. Evaluate each passage by its substantive meaning, not its position, heading, length or isolated keyword; choose none if no passage qualifies. Section headings alone never establish a claim. This is an independent evidence-selection question, not a request to repeat another answer.`,criteria);
 }
 function buildProviderRequest(input,env={}){
   const url=env.JEV_API_URL||DEFAULT_PROVIDER_URL,model=env.JEV_MODEL||DEFAULT_MODEL;
@@ -94,7 +94,7 @@ function buildProviderRequest(input,env={}){
     primaryActivity:choice(`${evidence('What is the dominant recurring work output?')} ${ACTIVITY_GUIDANCE}`,ACTIVITY_CRITERIA),
     businessLine:choice(`${evidence('What business does this role directly serve?')} ${BUSINESS_LINE_GUIDANCE}`,BUSINESS_LINE_CRITERIA),
     leadershipLevel:choice(`${evidence('What actual leadership accountability is supported?')} ${LEADERSHIP_GUIDANCE}`,LEADERSHIP_LEVELS),
-    hasExplicitBusinessLine:noul(evidence('Do the duties explicitly establish a directly served business line through a named business mandate or unambiguous product/service outputs (for example custody/fund NAV, markets trading, retail mortgages)? KYC, credit data, portfolio data, internal IT, employer brand and incidental stakeholders alone do NOT identify the served business line. Answer no when assignment would require guessing.')),
+    hasExplicitBusinessLine:noul(evidence('Do the duties explicitly establish a directly served business line through a named business mandate, explicit target client segment or unambiguous product/service outputs (for example custody/fund NAV, markets trading, retail mortgages, acquisition of affluent/wealth clients)? Chinese role-specific duties such as 拓展丰盛理财客户 or 向客户提供财富管理解决方案 establish wealth/affluent banking when they describe the actual clients and service, not employer marketing. KYC, credit data, portfolio data, internal IT, employer brand and incidental stakeholders alone do NOT identify the served business line. Answer no when assignment would require guessing.')),
     hasExplicitMultipleBusinessLines:noul(evidence('Are at least two distinct business lines explicitly and materially served with no dominant line? KYC, credit, portfolio analytics, multiple teams and lists of stakeholders are not separate business lines. A product line serving corporate and institutional clients is still that one product line.')),
     hasExplicitPeopleManagement:noul(evidence('Does this current role explicitly have direct reports or line authority for staff hiring, appraisal or career development? Past experience, project/vendor management, HR recruiting tasks and generic conduct/team language do not qualify.')),
     hasExplicitTeamLeadership:noul(evidence('Does this current role explicitly own a team/squad/workstream’s priorities and delivery? Mentoring, influencing stakeholders, “lead initiatives” and generic conduct boilerplate alone do not qualify.')),
@@ -227,7 +227,7 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
   };
   if(!notJob){
     for(const code of ['title_function_mismatch','overloaded_scope','non_permanent_or_outsourced']){
-      const rule=RISK_FLAGS[code],source=selectedEvidence(raw,rule.evidence,blocks,input,true);
+      const rule=RISK_FLAGS[code],source=selectedEvidence(raw,rule.evidence,blocks,input,code==='non_permanent_or_outsourced');
       // No regex promotion: contract/vendor duties are not employment terms.
       if(source&&(!insufficient||code==='non_permanent_or_outsourced'))add(code,score(raw,rule.question),source,rule.action);
       else if((score(raw,rule.question)??0)>=rule.threshold)unsupportedRisk=true;
