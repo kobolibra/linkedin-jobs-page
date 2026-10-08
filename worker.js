@@ -74,11 +74,14 @@ const DIMENSION_EVIDENCE_RULES={
   businessLine:'the directly served business/product/client segment or explicit enterprise-wide mandate, not employer marketing or incidental stakeholders',
   leadershipLevel:'current role-specific hands-on, mentoring, team-delivery or formal reporting responsibilities; not grade, previous experience or generic conduct boilerplate'
 };
+function isEvidenceHeading(quote){
+  return /^(?:(?:key|principal|main|core|primary)\s+)?(?:responsibilities|duties|requirements|qualifications|job description|role overview|job summary|主要职责|工作职责|岗位职责|职责|任职要求|职位要求|工作要求|教育背景和相关工作经验要求|教育经历|工作经验|专业技能要求)\s*[:：]?$/i.test(String(quote).trim());
+}
 function evidenceQuestion(rule,blocks,allowTitle=false){
   const criteria={none:'No passage establishes this claim; absence, negation or mere keywords are not evidence.'};
-  for(const id of Object.keys(blocks))criteria[id]=`Source passage jd_blocks.${id}`;
+  for(const id of Object.keys(blocks).filter(id=>!isEvidenceHeading(blocks[id])))criteria[id]=`Source passage jd_blocks.${id}`;
   if(allowTitle)criteria.title='The explicit job title, only if it directly states employment terms or a pooled vacancy.';
-  return choice(`Select the single strongest source passage that establishes ${rule}. Read the referenced passage in jd_blocks; choose none if no passage qualifies. This is an independent evidence-selection question, not a request to repeat another answer.`,criteria);
+  return choice(`Select the single strongest source passage that establishes ${rule}. Read the referenced passage in jd_blocks; choose none if no passage qualifies. Section headings alone never establish a claim. This is an independent evidence-selection question, not a request to repeat another answer.`,criteria);
 }
 function buildProviderRequest(input,env={}){
   const url=env.JEV_API_URL||DEFAULT_PROVIDER_URL,model=env.JEV_MODEL||DEFAULT_MODEL;
@@ -133,7 +136,7 @@ function dim(raw,key,map,fallback){
 function selectedEvidence(raw,key,blocks,input,allowTitle=false){
   const id=answer(raw,key,'none'),confidence=probability(raw?.[key]?.confidence);
   const quote=id==='title'&&allowTitle?input.title:blocks[id];
-  if(!quote||confidence===null||confidence<=0)return null;
+  if(!quote||isEvidenceHeading(quote)||confidence===null||confidence<=0)return null;
   return {id,source:id==='title'?'title':'jd',quote,confidence};
 }
 function replaceDimension(dimension,value,map,state){
