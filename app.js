@@ -123,8 +123,8 @@ function loadJdDetails(){
   }
   return jdDetailsPromise;
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v4.4.3";
-const JEV_TAXONOMY_VERSION="jev-taxonomy-v4.4.3";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v4.4.4";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v4.4.4";
 const JEV_CACHE_MAX_ENTRIES=400;
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // (worker.js) signs the provider request and returns the five-dimension card.
