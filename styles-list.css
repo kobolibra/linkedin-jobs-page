@@ -153,6 +153,8 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .jev-field { display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px;align-items:start;min-width:0; }
 .jev-field dt { color:var(--ink-faint);font:10.5px/1.5 var(--sans); }
 .jev-field dd { margin:0;color:var(--ink);font:11.5px/1.5 var(--sans);min-width:0; }
+.jev-result .jev-state { display:block;margin-top:4px;color:var(--ink-soft);font:10.5px/1.55 var(--sans);overflow-wrap:anywhere; }
+.jev-result .jev-confidence { white-space:nowrap; }
 .jev-tag { display:inline-block;margin:0 4px 3px 0;padding:2px 6px;border-radius:4px;background:var(--surface);border:1px solid var(--line-strong);font-size:10.5px; }
 .jev-muted,.jev-no-risk { color:var(--ink-faint); }
 .jev-risks { margin-top:12px;padding-top:10px;border-top:1px dashed var(--line-strong); }
