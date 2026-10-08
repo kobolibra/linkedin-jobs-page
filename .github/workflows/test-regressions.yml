@@ -8,7 +8,7 @@ on:
       - 'worker.js'
       - 'jev-taxonomy.mjs'
       - 'gen-taxonomy-doc.mjs'
-      - 'jev-taxonomy-v4.4.md'
+      - 'jev-taxonomy-*.md'
       - 'test-jev-worker.mjs'
       - 'visitor-count.js'
       - 'wrangler.jsonc'

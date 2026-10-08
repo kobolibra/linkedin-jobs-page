@@ -1,10 +1,10 @@
-# JEV Analysis API Contract — v4.4
+# JEV Analysis API Contract — v4.4.1
 
 ## Runtime and compatibility
 
 The browser calls the same-origin Cloudflare Worker `POST /api/jev/analyze`. The provider key remains server-side in the existing `TYPESAFE_API_KEY` / `JEV_API_KEY` binding. The existing Worker, ASSETS binding, endpoint, request limits, timeouts and deployment workflow remain in use.
 
-The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
+The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4.1`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
 
 ## Input
 
@@ -32,9 +32,10 @@ The frontend sends its preprocessed JD in `description`, with preprocessing meta
 
 One call to TypeSafe `https://api.typesafe.ai/v1/systemone`, model `jev-latest` (or configured model), using only supported Choice and Noul primitives. Shared state is `{title, company, location, employer_metadata, jd_blocks}`. Source passages occur once in state, not repeated in every question. At most 120 block IDs are offered; overflow is retained in the final block rather than dropping tail employment terms.
 
-Twenty independent questions:
+Twenty-two independent questions:
 
 - Five classification choices: posting, archetype, activity, business line, leadership.
+- Two explicit-context nouls: a directly established business line and multiple materially served lines.
 - Three explicit-authority nouls: people management, team/workstream leadership, manager-of-managers.
 - Four structural-risk nouls: title mismatch, unclear overloaded scope, employment terms, sparse/template evidence.
 - Eight evidence-selection choices: four visible classification dimensions and four risks (posting evidence covers the pooled-vacancy risk). Whole-description evidence quality is assessed separately.
@@ -43,7 +44,7 @@ Evidence choices select a block ID or `none`; employment/posting evidence may al
 
 ## Classification and uncertainty
 
-`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
+`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.1.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
 
 - **Role Archetype:** occupational mandate, with inclusion/exclusion boundaries. v4.4 separates markets sales/trading; compliance/legal; data engineering/BI; ML/financial quant; actuarial/underwriting/claims. It also adds independent model validation, nontechnical change delivery and client onboarding.
 - **Primary Activity:** the recurring output, independently judged. Never filled from archetype defaults. An otherwise valid answer without confidence is preserved as uncertain instead of overwritten. Confidence below 0.35 abstains.
@@ -51,7 +52,9 @@ Evidence choices select a block ID or `none`; employment/posting evidence may al
 - **Leadership:** current authority rather than title grade. Team/people/hierarchical management requires a selected source passage and supporting nouls >= 0.8. Manager-of-managers also needs people-management support. Missing/weak evidence does not turn into IC. A substituted classification clears the rejected confidence and remains visibly conflicting.
 - **Role Risk:** source-supported clarification points, not a rating of the employer or a conclusion that workload is unrealistic. Employment/pooled risks require both model support and an actual selected source. Contract/vendor keywords and alternative locations do not trigger flags automatically. Missing/unsupported risk assessment is `not_stated`, distinct from `none`.
 
-Evidence selections require confidence >= 0.55. Invalid/nonfinite/out-of-range confidence and probability values are ignored, and candidates are restricted to valid categories and displayed using readable labels. Close alternatives are marked conflicting. These thresholds are engineering gates, not a measured accuracy claim.
+Business Line requires explicit-context support >= 0.8 and a non-conflicting classification >= 0.5; multi-line additionally requires explicit multiple-line support >= 0.8. KYC, credit and portfolio data do not establish multiple business lines.
+
+Evidence selections require a valid source ID and finite positive confidence. Selection confidence measures which passage to cite, not whether the independent classification is certain; several equally valid passages can split that probability. Missing citations do not change independently measured occupation/activity confidence. Leadership and risk gates still require source evidence. Invalid/nonfinite/out-of-range confidence and probability values are ignored, and candidates are restricted to valid categories and displayed using readable labels. Close alternatives are marked conflicting. These thresholds are engineering gates, not a measured accuracy claim.
 
 Non-job content clears all dimensions, evidence and candidates. Insufficient duties suppress occupation, activity and leadership guesses, while explicitly evidenced business context can remain. `not_applicable` is reserved for non-job content; real underspecified jobs use `not_stated`, `not_determinable`, or `insufficient_evidence`.
 
@@ -61,7 +64,7 @@ The five ambiguous role codes from v4.3 are retired: `CS6_markets_sales_trading`
 
 The card keeps its five dimensions, with compact labels and escaped source excerpts (full excerpt in title). Risk rows contain a specific clarification question/action plus their supporting source. Empty risk results distinguish unassessed from no supported flags. Rendering never inserts JD evidence as HTML.
 
-Successful entries use `linkedin-jev-analysis-v4.4`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
+Successful entries use `linkedin-jev-analysis-v4.4.1`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
 
 ## Errors and validation
 
