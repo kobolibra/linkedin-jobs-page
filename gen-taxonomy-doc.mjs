@@ -29,13 +29,14 @@ export function taxonomyMarkdown(){
     '- Evidence-selection confidence measures which passage to cite; it does not replace independent classification confidence. Several valid source passages can split the selection probabilities. Only a valid selected source ID with a finite positive confidence is used.',
     '- Missing/invalid answers and probabilities stay unknown; neither a missing answer nor a 0.5 noul is affirmative evidence.',
     '- No archetype-to-activity default. Weak activity answers below 0.35 abstain; other low-confidence/close alternatives remain visibly uncertain.',
+    '- Explicit source resolution can retain a single literal business mandate in a role title or a corroborated own-institution corporate/control mandate when model output is unknown. Multiple named mandates remain ambiguous; resolved answers carry basis=explicit_source and no invented model confidence.',
     '- Leadership claims require a selected source passage plus explicit evidence nouls at least 0.8. Manager-of-managers also requires people-management support. Downgrades clear the rejected confidence.',
     '- No automatic IC inference from missing management answers. A real but underspecified vacancy uses Not Stated, not Not Applicable.',
     '- Employment and pooled-vacancy flags require both a supported judgement and a selected source passage. Keywords never promote risk to 100%.',
     '- Unknown risk assessment is distinct from no supported structural flags. Flags are questions to clarify, not conclusions about employer quality, actual workload or legal status.',
     '- Non-job content neutralises all dimensions and removes their evidence/candidates. Insufficient duties suppress profession/activity/leadership guesses; a directly evidenced business line can remain.',
     '- Thresholds are conservative engineering gates, not measured accuracy guarantees. Model quality must be evaluated separately on labelled real JDs.',
-    '- v4.4.4 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
+    '- v4.4.5 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
   return lines.join('\n');
 }
 if(process.argv[1]&&new URL(import.meta.url).pathname===process.argv[1])writeFileSync(`${TAXONOMY_VERSION}.md`,taxonomyMarkdown());
