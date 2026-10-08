@@ -1,5 +1,5 @@
 // One source of truth for provider criteria, display labels and generated docs.
-export const TAXONOMY_VERSION = 'jev-taxonomy-v4.4.3';
+export const TAXONOMY_VERSION = 'jev-taxonomy-v4.4.4';
 export const ROLE_FAMILIES = { CS:'Client & Commercial', IR:'Investment, Markets & Research', RC:'Risk, Compliance & Audit', OP:'Operations & Securities Services', PS:'Product, Change, Strategy & Design', TE:'Technology & Engineering', CF:'Corporate Functions & Insurance Technical' };
 
 // Each entry names an occupational mandate, its output and its nearest exclusion.
@@ -112,7 +112,7 @@ const business = {
   investment_banking:['Investment Banking','M&A, ECM, DCM, leveraged finance or corporate-finance deal advisory/origination.'],
   asset_management:['Asset Management','Investment portfolios/funds/mandates as the explicitly employing or supported business. Not a fund administrator merely serving asset managers.'],
   insurance:['Insurance','Insurance underwriting, broking, claims or explicitly supported insurance operations.'],
-  enterprise_wide:['Enterprise-wide','Explicit group-wide/shared corporate mandate, including own-institution finance/treasury/HR. Internal technology/risk/operations without stated coverage is not enough.'],
+  enterprise_wide:['Enterprise-wide','Own-institution corporate/shared-control mandate: the bank’s own finance, treasury, HR, internal audit, employee misconduct investigations or group compliance controls. A country/regional remit still qualifies when the object is the institution itself. Generic internal technology or client-facing credit risk without a stated mandate is insufficient.'],
   multi_line:['Multiple Business Lines','At least two distinct, explicit and material served lines with no dominant one. Lists of collaborators or company marketing do not qualify.'],
   other_business_line:['Other Explicit Business','A clearly stated non-listed business, such as industrial/manufacturing or professional-services work. Do not force it into a banking line.'],
   not_stated:['Not Stated','The JD does not establish the directly served line. Use only when role-specific client segment and product/service mandate remain unclear. Do not abstain merely because the English business-line name is absent; employer brand or incidental stakeholders alone are insufficient.'],
@@ -120,7 +120,7 @@ const business = {
 };
 export const BUSINESS_LINES = Object.fromEntries(Object.entries(business).map(([k,v])=>[k,v[0]]));
 export const BUSINESS_LINE_CRITERIA = Object.fromEntries(Object.entries(business).map(([k,v])=>[k,v[1]]));
-export const BUSINESS_LINE_GUIDANCE = 'Classify the business that this role directly serves, independently of its profession. Product/service mandate first, client segment second: Transaction banking, securities services, markets, investment banking and asset management must be separated by outputs. A fund accountant serving an asset manager is securities services, not automatically asset management. A software engineer for a named markets desk is global_markets. Credit portfolio data does not by itself establish corporate versus retail banking. Do not infer from employer brand, marketing, industry of counterparties or a list of stakeholders. Explicit group/shared mandate => enterprise_wide; unspecified internal team => not_stated. Multi-line requires material responsibility for multiple lines, not occasional collaboration.';
+export const BUSINESS_LINE_GUIDANCE = 'Classify the business that this role directly serves, independently of its profession. Product/service mandate first, client segment second: Transaction banking, securities services, markets, investment banking and asset management must be separated by outputs. A fund accountant serving an asset manager is securities services, not automatically asset management. A software engineer for a named markets desk is global_markets. Credit portfolio data does not by itself establish corporate versus retail banking. An explicit role title or assigned team naming a business/product/client mandate is valid direct evidence; the English business-line name need not appear in duties. Distinguish this from a generic grade, profession or ambiguous department. Do not infer from employer brand, marketing, industry of counterparties or a list of stakeholders. Own-institution corporate/shared-control duties => enterprise_wide, including local employee investigations/internal audit; generic internal IT without stated mandate => not_stated. Multi-line requires material responsibility for multiple lines, not occasional collaboration.';
 
 export const LEADERSHIP_LABELS = {individual_contributor:'Individual Contributor',informal_mentor_or_lead:'Mentor / Informal Lead',team_lead:'Team / Workstream Lead',people_manager:'People Manager',manager_of_managers:'Manager of Managers',not_stated:'Not Stated',not_applicable:'Not Applicable'};
 export const LEADERSHIP_LEVELS = {
