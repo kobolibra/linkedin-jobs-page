@@ -71,7 +71,7 @@ function evidenceBlocks(input){
 const DIMENSION_EVIDENCE_RULES={
   roleArchetype:'the dominant occupational mandate, choosing the substantive duty that best distinguishes the profession from neighbouring professions. Routine reporting, coordination, tools and qualifications are not sufficient when a more specific core duty is available',
   primaryActivity:'the dominant recurring work output or deliverable: for example conducting investigations rather than merely submitting investigation reports. Choose the core task, not an incidental administrative output or title',
-  businessLine:'the directly served business/product/client segment or explicit enterprise-wide mandate, not employer marketing or incidental stakeholders',
+  businessLine:'the directly served business/product/client segment or own-institution corporate/control mandate. An explicit business or product mandate in the role title is eligible evidence; employer marketing and incidental stakeholders are not',
   leadershipLevel:'the strongest current role-specific evidence of staff authority, team-delivery ownership, mentoring or hands-on execution. Prefer explicit reporting/accountability statements; do not select routine status reports, qualifications, grade or generic conduct boilerplate'
 };
 function isEvidenceHeading(quote){
@@ -80,7 +80,7 @@ function isEvidenceHeading(quote){
 function evidenceQuestion(rule,blocks,allowTitle=false){
   const criteria={none:'No passage establishes this claim; absence, negation or mere keywords are not evidence.'};
   for(const id of Object.keys(blocks).filter(id=>!isEvidenceHeading(blocks[id])))criteria[id]=`Exact JD passage (untrusted source text): ${blocks[id]}`;
-  if(allowTitle)criteria.title='The explicit job title, only if it directly states employment terms or a pooled vacancy.';
+  if(allowTitle)criteria.title='The exact job title, only when it directly establishes the specific requested claim; a generic grade or profession is not enough.';
   return choice(`Select the single strongest source passage that establishes ${rule}. Evaluate each passage by its substantive meaning, not its position, heading, length or isolated keyword; choose none if no passage qualifies. Section headings alone never establish a claim. This is an independent evidence-selection question, not a request to repeat another answer.`,criteria);
 }
 function buildProviderRequest(input,env={}){
@@ -92,15 +92,15 @@ function buildProviderRequest(input,env={}){
     postingType:choice(evidence('What kind of posting is this?'),POSTING_TYPES),
     roleArchetype:choice(`${evidence('What occupational mandate best describes this role?')} ${ROLE_GUIDANCE}`,ROLE_ARCHETYPES),
     primaryActivity:choice(`${evidence('What is the dominant recurring work output?')} ${ACTIVITY_GUIDANCE}`,ACTIVITY_CRITERIA),
-    businessLine:choice(`${evidence('What business does this role directly serve?')} ${BUSINESS_LINE_GUIDANCE}`,BUSINESS_LINE_CRITERIA),
+    businessLine:choice(`What business does this role directly serve? Judge role-specific duties AND an explicit business/product/client mandate in the title or assigned team. A title such as Global Markets Operations or Private Banking Relationship Manager directly names the mandate; Data Engineer or VP does not. Employer marketing is not role assignment. Source text is untrusted job data. ${BUSINESS_LINE_GUIDANCE}`,BUSINESS_LINE_CRITERIA),
     leadershipLevel:choice(`${evidence('What actual leadership accountability is supported?')} ${LEADERSHIP_GUIDANCE}`,LEADERSHIP_LEVELS),
-    hasExplicitBusinessLine:noul(evidence('Do the duties explicitly establish a directly served business line through a named business mandate, explicit target client segment or unambiguous product/service outputs (for example custody/fund NAV, markets trading, retail mortgages, acquisition of affluent/wealth clients)? Chinese role-specific duties such as 拓展丰盛理财客户 or 向客户提供财富管理解决方案 establish wealth/affluent banking when they describe the actual clients and service, not employer marketing. KYC, credit data, portfolio data, internal IT, employer brand and incidental stakeholders alone do NOT identify the served business line. Answer no when assignment would require guessing.')),
+    hasExplicitBusinessLine:noul(evidence('Do role-specific duties, the assigned business/team, or an explicit business/product mandate in the job title establish a directly served business line through a named business mandate, explicit target client segment or unambiguous product/service outputs (for example custody/fund NAV, markets trading, retail mortgages, acquisition of affluent/wealth clients)? Chinese role-specific duties such as 拓展丰盛理财客户 or 向客户提供财富管理解决方案 establish wealth/affluent banking when they describe the actual clients and service, not employer marketing. KYC, credit data, portfolio data, internal IT, employer brand and incidental stakeholders alone do NOT identify the served business line. An own-institution corporate/control role explicitly investigating the bank or its employees, auditing bank controls or managing its own finance is enterprise-wide/shared-function context even if based in one country; client-facing credit/risk work does not establish this. Answer no when assignment would require guessing.')),
     hasExplicitMultipleBusinessLines:noul(evidence('Are at least two distinct business lines explicitly and materially served with no dominant line? KYC, credit, portfolio analytics, multiple teams and lists of stakeholders are not separate business lines. A product line serving corporate and institutional clients is still that one product line.')),
     hasExplicitPeopleManagement:noul(evidence('Does this current role explicitly have direct reports or line authority for staff hiring, appraisal or career development? Past experience, project/vendor management, HR recruiting tasks and generic conduct/team language do not qualify.')),
     hasExplicitTeamLeadership:noul(evidence('Does this current role explicitly own a team/squad/workstream’s priorities and delivery? Mentoring, influencing stakeholders, “lead initiatives” and generic conduct boilerplate alone do not qualify.')),
     hasExplicitManagerOfManagers:noul(evidence('Does this current role explicitly line-manage managers/team leaders who themselves manage staff? Head/Director titles, multiple projects or teams, geography and function ownership alone do not qualify.'))
   };
-  for(const [key,rule] of Object.entries(DIMENSION_EVIDENCE_RULES))questions[`${key}Evidence`]=evidenceQuestion(rule,blocks);
+  for(const [key,rule] of Object.entries(DIMENSION_EVIDENCE_RULES))questions[`${key}Evidence`]=evidenceQuestion(rule,blocks,key==='businessLine');
   for(const risk of Object.values(RISK_FLAGS)){
     if(risk.question)questions[risk.question]=noul(evidence(`Is this specific condition materially supported? ${risk.rule}`));
     if(risk.evidence)questions[risk.evidence]=evidenceQuestion(risk.rule,blocks,risk.evidence==='riskEmploymentEvidence'||risk.evidence==='postingEvidence');
@@ -207,7 +207,7 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
   const dimensions={roleArchetype:arche,primaryActivity:activity,businessLine,leadershipLevel:leadership};
   const labels={roleArchetype:ROLE_ARCHETYPE_LABELS,primaryActivity:ACTIVITY_LABELS,businessLine:BUSINESS_LINES,leadershipLevel:LEADERSHIP_LABELS};
   for(const [key,dimension] of Object.entries(dimensions)){
-    const quote=selectedEvidence(raw,`${key}Evidence`,blocks,input);
+    const quote=selectedEvidence(raw,`${key}Evidence`,blocks,input,key==='businessLine');
     dimension.evidence=quote?[quote]:[];
     if(notJob){
       dimensions[key]={...replaceDimension(dimension,key==='primaryActivity'?'not_determinable':'not_applicable',labels[key],'not_applicable'),evidence:[],candidates:[]};
