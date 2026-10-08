@@ -1,10 +1,10 @@
-# JEV Analysis API Contract — v4.4.4
+# JEV Analysis API Contract — v4.4.5
 
 ## Runtime and compatibility
 
 The browser calls the same-origin Cloudflare Worker `POST /api/jev/analyze`. The provider key remains server-side in the existing `TYPESAFE_API_KEY` / `JEV_API_KEY` binding. The existing Worker, ASSETS binding, endpoint, request limits, timeouts and deployment workflow remain in use.
 
-The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4.4`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
+The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4.5`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
 
 ## Input
 
@@ -44,7 +44,7 @@ Evidence choices select a block ID or `none`; employment/posting evidence may al
 
 ## Classification and uncertainty
 
-`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.4.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
+`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.5.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
 
 - **Role Archetype:** occupational mandate, with inclusion/exclusion boundaries. v4.4 separates markets sales/trading; compliance/legal; data engineering/BI; ML/financial quant; actuarial/underwriting/claims. It also adds independent model validation, nontechnical change delivery and client onboarding.
 - **Primary Activity:** the recurring output, independently judged. Never filled from archetype defaults. An otherwise valid answer without confidence is preserved as uncertain instead of overwritten. Confidence below 0.35 abstains.
@@ -64,7 +64,7 @@ The five ambiguous role codes from v4.3 are retired: `CS6_markets_sales_trading`
 
 The card keeps its five dimensions, with compact labels and escaped source excerpts (full excerpt in title). Risk rows contain a specific clarification question/action plus their supporting source. Empty risk results distinguish unassessed from no supported flags. Rendering never inserts JD evidence as HTML.
 
-Successful entries use `linkedin-jev-analysis-v4.4.4`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
+Successful entries use `linkedin-jev-analysis-v4.4.5`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
 
 ## Errors and validation
 
@@ -73,3 +73,5 @@ Existing error semantics remain: 400 invalid request, 422 short description, 403
 Runtime regression tests cover misleading title grades, hierarchy gates, missing answers/confidence, invalid scores, contract/vendor false positives, pooled versus same-role openings, source bounds, bilingual duties, source HTML escaping, non-job neutralisation, document drift and API failures. These deterministic tests validate application safeguards, not model accuracy; real-JD spot checks are reported separately.
 
 No changes to JobSpy, lifecycle statuses, blacklist logic, company statistics, visitor counts or cursor styling are required. Rollback is a git revert of the coordinated Worker/taxonomy/frontend change.
+
+Business Line may include `basis: "explicit_source"` when an unknown model answer is resolved from a single literal role business mandate or a corroborated own-institution corporate/control mandate (score at least 0.85 plus a selected JD passage). In that case `confidence` remains null, source evidence is preserved, and rejected model candidates are cleared. This does not infer business from employer brand or generic IT/KYC/credit keywords.
