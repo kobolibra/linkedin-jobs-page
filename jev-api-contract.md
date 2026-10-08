@@ -1,10 +1,10 @@
-# JEV Analysis API Contract — v4.4.2
+# JEV Analysis API Contract — v4.4.3
 
 ## Runtime and compatibility
 
 The browser calls the same-origin Cloudflare Worker `POST /api/jev/analyze`. The provider key remains server-side in the existing `TYPESAFE_API_KEY` / `JEV_API_KEY` binding. The existing Worker, ASSETS binding, endpoint, request limits, timeouts and deployment workflow remain in use.
 
-The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4.2`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
+The response retains `schemaVersion: 6` and the five visible dimensions. `taxonomyVersion` is `jev-taxonomy-v4.4.3`. Each dimension preserves `code`, `value`, `label`, `confidence`, `state`, and `candidates`; `evidence` is an additive array of selected source passages. Input schema `jev-input-v4` and job data are unchanged.
 
 ## Input
 
@@ -44,7 +44,7 @@ Evidence choices select a block ID or `none`; employment/posting evidence may al
 
 ## Classification and uncertainty
 
-`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.2.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
+`jev-taxonomy.mjs` is the single source for criteria and display labels. `node gen-taxonomy-doc.mjs` generates `jev-taxonomy-v4.4.3.md`; a regression test checks exact agreement. Historical taxonomy documents remain historical.
 
 - **Role Archetype:** occupational mandate, with inclusion/exclusion boundaries. v4.4 separates markets sales/trading; compliance/legal; data engineering/BI; ML/financial quant; actuarial/underwriting/claims. It also adds independent model validation, nontechnical change delivery and client onboarding.
 - **Primary Activity:** the recurring output, independently judged. Never filled from archetype defaults. An otherwise valid answer without confidence is preserved as uncertain instead of overwritten. Confidence below 0.35 abstains.
@@ -64,7 +64,7 @@ The five ambiguous role codes from v4.3 are retired: `CS6_markets_sales_trading`
 
 The card keeps its five dimensions, with compact labels and escaped source excerpts (full excerpt in title). Risk rows contain a specific clarification question/action plus their supporting source. Empty risk results distinguish unassessed from no supported flags. Rendering never inserts JD evidence as HTML.
 
-Successful entries use `linkedin-jev-analysis-v4.4.2`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
+Successful entries use `linkedin-jev-analysis-v4.4.3`, keyed by job ID and SHA-256 JD fingerprint. v4.3 results cannot be reused as v4.4; responses from a different taxonomy during deployment are not written into the v4.4 cache. There is no automatic mass reanalysis; a user's next analysis click runs the current taxonomy.
 
 ## Errors and validation
 

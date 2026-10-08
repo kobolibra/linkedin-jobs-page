@@ -1,5 +1,5 @@
 // One source of truth for provider criteria, display labels and generated docs.
-export const TAXONOMY_VERSION = 'jev-taxonomy-v4.4.2';
+export const TAXONOMY_VERSION = 'jev-taxonomy-v4.4.3';
 export const ROLE_FAMILIES = { CS:'Client & Commercial', IR:'Investment, Markets & Research', RC:'Risk, Compliance & Audit', OP:'Operations & Securities Services', PS:'Product, Change, Strategy & Design', TE:'Technology & Engineering', CF:'Corporate Functions & Insurance Technical' };
 
 // Each entry names an occupational mandate, its output and its nearest exclusion.
@@ -101,7 +101,7 @@ export const ACTIVITY_GUIDANCE = 'Choose the dominant recurring work product, no
 
 const business = {
   personal_retail:['Personal / Retail Banking','Everyday consumer banking, deposits, cards or mortgages for individuals.'],
-  wealth_and_affluent_banking:['Wealth & Affluent Banking','Explicit wealth, premier, affluent or HNW banking; wealth alone does not establish private banking.'],
+  wealth_and_affluent_banking:['Wealth & Affluent Banking','Role-specific acquisition, coverage or service of wealth, premier, affluent or HNW clients, including 丰盛理财、卓越理财、财富管理客户. Explicit wealth solutions for those clients qualify; the exact English business-line name is not required. Wealth alone does not establish private banking.'],
   private_banking:['Private Banking','Explicit private-banking team/mandate or UHNW bespoke private-bank service. Family office or wealthy clients alone do not prove private banking.'],
   commercial_sme:['Commercial / SME Banking','Small, owner-managed, SME or mid-market business clients.'],
   corporate_banking:['Corporate Banking','Corporate coverage/lending for large companies or multinational corporates. Not the financial industry of an incidental counterparty.'],
@@ -115,7 +115,7 @@ const business = {
   enterprise_wide:['Enterprise-wide','Explicit group-wide/shared corporate mandate, including own-institution finance/treasury/HR. Internal technology/risk/operations without stated coverage is not enough.'],
   multi_line:['Multiple Business Lines','At least two distinct, explicit and material served lines with no dominant one. Lists of collaborators or company marketing do not qualify.'],
   other_business_line:['Other Explicit Business','A clearly stated non-listed business, such as industrial/manufacturing or professional-services work. Do not force it into a banking line.'],
-  not_stated:['Not Stated','The JD does not establish the directly served line; employer brand or department name alone is insufficient.'],
+  not_stated:['Not Stated','The JD does not establish the directly served line. Use only when role-specific client segment and product/service mandate remain unclear. Do not abstain merely because the English business-line name is absent; employer brand or incidental stakeholders alone are insufficient.'],
   not_applicable:['Not Applicable','Only non-job content.']
 };
 export const BUSINESS_LINES = Object.fromEntries(Object.entries(business).map(([k,v])=>[k,v[0]]));
