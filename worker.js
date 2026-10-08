@@ -91,6 +91,8 @@ function buildProviderRequest(input,env={}){
     primaryActivity:choice(`${evidence('What is the dominant recurring work output?')} ${ACTIVITY_GUIDANCE}`,ACTIVITY_CRITERIA),
     businessLine:choice(`${evidence('What business does this role directly serve?')} ${BUSINESS_LINE_GUIDANCE}`,BUSINESS_LINE_CRITERIA),
     leadershipLevel:choice(`${evidence('What actual leadership accountability is supported?')} ${LEADERSHIP_GUIDANCE}`,LEADERSHIP_LEVELS),
+    hasExplicitBusinessLine:noul(evidence('Do the duties explicitly establish a directly served business line through a named business mandate or unambiguous product/service outputs (for example custody/fund NAV, markets trading, retail mortgages)? KYC, credit data, portfolio data, internal IT, employer brand and incidental stakeholders alone do NOT identify the served business line. Answer no when assignment would require guessing.')),
+    hasExplicitMultipleBusinessLines:noul(evidence('Are at least two distinct business lines explicitly and materially served with no dominant line? KYC, credit, portfolio analytics, multiple teams and lists of stakeholders are not separate business lines. A product line serving corporate and institutional clients is still that one product line.')),
     hasExplicitPeopleManagement:noul(evidence('Does this current role explicitly have direct reports or line authority for staff hiring, appraisal or career development? Past experience, project/vendor management, HR recruiting tasks and generic conduct/team language do not qualify.')),
     hasExplicitTeamLeadership:noul(evidence('Does this current role explicitly own a team/squad/workstream’s priorities and delivery? Mentoring, influencing stakeholders, “lead initiatives” and generic conduct boilerplate alone do not qualify.')),
     hasExplicitManagerOfManagers:noul(evidence('Does this current role explicitly line-manage managers/team leaders who themselves manage staff? Head/Director titles, multiple projects or teams, geography and function ownership alone do not qualify.'))
@@ -131,7 +133,7 @@ function dim(raw,key,map,fallback){
 function selectedEvidence(raw,key,blocks,input,allowTitle=false){
   const id=answer(raw,key,'none'),confidence=probability(raw?.[key]?.confidence);
   const quote=id==='title'&&allowTitle?input.title:blocks[id];
-  if(!quote||confidence===null||confidence<.55)return null;
+  if(!quote||confidence===null||confidence<=0)return null;
   return {id,source:id==='title'?'title':'jd',quote,confidence};
 }
 function replaceDimension(dimension,value,map,state){
@@ -152,7 +154,7 @@ function hasProviderAnswers(raw){
     const a=raw[key];
     if(a&&typeof a==='object'&&!Array.isArray(a)&&(!a.type||a.type==='choice')&&Object.hasOwn(values,answer(raw,key,'')))return true;
   }
-  for(const key of ['hasExplicitPeopleManagement','hasExplicitTeamLeadership','hasExplicitManagerOfManagers','riskTitleFunctionMismatch','riskOverloadedScope','riskGenericTemplate','riskNonPermanent']){
+  for(const key of ['hasExplicitBusinessLine','hasExplicitMultipleBusinessLines','hasExplicitPeopleManagement','hasExplicitTeamLeadership','hasExplicitManagerOfManagers','riskTitleFunctionMismatch','riskOverloadedScope','riskGenericTemplate','riskNonPermanent']){
     const a=raw[key];
     if(!a||typeof a!=='object'||Array.isArray(a))continue;
     const value=a.noul??a.value;
@@ -176,6 +178,11 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
   // Missing/weak activity answers are never filled from an occupation stereotype.
   if(activity.confidence!==null&&activity.confidence<.35)activity=replaceDimension(activity,'not_determinable',ACTIVITY_LABELS,'low_confidence');
   if(!notJob){
+    if(!['not_stated','not_applicable'].includes(businessLine.value)){
+      const supported=score(raw,'hasExplicitBusinessLine')>=.8;
+      const multiSupported=businessLine.value!=='multi_line'||score(raw,'hasExplicitMultipleBusinessLines')>=.8;
+      if(!supported||!multiSupported||businessLine.confidence===null||businessLine.confidence<.5||businessLine.state==='conflicting')businessLine=replaceDimension(businessLine,'not_stated',BUSINESS_LINES,businessLine.state==='conflicting'?'conflicting':'not_stated');
+    }
     if(arche.value==='not_applicable')arche=replaceDimension(arche,'insufficient_evidence',ROLE_ARCHETYPE_LABELS,'not_stated');
     if(businessLine.value==='not_applicable')businessLine=replaceDimension(businessLine,'not_stated',BUSINESS_LINES,'not_stated');
     if(leadership.value==='not_applicable')leadership=replaceDimension(leadership,'not_stated',LEADERSHIP_LABELS,'not_stated');
@@ -203,10 +210,10 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
       dimensions[key]={...replaceDimension(dimension,key==='primaryActivity'?'not_determinable':'not_applicable',labels[key],'not_applicable'),evidence:[],candidates:[]};
     }else if(['not_stated','insufficient_evidence','not_determinable','not_applicable'].includes(dimension.value)){
       dimension.confidence=null;if(dimension.state!=='conflicting')dimension.state='not_stated';dimension.evidence=[];
-    }else if(!quote){
-      // Keep compatible partial provider answers, but do not present them as certain.
-      dimension.state=dimension.state==='conflicting'?'conflicting':'low_confidence';
     }
+    // Citation choice can split across several equally valid passages. Its
+    // confidence is not the confidence of the independently classified role.
+    dimension.evidenceState=dimension.evidence.length?'selected':'not_stated';
   }
   // A thin JD can still explicitly name a served business. No evidence => abstain.
   if(!notJob&&insufficient&&!dimensions.businessLine.evidence.length)dimensions.businessLine=replaceDimension(dimensions.businessLine,'not_stated',BUSINESS_LINES,'not_stated');
