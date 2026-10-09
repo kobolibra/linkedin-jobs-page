@@ -18,6 +18,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from linkedin_ids import linkedin_job_id
+from posting_dates import is_repost
 
 
 def rows(doc):
@@ -84,7 +85,7 @@ def annotate(existing_doc, snapshot_doc, observed_at=None):
         old = existing.get(jid(item))
         # Only a repost with a newly fetched JD is eligible. New jobs and missing-JD
         # backfills are intentionally excluded from change tracking.
-        if not old or item.get("jobspyRepost") is not True:
+        if not old or not (is_repost(old, item.get("datePosted"), observed_at) if item.get("datePosted") else item.get("jobspyRepost") is True):
             out_rows.append(item)
             continue
         if not str(item.get("descriptionHtml") or item.get("descriptionText") or "").strip():

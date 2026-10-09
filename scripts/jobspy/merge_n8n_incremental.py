@@ -172,7 +172,8 @@ def merge_documents(baseline, batch_doc):
                 # therefore keep their canonical pushTime; JobSpy is the
                 # only source allowed to advance it after confirming repost.
                 if field in {
-                    "firstSeen", "pushTime", "source",
+                    "firstSeen", "pushTime", "datePosted", "source",
+                    "postingLastDate", "postingDateSource", "postingDateObservedAt", "lastRepostedAt",
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
                     "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
@@ -224,7 +225,7 @@ def merge_documents(baseline, batch_doc):
         "salaryMatches": salary_matches, "salaryPreserved": salary_preserved,
         "source": "n8n RSS staging snapshot",
         "firstSeenPolicy": "immutable-for-existing-id",
-        "pushTimePolicy": "JobSpy-confirmed-repost-within-24-hours-only",
+        "pushTimePolicy": "verified-source-date-advancement-only",
         "blocklistHardDelete": len(blocked),
         "livenessKeptExpired": liveness_kept_expired,
     }

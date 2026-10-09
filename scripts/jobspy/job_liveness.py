@@ -5,8 +5,10 @@ from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse
 import re
 
-from fetch_linkedin_requests import COMPANIES
+from fetch_linkedin_requests import COMPANIES, canonical
 from reconcile_full_snapshots import jid, location_key, company_key
+from linkedin_ids import linkedin_job_id
+from posting_dates import apply_posting_date
 
 LIVENESS_EXPIRED_REASONS = {
     "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
@@ -33,7 +35,13 @@ def iso(value=None):
 def in_scope(row, location="CN"):
     if location_key(row) != str(location).upper():
         return False
-    if company_key(row) in COVERED:
+    name = str(row.get("company") or "").strip()
+    folded = canonical(name)
+    variants = [v for spec in COMPANIES.values() for v in spec["variants"]]
+    alias = any(name.casefold() == v.casefold() or (
+        folded and canonical(v) and re.search(r"(?:^| )" + re.escape(canonical(v)) + r"(?: |$)", folded)
+    ) for v in variants) if name else False
+    if company_key(row) in COVERED or alias:
         return False
     status = row.get("jobStatus")
     reason = row.get("expiredReason")
@@ -42,7 +50,7 @@ def in_scope(row, location="CN"):
 def _page_matches(html, job_id):
     text = str(html or "")
     canonical = _CANONICAL.search(text)
-    canonical_ok = bool(canonical and str(job_id) in canonical.group(1))
+    canonical_ok = bool(canonical and linkedin_job_id(canonical.group(1)) == str(job_id))
     title_ok = bool(re.search(r'class=["\'][^"\']*top-card-layout__title[^"\']*["\']', text, re.I))
     body_ok = bool(re.search(r'class=["\'][^"\']*show-more-less-html__markup[^"\']*["\']', text, re.I))
     return canonical_ok and title_ok and body_ok
@@ -98,18 +106,36 @@ def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gon
     priorities.sort(key=lambda item: (item[0], item[1], -item[2].timestamp()))
     return [item[3] for item in priorities[:max(0, int(max_probes))]]
 
-def apply_observation(row, result, observed_at=None, gone_confirm_hours=12):
+def select_regional_candidates(rows, locations, **options):
+    """Share a bounded request budget fairly; CN cannot starve HK/SG."""
+    budget = max(0, int(options.get("max_probes", 150)))
+    queues = [select_candidates(rows, location=loc, **options) for loc in dict.fromkeys(locations)]
+    picked = []
+    while len(picked) < budget and any(queues):
+        for queue in queues:
+            if queue and len(picked) < budget:
+                picked.append(queue.pop(0))
+    return picked
+
+
+def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date_posted=None, date_source=None):
     """Mutate and return one row; stale observations are ignored."""
     observed_at = iso(observed_at)
     when = parse_time(observed_at)
     checked = parse_time(row.get("liveCheckedAt"))
-    if checked and when and when <= checked:
+    if when is None or (checked and when <= checked):
         return row
     result = str(result or "unknown")
+    # An old negative probe cannot overwrite a newer verified observation.
+    newer = [parse_time(row.get(k)) for k in ("lastSeenAt", "liveVerifiedAt")]
+    if result in {"closed", "gone", "not_accepting"} and any(t and t > when for t in newer):
+        return row
     row["liveCheckedAt"] = observed_at
     if result == "unknown":
         return row
     if result == "open":
+        if date_posted:
+            apply_posting_date(row, date_posted, observed_at, date_source or "linkedin-liveness")
         was_liveness_expired = row.get("expiredReason") in LIVENESS_EXPIRED_REASONS
         row["liveStatus"] = "open"
         row["liveVerifiedAt"] = observed_at
