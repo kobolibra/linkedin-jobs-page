@@ -501,6 +501,7 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
 }
 [data-theme="dark"] .job.expired { opacity:.72; }
 
-.count .active-only-toggle { appearance:none;border:0;background:none;padding:0;color:inherit;font:inherit;letter-spacing:inherit; }
-.count .active-only-toggle[aria-pressed="true"] { color:var(--ink);text-decoration:underline;text-underline-offset:3px; }
-.count .active-only-toggle:focus-visible { outline:2px solid var(--ink-soft);outline-offset:3px;border-radius:2px; }
+.count .active-only-toggle { appearance:none;border:0;background:transparent;padding:2px 6px;margin-inline-start:-6px;border-radius:7px;color:inherit;font:inherit;letter-spacing:inherit; }
+.count .active-only-toggle[aria-pressed="true"] { background:var(--navy);color:#f4f1e9; }
+[data-theme="dark"] .count .active-only-toggle[aria-pressed="true"] { background:var(--gold);color:#131210; }
+.count .active-only-toggle:focus-visible { outline:2px solid var(--ink-soft);outline-offset:3px; }
