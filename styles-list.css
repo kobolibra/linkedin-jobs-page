@@ -500,3 +500,7 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
   .job.expired .job-title { text-decoration-thickness:1px; }
 }
 [data-theme="dark"] .job.expired { opacity:.72; }
+
+.count .active-only-toggle { appearance:none;border:0;background:none;padding:0;color:inherit;font:inherit;letter-spacing:inherit; }
+.count .active-only-toggle[aria-pressed="true"] { color:var(--ink);text-decoration:underline;text-underline-offset:3px; }
+.count .active-only-toggle:focus-visible { outline:2px solid var(--ink-soft);outline-offset:3px;border-radius:2px; }
