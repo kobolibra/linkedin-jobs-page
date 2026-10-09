@@ -14,6 +14,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from linkedin_ids import linkedin_job_id
+from posting_dates import apply_posting_date, is_repost, posting_day, last_posted
 
 
 BEIJING_TZ = ZoneInfo("Asia/Shanghai")
@@ -66,26 +67,6 @@ def status_ok(status):
     return str(status or "").startswith(("ok:", "empty"))
 
 
-def within_repost_window(value, observed_at):
-    """Return whether the JobSpy observation qualifies as a repost.
-
-    The rule itself is the only repost test: observation must follow
-    ``datePosted`` and be no later than 24 hours after it. A separate
-    ``jobspyRepost`` flag is derived evidence, not an additional gate.
-    """
-    text = str(value or "").strip()
-    if len(text) == 10:
-        try:
-            posted = datetime.fromisoformat(text).replace(tzinfo=BEIJING_TZ)
-        except ValueError:
-            posted = None
-    else:
-        posted = timestamp(value)
-    observed = timestamp(observed_at)
-    if not posted or not observed or observed < posted:
-        return False
-    return observed - posted <= timedelta(hours=24)
-
 
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
@@ -129,9 +110,9 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         # Listing fields are refreshed every run; detail fields are only present
         # for the incremental detail candidates and otherwise remain untouched.
         for field in ("title", "link", "company", "companyCanonical", "requestedCompany",
-                      "location", "locationRaw", "datePosted", "source",
+                      "location", "locationRaw", "source",
                       "sourceSite", "dataSources", "jobspyFetchedAt", "fetchedAt",
-                      "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost"):
+                      "jobspyFirstSeen"):
             if item.get(field) not in (None, ""):
                 merged[field] = item[field]
         # JD and city enrichment remain a CN-only pipeline. Preserve any
@@ -154,21 +135,24 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             + (["jobspy"] if item.get("source") == "jobspy-requests" else [])
         ))
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
-        # JobSpy is the only source allowed to advance pushTime. The repost
-        # decision is the 24-hour elapsed-time rule itself: observation must
-        # follow datePosted and be no later than 24 hours after it. Do not
-        # require a second jobspyRepost flag; that flag is derived evidence,
-        # not an additional gate. Use JobSpy's datePosted as canonical
-        # pushTime rather than the later workflow runtime.
-        repost = bool(item.get("datePosted")) and within_repost_window(
-            item.get("datePosted"), observed_at
-        )
-        if item.get("datePosted"):
-            merged["jobspyRepost"] = repost
+        # CN/HK/SG share the same source-date advancement test. A delayed
+        # observation still proves a repost; repeated dates do not reset time.
+        repost = bool(old) and is_repost(old, item.get("datePosted"), observed_at)
         if not old.get("pushTime"):
             merged["pushTime"] = observed_at
-        elif repost:
-            merged["pushTime"] = item.get("datePosted")
+        previous = last_posted(old)
+        if previous:
+            merged["postingLastDate"] = previous.isoformat()
+        elif old:
+            merged.pop("datePosted", None)
+        apply_posting_date(merged, item.get("datePosted"), observed_at, "linkedin-search")
+        if posting_day(item.get("datePosted")) and posting_day(item["datePosted"]) <= posting_day(observed_at):
+            merged["datePosted"] = item["datePosted"]
+        if item.get("datePosted"):
+            merged["jobspyRepost"] = repost
+        watermark = last_posted(merged)
+        if watermark:
+            merged["jobspyLastPosted"] = watermark.isoformat()
         if not old.get("firstSeen"):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
         elif timestamp(item.get("datePosted")) and timestamp(old.get("firstSeen")):

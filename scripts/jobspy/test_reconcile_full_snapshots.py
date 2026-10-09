@@ -178,7 +178,7 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(row["firstSeen"], "2026-09-01T00:00:00+00:00")
         self.assertEqual(row["pushTime"], "2026-09-06T00:00:00+00:00")
 
-    def test_jobspy_repost_within_24_hours_uses_date_posted_without_flag(self):
+    def test_date_advance_uses_source_date_without_derived_flag(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000015", "company": "Acme", "companyCanonical": "acme",
             "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
@@ -188,11 +188,11 @@ class ReconcileTests(unittest.TestCase):
             "datePosted": "2026-09-10",
         }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
         # datePosted without a clock is treated as 2026-09-10 00:00 Beijing;
-        # 03:00 UTC is 11:00 Beijing and is inside the 24-hour rule.
+        # 03:00 UTC is 11:00 Beijing and is after the source date.
         row = reconcile(existing, snapshot, "2026-09-10T03:00:00+00:00")["jobs"][0]
         self.assertEqual(row["pushTime"], "2026-09-10")
 
-    def test_jobspy_repost_at_exactly_24_hours_is_accepted_without_flag(self):
+    def test_next_day_observation_accepts_advanced_source_date(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000017", "company": "Acme", "companyCanonical": "acme",
             "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
@@ -205,7 +205,7 @@ class ReconcileTests(unittest.TestCase):
         row = reconcile(existing, snapshot, "2026-09-10T16:00:00+00:00")["jobs"][0]
         self.assertEqual(row["pushTime"], "2026-09-10")
 
-    def test_jobspy_repost_after_24_hours_is_rejected_without_flag(self):
+    def test_delayed_jobspy_repost_is_accepted_without_flag(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000018", "company": "Acme", "companyCanonical": "acme",
             "firstSeen": "2026-08-01T00:00:00+00:00", "pushTime": "2026-09-01T00:00:00+00:00",
@@ -215,7 +215,7 @@ class ReconcileTests(unittest.TestCase):
             "datePosted": "2026-09-10",
         }], "statusSummary": {"acme": "ok: 1 jobs"}, "companies": {"acme": "ok: 1 jobs"}}
         row = reconcile(existing, snapshot, "2026-09-10T16:01:00+00:00")["jobs"][0]
-        self.assertEqual(row["pushTime"], "2026-09-01T00:00:00+00:00")
+        self.assertEqual(row["pushTime"], "2026-09-10")
 
     def test_future_jobspy_date_posted_is_rejected_without_flag(self):
         existing = {"jobs": [{

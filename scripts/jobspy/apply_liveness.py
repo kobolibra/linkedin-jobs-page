@@ -12,13 +12,23 @@ def main():
     try: live=json.loads(Path(args.liveness).read_text(encoding="utf-8"))
     except (FileNotFoundError,json.JSONDecodeError):
         Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); return
-    if not isinstance(live,dict) or live.get("schemaVersion")!="1.0" or live.get("mode")!="cn-job-liveness" or not isinstance(live.get("observations"),list):
+    legacy = isinstance(live, dict) and live.get("schemaVersion") == "1.0" and live.get("mode") == "cn-job-liveness"
+    regional = isinstance(live, dict) and live.get("schemaVersion") == "1.1" and live.get("mode") == "job-liveness"
+    if not (legacy or regional) or not isinstance(live.get("observations"), list):
         Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); return
-    by={jid(row):row for row in out.get("jobs",[]) if isinstance(row,dict) and jid(row)}; stats={"open":0,"reactivated":0,"expired_closed":0,"expired_not_accepting":0,"expired_gone":0,"pending":0,"unknown":0,"skipped_out_of_scope":0}
+    scope = ["CN"] if legacy else [x for x in live.get("scopeLocations", []) if x in {"CN", "HK", "SG"}]
+    def eligible_scope(row):
+        return any(in_scope(row, loc) for loc in scope)
+    by={jid(row):row for row in out.get("jobs",[]) if isinstance(row,dict) and jid(row)}; stats={"open":0,"reactivated":0,"expired_closed":0,"expired_not_accepting":0,"expired_gone":0,"pending":0,"unknown":0,"skipped_out_of_scope":0,"reposts":0,"stale_observations":0}
     for obs in live["observations"]:
         row=by.get(str(obs.get("jobId") or "")) or by.get(jid(obs)); result=obs.get("result")
-        if not row or not in_scope(row,"CN"): stats["skipped_out_of_scope"]+=1; continue
-        before=row.get("jobStatus"); apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours)
+        if not row or not eligible_scope(row): stats["skipped_out_of_scope"]+=1; continue
+        before=row.get("jobStatus"); old_push=row.get("pushTime"); old_check=row.get("liveCheckedAt")
+        apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours,obs.get("datePosted"),obs.get("dateSource"))
+        if row.get("liveCheckedAt") == old_check:
+            stats["stale_observations"] += 1
+            continue
+        stats["reposts"] += int(row.get("pushTime") != old_push)
         if result=="open": stats["open"]+=1; stats["reactivated"]+=int(before=="expired" and row.get("jobStatus")=="active")
         elif result=="closed": stats["expired_closed"]+=int(row.get("expiredReason")=="linkedin_closed")
         elif result=="gone": stats["expired_gone"]+=int(row.get("expiredReason")=="linkedin_removed"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_removed")
@@ -27,12 +37,12 @@ def main():
     now=datetime.now(timezone.utc); kept=[]; deleted=0
     for row in by.values():
         expired_at=parse_time(row.get("expiredAt"))
-        eligible=(in_scope(row,"CN") and row.get("jobStatus")=="expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and expired_at and (now-expired_at).total_seconds() >= args.delete_after_days*24*3600)
+        eligible=(eligible_scope(row) and row.get("jobStatus")=="expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and expired_at and (now-expired_at).total_seconds() >= args.delete_after_days*24*3600)
         if eligible:
             deleted += 1
         else:
             kept.append(row)
-    out["jobs"]=kept; out["count"]=len(kept); out["liveness"]={"observedAt":live.get("observedAt"),"deleted_after_days":deleted,**stats}
+    out["jobs"]=kept; out["count"]=len(kept); out["liveness"]={"observedAt":live.get("observedAt"),"scopeLocations":scope,"deleted_after_days":deleted,**stats}
     Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(out["liveness"],ensure_ascii=False))
 if __name__ == "__main__": main()
