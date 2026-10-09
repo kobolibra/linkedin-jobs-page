@@ -141,14 +141,37 @@ class PostingTests(unittest.TestCase):
             self.assertEqual(got['stats']['unknown'],10)
             self.assertEqual(got['stats']['open'],20)
 
-    def test_region_budget_is_fair_and_target_aliases_are_excluded(self):
+    def test_cn_due_backlog_has_first_claim_on_the_total_cap(self):
         jobs=[row("CN",sourceJobId="li-"+str(200000000+i)) for i in range(300)]
         jobs+=[row("HK",sourceJobId="li-300000001"),row("SG",sourceJobId="li-300000002")]
         selected=select_regional_candidates(jobs,["CN","HK","SG"],max_probes=6)
         self.assertEqual(len(selected),6)
-        self.assertEqual([x["location"] for x in selected[:3]],["CN","HK","SG"])
+        self.assertEqual([x["location"] for x in selected],["CN"]*6)
         self.assertFalse(in_scope(row(company="JPMorganChase",companyCanonical="")))
         self.assertTrue(in_scope(row(company="Small Co")))
+
+    def test_cn_first_then_hk_sg_share_spare_places(self):
+        jobs=[row("CN",sourceJobId="li-200000001")]
+        jobs += [row(loc,sourceJobId="li-"+str(base+i)) for loc,base in (("HK",300000000),("SG",400000000)) for i in range(10)]
+        selected=select_regional_candidates(jobs,["SG","HK","CN","CN"],max_probes=6)
+        self.assertEqual([x["location"] for x in selected],["CN","HK","SG","HK","SG","HK"])
+        self.assertEqual(len({x['sourceJobId'] for x in selected}),6)
+
+    def test_recent_cn_and_targets_do_not_reserve_places(self):
+        now="2026-10-09T14:00:00Z"
+        jobs=[row("CN",liveCheckedAt=now),row("CN",company="HSBC",sourceJobId="li-200000001"),row("HK",sourceJobId="li-300000001"),row("SG",sourceJobId="li-400000001")]
+        selected=select_regional_candidates(jobs,["CN","HK","SG"],now=now,max_probes=150)
+        self.assertEqual([x['location'] for x in selected],["HK","SG"])
+
+    def test_unused_region_places_are_reused_and_zero_cap_is_empty(self):
+        jobs=[row("CN",sourceJobId="li-200000001")]+[row("SG",sourceJobId="li-"+str(400000000+i)) for i in range(5)]
+        selected=select_regional_candidates(jobs,["CN","HK","SG"],max_probes=4)
+        self.assertEqual([x['location'] for x in selected],["CN","SG","SG","SG"])
+        self.assertEqual(select_regional_candidates(jobs,["CN","HK","SG"],max_probes=0),[])
+
+    def test_scope_without_cn_never_selects_cn_records(self):
+        jobs=[row("CN"),row("HK",sourceJobId="li-300000001"),row("SG",sourceJobId="li-400000001")]
+        self.assertEqual([x['location'] for x in select_regional_candidates(jobs,["HK","SG"],max_probes=150)],["HK","SG"])
 
     def test_regional_cleanup_does_not_reintroduce_rows_from_rss(self):
         old=(datetime.now(timezone.utc)-timedelta(days=31)).isoformat()
