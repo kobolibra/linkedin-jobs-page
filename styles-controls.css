@@ -10,6 +10,7 @@
 .toolbar .seg,.toolbar .city-filter { height:30px;padding-block:0;border-radius:var(--control-inner-radius);font-size:var(--control-font);line-height:1.4; }
 .toolbar .pill.active,.toolbar select.ctrl.on { color:#f4f1e9;background-color:var(--navy);font-weight:700; }
 .toolbar select.ctrl.on { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='m3 4.5 3 3 3-3' fill='none' stroke='%23f4f1e9' stroke-width='1.2'/%3E%3C/svg%3E"); }
+.toolbar select.ctrl { background-repeat:no-repeat;background-position:right 8px center;background-size:13px 13px; }
 .toolbar select.ctrl option { color:var(--ink);background:var(--surface); }
 [data-theme="dark"] .toolbar .pill.active,[data-theme="dark"] .toolbar select.ctrl.on { color:#131210;background-color:var(--gold); }
 [data-theme="dark"] .toolbar select.ctrl.on { background-image:var(--caret); }
