@@ -5,11 +5,13 @@ Auto Daily Companies Filter v2
 Downloads latest jobs.json and financial_blacklist.json from GitHub,
 filters by Beijing time today, excludes financial/headhunter companies
 using the blacklist (exact match, loaded from GitHub for persistence).
+Also loads company_industries.json to show verified industry info in 备注 column.
 Saves results to /workspace/today-companies-YYYY-MM-DD.json.
 
 Blacklist is stored on GitHub at:
   https://github.com/kobolibra/linkedin-jobs-page/blob/main/financial_blacklist.json
-This ensures the blacklist persists across sessions.
+Company industries stored at:
+  https://github.com/kobolibra/linkedin-jobs-page/blob/main/company_industries.json
 """
 
 import os
@@ -31,6 +33,7 @@ GITHUB_BRANCH = "main"
 # Use GitHub API (NOT raw.githubusercontent.com) for private repo access
 JOBS_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/jobs.json"
 BLACKLIST_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/financial_blacklist.json"
+INDUSTRIES_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/company_industries.json"
 
 BEIJING_TZ = timezone(timedelta(hours=8))
 OUTPUT_DIR = "/workspace"
@@ -47,6 +50,7 @@ BUILTIN_BLACKLIST = {
 
 # Loaded from GitHub at runtime
 FINANCIAL_BLACKLIST = set()
+COMPANY_INDUSTRIES = {}  # {company_name: industry_string}
 
 
 # ============================================================
@@ -68,7 +72,7 @@ def _make_request(url, headers=None, method="GET", data=None, timeout=60):
     return urllib.request.urlopen(req, context=ctx, timeout=timeout)
 
 
-def download_json_from_api(api_url, timeout=60):
+def download_json_from_api(api_url, timeout=120):
     """Download JSON from GitHub API (private repo support via base64 decode or download_url for large files)."""
     print(f"[INFO] Downloading via API: {api_url}")
     try:
@@ -106,6 +110,27 @@ def load_blacklist_from_github():
         print("[WARN] Failed to load blacklist from GitHub, using builtin fallback")
         FINANCIAL_BLACKLIST = set(BUILTIN_BLACKLIST)
         print(f"[INFO] Using {len(FINANCIAL_BLACKLIST)} builtin blacklist entries")
+
+
+def load_industries_from_github():
+    """Load company industries from GitHub API. Falls back to empty if not found."""
+    global COMPANY_INDUSTRIES
+    try:
+        data = download_json_from_api(INDUSTRIES_API_URL)
+        if data and isinstance(data, dict):
+            COMPANY_INDUSTRIES = data
+            print(f"[INFO] Loaded {len(COMPANY_INDUSTRIES)} company industry entries from GitHub")
+        elif data is not None:
+            print(f"[WARN] company_industries.json is not a dict, ignoring")
+        else:
+            print("[INFO] company_industries.json not found on GitHub (first run)")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            print("[INFO] company_industries.json not found on GitHub yet (first run)")
+        else:
+            print(f"[WARN] Could not load company_industries.json: HTTP {e.code}")
+    except Exception as e:
+        print(f"[WARN] Could not load company_industries.json: {e}")
 
 
 def update_blacklist_on_github(new_companies):
@@ -203,6 +228,21 @@ def is_crypto(name):
     return any(k in nl for k in kw)
 
 
+def get_target_reason(cn):
+    """Determine the 备注 string for a target company.
+    Shows verified industry from company_industries.json if available.
+    Shows crypto tag for crypto companies.
+    Shows 待查证 for companies not yet verified."""
+    parts = []
+    if is_crypto(cn):
+        parts.append("crypto/blockchain (always included)")
+    if cn in COMPANY_INDUSTRIES:
+        parts.append(COMPANY_INDUSTRIES[cn])
+    if not parts:
+        return "待查证"
+    return " | ".join(parts)
+
+
 def process_jobs(jobs, today):
     if not isinstance(jobs, list):
         if isinstance(jobs, dict):
@@ -234,18 +274,13 @@ def process_jobs(jobs, today):
         if cn in seen:
             continue
         seen.add(cn)
-        if is_crypto(cn):
-            target.append({"company": cn, "category": "target",
-                          "reason": "crypto/blockchain (always included)",
-                          "pushTime": str(pt)})
-            continue
         if cn in FINANCIAL_BLACKLIST:
             excluded.append({"company": cn, "category": "excluded",
                            "reason": "blacklist exact match (financial/headhunter)",
                            "pushTime": str(pt)})
         else:
             target.append({"company": cn, "category": "target",
-                          "reason": "not in blacklist",
+                          "reason": get_target_reason(cn),
                           "pushTime": str(pt)})
 
     print(f"\n[INFO] Total jobs: {len(jobs)}, Past 24h: {len(today_jobs)}")
@@ -280,6 +315,9 @@ def main():
 
     # Load blacklist from GitHub (persistent storage)
     load_blacklist_from_github()
+
+    # Load company industries from GitHub (persistent storage)
+    load_industries_from_github()
 
     # Download jobs data via API (private repo)
     jobs_data = download_json_from_api(JOBS_API_URL)
@@ -323,24 +361,24 @@ def main():
     print(f"  Excluded companies: {results['total_excluded']}")
     print("=" * 70)
 
-    # TARGET COMPANIES — clean TSV block (no leading spaces, no separator lines in data)
-    # Select and copy ONLY the lines between the markers, then paste into Excel/WPS/Google Sheets
+    # TARGET COMPANIES — TSV inside fenced code block to preserve Tab chars in Trae
+    # Copy the code block content (including header) and paste into Excel/WPS/Google Sheets
     if results["target_companies"]:
-        print("\n[TARGET COMPANIES] — copy the TSV block below (between markers) into Excel:")
-        print("---BEGIN TSV---")
+        print("\n[TARGET COMPANIES] — copy the code block below into Excel:")
+        print("```tsv")
         print("序号\t公司名\t备注")
         for i, c in enumerate(results["target_companies"], 1):
             print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
-        print("---END TSV---")
+        print("```")
 
-    # EXCLUDED COMPANIES — clean TSV block
+    # EXCLUDED COMPANIES — TSV inside fenced code block
     if results["excluded_companies"]:
-        print("\n[EXCLUDED COMPANIES] — copy the TSV block below (between markers) into Excel:")
-        print("---BEGIN TSV---")
+        print("\n[EXCLUDED COMPANIES] — copy the code block below into Excel:")
+        print("```tsv")
         print("序号\t公司名\t排除原因")
         for i, c in enumerate(results["excluded_companies"], 1):
             print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
-        print("---END TSV---")
+        print("```")
     print("\n" + "=" * 70)
 
     return results, filepath
