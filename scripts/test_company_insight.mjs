@@ -137,7 +137,7 @@ function appScope(){
   const sec={...element(),_jobCards:cards,dataset:{dayKey:'2026-10-07',dayLabel:'today'},querySelector:()=>element()};
   let received=[];
   const controls=()=>({...element(),value:'all'});
-  const c={document:{dispatchEvent:()=>{}},CustomEvent:class{},searchEl:{value:''},companyEl:{...controls(),value:'ACME'},ageEl:controls(),cityEl:controls(),compClear:{...element(),parentElement:element()},jobsEl:element(),emptyEl:element(),countEl:element(),daySections:[sec],blocked:new Set(),blockedKw:new Set(),favs:new Set(['a','d']),favOnly:false,activeOnly:false,activeOnlyEl:{...element(),setAttribute(name,value){this[name]=value;}},activeCountEl:element(),activeRegion:'all',activeCity:'all',simpleFilterActive:false,filteredCards:new Set(),REGIONS:{HK:{},CN:{}},ageMatch:(v,d)=>v==='all'||(v==='0'?d===0:v==='1-7'?d!==null&&d>=1&&d<=7:false),renderCo:(name,rows,age)=>{received={name,rows,age};}};
+  const c={document:{dispatchEvent:()=>{}},CustomEvent:class{},searchEl:{value:''},companyEl:{...controls(),value:'ACME'},ageEl:controls(),cityEl:controls(),compClear:{...element(),parentElement:element()},jobsEl:element(),emptyEl:element(),countEl:element(),daySections:[sec],blocked:new Set(),blockedKw:new Set(),favs:new Set(['a','d']),favOnly:false,activeOnly:false,activeOnlyEl:{...element(),setAttribute(name,value){this[name]=value;}},activeCountEl:element(),activeRegion:'all',activeCity:'all',simpleFilterActive:false,renderReady:true,loadedJobs:null,filteredCards:new Set(),REGIONS:{HK:{},CN:{}},ageMatch:(v,d)=>v==='all'||(v==='0'?d===0:v==='1-7'?d!==null&&d>=1&&d<=7:false),renderCo:(name,rows,age)=>{received={name,rows,age};}};
   const context=vm.createContext(c);
   vm.runInContext(app.slice(app.indexOf('function updateJobCount(count){'),app.indexOf('document.addEventListener("keydown"')),context);
   return {c:context,cards,run:()=>{context.apply();return received;},get result(){return received;}};
@@ -178,4 +178,28 @@ test('active-only list filter composes with search and restores closed records w
   a.c.activeOnly=false;a.c.searchEl.value='';a.run();
   assert.equal(a.cards.filter(card=>card.style.display!=="none").length,original);
   assert.equal(a.c.activeOnlyEl['aria-pressed'],'false');
+});
+
+test('early count precedes card rendering and respects existing filters',async()=>{
+  const rows=[
+    {title:'Fund Accountant',company:'ACME',location:'HK',city:'Hong Kong',link:'a',age:2},
+    {title:'Fund Accountant',company:'ACME',location:'HK',city:'Hong Kong',link:'b',age:2,jobStatus:'expired'},
+    {title:'Risk Analyst',company:'ACME',location:'CN',city:'Shanghai',link:'c',age:9},
+    {title:'Fund Manager',company:'OTHER',location:'SG',city:'Singapore',link:'d',age:2}
+  ];
+  const events=[],c={loadedJobs:rows,searchEl:{value:''},companyEl:{value:'all'},ageEl:{value:'all'},blocked:new Set(),blockedKw:new Set(),favs:new Set(['a']),favOnly:false,activeRegion:'all',activeCity:'all',isActiveJob:j=>j.jobStatus!=='expired',canonicalCompany:x=>x,norm:x=>x,cityOf:j=>j.city,jobId:x=>x,seenAt:j=>j.age,ageDays:x=>x,ageMatch:(sel,age)=>sel==='all'||age>=1&&age<=7};
+  const context=vm.createContext(c);
+  vm.runInContext(app.slice(app.indexOf('function countLoadedActiveJobs(){'),app.indexOf('function updateJobCount(count){')),context);
+  assert.equal(context.countLoadedActiveJobs(),3);
+  c.blocked.add('OTHER');assert.equal(context.countLoadedActiveJobs(),2);
+  c.blockedKw.add('risk');assert.equal(context.countLoadedActiveJobs(),1);
+  c.blockedKw.clear();c.searchEl.value='hong kong';assert.equal(context.countLoadedActiveJobs(),1);
+  c.searchEl.value='';c.activeRegion='CN';assert.equal(context.countLoadedActiveJobs(),1);
+  c.ageEl.value='1-7';assert.equal(context.countLoadedActiveJobs(),0);
+  c.ageEl.value='all';c.activeRegion='all';c.activeCity='Hong Kong';c.companyEl.value='ACME';c.favOnly=true;assert.equal(context.countLoadedActiveJobs(),1);
+  Object.assign(c,{keepLatestSameCityTitle:jobs=>jobs,updateJobCount:n=>events.push(['count',n]),requestAnimationFrame:fn=>{events.push(['frame']);fn();},setTimeout:fn=>{events.push(['yield']);fn();}});
+  const start=app.indexOf('if(!Array.isArray(data))data=[];',app.indexOf('jobsDataPromise\n'));
+  const end=app.indexOf('const activeData=data.filter(isActiveJob);',start);
+  await vm.runInContext('(async data=>{'+app.slice(start,end)+'})',context)(rows);
+  assert.deepEqual(events,[['count',1],['frame'],['yield']]);
 });
