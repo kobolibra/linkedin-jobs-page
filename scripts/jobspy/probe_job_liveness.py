@@ -40,7 +40,7 @@ def lookup_posting_date(session, row, html, checked_at, timeout):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--jobs", required=True); ap.add_argument("--output", required=True)
-    ap.add_argument("--max-probes", type=int, default=150); ap.add_argument("--min-interval-hours", type=float, default=20)
+    ap.add_argument("--max-probes", type=int, default=150, help="Total job cap across all regions; due CN jobs first, HK/SG share spare places (not an HTTP request cap)"); ap.add_argument("--min-interval-hours", type=float, default=20)
     ap.add_argument("--gone-confirm-hours", type=float, default=12); ap.add_argument("--recheck-expired-hours", type=float, default=72)
     ap.add_argument("--recheck-expired-days", type=float, default=30); ap.add_argument("--delay-min", type=float, default=2)
     ap.add_argument("--delay-max", type=float, default=5); ap.add_argument("--timeout", type=float, default=20)

@@ -107,10 +107,13 @@ def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gon
     return [item[3] for item in priorities[:max(0, int(max_probes))]]
 
 def select_regional_candidates(rows, locations, **options):
-    """Share a bounded request budget fairly; CN cannot starve HK/SG."""
+    """Spend the job budget on due CN records first, then share the remainder."""
     budget = max(0, int(options.get("max_probes", 150)))
-    queues = [select_candidates(rows, location=loc, **options) for loc in dict.fromkeys(locations)]
-    picked = []
+    locations = list(dict.fromkeys(str(loc).upper() for loc in locations))
+    picked = select_candidates(rows, location="CN", **options) if "CN" in locations else []
+    picked = picked[:budget]
+    other_locations = [loc for loc in ("HK", "SG") if loc in locations]
+    queues = [select_candidates(rows, location=loc, **options) for loc in other_locations]
     while len(picked) < budget and any(queues):
         for queue in queues:
             if queue and len(picked) < budget:
