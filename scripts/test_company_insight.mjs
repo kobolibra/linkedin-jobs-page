@@ -137,14 +137,14 @@ function appScope(){
   const sec={...element(),_jobCards:cards,dataset:{dayKey:'2026-10-07',dayLabel:'today'},querySelector:()=>element()};
   let received=[];
   const controls=()=>({...element(),value:'all'});
-  const c={document:{dispatchEvent:()=>{}},CustomEvent:class{},searchEl:{value:''},companyEl:{...controls(),value:'ACME'},ageEl:controls(),cityEl:controls(),compClear:{...element(),parentElement:element()},jobsEl:element(),emptyEl:element(),countEl:element(),daySections:[sec],blocked:new Set(),blockedKw:new Set(),favs:new Set(['a','d']),favOnly:false,activeRegion:'all',activeCity:'all',simpleFilterActive:false,filteredCards:new Set(),REGIONS:{HK:{},CN:{}},ageMatch:(v,d)=>v==='all'||(v==='0'?d===0:v==='1-7'?d!==null&&d>=1&&d<=7:false),renderCo:(name,rows,age)=>{received={name,rows,age};}};
+  const c={document:{dispatchEvent:()=>{}},CustomEvent:class{},searchEl:{value:''},companyEl:{...controls(),value:'ACME'},ageEl:controls(),cityEl:controls(),compClear:{...element(),parentElement:element()},jobsEl:element(),emptyEl:element(),countEl:element(),daySections:[sec],blocked:new Set(),blockedKw:new Set(),favs:new Set(['a','d']),favOnly:false,activeOnly:false,activeOnlyEl:{...element(),setAttribute(name,value){this[name]=value;}},activeCountEl:element(),activeRegion:'all',activeCity:'all',simpleFilterActive:false,filteredCards:new Set(),REGIONS:{HK:{},CN:{}},ageMatch:(v,d)=>v==='all'||(v==='0'?d===0:v==='1-7'?d!==null&&d>=1&&d<=7:false),renderCo:(name,rows,age)=>{received={name,rows,age};}};
   const context=vm.createContext(c);
-  vm.runInContext(app.slice(app.indexOf('function apply(){'),app.indexOf('document.addEventListener("keydown"')),context);
+  vm.runInContext(app.slice(app.indexOf('function updateJobCount(count){'),app.indexOf('document.addEventListener("keydown"')),context);
   return {c:context,cards,run:()=>{context.apply();return received;},get result(){return received;}};
 }
 test('app passes active, expired and missing-date records, excluding other companies',()=>{
   const a=appScope(),r=a.run();assert.equal(r.rows.length,4);assert.equal(summarize(r.rows,NOW).expired,3);
-  assert.match(a.c.countEl.innerHTML,/有效 <b>1<\/b>/);
+  assert.equal(a.c.activeCountEl.textContent,1);
 });
 test('time filtering changes rows but preserves the full company distribution',()=>{
   const a=appScope();a.c.ageEl.value='1-7';const r=a.run();
@@ -161,4 +161,21 @@ test('favorite toggling and unfavoriting refresh the selected company statistics
   a.c.favOnly=true;a.c.refreshFavoriteFilterView();assert.equal(a.result.rows.length,2);
   a.c.favs.delete('d');a.c.refreshFavoriteFilterView();assert.equal(a.result.rows.length,1);
   a.c.favOnly=false;a.c.refreshFavoriteFilterView();assert.equal(a.result.rows.length,4);
+});
+
+
+test('active-only list filter composes with search and restores closed records without shrinking company insight',()=>{
+  const a=appScope();
+  a.run();
+  const original=a.cards.filter(card=>card.style.display!=="none").length;
+  a.c.activeOnly=true;a.run();
+  assert.ok(a.cards.filter(card=>card.style.display!=="none").every(card=>card.dataset.status!=="expired"));
+  assert.equal(a.result.rows.length,4);
+  assert.equal(a.c.activeOnlyEl['aria-pressed'],'true');
+  a.c.searchEl.value='analyst';a.run();
+  assert.equal(a.cards.filter(card=>card.style.display!=="none").length,1);
+  assert.ok(a.cards.filter(card=>card.style.display!=="none").every(card=>card.dataset.status!=="expired"));
+  a.c.activeOnly=false;a.c.searchEl.value='';a.run();
+  assert.equal(a.cards.filter(card=>card.style.display!=="none").length,original);
+  assert.equal(a.c.activeOnlyEl['aria-pressed'],'false');
 });
