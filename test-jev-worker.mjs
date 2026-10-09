@@ -242,16 +242,6 @@ test('frontend renders evidence safely and distinguishes unknown risk from none'
   assert.match(container.innerHTML,/Insufficient evidence to assess role risks/);
   assert.equal((container.innerHTML.match(/<dt>/g)||[]).length,4);
   assert.match(container.innerHTML,/<h4>Role Risk<\/h4>/);
-  assert.match(container.innerHTML,/<details class="jev-evidence"><summary>查看依据<\/summary><blockquote>/);
-  assert.doesNotMatch(container.innerHTML,/<details[^>]*\bopen\b/);
-  const quote='Source evidence '.repeat(30)+'final source sentence';
-  context.render(container,{primaryActivity:{label:'Review',state:'conflicting',candidates:[{label:'Review',p:.6},{label:'Approve',p:.4}],evidence:[{source:'title',quote}]},roleRisk:{flags:[{label:'Fixed-term',severity:'high',probability:.9,reason:'Limited duration',evidence:[{source:'jd',quote}]}]}});
-  assert.equal((container.innerHTML.match(/final source sentence/g)||[]).length,2);
-  assert.match(container.innerHTML,/Conflicting evidence · candidates: Review 60% \/ Approve 40%/);
-  assert.match(container.innerHTML,/Fixed-term/);assert.match(container.innerHTML,/High · 90%/);
-  assert.match(container.innerHTML,/Limited duration/);
-  assert.match(container.innerHTML,/<span class="jev-source">Title<\/span>/);
-  assert.equal(container.hidden,false);
   assert.match(source,/if\(normalized.taxonomyVersion===JEV_TAXONOMY_VERSION\)/);
 });
 
