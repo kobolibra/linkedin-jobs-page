@@ -308,7 +308,7 @@ jobsEl.addEventListener("click",e=>{
 jobsEl.addEventListener("keydown",e=>{if(e.key!=="Enter"&&e.key!==" ")return;const sub=e.target.closest(".job-sub-link");if(!sub)return;e.preventDefault();const card=sub.closest(".job"),c=card?.dataset.comp;if(c){companyEl.value=c;apply();const tb=document.querySelector(".toolbar");if(tb)tb.scrollIntoView({behavior:"smooth",block:"start"});}});
 const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementById("kwPanel"),kwForm=document.getElementById("kwForm"),kwInput=document.getElementById("kwInput"),kwList=document.getElementById("kwList");
 let activeRegion="all",activeCity="all",activeOnly=false,favOnly=false,blockedOpen=false,simpleFilterActive=true,renderReady=false;
-let daySections=[],jobCards=[],filteredCards=new Set();
+let daySections=[],jobCards=[],filteredCards=new Set(),loadedJobs=null;
 const regionActiveTotals={CN:0,HK:0,SG:0,OTHER:0};
 const setRegion=region=>{
   const b=regionsEl.querySelector('.seg[data-region="'+region+'"]');if(!b)return;
@@ -316,7 +316,7 @@ const setRegion=region=>{
     b.classList.add("active");b.setAttribute("aria-selected","true");activeRegion=region;
     if(region!=="CN"){activeCity="all";cityEl.value="all";}
     regionsEl.dataset.pendingRegion=region;
-    if(renderReady)apply();
+    apply();
   };
   regionsEl.addEventListener("click",e=>{const b=e.target.closest(".seg");if(b)setRegion(b.dataset.region);});
   regionsEl.addEventListener("keydown",e=>{
@@ -527,6 +527,11 @@ jobsDataPromise
     if(!Array.isArray(data))data=[];
     // Use the deduplicated dataset as the single source for rendering and every statistic.
     data=keepLatestSameCityTitle(data);
+    loadedJobs=data;
+    updateJobCount(countLoadedActiveJobs());
+    // Paint the accurate count before charts and thousands of cards are built.
+    await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
+    await new Promise(resolve=>setTimeout(resolve,0));
     const activeData=data.filter(isActiveJob);
     const companyRegionCount=new Map();
     activeData.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
@@ -650,12 +655,25 @@ jobsDataPromise
   .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
 const activeOnlyEl=document.getElementById("activeOnlyToggle"),activeCountEl=document.getElementById("activeJobCount");
 activeOnlyEl.addEventListener("click",()=>{activeOnly=!activeOnly;apply();});
+function countLoadedActiveJobs(){
+  const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
+  let count=0;
+  for(const job of loadedJobs){
+    if(!isActiveJob(job))continue;
+    const company=canonicalCompany(job.company),title=(job.title||'').toLowerCase(),region=norm(job.location);
+    const city=region==='OTHER'?'OTHER':cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
+    const id=jobId(job.link)||(job.title+'|'+job.company);
+    if(!blocked.has(company)&&!kwArr.some(k=>title.includes(k))&&(activeRegion==='all'||region===activeRegion)&&(activeCity==='all'||city===activeCity)&&(comp==='all'||company===comp)&&(!favOnly||favs.has(id))&&(!q||(title+' '+company+' '+cityLabel).toLowerCase().includes(q))&&ageMatch(ageSel,ageDays(seenAt(job))))count++;
+  }
+  return count;
+}
 function updateJobCount(count){
   activeCountEl.textContent=count;
   activeOnlyEl.setAttribute("aria-pressed",String(activeOnly));
   activeOnlyEl.title=activeOnly?"取消仅显示有效职位":"仅显示有效职位";
 }
 function apply(){
+  if(!renderReady){if(loadedJobs)updateJobCount(countLoadedActiveJobs());return;}
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   cityEl.classList.toggle("on",activeCity!=="all");
