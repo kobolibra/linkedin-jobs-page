@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 """
-Auto Daily Companies Filter v2
+Auto Daily Companies Filter v3
 ------------------------------
-Downloads latest jobs.json and financial_blacklist.json from GitHub,
-filters by Beijing time today, excludes financial/headhunter companies
-using the blacklist (exact match, loaded from GitHub for persistence).
-Saves results to /workspace/today-companies-YYYY-MM-DD.json.
+Downloads latest jobs.json, financial_blacklist.json, and company_industries.json
+from GitHub, filters by Beijing time today, excludes financial/headhunter companies
+using the blacklist (exact match), and shows real industry info for each target company.
 
-Blacklist is stored on GitHub at:
-  https://github.com/kobolibra/linkedin-jobs-page/blob/main/financial_blacklist.json
-This ensures the blacklist persists across sessions.
+Files on GitHub (private repo, accessed via Contents API):
+  - jobs.json               : job postings data source
+  - financial_blacklist.json : persistent blacklist of financial/headhunter companies
+  - company_industries.json  : verified industry info for target companies
+
+Output:
+  - /workspace/today-companies-YYYY-MM-DD.json (full results)
+  - /workspace/today-target-companies-YYYY-MM-DD.tsv
+  - /workspace/today-excluded-companies-YYYY-MM-DD.tsv
 """
 
 import os
@@ -28,9 +33,9 @@ from datetime import datetime, timezone, timedelta
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = "kobolibra/linkedin-jobs-page"
 GITHUB_BRANCH = "main"
-# Use GitHub API (NOT raw.githubusercontent.com) for private repo access
 JOBS_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/jobs.json"
 BLACKLIST_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/financial_blacklist.json"
+INDUSTRIES_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/company_industries.json"
 
 BEIJING_TZ = timezone(timedelta(hours=8))
 OUTPUT_DIR = "/workspace"
@@ -47,6 +52,7 @@ BUILTIN_BLACKLIST = {
 
 # Loaded from GitHub at runtime
 FINANCIAL_BLACKLIST = set()
+COMPANY_INDUSTRIES = {}  # {company_name: industry_string}
 
 
 # ============================================================
@@ -58,7 +64,7 @@ def _make_request(url, headers=None, method="GET", data=None, timeout=60):
     req = urllib.request.Request(url, method=method)
     req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
     req.add_header("Accept", "application/vnd.github+json")
-    req.add_header("User-Agent", "auto-daily-companies/2.0")
+    req.add_header("User-Agent", "auto-daily-companies/3.0")
     if headers:
         for k, v in headers.items():
             req.add_header(k, v)
@@ -68,21 +74,21 @@ def _make_request(url, headers=None, method="GET", data=None, timeout=60):
     return urllib.request.urlopen(req, context=ctx, timeout=timeout)
 
 
-def download_json_from_api(api_url, timeout=60):
-    """Download JSON from GitHub API (private repo support via base64 decode or download_url for large files)."""
+def download_json_from_api(api_url, timeout=120):
+    """Download JSON from GitHub API (private repo support)."""
     print(f"[INFO] Downloading via API: {api_url}")
     try:
         with _make_request(api_url, timeout=timeout) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             if "content" in data and data.get("encoding") == "base64":
                 return json.loads(base64.b64decode(data["content"]).decode("utf-8"))
-            # Large files: encoding is None, use download_url with temp token
+            # Large files: use download_url
             if "download_url" in data and data["download_url"]:
                 print(f"[INFO] Large file ({data.get('size',0)/1024/1024:.1f}MB), downloading via download_url...")
                 dl_req = urllib.request.Request(data["download_url"])
                 dl_req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
                 dl_req.add_header("Accept", "application/vnd.github.v3.raw+json")
-                dl_req.add_header("User-Agent", "auto-daily-companies/2.0")
+                dl_req.add_header("User-Agent", "auto-daily-companies/3.0")
                 ctx = ssl.create_default_context()
                 with urllib.request.urlopen(dl_req, context=ctx, timeout=timeout) as dl_resp:
                     return json.loads(dl_resp.read().decode("utf-8"))
@@ -108,45 +114,23 @@ def load_blacklist_from_github():
         print(f"[INFO] Using {len(FINANCIAL_BLACKLIST)} builtin blacklist entries")
 
 
-def update_blacklist_on_github(new_companies):
-    """Add new companies to the blacklist JSON file on GitHub."""
-    if not new_companies:
-        return
-    # Merge with existing
-    updated = sorted(FINANCIAL_BLACKLIST | set(new_companies))
-    content = json.dumps(updated, ensure_ascii=False, indent=2)
-    content_b64 = base64.b64encode(content.encode("utf-8")).decode("ascii")
-
-    # Get current file sha (needed for update)
-    sha = None
+def load_industries_from_github():
+    """Load company industries from GitHub API. Falls back to empty if not found."""
+    global COMPANY_INDUSTRIES
     try:
-        with _make_request(BLACKLIST_API_URL) as resp:
-            info = json.loads(resp.read())
-            sha = info.get("sha")
+        data = download_json_from_api(INDUSTRIES_API_URL)
+        if data and isinstance(data, dict):
+            COMPANY_INDUSTRIES = data
+            print(f"[INFO] Loaded {len(COMPANY_INDUSTRIES)} company industry entries from GitHub")
+        elif data is not None:
+            print(f"[WARN] company_industries.json is not a dict, ignoring")
+        else:
+            print("[INFO] company_industries.json not found on GitHub (will be created on first verification)")
     except urllib.error.HTTPError as e:
-        if e.code != 404:
-            print(f"[WARN] Could not get blacklist sha: {e.code}")
-
-    payload = json.dumps({
-        "message": f"Update financial blacklist: +{len(new_companies)} companies ({datetime.now(BEIJING_TZ).strftime('%Y-%m-%d')})",
-        "content": content_b64,
-        "branch": GITHUB_BRANCH,
-        **({"sha": sha} if sha else {})
-    })
-    try:
-        req = urllib.request.Request(BLACKLIST_API_URL, data=payload.encode("utf-8"), method="PUT")
-        req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
-        req.add_header("Accept", "application/vnd.github+json")
-        req.add_header("Content-Type", "application/json")
-        ctx = ssl.create_default_context()
-        with urllib.request.urlopen(req, context=ctx, timeout=30) as resp:
-            result = json.loads(resp.read())
-            print(f"[INFO] Blacklist updated on GitHub: +{len(new_companies)} companies (total: {len(updated)})")
-            print(f"[INFO] Commit: {result['commit']['sha'][:12]}")
-            FINANCIAL_BLACKLIST.update(new_companies)
-    except Exception as e:
-        print(f"[WARN] Failed to update blacklist on GitHub: {e}")
-        print(f"[INFO] New companies to add manually: {new_companies}")
+        if e.code == 404:
+            print("[INFO] company_industries.json not found on GitHub yet (will be created on first verification)")
+        else:
+            print(f"[WARN] Could not load company_industries.json: HTTP {e.code}")
 
 
 # ============================================================
@@ -158,8 +142,7 @@ def get_beijing_today():
 
 
 def parse_push_time_dt(s):
-    """Parse pushTime string and return a timezone-aware datetime in Beijing time.
-    Returns None if parsing fails."""
+    """Parse pushTime string and return a timezone-aware datetime in Beijing time."""
     if not s:
         return None
     for fmt in ["%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z",
@@ -203,6 +186,18 @@ def is_crypto(name):
     return any(k in nl for k in kw)
 
 
+def get_target_reason(cn):
+    """Determine the reason/industry string for a target company."""
+    if is_crypto(cn):
+        crypto_base = "数字货币/区块链公司（始终包含）"
+        if cn in COMPANY_INDUSTRIES:
+            return f"{crypto_base} | {COMPANY_INDUSTRIES[cn]}"
+        return crypto_base
+    if cn in COMPANY_INDUSTRIES:
+        return COMPANY_INDUSTRIES[cn]
+    return "未在黑名单中（行业待查证）"
+
+
 def process_jobs(jobs, today):
     if not isinstance(jobs, list):
         if isinstance(jobs, dict):
@@ -234,18 +229,13 @@ def process_jobs(jobs, today):
         if cn in seen:
             continue
         seen.add(cn)
-        if is_crypto(cn):
-            target.append({"company": cn, "category": "target",
-                          "reason": "crypto/blockchain (always included)",
-                          "pushTime": str(pt)})
-            continue
         if cn in FINANCIAL_BLACKLIST:
             excluded.append({"company": cn, "category": "excluded",
-                           "reason": "blacklist exact match (financial/headhunter)",
+                           "reason": "黑名单精确匹配（金融/猎头）",
                            "pushTime": str(pt)})
         else:
             target.append({"company": cn, "category": "target",
-                          "reason": "not in blacklist",
+                          "reason": get_target_reason(cn),
                           "pushTime": str(pt)})
 
     print(f"\n[INFO] Total jobs: {len(jobs)}, Past 24h: {len(today_jobs)}")
@@ -268,7 +258,7 @@ def process_jobs(jobs, today):
 
 def main():
     print("=" * 70)
-    print("  AUTO DAILY COMPANIES FILTER v2")
+    print("  AUTO DAILY COMPANIES FILTER v3")
     print("=" * 70)
 
     if not GITHUB_TOKEN:
@@ -280,6 +270,9 @@ def main():
 
     # Load blacklist from GitHub (persistent storage)
     load_blacklist_from_github()
+
+    # Load company industries from GitHub (persistent storage)
+    load_industries_from_github()
 
     # Download jobs data via API (private repo)
     jobs_data = download_json_from_api(JOBS_API_URL)
@@ -299,8 +292,7 @@ def main():
     # Save target companies as TSV (tab-separated) for easy copy-paste into Excel
     tsv_path = os.path.join(OUTPUT_DIR, f"today-target-companies-{today}.tsv")
     with open(tsv_path, "w", encoding="utf-8-sig") as f:
-        # UTF-8 BOM so Excel opens Chinese correctly
-        f.write("序号\t公司名\t备注\n")
+        f.write("序号\t公司名\t行业/备注\n")
         for i, c in enumerate(results["target_companies"], 1):
             f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
     print(f"[INFO] TSV table saved to: {tsv_path}")
@@ -324,11 +316,10 @@ def main():
     print("=" * 70)
 
     # TARGET COMPANIES — TSV inside fenced code block to preserve Tab chars in Trae
-    # Copy the code block content (including header) and paste into Excel/WPS/Google Sheets
     if results["target_companies"]:
         print("\n[TARGET COMPANIES] — copy the code block below into Excel:")
         print("```tsv")
-        print("序号\t公司名\t备注")
+        print("序号\t公司名\t行业/备注")
         for i, c in enumerate(results["target_companies"], 1):
             print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
         print("```")
