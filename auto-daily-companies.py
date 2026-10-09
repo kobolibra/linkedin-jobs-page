@@ -323,24 +323,24 @@ def main():
     print(f"  Excluded companies: {results['total_excluded']}")
     print("=" * 70)
 
-    # TARGET COMPANIES — clean TSV block (no leading spaces, no separator lines in data)
-    # Select and copy ONLY the lines between the markers, then paste into Excel/WPS/Google Sheets
+    # TARGET COMPANIES — TSV inside fenced code block to preserve Tab chars in Trae
+    # Copy the code block content (including header) and paste into Excel/WPS/Google Sheets
     if results["target_companies"]:
-        print("\n[TARGET COMPANIES] — copy the TSV block below (between markers) into Excel:")
-        print("---BEGIN TSV---")
+        print("\n[TARGET COMPANIES] — copy the code block below into Excel:")
+        print("```tsv")
         print("序号\t公司名\t备注")
         for i, c in enumerate(results["target_companies"], 1):
             print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
-        print("---END TSV---")
+        print("```")
 
-    # EXCLUDED COMPANIES — clean TSV block
+    # EXCLUDED COMPANIES — TSV inside fenced code block
     if results["excluded_companies"]:
-        print("\n[EXCLUDED COMPANIES] — copy the TSV block below (between markers) into Excel:")
-        print("---BEGIN TSV---")
+        print("\n[EXCLUDED COMPANIES] — copy the code block below into Excel:")
+        print("```tsv")
         print("序号\t公司名\t排除原因")
         for i, c in enumerate(results["excluded_companies"], 1):
             print(f"{i}\t{c['company']}\t{c.get('reason', '')}")
-        print("---END TSV---")
+        print("```")
     print("\n" + "=" * 70)
 
     return results, filepath
