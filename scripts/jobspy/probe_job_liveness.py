@@ -1,16 +1,41 @@
 #!/usr/bin/env python3
-"""Probe non-target CN LinkedIn detail pages and emit safe observations."""
+"""Check non-target CN/HK/SG jobs and their posting dates in one bounded pass."""
 from __future__ import annotations
 import argparse, json, random, time
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
-from job_liveness import classify, jid, select_candidates
+from job_liveness import classify, jid, select_regional_candidates
+from reconcile_full_snapshots import location_key
+from posting_evidence import detail_posting_date, search_posting_date
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+SEARCH_URL = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
 
 def rows(doc):
     return doc if isinstance(doc, list) else doc.get("jobs", []) if isinstance(doc, dict) else []
+
+def lookup_posting_date(session, row, html, checked_at, timeout):
+    key = jid(row)
+    posted, source = detail_posting_date(html, key, checked_at)
+    if posted:
+        return posted, source, False
+    # Relative days/weeks often cross a calendar boundary. Resolve the date
+    # from ONE search page, requiring the same numeric LinkedIn job ID.
+    if not row.get("title") or not row.get("company"):
+        return None, None, False
+    try:
+        response = session.get(SEARCH_URL, params={
+            "keywords": str(row["title"]) + " " + str(row["company"]),
+            "location": {"CN":"China", "HK":"Hong Kong", "SG":"Singapore"}[location_key(row)],
+            "start": 0,
+        }, timeout=timeout, allow_redirects=False)
+        if response.status_code != 200:
+            return None, None, response.status_code in {403,429,999} or response.status_code >= 500
+        posted = search_posting_date(response.text, key)
+        return posted, "linkedin-search-id" if posted else None, False
+    except requests.RequestException:
+        return None, None, True
 
 def main():
     ap = argparse.ArgumentParser()
@@ -20,27 +45,37 @@ def main():
     ap.add_argument("--recheck-expired-days", type=float, default=30); ap.add_argument("--delay-min", type=float, default=2)
     ap.add_argument("--delay-max", type=float, default=5); ap.add_argument("--timeout", type=float, default=20)
     ap.add_argument("--breaker", type=int, default=3); ap.add_argument("--guard-ratio", type=float, default=.6)
-    ap.add_argument("--guard-min", type=int, default=10); ap.add_argument("--location", action="append", default=["CN"])
-    args = ap.parse_args()
+    ap.add_argument("--guard-min", type=int, default=10)
+    ap.add_argument("--location", action="append", choices=["CN","HK","SG"], default=None)
+    args = ap.parse_args(); locations = list(dict.fromkeys(args.location or ["CN","HK","SG"]))
     now = datetime.now(timezone.utc).isoformat()
-    out = {"schemaVersion":"1.0","mode":"cn-job-liveness","observedAt":now,"observations":[],"stats":{}}
+    out = {"schemaVersion":"1.1","mode":"job-liveness","scopeLocations":locations,"observedAt":now,"observations":[],"stats":{}}
     try:
-        doc=json.loads(Path(args.jobs).read_text(encoding="utf-8")); candidates=[]
-        for loc in args.location: candidates.extend(select_candidates(rows(doc), now=now, max_probes=args.max_probes, min_interval_hours=args.min_interval_hours, gone_confirm_hours=args.gone_confirm_hours, recheck_expired_hours=args.recheck_expired_hours, recheck_expired_days=args.recheck_expired_days, location=loc))
-        seen=set(); candidates=[r for r in candidates if jid(r) and not (jid(r) in seen or seen.add(jid(r)))]
+        doc=json.loads(Path(args.jobs).read_text(encoding="utf-8"))
+        candidates=select_regional_candidates(rows(doc), locations, now=now, max_probes=args.max_probes,
+            min_interval_hours=args.min_interval_hours, gone_confirm_hours=args.gone_confirm_hours,
+            recheck_expired_hours=args.recheck_expired_hours, recheck_expired_days=args.recheck_expired_days)
         session=requests.Session(); session.headers.update({"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
         breaker=0; classified=[]
-        for i,row in enumerate(candidates[:args.max_probes]):
+        for i,row in enumerate(candidates):
             key=jid(row); url=f"https://www.linkedin.com/jobs/view/{key}"
+            posted=source=None; blocked=False
             try:
                 response=session.get(url, timeout=args.timeout, allow_redirects=False)
+                checked_at=datetime.now(timezone.utc).isoformat()
                 result=classify(response.status_code, response.text, key)
-                if response.status_code in {403,429,999} or response.status_code >= 500: breaker += 1
-                else: breaker=0
+                blocked=response.status_code in {403,429,999} or response.status_code >= 500
+                if result == "open":
+                    posted,source,date_blocked=lookup_posting_date(session,row,response.text,checked_at,args.timeout)
+                    blocked=blocked or date_blocked
             except requests.RequestException as exc:
-                result="unknown"; breaker += 1; response=None; print("probe_error",key,type(exc).__name__,flush=True)
+                checked_at=datetime.now(timezone.utc).isoformat()
+                result="unknown"; blocked=True; print("probe_error",key,type(exc).__name__,flush=True)
+            breaker=breaker+1 if blocked else 0
             classified.append(result)
-            out["observations"].append({"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"result":result,"checkedAt":now})
+            observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
+            if posted: observation.update({"datePosted":posted,"dateSource":source})
+            out["observations"].append(observation)
             if breaker >= args.breaker:
                 out["stats"]["circuitOpen"] = True
                 out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
@@ -52,10 +87,27 @@ def main():
             out["stats"]["selectorGuardTripped"] = True
             for item in out["observations"]:
                 if item["result"] == "not_accepting": item["result"]="unknown"
-        stats=out["stats"]; stats.update({"probed":len(out["observations"]),"open":sum(x["result"]=="open" for x in out["observations"]),"closed":sum(x["result"]=="closed" for x in out["observations"]),"not_accepting":sum(x["result"]=="not_accepting" for x in out["observations"]),"gone":sum(x["result"]=="gone" for x in out["observations"]),"unknown":sum(x["result"]=="unknown" for x in out["observations"]),"circuitOpen":stats.get("circuitOpen",False),"selectorGuardTripped":stats.get("selectorGuardTripped",False)})
+        # A selector change limited to one region must not be diluted by
+        # successful pages from the other two regions.
+        guarded=[]
+        for loc in locations:
+            regional=[x for x in out["observations"] if x["location"] == loc and x["result"] != "unknown"]
+            if len(regional) >= args.guard_min and sum(x["result"] == "not_accepting" for x in regional)/len(regional) > args.guard_ratio:
+                guarded.append(loc)
+                for item in regional:
+                    if item["result"] == "not_accepting": item["result"]="unknown"
+        if guarded:
+            out["stats"]["selectorGuardTripped"] = True
+            out["stats"]["guardedRegions"] = guarded
+        stats=out["stats"]; stats.update({"probed":len(out["observations"]),
+            **{state:sum(x["result"]==state for x in out["observations"]) for state in ("open","closed","not_accepting","gone","unknown")},
+            "postingDates":sum(bool(x.get("datePosted")) for x in out["observations"]),
+            "regions":{loc:sum(x["location"]==loc for x in out["observations"]) for loc in locations},
+            "circuitOpen":stats.get("circuitOpen",False),"selectorGuardTripped":stats.get("selectorGuardTripped",False)})
     except Exception as exc:
         out["stats"]={"error":type(exc).__name__,"probed":len(out["observations"]),"circuitOpen":False,"selectorGuardTripped":False}
         print("liveness_error",type(exc).__name__,str(exc),flush=True)
+    out["observedAt"]=datetime.now(timezone.utc).isoformat()
     Path(args.output).parent.mkdir(parents=True,exist_ok=True); Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print(json.dumps(out["stats"],ensure_ascii=False),flush=True)
 
