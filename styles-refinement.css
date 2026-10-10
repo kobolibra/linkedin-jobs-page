@@ -193,9 +193,17 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 #top50Title {
   color:var(--ink-soft);
   opacity:1;
-  font:700 9px/1.4 var(--mono);
-  letter-spacing:.13em;
+  font:600 11px/1.4 var(--sans);
+  letter-spacing:.04em;
   text-transform:uppercase;
+}
+/* Match the regional filter controls while keeping the compact Top 30 scale. */
+.top50-tab,
+.top50-tab.active {
+  font-family:var(--sans);
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.04em;
 }
 /* Closed is a compact inline status marker, vertically centered against the title. */
 .job-heading { align-items:center; }
