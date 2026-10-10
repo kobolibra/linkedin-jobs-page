@@ -6,7 +6,7 @@
   const setExpanded = expanded => {
     chart.hidden = !expanded;
     toggle.setAttribute('aria-expanded', String(expanded));
-    toggle.textContent = expanded ? '收起图表' : '展开图表';
+    toggle.textContent = expanded ? 'Collapse chart' : 'Expand chart';
   };
   setExpanded(false);
   toggle.hidden = false;
