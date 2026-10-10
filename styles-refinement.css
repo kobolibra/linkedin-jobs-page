@@ -195,7 +195,7 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
   opacity:1;
   font:600 11px/1.4 var(--sans);
   letter-spacing:.04em;
-  text-transform:uppercase;
+  text-transform:none;
 }
 /* Match the regional filter controls while keeping the compact Top 30 scale. */
 .top50-tab,
@@ -221,4 +221,21 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
     padding:0 4px;
     font-size:8.5px;
   }
+}
+/* Make the selected Top 30 region unmistakable while keeping inactive tabs quiet. */
+.top50-tab:not(.active) {
+  color:var(--ink-faint) !important;
+  font-weight:500 !important;
+  opacity:.72;
+}
+.top50-tab[data-top-region].active {
+  border:1px solid color-mix(in srgb, currentColor 42%, transparent) !important;
+  background:color-mix(in srgb, currentColor 16%, var(--glass-light)) !important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb, #fff 42%, transparent), 0 1px 5px color-mix(in srgb, currentColor 18%, transparent) !important;
+  font-weight:750 !important;
+  opacity:1;
+}
+[data-theme="dark"] .top50-tab[data-top-region].active {
+  background:color-mix(in srgb, currentColor 24%, var(--glass-light)) !important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb, #fff 24%, transparent), 0 1px 7px color-mix(in srgb, currentColor 24%, transparent) !important;
 }

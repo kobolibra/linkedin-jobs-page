@@ -250,6 +250,7 @@ const dayKey=iso=>{const d=new Date(iso);return isNaN(d)?"—":keyOf(d);};
 const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"});};
 const isActiveJob=job=>job?.jobStatus!=="expired";
 const seenAt=j=>j.firstSeen||j.pushTime;
+const validDays=(start,end)=>{const a=Date.parse(start),b=Date.parse(end);if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.max(0,Math.floor((b-a)/864e5));};
 // pushTime is advanced only by JobSpy-confirmed same-day reposts; RSS merely
 // observes existing listings and must not move them to the top of the list.
 const placeAt=j=>j.pushTime||j.firstSeen;
@@ -342,7 +343,7 @@ function setTop50Mode(mode){
   top50Mode=mode;
   if(top50Tabs){top50Tabs.dataset.active=mode;updateTop50Slider(mode);}
   top50Tabs?.querySelectorAll(".top50-tab").forEach(b=>{const active=b.dataset.topRegion===mode;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
-  if(top50Title)top50Title.textContent="Top 30 by postings · "+(mode==="all"?"ALL":mode);
+  if(top50Title)top50Title.textContent="Top 30 Institutions by Active Positions: Who Is Hiring and Where?";
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
 }
 top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
@@ -609,7 +610,7 @@ jobsDataPromise
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>{
-        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?dayKey(job.expiredAt):"",expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+'" title="关闭日期：'+esc(expiredText)+'">'+esc(expiredText)+'</span>':'';
+        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?dayKey(job.expiredAt):"",expiredValidDays=expired?validDays(seenAt(job),job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} days`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
         const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count">· '+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
