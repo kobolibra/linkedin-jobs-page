@@ -329,7 +329,7 @@ const setRegion=region=>{
     if(!next)return;e.preventDefault();next.focus();setRegion(next.dataset.region);
   });
 let top50Mode="all",top50Rows=[];
-const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title"),top50Context=document.getElementById("top50Context");
+const top50Tabs=document.getElementById("top50Tabs"),top50Title=document.getElementById("top50Title");
 function updateTop50Slider(mode){
   if(!top50Tabs)return;
   const colors={all:'rgba(107,106,101,.14)',CN:'rgba(156,42,51,.18)',HK:'rgba(176,124,34,.20)',SG:'rgba(110,138,70,.20)'};
@@ -338,24 +338,11 @@ function updateTop50Slider(mode){
   top50Tabs.style.setProperty('--top50-slider-x',(offsets[mode]??0)+'%');
 }
 if(top50Tabs){top50Tabs.dataset.active=top50Mode;updateTop50Slider(top50Mode);}
-const top50RegionLabels={all:"All regions",CN:"Chinese mainland",HK:"Hong Kong",SG:"Singapore"};
-function updateTop50TabCounts(rows){
-  if(!top50Tabs)return;
-  const counts={all:0,CN:0,HK:0,SG:0};
-  (Array.isArray(rows)?rows:[]).forEach(job=>{const region=norm(job.location);counts.all++;if(counts[region]!=null)counts[region]++;});
-  top50Tabs.querySelectorAll(".top50-tab").forEach(button=>{
-    const value=counts[button.dataset.topRegion]??0;
-    const count=button.querySelector("[data-top-count]");
-    if(count)count.textContent=value.toLocaleString("en-US");
-    button.setAttribute("aria-label",`${top50RegionLabels[button.dataset.topRegion]||button.dataset.topRegion}: ${value.toLocaleString("en-US")} active postings`);
-  });
-}
 function setTop50Mode(mode){
   top50Mode=mode;
   if(top50Tabs){top50Tabs.dataset.active=mode;updateTop50Slider(mode);}
   top50Tabs?.querySelectorAll(".top50-tab").forEach(b=>{const active=b.dataset.topRegion===mode;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
-  if(top50Title)top50Title.textContent="Top 30 by postings";
-  if(top50Context){const count=top50Tabs?.querySelector(`.top50-tab[data-top-region="${mode}"] [data-top-count]`)?.textContent||"—";top50Context.textContent=`${top50RegionLabels[mode]||mode} · ${count} active postings`;}
+  if(top50Title)top50Title.textContent="Top 30 by postings · "+(mode==="all"?"ALL":mode);
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
 }
 top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
@@ -600,8 +587,7 @@ jobsDataPromise
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     top50Rows=activeData;
-    updateTop50TabCounts(top50Rows);
-    setTop50Mode(top50Mode);
+    renderTop50(top50Rows,top50Mode);
     // Let the browser paint the stats and all three charts before the large
     // 8k-card list begins. This removes the perceived chained pause without
     // changing the data, ordering, or filter state.
