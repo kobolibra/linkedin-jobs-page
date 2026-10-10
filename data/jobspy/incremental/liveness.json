@@ -6,1261 +6,201 @@
     "HK",
     "SG"
   ],
-  "observedAt": "2026-10-10T15:46:57.770108+00:00",
+  "observedAt": "2026-10-10T21:37:42.960396+00:00",
   "observations": [
     {
-      "sourceJobId": "li-kyc-policy-implementation-manager-52852-at-%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4464964272",
-      "jobId": "4464964272",
+      "sourceJobId": "li-4460186061",
+      "jobId": "4460186061",
       "location": "CN",
       "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:36:03.677853+00:00"
+      "checkedAt": "2026-10-10T21:36:16.600529+00:00"
     },
     {
-      "sourceJobId": "li-head-of-property-asset-management-china-at-hays-4476884734",
-      "jobId": "4476884734",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:07.869239+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-avp-senior-channel-manager-at-alliancebernstein-4426330793",
-      "jobId": "4426330793",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:11.469653+00:00",
-      "datePosted": "2026-09-25",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-vp-avp-risk-manager-at-alliancebernstein-4426340175",
-      "jobId": "4426340175",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:16.754244+00:00",
-      "datePosted": "2026-09-25",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-cyber-graduate-china-at-targetjobs-uk-4473874111",
-      "jobId": "4473874111",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:20.198372+00:00",
-      "datePosted": "2026-10-03",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-analyst-marketing-at-mastercard-4466920000",
-      "jobId": "4466920000",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:24.453225+00:00",
-      "datePosted": "2026-09-18",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-analyst-marketing-at-mastercard-4466916051",
-      "jobId": "4466916051",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:29.606219+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-senior-manager-renewable-energy-asset-management-at-schroders-4477657495",
-      "jobId": "4477657495",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:32.886153+00:00",
-      "datePosted": "2026-10-09",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-officer-at-state-street-4477629717",
-      "jobId": "4477629717",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:36.570105+00:00",
-      "datePosted": "2026-10-09",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-manager-regulatory-compliance-at-%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8-4474805539",
-      "jobId": "4474805539",
+      "sourceJobId": "li-senior-software-engineer-at-lseg-4331592697",
+      "jobId": "4331592697",
       "location": "CN",
       "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:36:40.258749+00:00"
+      "checkedAt": "2026-10-10T21:36:22.103676+00:00"
     },
     {
-      "sourceJobId": "li-director-solutions-architect-tech-partnership-at-visa-4475750402",
-      "jobId": "4475750402",
+      "sourceJobId": "li-business-development-officer-hsh-at-hang-seng-bank-4450329282",
+      "jobId": "4450329282",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-10T15:36:43.217977+00:00",
-      "datePosted": "2026-10-08",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-publishing-coordinator-at-thomson-reuters-4475195456",
-      "jobId": "4475195456",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:47.201961+00:00",
-      "datePosted": "2026-10-07",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-business-development-manager-trilingual-cantonese-mandarin-english-at-one-advisors-4474266002",
-      "jobId": "4474266002",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:52.576468+00:00",
-      "datePosted": "2026-10-05",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-associate-director-asset-servicing-operations-at-cmu-omniclear-limited-4473132171",
-      "jobId": "4473132171",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:36:57.161624+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-greater-china-2027-campus-recruitment-information-session-webinar-at-mastercard-4460957393",
-      "jobId": "4460957393",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:01.870318+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-statarb-portfolio-manager-quantitative-researcher-at-optiver-4423647763",
-      "jobId": "4423647763",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:07.732236+00:00",
-      "datePosted": "2026-09-26",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-senior-portfolio-manager-quantitative-researcher-%E2%80%93-intraday-trading-strategy-at-optiver-4423645805",
-      "jobId": "4423645805",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:13.432073+00:00",
-      "datePosted": "2026-09-28",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-associate-software-developer-%E2%80%93-ai-vulnerability-triage-lme-at-hong-kong-exchanges-and-clearing-limited-hkex-4472114620",
-      "jobId": "4472114620",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:17.785536+00:00"
-    },
-    {
-      "sourceJobId": "li-student-trainee-at-schroders-4473588769",
-      "jobId": "4473588769",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:21.685897+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-business-analyst-at-vistra-4471227588",
-      "jobId": "4471227588",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:25.943245+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-director-%E2%80%93-migrations-global-delivery-hub-at-vistra-4435981894",
-      "jobId": "4435981894",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:31.007361+00:00",
-      "datePosted": "2026-07-10",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-alpha-operations-account-services-team-officer-at-state-street-4472497102",
-      "jobId": "4472497102",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:35.136092+00:00",
+      "checkedAt": "2026-10-10T21:36:26.248606+00:00",
       "datePosted": "2026-10-10",
       "dateSource": "linkedin-detail-relative-day"
     },
     {
-      "sourceJobId": "li-associate-strategist-at-morgan-mckinley-4448968285",
-      "jobId": "4448968285",
+      "sourceJobId": "li-senior-relationship-associate-at-hang-seng-bank-4447262474",
+      "jobId": "4447262474",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-10T15:37:38.498278+00:00",
-      "datePosted": "2026-08-05",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-4448979200",
-      "jobId": "4448979200",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:43.288465+00:00",
-      "datePosted": "2026-08-05",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-4448687772",
-      "jobId": "4448687772",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:48.722696+00:00"
-    },
-    {
-      "sourceJobId": "li-4442617421",
-      "jobId": "4442617421",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:53.307937+00:00",
-      "datePosted": "2026-07-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-4446723211",
-      "jobId": "4446723211",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:37:56.889273+00:00",
-      "datePosted": "2026-07-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-director-specialist-sales-consumer-acquisition-engagement-at-mastercard-4440196243",
-      "jobId": "4440196243",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:01.776330+00:00",
-      "datePosted": "2026-09-24",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-manager-deal-management-strategic-finance-partner-at-mastercard-4434827866",
-      "jobId": "4434827866",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:08.047857+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-china-industry-specialist-ai-e-commerce-gaming-at-capital-group-4435017135",
-      "jobId": "4435017135",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:14.270543+00:00",
-      "datePosted": "2026-09-25",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-vp-investment-manager-pam-multi-asset-fi-at-alliancebernstein-4419416879",
-      "jobId": "4419416879",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:18.504614+00:00",
+      "checkedAt": "2026-10-10T21:36:31.059005+00:00",
       "datePosted": "2026-10-04",
       "dateSource": "linkedin-search-id"
     },
     {
-      "sourceJobId": "li-research-analyst-china-coverage-at-william-blair-4385702296",
-      "jobId": "4385702296",
+      "sourceJobId": "li-senior-portfolio-manager-quantitative-researcher-at-alexander-chapman-4473283660",
+      "jobId": "4473283660",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-10T15:38:21.976991+00:00",
+      "checkedAt": "2026-10-10T21:36:36.930758+00:00",
+      "datePosted": "2026-09-29",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-id90m0153180-listed-company-secretary-ai-at-randstad-china-4473092984",
+      "jobId": "4473092984",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:36:42.960774+00:00",
+      "datePosted": "2026-09-29",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-associate-director-business-development-global-incorporations-at-vistra-4459937955",
+      "jobId": "4459937955",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:36:46.303613+00:00",
+      "datePosted": "2026-09-02",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-associate-director-fund-services-at-vistra-4471255181",
+      "jobId": "4471255181",
+      "location": "CN",
+      "result": "unknown",
+      "checkedAt": "2026-10-10T21:36:50.029267+00:00"
+    },
+    {
+      "sourceJobId": "li-senior-manager-account-management-at-vistra-4451187607",
+      "jobId": "4451187607",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:36:53.345299+00:00",
+      "datePosted": "2026-08-10",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-senior-marketing-manager-at-vistra-4458880556",
+      "jobId": "4458880556",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:36:56.469181+00:00",
+      "datePosted": "2026-08-31",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-software-engineer-analyst-programmer-gov-contract-up-to-%2465k-at-vistra-4441179548",
+      "jobId": "4441179548",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:00.198616+00:00",
+      "datePosted": "2026-07-17",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-senior-manager-account-management-at-vistra-4451193562",
+      "jobId": "4451193562",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:04.115018+00:00",
+      "datePosted": "2026-08-10",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-manager-settlement-operation-regional-bank-at-trius-consulting-4471331916",
+      "jobId": "4471331916",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:08.032171+00:00",
       "datePosted": "2026-09-28",
       "dateSource": "linkedin-search-id"
     },
     {
-      "sourceJobId": "li-director-of-research-at-alliancebernstein-4419819412",
-      "jobId": "4419819412",
+      "sourceJobId": "li-fund-administration-associate-2-at-state-street-4471443852",
+      "jobId": "4471443852",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-10T15:38:27.781792+00:00",
-      "datePosted": "2026-10-03",
+      "checkedAt": "2026-10-10T21:37:11.814310+00:00",
+      "datePosted": "2026-10-08",
       "dateSource": "linkedin-search-id"
     },
     {
-      "sourceJobId": "li-business-oversight-compliance-specialist-vp-at-barclays-4468345999",
-      "jobId": "4468345999",
+      "sourceJobId": "li-core-operations-senior-associate-at-state-street-4464439759",
+      "jobId": "4464439759",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-10T15:38:31.709887+00:00",
-      "datePosted": "2026-09-18",
+      "checkedAt": "2026-10-10T21:37:15.209801+00:00",
+      "datePosted": "2026-09-17",
       "dateSource": "linkedin-search-id"
     },
     {
-      "sourceJobId": "li-operations-analyst-mo-investment-bank-at-michael-page-4476566958",
-      "jobId": "4476566958",
-      "location": "HK",
+      "sourceJobId": "li-investment-analyst-at-schroders-4470905602",
+      "jobId": "4470905602",
+      "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-10T15:38:35.065357+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
+      "checkedAt": "2026-10-10T21:37:19.713717+00:00",
+      "datePosted": "2026-09-23",
+      "dateSource": "linkedin-search-id"
     },
     {
-      "sourceJobId": "li-regional-director-at-scpmi-supply-chain-and-procurement-management-institute-4474881996",
-      "jobId": "4474881996",
-      "location": "SG",
+      "sourceJobId": "li-analyst-transfer-agency-at-apex-group-ltd-4468558276",
+      "jobId": "4468558276",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:24.390638+00:00",
+      "datePosted": "2026-09-22",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-compliance-advisory-manager-at-anz-4468519106",
+      "jobId": "4468519106",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:29.387762+00:00",
+      "datePosted": "2026-09-22",
+      "dateSource": "linkedin-search-id"
+    },
+    {
+      "sourceJobId": "li-deep-learning-quantitative-researcher-at-millennium-4444615307",
+      "jobId": "4444615307",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:35.157148+00:00"
+    },
+    {
+      "sourceJobId": "li-quant-research-engineer-at-millennium-4444657634",
+      "jobId": "4444657634",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-10T21:37:39.716338+00:00"
+    },
+    {
+      "sourceJobId": "li-quantitative-researcher-quantitative-strategies-at-millennium-4439444256",
+      "jobId": "4439444256",
+      "location": "CN",
       "result": "unknown",
-      "checkedAt": "2026-10-10T15:38:37.875360+00:00"
-    },
-    {
-      "sourceJobId": "li-coo-shkcp-at-sun-hung-kai-co-limited-4477666619",
-      "jobId": "4477666619",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:40.792347+00:00"
-    },
-    {
-      "sourceJobId": "li-vice-president-third-party-risk-assurance-at-robert-walters-4477873859",
-      "jobId": "4477873859",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:44.359645+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-business-manager-12-month-fixed-term-contract-at-nomura-4477688845",
-      "jobId": "4477688845",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:47.079944+00:00",
-      "datePosted": "2026-10-09",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-loaniq-sdk-developer-at-virtusa-4475271919",
-      "jobId": "4475271919",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:52.795158+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-svp-team-head-data-services-analytics-wholesale-business-banking-at-justonegalaxy-recruitment-4477208074",
-      "jobId": "4477208074",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:38:56.662997+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-temenos-technical-analyst-at-virtusa-4475277845",
-      "jobId": "4475277845",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:02.117966+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-wealth-management-client-digital-service-specialist-at-cicc-4477200610",
-      "jobId": "4477200610",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:05.750912+00:00",
-      "datePosted": "2026-10-10",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-fund-services-supervisor-at-the-citco-group-limited-4472924320",
-      "jobId": "4472924320",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:09.543254+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-infrastructure-support-engineer-linux-platform-at-robert-walters-4475009488",
-      "jobId": "4475009488",
-      "location": "HK",
-      "result": "gone",
-      "checkedAt": "2026-10-10T15:39:12.836449+00:00"
-    },
-    {
-      "sourceJobId": "li-assistant-vice-president-fund-accounting-hedge-funds-at-the-citco-group-limited-4472920442",
-      "jobId": "4472920442",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:16.070526+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-ai-developer-financial-services-at-michael-page-4475041082",
-      "jobId": "4475041082",
-      "location": "HK",
-      "result": "gone",
-      "checkedAt": "2026-10-10T15:39:20.691791+00:00"
-    },
-    {
-      "sourceJobId": "li-intern-at-schroders-4474134724",
-      "jobId": "4474134724",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:25.946441+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-assistant-manager-to-deputy-manager-policies-and-risk-assessments-fcc-at-industrial-and-commercial-bank-of-china-4473354768",
-      "jobId": "4473354768",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:32.070260+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-head-of-dealing-brokerage-digital-trading-securities-at-drake-international-%E2%80%93-singapore-4472507555",
-      "jobId": "4472507555",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:39:36.491879+00:00"
-    },
-    {
-      "sourceJobId": "li-complaint-manager-personal-e-business-internet-finance-at-industrial-and-commercial-bank-of-china-4473349954",
-      "jobId": "4473349954",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:40.318855+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-compliance-manager-senior-compliance-associate-%E2%80%93-brokerage-firm-at-ethos-beathchapman-4472530600",
-      "jobId": "4472530600",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:39:44.691053+00:00"
-    },
-    {
-      "sourceJobId": "li-ro-director-infrastructure-international-private-equity-fund-at-hays-4474735114",
-      "jobId": "4474735114",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:48.991823+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-customer-service-lead-at-anz-4474139735",
-      "jobId": "4474139735",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:52.356335+00:00"
-    },
-    {
-      "sourceJobId": "li-assistant-manager-manager-government-customer-management-custody-services-at-industrial-and-commercial-bank-of-china-4473366199",
-      "jobId": "4473366199",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:39:57.171645+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-portfolio-manager-fixed-income-asia-at-norges-bank-investment-management-4472696385",
-      "jobId": "4472696385",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:40:02.866289+00:00"
-    },
-    {
-      "sourceJobId": "li-%E4%BA%A4%E9%80%9A%E4%B8%BB%E4%BB%BB-%E4%BF%9D%E5%AE%89%E7%B5%84-ref-to-at-hudson-pacific-group-ltd-4473357646",
-      "jobId": "4473357646",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:06.244128+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-senior-fund-accounting-manager-at-linnovate-partners-4472525614",
-      "jobId": "4472525614",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:10.574675+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-trade-finance-officer-import-export-at-industrial-and-commercial-bank-of-china-4473348937",
-      "jobId": "4473348937",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:16.070783+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-fund-accounting-manager-at-the-edge-partnership-the-edge-in-asia-4472503874",
-      "jobId": "4472503874",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:22.251923+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-relationship-manager-asia-pacific-region-corporate-finance-at-industrial-and-commercial-bank-of-china-4473357642",
-      "jobId": "4473357642",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:27.935840+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-dealer-for-affluent-markets-team-at-phillipcapital-4472391304",
-      "jobId": "4472391304",
-      "location": "SG",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:40:31.813246+00:00"
-    },
-    {
-      "sourceJobId": "li-avp-listing-regulation-and-enforcement-at-hong-kong-exchanges-and-clearing-limited-hkex-4309361532",
-      "jobId": "4309361532",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:36.151509+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-customer-service-executive-at-global-recruitment-agency-4473984571",
-      "jobId": "4473984571",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:40:39.869339+00:00"
-    },
-    {
-      "sourceJobId": "li-head-of-delivery-business-process-and-core-corporate-it-at-clsa-4474776235",
-      "jobId": "4474776235",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:40:44.395374+00:00"
-    },
-    {
-      "sourceJobId": "li-site-reliability-engineer-sre-at-argyll-scott-4470060666",
-      "jobId": "4470060666",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:40:47.006352+00:00"
-    },
-    {
-      "sourceJobId": "li-avp-sanctions-compliance-legal-compliance-department-at-china-merchants-bank-4474761980",
-      "jobId": "4474761980",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:40:50.610170+00:00"
-    },
-    {
-      "sourceJobId": "li-client-onboarding-sg-documentation-officer-at-julius-baer-4473299132",
-      "jobId": "4473299132",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:40:55.635557+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-sr-manager-digital-workspace-it-at-clsa-4474767736",
-      "jobId": "4474767736",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:41:00.550052+00:00"
-    },
-    {
-      "sourceJobId": "li-corporate-access-japanese-speaking-at-jac-recruitment-4473778853",
-      "jobId": "4473778853",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:06.033861+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-associate-director-director-equity-portfolio-manager-asset-management-at-clsa-4474770518",
-      "jobId": "4474770518",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:41:11.562052+00:00"
-    },
-    {
-      "sourceJobId": "li-equity-analyst-at-schroders-4472162353",
-      "jobId": "4472162353",
-      "location": "SG",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:41:15.710487+00:00"
-    },
-    {
-      "sourceJobId": "li-director-equity-portfolio-manager-asset-management-at-clsa-4474778228",
-      "jobId": "4474778228",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:41:19.425629+00:00"
-    },
-    {
-      "sourceJobId": "li-proposition-marketing-executive-at-schroders-4473900284",
-      "jobId": "4473900284",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:23.789111+00:00"
-    },
-    {
-      "sourceJobId": "li-vice-president-investment-consultant-ic-%E2%80%93-wealth-management-product-department-at-cmb-international-4474781123",
-      "jobId": "4474781123",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:41:27.432189+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-support-analyst-fix-cash-equity-at-robert-walters-4473752418",
-      "jobId": "4473752418",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:31.026124+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-vp-relationship-manager-asset-management-at-new-region-4472873682",
-      "jobId": "4472873682",
-      "location": "HK",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:41:34.875313+00:00"
-    },
-    {
-      "sourceJobId": "li-avp-vp-sales-digital-assets-at-selby-jennings-4473722438",
-      "jobId": "4473722438",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:39.707554+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-junior-investment-analyst-at-alps-capital-management-limited-4472885608",
-      "jobId": "4472885608",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:45.983258+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-senior-consultant-client-solutions-singapore-feb-2027-at-factset-4472178354",
-      "jobId": "4472178354",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:49.391635+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-avp-asset-allocation-planner-wealth-product-department-at-cmb-wing-lung-bank-4474776238",
-      "jobId": "4474776238",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:41:53.858962+00:00"
-    },
-    {
-      "sourceJobId": "li-assistant-relationship-manager-client-support-desk-at-rbc-4473767424",
-      "jobId": "4473767424",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:41:57.445578+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-head-of-funds-fund-services-at-fp-global-4474719843",
-      "jobId": "4474719843",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:02.922781+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-analyst-associate-assistant-relationship-manager-at-lighthouse-canton-4471797823",
-      "jobId": "4471797823",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:08.469570+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-associate-settlement-night-shift-at-cmb-international-4474763861",
-      "jobId": "4474763861",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:42:11.852454+00:00"
-    },
-    {
-      "sourceJobId": "li-director-regulatory-affairs-biotech-platform-at-michael-page-4472172251",
-      "jobId": "4472172251",
-      "location": "SG",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:42:16.444344+00:00"
-    },
-    {
-      "sourceJobId": "li-officer-depository-participant-services-depository-vault-operations-at-hong-kong-exchanges-and-clearing-limited-hkex-4474777242",
-      "jobId": "4474777242",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:42:19.645809+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-investor-accounting-finance-asia-pacific-maternity-leave-coverage-at-lasalle-investment-management-4472160117",
-      "jobId": "4472160117",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:23.575404+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-settlement-officer-retail-business-management-department-at-china-merchants-bank-4474766743",
-      "jobId": "4474766743",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:42:29.607617+00:00"
-    },
-    {
-      "sourceJobId": "li-equity-sales-trader-at-bah-partners-4473734833",
-      "jobId": "4473734833",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:33.343226+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-us-stock-settlement-manager-at-jobs-via-efinancialcareers-4474774402",
-      "jobId": "4474774402",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:42:38.795972+00:00"
-    },
-    {
-      "sourceJobId": "li-fund-operation-executive-at-duxton-asset-management-4473743291",
-      "jobId": "4473743291",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:43.090668+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-relationship-manager-securities-department-at-cmb-wing-lung-bank-4474765749",
-      "jobId": "4474765749",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:42:47.102261+00:00"
-    },
-    {
-      "sourceJobId": "li-manager-finance-at-capitaland-investment-cli-4473711138",
-      "jobId": "4473711138",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:51.315060+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-avp-derisking-business-banking-hang-seng-bank-hk-at-hang-seng-bank-4474729782",
-      "jobId": "4474729782",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:42:57.186337+00:00"
-    },
-    {
-      "sourceJobId": "li-operations-expert-at-julius-baer-4473285926",
-      "jobId": "4473285926",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:02.214912+00:00"
-    },
-    {
-      "sourceJobId": "li-director-vice-president-at-cambium-grove-capital-4472891294",
-      "jobId": "4472891294",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:07.030771+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-sales-executive-at-nasdaq-4472114277",
-      "jobId": "4472114277",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:11.216268+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-family-office-vp-fund-operations-alternative-investment-at-robert-half-4474706042",
-      "jobId": "4474706042",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:15.936124+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-administrative-executive-research-at-clsa-4471972835",
-      "jobId": "4471972835",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:43:21.518726+00:00"
-    },
-    {
-      "sourceJobId": "li-executive-director-investment-advisor-at-michael-page-4474718238",
-      "jobId": "4474718238",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:24.905096+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-investment-banking-analyst-at-jefferies-4471291899",
-      "jobId": "4471291899",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:30.275005+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-%E8%82%A1%E7%A5%A8%E7%A0%94%E7%A9%B6%E5%88%86%E6%9E%90%E5%B8%88%EF%BC%88%E5%85%A8%E7%90%83%E4%BA%8C%E7%BA%A7%E5%B8%82%E5%9C%BA-%E5%AE%B6%E6%97%8F%E5%8A%9E%E5%85%AC%E5%AE%A4%EF%BC%89-at-king-deux-search-and-consulting-4474713118",
-      "jobId": "4474713118",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:43:35.836081+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-executive-property-management-2-year-contract-at-capitaland-investment-cli-4473708180",
-      "jobId": "4473708180",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:39.398849+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-officer-operations-fund-services-at-clsa-4472867807",
-      "jobId": "4472867807",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:43.914719+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-associate-manager-investor-services-aml-at-ss-c-technologies-4473278284",
-      "jobId": "4473278284",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:43:49.674901+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-senior-operations-manager-at-aquis-search-4472881249",
-      "jobId": "4472881249",
-      "location": "HK",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:43:54.286749+00:00"
-    },
-    {
-      "sourceJobId": "li-customer-experience-specialist-tech-mnc-at-talentvis-4473216839",
-      "jobId": "4473216839",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:43:58.581304+00:00"
-    },
-    {
-      "sourceJobId": "li-fund-accounting-associate-accounting-fund-admin-experience-preferable-at-alps-capital-management-limited-4472877841",
-      "jobId": "4472877841",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:01.656254+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-associate-trade-control-at-cibc-capital-markets-4471709806",
-      "jobId": "4471709806",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:07.777445+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-prime-services-middle-office-avp-equity-financing-prime-synthetics-at-the-edge-partnership-the-edge-in-asia-4472878448",
-      "jobId": "4472878448",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:12.055163+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-market-services-executive-commodity-markets-and-financing-at-macquarie-group-4473225234",
-      "jobId": "4473225234",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:15.495648+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-expanding-hedge-fund-trade-operations-python-automation-at-robert-half-4474701232",
-      "jobId": "4474701232",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:19.020694+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-vp-%E2%80%93-middle-office-fx-macro-at-the-edge-partnership-the-edge-in-asia-4471725030",
-      "jobId": "4471725030",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:44:23.945938+00:00"
-    },
-    {
-      "sourceJobId": "li-sales-director-at-saturn-capital-4472881298",
-      "jobId": "4472881298",
-      "location": "HK",
-      "result": "unknown",
-      "checkedAt": "2026-10-10T15:44:27.015605+00:00"
-    },
-    {
-      "sourceJobId": "li-associate-investor-services-at-ss-c-technologies-4473276342",
-      "jobId": "4473276342",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:31.246525+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-fx-account-executive-fx-payment-sme-at-hays-4474592527",
-      "jobId": "4474592527",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:35.206315+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-svp-listed-derivatives-sales-korea-at-stonex-group-inc-4429411614",
-      "jobId": "4429411614",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:40.817927+00:00"
-    },
-    {
-      "sourceJobId": "li-m-sm-aml-system-and-project-chinese-bank-at-hays-4474718423",
-      "jobId": "4474718423",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:44:44.934173+00:00",
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-account-development-manager-direct-data-at-pitchbook-4473237565",
-      "jobId": "4473237565",
-      "location": "SG",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:44:51.126869+00:00"
-    },
-    {
-      "sourceJobId": "li-private-banking-banker-arm-basic-salary-1m-2m-hkd-arm-500k-800k-at-be-myjob-company-limited-4472886536",
-      "jobId": "4472886536",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:44:55.177859+00:00"
-    },
-    {
-      "sourceJobId": "li-relationship-manager-hong-kong-market-at-robert-walters-4471700915",
-      "jobId": "4471700915",
-      "location": "SG",
-      "result": "gone",
-      "checkedAt": "2026-10-10T15:44:57.939488+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-c%23-java-developer-%E2%80%93-front-office-technology-global-candidates-welcome-at-sanderson-ikas-hong-kong-4474718387",
-      "jobId": "4474718387",
-      "location": "HK",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:45:02.044270+00:00"
-    },
-    {
-      "sourceJobId": "li-vp-director-investor-services-transfer-agent-fund-services-at-amethyst-partners-4471263078",
-      "jobId": "4471263078",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:05.754284+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-bancassurance-acquisition-strategy-manager-at-ips-group-4469115276",
-      "jobId": "4469115276",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:09.868450+00:00",
-      "datePosted": "2026-10-09",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-corporate-actions-analyst-%E2%80%93-asset-servicing-at-peoplebank-asia-4473215271",
-      "jobId": "4473215271",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:45:15.835127+00:00"
-    },
-    {
-      "sourceJobId": "li-assistant-vice-president-strategic-process-optimization-fcc-at-china-citic-bank-international-limited-4472875010",
-      "jobId": "4472875010",
-      "location": "HK",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:45:18.577847+00:00"
-    },
-    {
-      "sourceJobId": "li-execution-trader-at-corecam-family-office-4471275012",
-      "jobId": "4471275012",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:23.236964+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-business-analyst-wealth-management-at-nicoll-curtin-4472391841",
-      "jobId": "4472391841",
-      "location": "HK",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:45:29.133603+00:00"
-    },
-    {
-      "sourceJobId": "li-assistant-relationship-manager-private-banking-at-raffles-family-office-4464199526",
-      "jobId": "4464199526",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:33.186414+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-infra-developer-at-millennium-4472596402",
-      "jobId": "4472596402",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:37.161153+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-assistant-vice-president-wealth-operations-at-lighthouse-canton-4471271209",
-      "jobId": "4471271209",
-      "location": "SG",
-      "result": "unknown",
-      "checkedAt": "2026-10-10T15:45:39.982751+00:00"
-    },
-    {
-      "sourceJobId": "li-apac-research-coordinator-at-jain-global-4474527471",
-      "jobId": "4474527471",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:45.320373+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-business-risk-analyst-12-month-contract-at-hays-4473221081",
-      "jobId": "4473221081",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:49.203983+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-platform-site-reliability-engineer-at-millennium-4473752613",
-      "jobId": "4473752613",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:53.181319+00:00",
-      "datePosted": "2026-09-30",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-client-onboarding-specialist-onboarding-reviewer-12-month-contract-at-hays-4473212394",
-      "jobId": "4473212394",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:45:56.519099+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-unconditional-type-9-ro-mnc-asset-management-etf-focus-at-links-international-4472579101",
-      "jobId": "4472579101",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:01.565721+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-l1-desktop-engineer-i-contract-at-peoplebank-asia-4471586623",
-      "jobId": "4471586623",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:46:06.500647+00:00"
-    },
-    {
-      "sourceJobId": "li-fund-operation-team-lead-chinese-asset-management-at-links-international-4472565563",
-      "jobId": "4472565563",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:09.728921+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-buona-vista-office-building-night-security-officer-5666-at-reachfield-security-safety-management-pte-ltd-4471226402",
-      "jobId": "4471226402",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:46:15.128938+00:00"
-    },
-    {
-      "sourceJobId": "li-university-graduate-%E2%80%93-fund-specialist-hong-kong-100%25-f-m-d-at-julius-baer-4465094210",
-      "jobId": "4465094210",
-      "location": "HK",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-10T15:46:19.930904+00:00"
-    },
-    {
-      "sourceJobId": "li-analyst-corporate-actions-asset-servicing-at-skillsforce-management-consultancy-4471598278",
-      "jobId": "4471598278",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:46:23.876738+00:00"
-    },
-    {
-      "sourceJobId": "li-quantitative-researcher-at-millennium-4472545280",
-      "jobId": "4472545280",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:28.085385+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-service-relationship-manager-fi-equity-at-randstad-singapore-4471242295",
-      "jobId": "4471242295",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:46:31.790800+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-enterprise-sales-executive-at-numerix-4474160157",
-      "jobId": "4474160157",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:35.338710+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-avp-fund-operations-at-tri-cap-consulting-pte-ltd-4471589522",
-      "jobId": "4471589522",
-      "location": "SG",
-      "result": "closed",
-      "checkedAt": "2026-10-10T15:46:41.302721+00:00"
-    },
-    {
-      "sourceJobId": "li-vp-customer-relations-business-banking-hang-seng-bank-hk-at-hang-seng-bank-4465050481",
-      "jobId": "4465050481",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:44.512853+00:00",
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-avp-supervisor-%E2%80%93-real-estate-fund-administration-at-fp-global-4473056837",
-      "jobId": "4473056837",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:48.262956+00:00",
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-search-id"
-    },
-    {
-      "sourceJobId": "li-funds-alternatives-manager-private-bank-at-michael-page-4473904071",
-      "jobId": "4473904071",
-      "location": "HK",
-      "result": "gone",
-      "checkedAt": "2026-10-10T15:46:52.282159+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-vice-president-global-tax-product-client-tax-services-at-bny-4455281406",
-      "jobId": "4455281406",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-10T15:46:57.143620+00:00",
-      "datePosted": "2026-09-28",
-      "dateSource": "linkedin-search-id"
+      "checkedAt": "2026-10-10T21:37:42.960308+00:00"
     }
   ],
   "stats": {
-    "probed": 150,
-    "open": 103,
-    "closed": 29,
-    "not_accepting": 11,
-    "gone": 4,
-    "unknown": 3,
-    "postingDates": 94,
+    "circuitOpen": true,
+    "skippedCircuitOpen": 129,
+    "probed": 21,
+    "open": 17,
+    "closed": 0,
+    "not_accepting": 2,
+    "gone": 0,
+    "unknown": 2,
+    "postingDates": 15,
     "regions": {
-      "CN": 34,
-      "HK": 58,
-      "SG": 58
+      "CN": 21,
+      "HK": 0,
+      "SG": 0
     },
-    "circuitOpen": false,
     "selectorGuardTripped": false
   }
 }
