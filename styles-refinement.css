@@ -172,3 +172,45 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 @media (max-width:720px) {
   .ac-col-top50 { margin:0; padding:12px 14px !important; }
 }
+
+/* ---------- Final alignment fixes ---------- */
+/* Restore the divider above Top 30 while keeping the shared analytics plane. */
+.analytics-card > .ac-col-top50 {
+  border-top:1px solid var(--ui-divider) !important;
+}
+/* Region tabs and the chart toggle are sibling controls with one glass surface. */
+.top50-tabs,
+.top50-toggle {
+  background:var(--glass-light) !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+}
+[data-theme="dark"] .top50-tabs,
+[data-theme="dark"] .top50-toggle {
+  background:var(--glass-light) !important;
+}
+/* Match Top 30's heading to the other analytics headings. */
+#top50Title {
+  color:var(--ink-soft);
+  opacity:1;
+  font:700 9px/1.4 var(--mono);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+/* Closed is a compact inline status marker, vertically centered against the title. */
+.job-heading { align-items:center; }
+.job-state-closed {
+  height:16px;
+  margin-top:0;
+  padding:0 5px;
+  border-radius:3px;
+  font-size:9px;
+  letter-spacing:.02em;
+}
+@media (max-width:720px) {
+  .job-state-closed {
+    height:15px;
+    padding:0 4px;
+    font-size:8.5px;
+  }
+}
