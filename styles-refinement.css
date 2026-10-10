@@ -43,20 +43,13 @@
 .top50-head h3 { flex:1 1 auto; }
 .top50-chart { margin-top:12px; background:transparent !important; border-radius:0 !important; box-shadow:none !important; }
 #top50[hidden], #top50Toggle[hidden] { display:none !important; }
-.top50-tabs { box-sizing:border-box; height:var(--control-height); padding:3px; align-items:center; border:0; border-radius:var(--control-radius); background:var(--glass-soft); box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.top50-tabs { box-sizing:border-box; height:var(--control-height); padding:3px; align-items:center; border:0; border-radius:var(--control-radius); background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; }
 .top50-tabs::before { display:none; }
-.top50-tab, .top50-tab.active { min-height:28px; min-width:38px; padding:5px 10px; border-radius:5px; font-size:10px; letter-spacing:.04em; box-shadow:none; }
+.top50-tab, .top50-tab.active { position:relative; min-height:28px; min-width:38px; padding:5px 10px; border-radius:5px; background:transparent; font-size:10px; letter-spacing:.04em; box-shadow:none; }
 .top50-tab { color:var(--ink-soft); }
-.top50-tab.active { font-weight:700; }
-.top50-tab[data-top-region="all"].active { background:var(--navy); color:#fff; }
-.top50-tab[data-top-region="CN"].active { background:var(--cn); color:#fff; }
-.top50-tab[data-top-region="HK"].active { background:#936719; color:#fff; }
-.top50-tab[data-top-region="SG"].active { background:#5e783d; color:#fff; }
-[data-theme="dark"] .top50-tabs { background:var(--glass-soft); box-shadow:none; }
-[data-theme="dark"] .top50-tab[data-top-region="all"].active { background:var(--gold); color:#131210; }
-[data-theme="dark"] .top50-tab[data-top-region="CN"].active { background:var(--cn); color:#132333; }
-[data-theme="dark"] .top50-tab[data-top-region="HK"].active { background:var(--hk); color:#132333; }
-[data-theme="dark"] .top50-tab[data-top-region="SG"].active { background:var(--sg); color:#132333; }
+.top50-tab[data-top-region].active { background:transparent; color:var(--navy); font-weight:700; }
+[data-theme="dark"] .top50-tabs { background:transparent; box-shadow:none; }
+[data-theme="dark"] .top50-tab[data-top-region].active { background:transparent; color:var(--navy); }
 .top50-toggle { height:var(--control-height); padding:0 11px; border:0; border-radius:var(--control-radius); background:var(--glass-light); color:var(--ink-soft); box-shadow:none; font:500 12px var(--sans); white-space:nowrap; }
 .toolbar { padding-top:16px; }
 .toolbar-inner { gap:8px; }
