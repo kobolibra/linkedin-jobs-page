@@ -144,37 +144,31 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
   .job-state-closed { color:#444; background:none; border-color:#777; }
 }
 
-/* Top 30 only: translucent glass plane; keep the region control secondary. */
+/* Top 30 only: inherit the shared glass plane; keep the control quiet. */
 .ac-col-top50 {
-  position:relative;
-  margin:8px;
-  padding:14px 16px 12px !important;
-  border:1px solid rgba(255,255,255,.56) !important;
-  border-radius:14px !important;
-  background:color-mix(in srgb,var(--glass-soft) 74%,transparent) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.58),0 7px 22px rgba(24,43,59,.035) !important;
-  backdrop-filter:blur(16px) saturate(1.08);
-  -webkit-backdrop-filter:blur(16px) saturate(1.08);
+  margin:0;
+  padding:12px 20px !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
 }
-#top50Title { color:var(--ink-faint); opacity:.72; }
+#top50Title { color:var(--ink-faint); opacity:.64; }
 .top50-tabs {
-  background:color-mix(in srgb,var(--glass-soft) 42%,transparent) !important;
-  border:1px solid rgba(255,255,255,.24) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.28) !important;
-  backdrop-filter:blur(12px) saturate(1.08);
-  -webkit-backdrop-filter:blur(12px) saturate(1.08);
+  background:rgba(255,255,255,.035) !important;
+  border:0 !important;
+  box-shadow:none !important;
+  backdrop-filter:blur(8px) saturate(1.04);
+  -webkit-backdrop-filter:blur(8px) saturate(1.04);
 }
 .top50-tab[data-top-region].active {
-  background:rgba(255,255,255,.18) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 1px 5px rgba(24,43,59,.045) !important;
+  background:rgba(255,255,255,.08) !important;
+  box-shadow:none !important;
 }
-[data-theme="dark"] .ac-col-top50 {
-  border-color:rgba(255,255,255,.12) !important;
-  background:rgba(255,255,255,.035) !important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 24px rgba(0,0,0,.14) !important;
-}
-[data-theme="dark"] .top50-tabs { background:rgba(255,255,255,.045) !important; border-color:rgba(255,255,255,.12) !important; }
-[data-theme="dark"] .top50-tab[data-top-region].active { background:rgba(255,255,255,.10) !important; box-shadow:inset 0 1px 0 rgba(255,255,255,.12) !important; }
+[data-theme="dark"] .top50-tabs { background:rgba(255,255,255,.025) !important; border:0 !important; }
+[data-theme="dark"] .top50-tab[data-top-region].active { background:rgba(255,255,255,.06) !important; box-shadow:none !important; }
 @media (max-width:720px) {
-  .ac-col-top50 { margin:6px; padding:12px 12px 10px !important; }
+  .ac-col-top50 { margin:0; padding:12px 14px !important; }
 }
