@@ -55,6 +55,11 @@
 .co-close-metrics dt, .co-range, .co-quality { font-size:11px; color:var(--ink-soft); }
 .co-note { font-size:12px; line-height:1.7; }
 .co-history summary { font-size:12px; padding:7px 0; }
+.co-fact-k { font-size:11px; letter-spacing:0; color:var(--ink-soft); }
+.co-fact b { font-size:11px; }
+@media (min-width:721px) {
+  .co-kpis, body.compact .co-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 12px; }
+}
 @media (max-width:720px) {
   .stats { gap:6px; }
   .stats .stat { padding:9px 10px; }
