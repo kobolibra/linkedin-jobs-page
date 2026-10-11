@@ -223,9 +223,10 @@ function supportedDescriptor(raw,key,evidenceKey,map,fallback,blocks,input,{allo
   let result=dim(raw,key,map,fallback);
   const citation=selectedEvidence(raw,evidenceKey,blocks,input,allowTitle,allowMetadata);
   const cue=key==='employmentTerms'?TERM_CUES[result.value]:['roleConstraint','secondaryRoleConstraint'].includes(key)?CONDITION_CUES[result.value]:null;
+  const missingOwnBeneficiary=key==='clientSegment'&&result.value==='own_institution'&&citation&&!/employees|internal|own[- ]institution|against the Bank|employing|our (?:bank|firm|institution)|bank['’]s (?:own|internal)|本行|本机构|员工|内部|自身/i.test(citation.quote);
   const deniedTerm=key==='employmentTerms'&&citation&&(result.value==='fixed_term'?/无固定期限|not (?:a )?fixed[- ]term|不是固定期限/i.test(citation.quote):result.value==='permanent'?/non[- ]permanent|not (?:a )?permanent|no permanent|不是正式|非正式编制/i.test(citation.quote):false);
   const contextOnly=key==='clientSegment'&&citation&&/^(?:[A-Za-z .&'-]{0,35}\s+)?Corporate\s*(?:and|&)\s*Institutional Banking(?:\s*\(CIB\))?$/i.test(citation.quote.replace(/^(?:Business|Division|Department|Team)\s*:\s*/i,''));
-  if(deniedTerm||contextOnly||cue&&citation&&!cue.test(citation.quote)||result.value===fallback||result.confidence===null||result.confidence<.6||result.state==='conflicting'||!citation)return {...replaceDimension(result,fallback,map,'not_stated'),evidence:[]};
+  if(missingOwnBeneficiary||deniedTerm||contextOnly||cue&&citation&&!cue.test(citation.quote)||result.value===fallback||result.confidence===null||result.confidence<.6||result.state==='conflicting'||!citation)return {...replaceDimension(result,fallback,map,'not_stated'),evidence:[]};
   return {...result,evidence:[citation]};
 }
 function parseProviderResponse(providerResponse,input={},prepared=null){
@@ -293,9 +294,10 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
     dimensions.primaryActivity.responsibility=supportedDescriptor(raw,'activityMode','activityModeEvidence',ACTIVITY_MODE_LABELS,'not_established',blocks,input);
     if(insufficient&&dimensions.primaryActivity.value==='not_determinable')dimensions.primaryActivity.responsibility={...replaceDimension(dimensions.primaryActivity.responsibility,'not_established',ACTIVITY_MODE_LABELS,'not_stated'),evidence:[]};
     dimensions.businessLine.clientSegment=supportedDescriptor(raw,'clientSegment','clientSegmentEvidence',CLIENT_SEGMENT_LABELS,'not_established',blocks,input,{allowTitle:true,allowMetadata:true});
+    dimensions.businessLine.assignedUnits=Object.entries(blocks).filter(([id])=>id.startsWith('m')).slice(0,2).map(([id,quote])=>({label:quote.replace(/^[^:]+:\s*/,''),evidence:[{id,source:'assignment',quote,confidence:null}]}));
     const parent=explicitBusinessMandate(input,blocks);
     if(parent?.value==='corporate_institutional_coverage'&&['corporate_banking','institutional_banking'].includes(dimensions.businessLine.value)&&dimensions.businessLine.clientSegment.value==='not_established'){
-      dimensions.businessLine={...replaceDimension(dimensions.businessLine,parent.value,BUSINESS_LINES,'ok'),evidence:[parent.evidence],evidenceState:'selected',basis:'explicit_source',candidates:[],clientSegment:dimensions.businessLine.clientSegment};
+      dimensions.businessLine={...replaceDimension(dimensions.businessLine,parent.value,BUSINESS_LINES,'ok'),evidence:[parent.evidence],evidenceState:'selected',basis:'explicit_source',candidates:[],clientSegment:dimensions.businessLine.clientSegment,assignedUnits:dimensions.businessLine.assignedUnits};
     }
   }
   // A thin JD can still explicitly name a served business. No evidence => abstain.
@@ -321,6 +323,13 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
     else add('thin_or_template_jd',score(raw,thin.question),null,thin.action);
   }
   const employment=notJob?null:supportedDescriptor(raw,'employmentTerms','employmentTermsEvidence',EMPLOYMENT_LABELS,'not_disclosed',blocks,input,{allowTitle:true});
+  if(employment&&employment.value!=='not_disclosed'){
+    const source=employment.evidence[0]?.quote||'';
+    const duration=source.match(/\b(\d{1,3})[-\s]*(month|year)s?\b/i);
+    const chinese=source.match(/[一二三四五六七八九十百\d]+个月/);
+    if(duration)employment.duration=`${duration[1]} ${duration[2].toLowerCase()}${Number(duration[1])===1?'':'s'}`;
+    else if(chinese)employment.duration=chinese[0];
+  }
   const exposure=notJob?null:supportedDescriptor(raw,'riskExposure','riskExposureEvidence',RISK_EXPOSURE_LABELS,'not_established',blocks,input);
   const constraints=[];
   if(!notJob){
@@ -334,8 +343,9 @@ function parseProviderResponse(providerResponse,input={},prepared=null){
   if(!notJob){
     if(employment.value==='not_disclosed')clarification.push({code:'employment_terms',label:'Confirm employment type and duration',reason:'Permanent, fixed-term or contingent terms are not established in this posting.'});
     if(dimensions.leadershipLevel.value==='not_stated')clarification.push({code:'reporting_authority',label:'Confirm direct reports and decision rights',reason:'The current reporting and management mandate is not established.'});
-    if(dimensions.businessLine.value==='not_stated')clarification.push({code:'business_assignment',label:'Confirm the assigned business and client book',reason:'Product/business assignment is not established by the role-specific evidence.'});
+    if(dimensions.businessLine.value==='not_stated')clarification.push({code:'business_assignment',label:dimensions.businessLine.assignedUnits?.length?'Confirm the business/products served by this unit':'Confirm the assigned business and client book',reason:'Product/business assignment is not established by the role-specific evidence.'});
   }
+  if(employment&&['fixed_term','temporary_agency','contractor','secondment'].includes(employment.value))clarification.unshift({code:'employment_arrangement',label:employment.duration?'Confirm employer and renewal/conversion terms':'Confirm duration, employer and renewal/conversion terms',reason:'The employment arrangement is disclosed; employing entity and continuation terms may still need confirmation.'});
   if(employment?.value==='permanent'&&risk.some(x=>x.code==='non_permanent_or_outsourced')){
     unsupportedRisk=true;
     risk.splice(risk.findIndex(x=>x.code==='non_permanent_or_outsourced'),1);
