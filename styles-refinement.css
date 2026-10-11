@@ -1,3 +1,12 @@
+/* Four-glyph, self-hosted derivative of Source Han Serif SC SemiBold. */
+@font-face {
+  font-family:"Finance Title SC";
+  src:url("assets/fonts/finance-title-sc-semibold.woff") format("woff");
+  font-style:normal;
+  font-weight:600;
+  font-display:swap;
+  unicode-range:U+4F4D,U+804C,U+878D,U+91D1;
+}
 /* Shared glass planes, clear hierarchy, and explicit lifecycle state. */
 :root {
   --control-radius:9px; --control-height:36px;
@@ -276,4 +285,13 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 }
 [data-theme="dark"] .top50-tab[data-top-region].active {
   background:color-mix(in srgb, var(--ink) 12%, var(--glass-light)) !important;
+}
+
+/* Preserve the editorial masthead; tune Latin and Chinese separately. */
+.masthead h1 { font-weight:600; letter-spacing:0; }
+.masthead h1 .mast-title-latin { letter-spacing:-.025em; }
+.masthead h1 .mast-title-cjk {
+  font-family:"Finance Title SC","Songti SC","Noto Serif CJK SC",serif;
+  letter-spacing:0;
+  font-synthesis:none;
 }
