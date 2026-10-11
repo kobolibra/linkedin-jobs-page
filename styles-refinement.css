@@ -231,34 +231,32 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 #top50Title {
   color:color-mix(in srgb,var(--navy) 72%,var(--ink-soft)) !important;
 }
-/* Analytics is a quiet inline action: align it with the JD disclosure instead of creating a second badge. */
+/* Analytics is intentionally a text action, not another badge or control surface. */
 .job-jd-analytics {
   margin-left:8px;
-  padding:2px 0 1px;
-  border:0;
-  border-bottom:1px solid color-mix(in srgb,var(--region,var(--navy)) 28%,transparent);
+  padding:0;
+  border:0 !important;
+  border-bottom:0 !important;
   border-radius:0;
-  background:transparent;
+  background:transparent !important;
+  box-shadow:none !important;
   color:var(--ink-soft);
   font:600 10px/1.2 var(--sans);
   letter-spacing:.02em;
   text-transform:none;
-  transition:color .18s var(--ease),border-color .18s var(--ease);
+  transition:color .18s var(--ease),text-decoration-color .18s var(--ease);
 }
 .job-jd-analytics:hover,
 .job-jd-analytics:focus-visible {
   color:var(--region,var(--navy));
-  border-bottom-color:currentColor;
-  background:transparent;
-  outline:2px solid var(--gold);
-  outline-offset:3px;
+  background:transparent !important;
+  outline:none;
+  text-decoration:underline;
+  text-decoration-thickness:1px;
+  text-underline-offset:3px;
 }
 .job-jd-analytics.is-loading {
   color:var(--gold-deep);
-  border-bottom-color:currentColor;
-}
-.job-jd-analytics.is-cached {
-  border-bottom-style:dashed;
 }
 /* Give the selected region a quiet, low-salience distinction within the shared glass surface. */
 .top50-tab:not(.active) {
