@@ -226,6 +226,40 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
     font-size:8.5px;
   }
 }
+/* Analytical headings use a restrained navy-gray, distinct from body copy without competing with the charts. */
+.analytics-card .ac-col h3,
+#top50Title {
+  color:color-mix(in srgb,var(--navy) 72%,var(--ink-soft)) !important;
+}
+/* Analytics is a quiet inline action: align it with the JD disclosure instead of creating a second badge. */
+.job-jd-analytics {
+  margin-left:8px;
+  padding:2px 0 1px;
+  border:0;
+  border-bottom:1px solid color-mix(in srgb,var(--region,var(--navy)) 28%,transparent);
+  border-radius:0;
+  background:transparent;
+  color:var(--ink-soft);
+  font:600 10px/1.2 var(--sans);
+  letter-spacing:.02em;
+  text-transform:none;
+  transition:color .18s var(--ease),border-color .18s var(--ease);
+}
+.job-jd-analytics:hover,
+.job-jd-analytics:focus-visible {
+  color:var(--region,var(--navy));
+  border-bottom-color:currentColor;
+  background:transparent;
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+}
+.job-jd-analytics.is-loading {
+  color:var(--gold-deep);
+  border-bottom-color:currentColor;
+}
+.job-jd-analytics.is-cached {
+  border-bottom-style:dashed;
+}
 /* Give the selected region a quiet, low-salience distinction within the shared glass surface. */
 .top50-tab:not(.active) {
   color:var(--ink-faint) !important;
