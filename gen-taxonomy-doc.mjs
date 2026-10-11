@@ -41,6 +41,9 @@ export function taxonomyMarkdown(){
     '- The inline descriptors require independent classification >= 0.6, a non-conflicting result and an actual selected source passage. No profession-to-activity, business-to-client or silence-to-permanent default.',
     '- Up to two distinct, source-backed operating obligations are retained. They describe conditions, not predictions of workload, employer quality or legal conclusions. Duplicates are removed.',
     '- Structured Business/Division/Department/Team assignment metadata can be cited for business context, but cannot become profession, activity, leadership, employment or risk evidence. Employer legal entity and Job Family do not establish a served business.',
+    '- When no commercial line is supported, a verbatim assigned organisational unit (such as CTO Data Technology) remains visible as partial context without inventing enterprise-wide or client-business classification.',
+    '- An own-institution beneficiary descriptor additionally requires an explicit internal/employee/institutional-object anchor; technical pipelines alone are insufficient.',
+    '- Disclosed employment duration is retained from its source passage. Duplicate contingent-employment warnings are folded into the fact and a focused renewal/employer question, rather than asking for a duration already supplied.',
     '- A standalone combined CIB heading or explicit assigned division can retain the supported parent business when the finer client/product line is unknown. Generic employer marketing and multiple conflicting assignments do not resolve it.',
     '- Employment and operating descriptors additionally require a compatible lexical anchor in the selected passage; a citation ID alone cannot manufacture a shift, travel duty, approval or employment term. These cues are necessary checks, never sufficient proof.',
     '- Role Risk retains actual employment/operating facts and concrete confirmation gaps even when no structural warning is flagged. Absence of flags is never a low-risk guarantee.',
@@ -58,7 +61,7 @@ export function taxonomyMarkdown(){
     '- Unknown risk assessment is distinct from no supported structural flags. Flags are questions to clarify, not conclusions about employer quality, actual workload or legal status.',
     '- Non-job content neutralises all dimensions and removes their evidence/candidates. Insufficient overall detail suppresses unsupported profession/activity/leadership guesses. A dimension may retain an independently classified result >= 0.75 with an actual duty citation; staff authority still requires the separate management gates. A directly evidenced business line can remain.',
     '- Thresholds are conservative engineering gates, not measured accuracy guarantees. Model quality must be evaluated separately on labelled real JDs.',
-    '- v5.0.0 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
+    '- v5.0.1 uses a new frontend cache namespace. Retired broad role codes are rejected instead of silently assigned a narrower meaning. Raw jobs, lifecycle values and scraping are unchanged.','');
   return lines.join('\n');
 }
 if(process.argv[1]&&new URL(import.meta.url).pathname===process.argv[1])writeFileSync(`${TAXONOMY_VERSION}.md`,taxonomyMarkdown());

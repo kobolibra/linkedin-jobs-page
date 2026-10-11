@@ -1,5 +1,5 @@
 // One source of truth for provider criteria, display labels and generated docs.
-export const TAXONOMY_VERSION = 'jev-taxonomy-v5.0.0';
+export const TAXONOMY_VERSION = 'jev-taxonomy-v5.0.1';
 export const ROLE_FAMILIES = { CS:'Client & Commercial', IR:'Investment, Markets & Research', RC:'Risk, Compliance, Audit & Investigations', OP:'Operations & Securities Services', PS:'Product, Change, Strategy & Design', TE:'Technology & Engineering', CF:'Corporate Functions', IN:'Insurance Technical' };
 
 // Each entry names an occupational mandate, its output and its nearest exclusion.
