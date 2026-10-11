@@ -7,6 +7,7 @@
     "bindings": [{"name": "VISITS", "class_name": "VisitorCounter"}]
   },
   "migrations": [{"tag": "visitor-counter-v1", "new_sqlite_classes": ["VisitorCounter"]}],
+  "build": {"command": "node scripts/build_jd_shards.mjs"},
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
