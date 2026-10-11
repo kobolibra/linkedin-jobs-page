@@ -1,5 +1,5 @@
 // One source of truth for provider criteria, display labels and generated docs.
-export const TAXONOMY_VERSION = 'jev-taxonomy-v5.0.1';
+export const TAXONOMY_VERSION = 'jev-taxonomy-v5.1.0';
 export const ROLE_FAMILIES = { CS:'Client & Commercial', IR:'Investment, Markets & Research', RC:'Risk, Compliance, Audit & Investigations', OP:'Operations & Securities Services', PS:'Product, Change, Strategy & Design', TE:'Technology & Engineering', CF:'Corporate Functions', IN:'Insurance Technical' };
 
 // Each entry names an occupational mandate, its output and its nearest exclusion.
@@ -143,7 +143,7 @@ export const RISK_FLAGS = {
   overloaded_scope:{label:'Scope & Priorities Need Clarification',severity:'medium',threshold:.85,question:'riskOverloadedScope',evidence:'riskScopeEvidence',rule:'Several materially separate mandates are simultaneously assigned without clear priority, ownership or resourcing. Routine cross-functional collaboration, end-to-end work and senior breadth are not enough; a JD cannot prove workload is unrealistic.',action:'Clarify priorities, ownership and resourcing across the stated mandates.'},
   pooled_or_multi_role_posting:{label:'Pooled or Multiple Distinct Roles',severity:'medium',threshold:.8,evidence:'postingEvidence',rule:'Explicit pipeline/evergreen or materially different roles; not a graduate programme, multiple seats, or alternative locations for the same role.',action:'Confirm the specific open vacancy and its responsibilities.'},
   non_permanent_or_outsourced:{label:'Fixed-term / Contingent Employment',severity:'medium',threshold:.85,question:'riskNonPermanent',evidence:'riskEmploymentEvidence',rule:'This advertised job itself has fixed-term, temporary, contractor, agency/payroll or secondment terms. Contract drafting, vendor/outsourcing oversight, ordinary employment contracts and past contractor experience are not evidence. Explicit permanent employment or negation rules this out.',action:'Confirm duration, employing entity and renewal/conversion terms.'},
-  thin_or_template_jd:{label:'Limited Role-specific Evidence',severity:'low',threshold:.85,question:'riskGenericTemplate',rule:'Responsibilities are too sparse, vague or template-dominated to establish the actual mandate. Specific short descriptions can be sufficient; benefits/EEO boilerplate alongside clear duties is not itself a risk.',action:'Request concrete responsibilities and expected outputs.'}
+  thin_or_template_jd:{label:'Limited Role-specific Evidence',severity:'low',threshold:.9,question:'riskGenericTemplate',evidence:'riskTemplateEvidence',rule:'Responsibilities are too sparse, vague or template-dominated to establish the actual mandate. Specific short descriptions can be sufficient; benefits/EEO boilerplate alongside clear duties is not itself a risk.',action:'Request concrete responsibilities and expected outputs.'}
 };
 
 // Literal named business mandates only; occupations such as Fund Accountant are not business lines.
@@ -195,13 +195,13 @@ export const EMPLOYMENT_TERMS = {
   secondment:'The advertised worker itself is on an explicitly stated secondment arrangement.',
   not_disclosed:'The posting does not explicitly establish employment terms. Neither a normal vacancy nor a job title proves permanent employment.'
 };
-export const ROLE_CONSTRAINT_LABELS = {revenue_targets:'Revenue / Acquisition Targets',on_call_shift:'Shift / On-call Obligations',travel_mobility:'Travel / Location Obligations',approval_accountability:'Approval / Sign-off Accountability',time_critical_delivery:'Time-critical Service Commitments',none_explicit:'No Explicit Condition Identified'};
+export const ROLE_CONSTRAINT_LABELS = {revenue_targets:'Revenue / Acquisition Targets',on_call_shift:'Shift / On-call Obligations',travel_mobility:'Travel / Location Obligations',approval_accountability:'Personal Regulatory / Statutory Accountability',time_critical_delivery:'Market / Statutory Cut-off Obligations',none_explicit:'No Explicit Condition Identified'};
 export const ROLE_CONSTRAINTS = {
   revenue_targets:'Explicit personal/book revenue, acquisition, sales or commercial KPI accountability. Generic business growth or supporting sales is insufficient; do not infer workload or compensation.',
   on_call_shift:'Explicit shifts, on-call rota, nights/weekends or out-of-hours response expected of this worker. General production support alone is insufficient.',
   travel_mobility:'Explicit regular travel, relocation or multi-site presence expected of this worker. Client geography and a global employer alone are insufficient.',
-  approval_accountability:'Explicit authority or accountability to approve/sign off financial, risk, regulatory or material operational decisions. Generic compliance obligations do not qualify.',
-  time_critical_delivery:'Explicit market cut-offs, settlement deadlines, service SLA or incident-response commitments. Normal deadlines and vague fast-paced language are insufficient.',
+  approval_accountability:'Explicit personal regulatory accountability, named registered/accountable status or statutory sign-off responsibility. Routine transaction/credit approval, normal control checking and generic compliance duties do not qualify.',
+  time_critical_delivery:'Explicit externally imposed market, settlement or statutory filing cut-offs borne by this worker. Generic SLA, service quality, normal deadlines and incident response alone do not qualify.',
   none_explicit:'No such material condition is explicitly evidenced. This is an extraction result, never a claim that the role is low-risk or has no obligations.'
 };
 export const DIMENSION_FRAMEWORK = {
@@ -209,16 +209,6 @@ export const DIMENSION_FRAMEWORK = {
   primaryActivity:'Dominant recurring deliverable plus task responsibility: own, decide, advise, execute, coordinate or independently assure. Never default from profession.',
   businessLine:'Narrowest supported served business plus independently evidenced beneficiary segment. Retain a supported parent assignment when finer detail is absent.',
   leadershipLevel:'Current authority over delivery and people. Grade, geography and past experience do not establish reports; distinguish hands-on work from proof of no reports.',
-  roleRisk:'Evidence-backed structural concerns, consequential accountability, employment terms and up to two material operating obligations. Report concrete clarification gaps, not invented risks or a low-risk verdict.'
+  roleRisk:'Only source-backed material conditions affecting acceptance of this job: contingent employment, concrete operating constraints or structural mandate concerns. Exclude ordinary professional duties, generic information gaps and unsupported severity claims. Abstain rather than fill space.'
 };
 
-export const RISK_EXPOSURE_LABELS = {financial_processing_integrity:'Financial Processing Accuracy',client_commercial_outcomes:'Client / Commercial Outcome Accountability',regulated_case_control:'Regulatory / Case Integrity Accountability',capital_investment_credit:'Capital / Investment Decision Accountability',live_service_reliability:'Live Service Reliability',delivery_dependencies:'Delivery / Dependency Accountability',not_established:'Responsibility Exposure Unclear'};
-export const RISK_EXPOSURES = {
-  financial_processing_integrity:'Role-specific duties explicitly require accurate financial transaction processing, credit/fund documentation, reconciliation or financial controls. Describes the accountability of the work; never predicts losses, workload or mistakes.',
-  client_commercial_outcomes:'Explicit responsibility for client revenue, acquisition, retention or relationship outcomes; incidental client contact and generic business growth are insufficient.',
-  regulated_case_control:'Explicit substantive responsibility for regulated investigations, case findings, control assurance or compliance decisions. Universal employee conduct/privacy clauses are insufficient.',
-  capital_investment_credit:'Explicit responsibility for investment, trading-book, lending/credit approval or capital decisions. Preparing data for these teams does not inherit decision accountability.',
-  live_service_reliability:'Explicit responsibility for live production availability, incident resolution or service reliability. Merely building code/data does not imply a production support obligation.',
-  delivery_dependencies:'Explicit accountability for interdependent milestones, hand-offs, implementation or delivery dependencies. Normal stakeholder collaboration is insufficient.',
-  not_established:'No specific consequential accountability is established in the actual duties. Do not turn the typical risks of a profession into a finding about this role.'
-};

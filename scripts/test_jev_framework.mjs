@@ -55,7 +55,7 @@ test('risk retains employment and two distinct operating facts when structural w
 test('missing evidence never becomes permanent employment or fabricated conditions; duplicate conditions collapse',()=>{
   const i=job('Maintain services and coordinate stakeholders.');
   const unknown=parseProviderResponse({answers:{employmentTerms:ch('permanent'),roleConstraint:ch('on_call_shift')}},i);
-  assert.equal(unknown.roleRisk.employment.value,'not_disclosed');assert.deepEqual(unknown.roleRisk.constraints,[]);assert.equal(unknown.roleRisk.clarification[0].code,'employment_terms');
+  assert.equal(unknown.roleRisk.employment.value,'not_disclosed');assert.deepEqual(unknown.roleRisk.constraints,[]);assert.deepEqual(unknown.roleRisk.clarification,[]);
   const duplicate=parseProviderResponse({answers:{roleConstraint:ch('on_call_shift'),roleConstraintEvidence:ch('b1'),secondaryRoleConstraint:ch('on_call_shift'),secondaryRoleConstraintEvidence:ch('b1')}},job('Participate in the weekend on-call rota.'));
   assert.equal(duplicate.roleRisk.constraints.length,1);
 });
@@ -85,7 +85,7 @@ test('an explicit technical unit stays useful when commercial business is unknow
   const i=job('Build and operate credit and portfolio data pipelines.');i.jevInput.employer_metadata='Business: CTO Data Technology';
   const r=parseProviderResponse({answers:{businessLine:ch('not_stated'),leadershipLevel:ch('individual_contributor'),leadershipLevelEvidence:ch('b1')}},i);
   assert.equal(r.businessLine.value,'not_stated');assert.equal(r.businessLine.assignedUnits[0].label,'CTO Data Technology');assert.equal(r.businessLine.assignedUnits[0].evidence[0].source,'assignment');
-  assert.equal(r.roleRisk.clarification.find(x=>x.code==='business_assignment').label,'Confirm the business/products served by this unit');
+  assert.deepEqual(r.roleRisk.clarification,[]);
 });
 test('technical data delivery alone does not establish own-institution beneficiaries',()=>{
   const r=parseProviderResponse({answers:{clientSegment:ch('own_institution'),clientSegmentEvidence:ch('b1')}},job('Deliver reliable datasets used by KYC, credit and portfolio AI solutions.'));
@@ -100,22 +100,47 @@ test('a combined CIB heading does not prove specific institutional clients',()=>
   const r=parseProviderResponse({answers:{clientSegment:ch('financial_public_institutions'),clientSegmentEvidence:ch('b1')}},job('HSBC Corporate and Institutional Banking(CIB)\nPrepare facility documentation.'));
   assert.equal(r.businessLine.value,'corporate_institutional_coverage');assert.equal(r.businessLine.clientSegment.value,'not_established');
 });
-test('risk accountability is independently evidenced, not inherited from the profession',()=>{
+test('ordinary professional exposure is not requested or emitted as role risk',()=>{
   const i=job('Ensure client account transactions are completed accurately and reconcile financial records.');
-  const supported=parseProviderResponse({answers:{riskExposure:ch('financial_processing_integrity'),riskExposureEvidence:ch('b1')}},i);
-  assert.equal(supported.roleRisk.exposure.value,'financial_processing_integrity');assert.equal(supported.roleRisk.exposure.evidence[0].quote,i.description);
-  const missing=parseProviderResponse({answers:{roleArchetype:ch('OP1_banking_operations')}},i);
-  assert.equal(missing.roleRisk.exposure.value,'not_established');
+  const q=buildProviderRequest(i).payload.questions;assert.equal(q.riskExposure,undefined);
+  const r=parseProviderResponse({answers:{riskExposure:ch('financial_processing_integrity'),riskExposureEvidence:ch('b1')}},i);
+  assert.equal(r.roleRisk.exposure,undefined);assert.deepEqual(r.roleRisk.clarification,[]);
 });
 test('the frontend preserves the five dimensions and shows risk facts instead of a no-flags placeholder',async()=>{
   const {readFileSync}=await import('node:fs');const {runInNewContext}=await import('node:vm');
   const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
   const snippet=source.slice(source.indexOf('function jevPayload('),source.indexOf('function jevErrorMessage('));
-  const context={JEV_TAXONOMY_VERSION:'jev-taxonomy-v5.0.1',esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;')};
+  const context={JEV_TAXONOMY_VERSION:'jev-taxonomy-v5.1.0',esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;')};
   runInNewContext(snippet+';this.render=renderJevResult;',context);
   const container={};context.render(container,{primaryActivity:{label:'Credit Documentation',responsibility:{value:'coordinate_enable',label:'Coordination & Enablement',evidence:[{source:'jd',quote:'Coordinate credit documents.'}]}},businessLine:{label:'Corporate & Institutional Banking',clientSegment:{value:'corporate_multinational',label:'Corporate Clients',evidence:[{source:'assignment',quote:'Business: Corporate Banking'}]}},roleRisk:{flags:[],state:'none',employment:{value:'permanent',label:'Explicit Permanent Employment',evidence:[{source:'jd',quote:'This is a permanent position.'}]},constraints:[{label:'Shift / On-call Obligations',evidence:[{source:'jd',quote:'<b>Weekend on-call</b>'}]}],clarification:[],postingShape:{label:'Specific Vacancy'},mandateEvidence:'adequate'}});
   assert.equal((container.innerHTML.match(/<dt>/g)||[]).length,4);assert.equal((container.innerHTML.match(/<h4>Role Risk<\/h4>/g)||[]).length,1);
-  for(const text of ['Explicit Permanent Employment','Shift / On-call Obligations','Coordination &amp; Enablement','Corporate Clients','Assignment:'])assert.ok(container.innerHTML.includes(text));
-  assert.doesNotMatch(container.innerHTML,/No supported structural flags|<b>/);assert.match(container.innerHTML,/&lt;b>/);
-  assert.match(source,/linkedin-jev-analysis-v5\.0\.1/);
+  for(const text of ['Shift / On-call Obligations','Coordination &amp; Enablement','Corporate Clients','Assignment:'])assert.ok(container.innerHTML.includes(text));
+  assert.doesNotMatch(container.innerHTML,/No supported structural flags|Explicit Permanent Employment|Specific Vacancy|<b>/);assert.match(container.innerHTML,/&lt;b>/);
+  assert.match(source,/linkedin-jev-analysis-v5\.1\.0/);
+});
+
+test('ordinary SLA and routine approval fail the material condition guard even with high model support',()=>{
+  for(const [text,value] of [['Maintain SLAs and production reliability.','time_critical_delivery'],['Approve routine credit documents and authorize transactions.','approval_accountability']]){
+    const r=parseProviderResponse({answers:{roleConstraint:ch(value),roleConstraintEvidence:ch('b1')}},job(text));assert.deepEqual(r.roleRisk.constraints,[]);
+  }
+});
+test('personal statutory accountability and externally imposed settlement deadlines remain visible',()=>{
+  for(const [text,value] of [['You hold personal accountability for statutory regulatory sign-off.','approval_accountability'],['You must complete trades before the settlement deadline T+1.','time_critical_delivery'],['Meet your personal quarterly sales quota.','revenue_targets']]){
+    const r=parseProviderResponse({answers:{roleConstraint:ch(value),roleConstraintEvidence:ch('b1')}},job(text));assert.equal(r.roleRisk.constraints[0].value,value);
+  }
+});
+test('risk descriptors require stronger independent confidence than activity descriptors',()=>{
+  const r=parseProviderResponse({answers:{roleConstraint:ch('on_call_shift',.7),roleConstraintEvidence:ch('b1')}},job('Participate in a weekend on-call rota.'));assert.deepEqual(r.roleRisk.constraints,[]);
+});
+test('data incompleteness is never automatically turned into a template role warning',()=>{
+  const i=job('Join our team.');i.jevInput.evidence_level='insufficient';
+  assert.deepEqual(parseProviderResponse({answers:{}},i).roleRisk.flags,[]);
+  assert.deepEqual(parseProviderResponse({answers:{riskGenericTemplate:nl(.99)}},i).roleRisk.flags,[]);
+  const r=parseProviderResponse({answers:{riskGenericTemplate:nl(.95),riskTemplateEvidence:ch('b1')}},i);assert.equal(r.roleRisk.flags[0].code,'thin_or_template_jd');assert.equal(r.roleRisk.flags[0].evidence[0].quote,i.description);
+});
+
+test('explicit absence of a condition does not become a risk finding',()=>{
+  for(const [text,value] of [['No on-call rota is required.','on_call_shift'],['No regular travel is required.','travel_mobility']]){
+    const r=parseProviderResponse({answers:{roleConstraint:ch(value),roleConstraintEvidence:ch('b1')}},job(text));assert.deepEqual(r.roleRisk.constraints,[]);
+  }
 });
