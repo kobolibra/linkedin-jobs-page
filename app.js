@@ -300,7 +300,7 @@ jobsEl.addEventListener("click",e=>{
   if(e.target.closest(".job-jd-toggle")){hydrateJd(card);return;}
   if(e.target.closest(".job-title")){reads.add(id);saveReads();card.classList.add("read");return;}
   const star=e.target.closest(".star");
-  if(star){e.preventDefault();const isFavorite=favs.has(id);if(isFavorite){favs.delete(id);star.classList.remove("on");}else{favs.add(id);star.classList.add("on");}star.classList.toggle("is-favorite",!isFavorite);star.title=favs.has(id)?"取消收藏":"收藏";card.classList.toggle("is-favorite",!isFavorite);saveFavs();if(favOnly)refreshFavoriteFilterView();return;}
+  if(star){e.preventDefault();const isFavorite=!favs.has(id);if(isFavorite)favs.add(id);else favs.delete(id);card.classList.toggle("is-favorite",isFavorite);card.querySelectorAll(".star").forEach(button=>{button.classList.toggle("on",isFavorite);button.classList.toggle("is-favorite",isFavorite);button.title=isFavorite?"取消收藏":"收藏";button.setAttribute("aria-pressed",String(isFavorite));});const section=card.closest(".day");if(section?._favoriteCards){if(isFavorite)section._favoriteCards.add(card);else section._favoriteCards.delete(card);}saveFavs();if(favOnly)refreshFavoriteFilterView();return;}
   const ban=e.target.closest(".ban");
   if(ban){e.preventDefault();const c=card.dataset.comp;if(c){blocked.add(c);saveBlocked();renderBlocked();apply();}return;}
   const sub=e.target.closest(".job-sub-link");
@@ -311,6 +311,29 @@ const kwToggle=document.getElementById("kwToggle"),kwPanel=document.getElementBy
 let activeRegion="all",activeCity="all",activeOnly=false,favOnly=false,blockedOpen=false,simpleFilterActive=true,renderReady=false;
 let daySections=[],jobCards=[],filteredCards=new Set(),loadedJobs=null;
 const regionActiveTotals={CN:0,HK:0,SG:0,OTHER:0};
+// Bind controls before fetching/rendering the list; keep choices made during loading.
+favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);refreshFavoriteFilterView();});
+let _searchTimer=null, _searchFrame=0;
+searchEl.addEventListener("input",()=>{
+  clearTimeout(_searchTimer);
+  cancelAnimationFrame(_searchFrame);
+  _searchTimer=setTimeout(()=>{_searchFrame=requestAnimationFrame(()=>{_searchFrame=0;apply();});},180);
+});
+companyEl.addEventListener("change",apply);
+ageEl.addEventListener("change",apply);
+cityEl.addEventListener("change",()=>{
+  activeCity=cityEl.value;
+  if(activeCity==="OTHER"){
+    regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
+    activeRegion="OTHER";
+  }else if(activeCity!=="all"){
+    const cn=regionsEl.querySelector('.seg[data-region="CN"]');
+    regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.toggle("active",x===cn);x.setAttribute("aria-selected",x===cn?"true":"false");});
+    activeRegion="CN";
+  }
+  apply();
+});
+
 const setRegion=region=>{
   const b=regionsEl.querySelector('.seg[data-region="'+region+'"]');if(!b)return;
     regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
@@ -593,10 +616,8 @@ jobsDataPromise
     // 8k-card list begins. This removes the perceived chained pause without
     // changing the data, ordering, or filter state.
     await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
-    const yieldToBrowser=()=>new Promise(resolve=>{
-      if("requestIdleCallback" in window)requestIdleCallback(()=>resolve(),{timeout:80});
-      else requestAnimationFrame(()=>resolve());
-    });
+    // Yield between small batches so input is processed while older records load.
+    const yieldToBrowser=()=>new Promise(resolve=>setTimeout(resolve,0));
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
@@ -605,7 +626,7 @@ jobsDataPromise
     orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
     let first=true,batchJobs=0,batch=document.createDocumentFragment();
     for(const[key,g]of renderGroups){
-      if(!first&&batchJobs>=600){jobsEl.appendChild(batch);batch=document.createDocumentFragment();batchJobs=0;await yieldToBrowser();}
+      if(!first&&batchJobs>=120){jobsEl.appendChild(batch);batch=document.createDocumentFragment();batchJobs=0;await yieldToBrowser();}
       const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};sec._activeCount=0;g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j)){sec._regionActiveCounts[region]++;sec._activeCount++;}});daySections.push(sec);
       const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+'</div>';
       const rows=[];
@@ -623,32 +644,12 @@ jobsDataPromise
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
+      sec._favoriteCards=new Set(sec._jobCards.filter(card=>favs.has(card.dataset.id)));
       sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:seenAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;
     }
     if(batchJobs)jobsEl.appendChild(batch);
-    favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);refreshFavoriteFilterView();});
-    let _searchTimer=null, _searchFrame=0;
-    searchEl.addEventListener("input",()=>{
-      clearTimeout(_searchTimer);
-      cancelAnimationFrame(_searchFrame);
-      _searchTimer=setTimeout(()=>{_searchFrame=requestAnimationFrame(()=>{_searchFrame=0;apply();});},180);
-    });
-    companyEl.addEventListener("change",apply);
-    ageEl.addEventListener("change",apply);
-    cityEl.addEventListener("change",()=>{
-      activeCity=cityEl.value;
-      if(activeCity==="OTHER"){
-        regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.remove("active");x.setAttribute("aria-selected","false");});
-        activeRegion="OTHER";
-      }else if(activeCity!=="all"){
-        const cn=regionsEl.querySelector('.seg[data-region="CN"]');
-        regionsEl.querySelectorAll(".seg").forEach(x=>{x.classList.toggle("active",x===cn);x.setAttribute("aria-selected",x===cn?"true":"false");});
-        activeRegion="CN";
-      }
-      apply();
-    });
     renderReady=true;
     delete regionsEl.dataset.pendingRegion;
     apply();
@@ -674,25 +675,36 @@ function updateJobCount(count){
   activeOnlyEl.title=activeOnly?"取消仅显示有效职位":"仅显示有效职位";
 }
 function apply(){
+  jobsEl.classList.toggle("fav-only",favOnly);
   if(!renderReady){if(loadedJobs)updateJobCount(countLoadedActiveJobs());return;}
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
   companyEl.classList.toggle("on",comp!=="all");ageEl.classList.toggle("on",ageSel!=="all");
   cityEl.classList.toggle("on",activeCity!=="all");
   cityEl.classList.toggle("is-default",cityEl.value==="all");
   compClear.classList.toggle("show",comp!=="all");compClear.parentElement.classList.toggle("filtering",comp!=="all");
-  const canFastFilter=!q&&comp==="all"&&ageSel==="all"&&kwArr.length===0&&!favOnly&&!activeOnly&&activeCity==="all"&&(activeRegion==="all"||REGIONS[activeRegion]);
+  const canFastFilter=!q&&comp==="all"&&ageSel==="all"&&kwArr.length===0&&blocked.size===0&&!activeOnly&&activeCity==="all"&&(activeRegion==="all"||REGIONS[activeRegion]);
   if(canFastFilter){
     if(!simpleFilterActive){filteredCards.forEach(card=>{card.classList.remove("hidden");card.style.display="";card._filterVisible=true;});filteredCards.clear();}
     simpleFilterActive=true;
     if(activeRegion==="all")delete jobsEl.dataset.fastRegion;else jobsEl.dataset.fastRegion=activeRegion;
     let visible=0,displayed=0;const dayActive=new Map();
     daySections.forEach(sec=>{
-      const shown=activeRegion==="all"?sec._jobCards.length:sec._regionCounts[activeRegion];
-      const active=activeRegion==="all"?sec._activeCount:sec._regionActiveCounts[activeRegion];
-      sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;sec._filteredShown=shown;sec.style.display=shown?"":"none";dayActive.set(sec.dataset.dayKey,(dayActive.get(sec.dataset.dayKey)||0)+active);visible+=active;displayed+=shown;
+      let shown=activeRegion==="all"?sec._jobCards.length:sec._regionCounts[activeRegion];
+      let active=activeRegion==="all"?sec._activeCount:sec._regionActiveCounts[activeRegion];
+      if(favOnly){shown=0;active=0;sec._favoriteCards.forEach(card=>{if(activeRegion==="all"||card.dataset.region===activeRegion){shown++;if(card.dataset.status!=="expired")active++;}});}
+      sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());delete sec.dataset.filterHead;sec._filteredShown=shown;sec._filterVisible=shown>0;sec.style.display=shown?"":"none";dayActive.set(sec.dataset.dayKey,(dayActive.get(sec.dataset.dayKey)||0)+active);visible+=active;displayed+=shown;
     });
     const visibleDays=new Set();
-    daySections.forEach(sec=>{if(sec.style.display==="none"||visibleDays.has(sec.dataset.dayKey))return;visibleDays.add(sec.dataset.dayKey);const active=dayActive.get(sec.dataset.dayKey)||0;const head=sec.querySelector('.day-head');const c=head?.querySelector('[data-role="daycount"]');if(c)c.textContent=active+" 个有效职位";});
+    daySections.forEach(sec=>{
+      if(sec.style.display==="none"||visibleDays.has(sec.dataset.dayKey))return;
+      visibleDays.add(sec.dataset.dayKey);
+      const active=dayActive.get(sec.dataset.dayKey)||0;
+      if(!sec.querySelector('.day-head')){
+        sec.dataset.filterHead="true";
+        sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+active+' 个有效职位</span></div>');
+      }
+      const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=active+" 个有效职位";
+    });
     updateJobCount(visible);
     emptyEl.classList.toggle("show",displayed===0);
     if(typeof renderCo==="function")renderCo(null,[],ageSel);
@@ -748,40 +760,9 @@ function apply(){
   document.dispatchEvent(new CustomEvent("jobsfilterchange"));
 }
 function refreshFavoriteFilterView(){
-  jobsEl.classList.toggle("fav-only",favOnly);
-  if(activeOnly||companyEl.value!=="all"){apply();return;}
-  const regionFilter=jobsEl.dataset.fastRegion||"";
-  let displayed=0,active=0;
-  const dayVisibleTotals=new Map();
-  daySections.forEach(sec=>{
-    sec.querySelectorAll('[data-filter-head="true"]').forEach(head=>head.remove());
-    delete sec.dataset.filterHead;
-    let shown=0,shownActive=0;
-    sec._jobCards.forEach(card=>{
-      const baseVisible=(!regionFilter||card.dataset.region===regionFilter)&&card.style.display!=="none"&&!card.classList.contains("hidden");
-      const visible=baseVisible&&(!favOnly||card.classList.contains("is-favorite"));
-      if(visible){shown++;if(card.dataset.status!=="expired")shownActive++;}
-    });
-    sec.style.display=shown?"":"none";
-    const dayTotal=dayVisibleTotals.get(sec.dataset.dayKey)||{shown:0,active:0};
-    dayTotal.shown+=shown;dayTotal.active+=shownActive;dayVisibleTotals.set(sec.dataset.dayKey,dayTotal);
-    displayed+=shown;active+=shownActive;
-  });
-  const visibleDays=new Set();
-  daySections.forEach(sec=>{
-    const key=sec.dataset.dayKey;
-    if(sec.style.display==="none"||visibleDays.has(key))return;
-    visibleDays.add(key);
-    const dayTotal=dayVisibleTotals.get(key)||{active:0};
-    if(!sec.querySelector('.day-head')){
-      sec.dataset.filterHead="true";
-      sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+dayTotal.active+' 个有效职位</span></div>');
-    }
-    const count=sec.querySelector('[data-role="daycount"]');
-    if(count)count.textContent=dayTotal.active+" 个有效职位";
-  });
-  updateJobCount(active);
-  emptyEl.classList.toggle("show",displayed===0);
+  // All filter combinations share one state; the simple favorites path uses
+  // each section\'s small favorite set instead of visiting every job card.
+  apply();
 }
 document.addEventListener("keydown",e=>{
   const tag=(e.target.tagName||"").toLowerCase();
