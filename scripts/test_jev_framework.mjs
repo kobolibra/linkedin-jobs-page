@@ -75,6 +75,12 @@ test('a real citation cannot manufacture an employment term or obligation absent
   const r=parseProviderResponse({answers:{employmentTerms:ch('fixed_term'),employmentTermsEvidence:ch('b1'),roleConstraint:ch('on_call_shift'),roleConstraintEvidence:ch('b1')}},i);
   assert.equal(r.roleRisk.employment.value,'not_disclosed');assert.equal(r.roleRisk.constraints.length,0);
 });
+test('negated fixed-term or permanent wording is not affirmative employment evidence',()=>{
+  for(const [description,value] of [['此岗位为无固定期限劳动合同。','fixed_term'],['This is not a fixed-term role.','fixed_term'],['This is not a permanent role.','permanent']]){
+    const r=parseProviderResponse({answers:{employmentTerms:ch(value),employmentTermsEvidence:ch('b1')}},job(description));
+    assert.equal(r.roleRisk.employment.value,'not_disclosed');
+  }
+});
 test('a combined CIB heading does not prove specific institutional clients',()=>{
   const r=parseProviderResponse({answers:{clientSegment:ch('financial_public_institutions'),clientSegmentEvidence:ch('b1')}},job('HSBC Corporate and Institutional Banking(CIB)\nPrepare facility documentation.'));
   assert.equal(r.businessLine.value,'corporate_institutional_coverage');assert.equal(r.businessLine.clientSegment.value,'not_established');

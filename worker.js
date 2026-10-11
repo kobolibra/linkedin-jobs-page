@@ -223,8 +223,9 @@ function supportedDescriptor(raw,key,evidenceKey,map,fallback,blocks,input,{allo
   let result=dim(raw,key,map,fallback);
   const citation=selectedEvidence(raw,evidenceKey,blocks,input,allowTitle,allowMetadata);
   const cue=key==='employmentTerms'?TERM_CUES[result.value]:['roleConstraint','secondaryRoleConstraint'].includes(key)?CONDITION_CUES[result.value]:null;
+  const deniedTerm=key==='employmentTerms'&&citation&&(result.value==='fixed_term'?/无固定期限|not (?:a )?fixed[- ]term|不是固定期限/i.test(citation.quote):result.value==='permanent'?/non[- ]permanent|not (?:a )?permanent|no permanent|不是正式|非正式编制/i.test(citation.quote):false);
   const contextOnly=key==='clientSegment'&&citation&&/^(?:[A-Za-z .&'-]{0,35}\s+)?Corporate\s*(?:and|&)\s*Institutional Banking(?:\s*\(CIB\))?$/i.test(citation.quote.replace(/^(?:Business|Division|Department|Team)\s*:\s*/i,''));
-  if(contextOnly||cue&&citation&&!cue.test(citation.quote)||result.value===fallback||result.confidence===null||result.confidence<.6||result.state==='conflicting'||!citation)return {...replaceDimension(result,fallback,map,'not_stated'),evidence:[]};
+  if(deniedTerm||contextOnly||cue&&citation&&!cue.test(citation.quote)||result.value===fallback||result.confidence===null||result.confidence<.6||result.state==='conflicting'||!citation)return {...replaceDimension(result,fallback,map,'not_stated'),evidence:[]};
   return {...result,evidence:[citation]};
 }
 function parseProviderResponse(providerResponse,input={},prepared=null){
