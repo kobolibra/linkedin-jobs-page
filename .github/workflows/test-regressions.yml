@@ -15,6 +15,8 @@ on:
       - 'scripts/visitor-counter.mjs'
       - 'index.html'
       - 'app.js'
+      - 'row-fixes.js'
+      - 'scripts/test_list_interaction.mjs'
       - 'company-insight.js'
       - 'styles-company.css'
       - 'scripts/test_company_insight.mjs'
@@ -53,5 +55,5 @@ jobs:
           python scripts/jobspy/build_frontend_payload.py --self-test
       - name: Test JEV Worker and visitor counter
         run: |
-          node --test test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs
+          node --test test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs
           python -m unittest discover -s scripts -p test_verify_visitor_counter.py
