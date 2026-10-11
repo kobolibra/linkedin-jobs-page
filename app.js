@@ -129,8 +129,8 @@ function loadJdDetails(id){
   }
   return jdDetailsPromises.get(shard);
 }
-const JEV_CACHE_KEY="linkedin-jev-analysis-v5.0.0";
-const JEV_TAXONOMY_VERSION="jev-taxonomy-v5.0.0";
+const JEV_CACHE_KEY="linkedin-jev-analysis-v5.0.1";
+const JEV_TAXONOMY_VERSION="jev-taxonomy-v5.0.1";
 const JEV_CACHE_MAX_ENTRIES=400;
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // (worker.js) signs the provider request and returns the five-dimension card.
@@ -153,21 +153,21 @@ function renderJevResult(container,result,analyzedAt){
   const row=(label,dim,text)=>{
     const state=dim.state||"ok";
     const confidence="";
-    const candidates=(state==="low_confidence"||state==="conflicting")&&Array.isArray(dim.candidates)&&dim.candidates.length?`<small class="jev-state">${esc(jevStateText[state])} · candidates: ${dim.candidates.slice(0,3).map(c=>esc(c.label||jevText(c.code))).join(" / ")}</small>`:(state!=="ok"?`<small class="jev-state">${esc(jevStateText[state]||jevText(state))}</small>`:"");
-    return `<div class="jev-field jev-state-${esc(state)}"><dt>${label}</dt><dd><span>${esc(text)}</span>${confidence}${candidates}${sourceNote(dim.evidence)}${label==="Primary Activity"&&dim.responsibility?.value!=="not_established"&&dim.responsibility?.evidence?.length?`<small class="jev-state">Responsibility: ${esc(dim.responsibility.label)}${sourceNote(dim.responsibility.evidence)}</small>`:""}${label==="Business Line"&&dim.clientSegment?.value!=="not_established"&&dim.clientSegment?.evidence?.length?`<small class="jev-state">Clients: ${esc(dim.clientSegment.label)}${sourceNote(dim.clientSegment.evidence)}</small>`:""}${label==="Leadership Level"&&dim.value==="individual_contributor"?'<small class="jev-state">Hands-on mandate; direct-report authority is not established.</small>':""}</dd></div>`;
+    const candidates=label==="Business Line"&&dim.value==="not_stated"&&dim.assignedUnits?.length?`<small class="jev-state">Known organisational unit; commercial business line is not established.</small>`:(state==="low_confidence"||state==="conflicting")&&Array.isArray(dim.candidates)&&dim.candidates.length?`<small class="jev-state">${esc(jevStateText[state])} · candidates: ${dim.candidates.slice(0,3).map(c=>esc(c.label||jevText(c.code))).join(" / ")}</small>`:(state!=="ok"?`<small class="jev-state">${esc(jevStateText[state]||jevText(state))}</small>`:"");
+    return `<div class="jev-field jev-state-${esc(state)}"><dt>${label}</dt><dd><span>${esc(text)}</span>${confidence}${candidates}${sourceNote(dim.evidence)}${label==="Business Line"&&dim.value==="not_stated"&&dim.assignedUnits?.length?sourceNote(dim.assignedUnits[0].evidence):""}${label==="Primary Activity"&&dim.responsibility?.value!=="not_established"&&dim.responsibility?.evidence?.length?`<small class="jev-state">Responsibility: ${esc(dim.responsibility.label)}${sourceNote(dim.responsibility.evidence)}</small>`:""}${label==="Business Line"&&dim.clientSegment?.value!=="not_established"&&dim.clientSegment?.evidence?.length?`<small class="jev-state">Clients: ${esc(dim.clientSegment.label)}${sourceNote(dim.clientSegment.evidence)}</small>`:""}${label==="Leadership Level"&&dim.value==="individual_contributor"?'<small class="jev-state">Hands-on mandate; direct-report authority is not established.</small>':""}</dd></div>`;
   };
   const a=r.roleArchetype;
   const archetypeText=[a.familyLabel,a.label,a.specialisationLabel].filter(Boolean).join(" · ")||jevText(a.code);
   const risk=r.roleRisk;
-  const flags=risk.flags.map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}${sourceNote(item.evidence)}</article>`).join("");
+  const flags=risk.flags.filter(item=>item.code!=="non_permanent_or_outsourced"||!risk.employment||risk.employment.value==="not_disclosed").map(item=>`<article class="jev-risk jev-risk-${esc(item.severity||"medium")}"><div><strong>${esc(item.label||jevText(item.code))}</strong><span class="jev-severity">${esc(jevText(item.severity||"medium"))}</span></div>${item.reason?`<p>${esc(item.reason)}</p>`:""}${sourceNote(item.evidence)}</article>`).join("");
   const exposure=risk.exposure?.value!=="not_established"&&risk.exposure?.evidence?.length?`<p class="jev-state"><strong>${esc(risk.exposure.label)}</strong>${sourceNote(risk.exposure.evidence)}</p>`:"";
-  const employment=risk.employment?.value&&risk.employment.value!=="not_disclosed"?`<p class="jev-state"><strong>${esc(risk.employment.label)}</strong>${sourceNote(risk.employment.evidence)}</p>`:"";
+  const employment=risk.employment?.value&&risk.employment.value!=="not_disclosed"?`<p class="jev-state"><strong>${esc(risk.employment.label)}${risk.employment.duration?` · ${esc(risk.employment.duration)}`:""}</strong>${sourceNote(risk.employment.evidence)}</p>`:"";
   const obligations=(Array.isArray(risk.constraints)?risk.constraints:[]).map(item=>`<p class="jev-state"><strong>${esc(item.label)}</strong>${sourceNote(item.evidence)}</p>`).join("");
   const questions=(Array.isArray(risk.clarification)?risk.clarification:[]).map(item=>`<p class="jev-state"><strong>${esc(item.label)}</strong></p>`).join("");
   const shape=risk.postingShape?.label?`<small class="jev-state">${esc(risk.postingShape.label)}${["adequate","rich"].includes(risk.mandateEvidence)?" · Role-specific duties available":""}</small>`:"";
   const empty=!flags&&!exposure&&!employment&&!obligations&&!questions?`<small class="jev-state">${risk.state==="not_applicable"?"Not applicable":risk.state==="not_stated"?"Insufficient evidence to assess role risks":"Employment terms and operating obligations need confirmation."}</small>`:"";
   const riskSection=`<section class="jev-risks"><h4>Role Risk</h4>${shape}${exposure}${employment}${obligations}${flags}${questions}${empty}</section>`;
-  container.innerHTML=`<dl class="jev-fields">${row("Role Archetype",a,archetypeText)}${row("Primary Activity",r.primaryActivity,r.primaryActivity.label||jevText(r.primaryActivity.value))}${row("Business Line",r.businessLine,r.businessLine.label||jevText(r.businessLine.value))}${row("Leadership Level",r.leadershipLevel,r.leadershipLevel.label||jevText(r.leadershipLevel.value))}</dl>${riskSection}`;
+  container.innerHTML=`<dl class="jev-fields">${row("Role Archetype",a,archetypeText)}${row("Primary Activity",r.primaryActivity,r.primaryActivity.label||jevText(r.primaryActivity.value))}${row("Business Line",r.businessLine,r.businessLine.value==="not_stated"&&r.businessLine.assignedUnits?.length?r.businessLine.assignedUnits.map(x=>x.label).join(" · "):r.businessLine.label||jevText(r.businessLine.value))}${row("Leadership Level",r.leadershipLevel,r.leadershipLevel.label||jevText(r.leadershipLevel.value))}</dl>${riskSection}`;
   container.hidden=false;
 }
 function jevErrorMessage(status,body){

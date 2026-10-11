@@ -81,6 +81,21 @@ test('negated fixed-term or permanent wording is not affirmative employment evid
     assert.equal(r.roleRisk.employment.value,'not_disclosed');
   }
 });
+test('an explicit technical unit stays useful when commercial business is unknown',()=>{
+  const i=job('Build and operate credit and portfolio data pipelines.');i.jevInput.employer_metadata='Business: CTO Data Technology';
+  const r=parseProviderResponse({answers:{businessLine:ch('not_stated'),leadershipLevel:ch('individual_contributor'),leadershipLevelEvidence:ch('b1')}},i);
+  assert.equal(r.businessLine.value,'not_stated');assert.equal(r.businessLine.assignedUnits[0].label,'CTO Data Technology');assert.equal(r.businessLine.assignedUnits[0].evidence[0].source,'assignment');
+  assert.equal(r.roleRisk.clarification.find(x=>x.code==='business_assignment').label,'Confirm the business/products served by this unit');
+});
+test('technical data delivery alone does not establish own-institution beneficiaries',()=>{
+  const r=parseProviderResponse({answers:{clientSegment:ch('own_institution'),clientSegmentEvidence:ch('b1')}},job('Deliver reliable datasets used by KYC, credit and portfolio AI solutions.'));
+  assert.equal(r.businessLine.clientSegment.value,'not_established');
+});
+test('a disclosed contractor duration is preserved and not asked for again',()=>{
+  const i=job('Conduct investigations against the Bank and its employees.');i.title='Snr Investigator (6-month contractor)';
+  const r=parseProviderResponse({answers:{employmentTerms:ch('contractor'),employmentTermsEvidence:ch('title')}},i);
+  assert.equal(r.roleRisk.employment.duration,'6 months');assert.equal(r.roleRisk.clarification[0].label,'Confirm employer and renewal/conversion terms');
+});
 test('a combined CIB heading does not prove specific institutional clients',()=>{
   const r=parseProviderResponse({answers:{clientSegment:ch('financial_public_institutions'),clientSegmentEvidence:ch('b1')}},job('HSBC Corporate and Institutional Banking(CIB)\nPrepare facility documentation.'));
   assert.equal(r.businessLine.value,'corporate_institutional_coverage');assert.equal(r.businessLine.clientSegment.value,'not_established');
@@ -96,11 +111,11 @@ test('the frontend preserves the five dimensions and shows risk facts instead of
   const {readFileSync}=await import('node:fs');const {runInNewContext}=await import('node:vm');
   const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
   const snippet=source.slice(source.indexOf('function jevPayload('),source.indexOf('function jevErrorMessage('));
-  const context={JEV_TAXONOMY_VERSION:'jev-taxonomy-v5.0.0',esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;')};
+  const context={JEV_TAXONOMY_VERSION:'jev-taxonomy-v5.0.1',esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;')};
   runInNewContext(snippet+';this.render=renderJevResult;',context);
   const container={};context.render(container,{primaryActivity:{label:'Credit Documentation',responsibility:{value:'coordinate_enable',label:'Coordination & Enablement',evidence:[{source:'jd',quote:'Coordinate credit documents.'}]}},businessLine:{label:'Corporate & Institutional Banking',clientSegment:{value:'corporate_multinational',label:'Corporate Clients',evidence:[{source:'assignment',quote:'Business: Corporate Banking'}]}},roleRisk:{flags:[],state:'none',employment:{value:'permanent',label:'Explicit Permanent Employment',evidence:[{source:'jd',quote:'This is a permanent position.'}]},constraints:[{label:'Shift / On-call Obligations',evidence:[{source:'jd',quote:'<b>Weekend on-call</b>'}]}],clarification:[],postingShape:{label:'Specific Vacancy'},mandateEvidence:'adequate'}});
   assert.equal((container.innerHTML.match(/<dt>/g)||[]).length,4);assert.equal((container.innerHTML.match(/<h4>Role Risk<\/h4>/g)||[]).length,1);
   for(const text of ['Explicit Permanent Employment','Shift / On-call Obligations','Coordination &amp; Enablement','Corporate Clients','Assignment:'])assert.ok(container.innerHTML.includes(text));
   assert.doesNotMatch(container.innerHTML,/No supported structural flags|<b>/);assert.match(container.innerHTML,/&lt;b>/);
-  assert.match(source,/linkedin-jev-analysis-v5\.0\.0/);
+  assert.match(source,/linkedin-jev-analysis-v5\.0\.1/);
 });
