@@ -110,18 +110,24 @@ function safeJdHtml(raw){
   clean(tpl.content);return tpl.innerHTML||esc(String(raw||""));
 }
 const jdById=new Map();
-let jdDetailsPromise=null;
-function loadJdDetails(){
-  if(!jdDetailsPromise){
-    jdDetailsPromise=fetch("jobs-details.json",{cache:"no-cache"})
-      .then(r=>{if(!r.ok)throw new Error("jobs-details.json HTTP "+r.status);return r.json();})
+// One small, deterministic partition per request; never download the entire JD corpus.
+const jdDetailsPromises=new Map();
+function jdShard(id){let hash=0;for(const char of String(id))hash=(hash*31+char.charCodeAt(0))>>>0;return (hash%256).toString(16).padStart(2,"0");}
+function loadJdDetails(id){
+  const shard=jdShard(id);
+  if(!jdDetailsPromises.has(shard)){
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+    const promise=fetch(`jd-parts/${shard}.json`,{cache:"no-cache",signal:controller.signal})
+      .then(r=>{if(!r.ok)throw new Error("Job description HTTP "+r.status);return r.json();})
       .then(doc=>{
         const details=doc&&typeof doc.details==="object"?doc.details:{};
-        Object.entries(details).forEach(([id,entry])=>jdById.set(id,entry));
+        Object.entries(details).forEach(([key,entry])=>jdById.set(key,entry));
         return jdById;
-      }).catch(error=>{jdDetailsPromise=null;throw error;});
+      }).catch(error=>{jdDetailsPromises.delete(shard);throw error;})
+      .finally(()=>clearTimeout(timer));
+    jdDetailsPromises.set(shard,promise);
   }
-  return jdDetailsPromise;
+  return jdDetailsPromises.get(shard);
 }
 const JEV_CACHE_KEY="linkedin-jev-analysis-v4.4.5";
 const JEV_TAXONOMY_VERSION="jev-taxonomy-v4.4.5";
@@ -181,7 +187,7 @@ function showJevError(panel,message,retry){if(!panel)return;panel.innerHTML=`<p 
 const JEV_MAX_DESCRIPTION_CHARS=24000;// worker MAX_DESCRIPTION_CHARS; longest real jd_text in the corpus is 14.8k chars
 const jevRuns=new Set();
 // Every Analytics click goes through here (delegated from the list root), so a click always produces a visible
-// state — even before jobs-details.json has finished loading, and even when the request fails.
+// state — even before the requested JD partition has finished loading, and even when the request fails.
 async function runJevAnalysis(card){
   const id=card?.dataset?.id||"";if(!id||jevRuns.has(id))return;jevRuns.add(id);
   const button=card.querySelector(".job-jd-analytics");
@@ -191,7 +197,7 @@ async function runJevAnalysis(card){
   showJevStatus(panel,"Loading job description…");
   try{
     let entry=jdById.get(id);
-    if(!entry){try{await loadJdDetails();}catch{}entry=jdById.get(id);}
+    if(!entry){try{await loadJdDetails(id);}catch{}entry=jdById.get(id);}
     if(!entry){showJevError(panel,"Job description could not be loaded. Please try again.",()=>runJevAnalysis(card));return;}
     await hydrateJd(card);panel=ensureJevPanel(card)||panel;
     const text=jevRequestText(entry).slice(0,JEV_MAX_DESCRIPTION_CHARS);
@@ -216,15 +222,16 @@ function addJevControls(body,card,entry){
   if(window.matchMedia?.("(max-width:720px)").matches)return;
   const panel=ensureJevPanel(card);if(!panel||panel.dataset.cachedChecked==="true")return;panel.dataset.cachedChecked="true";
   const id=card.dataset.id||"",existing=readJevCache()[id];
-  if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(jevRequestText(entry)).then(fingerprint=>{if(existing.jdFingerprint===fingerprint&&panel.hidden){renderJevResult(panel,existing.result,existing.analyzedAt);card.querySelector(".job-jd-analytics")?.classList.add("is-cached");}});}
+  if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(jevRequestText(entry).slice(0,JEV_MAX_DESCRIPTION_CHARS)).then(fingerprint=>{if(existing.jdFingerprint===fingerprint&&panel.hidden){renderJevResult(panel,existing.result,existing.analyzedAt);card.querySelector(".job-jd-analytics")?.classList.add("is-cached");}});}
 }
 async function hydrateJd(card){
   const body=card.querySelector(".job-jd-text");
   if(!body||body.dataset.loaded==="true")return;
   if(body.dataset.loading==="true")return;
   body.dataset.loading="true";
+  body.textContent="Loading job description…";
   let entry=jdById.get(card.dataset.id);
-  if(!entry){try{await loadJdDetails();entry=jdById.get(card.dataset.id);}catch(e){body.textContent="Job description could not be loaded. Please try again.";}}
+  if(!entry){try{await loadJdDetails(card.dataset.id);entry=jdById.get(card.dataset.id);}catch(e){body.textContent="Job description could not be loaded. Please try again.";}}
   if(!entry){delete body.dataset.loading;return;}
   const html=entry.descriptionHtml||"",text=entry.descriptionText||entry.description||jdPlainText(html);
   const current=html?safeJdHtml(html):esc(text).replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
@@ -277,7 +284,7 @@ const saveBlockedKw=()=>localStorage.setItem("blockedKw",JSON.stringify([...bloc
 const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),cityEl=document.getElementById("city"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");
 // `toggle` does not bubble, so capture it at the list root. The initial
 // index payload intentionally excludes JD text; only opening a details row
-// fetches jobs-details.json and hydrates that one card.
+// fetches a small JD partition and hydrates that one card.
 jobsEl.addEventListener("toggle",event=>{
   const details=event.target;
   if(details instanceof HTMLDetailsElement&&details.matches("details.job-jd")){
