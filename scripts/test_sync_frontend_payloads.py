@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -14,6 +15,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class FrontendPayloadSyncTests(unittest.TestCase):
+    def test_boilerplate_bytes_are_stable_across_python_hash_seeds(self) -> None:
+        code = (
+            "import json; from jev_preprocess import build_boilerplate_table; "
+            "jobs=[('Acme','<p>We provide flexible working opportunities across the region.</p>"
+            "<p>We value collaboration and continuous learning across teams.</p>')]*20; "
+            "print(json.dumps(build_boilerplate_table(jobs),ensure_ascii=False,separators=(',',':')))"
+        )
+        results = []
+        for seed in ("1", "2", "3"):
+            env = os.environ.copy()
+            env["PYTHONHASHSEED"] = seed
+            env["PYTHONPATH"] = str(ROOT / "scripts" / "jobspy")
+            results.append(subprocess.check_output((sys.executable, "-c", code), env=env))
+        self.assertEqual(results[0], results[1])
+        self.assertEqual(results[1], results[2])
+
     def test_publish_repairs_drift_and_clean_build_gate_catches_it(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

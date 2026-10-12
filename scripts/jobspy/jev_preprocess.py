@@ -50,7 +50,9 @@ def build_boilerplate_table(jobs: Iterable[tuple[str, str]], min_share: float = 
     for company, docs in grouped.items():
         counts = Counter(sig for doc in docs for sig in {signature(block) for block in doc if len(block) >= 30})
         threshold = max(min_count, int(len(docs) * min_share + .999))
-        signatures = {sig: count for sig, count in counts.items() if count >= threshold}
+        # The per-document set above has a process-random iteration order.
+        # Stable keys are required because this table is a committed build asset.
+        signatures = {sig: counts[sig] for sig in sorted(counts) if counts[sig] >= threshold}
         samples = {}
         for doc in docs:
             for block in doc:
