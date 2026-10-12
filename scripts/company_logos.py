@@ -74,18 +74,17 @@ def candidates(jobs, rss, state, mode):
     for row in rows(jobs):
         k=key(row.get('company'))
         if k and linkedin_url(row.get('link','')): grouped.setdefault(k,[]).append(row)
-    wanted=set(grouped) if mode in ('bootstrap','repair') else {key(r.get('company')) for r in rows(rss)} & set(grouped)
+    # Every RSS publication retries all retained companies without a verified
+    # logo, even when the latest RSS batch does not mention them. Keep the rss
+    # argument for compatibility; canonical jobs determine the candidate set.
+    wanted=set(grouped)
     result=[]
     for k in sorted(wanted):
         old=state.get(k,{})
         if old.get('status')=='ready': continue
-        # Retry failures only when RSS mentions the company again, after seven days.
-        if old and mode!='repair':
-            if mode=='bootstrap':
-                if old.get('parserVersion',1)>=PARSER_VERSION: continue
-            else:
-                checked=datetime.fromisoformat(old['checkedAt'])
-                if (datetime.now(timezone.utc)-checked).total_seconds()<7*86400: continue
+        # Bootstrap revisits failures after parser upgrades. RSS and explicit
+        # repair runs retry missing/placeholder entries without a cooldown.
+        if old and mode=='bootstrap' and old.get('parserVersion',1)>=PARSER_VERSION: continue
         group=sorted(grouped[k],key=lambda r:(r.get('jobStatus')!='expired',str(r.get('pushTime') or r.get('firstSeen') or '')),reverse=True)
         corrective=mode=='repair' or (mode=='bootstrap' and old and old.get('parserVersion',1)<PARSER_VERSION)
         result.append((k,group[:6] if corrective else group[:2]))
@@ -104,7 +103,7 @@ def fetch_bytes(session,url,limit):
 
 def collect(args):
     state=read(args.state,{})
-    batch=candidates(read(args.jobs,{}),read(args.rss,{}),state,args.mode)
+    batch=candidates(read(args.jobs,{}),None,state,args.mode)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     changes={};blocked=0;stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0}
     started=time.monotonic()

@@ -56,18 +56,39 @@ class LogosTests(unittest.TestCase):
             result=json.loads((p/'out/updates.json').read_text())['dbs bank']
             self.assertEqual(result['status'],'placeholder');self.assertNotIn('asset',result)
             self.assertEqual(result['attempts'][0]['reason'],'placeholder_image')
-    def test_rss_only_new_retained_company(self):
+    def test_rss_retries_all_retained_companies_not_only_batch_companies(self):
         a={'company':'A','link':'https://www.linkedin.com/jobs/view/12345'}
         b={'company':'B','link':'https://www.linkedin.com/jobs/view/12346'}
         jobs={'jobs':[a,b]};rss={'jobs':[a,{'company':'Blocked Co','link':'https://www.linkedin.com/jobs/view/12347'}]}
-        self.assertEqual([k for k,_ in candidates(jobs,rss,{},'rss')],['a'])
+        self.assertEqual([k for k,_ in candidates(jobs,rss,{},'rss')],['a','b'])
         self.assertEqual([k for k,_ in candidates(jobs,rss,{},'bootstrap')],['a','b'])
-        self.assertEqual(candidates(jobs,rss,{'a':{'status':'ready'}},'rss'),[])
-    def test_failure_backoff(self):
+        self.assertEqual([k for k,_ in candidates(jobs,rss,{'a':{'status':'ready'}},'rss')],['b'])
+    def test_rss_retries_recent_missing_and_placeholder_but_skips_ready(self):
         from datetime import datetime,timezone
-        row={'company':'A','link':'https://www.linkedin.com/jobs/view/12345'}
-        state={'a':{'status':'missing','checkedAt':datetime.now(timezone.utc).isoformat()}}
-        self.assertEqual(candidates([row],[row],state,'rss'),[])
+        jobs=[{'company':name,'link':'https://www.linkedin.com/jobs/view/'+str(12345+i)} for i,name in enumerate(('A','B','C'))]
+        checked=datetime.now(timezone.utc).isoformat()
+        state={'a':{'status':'missing','checkedAt':checked,'parserVersion':PARSER_VERSION},'b':{'status':'placeholder','checkedAt':checked,'parserVersion':PARSER_VERSION},'c':{'status':'ready','checkedAt':checked}}
+        for _ in range(2):
+            self.assertEqual([k for k,_ in candidates(jobs,[],state,'rss')],['a','b'])
+        self.assertEqual(candidates(jobs,[],state,'bootstrap'),[])
+    def test_rss_uses_retained_linkedin_jobs_and_two_representative_links(self):
+        jobs=[{'company':'A','link':'https://www.linkedin.com/jobs/view/'+str(12345+i),'pushTime':str(i),'jobStatus':'expired' if i==7 else 'active'} for i in range(8)]
+        jobs.append({'company':'External','link':'https://example.com/jobs/12345'})
+        state={'a':{'status':'missing'}}
+        batch=candidates(jobs,None,state,'rss')
+        self.assertEqual([k for k,_ in batch],['a'])
+        self.assertEqual([r['link'] for r in batch[0][1]],[jobs[6]['link'],jobs[5]['link']])
+    def test_collect_rss_does_not_require_or_read_staging_file(self):
+        from unittest.mock import patch
+        from company_logos import collect
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d);jobs=p/'jobs.json';jobs.write_text(json.dumps([{'company':'DBS Bank','link':'https://www.linkedin.com/jobs/view/12345'}]))
+            state=p/'state.json';state.write_text(json.dumps({'dbs bank':{'status':'missing','checkedAt':'2026-10-12T08:49:00+00:00'}}))
+            rss=p/'rss.json';rss.write_text('not a valid RSS JSON document')
+            args=SimpleNamespace(state=str(state),jobs=str(jobs),rss=str(rss),mode='rss',output=str(p/'out'),limit=1000,delay=0)
+            with patch('company_logos.fetch_bytes',return_value=self.html(url='https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u').encode()) as fetch:collect(args)
+            self.assertEqual(fetch.call_count,1)
+            self.assertEqual(json.loads((p/'out/updates.json').read_text())['dbs bank']['status'],'placeholder')
     def test_apply_merges_latest_state_and_does_not_touch_jobs(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d);out=p/'out';out.mkdir();assets=p/'assets';assets.mkdir()
