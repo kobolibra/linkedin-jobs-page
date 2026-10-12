@@ -12,7 +12,18 @@ Image.MAX_IMAGE_PIXELS=4000000
 
 # Verified historical display names, scoped to logo identity only.
 LOGO_IDENTITIES={'ateca':'ateca executive search','charterhouse partnership | asia':'charterhouse partnership','drake international singapore':'drake international – singapore','efg international':'efg private banking'}
-PARSER_VERSION=2
+LOGO_IDENTITIES.update({'mercer':('marsh','marsh people solutions'),'oaktree capital management, l.p.':'oaktree','orion james':'orion james limited','privee associates':'privee associates limited','verition fund management llc':'verition'})
+PARSER_VERSION=3
+
+def supported_names(expected):
+    k=key(expected);aliases=LOGO_IDENTITIES.get(k,())
+    return {k,*(aliases if isinstance(aliases,tuple) else (aliases,))}
+
+def is_placeholder(img):
+    if not img: return False
+    url=img.get('data-delayed-url') or img.get('src','')
+    ghost=img.get('data-ghost-url')
+    return bool(url and ((ghost and url==ghost) or (urlsplit(url).hostname=='static.licdn.com' and '/aero-v1/sc/h/' in urlsplit(url).path)))
 
 def key(name):
     raw=str(name or '').strip()
@@ -36,12 +47,12 @@ def extract(html, expected):
     org=soup.select_one('a.topcard__org-name-link')
     observed=key(org.get_text(' ',strip=True)) if org else ''
     expected_key=key(expected)
-    if not org or observed not in {expected_key,LOGO_IDENTITIES.get(expected_key,expected_key)}: return None
+    if not org or observed not in supported_names(expected): return None
     company_url=org.get('href','').split('?')[0]
     if not linkedin_url(company_url) or not re.match(r'^/(company|school|showcase)/[^/]+/?$',urlsplit(company_url).path): return None
     top=org.find_parent(class_='top-card-layout') or soup
     img=top.select_one('img.artdeco-entity-image')
-    if not img: return None
+    if not img or is_placeholder(img): return None
     url=img.get('data-delayed-url') or img.get('src','')
     if not image_url(url) or not re.search(r'/(company-logo_|school-logo_|img-crop_)',urlsplit(url).path): return None
     return url,company_url
@@ -95,7 +106,7 @@ def collect(args):
     state=read(args.state,{})
     batch=candidates(read(args.jobs,{}),read(args.rss,{}),state,args.mode)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
-    changes={};blocked=0;stats={'candidates':len(batch),'downloaded':0,'missing':0,'blocked':0}
+    changes={};blocked=0;stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0}
     started=time.monotonic()
     with requests.Session() as session:
         session.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'en-US,en;q=0.9'})
@@ -113,7 +124,12 @@ def collect(args):
                     if not found:
                         soup=BeautifulSoup(html,'html.parser');org=soup.select_one('a.topcard__org-name-link')
                         observed=org.get_text(' ',strip=True) if org else ''
-                        entry['attempts'].append({'jobId':match[1],'reason':'no_employer' if not org else 'name_mismatch' if key(observed) not in {key(row['company']),LOGO_IDENTITIES.get(key(row['company']))} else 'no_supported_image','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
+                        top=(org.find_parent(class_='top-card-layout') or soup) if org else soup
+                        placeholder=is_placeholder(top.select_one('img.artdeco-entity-image'))
+                        matched=org and key(observed) in supported_names(row['company'])
+                        entry['attempts'].append({'jobId':match[1],'reason':'no_employer' if not org else 'name_mismatch' if not matched else 'placeholder_image' if placeholder else 'no_supported_image','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
+                        if matched and placeholder:
+                            entry['status']='placeholder';break
                         continue
                     data=thumbnail(fetch_bytes(session,found[0],1000000))
                     filename=hashlib.sha256(data).hexdigest()[:24]+'.webp'
@@ -128,6 +144,7 @@ def collect(args):
                 finally: time.sleep(args.delay)
             changes[k]=entry
             stats['downloaded' if entry['status']=='ready' else 'missing']+=1
+            if entry['status']=='placeholder': stats['placeholders']+=1
             print(json.dumps({'company':entry['name'],'status':entry['status']}),flush=True)
             if blocked>=5: break  # No challenge retries or alternate routes.
     (out/'updates.json').write_text(json.dumps(changes,ensure_ascii=False,indent=2)+'\n')

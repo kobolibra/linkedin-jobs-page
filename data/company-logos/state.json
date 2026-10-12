@@ -189,16 +189,12 @@
   },
   "airswift": {
     "name": "Airswift",
-    "checkedAt": "2026-10-12T05:49:38.438482+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4464307017",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "57e489cdfcba99eba2984983.webp",
+    "sourceUrl": "https://www.airswift.com/hubfs/Airswift%20Bird%20Favicon.png",
+    "verificationUrl": "https://www.airswift.com/",
+    "checkedAt": "2026-10-12T05:50:55.641622+00:00",
+    "parserVersion": 2
   },
   "akamai technologies": {
     "name": "Akamai Technologies",
@@ -1132,14 +1128,15 @@
   },
   "business and banking industry": {
     "name": "Business and Banking Industry",
-    "checkedAt": "2026-10-12T05:49:41.961542+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:15.024258+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4474662403",
-        "reason": "http_error",
-        "status": 429
+        "reason": "placeholder_image",
+        "observedName": "Business and Banking Industry",
+        "companyUrl": "https://www.linkedin.com/company/rich-language-training-school"
       }
     ]
   },
@@ -1264,16 +1261,12 @@
   },
   "careernet": {
     "name": "Careernet",
-    "checkedAt": "2026-10-12T05:49:43.021139+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4462267927",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "c8da3f826817e6fe3dad758d.webp",
+    "sourceUrl": "https://careernet.in/wp-content/uploads/2021/08/Website-Stuff_FAv-icon.png",
+    "verificationUrl": "https://careernet.in/",
+    "checkedAt": "2026-10-12T05:51:03.141119+00:00",
+    "parserVersion": 2
   },
   "ccb international (holdings) limited": {
     "name": "CCB International (Holdings) Limited",
@@ -1346,13 +1339,13 @@
   },
   "chesterton consulting": {
     "name": "Chesterton Consulting",
-    "checkedAt": "2026-10-12T05:49:46.552443+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:16.256677+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4443498270",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Chesterton Consulting",
         "companyUrl": "https://www.linkedin.com/company/chesterton-consulting"
       }
@@ -1888,16 +1881,12 @@
   },
   "easy consult hr solutions doo": {
     "name": "Easy Consult HR Solutions DOO",
-    "checkedAt": "2026-10-12T05:49:48.886360+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4446632235",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "a0257eb4c595dd8df7149ea4.webp",
+    "sourceUrl": "https://easyconsultrs.com/apple-touch-icon.png",
+    "verificationUrl": "https://easyconsultrs.com/",
+    "checkedAt": "2026-10-12T05:51:09.977108+00:00",
+    "parserVersion": 2
   },
   "ebury": {
     "name": "Ebury",
@@ -1908,13 +1897,13 @@
   },
   "edgewater services co ltd": {
     "name": "Edgewater Services Co Ltd",
-    "checkedAt": "2026-10-12T05:49:49.969294+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:17.414005+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4442372436",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Edgewater Services Co Ltd",
         "companyUrl": "https://www.linkedin.com/company/edgewater-services-co-ltd"
       }
@@ -1974,19 +1963,13 @@
   },
   "enrise family office": {
     "name": "Enrise Family Office",
-    "checkedAt": "2026-10-12T05:49:52.428483+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:18.553275+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4456843255",
-        "reason": "no_supported_image",
-        "observedName": "Enrise Family Office",
-        "companyUrl": "https://hk.linkedin.com/company/enrise-family-office"
-      },
-      {
-        "jobId": "4440422253",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Enrise Family Office",
         "companyUrl": "https://hk.linkedin.com/company/enrise-family-office"
       }
@@ -2091,13 +2074,13 @@
   },
   "family office": {
     "name": "Family Office",
-    "checkedAt": "2026-10-12T05:49:57.068987+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:19.666473+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4457306277",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Family Office",
         "companyUrl": "https://www.linkedin.com/company/family-office_2"
       }
@@ -2268,9 +2251,9 @@
   },
   "flowdesk-p": {
     "name": "Flowdesk-p",
-    "checkedAt": "2026-10-12T05:50:01.783169+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:20.815705+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4455584474",
@@ -2279,7 +2262,7 @@
       },
       {
         "jobId": "4446554770",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Flowdesk-p",
         "companyUrl": "https://www.linkedin.com/company/flowdesk-p"
       }
@@ -2287,16 +2270,12 @@
   },
   "fort financial": {
     "name": "Fort Financial",
-    "checkedAt": "2026-10-12T05:50:04.135065+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4407191530",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "47c7227d6f6a5b7558e70157.webp",
+    "sourceUrl": "https://www.fort.sg/wp-content/uploads/2026/03/Untitled-design-2.png",
+    "verificationUrl": "https://www.fort.sg/",
+    "checkedAt": "2026-10-12T08:42:32.463900+00:00",
+    "parserVersion": 3
   },
   "forthright securities co., ltd.": {
     "name": "Forthright Securities Co., Ltd.",
@@ -2443,16 +2422,12 @@
   },
   "golden equator capital": {
     "name": "Golden Equator Capital",
-    "checkedAt": "2026-10-12T05:50:06.490916+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4463229439",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "7427eb860a146c38e0a6dc06.webp",
+    "companyUrl": "https://sg.linkedin.com/company/goldenequatorcapital",
+    "sourceJobId": "4463229439",
+    "checkedAt": "2026-10-12T08:43:47.946836+00:00",
+    "parserVersion": 3
   },
   "golden gate ventures": {
     "name": "Golden Gate Ventures",
@@ -2491,13 +2466,13 @@
   },
   "gp asset management limited": {
     "name": "GP ASSET MANAGEMENT LIMITED",
-    "checkedAt": "2026-10-12T05:50:07.553075+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:23.045099+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4469624229",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "GP ASSET MANAGEMENT LIMITED",
         "companyUrl": "https://www.linkedin.com/company/gp-asset-management-limited"
       }
@@ -2589,16 +2564,13 @@
   },
   "hamsa": {
     "name": "Hamsa",
-    "checkedAt": "2026-10-12T05:50:08.749838+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4441255415",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "856535522051fb25a053aef9.webp",
+    "sourceUrl": "https://cdn.prod.website-files.com/67c71aabacaefac88a59d718/67cc86d56ca1c760af08d7ac_webclip-hamsa.png",
+    "verificationUrl": "https://www.hamsa.com/",
+    "identityEvidence": "https://sg.linkedin.com/jobs/view/information-technology-operations-engineer-at-hamsa-4431215350",
+    "checkedAt": "2026-10-12T08:43:16.852562+00:00",
+    "parserVersion": 3
   },
   "hang seng bank": {
     "name": "Hang Seng Bank",
@@ -2710,13 +2682,13 @@
   },
   "high5hires": {
     "name": "High5hires",
-    "checkedAt": "2026-10-12T05:50:11.072442+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:24.196895+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4470279771",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "High5hires",
         "companyUrl": "https://www.linkedin.com/company/high5hires"
       }
@@ -2731,9 +2703,9 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-12T05:50:12.277328+00:00",
+    "checkedAt": "2026-10-12T08:49:25.360449+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4461013126",
@@ -2743,12 +2715,7 @@
       {
         "jobId": "4461002131",
         "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4461012092",
-        "reason": "http_error",
-        "status": 404
+        "status": 429
       }
     ]
   },
@@ -2955,13 +2922,13 @@
   },
   "idc咨询(北京)有限公司": {
     "name": "IDC咨询(北京)有限公司",
-    "checkedAt": "2026-10-12T05:50:20.332747+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:27.596965+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4446495345",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "IDC咨询(北京)有限公司",
         "companyUrl": "https://www.linkedin.com/company/idc%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -3059,9 +3026,9 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-12T05:50:23.903988+00:00",
+    "checkedAt": "2026-10-12T08:49:28.792888+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4445434545",
@@ -3210,9 +3177,9 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-12T05:50:31.042414+00:00",
+    "checkedAt": "2026-10-12T08:49:31.005107+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4441170948",
@@ -3231,13 +3198,13 @@
   },
   "jobpostz llp": {
     "name": "JOBPOSTZ LLP",
-    "checkedAt": "2026-10-12T05:50:32.152524+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:32.110023+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4455049463",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "JOBPOSTZ LLP",
         "companyUrl": "https://www.linkedin.com/company/jobpostz-llp"
       }
@@ -3283,16 +3250,12 @@
   },
   "jump trading": {
     "name": "Jump Trading",
-    "checkedAt": "2026-10-12T05:50:34.457068+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4362074602",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "bab93af510055b8ee139b330.webp",
+    "companyUrl": "https://www.linkedin.com/company/jump-trading",
+    "sourceJobId": "4362074602",
+    "checkedAt": "2026-10-12T08:43:47.947278+00:00",
+    "parserVersion": 3
   },
   "justonegalaxy recruitment": {
     "name": "JustOneGalaxy Recruitment",
@@ -3422,16 +3385,12 @@
   },
   "kyberlife": {
     "name": "Kyberlife",
-    "checkedAt": "2026-10-12T05:50:35.514554+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4456858680",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "167d2a3cc29e794da02804af.webp",
+    "sourceUrl": "https://kyberlifecorporate.com/wp-content/themes/kyberlife-nexus/assets/images/logo.png",
+    "verificationUrl": "https://kyberlifecorporate.com/",
+    "checkedAt": "2026-10-12T08:38:07.178668+00:00",
+    "parserVersion": 2
   },
   "l'avenir advisory": {
     "name": "L'Avenir Advisory",
@@ -3776,19 +3735,13 @@
   },
   "mci career services pte ltd": {
     "name": "MCI Career Services Pte Ltd",
-    "checkedAt": "2026-10-12T05:50:41.330214+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:33.211285+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4475642069",
-        "reason": "no_supported_image",
-        "observedName": "MCI Career Services Pte Ltd",
-        "companyUrl": "https://www.linkedin.com/showcase/mci-career-services-pte-ltd/"
-      },
-      {
-        "jobId": "4461499752",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "MCI Career Services Pte Ltd",
         "companyUrl": "https://www.linkedin.com/showcase/mci-career-services-pte-ltd/"
       }
@@ -3810,47 +3763,13 @@
   },
   "mercer": {
     "name": "Mercer",
-    "checkedAt": "2026-10-12T05:50:43.661547+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4465009788",
-        "reason": "name_mismatch",
-        "observedName": "Marsh",
-        "companyUrl": "https://www.linkedin.com/company/marshglobal"
-      },
-      {
-        "jobId": "4458256002",
-        "reason": "name_mismatch",
-        "observedName": "Marsh People Solutions",
-        "companyUrl": "https://www.linkedin.com/showcase/marsh-people-solutions/"
-      },
-      {
-        "jobId": "4458244820",
-        "reason": "name_mismatch",
-        "observedName": "Marsh People Solutions",
-        "companyUrl": "https://www.linkedin.com/showcase/marsh-people-solutions/"
-      },
-      {
-        "jobId": "4458244816",
-        "reason": "name_mismatch",
-        "observedName": "Marsh",
-        "companyUrl": "https://www.linkedin.com/company/marshglobal"
-      },
-      {
-        "jobId": "4458245802",
-        "reason": "name_mismatch",
-        "observedName": "Marsh",
-        "companyUrl": "https://www.linkedin.com/company/marshglobal"
-      },
-      {
-        "jobId": "4458238873",
-        "reason": "name_mismatch",
-        "observedName": "Marsh People Solutions",
-        "companyUrl": "https://www.linkedin.com/showcase/marsh-people-solutions/"
-      }
-    ]
+    "checkedAt": "2026-10-12T08:49:34.329493+00:00",
+    "status": "ready",
+    "parserVersion": 3,
+    "attempts": [],
+    "asset": "861a264cf61f339ee13bcf18.webp",
+    "companyUrl": "https://www.linkedin.com/company/marshglobal",
+    "sourceJobId": "4465009788"
   },
   "mercuria": {
     "name": "Mercuria",
@@ -3947,9 +3866,9 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-12T05:50:54.170654+00:00",
+    "checkedAt": "2026-10-12T08:49:35.553526+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4458711512",
@@ -4288,17 +4207,13 @@
   },
   "oaktree capital management, l.p.": {
     "name": "Oaktree Capital Management, L.P.",
-    "checkedAt": "2026-10-12T05:50:57.622644+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4424523179",
-        "reason": "name_mismatch",
-        "observedName": "Oaktree",
-        "companyUrl": "https://www.linkedin.com/company/oaktree-capital-management"
-      }
-    ]
+    "checkedAt": "2026-10-12T08:49:36.643215+00:00",
+    "status": "ready",
+    "parserVersion": 3,
+    "attempts": [],
+    "asset": "abba333d0bb6097b37a0efa2.webp",
+    "companyUrl": "https://www.linkedin.com/company/oaktree-capital-management",
+    "sourceJobId": "4424523179"
   },
   "ocorian": {
     "name": "Ocorian",
@@ -4407,19 +4322,13 @@
   },
   "orion james": {
     "name": "Orion James",
-    "checkedAt": "2026-10-12T05:50:58.856878+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:37.912722+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4457756068",
-        "reason": "name_mismatch",
-        "observedName": "Orion James Limited",
-        "companyUrl": "https://hk.linkedin.com/company/orion-james-ltd"
-      },
-      {
-        "jobId": "4446025106",
-        "reason": "name_mismatch",
+        "reason": "placeholder_image",
         "observedName": "Orion James Limited",
         "companyUrl": "https://hk.linkedin.com/company/orion-james-ltd"
       }
@@ -4448,41 +4357,12 @@
   },
   "page executive": {
     "name": "Page Executive",
-    "checkedAt": "2026-10-12T05:51:01.148455+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4464334525",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4463338677",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4459685819",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4447508783",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4449490736",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4443909119",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "43269577936980ba340edfff.webp",
+    "sourceUrl": "https://www.pageexecutive.com/sites/pageexecutive.com/files/favicon_0.ico",
+    "verificationUrl": "https://www.pageexecutive.com/",
+    "checkedAt": "2026-10-12T08:42:39.643811+00:00",
+    "parserVersion": 3
   },
   "pan & company | headhunter": {
     "name": "PAN & COMPANY | HEADHUNTER",
@@ -4718,16 +4598,12 @@
   },
   "pinnacle consult": {
     "name": "Pinnacle Consult",
-    "checkedAt": "2026-10-12T05:51:13.950076+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4458937671",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "b3501cc6f6c6af5a2c99ce19.webp",
+    "companyUrl": "https://sg.linkedin.com/company/sppinnacle",
+    "sourceJobId": "4458937671",
+    "checkedAt": "2026-10-12T08:43:47.947540+00:00",
+    "parserVersion": 3
   },
   "pinpoint asia": {
     "name": "Pinpoint Asia",
@@ -4845,23 +4721,13 @@
   },
   "privee associates": {
     "name": "Privee Associates",
-    "checkedAt": "2026-10-12T05:51:18.521213+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4453980747",
-        "reason": "name_mismatch",
-        "observedName": "Privee Associates Limited",
-        "companyUrl": "https://hk.linkedin.com/company/privee-associates"
-      },
-      {
-        "jobId": "4442293043",
-        "reason": "name_mismatch",
-        "observedName": "Privee Associates Limited",
-        "companyUrl": "https://hk.linkedin.com/company/privee-associates"
-      }
-    ]
+    "checkedAt": "2026-10-12T08:49:39.101892+00:00",
+    "status": "ready",
+    "parserVersion": 3,
+    "attempts": [],
+    "asset": "ad9b34a6857329ed5df079aa.webp",
+    "companyUrl": "https://hk.linkedin.com/company/privee-associates",
+    "sourceJobId": "4453980747"
   },
   "profile executive search": {
     "name": "Profile Executive Search",
@@ -4923,19 +4789,13 @@
   },
   "prusik investment management": {
     "name": "Prusik Investment Management",
-    "checkedAt": "2026-10-12T05:51:24.363428+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:40.286232+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4465704553",
-        "reason": "no_supported_image",
-        "observedName": "Prusik Investment Management",
-        "companyUrl": "https://www.linkedin.com/company/prusik-investment-management"
-      },
-      {
-        "jobId": "4446607617",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Prusik Investment Management",
         "companyUrl": "https://www.linkedin.com/company/prusik-investment-management"
       }
@@ -5213,13 +5073,13 @@
   },
   "saturn capital": {
     "name": "Saturn Capital",
-    "checkedAt": "2026-10-12T05:51:33.720068+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:41.408710+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4472881298",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Saturn Capital",
         "companyUrl": "https://hk.linkedin.com/company/saturn-capital-hk"
       }
@@ -5318,16 +5178,12 @@
   },
   "shikhara investment management": {
     "name": "Shikhara Investment Management",
-    "checkedAt": "2026-10-12T05:51:34.902867+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4450260066",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "32fca7c997d3cf9c1272fa8b.webp",
+    "companyUrl": "https://www.linkedin.com/company/shikhara-investments",
+    "sourceJobId": "4450260066",
+    "checkedAt": "2026-10-12T08:43:47.948022+00:00",
+    "parserVersion": 3
   },
   "silverdale capital pte ltd": {
     "name": "Silverdale Capital Pte Ltd",
@@ -5439,13 +5295,13 @@
   },
   "starbridge group": {
     "name": "Starbridge Group",
-    "checkedAt": "2026-10-12T05:51:37.192083+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:42.531580+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4469069730",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Starbridge Group",
         "companyUrl": "https://hk.linkedin.com/company/starbridge-investment"
       }
@@ -5529,25 +5385,13 @@
   },
   "sumsung air china life insurance co.,ltd.": {
     "name": "Sumsung Air China Life Insurance Co.,Ltd.",
-    "checkedAt": "2026-10-12T05:51:40.699827+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:43.679311+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4475673513",
-        "reason": "no_supported_image",
-        "observedName": "Sumsung Air China Life Insurance Co.,Ltd.",
-        "companyUrl": "https://www.linkedin.com/company/sumsung-air-china-life-insurance-co-ltd-"
-      },
-      {
-        "jobId": "4475669720",
-        "reason": "no_supported_image",
-        "observedName": "Sumsung Air China Life Insurance Co.,Ltd.",
-        "companyUrl": "https://www.linkedin.com/company/sumsung-air-china-life-insurance-co-ltd-"
-      },
-      {
-        "jobId": "4475679227",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "Sumsung Air China Life Insurance Co.,Ltd.",
         "companyUrl": "https://www.linkedin.com/company/sumsung-air-china-life-insurance-co-ltd-"
       }
@@ -5562,9 +5406,9 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-12T05:51:44.147711+00:00",
+    "checkedAt": "2026-10-12T08:49:44.803152+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4467705418",
@@ -6042,23 +5886,13 @@
   },
   "verition fund management llc": {
     "name": "Verition Fund Management LLC",
-    "checkedAt": "2026-10-12T05:51:52.383104+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4443949431",
-        "reason": "name_mismatch",
-        "observedName": "Verition",
-        "companyUrl": "https://www.linkedin.com/company/verition"
-      },
-      {
-        "jobId": "4443944625",
-        "reason": "name_mismatch",
-        "observedName": "Verition",
-        "companyUrl": "https://www.linkedin.com/company/verition"
-      }
-    ]
+    "checkedAt": "2026-10-12T08:49:45.979886+00:00",
+    "status": "ready",
+    "parserVersion": 3,
+    "attempts": [],
+    "asset": "fcbdefa9bd1ce47e3a0d7a95.webp",
+    "companyUrl": "https://www.linkedin.com/company/verition",
+    "sourceJobId": "4443949431"
   },
   "viewtrade": {
     "name": "ViewTrade",
@@ -6312,19 +6146,13 @@
   },
   "上海璞泰来新能源科技股份有限公司": {
     "name": "上海璞泰来新能源科技股份有限公司",
-    "checkedAt": "2026-10-12T05:52:00.524803+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:47.111629+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4445873161",
-        "reason": "no_supported_image",
-        "observedName": "上海璞泰来新能源科技股份有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E7%92%9E%E6%B3%B0%E6%9D%A5%E6%96%B0%E8%83%BD%E6%BA%90%E7%A7%91%E6%8A%80%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4442344096",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "上海璞泰来新能源科技股份有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E7%92%9E%E6%B3%B0%E6%9D%A5%E6%96%B0%E8%83%BD%E6%BA%90%E7%A7%91%E6%8A%80%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6332,13 +6160,13 @@
   },
   "光大保德信基金管理有限公司": {
     "name": "光大保德信基金管理有限公司",
-    "checkedAt": "2026-10-12T05:52:02.768408+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:48.228223+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4443658919",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "光大保德信基金管理有限公司",
         "companyUrl": "https://cn.linkedin.com/company/%E5%85%89%E5%A4%A7%E4%BF%9D%E5%BE%B7%E4%BF%A1%E5%9F%BA%E9%87%91%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6346,19 +6174,13 @@
   },
   "北京星展科技有限公司": {
     "name": "北京星展科技有限公司",
-    "checkedAt": "2026-10-12T05:52:03.891600+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:49.340133+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4470819965",
-        "reason": "no_supported_image",
-        "observedName": "北京星展科技有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E6%98%9F%E5%B1%95%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4439292115",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "北京星展科技有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E6%98%9F%E5%B1%95%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6394,57 +6216,26 @@
   },
   "天风证券股份有限公司": {
     "name": "天风证券股份有限公司",
-    "checkedAt": "2026-10-12T05:52:06.149178+00:00",
+    "checkedAt": "2026-10-12T08:49:50.456516+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4445581203",
-        "reason": "no_supported_image",
-        "observedName": "天风证券股份有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E5%A4%A9%E9%A3%8E%E8%AF%81%E5%88%B8%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
+        "reason": "http_error",
+        "status": 429
       }
     ]
   },
   "摩根大通亚洲咨询(北京)有限公司": {
     "name": "摩根大通亚洲咨询(北京)有限公司",
-    "checkedAt": "2026-10-12T05:52:07.261615+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:51.508018+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4468953870",
-        "reason": "no_supported_image",
-        "observedName": "摩根大通亚洲咨询(北京)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4468954381",
-        "reason": "no_supported_image",
-        "observedName": "摩根大通亚洲咨询(北京)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4467334995",
-        "reason": "no_supported_image",
-        "observedName": "摩根大通亚洲咨询(北京)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4466998682",
-        "reason": "no_supported_image",
-        "observedName": "摩根大通亚洲咨询(北京)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4467310302",
-        "reason": "no_supported_image",
-        "observedName": "摩根大通亚洲咨询(北京)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4464722485",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "摩根大通亚洲咨询(北京)有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%91%A9%E6%A0%B9%E5%A4%A7%E9%80%9A%E4%BA%9A%E6%B4%B2%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6452,13 +6243,13 @@
   },
   "晨星资讯(深圳)有限公司": {
     "name": "晨星资讯(深圳)有限公司",
-    "checkedAt": "2026-10-12T05:52:14.291872+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:52.666192+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4475636420",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "晨星资讯(深圳)有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%99%A8%E6%98%9F%E8%B5%84%E8%AE%AF-%E6%B7%B1%E5%9C%B3-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6466,13 +6257,13 @@
   },
   "朱雀基金管理有限公司": {
     "name": "朱雀基金管理有限公司",
-    "checkedAt": "2026-10-12T05:52:15.429232+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:53.821203+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4445829304",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "朱雀基金管理有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%9C%B1%E9%9B%80%E5%9F%BA%E9%87%91%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6480,43 +6271,13 @@
   },
   "某香港猎头公司": {
     "name": "某香港猎头公司",
-    "checkedAt": "2026-10-12T05:52:16.548438+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:54.935932+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4469642263",
-        "reason": "no_supported_image",
-        "observedName": "某香港猎头公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%9F%90%E9%A6%99%E6%B8%AF%E7%8C%8E%E5%A4%B4%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4462980950",
-        "reason": "no_supported_image",
-        "observedName": "某香港猎头公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%9F%90%E9%A6%99%E6%B8%AF%E7%8C%8E%E5%A4%B4%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4458930753",
-        "reason": "no_supported_image",
-        "observedName": "某香港猎头公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%9F%90%E9%A6%99%E6%B8%AF%E7%8C%8E%E5%A4%B4%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4457671996",
-        "reason": "no_supported_image",
-        "observedName": "某香港猎头公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%9F%90%E9%A6%99%E6%B8%AF%E7%8C%8E%E5%A4%B4%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4456111988",
-        "reason": "no_supported_image",
-        "observedName": "某香港猎头公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%9F%90%E9%A6%99%E6%B8%AF%E7%8C%8E%E5%A4%B4%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4476257498",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "某香港猎头公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%9F%90%E9%A6%99%E6%B8%AF%E7%8C%8E%E5%A4%B4%E5%85%AC%E5%8F%B8"
       }
@@ -6524,13 +6285,13 @@
   },
   "永丰银行(中国)有限公司": {
     "name": "永丰银行(中国)有限公司",
-    "checkedAt": "2026-10-12T05:52:23.725987+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:56.098678+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4439291142",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "永丰银行(中国)有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%B0%B8%E4%B8%B0%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6538,13 +6299,13 @@
   },
   "汉能(北京)投资咨询有限公司": {
     "name": "汉能(北京)投资咨询有限公司",
-    "checkedAt": "2026-10-12T05:52:24.869699+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:57.208636+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4475676302",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "汉能(北京)投资咨询有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%B1%89%E8%83%BD-%E5%8C%97%E4%BA%AC-%E6%8A%95%E8%B5%84%E5%92%A8%E8%AF%A2%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6552,43 +6313,13 @@
   },
   "法国兴业银行(中国)有限公司": {
     "name": "法国兴业银行(中国)有限公司",
-    "checkedAt": "2026-10-12T05:52:26.012314+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:58.334150+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4473450808",
-        "reason": "no_supported_image",
-        "observedName": "法国兴业银行(中国)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4470532255",
-        "reason": "no_supported_image",
-        "observedName": "法国兴业银行(中国)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4463405559",
-        "reason": "no_supported_image",
-        "observedName": "法国兴业银行(中国)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4458809531",
-        "reason": "no_supported_image",
-        "observedName": "法国兴业银行(中国)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4454678776",
-        "reason": "no_supported_image",
-        "observedName": "法国兴业银行(中国)有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4451774034",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "法国兴业银行(中国)有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%B3%95%E5%9B%BD%E5%85%B4%E4%B8%9A%E9%93%B6%E8%A1%8C-%E4%B8%AD%E5%9B%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6603,43 +6334,13 @@
   },
   "渣打环球商业服务有限公司": {
     "name": "渣打环球商业服务有限公司",
-    "checkedAt": "2026-10-12T05:52:32.791799+00:00",
-    "status": "missing",
-    "parserVersion": 2,
+    "checkedAt": "2026-10-12T08:49:59.452784+00:00",
+    "status": "placeholder",
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4474805539",
-        "reason": "no_supported_image",
-        "observedName": "渣打环球商业服务有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4473402612",
-        "reason": "no_supported_image",
-        "observedName": "渣打环球商业服务有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4473472016",
-        "reason": "no_supported_image",
-        "observedName": "渣打环球商业服务有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4473456664",
-        "reason": "no_supported_image",
-        "observedName": "渣打环球商业服务有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4470594020",
-        "reason": "no_supported_image",
-        "observedName": "渣打环球商业服务有限公司",
-        "companyUrl": "https://www.linkedin.com/company/%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
-      },
-      {
-        "jobId": "4470579506",
-        "reason": "no_supported_image",
+        "reason": "placeholder_image",
         "observedName": "渣打环球商业服务有限公司",
         "companyUrl": "https://www.linkedin.com/company/%E6%B8%A3%E6%89%93%E7%8E%AF%E7%90%83%E5%95%86%E4%B8%9A%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
       }
@@ -6654,9 +6355,9 @@
   },
   "青岛融资担保中心有限公司": {
     "name": "青岛融资担保中心有限公司",
-    "checkedAt": "2026-10-12T05:52:39.581160+00:00",
+    "checkedAt": "2026-10-12T08:50:00.600670+00:00",
     "status": "missing",
-    "parserVersion": 2,
+    "parserVersion": 3,
     "attempts": [
       {
         "jobId": "4450012995",
