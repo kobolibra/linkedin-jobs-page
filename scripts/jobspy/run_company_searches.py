@@ -23,6 +23,7 @@ LOG = logging.getLogger("jobspy-orchestrator")
 
 def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -> tuple[str, int, str]:
     output = args.output_dir / f"{key}.json"
+    output.unlink(missing_ok=True)
     command = [
         sys.executable,
         str(Path(__file__).with_name("fetch_linkedin_requests.py")),
@@ -114,3 +115,4 @@ def main() -> int:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     raise SystemExit(main())
+

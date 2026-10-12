@@ -9,6 +9,7 @@ from job_liveness import classify, jid, select_regional_candidates
 from reconcile_full_snapshots import location_key
 from posting_evidence import detail_posting_date, search_posting_date
 from logo_sources import source_hint
+from linkedin_http import LinkedInSession, RequestStopped
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
 SEARCH_URL = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
@@ -56,11 +57,11 @@ def main():
         candidates=select_regional_candidates(rows(doc), locations, now=now, max_probes=args.max_probes,
             min_interval_hours=args.min_interval_hours, gone_confirm_hours=args.gone_confirm_hours,
             recheck_expired_hours=args.recheck_expired_hours, recheck_expired_days=args.recheck_expired_days)
-        session=requests.Session(); session.headers.update({"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
+        session=LinkedInSession(attempts=1, context={"stage":"liveness"}); session.headers.update({"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
         breaker=0; classified=[]
         for i,row in enumerate(candidates):
             key=jid(row); url=f"https://www.linkedin.com/jobs/view/{key}"
-            posted=source=hint=None; blocked=False
+            posted=source=hint=None; blocked=False; shared_stop=False
             try:
                 response=session.get(url, timeout=args.timeout, allow_redirects=False)
                 checked_at=datetime.now(timezone.utc).isoformat()
@@ -72,14 +73,14 @@ def main():
                     blocked=blocked or date_blocked
             except requests.RequestException as exc:
                 checked_at=datetime.now(timezone.utc).isoformat()
-                result="unknown"; blocked=True; print("probe_error",key,type(exc).__name__,flush=True)
+                result="unknown"; blocked=True; shared_stop=isinstance(exc,RequestStopped); print("probe_error",key,type(exc).__name__,flush=True)
             breaker=breaker+1 if blocked else 0
             classified.append(result)
             observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
             if posted: observation.update({"datePosted":posted,"dateSource":source})
             if hint: observation['companyLogoSource']=hint
             out["observations"].append(observation)
-            if breaker >= args.breaker:
+            if shared_stop or breaker >= args.breaker:
                 out["stats"]["circuitOpen"] = True
                 out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
                 break

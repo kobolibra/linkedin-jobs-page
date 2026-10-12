@@ -14,6 +14,8 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import requests
 from bs4 import BeautifulSoup
 from logo_sources import source_hint
+from linkedin_http import LinkedInSession
+from linkedin_detail import fetch_detail
 
 LOG = logging.getLogger("linkedin-requests")
 BASE = "https://www.linkedin.com"
@@ -154,41 +156,16 @@ def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN")
 
 
 def enrich_detail(session: requests.Session, job: dict, timeout: tuple[int, int], retries: int = 3) -> bool:
-    job["link"] = normalize_url(job.get("link", ""))
-    last_error = ""
-    for attempt in range(1, retries + 1):
-        try:
-            response = session.get(job["link"], timeout=timeout)
-            if response.status_code == 429 or response.status_code >= 500:
-                last_error = f"HTTP {response.status_code}"
-                if attempt < retries:
-                    time.sleep(min(30, 2 ** attempt + random.random()))
-                    continue
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, "html.parser")
-            hint=source_hint(soup,job.get("company"),job["link"],datetime.now(timezone.utc).isoformat())
-            if hint: job["companyLogoSource"]=hint
-            block = soup.select_one("div.show-more-less-html__markup") or soup.select_one("div.description__text")
-            if block:
-                job["descriptionHtml"] = str(block)
-                job["descriptionText"] = block.get_text("\n", strip=True)
-            location_candidates = soup.select("div.top-card-layout__card span.topcard__flavor")
-            for location in location_candidates:
-                raw = location.get_text(" ", strip=True)
-                company = clean(job.get("company"))
-                if raw and company and raw.casefold() == company.casefold():
-                    continue
-                if raw and ("," in raw or "china" in raw.casefold() or raw.casefold() in {"beijing", "shanghai", "shenzhen", "guangzhou", "xi'an"}):
-                    job["locationRaw"] = raw
-                    job["city"] = city_from_location(raw)
-                    break
-            return bool((job.get("descriptionText") or "").strip())
-        except requests.RequestException as exc:
-            last_error = str(exc)
-            if attempt < retries:
-                time.sleep(min(30, 2 ** attempt + random.random()))
-    LOG.warning("detail failed %s: %s", job.get("sourceJobId"), last_error)
-    return False
+    old_context = getattr(session, "context", {})
+    session.context = {**old_context, "stage": "details"}
+    try:
+        result = fetch_detail(session, job, timeout)
+    finally:
+        session.context = old_context
+    job.update(result)
+    if result.get("locationRaw"):
+        job["city"] = city_from_location(result["locationRaw"])
+    return result.get("detailStatus") == "ok"
 
 
 def main() -> int:
@@ -212,7 +189,7 @@ def main() -> int:
     page_attempts = max(1, args.page_attempts)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    session = requests.Session()
+    session = LinkedInSession(attempts=page_attempts, user_agents=USER_AGENTS)
     session.headers.update({
         "User-Agent": USER_AGENTS[0],
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -243,29 +220,15 @@ def main() -> int:
                 LOG.info("%s [%s] search start=%s", company, region, start)
                 response = None
                 last_error = ""
-                for page_attempt in range(1, page_attempts + 1):
-                    rotate_user_agent(session, page_attempt - 1)
-                    try:
-                        response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))
-                        LOG.info("%s [%s] start=%s attempt=%s http=%s bytes=%s", company, region, start, page_attempt, response.status_code, len(response.content))
-                        if response.status_code in {403, 429, 999} or response.status_code >= 500:
-                            last_error = f"HTTP {response.status_code}"
-                            response = None
-                            if page_attempt < page_attempts:
-                                wait = min(180, 15 * page_attempt + random.uniform(1, 8))
-                                LOG.warning("%s [%s] throttled at start=%s (%s); retry %s/%s in %.1fs", company, region, start, last_error, page_attempt + 1, page_attempts, wait)
-                                time.sleep(wait)
-                                continue
-                            break
-                        response.raise_for_status()
-                        break
-                    except requests.RequestException as exc:
-                        last_error = str(exc)
-                        response = None
-                        if page_attempt < page_attempts:
-                            wait = min(180, 15 * page_attempt + random.uniform(1, 8))
-                            LOG.warning("%s [%s] page failed at start=%s; retry %s/%s in %.1fs: %s", company, region, start, page_attempt + 1, page_attempts, wait, exc)
-                            time.sleep(wait)
+                session.context = {"stage": "search", "company": company, "region": region}
+                try:
+                    rotate_user_agent(session, 0)
+                    response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))
+                    LOG.info("%s [%s] start=%s http=%s bytes=%s", company, region, start, response.status_code, len(response.content))
+                    response.raise_for_status()
+                except requests.RequestException as exc:
+                    last_error = str(exc)
+                    response = None
                 if response is None:
                     LOG.error("%s [%s] search failed at start=%s after %s attempts: %s", company, region, start, page_attempts, last_error)
                     blocked = start == 0
