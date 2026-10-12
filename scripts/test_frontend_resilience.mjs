@@ -5,6 +5,33 @@ import {readFileSync} from 'node:fs';
 
 const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const guestbook=readFileSync(new URL('../guestbook.js',import.meta.url),'utf8');
+function indexHarness(fetch){
+  const context={AbortController,setTimeout,clearTimeout,fetch};
+  vm.createContext(context);
+  vm.runInContext(source.slice(source.indexOf('async function fetchJobsIndex('),source.indexOf('// Keep conditional cache validation')),context);
+  return context.fetchJobsIndex;
+}
+test('stalled index requests abort and reject after bounded retries',async()=>{
+  let requests=0,aborts=0;
+  const load=indexHarness((_url,options)=>{
+    requests++;
+    options.signal.addEventListener('abort',()=>aborts++);
+    return new Promise(()=>{});
+  });
+  await assert.rejects(load({attemptTimeouts:[5,5],retryDelay:1}),/timeout/);
+  assert.equal(requests,2);
+  assert.equal(aborts,2);
+});
+test('index retry covers a failed response and a stalled JSON body',async()=>{
+  let requests=0;
+  const load=indexHarness(async()=>{
+    requests++;
+    return requests===1?{ok:true,json:()=>new Promise(()=>{})}:{ok:true,json:async()=>({jobs:[{title:'Ready'}]})};
+  });
+  const result=await load({attemptTimeouts:[5,20],retryDelay:1});
+  assert.equal(result.jobs[0].title,'Ready');
+  assert.equal(requests,2);
+});
 test('denied browser storage and corrupt list preferences do not break initialization',()=>{
   const context={};
   Object.defineProperty(context,'localStorage',{get(){throw new Error('denied');}});

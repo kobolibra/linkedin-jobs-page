@@ -565,9 +565,30 @@ function renderTop50(rows,mode="all"){
 }
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
-// n8n 直接覆盖 jobs.json；使用稳定 URL，并让浏览器条件验证缓存（ETag/Last-Modified）。
-const jobsDataPromise=fetch("jobs-index.json",{cache:"no-cache"})
-  .then(r=>{if(!r.ok)throw new Error("jobs-index.json HTTP "+r.status);return r.json();})
+// Bound the whole transfer, including JSON parsing, so a stalled index cannot leave skeletons forever.
+async function fetchJobsIndex({attemptTimeouts=[12000,7000],retryDelay=350}={}){
+  let lastError;
+  for(let attempt=0;attempt<attemptTimeouts.length;attempt++){
+    const controller=new AbortController();
+    let timer;
+    const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new Error("jobs-index.json timeout"));},attemptTimeouts[attempt]);});
+    try{
+      return await Promise.race([
+        fetch("jobs-index.json",{cache:"no-cache",signal:controller.signal}).then(r=>{
+          if(!r.ok)throw new Error("jobs-index.json HTTP "+r.status);
+          return r.json();
+        }),
+        timeout,
+      ]);
+    }catch(error){
+      lastError=error;
+    }finally{clearTimeout(timer);}
+    if(attempt+1<attemptTimeouts.length)await new Promise(resolve=>setTimeout(resolve,retryDelay));
+  }
+  throw lastError;
+}
+// Keep conditional cache validation so repeat visits can reuse the browser's copy.
+const jobsDataPromise=fetchJobsIndex()
   .then(data=>{window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
 jobsDataPromise
@@ -679,7 +700,7 @@ jobsDataPromise
     delete regionsEl.dataset.pendingRegion;
     apply();
   })
-  .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败";});
+  .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败，请刷新重试";emptyEl.querySelector(".big").nextElementSibling.textContent="网络暂时不可用，或数据加载超时。";});
 const activeOnlyEl=document.getElementById("activeOnlyToggle"),activeCountEl=document.getElementById("activeJobCount");
 activeOnlyEl.addEventListener("click",()=>{activeOnly=!activeOnly;apply();});
 function countLoadedActiveJobs(){
@@ -798,4 +819,3 @@ document.addEventListener("keydown",e=>{
 const totop=document.getElementById("totop");
 addEventListener("scroll",()=>{totop.classList.toggle("show",window.scrollY>600);},{passive:true});
 totop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
-

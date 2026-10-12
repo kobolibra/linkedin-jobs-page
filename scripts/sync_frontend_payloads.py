@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""Build frontend assets, publish any drift, and verify the build is reproducible."""
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+import time
+
+
+GENERATED = ("jobs-index.json", "jobs-details.json", "data/jev-boilerplate.json")
+
+
+def run(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, check=check, text=True)
+
+
+def build() -> None:
+    run(sys.executable, "scripts/jobspy/build_frontend_payload.py", "--boilerplate", GENERATED[2])
+    run("node", "scripts/build_jd_shards.mjs")
+
+
+def has_staged_changes() -> bool:
+    result = subprocess.run(("git", "diff", "--cached", "--quiet", "--", *GENERATED))
+    if result.returncode not in (0, 1):
+        raise RuntimeError("Unable to inspect staged frontend payloads")
+    return result.returncode == 1
+
+
+def check_clean_build() -> None:
+    build()
+    run("git", "diff", "--exit-code", "--", *GENERATED)
+    run("git", "diff", "--cached", "--exit-code", "--", *GENERATED)
+    print("frontend_payloads_match_committed_sources")
+
+
+def publish() -> None:
+    for attempt in range(1, 6):
+        run("git", "fetch", "origin", "main")
+        run("git", "reset", "--hard", "origin/main")
+        build()
+        run("git", "add", "--", *GENERATED)
+        # A second build must reproduce the staged bytes before they can be published.
+        build()
+        run("git", "diff", "--exit-code", "--", *GENERATED)
+        if has_staged_changes():
+            run("git", "-c", "user.name=github-actions[bot]", "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com", "commit", "-m", "Sync generated frontend payloads with canonical jobs")
+            if run("git", "push", "origin", "HEAD:main", check=False).returncode:
+                if attempt == 5:
+                    raise RuntimeError("Unable to publish frontend payloads after five attempts")
+                time.sleep(attempt * 2)
+                continue
+        run("git", "fetch", "origin", "main")
+        head = subprocess.check_output(("git", "rev-parse", "HEAD"), text=True).strip()
+        remote = subprocess.check_output(("git", "rev-parse", "origin/main"), text=True).strip()
+        if head == remote:
+            return
+        if attempt == 5:
+            raise RuntimeError("Main advanced during frontend publication")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--publish", action="store_true", help="commit generated drift to main before deployment")
+    args = parser.parse_args()
+    if args.publish:
+        publish()
+    else:
+        check_clean_build()
+
+
+if __name__ == "__main__":
+    main()
