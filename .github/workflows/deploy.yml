@@ -17,6 +17,7 @@ on:
       - 'scripts/build_jd_shards.mjs'
       - 'package.json'
       - 'scripts/verify_visitor_counter.py'
+      - 'scripts/deploy_cloudflare.py'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
@@ -46,12 +47,15 @@ jobs:
         with:
           github_token: "\u0024\u007B\u007B secrets.GITHUB_TOKEN \u007D\u007D"
           publish_dir: ./
-      - name: Deploy to Cloudflare Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: "\u0024\u007B\u007B secrets.CLOUDFLARE_API_TOKEN \u007D\u007D"
-          accountId: "\u0024\u007B\u007B secrets.CLOUDFLARE_ACCOUNT_ID \u007D\u007D"
-          wranglerVersion: "4.143.0"
-          command: deploy --config wrangler.jsonc
+      - name: Install pinned Cloudflare deploy CLI
+        run: npm install --no-save --package-lock=false wrangler@4.149.0
+      - name: Deploy to Cloudflare Worker with bounded transient retries
+        timeout-minutes: 15
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: python scripts/deploy_cloudflare.py --attempts 3 --timeout 240
       - name: Verify production visitor counter assets
         run: python scripts/verify_visitor_counter.py
+
