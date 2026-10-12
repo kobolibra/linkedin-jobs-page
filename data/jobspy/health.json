@@ -36,7 +36,102 @@
         "httpRetries": 0,
         "stoppedReason": "LinkedIn returned a login or challenge page"
       }
+    },
+    {
+      "runId": "jobs:38270689745:1",
+      "task": "jobs",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-12T15:35:59.279591+00:00",
+      "requests": 130,
+      "retries": 5,
+      "httpStatuses": {
+        "200": 125,
+        "429": 5
+      },
+      "outcomes": {
+        "response": 125,
+        "rate_limited": 5
+      },
+      "stages": {
+        "search": 130
+      },
+      "detailEndpoints": {},
+      "queries": {
+        "Bank of America::CN": "failed@start=10: unrecognised or incomplete search markup",
+        "BBVA::CN": "failed@start=10: unrecognised or incomplete search markup",
+        "BlackRock::CN": "failed@start=10: unrecognised or incomplete search markup",
+        "BNP Paribas::CN": "failed@start=10: unrecognised or incomplete search markup",
+        "Citi::CN": "failed@start=50: unrecognised or incomplete search markup",
+        "DBS Bank::CN": "failed@start=90: unrecognised or incomplete search markup",
+        "Deutsche Bank::CN": "failed@start=20: unrecognised or incomplete search markup",
+        "Fidelity International::CN": "failed@start=20: unrecognised or incomplete search markup",
+        "Goldman Sachs::CN": "failed@start=10: unrecognised or incomplete search markup",
+        "HSBC::CN": "failed@start=450: unrecognised or incomplete search markup",
+        "JPMorgan Chase::CN": "failed@start=50: unrecognised or incomplete search markup",
+        "Morgan Stanley::CN": "failed@start=20: unrecognised or incomplete search markup",
+        "Natixis::CN": "failed@start=20: unrecognised or incomplete search markup",
+        "Societe Generale::CN": "failed@start=10: unrecognised or incomplete search markup",
+        "Standard Chartered::CN": "failed@start=290: unrecognised or incomplete search markup",
+        "UBS::CN": "failed@start=20: unrecognised or incomplete search markup"
+      },
+      "cooldowns": {},
+      "details": {},
+      "liveness": {}
+    },
+    {
+      "runId": "logos:38274933832:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-12T16:05:56.976105+00:00",
+      "requests": 6,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 5,
+        "404": 1
+      },
+      "outcomes": {
+        "response": 6
+      },
+      "stages": {
+        "logos": 6
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791822956.8855975,
+          "stopUntil": 1791822956.8855975,
+          "reason": "login or challenge"
+        }
+      },
+      "logos": {
+        "candidates": 7,
+        "downloaded": 2,
+        "missing": 2,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "LinkedIn returned a login or challenge page"
+      }
     }
   ],
-  "queryFailureStreaks": {}
+  "queryFailureStreaks": {
+    "Bank of America::CN": 1,
+    "BBVA::CN": 1,
+    "BlackRock::CN": 1,
+    "BNP Paribas::CN": 1,
+    "Citi::CN": 1,
+    "DBS Bank::CN": 1,
+    "Deutsche Bank::CN": 1,
+    "Fidelity International::CN": 1,
+    "Goldman Sachs::CN": 1,
+    "HSBC::CN": 1,
+    "JPMorgan Chase::CN": 1,
+    "Morgan Stanley::CN": 1,
+    "Natixis::CN": 1,
+    "Societe Generale::CN": 1,
+    "Standard Chartered::CN": 1,
+    "UBS::CN": 1
+  }
 }
