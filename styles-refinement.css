@@ -303,3 +303,16 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 /* Keep the mascot photo stack without a cast shadow underneath. */
 .mast-stack .mast-photo,
 [data-theme="dark"] .mast-stack .mast-photo { box-shadow:none; }
+
+/* One quiet header row, ending 16px before the 80px theme control. */
+.masthead .eyebrow { padding-right:96px; white-space:nowrap; }
+.masthead .eyebrow::after { background:var(--line); min-width:0; }
+.masthead .theme-toggle { top:26px; }
+@media (max-width:720px) {
+  .masthead .theme-toggle { top:27.25px; }
+  .masthead .mast-stack { top:66px; }
+}
+/* JD loading belongs beside Analytics, not in the description body. */
+.job-jd-status { color:var(--ink-soft); font:400 11px/1.2 var(--sans); white-space:nowrap; }
+.job-jd-status[hidden] { display:none !important; }
+.job-jd-text:empty { display:none !important; }

@@ -234,10 +234,15 @@ async function hydrateJd(card){
   if(!body||body.dataset.loaded==="true")return;
   if(body.dataset.loading==="true")return;
   body.dataset.loading="true";
-  body.textContent="Loading job description…";
+  const summary=card.querySelector("details.job-jd summary");
+  let status=summary?.querySelector(".job-jd-status");
+  if(summary&&!status){status=document.createElement("span");status.className="job-jd-status";status.setAttribute("role","status");summary.appendChild(status);}
+  if(status){status.hidden=false;status.textContent="Loading job description…";body.textContent="";}
+  else body.textContent="Loading job description…";
   let entry=jdById.get(card.dataset.id);
   if(!entry){try{await loadJdDetails(card.dataset.id);entry=jdById.get(card.dataset.id);}catch(e){body.textContent="Job description could not be loaded. Please try again.";}}
-  if(!entry){delete body.dataset.loading;return;}
+  if(!entry){if(status)status.hidden=true;body.textContent="Job description could not be loaded. Please try again.";delete body.dataset.loading;return;}
+  if(status)status.hidden=true;
   const html=entry.descriptionHtml||"",text=entry.descriptionText||entry.description||jdPlainText(html);
   const current=html?safeJdHtml(html):esc(text).replace(/\n{2,}/g,"</p><p>").replace(/\n/g,"<br>");
   const tracked=entry.jdDiffHtml?safeJdHtml(entry.jdDiffHtml):"";
