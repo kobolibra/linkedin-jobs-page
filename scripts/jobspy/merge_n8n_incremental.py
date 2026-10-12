@@ -157,7 +157,7 @@ def merge_documents(baseline, batch_doc):
     by_key = {job_key(row): i for i, row in enumerate(rows) if job_key(row)}
     added = updated = reactivated = liveness_kept_expired = 0
     for incoming in batch:
-        if not isinstance(incoming, dict):
+        if not isinstance(incoming, dict) or normalize_company(incoming.get("company")) in blocked:
             continue
         key = job_key(incoming)
         if not key:
@@ -165,7 +165,10 @@ def merge_documents(baseline, batch_doc):
         if key in by_key:
             current = rows[by_key[key]]
             merged = dict(current)
-            keep_liveness_expired = current.get("jobStatus") == "expired" and current.get("expiredReason") in LIVENESS_EXPIRED_REASONS
+            feed_time = timestamp(incoming.get("observedAt") or observed_at)
+            expired_time = timestamp(current.get("expiredAt"))
+            stale_expiry = current.get("jobStatus") == "expired" and feed_time and expired_time and feed_time <= expired_time
+            keep_liveness_expired = stale_expiry or current.get("jobStatus") == "expired" and current.get("expiredReason") in LIVENESS_EXPIRED_REASONS
             for field, value in incoming.items():
                 # RSS is evidence that a listing is visible in the feed, but
                 # cannot by itself prove a LinkedIn repost.  Existing rows
@@ -177,7 +180,9 @@ def merge_documents(baseline, batch_doc):
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
                     "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
-                    "rssObservedAt",
+                    "rssObservedAt", "jobStatus", "expiredAt", "expiredReason",
+                    "lastSeenAt", "liveCheckedAt", "liveVerifiedAt", "liveStatus",
+                    "liveMissCount", "liveFirstMissAt",
                 } or not nonempty(value):
                     continue
                 merged[field] = value

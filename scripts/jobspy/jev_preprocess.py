@@ -48,7 +48,7 @@ def build_boilerplate_table(jobs: Iterable[tuple[str, str]], min_share: float = 
         grouped[str(company or "Unknown")].append(html_to_blocks(source))
     result: dict[str, Any] = {}
     for company, docs in grouped.items():
-        counts = Counter(signature(block) for doc in docs for block in doc if len(block) >= 30)
+        counts = Counter(sig for doc in docs for sig in {signature(block) for block in doc if len(block) >= 30})
         threshold = max(min_count, int(len(docs) * min_share + .999))
         signatures = {sig: count for sig, count in counts.items() if count >= threshold}
         samples = {}
@@ -135,8 +135,11 @@ def preprocess(title: str, company: str, source: str, metadata: dict[str, Any] |
     raw = html_to_blocks(source)
     company_sigs = (boilerplate or {}).get(str(company or ""), {})
     kept, extracted, removed = clean_blocks(raw, company_sigs)
-    jd_text = "\n".join(kept)[:24000]
-    level, flags, stats = evidence(kept, jd_text)
+    full_text = "\n".join(kept)
+    jd_text = full_text[:24000]
+    level, flags, stats = evidence(html_to_blocks(jd_text), jd_text)
+    if len(full_text) > 24000:
+        flags.append("truncated")
     if len(jd_text) < 40: level = "insufficient"
     if len(jd_text) < 300 and "insufficient_role_evidence" not in flags: flags.append("insufficient_role_evidence")
     metadata = metadata or {}

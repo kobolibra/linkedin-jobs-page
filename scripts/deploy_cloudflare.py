@@ -2,6 +2,7 @@
 import argparse
 import os
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -26,7 +27,20 @@ def transient_error(output):
         r"fetch failed|socket hang up|network connection.*(?:lost|timeout)", plain, re.I))
 
 
-def deploy(*, attempts=3, timeout=240, run=subprocess.run, sleep=time.sleep,
+def run_command(command, *, stdout, stderr, text, timeout):
+    # npx launches descendants; kill the complete process group before retrying.
+    with subprocess.Popen(command, stdout=stdout, stderr=stderr, text=text,
+                          start_new_session=True) as process:
+        try:
+            output, _ = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.communicate()
+            raise
+        return subprocess.CompletedProcess(command, process.returncode, output)
+
+
+def deploy(*, attempts=3, timeout=240, run=run_command, sleep=time.sleep,
            report=print, summary=None):
     if attempts < 1 or timeout <= 0:
         raise ValueError("deployment attempts and timeout must be positive")

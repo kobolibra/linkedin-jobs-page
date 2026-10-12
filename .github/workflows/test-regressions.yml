@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - 'scripts/jobspy/**'
+      - 'scripts/audit_project.py'
+      - 'scripts/test_audit_project.py'
+      - 'scripts/test_frontend_resilience.mjs'
+      - 'guestbook.js'
       - 'scripts/company_logos.py'
       - 'scripts/logo_http.py'
       - 'scripts/test_logo_http.py'
@@ -59,6 +63,8 @@ jobs:
           node-version: '22'
       - name: Install Python dependencies
         run: python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
+      - name: Audit the actual canonical data and cached logo assets
+        run: python scripts/audit_project.py --strict
       - name: Test lifecycle and frontend payload generation
         env:
           PYTHONPATH: scripts/jobspy
@@ -74,8 +80,8 @@ jobs:
           node --test scripts/test_company_logos.mjs
       - name: Test JEV Worker and visitor counter
         run: |
-          node --test test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs scripts/test_jd_loading.mjs scripts/test_jev_framework.mjs
+          node --test scripts/test_frontend_resilience.mjs test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs scripts/test_jd_loading.mjs scripts/test_jev_framework.mjs
           python -m unittest discover -s scripts -p test_verify_visitor_counter.py
 
       - name: Test transient deployment failures and retry budgets
-        run: PYTHONPATH=scripts python -m unittest scripts/test_deploy_cloudflare.py
+        run: PYTHONPATH=scripts python -m unittest scripts/test_deploy_cloudflare.py scripts/test_audit_project.py

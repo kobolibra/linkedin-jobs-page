@@ -80,7 +80,8 @@ def merge_history(previous, report):
 def alerts(report):
     statuses = list(report.get("queries", {}).values())
     failures = [x for x in statuses if str(x).startswith(("failed", "process-failed", "unreadable"))]
-    critical = (bool(statuses) and len(failures) == len(statuses)) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses)
+    reliable = any(str(x).startswith(("ok:", "empty")) for x in statuses)
+    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses)
     issues = []
     if critical:
         issues.append("Scraping run failed or no reliable search report; last good jobs must remain unchanged")

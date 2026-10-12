@@ -155,7 +155,7 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(row["pushTime"], "2026-09-10T02:00:00+00:00")
         self.assertEqual(row["firstSeen"], "2026-08-28")
 
-    def test_earlier_jobspy_date_posted_backfills_first_seen(self):
+    def test_earlier_jobspy_date_preserves_existing_first_seen(self):
         existing = {"jobs": [{
             "sourceJobId": "li-100000014",
             "company": "Acme",
@@ -175,7 +175,7 @@ class ReconcileTests(unittest.TestCase):
         }
         result = reconcile(existing, snapshot, "2026-09-10T02:00:00+00:00")
         row = result["jobs"][0]
-        self.assertEqual(row["firstSeen"], "2026-09-01T00:00:00+00:00")
+        self.assertEqual(row["firstSeen"], "2026-09-05T00:00:00+00:00")
         self.assertEqual(row["pushTime"], "2026-09-06T00:00:00+00:00")
 
     def test_date_advance_uses_source_date_without_derived_flag(self):

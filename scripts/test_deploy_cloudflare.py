@@ -58,3 +58,13 @@ class DeploymentTests(unittest.TestCase):
         run.assert_called_once();sleep.assert_not_called()
 
 if __name__ == '__main__':unittest.main()
+
+class ProcessBudgetTests(unittest.TestCase):
+    def test_timeout_kills_descendants_holding_the_output_pipe(self):
+        import sys, time
+        from deploy_cloudflare import run_command
+        command = [sys.executable, '-c', 'import subprocess,time,sys; subprocess.Popen([sys.executable,"-c","import time; time.sleep(30)"]); time.sleep(30)']
+        start = time.monotonic()
+        with self.assertRaises(subprocess.TimeoutExpired):
+            run_command(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=.2)
+        self.assertLess(time.monotonic()-start, 3)
