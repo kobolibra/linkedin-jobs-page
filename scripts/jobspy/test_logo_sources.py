@@ -12,6 +12,6 @@ class SourceTests(unittest.TestCase):
     def test_index_embeds_catalog_once_and_rejects_external_paths(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);source=root/'jobs.json';source.write_text(json.dumps({'jobs':[{'company':'DBS','title':'A','link':'https://www.linkedin.com/jobs/view/12345'}]}))
-            asset='assets/company-logos/'+'a'*24+'.svg';(root/'company-logos.json').write_text(json.dumps({'dbs bank':asset,'other':'https://attacker.test/logo'}))
+            asset='assets/company-logos/'+'a'*24+'.svg';other='assets/company-logos/'+'b'*24+'.webp';(root/'company-logos.json').write_text(json.dumps({'dbs bank':asset,'cached historical company':other,'other':'https://attacker.test/logo'}))
             (root/'data/company-logos').mkdir(parents=True);(root/'data/company-logos/state.json').write_text(json.dumps({'dbs bank':{'status':'ready','imageKind':'placeholder'}}))
-            build(source,root/'index.json',root/'details.json');doc=json.loads((root/'index.json').read_text());self.assertEqual(doc['companyLogos'],{'dbs bank':asset});self.assertEqual(doc['companyLogoFallback'],asset);self.assertNotIn('companyLogos',doc['jobs'][0])
+            build(source,root/'index.json',root/'details.json');doc=json.loads((root/'index.json').read_text());self.assertEqual(doc['companyLogos'],{'dbs bank':asset,'cached historical company':other});self.assertEqual(doc['companyLogoFallback'],asset);self.assertNotIn('companyLogos',doc['jobs'][0])
