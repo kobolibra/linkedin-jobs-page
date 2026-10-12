@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 60
     env:
       LINKEDIN_HTTP_STATE: ${{ github.workspace }}/data/jobspy/http-state.json
-      LINKEDIN_HEALTH_EVENTS: ${{ runner.temp }}/linkedin-logo-health.jsonl
+      LINKEDIN_HEALTH_EVENTS: /tmp/linkedin-logo-health.jsonl
     steps:
       - uses: actions/checkout@v4
         with:
