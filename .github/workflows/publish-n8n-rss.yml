@@ -87,3 +87,9 @@ jobs:
           done
           echo "Unable to publish canonical RSS merge" >&2
           exit 1
+
+      - name: Queue RSS-only company logo updates
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run company-logos.yml --ref main -f mode=rss

@@ -1,0 +1,63 @@
+name: Cache LinkedIn company logos
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/company-logos.yml', '.github/company-logo-bootstrap.json']
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [rss, bootstrap]
+        default: rss
+
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: company-logos
+  cancel-in-progress: false
+
+jobs:
+  cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install logo-only dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-logos.txt
+      - name: Fetch missing company logos
+        env:
+          MODE: ${{ github.event.inputs.mode || 'bootstrap' }}
+        run: python scripts/company_logos.py --mode "$MODE" --output /tmp/company-logos
+      - name: Upload collection report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: company-logo-report
+          path: /tmp/company-logos/*.json
+          if-no-files-found: ignore
+      - name: Publish verified images without changing job data
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/company_logos.py --apply /tmp/company-logos
+            git add assets/company-logos company-logos.json data/company-logos/state.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m '[company-logos] cache verified employer images'
+            if git push origin HEAD:main; then
+              GH_TOKEN="${{ github.token }}" gh workflow run deploy.yml --ref main
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          exit 1
