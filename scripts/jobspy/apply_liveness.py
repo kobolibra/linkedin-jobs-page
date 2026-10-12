@@ -7,7 +7,7 @@ from pathlib import Path
 from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=30); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=10); args=ap.parse_args()
     doc=json.loads(Path(args.jobs).read_text(encoding="utf-8")); out=dict(doc) if isinstance(doc,dict) else {"jobs":doc}
     try: live=json.loads(Path(args.liveness).read_text(encoding="utf-8"))
     except (FileNotFoundError,json.JSONDecodeError):

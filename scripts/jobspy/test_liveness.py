@@ -1,6 +1,8 @@
 import json, tempfile, unittest
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
+from unittest.mock import patch
+import apply_liveness
 from job_liveness import apply_observation, classify, in_scope, select_candidates
 from apply_liveness import main as apply_main
 class LivenessTests(unittest.TestCase):
@@ -76,9 +78,9 @@ class LivenessTests(unittest.TestCase):
     def test_open_clears_pending_and_reactivates(self):
         row=self.row(jobStatus='expired',expiredReason='linkedin_not_accepting',expiredAt='2026-09-01T00:00:00+00:00',liveFirstMissAt='2026-09-01T00:00:00+00:00'); apply_observation(row,'open','2026-10-01T00:00:00+00:00'); self.assertEqual(row['jobStatus'],'active'); self.assertNotIn('expiredReason',row); self.assertEqual(row['liveMissCount'],0)
 
-    def test_apply_liveness_deletes_only_cn_non_target_after_thirty_days(self):
+    def test_apply_liveness_deletes_only_cn_non_target_after_ten_days(self):
         now=datetime.now(timezone.utc)
-        old=(now-timedelta(days=31)).isoformat(); recent=(now-timedelta(days=29)).isoformat()
+        old=(now-timedelta(days=11)).isoformat(); recent=(now-timedelta(days=9)).isoformat()
         doc={"jobs":[
             self.row(sourceJobId='li-100000001',jobStatus='expired',expiredAt=old,expiredReason='linkedin_closed'),
             self.row(sourceJobId='li-100000002',jobStatus='expired',expiredAt=recent,expiredReason='linkedin_closed'),
@@ -99,4 +101,37 @@ class LivenessTests(unittest.TestCase):
         self.assertEqual(result['liveness']['deleted_after_days'],1)
     def test_idempotent_and_candidate_priority(self):
         row=self.row(); apply_observation(row,'gone','2026-10-01T00:00:00+00:00'); snapshot=dict(row); apply_observation(row,'gone','2026-10-01T00:00:00+00:00'); self.assertEqual(row,snapshot); picked=select_candidates([self.row(liveFirstMissAt='2026-09-01T00:00:00+00:00',liveCheckedAt='2026-09-01T00:00:00+00:00'),self.row(sourceJobId='li-123456790')],now='2026-10-01T00:00:00+00:00',max_probes=1); self.assertEqual(picked[0]['sourceJobId'],'li-123456789')
+
+    def test_ten_day_boundary_all_regions_and_protected_records(self):
+        now=datetime(2026,10,12,4,tzinfo=timezone.utc)
+        class FrozenDatetime(datetime):
+            @classmethod
+            def now(cls,tz=None): return now
+        rows=[]; expected=set(); observations=[]
+        def add(keep, **kw):
+            row=self.row(sourceJobId='li-'+str(100000000+len(rows)), **kw)
+            rows.append(row)
+            if keep: expected.add(row['sourceJobId'])
+            return row
+        for region in ('CN','HK','SG'):
+            for seconds, keep in ((10*86400-1,True),(10*86400,False),(10*86400+1,False)):
+                add(keep,location=region,jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(seconds=seconds)).isoformat())
+            add(True,location=region,company='HSBC',companyCanonical='hsbc',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=20)).isoformat())
+        add(True,jobStatus='active',expiredAt=(now-timedelta(days=20)).isoformat())
+        add(True,jobStatus='expired',expiredReason='missing_from_full_company_snapshot',expiredAt=(now-timedelta(days=20)).isoformat())
+        add(True,jobStatus='expired',expiredReason='linkedin_closed',expiredAt='invalid')
+        add(True,jobStatus='expired',expiredReason='linkedin_closed')
+        reopened=add(True,location='HK',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=20)).isoformat())
+        observations.append({'jobId':reopened['sourceJobId'].removeprefix('li-'),'result':'open','checkedAt':now.isoformat()})
+        live={'schemaVersion':'1.1','mode':'job-liveness','scopeLocations':['CN','HK','SG'],'observedAt':now.isoformat(),'observations':observations}
+        with tempfile.TemporaryDirectory() as d:
+            jobs=Path(d)/'jobs.json'; obs=Path(d)/'live.json'; out=Path(d)/'out.json'
+            jobs.write_text(json.dumps({'jobs':rows})); obs.write_text(json.dumps(live))
+            with patch('sys.argv',['apply_liveness.py','--jobs',str(jobs),'--liveness',str(obs),'--output',str(out)]), patch.object(apply_liveness,'datetime',FrozenDatetime):
+                apply_main()
+            result=json.loads(out.read_text())
+        self.assertEqual({row['sourceJobId'] for row in result['jobs']},expected)
+        self.assertEqual(result['liveness']['deleted_after_days'],6)
+        self.assertEqual(next(row for row in result['jobs'] if row['sourceJobId']==reopened['sourceJobId'])['jobStatus'],'active')
+
 if __name__=='__main__': unittest.main()
