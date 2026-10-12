@@ -1,6 +1,12 @@
+import json
+import sys
+import tempfile
 import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
-from fetch_linkedin_requests import parse_search
+from fetch_linkedin_requests import main, parse_search
 
 
 HTML = '''
@@ -36,6 +42,40 @@ class FetchMultiRegionTests(unittest.TestCase):
         self.assertEqual(cn["location"], "CN")
         self.assertEqual(cn["city"], "Shanghai")
         self.assertEqual(cn["descriptionHtml"], "")
+
+    def test_verified_guest_end_marker_completes_snapshot_but_unknown_markup_does_not(self):
+        listing = HTML.replace("HSBC", "Bank of America")
+        end_marker = "<!DOCTYPE html>\n\n<!---->  "
+
+        def run_pages(pages):
+            class Session:
+                def __init__(self):
+                    self.headers = {}
+                    self.context = {}
+                    self.calls = 0
+
+                def get(self, *_args, **_kwargs):
+                    html = pages[self.calls]
+                    self.calls += 1
+                    return SimpleNamespace(status_code=200, content=html.encode(), text=html, raise_for_status=lambda: None)
+
+            session = Session()
+            with tempfile.TemporaryDirectory() as directory:
+                output = Path(directory) / "search.json"
+                argv = ["fetch_linkedin_requests.py", "--company", "Bank of America", "--location", "China", "--output", str(output), "--delay-min", "0", "--delay-max", "0"]
+                with patch("fetch_linkedin_requests.LinkedInSession", return_value=session), patch("fetch_linkedin_requests.time.sleep"), patch.object(sys, "argv", argv):
+                    self.assertEqual(main(), 0)
+                return json.loads(output.read_text()), session.calls
+
+        complete, calls = run_pages([listing, end_marker, end_marker])
+        self.assertEqual(calls, 3)
+        self.assertEqual(complete["count"], 1)
+        self.assertEqual(complete["statusSummary"], {"Bank of America::CN": "ok: 1 jobs"})
+
+        unsafe, calls = run_pages([listing, "<!DOCTYPE html><div>unexpected page</div>"])
+        self.assertEqual(calls, 2)
+        self.assertEqual(unsafe["count"], 1)
+        self.assertIn("failed@start=10", unsafe["statusSummary"]["Bank of America::CN"])
 
 
 if __name__ == "__main__":
