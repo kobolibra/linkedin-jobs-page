@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-12T09:28:44.284375+00:00",
+    "checkedAt": "2026-10-12T10:04:40.133957+00:00",
     "status": "missing",
     "parserVersion": 4,
     "attempts": [
@@ -2700,7 +2700,7 @@
       {
         "jobId": "4461002131",
         "reason": "http_error",
-        "status": 429
+        "status": 404
       }
     ]
   },
@@ -3009,7 +3009,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-12T09:28:47.594847+00:00",
+    "checkedAt": "2026-10-12T10:04:42.423293+00:00",
     "status": "missing",
     "parserVersion": 4,
     "attempts": [
@@ -3160,7 +3160,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-12T09:28:49.783468+00:00",
+    "checkedAt": "2026-10-12T10:04:44.790989+00:00",
     "status": "missing",
     "parserVersion": 4,
     "attempts": [
@@ -3845,7 +3845,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-12T09:28:53.070425+00:00",
+    "checkedAt": "2026-10-12T10:04:45.956077+00:00",
     "status": "missing",
     "parserVersion": 4,
     "attempts": [
@@ -5268,16 +5268,15 @@
   },
   "starbridge group": {
     "name": "Starbridge Group",
-    "checkedAt": "2026-10-12T09:28:57.569543+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-12T10:04:48.303063+00:00",
+    "status": "ready",
     "parserVersion": 4,
-    "attempts": [
-      {
-        "jobId": "4469069730",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://hk.linkedin.com/company/starbridge-investment",
+    "sourceJobId": "4469069730"
   },
   "starry recruitment": {
     "name": "Starry Recruitment",
@@ -5376,7 +5375,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-12T09:28:59.765433+00:00",
+    "checkedAt": "2026-10-12T10:04:50.709394+00:00",
     "status": "missing",
     "parserVersion": 4,
     "attempts": [
@@ -6314,5 +6313,41 @@
         "companyUrl": ""
       }
     ]
+  },
+  "edb": {
+    "name": "EDB",
+    "checkedAt": "2026-10-12T10:04:38.807604+00:00",
+    "status": "ready",
+    "parserVersion": 4,
+    "attempts": [],
+    "asset": "98b86ce5ed4e04eb26e60c94.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFcc29ZhOEcMg/company-logo_100_100/B4EZd.lnZ0HgAQ-/0/1750175479851/edbpostgres_logo?e=2147483647&v=beta&t=yhn-Ug0FznRye4argTPjQHppGXu1nfFBCUdLv6r5ESw",
+    "companyUrl": "https://www.linkedin.com/company/edbpostgres",
+    "sourceJobId": "4478388209"
+  },
+  "paragon capital management": {
+    "name": "Paragon Capital Management",
+    "checkedAt": "2026-10-12T10:04:47.075333+00:00",
+    "status": "ready",
+    "parserVersion": 4,
+    "attempts": [],
+    "asset": "35a121c9d88c4ce671eb39fe.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHgWd-6FKENEQ/company-logo_100_100/company-logo_100_100/0/1651202396682/paragon_capital_management_singapore_private_limited_logo?e=2147483647&v=beta&t=kaALOPyRrus3x_J6z5SPc8HBsrwbR-GbQs0u5e5PSUI",
+    "companyUrl": "https://sg.linkedin.com/company/paragon-capital-management-singapore-private-limited",
+    "sourceJobId": "4477282994"
+  },
+  "state street investment management": {
+    "name": "State Street Investment Management",
+    "checkedAt": "2026-10-12T10:04:49.495171+00:00",
+    "status": "ready",
+    "parserVersion": 4,
+    "attempts": [],
+    "asset": "64b41ea4f7a652c939caf259.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE7iRTzzHGS0Q/company-logo_100_100/B56ZfAnmdqHoAQ-/0/1751283296574/state_street_investment_management_logo?e=2147483647&v=beta&t=MgSjbn8SlimiZR-ogTdud7u6DtaG5iF9ZcIB7rtJrwY",
+    "companyUrl": "https://www.linkedin.com/company/state-street-investment-management",
+    "sourceJobId": "4478390129"
   }
 }
