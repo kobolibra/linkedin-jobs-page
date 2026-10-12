@@ -49,6 +49,15 @@ class HealthTests(unittest.TestCase):
             self.assertEqual(report['detailEndpoints'],{'guest':1})
             self.assertEqual(report['details']['ok'],1)
 
+    def test_capture_marks_all_failed_search_as_failed_even_when_job_status_is_success(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp);search=p/'search';search.mkdir()
+            (search/'bank.json').write_text(json.dumps({'statusSummary':{'Bank::CN':'failed@start=10: unrecognised or incomplete search markup'}}))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=str(search),details=None,liveness=None)
+            self.assertEqual(collect(args)['workflowStatus'],'failure')
+            (search/'bank.json').write_text(json.dumps({'statusSummary':{'Bank::CN':'ok: 5 jobs'}}))
+            self.assertEqual(collect(args)['workflowStatus'],'success')
+
     def test_workflow_failure_and_absent_reports_are_not_healthy(self):
         self.assertTrue(alerts({'task':'jobs','queries':{}})[0])
         self.assertTrue(alerts({'workflowStatus':'failure'})[0])

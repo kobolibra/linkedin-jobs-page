@@ -60,6 +60,10 @@ def collect(args):
         # Inputs are only supplied when those steps ran in this invocation.
         report["details"] = read(args.details, {}).get("health", {})
         report["liveness"] = read(args.liveness, {}).get("stats", {})
+        # The health step runs after skipped publishing steps, when job.status
+        # can still say success. Record the known all-source failure honestly.
+        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()):
+            report["workflowStatus"] = "failure"
     else:
         report["logos"] = read(args.logo_report, {})
     return report
