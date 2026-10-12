@@ -114,6 +114,13 @@ def looks_like_block_page(html: str) -> bool:
     return "captcha" in text or "security verification" in text
 
 
+def is_empty_search_page(html: str) -> bool:
+    # LinkedIn's guest pagination endpoint returns this 26-byte document after
+    # the last result. Only this verified marker (or a truly empty body) is an
+    # empty page; other card-free HTML remains untrusted.
+    return not html.strip() or bool(re.fullmatch(r"<!doctype html>\s*<!---->", html.strip(), re.I))
+
+
 def listing_region(raw):
     value = str(raw or "").casefold()
     if re.search(r"hong ?kong|香港", value):
@@ -260,7 +267,7 @@ def main() -> int:
                 page_jobs = parse_search(response.text, company, fetched_at, region)
                 markup = BeautifulSoup(response.text, "html.parser")
                 cards = markup.select("div.base-search-card")
-                if ((not cards and response.text.strip()) or
+                if ((not cards and not is_empty_search_page(response.text)) or
                     any(not card.select_one("a.base-card__full-link[href]") or
                         not card.select_one("h3.base-search-card__title") or
                         not card.select_one("h4.base-search-card__subtitle a") for card in cards)):
@@ -319,4 +326,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
