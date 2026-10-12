@@ -9,7 +9,6 @@ from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
 from jev_preprocess import build_boilerplate_table, preprocess
-from logo_sources import key as logo_key
 
 
 def job_id(link: object) -> str:
@@ -73,9 +72,8 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
     if logo_path.is_file():
         try: catalog=json.loads(logo_path.read_text(encoding='utf-8'))
         except (OSError,json.JSONDecodeError): catalog={}
-        companies={logo_key(row.get('company')) for row in rows if isinstance(row,dict)}
         if isinstance(catalog,dict):
-            logos={name:path for name,path in catalog.items() if name in companies and isinstance(path,str) and re.fullmatch(r'assets/company-logos/[a-f0-9]{24}\.(webp|svg)',path)}
+            logos={name:path for name,path in catalog.items() if isinstance(path,str) and re.fullmatch(r'assets/company-logos/[a-f0-9]{24}\.(webp|svg)',path)}
         state_path=source.parent/'data/company-logos/state.json'
         if state_path.is_file():
             try: state=json.loads(state_path.read_text(encoding='utf-8'))
