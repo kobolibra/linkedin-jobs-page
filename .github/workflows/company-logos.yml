@@ -8,7 +8,7 @@ on:
     inputs:
       mode:
         type: choice
-        options: [rss, bootstrap]
+        options: [rss, bootstrap, repair]
         default: rss
 
 permissions:

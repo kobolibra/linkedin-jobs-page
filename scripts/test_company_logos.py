@@ -21,6 +21,20 @@ class LogosTests(unittest.TestCase):
         data=thumbnail(buf.getvalue());self.assertLess(len(data),12000)
         with Image.open(io.BytesIO(data)) as im:
             self.assertEqual(im.size,(64,64));self.assertEqual(im.format,'WEBP');self.assertEqual(im.getpixel((0,0))[3],0)
+    def test_verified_crop_and_school_employer(self):
+        self.assertIsNotNone(extract(self.html(url='https://media.licdn.com/dms/image/v2/X/img-crop_100/image'),'DBS'))
+        self.assertIsNotNone(extract(self.html().replace('/company/dbs-bank/','/school/dbs-bank/'),'DBS'))
+        self.assertIsNone(extract(self.html().replace('/company/dbs-bank/','/in/dbs-bank/'),'DBS'))
+        self.assertIsNotNone(extract(self.html('Ateca Executive Search'),'Ateca'))
+        self.assertIsNone(extract(self.html('Ateca Recruitment'),'Ateca'))
+    def test_explicit_repair_skips_ready_but_rechecks_missing(self):
+        rows=[{'company':'A','link':'https://www.linkedin.com/jobs/view/'+str(i)} for i in range(8)]
+        state={'a':{'status':'missing','checkedAt':'2026-10-12T05:18:31+00:00'}}
+        self.assertEqual(len(candidates(rows,[],state,'repair')[0][1]),6)
+        self.assertEqual(candidates(rows,[],{'a':{'status':'ready'}},'repair'),[])
+        self.assertTrue(candidates(rows,[],state,'bootstrap'))
+        state['a']['parserVersion']=2
+        self.assertEqual(candidates(rows,[],state,'bootstrap'),[])
     def test_rss_only_new_retained_company(self):
         a={'company':'A','link':'https://www.linkedin.com/jobs/view/12345'}
         b={'company':'B','link':'https://www.linkedin.com/jobs/view/12346'}

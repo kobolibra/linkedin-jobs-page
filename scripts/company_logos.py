@@ -10,6 +10,10 @@ from PIL import Image, ImageOps
 ALIASES={'jpmorganchase':'JPMorgan Chase','jpmorgan':'JPMorgan Chase','bnp':'BNP Paribas','bnpparibas':'BNP Paribas','societegenerale':'Societe Generale','dbs':'DBS Bank','dbsbank':'DBS Bank','deutschebank':'Deutsche Bank','goldmansachs':'Goldman Sachs','blackrock':'BlackRock','blackrockassetmanagement':'BlackRock'}
 Image.MAX_IMAGE_PIXELS=4000000
 
+# Verified historical display names, scoped to logo identity only.
+LOGO_IDENTITIES={'ateca':'ateca executive search','charterhouse partnership | asia':'charterhouse partnership','drake international singapore':'drake international – singapore','efg international':'efg private banking'}
+PARSER_VERSION=2
+
 def key(name):
     raw=str(name or '').strip()
     folded=re.sub('[^a-z0-9]','',unicodedata.normalize('NFKD',raw).encode('ascii','ignore').decode().lower())
@@ -30,14 +34,16 @@ def image_url(url):
 def extract(html, expected):
     soup=BeautifulSoup(html,'html.parser')
     org=soup.select_one('a.topcard__org-name-link')
-    if not org or key(org.get_text(' ',strip=True))!=key(expected): return None
+    observed=key(org.get_text(' ',strip=True)) if org else ''
+    expected_key=key(expected)
+    if not org or observed not in {expected_key,LOGO_IDENTITIES.get(expected_key,expected_key)}: return None
     company_url=org.get('href','').split('?')[0]
-    if not linkedin_url(company_url) or '/company/' not in urlsplit(company_url).path: return None
+    if not linkedin_url(company_url) or not re.match(r'^/(company|school|showcase)/[^/]+/?$',urlsplit(company_url).path): return None
     top=org.find_parent(class_='top-card-layout') or soup
     img=top.select_one('img.artdeco-entity-image')
     if not img: return None
     url=img.get('data-delayed-url') or img.get('src','')
-    if not image_url(url) or '/company-logo_' not in url: return None
+    if not image_url(url) or not re.search(r'/(company-logo_|school-logo_|img-crop_)',urlsplit(url).path): return None
     return url,company_url
 
 def thumbnail(raw):
@@ -57,18 +63,21 @@ def candidates(jobs, rss, state, mode):
     for row in rows(jobs):
         k=key(row.get('company'))
         if k and linkedin_url(row.get('link','')): grouped.setdefault(k,[]).append(row)
-    wanted=set(grouped) if mode=='bootstrap' else {key(r.get('company')) for r in rows(rss)} & set(grouped)
+    wanted=set(grouped) if mode in ('bootstrap','repair') else {key(r.get('company')) for r in rows(rss)} & set(grouped)
     result=[]
     for k in sorted(wanted):
         old=state.get(k,{})
         if old.get('status')=='ready': continue
         # Retry failures only when RSS mentions the company again, after seven days.
-        if old:
-            if mode=='bootstrap': continue
-            checked=datetime.fromisoformat(old['checkedAt'])
-            if (datetime.now(timezone.utc)-checked).total_seconds()<7*86400: continue
+        if old and mode!='repair':
+            if mode=='bootstrap':
+                if old.get('parserVersion',1)>=PARSER_VERSION: continue
+            else:
+                checked=datetime.fromisoformat(old['checkedAt'])
+                if (datetime.now(timezone.utc)-checked).total_seconds()<7*86400: continue
         group=sorted(grouped[k],key=lambda r:(r.get('jobStatus')!='expired',str(r.get('pushTime') or r.get('firstSeen') or '')),reverse=True)
-        result.append((k,group[:2]))
+        corrective=mode=='repair' or (mode=='bootstrap' and old and old.get('parserVersion',1)<PARSER_VERSION)
+        result.append((k,group[:6] if corrective else group[:2]))
     return result
 
 def fetch_bytes(session,url,limit):
@@ -92,23 +101,30 @@ def collect(args):
         session.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'en-US,en;q=0.9'})
         for k,group in batch[:args.limit]:
             if time.monotonic()-started>2400: break
-            entry={'name':group[0]['company'],'checkedAt':datetime.now(timezone.utc).isoformat(),'status':'missing'}
+            entry={'name':group[0]['company'],'checkedAt':datetime.now(timezone.utc).isoformat(),'status':'missing','parserVersion':PARSER_VERSION,'attempts':[]}
             for row in group:
                 try:
                     link=row['link'].split('?')[0]
                     match=re.search(r'(\d+)(?:/)?$',urlsplit(link).path)
-                    if not match: continue
+                    if not match:
+                        entry['attempts'].append({'reason':'invalid_job_link'});continue
                     html=fetch_bytes(session,'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/'+match[1],1500000)
                     found=extract(html.decode('utf-8','replace'),row['company'])
-                    if not found: continue
+                    if not found:
+                        soup=BeautifulSoup(html,'html.parser');org=soup.select_one('a.topcard__org-name-link')
+                        observed=org.get_text(' ',strip=True) if org else ''
+                        entry['attempts'].append({'jobId':match[1],'reason':'no_employer' if not org else 'name_mismatch' if key(observed) not in {key(row['company']),LOGO_IDENTITIES.get(key(row['company']))} else 'no_supported_image','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
+                        continue
                     data=thumbnail(fetch_bytes(session,found[0],1000000))
                     filename=hashlib.sha256(data).hexdigest()[:24]+'.webp'
                     (out/filename).write_bytes(data)
-                    entry.update(status='ready',asset=filename,companyUrl=found[1]);blocked=0;break
+                    entry.update(status='ready',asset=filename,companyUrl=found[1],sourceJobId=match[1]);blocked=0;break
                 except requests.HTTPError as error:
+                    entry['attempts'].append({'jobId':match[1],'reason':'http_error','status':error.response.status_code})
                     if error.response.status_code in (403,429,999):
                         blocked+=1;stats['blocked']+=1;break
-                except (requests.RequestException,ValueError,OSError): pass
+                except (requests.RequestException,ValueError,OSError,Image.DecompressionBombError) as error:
+                    entry['attempts'].append({'jobId':match[1],'reason':type(error).__name__})
                 finally: time.sleep(args.delay)
             changes[k]=entry
             stats['downloaded' if entry['status']=='ready' else 'missing']+=1
@@ -137,6 +153,6 @@ def apply(args):
     print(json.dumps({'known':len(state),'ready':len(manifest),'missing':len(state)-len(manifest)}))
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--mode',choices=['bootstrap','rss'],default='rss');p.add_argument('--jobs',default='jobs.json');p.add_argument('--rss',default='data/n8n/rss-latest.json');p.add_argument('--state',default='data/company-logos/state.json');p.add_argument('--assets',default='assets/company-logos');p.add_argument('--manifest',default='company-logos.json');p.add_argument('--output',default='/tmp/company-logos');p.add_argument('--apply');p.add_argument('--limit',type=int,default=1000);p.add_argument('--delay',type=float,default=1)
+    p=argparse.ArgumentParser();p.add_argument('--mode',choices=['bootstrap','rss','repair'],default='rss');p.add_argument('--jobs',default='jobs.json');p.add_argument('--rss',default='data/n8n/rss-latest.json');p.add_argument('--state',default='data/company-logos/state.json');p.add_argument('--assets',default='assets/company-logos');p.add_argument('--manifest',default='company-logos.json');p.add_argument('--output',default='/tmp/company-logos');p.add_argument('--apply');p.add_argument('--limit',type=int,default=1000);p.add_argument('--delay',type=float,default=1)
     args=p.parse_args();apply(args) if args.apply else collect(args)
 if __name__=='__main__': main()
