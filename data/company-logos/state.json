@@ -3180,13 +3180,19 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-12T10:04:44.790989+00:00",
+    "checkedAt": "2026-10-12T12:56:23.091371+00:00",
     "status": "missing",
-    "parserVersion": 4,
+    "parserVersion": 5,
     "attempts": [
       {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "attempt": 1,
         "jobId": "4441170948",
-        "reason": "no_employer",
+        "reason": "login_or_challenge",
+        "stage": "job",
         "observedName": "",
         "companyUrl": ""
       }
