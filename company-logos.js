@@ -3,6 +3,8 @@
   const root=document.getElementById('jobs');if(!root)return;
   let manifest=null,scheduled=false;
   const visible=new Set(),observed=new WeakSet(),failed=new Set();
+  const idle=window.requestIdleCallback||((fn)=>setTimeout(fn,0));
+  const pending=[];let next=0,registerQueued=false;
   const key=name=>String(name||'').normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
   const paint=card=>{
     const box=card.querySelector('.mono'),src=manifest?.[key(card.dataset.comp)];
@@ -17,15 +19,24 @@
   const observer=new IntersectionObserver(entries=>entries.forEach(({target,isIntersecting})=>{
     if(isIntersecting){visible.add(target);if(manifest)paint(target);}else visible.delete(target);
   }),{rootMargin:'120px 0px'});
+  const flush=deadline=>{
+    let count=0;
+    while(next<pending.length&&count<150){
+      if(count&&deadline?.timeRemaining?.()<2)break;
+      const card=pending[next++];if(card.isConnected!==false)observer.observe(card);count++;
+    }
+    if(next<pending.length)idle(flush,{timeout:500});
+    else{pending.length=0;next=0;registerQueued=false;}
+  };
   const register=node=>{
     if(node.nodeType!==1)return;
     const cards=node.matches('.job')?[node]:node.querySelectorAll('.job');
-    cards.forEach(card=>{if(!observed.has(card)){observed.add(card);observer.observe(card);}});
+    cards.forEach(card=>{if(!observed.has(card)){observed.add(card);pending.push(card);}});
+    if(pending.length&&!registerQueued){registerQueued=true;idle(flush,{timeout:500});}
   };
   const start=()=>{
     register(root);
     new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(register))).observe(root,{childList:true,subtree:true});
-    const idle=window.requestIdleCallback||((fn)=>setTimeout(fn,0));
     idle(async()=>{
       try{
         const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);
