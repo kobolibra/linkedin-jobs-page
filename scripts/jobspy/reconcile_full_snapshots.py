@@ -112,7 +112,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         for field in ("title", "link", "company", "companyCanonical", "requestedCompany",
                       "location", "locationRaw", "source",
                       "sourceSite", "dataSources", "jobspyFetchedAt", "fetchedAt",
-                      "jobspyFirstSeen"):
+                      "jobspyFirstSeen", "companyLogoSource"):
             if item.get(field) not in (None, ""):
                 merged[field] = item[field]
         # JD and city enrichment remain a CN-only pipeline. Preserve any
@@ -226,3 +226,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

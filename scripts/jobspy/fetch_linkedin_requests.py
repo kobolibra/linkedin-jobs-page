@@ -13,6 +13,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
+from logo_sources import source_hint
 
 LOG = logging.getLogger("linkedin-requests")
 BASE = "https://www.linkedin.com"
@@ -147,6 +148,8 @@ def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN")
             "jobspyFetchedAt": fetched_at,
             "dataSources": ["jobspy"],
         })
+        hint=source_hint(card,company,url,fetched_at)
+        if hint: jobs[-1]["companyLogoSource"]=hint
     return jobs
 
 
@@ -163,6 +166,8 @@ def enrich_detail(session: requests.Session, job: dict, timeout: tuple[int, int]
                     continue
             response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")
+            hint=source_hint(soup,job.get("company"),job["link"],datetime.now(timezone.utc).isoformat())
+            if hint: job["companyLogoSource"]=hint
             block = soup.select_one("div.show-more-less-html__markup") or soup.select_one("div.description__text")
             if block:
                 job["descriptionHtml"] = str(block)
@@ -320,3 +325,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

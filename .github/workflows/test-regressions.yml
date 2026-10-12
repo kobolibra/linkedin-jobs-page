@@ -5,6 +5,8 @@ on:
     paths:
       - 'scripts/jobspy/**'
       - 'scripts/company_logos.py'
+      - 'scripts/logo_http.py'
+      - 'scripts/test_logo_http.py'
       - 'scripts/test_company_logos.py'
       - 'scripts/test_company_logos.mjs'
       - 'company-logos.js'
@@ -65,10 +67,11 @@ jobs:
       - name: Test company logo identity and cache publication
         run: |
           python -m pip install --disable-pip-version-check -r requirements-logos.txt
-          PYTHONPATH=scripts python -m unittest discover -s scripts -p test_company_logos.py
+          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_logo_http.py
           node --check company-logos.js
           node --test scripts/test_company_logos.mjs
       - name: Test JEV Worker and visitor counter
         run: |
           node --test test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs scripts/test_jd_loading.mjs scripts/test_jev_framework.mjs
           python -m unittest discover -s scripts -p test_verify_visitor_counter.py
+

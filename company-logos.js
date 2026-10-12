@@ -1,51 +1,41 @@
-/* Logos are optional decoration: jobs and controls never wait for this file. */
+/* Company images are available with the index, before the first job render. */
 (()=>{
-  const root=document.getElementById('jobs');if(!root)return;
-  let manifest=null,scheduled=false;
-  const visible=new Set(),observed=new WeakSet(),failed=new Set();
-  const idle=window.requestIdleCallback||((fn)=>setTimeout(fn,0));
-  const pending=[];let next=0,registerQueued=false;
+  const safe=src=>typeof src==='string'&&/^assets\/company-logos\/[a-f0-9]{24}\.(webp|svg)$/.test(src);
   const key=name=>String(name||'').normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
-  const paint=card=>{
-    const box=card.querySelector('.mono'),src=manifest?.[key(card.dataset.comp)];
-    if(!box||box.dataset.logoTried||!src||failed.has(src)||!/^assets\/company-logos\/[a-f0-9]{24}\.(webp|svg)$/.test(src))return;
-    box.dataset.logoTried='true';
-    // IntersectionObserver already limits requests to visible/nearby cards.
-    // Detached lazy images can wait forever before onload, so start this one now.
-    const img=new Image(24,24);img.alt='';img.decoding='async';img.loading='eager';img.fetchPriority='low';
-    img.onload=()=>{if(box.isConnected){box.replaceChildren(img);box.classList.add('has-company-logo');}};
-    img.onerror=()=>failed.add(src);img.src=src;
-  };
-  const observer=new IntersectionObserver(entries=>entries.forEach(({target,isIntersecting})=>{
-    if(isIntersecting){visible.add(target);if(manifest)paint(target);}else visible.delete(target);
-  }),{rootMargin:'120px 0px'});
-  const flush=deadline=>{
-    let count=0;
-    while(next<pending.length&&count<150){
-      if(count&&deadline?.timeRemaining?.()<2)break;
-      const card=pending[next++];if(card.isConnected!==false)observer.observe(card);count++;
-    }
-    if(next<pending.length)idle(flush,{timeout:500});
-    else{pending.length=0;next=0;registerQueued=false;}
-  };
-  const register=node=>{
-    if(node.nodeType!==1)return;
-    const cards=node.matches('.job')?[node]:node.querySelectorAll('.job');
-    cards.forEach(card=>{if(!observed.has(card)){observed.add(card);pending.push(card);}});
-    if(pending.length&&!registerQueued){registerQueued=true;idle(flush,{timeout:500});}
-  };
-  const start=()=>{
-    register(root);
-    new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(register))).observe(root,{childList:true,subtree:true});
-    idle(async()=>{
+  const esc=value=>String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let catalog=Object.create(null),fallback='';
+  function setManifest(data,defaultImage){
+    catalog=Object.create(null);
+    if(data&&typeof data==='object'&&!Array.isArray(data))for(const[name,src]of Object.entries(data))if(safe(src))catalog[key(name)]=src;
+    fallback=safe(defaultImage)?defaultImage:'';
+  }
+  function markup(company,letter,eager=false){
+    const src=catalog[key(company)]||fallback;
+    if(!src)return '<div class="mono">'+esc(letter)+'</div>';
+    return '<div class="mono has-company-logo" data-monogram="'+esc(letter)+'"><img class="company-logo" src="'+esc(src)+'" alt="" width="24" height="24" loading="'+(eager?'eager':'lazy')+'" decoding="async" fetchpriority="'+(eager?'auto':'low')+'" /></div>';
+  }
+  function failed(img){
+    if(!img?.matches?.('img.company-logo'))return;
+    const box=img.parentElement;
+    if(fallback&&img.getAttribute('src')!==fallback&&!img.dataset.fallbackTried){img.dataset.fallbackTried='true';img.src=fallback;return;}
+    if(box){box.classList.remove('has-company-logo');box.textContent=box.dataset.monogram||'';}
+  }
+  document.addEventListener('error',event=>failed(event.target),true);
+  async function prepare(root,{timeoutMs=180,maxImages=12}={}){
+    const images=[...root.querySelectorAll('img.company-logo')].slice(0,maxImages);
+    if(!images.length)return;
+    let timer;
+    const tasks=images.map(async img=>{
+      img.loading='eager';img.addEventListener('error',()=>failed(img),{once:true});
       try{
-        const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),5000);
-        let data;try{const response=await fetch('company-logos.json',{signal:controller.signal,priority:'low'});if(!response.ok)return;data=await response.json();}finally{clearTimeout(timer);}
-        if(!data||Array.isArray(data)||typeof data!=='object')return;
-        manifest=data;visible.forEach(paint);
-      }catch{} // Keep the existing letter when the optional manifest fails.
-    },{timeout:2500});
-  };
-  const wait=()=>{if(scheduled||!root.querySelector('.job'))return;scheduled=true;startup.disconnect();setTimeout(start,0);};
-  const startup=new MutationObserver(wait);startup.observe(root,{childList:true});wait();
+        if(typeof Image==='undefined'){if(img.decode)await img.decode();return;}
+        const ready=new Image(24,24);ready.className='company-logo';ready.alt='';ready.loading='eager';ready.decoding='async';ready.src=img.getAttribute('src');
+        await ready.decode();
+        if(img.parentElement&&img.getAttribute('src')===ready.getAttribute('src'))img.replaceWith(ready);
+      }catch{if(!img.dataset.fallbackTried)failed(img);}
+    });
+    try{await Promise.race([Promise.allSettled(tasks),new Promise(resolve=>{timer=setTimeout(resolve,timeoutMs);})]);}
+    finally{clearTimeout(timer);}
+  }
+  window.CompanyLogos={setManifest,markup,prepare};
 })();

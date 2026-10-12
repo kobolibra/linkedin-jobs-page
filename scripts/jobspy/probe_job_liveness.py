@@ -8,6 +8,7 @@ import requests
 from job_liveness import classify, jid, select_regional_candidates
 from reconcile_full_snapshots import location_key
 from posting_evidence import detail_posting_date, search_posting_date
+from logo_sources import source_hint
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
 SEARCH_URL = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
@@ -59,11 +60,12 @@ def main():
         breaker=0; classified=[]
         for i,row in enumerate(candidates):
             key=jid(row); url=f"https://www.linkedin.com/jobs/view/{key}"
-            posted=source=None; blocked=False
+            posted=source=hint=None; blocked=False
             try:
                 response=session.get(url, timeout=args.timeout, allow_redirects=False)
                 checked_at=datetime.now(timezone.utc).isoformat()
                 result=classify(response.status_code, response.text, key)
+                if response.status_code==200: hint=source_hint(response.text,row.get('company'),url,checked_at)
                 blocked=response.status_code in {403,429,999} or response.status_code >= 500
                 if result == "open":
                     posted,source,date_blocked=lookup_posting_date(session,row,response.text,checked_at,args.timeout)
@@ -75,6 +77,7 @@ def main():
             classified.append(result)
             observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
             if posted: observation.update({"datePosted":posted,"dateSource":source})
+            if hint: observation['companyLogoSource']=hint
             out["observations"].append(observation)
             if breaker >= args.breaker:
                 out["stats"]["circuitOpen"] = True
