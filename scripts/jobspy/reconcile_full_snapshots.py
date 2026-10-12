@@ -83,6 +83,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         return {**existing_doc, "jobs": existing}
     by_id = {jid(x): x for x in existing if jid(x)}
     reactivated = 0
+    protected_ids = set()
     scope_locations = {
         str(x).strip().upper()
         for x in (snapshot_doc.get("scopeLocations", ["CN"]) if isinstance(snapshot_doc, dict) else ["CN"])
@@ -107,6 +108,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         # A snapshot finishing later can still precede a more recent probe/RSS observation.
         if any((when := timestamp(old.get(field))) and when > observed_time
                for field in ("lastSeenAt", "rssObservedAt", "liveVerifiedAt", "expiredAt")):
+            protected_ids.add(key)
             continue
         if old.get("jobStatus") == "expired":
             reactivated += 1
@@ -173,6 +175,8 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
 
     expired = 0
     for key, item in by_id.items():
+        if key in protected_ids:
+            continue
         location = location_key(item)
         company = company_key(item)
         company_location = company_location_key(company, location)
