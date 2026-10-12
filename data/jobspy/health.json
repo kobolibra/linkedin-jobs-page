@@ -114,24 +114,71 @@
         "httpRetries": 0,
         "stoppedReason": "LinkedIn returned a login or challenge page"
       }
+    },
+    {
+      "runId": "jobs:38270689745:2",
+      "task": "jobs",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-12T17:04:14.006771+00:00",
+      "requests": 38,
+      "retries": 15,
+      "httpStatuses": {
+        "200": 22,
+        "429": 16
+      },
+      "outcomes": {
+        "response": 22,
+        "rate_limited": 16
+      },
+      "stages": {
+        "search": 38
+      },
+      "detailEndpoints": {},
+      "queries": {
+        "Bank of America::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "BBVA::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "BlackRock::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "BNP Paribas::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Citi::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "DBS Bank::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Deutsche Bank::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Fidelity International::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Goldman Sachs::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "HSBC::CN": "failed@start=120: HTTP 429 retry budget exhausted",
+        "JPMorgan Chase::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Morgan Stanley::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Natixis::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Societe Generale::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Standard Chartered::CN": "failed@start=100: shared circuit open: HTTP 429",
+        "UBS::CN": "failed@start=0: shared circuit open: HTTP 429"
+      },
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791824831.7789402,
+          "stopUntil": 1791824831.7789402,
+          "reason": "HTTP 429"
+        }
+      },
+      "details": {},
+      "liveness": {}
     }
   ],
   "queryFailureStreaks": {
-    "Bank of America::CN": 1,
-    "BBVA::CN": 1,
-    "BlackRock::CN": 1,
-    "BNP Paribas::CN": 1,
-    "Citi::CN": 1,
-    "DBS Bank::CN": 1,
-    "Deutsche Bank::CN": 1,
-    "Fidelity International::CN": 1,
-    "Goldman Sachs::CN": 1,
-    "HSBC::CN": 1,
-    "JPMorgan Chase::CN": 1,
-    "Morgan Stanley::CN": 1,
-    "Natixis::CN": 1,
-    "Societe Generale::CN": 1,
-    "Standard Chartered::CN": 1,
-    "UBS::CN": 1
+    "Bank of America::CN": 2,
+    "BBVA::CN": 2,
+    "BlackRock::CN": 2,
+    "BNP Paribas::CN": 2,
+    "Citi::CN": 2,
+    "DBS Bank::CN": 2,
+    "Deutsche Bank::CN": 2,
+    "Fidelity International::CN": 2,
+    "Goldman Sachs::CN": 2,
+    "HSBC::CN": 2,
+    "JPMorgan Chase::CN": 2,
+    "Morgan Stanley::CN": 2,
+    "Natixis::CN": 2,
+    "Societe Generale::CN": 2,
+    "Standard Chartered::CN": 2,
+    "UBS::CN": 2
   }
 }
