@@ -31,7 +31,7 @@ jobs:
           python-version: '3.11'
       - name: Install logo-only dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-logos.txt
-      - name: Fetch missing company logos (keep placeholder initials)
+      - name: Retry all retained missing logos (keep placeholder initials)
         env:
           MODE: ${{ github.event.inputs.mode || 'bootstrap' }}
         run: python scripts/company_logos.py --mode "$MODE" --output /tmp/company-logos

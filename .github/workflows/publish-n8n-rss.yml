@@ -88,7 +88,7 @@ jobs:
           echo "Unable to publish canonical RSS merge" >&2
           exit 1
 
-      - name: Queue RSS-only company logo updates
+      - name: Queue all retained missing company logo retries after RSS publication
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
