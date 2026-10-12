@@ -82,7 +82,10 @@ jobs:
             python scripts/jobspy/scraper_health.py --apply /tmp/linkedin-logo-health.json || health_rc=$?
             if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
             git add data/jobspy/health.json data/jobspy/http-state.json
-            if git diff --cached --quiet; then exit 0; fi
+            if git diff --cached --quiet; then
+              if [[ "$health_rc" == 2 ]]; then exit 1; fi
+              exit 0
+            fi
             git commit -m '[scraper-health] record logo collection and preserve cooldowns'
             if git push origin HEAD:main; then
               if [[ "$health_rc" == 2 ]]; then exit 1; fi

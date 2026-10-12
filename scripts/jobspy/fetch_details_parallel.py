@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, json, os
+import argparse, json, os, random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
 from urllib.parse import urlsplit, urlunsplit
-from linkedin_http import LinkedInSession
+from linkedin_http import LinkedInSession, Coordinator
 from linkedin_detail import fetch_detail
 
 def www(url: str) -> str:
@@ -17,7 +17,7 @@ def www(url: str) -> str:
 def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: float) -> dict:
     out = dict(item)
     out["link"] = www(out.get("link", ""))
-    with LinkedInSession(attempts=attempts, context={"stage": "details"}) as session:
+    with LinkedInSession(attempts=attempts, coordinator=Coordinator(min_interval=random.uniform(delay_min, delay_max)), context={"stage": "details"}) as session:
         session.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"})
         return fetch_detail(session, out, (10, timeout))
 
