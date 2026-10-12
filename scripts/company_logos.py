@@ -10,6 +10,7 @@ from PIL import Image, ImageOps
 
 from jobspy.logo_sources import extract, key, linkedin_url, image_url, logo_image_url, validate_hint, supported_names
 from logo_http import RequestPolicy, CollectionStopped, RateLimitStopped
+from jobspy.linkedin_http import Coordinator
 
 Image.MAX_IMAGE_PIXELS=4000000
 PARSER_VERSION=5
@@ -95,7 +96,7 @@ def collect(args):
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     changes={};images={};blocked=0;stop_reason=None
     stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0,'reusedSources':0}
-    policy=RequestPolicy(time.monotonic()+2400,attempts=getattr(args,'http_attempts',3),base_delay=getattr(args,'retry_base',15))
+    policy=RequestPolicy(time.monotonic()+2400,attempts=getattr(args,'http_attempts',3),base_delay=getattr(args,'retry_base',15),coordinator=Coordinator())
     with requests.Session() as session:
         session.logo_policy=policy
         session.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'en-US,en;q=0.9'})
@@ -135,7 +136,9 @@ def collect(args):
                         blocked_page=bool(soup.select_one('.authwall, #challenge, form.login__form, input[name=session_key]'))
                         reason='login_or_challenge' if blocked_page else 'no_employer' if not org else 'name_mismatch' if key(observed) not in supported_names(row['company']) else 'no_supported_image'
                         entry['attempts'].append({**(policy.last or {}),'jobId':job_id,'reason':reason,'stage':'job','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
-                        if blocked_page: stop_reason='LinkedIn returned a login or challenge page';break
+                        if blocked_page:
+                            policy.coordinator.defer('https://www.linkedin.com',1800,stop=True,reason='login or challenge')
+                            stop_reason='LinkedIn returned a login or challenge page';break
                         continue
                     stage='image'
                     save_image({'url':found[0],'companyUrl':found[1],'imageKind':'placeholder' if found[2] else 'company'},entry,job_id)
