@@ -8,6 +8,7 @@ from threading import Lock
 from urllib.parse import urlsplit, urlunsplit
 import requests
 from bs4 import BeautifulSoup
+from logo_sources import source_hint
 
 def www(url: str) -> str:
     p = urlsplit(url.strip())
@@ -27,6 +28,8 @@ def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: fl
                     time.sleep(min(60, 5 * attempt + random.uniform(1, 5))); continue
             r.raise_for_status()
             soup = BeautifulSoup(r.text, "html.parser")
+            hint = source_hint(soup, out.get("company"), out["link"], datetime.now(timezone.utc).isoformat())
+            if hint: out["companyLogoSource"] = hint
             block = soup.select_one("div.show-more-less-html__markup") or soup.select_one("div.description__text")
             if block:
                 out["descriptionHtml"] = str(block)
@@ -74,3 +77,4 @@ def main() -> int:
     ok = sum(x.get("detailStatus") == "ok" for x in rows); failed = sum(x.get("detailStatus") == "failed" for x in rows); empty = sum(x.get("detailStatus") == "empty" for x in rows)
     print(json.dumps({"total":len(rows),"ok":ok,"empty":empty,"failed":failed}, ensure_ascii=False)); return 0
 if __name__ == "__main__": raise SystemExit(main())
+

@@ -8,62 +8,16 @@ import requests
 from bs4 import BeautifulSoup
 from PIL import Image, ImageOps
 
-ALIASES={'jpmorganchase':'JPMorgan Chase','jpmorgan':'JPMorgan Chase','bnp':'BNP Paribas','bnpparibas':'BNP Paribas','societegenerale':'Societe Generale','dbs':'DBS Bank','dbsbank':'DBS Bank','deutschebank':'Deutsche Bank','goldmansachs':'Goldman Sachs','blackrock':'BlackRock','blackrockassetmanagement':'BlackRock'}
+from jobspy.logo_sources import extract, key, linkedin_url, image_url, logo_image_url, validate_hint, supported_names
+from logo_http import RequestPolicy, CollectionStopped, RateLimitStopped
+
 Image.MAX_IMAGE_PIXELS=4000000
-
-# Verified historical display names, scoped to logo identity only.
-LOGO_IDENTITIES={'ateca':'ateca executive search','charterhouse partnership | asia':'charterhouse partnership','drake international singapore':'drake international – singapore','efg international':'efg private banking'}
-LOGO_IDENTITIES.update({'mercer':('marsh','marsh people solutions'),'oaktree capital management, l.p.':'oaktree','orion james':'orion james limited','privee associates':'privee associates limited','verition fund management llc':'verition'})
-PARSER_VERSION=4
-
-def supported_names(expected):
-    k=key(expected);aliases=LOGO_IDENTITIES.get(k,())
-    return {k,*(aliases if isinstance(aliases,tuple) else (aliases,))}
-
-def is_placeholder(img):
-    if not img: return False
-    url=img.get('data-delayed-url') or img.get('src','')
-    ghost=img.get('data-ghost-url')
-    return bool(url and ((ghost and url==ghost) or (urlsplit(url).hostname=='static.licdn.com' and '/aero-v1/sc/h/' in urlsplit(url).path)))
-
-def key(name):
-    raw=str(name or '').strip()
-    folded=re.sub('[^a-z0-9]','',unicodedata.normalize('NFKD',raw).encode('ascii','ignore').decode().lower())
-    raw=ALIASES.get(folded,raw)
-    return re.sub(r'\s+',' ',unicodedata.normalize('NFKC',raw).lower()).strip()
+PARSER_VERSION=5
 
 def read(path, default):
     return json.loads(Path(path).read_text()) if Path(path).exists() else default
 
 def rows(doc): return doc if isinstance(doc,list) else doc.get('jobs',[])
-
-def linkedin_url(url):
-    p=urlsplit(str(url)); return p.scheme=='https' and (p.hostname=='linkedin.com' or str(p.hostname).endswith('.linkedin.com'))
-
-def image_url(url):
-    p=urlsplit(str(url)); return p.scheme=='https' and (p.hostname=='media.licdn.com' or bool(re.fullmatch(r'media-exp\d+\.licdn\.com',p.hostname or '')))
-
-def logo_image_url(url):
-    p=urlsplit(str(url))
-    return image_url(url) or (p.scheme=='https' and p.hostname=='static.licdn.com' and bool(re.fullmatch(r'/aero-v1/sc/h/[a-z0-9]+',p.path)))
-
-def extract(html, expected):
-    soup=BeautifulSoup(html,'html.parser')
-    org=soup.select_one('a.topcard__org-name-link')
-    observed=key(org.get_text(' ',strip=True)) if org else ''
-    expected_key=key(expected)
-    if not org or observed not in supported_names(expected): return None
-    company_url=org.get('href','').split('?')[0]
-    if not linkedin_url(company_url) or not re.match(r'^/(company|school|showcase)/[^/]+/?$',urlsplit(company_url).path): return None
-    top=org.find_parent(class_='top-card-layout') or soup
-    img=top.select_one('img.artdeco-entity-image')
-    if not img: return None
-    placeholder=is_placeholder(img)
-    url=img.get('data-delayed-url') or img.get('src','')
-    if placeholder:
-        if not logo_image_url(url): return None
-    elif not image_url(url) or not re.search(r'/(company-logo_|school-logo_|img-crop_)',urlsplit(url).path): return None
-    return url,company_url,placeholder
 
 def placeholder_svg(raw):
     # LinkedIn's default employer image is SVG. Preserve its actual shapes,
@@ -112,7 +66,7 @@ def candidates(jobs, rss, state, mode):
     # argument for compatibility; canonical jobs determine the candidate set.
     wanted=set(grouped)
     result=[]
-    for k in sorted(wanted):
+    for k in sorted(wanted,key=lambda k:(state.get(k,{}).get("checkedAt", ""),k)):
         old=state.get(k,{})
         if old.get('status')=='ready': continue
         # Bootstrap revisits failures after parser upgrades. RSS and explicit
@@ -125,7 +79,7 @@ def candidates(jobs, rss, state, mode):
     return result
 
 def fetch_bytes(session,url,limit):
-    with session.get(url,timeout=(15,15),stream=True) as response:
+    with (session.logo_policy.get(session,url) if hasattr(session,"logo_policy") else session.get(url,timeout=(15,15),stream=True)) as response:
         response.raise_for_status()
         allowed=logo_image_url if logo_image_url(url) else linkedin_url
         if not allowed(response.url): raise ValueError('unexpected redirect')
@@ -139,46 +93,73 @@ def collect(args):
     state=read(args.state,{})
     batch=candidates(read(args.jobs,{}),None,state,args.mode)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
-    changes={};images={};blocked=0;stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0}
-    started=time.monotonic()
+    changes={};images={};blocked=0;stop_reason=None
+    stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0,'reusedSources':0}
+    policy=RequestPolicy(time.monotonic()+2400,attempts=getattr(args,'http_attempts',3),base_delay=getattr(args,'retry_base',15))
     with requests.Session() as session:
+        session.logo_policy=policy
         session.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'en-US,en;q=0.9'})
+        def save_image(source,entry,job_id):
+            url=source['url']
+            if url not in images: images[url]=cached_image(fetch_bytes(session,url,1000000),source['imageKind']=='placeholder')
+            data,extension=images[url]
+            filename=hashlib.sha256(data).hexdigest()[:24]+'.'+extension
+            (out/filename).write_bytes(data)
+            entry.update(status='ready',asset=filename,imageKind=source['imageKind'],sourceUrl=url,companyUrl=source['companyUrl'],sourceJobId=job_id)
         for k,group in batch[:args.limit]:
-            if time.monotonic()-started>2400: break
+            if policy.clock()>=policy.deadline: stop_reason='collection time budget exhausted';break
             entry={'name':group[0]['company'],'checkedAt':datetime.now(timezone.utc).isoformat(),'status':'missing','parserVersion':PARSER_VERSION,'attempts':[]}
+            event_start=len(policy.events)
             for row in group:
+                job_id='';stage='job'
                 try:
                     link=row['link'].split('?')[0]
                     match=re.search(r'(\d+)(?:/)?$',urlsplit(link).path)
                     if not match:
                         entry['attempts'].append({'reason':'invalid_job_link'});continue
-                    html=fetch_bytes(session,'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/'+match[1],1500000)
+                    job_id=match[1]
+                    hint=row.get('companyLogoSource')
+                    if validate_hint(hint,row['company'],link):
+                        stage='image'
+                        try:
+                            save_image(hint,entry,job_id);stats['reusedSources']+=1;blocked=0;break
+                        except requests.HTTPError as error:
+                            if error.response.status_code not in (404,410): raise
+                            entry['attempts'].append({**(policy.last or {}),'jobId':job_id,'reason':'stale_image_source','stage':'image'})
+                    stage='job'
+                    html=fetch_bytes(session,'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/'+job_id,1500000)
                     found=extract(html.decode('utf-8','replace'),row['company'])
                     if not found:
                         soup=BeautifulSoup(html,'html.parser');org=soup.select_one('a.topcard__org-name-link')
                         observed=org.get_text(' ',strip=True) if org else ''
-                        top=(org.find_parent(class_='top-card-layout') or soup) if org else soup
-                        placeholder=is_placeholder(top.select_one('img.artdeco-entity-image'))
-                        matched=org and key(observed) in supported_names(row['company'])
-                        entry['attempts'].append({'jobId':match[1],'reason':'no_employer' if not org else 'name_mismatch' if not matched else 'placeholder_image' if placeholder else 'no_supported_image','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
+                        blocked_page=bool(soup.select_one('.authwall, #challenge, form.login__form, input[name=session_key]'))
+                        reason='login_or_challenge' if blocked_page else 'no_employer' if not org else 'name_mismatch' if key(observed) not in supported_names(row['company']) else 'no_supported_image'
+                        entry['attempts'].append({**(policy.last or {}),'jobId':job_id,'reason':reason,'stage':'job','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
+                        if blocked_page: stop_reason='LinkedIn returned a login or challenge page';break
                         continue
-                    if found[0] not in images: images[found[0]]=cached_image(fetch_bytes(session,found[0],1000000),found[2])
-                    data,extension=images[found[0]]
-                    filename=hashlib.sha256(data).hexdigest()[:24]+'.'+extension
-                    (out/filename).write_bytes(data)
-                    entry.update(status='ready',asset=filename,imageKind='placeholder' if found[2] else 'company',sourceUrl=found[0],companyUrl=found[1],sourceJobId=match[1]);blocked=0;break
+                    stage='image'
+                    save_image({'url':found[0],'companyUrl':found[1],'imageKind':'placeholder' if found[2] else 'company'},entry,job_id)
+                    blocked=0;break
+                except RateLimitStopped as error:
+                    stats['blocked']+=1;stop_reason=str(error)
+                    entry['attempts'].append({**(policy.last or {}),'jobId':job_id,'reason':'rate_limited','stage':stage});break
+                except CollectionStopped as error:
+                    stop_reason=str(error);entry['attempts'].append({'jobId':job_id,'reason':'collection_budget','stage':stage});break
                 except requests.HTTPError as error:
-                    entry['attempts'].append({'jobId':match[1],'reason':'http_error','status':error.response.status_code})
-                    if error.response.status_code in (403,429,999):
-                        blocked+=1;stats['blocked']+=1;break
+                    entry['attempts'].append({**(policy.last or {}),'jobId':job_id,'reason':'http_error','status':error.response.status_code,'stage':stage})
+                    if error.response.status_code in (403,429,999): blocked+=1;stats['blocked']+=1;break
                 except (requests.RequestException,ValueError,OSError,Image.DecompressionBombError) as error:
-                    entry['attempts'].append({'jobId':match[1],'reason':type(error).__name__})
-                finally: time.sleep(args.delay)
+                    entry['attempts'].append({'jobId':job_id,'reason':type(error).__name__,'stage':stage})
+                finally:
+                    if not stop_reason: time.sleep(args.delay)
+            if len(policy.events)>event_start: entry['httpRetries']=policy.events[event_start:]
             changes[k]=entry
             stats['downloaded' if entry['status']=='ready' else 'missing']+=1
             if entry.get('imageKind')=='placeholder': stats['placeholders']+=1
             print(json.dumps({'company':entry['name'],'status':entry['status']}),flush=True)
-            if blocked>=5: break  # No challenge retries or alternate routes.
+            if stop_reason or blocked>=5: break
+    stats['httpRetries']=sum(bool(event.get('retried')) for event in policy.events)
+    if stop_reason: stats['stoppedReason']=stop_reason
     (out/'updates.json').write_text(json.dumps(changes,ensure_ascii=False,indent=2)+'\n')
     (out/'report.json').write_text(json.dumps(stats,indent=2)+'\n')
     print(json.dumps(stats),flush=True)
@@ -202,6 +183,6 @@ def apply(args):
     print(json.dumps({'known':len(state),'ready':len(manifest),'missing':len(state)-len(manifest)}))
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--mode',choices=['bootstrap','rss','repair'],default='rss');p.add_argument('--jobs',default='jobs.json');p.add_argument('--rss',default='data/n8n/rss-latest.json');p.add_argument('--state',default='data/company-logos/state.json');p.add_argument('--assets',default='assets/company-logos');p.add_argument('--manifest',default='company-logos.json');p.add_argument('--output',default='/tmp/company-logos');p.add_argument('--apply');p.add_argument('--limit',type=int,default=1000);p.add_argument('--delay',type=float,default=1)
+    p=argparse.ArgumentParser();p.add_argument('--mode',choices=['bootstrap','rss','repair'],default='rss');p.add_argument('--jobs',default='jobs.json');p.add_argument('--rss',default='data/n8n/rss-latest.json');p.add_argument('--state',default='data/company-logos/state.json');p.add_argument('--assets',default='assets/company-logos');p.add_argument('--manifest',default='company-logos.json');p.add_argument('--output',default='/tmp/company-logos');p.add_argument('--apply');p.add_argument('--limit',type=int,default=1000);p.add_argument('--delay',type=float,default=1);p.add_argument('--http-attempts',type=int,default=3);p.add_argument('--retry-base',type=float,default=15)
     args=p.parse_args();apply(args) if args.apply else collect(args)
 if __name__=='__main__': main()

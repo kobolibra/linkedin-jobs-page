@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
 from jev_preprocess import build_boilerplate_table, preprocess
+from logo_sources import key as logo_key
 
 
 def job_id(link: object) -> str:
@@ -66,7 +68,19 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
                 })
         index_rows.append(item)
 
-    index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows}
+    logo_path=source.parent/'company-logos.json'
+    logos={};fallback=''
+    if logo_path.is_file():
+        catalog=json.loads(logo_path.read_text(encoding='utf-8'))
+        companies={logo_key(row.get('company')) for row in rows if isinstance(row,dict)}
+        if isinstance(catalog,dict):
+            logos={name:path for name,path in catalog.items() if name in companies and isinstance(path,str) and re.fullmatch(r'assets/company-logos/[a-f0-9]{24}\.(webp|svg)',path)}
+        state_path=source.parent/'data/company-logos/state.json'
+        if state_path.is_file():
+            state=json.loads(state_path.read_text(encoding='utf-8'))
+            if isinstance(state,dict):
+                fallback=next((logos[name] for name,entry in state.items() if name in logos and entry.get('status')=='ready' and entry.get('imageKind')=='placeholder'),'')
+    index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows,"companyLogos":logos,"companyLogoFallback":fallback}
     details_doc = {"schemaVersion": "1.1", "source": "jobs.json", "details": details}
     index_out.write_text(json.dumps(index_doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     details_out.write_text(json.dumps(details_doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
