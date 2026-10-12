@@ -2,7 +2,7 @@ import io, json, tempfile, unittest
 from pathlib import Path
 from types import SimpleNamespace
 from PIL import Image
-from company_logos import apply, candidates, extract, image_url, key, thumbnail
+from company_logos import apply, candidates, extract, image_url, key, thumbnail, PARSER_VERSION
 
 class LogosTests(unittest.TestCase):
     def html(self,name='DBS Bank',url='https://media.licdn.com/dms/image/v2/X/company-logo_100_100/image'):
@@ -33,8 +33,29 @@ class LogosTests(unittest.TestCase):
         self.assertEqual(len(candidates(rows,[],state,'repair')[0][1]),6)
         self.assertEqual(candidates(rows,[],{'a':{'status':'ready'}},'repair'),[])
         self.assertTrue(candidates(rows,[],state,'bootstrap'))
-        state['a']['parserVersion']=2
+        state['a']['parserVersion']=PARSER_VERSION
         self.assertEqual(candidates(rows,[],state,'bootstrap'),[])
+    def test_gray_placeholder_never_replaces_monogram(self):
+        url='https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u'
+        self.assertIsNone(extract(self.html(url=url),'DBS'))
+        real='https://media.licdn.com/dms/image/v2/X/company-logo_100_100/image'
+        html=self.html(url=real).replace('data-delayed-url=', 'data-ghost-url="'+real+'" data-delayed-url=')
+        self.assertIsNone(extract(html,'DBS'))
+        # A genuine image may also advertise a DIFFERENT fallback URL.
+        html=self.html(url=real).replace('data-delayed-url=', 'data-ghost-url="'+url+'" data-delayed-url=')
+        self.assertIsNotNone(extract(html,'DBS'))
+    def test_placeholder_stops_company_without_downloading_or_retrying(self):
+        from unittest.mock import patch
+        from company_logos import collect
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d);jobs=p/'jobs.json';jobs.write_text(json.dumps([{'company':'DBS','link':'https://www.linkedin.com/jobs/view/12345'},{'company':'DBS','link':'https://www.linkedin.com/jobs/view/12346'}]))
+            args=SimpleNamespace(state=str(p/'state.json'),jobs=str(jobs),rss=str(p/'rss.json'),mode='repair',output=str(p/'out'),limit=1000,delay=0)
+            html=self.html(url='https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u').encode()
+            with patch('company_logos.fetch_bytes',return_value=html) as fetch:collect(args)
+            self.assertEqual(fetch.call_count,1)
+            result=json.loads((p/'out/updates.json').read_text())['dbs bank']
+            self.assertEqual(result['status'],'placeholder');self.assertNotIn('asset',result)
+            self.assertEqual(result['attempts'][0]['reason'],'placeholder_image')
     def test_rss_only_new_retained_company(self):
         a={'company':'A','link':'https://www.linkedin.com/jobs/view/12345'}
         b={'company':'B','link':'https://www.linkedin.com/jobs/view/12346'}

@@ -189,16 +189,12 @@
   },
   "airswift": {
     "name": "Airswift",
-    "checkedAt": "2026-10-12T05:49:38.438482+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4464307017",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "57e489cdfcba99eba2984983.webp",
+    "sourceUrl": "https://www.airswift.com/hubfs/Airswift%20Bird%20Favicon.png",
+    "verificationUrl": "https://www.airswift.com/",
+    "checkedAt": "2026-10-12T05:50:55.641622+00:00",
+    "parserVersion": 2
   },
   "akamai technologies": {
     "name": "Akamai Technologies",
@@ -1264,16 +1260,12 @@
   },
   "careernet": {
     "name": "Careernet",
-    "checkedAt": "2026-10-12T05:49:43.021139+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4462267927",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "c8da3f826817e6fe3dad758d.webp",
+    "sourceUrl": "https://careernet.in/wp-content/uploads/2021/08/Website-Stuff_FAv-icon.png",
+    "verificationUrl": "https://careernet.in/",
+    "checkedAt": "2026-10-12T05:51:03.141119+00:00",
+    "parserVersion": 2
   },
   "ccb international (holdings) limited": {
     "name": "CCB International (Holdings) Limited",
@@ -1888,16 +1880,12 @@
   },
   "easy consult hr solutions doo": {
     "name": "Easy Consult HR Solutions DOO",
-    "checkedAt": "2026-10-12T05:49:48.886360+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4446632235",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "a0257eb4c595dd8df7149ea4.webp",
+    "sourceUrl": "https://easyconsultrs.com/apple-touch-icon.png",
+    "verificationUrl": "https://easyconsultrs.com/",
+    "checkedAt": "2026-10-12T05:51:09.977108+00:00",
+    "parserVersion": 2
   },
   "ebury": {
     "name": "Ebury",
@@ -2287,16 +2275,12 @@
   },
   "fort financial": {
     "name": "Fort Financial",
-    "checkedAt": "2026-10-12T05:50:04.135065+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4407191530",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "47c7227d6f6a5b7558e70157.webp",
+    "sourceUrl": "https://www.fort.sg/wp-content/uploads/2026/03/Untitled-design-2.png",
+    "verificationUrl": "https://www.fort.sg/",
+    "checkedAt": "2026-10-12T08:42:32.463900+00:00",
+    "parserVersion": 3
   },
   "forthright securities co., ltd.": {
     "name": "Forthright Securities Co., Ltd.",
@@ -2443,16 +2427,12 @@
   },
   "golden equator capital": {
     "name": "Golden Equator Capital",
-    "checkedAt": "2026-10-12T05:50:06.490916+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4463229439",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "7427eb860a146c38e0a6dc06.webp",
+    "companyUrl": "https://sg.linkedin.com/company/goldenequatorcapital",
+    "sourceJobId": "4463229439",
+    "checkedAt": "2026-10-12T08:43:47.946836+00:00",
+    "parserVersion": 3
   },
   "golden gate ventures": {
     "name": "Golden Gate Ventures",
@@ -2589,16 +2569,13 @@
   },
   "hamsa": {
     "name": "Hamsa",
-    "checkedAt": "2026-10-12T05:50:08.749838+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4441255415",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "856535522051fb25a053aef9.webp",
+    "sourceUrl": "https://cdn.prod.website-files.com/67c71aabacaefac88a59d718/67cc86d56ca1c760af08d7ac_webclip-hamsa.png",
+    "verificationUrl": "https://www.hamsa.com/",
+    "identityEvidence": "https://sg.linkedin.com/jobs/view/information-technology-operations-engineer-at-hamsa-4431215350",
+    "checkedAt": "2026-10-12T08:43:16.852562+00:00",
+    "parserVersion": 3
   },
   "hang seng bank": {
     "name": "Hang Seng Bank",
@@ -3283,16 +3260,12 @@
   },
   "jump trading": {
     "name": "Jump Trading",
-    "checkedAt": "2026-10-12T05:50:34.457068+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4362074602",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "bab93af510055b8ee139b330.webp",
+    "companyUrl": "https://www.linkedin.com/company/jump-trading",
+    "sourceJobId": "4362074602",
+    "checkedAt": "2026-10-12T08:43:47.947278+00:00",
+    "parserVersion": 3
   },
   "justonegalaxy recruitment": {
     "name": "JustOneGalaxy Recruitment",
@@ -3422,16 +3395,12 @@
   },
   "kyberlife": {
     "name": "Kyberlife",
-    "checkedAt": "2026-10-12T05:50:35.514554+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4456858680",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "167d2a3cc29e794da02804af.webp",
+    "sourceUrl": "https://kyberlifecorporate.com/wp-content/themes/kyberlife-nexus/assets/images/logo.png",
+    "verificationUrl": "https://kyberlifecorporate.com/",
+    "checkedAt": "2026-10-12T08:38:07.178668+00:00",
+    "parserVersion": 2
   },
   "l'avenir advisory": {
     "name": "L'Avenir Advisory",
@@ -4448,41 +4417,12 @@
   },
   "page executive": {
     "name": "Page Executive",
-    "checkedAt": "2026-10-12T05:51:01.148455+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4464334525",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4463338677",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4459685819",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4447508783",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4449490736",
-        "reason": "http_error",
-        "status": 404
-      },
-      {
-        "jobId": "4443909119",
-        "reason": "http_error",
-        "status": 404
-      }
-    ]
+    "status": "ready",
+    "asset": "43269577936980ba340edfff.webp",
+    "sourceUrl": "https://www.pageexecutive.com/sites/pageexecutive.com/files/favicon_0.ico",
+    "verificationUrl": "https://www.pageexecutive.com/",
+    "checkedAt": "2026-10-12T08:42:39.643811+00:00",
+    "parserVersion": 3
   },
   "pan & company | headhunter": {
     "name": "PAN & COMPANY | HEADHUNTER",
@@ -4718,16 +4658,12 @@
   },
   "pinnacle consult": {
     "name": "Pinnacle Consult",
-    "checkedAt": "2026-10-12T05:51:13.950076+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4458937671",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "b3501cc6f6c6af5a2c99ce19.webp",
+    "companyUrl": "https://sg.linkedin.com/company/sppinnacle",
+    "sourceJobId": "4458937671",
+    "checkedAt": "2026-10-12T08:43:47.947540+00:00",
+    "parserVersion": 3
   },
   "pinpoint asia": {
     "name": "Pinpoint Asia",
@@ -5318,16 +5254,12 @@
   },
   "shikhara investment management": {
     "name": "Shikhara Investment Management",
-    "checkedAt": "2026-10-12T05:51:34.902867+00:00",
-    "status": "missing",
-    "parserVersion": 2,
-    "attempts": [
-      {
-        "jobId": "4450260066",
-        "reason": "http_error",
-        "status": 429
-      }
-    ]
+    "status": "ready",
+    "asset": "32fca7c997d3cf9c1272fa8b.webp",
+    "companyUrl": "https://www.linkedin.com/company/shikhara-investments",
+    "sourceJobId": "4450260066",
+    "checkedAt": "2026-10-12T08:43:47.948022+00:00",
+    "parserVersion": 3
   },
   "silverdale capital pte ltd": {
     "name": "Silverdale Capital Pte Ltd",
