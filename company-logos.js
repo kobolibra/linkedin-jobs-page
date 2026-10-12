@@ -8,7 +8,7 @@
   const key=name=>String(name||'').normalize('NFKC').toLowerCase().replace(/\s+/g,' ').trim();
   const paint=card=>{
     const box=card.querySelector('.mono'),src=manifest?.[key(card.dataset.comp)];
-    if(!box||box.dataset.logoTried||!src||failed.has(src)||!/^assets\/company-logos\/[a-f0-9]{24}\.webp$/.test(src))return;
+    if(!box||box.dataset.logoTried||!src||failed.has(src)||!/^assets\/company-logos\/[a-f0-9]{24}\.(webp|svg)$/.test(src))return;
     box.dataset.logoTried='true';
     // IntersectionObserver already limits requests to visible/nearby cards.
     // Detached lazy images can wait forever before onload, so start this one now.

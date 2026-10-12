@@ -27,6 +27,11 @@ test('visible logos replace the letter only after a successful load without chan
   s.intersect([{target:s.card,isIntersecting:true}]);assert.equal(s.images.length,1);
 });
 test('an image failure preserves the letter',async()=>{const s=await setup({'dbs bank':'assets/company-logos/'+'a'.repeat(24)+'.webp'});s.images[0].onerror();assert.equal(s.box.letter,'D');});
+test('cached LinkedIn placeholder SVG replaces the letter only after loading',async()=>{
+  const src='assets/company-logos/'+'b'.repeat(24)+'.svg';
+  const s=await setup({'dbs bank':src});assert.equal(s.images.length,1);assert.equal(s.images[0].src,src);assert.equal(s.box.letter,'D');
+  s.images[0].onload();assert.equal(s.box.image,s.images[0]);assert.equal(s.box.letter,null);
+});
 test('external images and failed manifests produce no image requests',async()=>{
   assert.equal((await setup({'dbs bank':'https://attacker.test/logo.png'})).images.length,0);
   assert.equal((await setup({},false)).images.length,0);
