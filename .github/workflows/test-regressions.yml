@@ -4,6 +4,11 @@ on:
   pull_request:
     paths:
       - 'scripts/jobspy/**'
+      - 'scripts/company_logos.py'
+      - 'scripts/test_company_logos.py'
+      - 'scripts/test_company_logos.mjs'
+      - 'company-logos.js'
+      - 'requirements-logos.txt'
       - 'requirements-jobspy.txt'
       - 'worker.js'
       - 'jev-taxonomy.mjs'
@@ -57,6 +62,12 @@ jobs:
           python -m unittest discover -s scripts/jobspy -p 'test_*.py'
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
+      - name: Test company logo identity and cache publication
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-logos.txt
+          PYTHONPATH=scripts python -m unittest discover -s scripts -p test_company_logos.py
+          node --check company-logos.js
+          node --test scripts/test_company_logos.mjs
       - name: Test JEV Worker and visitor counter
         run: |
           node --test test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs scripts/test_jd_loading.mjs scripts/test_jev_framework.mjs
