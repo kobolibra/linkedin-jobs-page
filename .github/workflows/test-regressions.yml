@@ -29,6 +29,8 @@ on:
       - 'row-fixes.js'
       - 'scripts/test_list_interaction.mjs'
       - 'scripts/build_jd_shards.mjs'
+      - 'scripts/sync_frontend_payloads.py'
+      - 'scripts/test_sync_frontend_payloads.py'
       - 'scripts/test_jd_loading.mjs'
       - 'scripts/test_jev_framework.mjs'
       - 'package.json'
@@ -84,4 +86,4 @@ jobs:
           python -m unittest discover -s scripts -p test_verify_visitor_counter.py
 
       - name: Test transient deployment failures and retry budgets
-        run: PYTHONPATH=scripts python -m unittest scripts/test_deploy_cloudflare.py scripts/test_audit_project.py
+        run: PYTHONPATH=scripts python -m unittest scripts/test_deploy_cloudflare.py scripts/test_audit_project.py scripts/test_sync_frontend_payloads.py
