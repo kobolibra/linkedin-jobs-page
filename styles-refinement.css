@@ -299,3 +299,7 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 /* Let the serif title lead; keep the scope label light and precise. */
 .masthead::before { display:none; }
 .masthead .eyebrow { font-weight:500; letter-spacing:.16em; }
+
+/* Keep the mascot photo stack without a cast shadow underneath. */
+.mast-stack .mast-photo,
+[data-theme="dark"] .mast-stack .mast-photo { box-shadow:none; }
