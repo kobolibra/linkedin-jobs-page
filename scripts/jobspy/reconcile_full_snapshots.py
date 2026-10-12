@@ -191,10 +191,6 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
                 item["expiredReason"] = "missing_from_full_company_snapshot"
                 expired += 1
             item["jobStatus"] = "expired"
-        elif item.get("jobStatus") == "expired":
-            item["jobStatus"] = "active"
-            item.pop("expiredAt", None)
-            item.pop("expiredReason", None)
         item.setdefault("lastSeenAt", observed_at if key in snapshot_ids else None)
 
     result = existing_doc if isinstance(existing_doc, dict) else None
