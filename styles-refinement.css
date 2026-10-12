@@ -316,3 +316,13 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 .job-jd-status { color:var(--ink-soft); font:400 11px/1.2 var(--sans); white-space:nowrap; }
 .job-jd-status[hidden] { display:none !important; }
 .job-jd-text:empty { display:none !important; }
+
+/* Desktop rows: title/actions share a height; metadata has its own clear row. */
+@media (min-width:721px) {
+  .job { --job-top-row-height:26px; }
+  body.compact .job { --job-top-row-height:22px; }
+  .job-heading { min-height:var(--job-top-row-height); }
+  .job-right { height:var(--job-top-row-height); padding-top:0; }
+  .job-meta-line { margin-top:6px; min-height:20px; }
+  .job-sub { line-height:20px; }
+}
