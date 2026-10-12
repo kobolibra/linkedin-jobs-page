@@ -77,6 +77,43 @@
       "cooldowns": {},
       "details": {},
       "liveness": {}
+    },
+    {
+      "runId": "logos:38274933832:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-12T16:05:56.976105+00:00",
+      "requests": 6,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 5,
+        "404": 1
+      },
+      "outcomes": {
+        "response": 6
+      },
+      "stages": {
+        "logos": 6
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791822956.8855975,
+          "stopUntil": 1791822956.8855975,
+          "reason": "login or challenge"
+        }
+      },
+      "logos": {
+        "candidates": 7,
+        "downloaded": 2,
+        "missing": 2,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "LinkedIn returned a login or challenge page"
+      }
     }
   ],
   "queryFailureStreaks": {
