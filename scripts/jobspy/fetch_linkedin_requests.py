@@ -16,6 +16,7 @@ from bs4 import BeautifulSoup
 from logo_sources import source_hint
 from linkedin_http import LinkedInSession
 from linkedin_detail import fetch_detail
+from linkedin_ids import linkedin_job_id
 
 LOG = logging.getLogger("linkedin-requests")
 BASE = "https://www.linkedin.com"
@@ -28,7 +29,7 @@ USER_AGENTS = [
 ]
 COMPANIES = {
     "HSBC": {"canonical": "hsbc", "company_id": "1241", "variants": ["hsbc", "the hongkong and shanghai banking corporation"]},
-    "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "\u6e63\u6253\u73af\u7403\u5546\u4e1a\u670d\u52a1\u6709\u9650\u516c\u53f8"]},
+    "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "\u6e23\u6253\u73af\u7403\u5546\u4e1a\u670d\u52a1\u6709\u9650\u516c\u53f8"]},
     "Citi": {"canonical": "citi", "company_id": "11448", "variants": ["citi", "citibank", "citigroup"]},
     "JPMorgan Chase": {"canonical": "jpmorgan chase", "company_id": "1068", "variants": ["jpmorgan chase", "jpmorganchase", "\u6469\u6839\u5927\u901a\u4e9a\u6d32\u54a8\u8be2(\u5317\u4eac)\u6709\u9650\u516c\u53f8"]},
     "BNP Paribas": {"canonical": "bnp paribas", "company_id": "166278,963211,256009,11092068,30590982,10070,18735883,98774,15245937,3683364,3880216,3625182,3627928,1519,281207,2642837,251838,1508", "variants": ["bnp", "bnp paribas"]},
@@ -53,20 +54,18 @@ def clean(value: object) -> str:
 def canonical(value: str) -> str:
     folded = unicodedata.normalize("NFKD", clean(value).casefold())
     folded = "".join(ch for ch in folded if not unicodedata.combining(ch))
-    return re.sub(r"[^a-z0-9]+", " ", folded).strip()
+    return re.sub(r"[^a-z0-9\u3400-\u9fff]+", " ", folded).strip()
 
 
 def normalize_url(url: str) -> str:
     parsed = urlsplit(url)
     query = [(k, v) for k, v in parse_qsl(parsed.query) if k.lower() not in {"trk", "trackingid", "refid"}]
-    host = "www.linkedin.com" if parsed.netloc.casefold().endswith("linkedin.com") else parsed.netloc
+    host = "www.linkedin.com" if (parsed.hostname == "linkedin.com" or str(parsed.hostname).endswith(".linkedin.com")) else parsed.netloc
     return urlunsplit(("https", host, parsed.path.rstrip("/"), urlencode(query), ""))
 
 
 def extract_id(url: str) -> str:
-    # LinkedIn guest results use /jobs/view/<slug>-<numeric-id>.
-    match = re.search(r"/jobs/view/[^/?#]*?(\d{7,})(?:[/?#]|$)", url)
-    return match.group(1) if match else ""
+    return linkedin_job_id(url)
 
 
 def city_from_location(raw: str) -> str:
@@ -95,9 +94,12 @@ def date_only(value: str) -> str:
 
 def company_match(company: str, requested: str) -> bool:
     actual = canonical(company)
+    if not actual:
+        return False
     if actual == canonical(requested):
         return True
-    return any(canonical(v) in actual or actual in canonical(v) for v in COMPANIES[requested]["variants"])
+    return any(re.search(r"(?:^| )" + re.escape(canonical(v)) + r"(?: |$)", actual)
+               for v in COMPANIES[requested]["variants"] if canonical(v))
 
 
 def rotate_user_agent(session: requests.Session, attempt: int) -> None:
@@ -112,6 +114,17 @@ def looks_like_block_page(html: str) -> bool:
     return "captcha" in text or "security verification" in text
 
 
+def listing_region(raw):
+    value = str(raw or "").casefold()
+    if re.search(r"hong ?kong|香港", value):
+        return "HK"
+    if re.search(r"singapore|新加坡", value):
+        return "SG"
+    if re.search(r"(?:^|[, ])china(?:$|[, ])|中国|mainland china", value):
+        return "CN"
+    return None
+
+
 def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN") -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     jobs = []
@@ -121,7 +134,8 @@ def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN")
             continue
         url = normalize_url(link["href"].split("?")[0])
         job_id = extract_id(url)
-        if not job_id:
+        parsed_url = urlsplit(url)
+        if not job_id or not (parsed_url.hostname == "linkedin.com" or str(parsed_url.hostname).endswith(".linkedin.com")):
             continue
         company_tag = card.select_one("h4.base-search-card__subtitle a")
         company = company_tag.get_text(" ", strip=True) if company_tag else ""
@@ -129,7 +143,12 @@ def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN")
             continue
         title_tag = card.select_one("h3.base-search-card__title")
         location_tag = card.select_one("span.job-search-card__location")
+        observed_region = listing_region(location_tag.get_text(" ", strip=True) if location_tag else "")
+        if observed_region and observed_region != region:
+            continue
         time_tag = card.select_one("time.job-search-card__listdate, time.job-search-card__listdate--new")
+        if not title_tag or not title_tag.get_text(" ", strip=True):
+            continue
         jobs.append({
             "source": "jobspy-requests",
             "sourceSite": "linkedin",
@@ -239,6 +258,18 @@ def main() -> int:
                     blocked = True
                     break
                 page_jobs = parse_search(response.text, company, fetched_at, region)
+                markup = BeautifulSoup(response.text, "html.parser")
+                cards = markup.select("div.base-search-card")
+                if ((not cards and response.text.strip()) or
+                    any(not card.select_one("a.base-card__full-link[href]") or
+                        not card.select_one("h3.base-search-card__title") or
+                        not card.select_one("h4.base-search-card__subtitle a") for card in cards)):
+                    status_summary[status_key] = f"failed@start={start}: unrecognised or incomplete search markup"
+                    break
+                # Cards rejected by employer/identity checks are not an empty page.
+                if cards and not page_jobs:
+                    status_summary[status_key] = f"partial@start={start}: no verified matching employer cards"
+                    break
                 if not page_jobs:
                     empty_pages += 1
                     LOG.info("%s [%s] start=%s empty_page=%s/2", company, region, start, empty_pages)

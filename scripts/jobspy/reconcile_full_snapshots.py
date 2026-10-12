@@ -104,6 +104,10 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         if not key or location_key(item) not in scope_locations:
             continue
         old = by_id.get(key, {})
+        # A snapshot finishing later can still precede a more recent probe/RSS observation.
+        if any((when := timestamp(old.get(field))) and when > observed_time
+               for field in ("lastSeenAt", "rssObservedAt", "liveVerifiedAt", "expiredAt")):
+            continue
         if old.get("jobStatus") == "expired":
             reactivated += 1
         merged = dict(old)
@@ -123,6 +127,11 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
                           "jdChangedAt", "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText"):
                 if item.get(field) not in (None, ""):
                     merged[field] = item[field]
+        if location_key(item) == "CN" and item.get("detailStatus") == "ok":
+            merged.pop("detailError", None)
+        if location_key(item) == "CN" and item.get("jdChangeStatus") == "unchanged":
+            for field in ("jdChangedAt", "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText"):
+                merged.pop(field, None)
         # JobSpy is a lifecycle/status observer, not the feed that defines when
         # a job was pushed to the site.  Never let a snapshot row carrying an
         # incidental pushTime/firstSeen overwrite the canonical existing values.
@@ -155,9 +164,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             merged["jobspyLastPosted"] = watermark.isoformat()
         if not old.get("firstSeen"):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
-        elif timestamp(item.get("datePosted")) and timestamp(old.get("firstSeen")):
-            if timestamp(item["datePosted"]) < timestamp(old["firstSeen"]):
-                merged["firstSeen"] = item["datePosted"]
+
         merged["jobStatus"] = "active"
         merged["lastSeenAt"] = observed_at
         merged.pop("expiredAt", None)

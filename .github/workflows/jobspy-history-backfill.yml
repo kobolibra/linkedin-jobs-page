@@ -26,6 +26,9 @@ jobs:
   backfill:
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    env:
+      LINKEDIN_HTTP_STATE: /tmp/linkedin-backfill-state.json
+      LINKEDIN_HEALTH_EVENTS: /tmp/linkedin-backfill-events.jsonl
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,6 +36,11 @@ jobs:
           python-version: "3.11"
       - name: Install scraper dependencies
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
+      - name: Initialize bounded shared request state
+        run: |
+          cp data/jobspy/http-state.json "$LINKEDIN_HTTP_STATE"
+          : > "$LINKEDIN_HEALTH_EVENTS"
+          mkdir -p /tmp/linkedin-backfill-search
       - name: Fetch historical search results
         run: |
           mkdir -p data/jobspy/backfill
@@ -50,12 +58,12 @@ jobs:
             --delay-max 5 \
             --page-timeout 20 \
             --page-attempts 6 \
-            --output data/jobspy/backfill/search.json
+            --output /tmp/linkedin-backfill-search/search.json
       - name: Fetch historical JD details
         run: |
           python scripts/jobspy/fetch_details_parallel.py \
-            --input data/jobspy/backfill/search.json \
-            --output data/jobspy/backfill/details.json \
+            --input /tmp/linkedin-backfill-search/search.json \
+            --output /tmp/linkedin-backfill-details.json \
             --workers "${{ inputs.detail_workers }}" \
             --timeout 15 \
             --attempts 3 \
@@ -64,63 +72,10 @@ jobs:
       - name: Filter and normalize historical baseline
         run: |
           python scripts/jobspy/audit_and_repair_baseline.py \
-            --input data/jobspy/backfill/details.json \
+            --input /tmp/linkedin-backfill-details.json \
             --output data/jobspy/backfill/normalized.json \
             --retry-output data/jobspy/backfill/detail_retry.json \
             --report data/jobspy/backfill/report.json
-      - name: Publish company snapshots and merge into jobs.json
-        run: |
-          python - <<'PY'
-          import json, re
-          from pathlib import Path
-          root=Path('.')
-          normalized=json.loads((root/'data/jobspy/backfill/normalized.json').read_text(encoding='utf-8'))
-          rows=normalized.get('jobs', [])
-          specs={
-              'BNP Paribas': ('bnp_paribas','166278'),
-              'Societe Generale': ('societe_generale','1691'),
-              'DBS Bank': ('dbs_bank','163379'),
-              'Deutsche Bank': ('deutsche_bank','1262'),
-              'Goldman Sachs': ('goldman_sachs','1382'),
-              'BlackRock': ('blackrock','4764'),
-              'Bank of America': ('bank_of_america','1123'),
-              'Fidelity International': ('fidelity_international','1313'),
-          }
-          for company,(key,company_id) in specs.items():
-              selected=[x for x in rows if x.get('requestedCompany')==company]
-              doc={'schemaVersion':'1.2','mode':'historical-backfill','country':'China','company':company,'companyId':company_id,'count':len(selected),'jobs':selected}
-              (root/f'data/jobspy/{key}_f_c_{company_id}_final.json').write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          existing=json.loads((root/'jobs.json').read_text(encoding='utf-8'))
-          incoming=rows
-          def jid(x):
-              s=str(x.get('sourceJobId') or x.get('link') or '')
-              m=re.search(r'(\d{7,})',s)
-              return m.group(1) if m else s
-          old=existing if isinstance(existing,list) else existing.get('jobs',[])
-          byid={jid(x):x for x in old if jid(x)}
-          for x in incoming:
-              k=jid(x)
-              if k: byid[k]=x if k not in byid else {**byid[k],**x}
-          merged=list(byid.values())
-          if isinstance(existing,list):
-              (root/'jobs.json').write_text(json.dumps(merged,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          else:
-              out=dict(existing); out['jobs']=merged; out['count']=len(merged); out['jobspyBackfill']={'incoming':len(incoming),'addedOrUpdated':len(incoming)}
-              (root/'jobs.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          unified=[]
-          for p in sorted((root/'data/jobspy').glob('*_f_c_*_final.json')):
-              try: unified.extend(json.loads(p.read_text(encoding='utf-8')).get('jobs',[]))
-              except Exception: pass
-          seen={}; [seen.setdefault(jid(x),x) for x in unified if jid(x)]
-          (root/'data/jobspy/jobspy_baseline_final_unified.json').write_text(json.dumps({'schemaVersion':'1.2','mode':'historical-backfill-unified','country':'China','count':len(seen),'jobs':list(seen.values())},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          print(json.dumps({'backfill_rows':len(rows),'merged_rows':len(merged),'unified_rows':len(seen),'by_company':{c:sum(x.get('requestedCompany')==c for x in rows) for c in specs}},ensure_ascii=False))
-          PY
-      - name: Build frontend payloads from canonical jobs
-        run: python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-      - name: Validate published data
-        run: |
-          python3 -m py_compile scripts/jobspy/*.py scripts/audit_project.py
-          python3 scripts/audit_project.py
       - name: Upload backfill artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -131,14 +86,43 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json data/jobspy/jobspy_baseline_final_unified.json data/jobspy/*_f_c_*_final.json
-          if git diff --cached --quiet; then
-            echo "No historical data changes to commit"
-            exit 0
-          fi
-          git commit -m "jobspy: backfill five employer histories"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          cp data/jobspy/backfill/normalized.json /tmp/linkedin-backfill.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            python scripts/jobspy/publish_backfill.py --normalized /tmp/linkedin-backfill.json
+            python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
+            python scripts/audit_project.py --strict
+            git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json data/jobspy/jobspy_baseline_final_unified.json data/jobspy/*_f_c_*_final.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m "jobspy: enrich historical employer data without resetting lifecycle"
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi
+            sleep $((attempt * 3))
+          done
+          echo 'Unable to publish historical enrichment' >&2
+          exit 1
       - name: Dispatch complete site deployment
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy.yml --ref "$GITHUB_REF_NAME"
+      - name: Persist historical scraping health and cooldowns
+        if: always()
+        env:
+          WORKFLOW_STATUS: ${{ job.status }}
+        run: |
+          python scripts/jobspy/scraper_health.py --task jobs --workflow-status "$WORKFLOW_STATUS" --search-dir /tmp/linkedin-backfill-search --details /tmp/linkedin-backfill-details.json --snapshot /tmp/linkedin-backfill-health.json
+          for attempt in 1 2 3 4 5; do
+            git fetch origin "$GITHUB_REF_NAME"
+            git reset --hard "origin/$GITHUB_REF_NAME"
+            health_rc=0
+            python scripts/jobspy/scraper_health.py --apply /tmp/linkedin-backfill-health.json --state data/jobspy/http-state.json || health_rc=$?
+            if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add data/jobspy/health.json data/jobspy/http-state.json
+            if git diff --cached --quiet; then exit "$health_rc"; fi
+            git commit -m '[scraper-health] preserve backfill diagnostics and cooldowns'
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then exit "$health_rc"; fi
+            sleep $((attempt * 3))
+          done
+          exit 1

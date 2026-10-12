@@ -1,33 +1,66 @@
-import json, re, sys
+"""Validate canonical identities and published logo assets without changing data."""
+import argparse
+import hashlib
+import json
+import re
+import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
-ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT/'scripts/jobspy'))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts/jobspy'))
 from linkedin_ids import linkedin_job_id
 
-def load(p):
-    d=json.loads(Path(p).read_text(encoding='utf-8'))
-    return d if isinstance(d,list) else d.get('jobs',[])
-def jid(x):
-    s=str(x.get('sourceJobId') or x.get('link') or '')
-    return linkedin_job_id(s) or s
 
-def report(label, rows):
-    ids=[jid(x) for x in rows]
-    dup=len(ids)-len(set(i for i in ids if i))
-    bad_company_city=[x for x in rows if str(x.get('company') or '').strip() and str(x.get('city') or '').strip().casefold()==str(x.get('company') or '').strip().casefold()]
-    no_link=[x for x in rows if not x.get('link')]
-    print(label, 'rows=',len(rows),'unique_ids=',len(set(i for i in ids if i)),'duplicate_ids=',dup,'no_link=',len(no_link),'company_as_city=',len(bad_company_city),'jd=',sum(bool(str(x.get('descriptionText') or x.get('description') or '').strip()) for x in rows),'html=',sum(bool(str(x.get('descriptionHtml') or '').strip()) for x in rows),'city=',sum(bool(str(x.get('city') or '').strip()) for x in rows))
+def audit(root):
+    doc = json.loads((root / 'jobs.json').read_text(encoding='utf-8'))
+    rows = doc if isinstance(doc, list) else doc.get('jobs', [])
+    problems = []
+    seen = set()
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            problems.append(f'row {index}: invalid object')
+            continue
+        link = str(row.get('link') or '')
+        parsed = urlsplit(link)
+        key = linkedin_job_id(link)
+        source = linkedin_job_id(row.get('sourceJobId'))
+        if parsed.scheme != 'https' or not (parsed.hostname == 'linkedin.com' or str(parsed.hostname).endswith('.linkedin.com')) or not key:
+            problems.append(f'row {index}: invalid LinkedIn link')
+        if source and key != source:
+            problems.append(f'row {index}: source/link identity mismatch')
+        if key in seen:
+            problems.append(f'row {index}: duplicate LinkedIn ID {key}')
+        seen.add(key)
+        if row.get('jobStatus') not in (None, 'active', 'expired'):
+            problems.append(f'row {index}: invalid lifecycle status')
+        if row.get('jobStatus') == 'expired' and not row.get('expiredAt'):
+            problems.append(f'row {index}: expired without timestamp')
+    if isinstance(doc, dict) and doc.get('count') != len(rows):
+        problems.append('canonical count differs from rows')
+    catalog_path = root / 'company-logos.json'
+    catalog = json.loads(catalog_path.read_text()) if catalog_path.exists() else {}
+    for company, value in catalog.items():
+        if not isinstance(value, str) or not re.fullmatch(r'assets/company-logos/[a-f0-9]{24}\.(webp|svg)', value):
+            problems.append(f'{company}: unsafe logo asset path')
+            continue
+        asset = root / value
+        if not asset.is_file():
+            problems.append(f'{company}: missing logo asset')
+        elif hashlib.sha256(asset.read_bytes()).hexdigest()[:24] != asset.stem:
+            problems.append(f'{company}: logo asset hash mismatch')
+    return {'jobs': len(rows), 'uniqueIds': len(seen), 'logos': len(catalog),
+            'problems': problems, 'problemCount': len(problems)}
 
-report('jobs.json',load(ROOT/'jobs.json'))
-for p in sorted((ROOT/'data/jobspy').glob('*final.json')):
-    report(p.name,load(p))
-print('--- target company rows in jobs.json ---')
-rows=load(ROOT/'jobs.json')
-for c in ['HSBC','Standard Chartered','Citi','JPMorganChase','JPMorgan Chase','BNP Paribas','Societe Generale','DBS Bank','Deutsche Bank','Goldman Sachs','BlackRock']:
-    r=[x for x in rows if x.get('company')==c]
-    if r: report(c,r)
-print('--- invalid target IDs by independent files ---')
-for p in sorted((ROOT/'data/jobspy').glob('*final.json')):
-    for x in load(p):
-        if not jid(x): print(p.name,'missing id',x.get('title'))
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--strict', action='store_true')
+    args = parser.parse_args()
+    result = audit(ROOT)
+    print(json.dumps(result, ensure_ascii=False))
+    return int(args.strict and bool(result['problems']))
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

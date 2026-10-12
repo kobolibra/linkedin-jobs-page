@@ -88,7 +88,7 @@ def annotate(existing_doc, snapshot_doc, observed_at=None):
         if not old or not (is_repost(old, item.get("datePosted"), observed_at) if item.get("datePosted") else item.get("jobspyRepost") is True):
             out_rows.append(item)
             continue
-        if not str(item.get("descriptionHtml") or item.get("descriptionText") or "").strip():
+        if item.get("detailStatus") in {"failed", "blocked", "gone"} or not str(item.get("descriptionHtml") or item.get("descriptionText") or "").strip():
             skipped += 1
             out_rows.append(item)
             continue
