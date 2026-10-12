@@ -48,5 +48,5 @@ test('both JEV and JD expansion pass the job ID to the partition loader',()=>{
   assert.match(source,/await loadJdDetails\(id\)/);
   assert.match(source,/await loadJdDetails\(card.dataset.id\)/);
   assert.doesNotMatch(source,/fetch\("jobs-details.json"/);
-  assert.match(source,/jdFingerprint\(jevRequestText\(entry\).slice\(0,JEV_MAX_DESCRIPTION_CHARS\)\)/);
+  assert.match(source,/jdFingerprint\(JSON.stringify\(jevRequestData\(card,entry\)\)\)/);
 });

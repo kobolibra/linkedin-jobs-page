@@ -11,7 +11,7 @@ from linkedin_detail import fetch_detail
 
 def www(url: str) -> str:
     p = urlsplit(url.strip())
-    host = "www.linkedin.com" if p.netloc.casefold().endswith("linkedin.com") else p.netloc
+    host = "www.linkedin.com" if (p.hostname == "linkedin.com" or str(p.hostname).endswith(".linkedin.com")) else p.netloc
     return urlunsplit(("https", host, p.path.rstrip("/"), p.query, ""))
 
 def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: float) -> dict:

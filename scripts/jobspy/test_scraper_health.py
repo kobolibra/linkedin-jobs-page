@@ -11,9 +11,9 @@ class HealthTests(unittest.TestCase):
         self.assertTrue(alerts({'queries':{'HSBC::CN':'failed@start=0: HTTP 429'}})[0])
         self.assertFalse(alerts({'queries':{'HSBC::CN':'ok: 10 jobs'}})[0])
 
-    def test_partial_and_untrusted_zero_warn(self):
+    def test_all_partial_and_untrusted_queries_are_critical(self):
         critical,issues=alerts({'queries':{'HSBC::CN':'partial@cap: 20 jobs','Citi::CN':'no-results-untrusted'}})
-        self.assertFalse(critical);self.assertTrue(issues)
+        self.assertTrue(critical);self.assertTrue(issues)
 
     def test_failed_details_warn_without_marking_jobs_gone(self):
         self.assertTrue(alerts({'details':{'attempted':3,'ok':0}})[1])

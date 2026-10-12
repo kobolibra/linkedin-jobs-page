@@ -2,6 +2,9 @@
  * LinkedIn 金融职位 · 页面逻辑
  * 依赖：jobs.json
  */
+function storageGet(key, session=false){try{return (session?sessionStorage:localStorage).getItem(key);}catch{return null;}}
+function storageSet(key,value,session=false){try{(session?sessionStorage:localStorage).setItem(key,value);}catch{}}
+function storageList(key){try{const list=JSON.parse(storageGet(key)||"[]");return Array.isArray(list)?list.filter(x=>typeof x==="string"):[];}catch{return [];}}
 const IC={
   star:'<svg class="star-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2.6 15.09 8.86 22 9.87 17 14.74 18.18 21.62 12 18.37 5.82 21.62 7 14.74 2 9.87 8.91 8.86 12 2.6"/></svg>',
   ban:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg>',
@@ -18,9 +21,9 @@ function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   tbtn.setAttribute('data-mode',t);
   tbtn.setAttribute('aria-checked',t==='dark'?'true':'false');
-  localStorage.setItem('theme',t);
+  storageSet('theme',t);
 }
-setTheme(localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
+setTheme(storageGet('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
 tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
 (function(){
   const stack=document.getElementById('mastStack');
@@ -42,7 +45,7 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
     ...numbered('mast-bg-cobalt-canopy',6)
   ];
   const storageKey='mast-background-last';
-  const previous=(sessionStorage.getItem(storageKey)||'').split('|').filter(Boolean);
+  const previous=(storageGet(storageKey,true)||'').split('|').filter(Boolean);
   const choose=(pool,avoid)=>{const choices=pool.filter(path=>!avoid.includes(path));return choices[Math.floor(Math.random()*choices.length)]||pool[0];};
   const showCats=Math.random()<cats.length/(cats.length+portraits.length/3);
   const selected=showCats?[choose(cats,previous)]:[];
@@ -65,7 +68,7 @@ tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute
     if(!images.length){bg.style.display='none';return;}
     const frames=images.map(image=>{image.className='mast-bg-image';image.alt='';image.decoding='async';const frame=document.createElement('span');frame.className='mast-bg-frame';frame.append(image);return frame;});
     if(images.length===3){const credit=document.createElement('span');credit.className='mast-bg-credit';credit.textContent='photo by 小红书@岚岚';bg.replaceChildren(...frames,credit);}else bg.replaceChildren(...frames);
-    bg.classList.toggle('triptych',images.length===3);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');sessionStorage.setItem(storageKey,selected.join('|'));
+    bg.classList.toggle('triptych',images.length===3);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');storageSet(storageKey,selected.join('|'),true);
     document.fonts?.ready.then(fitGallery);setTimeout(fitGallery,760);addEventListener('resize',fitGallery,{passive:true});
   }).catch(()=>{bg.style.display='none';});
   };
@@ -103,6 +106,7 @@ const canonicalCompany=name=>{
   return aliases[key]||raw;
 };
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function safeJobLink(value){try{const url=new URL(String(value));return url.protocol==="https:"&&(url.hostname==="linkedin.com"||url.hostname.endsWith(".linkedin.com"))?url.href:"#";}catch{return "#";}}
 function safeJdHtml(raw){
   const tpl=document.createElement("template");tpl.innerHTML=String(raw||"");
   const allowed=new Set(["DIV","P","UL","OL","LI","STRONG","B","EM","I","BR","H3","H4","SPAN","INS","DEL"]);
@@ -135,14 +139,15 @@ const JEV_CACHE_MAX_ENTRIES=400;
 // The browser deliberately never receives the JEV secret. A same-origin proxy
 // (worker.js) signs the provider request and returns the five-dimension card.
 const JEV_API_ENDPOINT="/api/jev/analyze";
-function readJevCache(){try{const value=JSON.parse(localStorage.getItem(JEV_CACHE_KEY)||"{}");return value&&typeof value==="object"?value:{};}catch{return {};}}
-function writeJevCache(value){try{const entries=Object.entries(value);if(entries.length>JEV_CACHE_MAX_ENTRIES){entries.sort((a,b)=>String(b[1]?.analyzedAt||"").localeCompare(String(a[1]?.analyzedAt||"")));value=Object.fromEntries(entries.slice(0,JEV_CACHE_MAX_ENTRIES));}localStorage.setItem(JEV_CACHE_KEY,JSON.stringify(value));}catch{}}
+function readJevCache(){try{const value=JSON.parse(storageGet(JEV_CACHE_KEY)||"{}");return value&&typeof value==="object"?value:{};}catch{return {};}}
+function writeJevCache(value){try{const entries=Object.entries(value);if(entries.length>JEV_CACHE_MAX_ENTRIES){entries.sort((a,b)=>String(b[1]?.analyzedAt||"").localeCompare(String(a[1]?.analyzedAt||"")));value=Object.fromEntries(entries.slice(0,JEV_CACHE_MAX_ENTRIES));}storageSet(JEV_CACHE_KEY,JSON.stringify(value));}catch{}}
 async function jdFingerprint(text){if(window.crypto?.subtle){const bytes=new TextEncoder().encode(String(text||""));const digest=await crypto.subtle.digest("SHA-256",bytes);return [...new Uint8Array(digest)].map(x=>x.toString(16).padStart(2,"0")).join("");}return String(text||"").slice(0,16000);}
 // Block-aware plain text: keeps one line per paragraph / bullet so the worker's fallback cleaner can recognise
 // headings and boilerplate paragraphs. (jdPlainText collapses everything onto one line and is only used for display.)
 function jdBlockText(html){const tpl=document.createElement("template");tpl.innerHTML=String(html||"").replace(/<li\b[^>]*>/gi,"\n- ").replace(/<\/?(p|div|li|ul|ol|h[1-6]|tr|br)\b[^>]*>/gi,"\n");const text=tpl.content.textContent||"";return text.split("\n").map(line=>line.replace(/\s+/g," ").trim()).filter(Boolean).join("\n");}
 // v4 request text: the preprocessed jd_text when the build produced one (schema jev-input-v4), otherwise the raw JD.
 function jevRequestText(entry){const input=entry?.jevInput;if(input&&input.schema==="jev-input-v4"&&typeof input.jd_text==="string"&&input.jd_text.trim().length>=40)return input.jd_text;return jdBlockText(entry?.descriptionHtml||"")||String(entry?.descriptionText||entry?.description||"");}
+function jevRequestData(card,entry){return {jobId:card.dataset.id||"",title:card.querySelector(".job-title")?.textContent||"",company:card.dataset.comp||"",location:card.dataset.region||"",description:jevRequestText(entry).slice(0,JEV_MAX_DESCRIPTION_CHARS),jevInput:jevRequestMeta(entry)};}
 function jevRequestMeta(entry){const input=entry?.jevInput;if(!input||input.schema!=="jev-input-v4")return null;return {schema:input.schema,language:input.language||"",evidence_level:input.evidence_level||"",evidence_flags:Array.isArray(input.evidence_flags)?input.evidence_flags:[],employer_metadata:input.employer_metadata||""};}
 function jevPayload(raw){const root=raw?.analysis&&typeof raw.analysis==="object"?raw.analysis:raw||{};const dim=(value,fallback)=>value&&typeof value==="object"?value:{value:fallback,label:fallback,confidence:null,state:"not_stated",candidates:[]};return {taxonomyVersion:root.taxonomyVersion||JEV_TAXONOMY_VERSION,model:root.model||"",postingType:root.postingType||{},roleArchetype:dim(root.roleArchetype,"insufficient_evidence"),primaryActivity:dim(root.primaryActivity,"not_determinable"),businessLine:dim(root.businessLine,"not_stated"),leadershipLevel:dim(root.leadershipLevel,"not_stated"),roleRisk:root.roleRisk&&typeof root.roleRisk==="object"?{...root.roleRisk,flags:Array.isArray(root.roleRisk.flags)?root.roleRisk.flags:[],state:root.roleRisk.state||"none"}:{flags:[],state:"none"},evidence:root.evidence||{}};}
 const jevText=value=>String(value||"Unknown").replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
@@ -207,15 +212,17 @@ async function runJevAnalysis(card){
     await hydrateJd(card);panel=ensureJevPanel(card)||panel;
     const text=jevRequestText(entry).slice(0,JEV_MAX_DESCRIPTION_CHARS);
     if(!text||text.trim().length<40){showJevError(panel,"This posting does not contain enough description text to analyse.");return;}
-    const fingerprint=await jdFingerprint(text),cache=readJevCache(),record=cache[id];
+    const requestData=jevRequestData(card,entry),fingerprint=await jdFingerprint(JSON.stringify(requestData)),cache=readJevCache(),record=cache[id];
     if(record?.taxonomyVersion===JEV_TAXONOMY_VERSION&&record.jdFingerprint===fingerprint&&record.result){renderJevResult(panel,record.result,record.analyzedAt);button?.classList.add("is-cached");return;}
     showJevStatus(panel,"JEV is analysing the job description…");
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),45000);
     let response;
-    try{response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({jobId:id,title:card.querySelector(".job-title")?.textContent||"",company:card.querySelector(".company-name")?.textContent?.replace(/\s*·\s*\d+$/g,"")||"",location:card.dataset.region||"",description:text,jevInput:jevRequestMeta(entry)}),signal:controller.signal});}
+    try{response=await fetch(JEV_API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(requestData),signal:controller.signal});}
     finally{clearTimeout(timer);}
     if(!response.ok){let body=null;try{body=await response.json();}catch{}showJevError(panel,jevErrorMessage(response.status,body),()=>runJevAnalysis(card));return;}
-    const payload=await response.json(),normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
+    const payload=await response.json();
+    if(!payload?.analysis||payload.analysis.taxonomyVersion!==JEV_TAXONOMY_VERSION)throw new Error("Invalid analysis response");
+    const normalized=jevPayload(payload),analyzedAt=new Date().toISOString();
     renderJevResult(panel,normalized,analyzedAt);
     // Cache only after a successful render, so a failure can never poison later clicks.
     if(normalized.taxonomyVersion===JEV_TAXONOMY_VERSION){cache[id]={schemaVersion:3,taxonomyVersion:normalized.taxonomyVersion,jdFingerprint:fingerprint,analyzedAt,result:normalized};writeJevCache(cache);button?.classList.add("is-cached");}
@@ -227,7 +234,7 @@ function addJevControls(body,card,entry){
   if(window.matchMedia?.("(max-width:720px)").matches)return;
   const panel=ensureJevPanel(card);if(!panel||panel.dataset.cachedChecked==="true")return;panel.dataset.cachedChecked="true";
   const id=card.dataset.id||"",existing=readJevCache()[id];
-  if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(jevRequestText(entry).slice(0,JEV_MAX_DESCRIPTION_CHARS)).then(fingerprint=>{if(existing.jdFingerprint===fingerprint&&panel.hidden){renderJevResult(panel,existing.result,existing.analyzedAt);card.querySelector(".job-jd-analytics")?.classList.add("is-cached");}});}
+  if(existing?.taxonomyVersion===JEV_TAXONOMY_VERSION&&existing?.result){jdFingerprint(JSON.stringify(jevRequestData(card,entry))).then(fingerprint=>{if(existing.jdFingerprint===fingerprint&&panel.hidden){renderJevResult(panel,existing.result,existing.analyzedAt);card.querySelector(".job-jd-analytics")?.classList.add("is-cached");}});}
 }
 async function hydrateJd(card){
   const body=card.querySelector(".job-jd-text");
@@ -281,16 +288,16 @@ const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.ma
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel==="22+")return d>=22;const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
 function animNum(el,target,suffix){suffix=suffix||"";if(reduce){el.innerHTML=target.toLocaleString()+suffix;return;}const dur=420,start=performance.now();const step=now=>{const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);el.innerHTML=Math.round(target*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
-const favs=new Set(JSON.parse(localStorage.getItem("favs")||"[]"));
-const reads=new Set(JSON.parse(localStorage.getItem("reads")||"[]"));
-const blocked=new Set(JSON.parse(localStorage.getItem("blocked")||"[]"));
-const blockedKw=new Set(JSON.parse(localStorage.getItem("blockedKw")||"[]"));
-const saveFavs=()=>localStorage.setItem("favs",JSON.stringify([...favs]));
-const saveReads=()=>localStorage.setItem("reads",JSON.stringify([...reads]));
-const saveBlocked=()=>localStorage.setItem("blocked",JSON.stringify([...blocked]));
-const saveBlockedKw=()=>localStorage.setItem("blockedKw",JSON.stringify([...blockedKw]));
+const favs=new Set(storageList("favs"));
+const reads=new Set(storageList("reads"));
+const blocked=new Set(storageList("blocked"));
+const blockedKw=new Set(storageList("blockedKw"));
+const saveFavs=()=>storageSet("favs",JSON.stringify([...favs]));
+const saveReads=()=>storageSet("reads",JSON.stringify([...reads]));
+const saveBlocked=()=>storageSet("blocked",JSON.stringify([...blocked]));
+const saveBlockedKw=()=>storageSet("blockedKw",JSON.stringify([...blockedKw]));
 (function(){const values=[...blocked];blocked.clear();values.forEach(value=>blocked.add(canonicalCompany(value)));saveBlocked();})();
-(function(){if(localStorage.getItem("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();localStorage.setItem("favKeyV","2");})();
+(function(){if(storageGet("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();storageSet("favKeyV","2");})();
 const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),cityEl=document.getElementById("city"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");
 // `toggle` does not bubble, so capture it at the list root. The initial
 // index payload intentionally excludes JD text; only opening a details row
@@ -420,9 +427,9 @@ function setDensity(d){
   const c=d==="compact";
   document.body.classList.toggle("compact",c);
   dbtn.classList.toggle("active",c);
-  localStorage.setItem("density",d);
+  storageSet("density",d);
 }
-setDensity(localStorage.getItem("density")||"comfortable");
+setDensity(storageGet("density")||"comfortable");
 dbtn.addEventListener("click",()=>setDensity(document.body.classList.contains("compact")?"comfortable":"compact"));
 function renderBlocked(){
   if(blocked.size===0){blockedBar.classList.remove("show","open");blockedBar.innerHTML="";blockedOpen=false;return;}
@@ -657,7 +664,7 @@ jobsDataPromise
         // representation as JD-available so the lazy details loader and its
         // expand-only Analytics control remain reachable.
         const hasJd=job.hasJd===true||Boolean(job.descriptionHtml||job.descriptionText);
-        rows.push('<article class="job'+(reads.has(id)?' read':'')+(favs.has(id)?' is-favorite':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'>'+(window.CompanyLogos?window.CompanyLogos.markup(canonicalCompany(job.company),monogram(canonicalCompany(job.company)),first&&idx<12):'<div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div>')+'<div class="job-main"><div class="job-heading">'+(expired?'<span class="job-state-closed">关闭</span>':'')+'<a class="job-title" href="'+esc(job.link)+'" target="_blank" rel="noopener">'+esc(job.title)+'</a></div><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line"><div class="job-jd-row">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics" hidden>Analytics</span></summary><div class="job-jd-text"></div></details>':'')+'</div><div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
+        rows.push('<article class="job'+(reads.has(id)?' read':'')+(favs.has(id)?' is-favorite':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'>'+(window.CompanyLogos?window.CompanyLogos.markup(canonicalCompany(job.company),monogram(canonicalCompany(job.company)),first&&idx<12):'<div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div>')+'<div class="job-main"><div class="job-heading">'+(expired?'<span class="job-state-closed">关闭</span>':'')+'<a class="job-title" href="'+esc(safeJobLink(job.link))+'" target="_blank" rel="noopener">'+esc(job.title)+'</a></div><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line"><div class="job-jd-row">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics" hidden>Analytics</span></summary><div class="job-jd-text"></div></details>':'')+'</div><div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽机构"></button></div></div></div></div><div class="job-right">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="收藏" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></article>');
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];

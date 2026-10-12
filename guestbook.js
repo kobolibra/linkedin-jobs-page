@@ -1,5 +1,9 @@
 /* 留言板 Guestbook + 左侧滚动定位条 —— 浮动按钮 + 弹窗；点赞/多层回复开放，置顶/删除需管理员密码 */
 (function () {
+  function storeGet(key,session=false){try{return (session?sessionStorage:localStorage).getItem(key);}catch{return null;}}
+  function storeSet(key,value,session=false){try{(session?sessionStorage:localStorage).setItem(key,value);}catch{}}
+  function storeRemove(key){try{sessionStorage.removeItem(key);}catch{}}
+  function likedIds(){try{const list=JSON.parse(storeGet(LS_LIKES)||"[]");return Array.isArray(list)?list:[];}catch{return [];}}
   // ===== 配置 =====
   const API = "https://guestbook-api.claudecowork.workers.dev";
   const LS_LIKES = "gbLikes";
@@ -143,12 +147,12 @@
   let messages = [];
   let replyOpen = null;
   let loaded = false;
-  const ownerAlertsEnabled = localStorage.getItem(LS_OWNER_ALERTS) === "1";
-  let hasSeenBaseline = Number.isFinite(Number(localStorage.getItem(LS_SEEN_AT)));
-  let seenAt = Number(localStorage.getItem(LS_SEEN_AT)) || 0;
-  const likedSet = new Set(JSON.parse(localStorage.getItem(LS_LIKES) || "[]"));
+  const ownerAlertsEnabled = storeGet(LS_OWNER_ALERTS) === "1";
+  let hasSeenBaseline = storeGet(LS_SEEN_AT)!==null && Number.isFinite(Number(storeGet(LS_SEEN_AT)));
+  let seenAt = Number(storeGet(LS_SEEN_AT)) || 0;
+  const likedSet = new Set(likedIds());
   // 管理员密钥改用 sessionStorage：仅在当前标签页会话内有效，关闭标签页后自动失效，降低长期明文留存的风险。
-  let adminKey = sessionStorage.getItem(LS_ADMIN) || "";
+  let adminKey = storeGet(LS_ADMIN,true) || "";
   let isAdmin = !!adminKey;
 
   // ===== 工具 =====
@@ -220,7 +224,7 @@
   }
   function markSeen() {
     const latest = latestMessageTime(messages);
-    if (latest > 0) { seenAt = latest; localStorage.setItem(LS_SEEN_AT, String(seenAt)); }
+    if (latest > 0) { seenAt = latest; storeSet(LS_SEEN_AT, String(seenAt)); }
     hasSeenBaseline = true;
     updateUnread();
   }
@@ -243,7 +247,7 @@
       '<span class="gb-mtime">' + esc(fmtTime(r.time)) + '</span>' +
       '<div class="gb-mtext">' + esc(r.text) + '</div>' +
       '<div class="gb-tools">' +
-        '<button class="gb-act gb-small gb-like' + (liked ? ' liked' : '') + '" data-act="like" data-id="' + esc(r.id) + '">' + HEART + '<span class="gb-likenum">' + (r.likes || 0) + '</span></button>' +
+        '<button class="gb-act gb-small gb-like' + (liked ? ' liked' : '') + '" data-act="like" data-id="' + esc(r.id) + '">' + HEART + '<span class="gb-likenum">' + (Math.max(0,Number(r.likes)||0)) + '</span></button>' +
         '<button class="gb-act gb-small" data-act="reply" data-id="' + esc(r.id) + '">回复' + (replies.length ? ' · ' + replies.length : '') + '</button>' +
         (isAdmin ? '<button class="gb-act gb-small gb-del" data-act="del" data-id="' + esc(r.id) + '">删除</button>' : '') +
       '</div>' +
@@ -260,7 +264,7 @@
       '<div class="gb-meta"><span class="gb-mname">' + esc(m.name || "匿名") + '</span><span class="gb-mtime">' + esc(fmtTime(m.time)) + '</span></div>' +
       '<div class="gb-mtext">' + esc(m.text) + '</div>' +
       '<div class="gb-tools">' +
-        '<button class="gb-act gb-like' + (liked ? ' liked' : '') + '" data-act="like" data-id="' + esc(m.id) + '">' + HEART + '<span class="gb-likenum">' + (m.likes || 0) + '</span></button>' +
+        '<button class="gb-act gb-like' + (liked ? ' liked' : '') + '" data-act="like" data-id="' + esc(m.id) + '">' + HEART + '<span class="gb-likenum">' + (Math.max(0,Number(m.likes)||0)) + '</span></button>' +
         '<button class="gb-act" data-act="reply" data-id="' + esc(m.id) + '">回复' + (replies.length ? ' · ' + replies.length : '') + '</button>' +
         (isAdmin ? '<button class="gb-act gb-admin" data-act="pin" data-id="' + esc(m.id) + '">' + (m.pinned ? '取消置顶' : '置顶') + '</button><button class="gb-act gb-admin gb-del" data-act="del" data-id="' + esc(m.id) + '">删除</button>' : '') +
       '</div>' +
@@ -283,7 +287,7 @@
         const newest = latestMessageTime(next);
         if (!hasSeenBaseline) {
           seenAt = newest; hasSeenBaseline = true;
-          if (newest > 0) localStorage.setItem(LS_SEEN_AT, String(newest));
+          if (newest > 0) storeSet(LS_SEEN_AT, String(newest));
         }
         messages = next;
         if (options.render !== false) render();
@@ -375,9 +379,9 @@
   function doLike(id, btn) {
     const liked = likedSet.has(id);
     const m = findNode(messages, id);
-    if (m) m.likes = Math.max(0, (m.likes || 0) + (liked ? -1 : 1));
+    if (m) m.likes = Math.max(0, (Math.max(0,Number(m.likes)||0)) + (liked ? -1 : 1));
     if (liked) likedSet.delete(id); else likedSet.add(id);
-    localStorage.setItem(LS_LIKES, JSON.stringify([...likedSet]));
+    storeSet(LS_LIKES, JSON.stringify([...likedSet]));
     if (btn) {
       btn.classList.toggle("liked", !liked);
       const num = btn.querySelector(".gb-likenum"); if (num && m) num.textContent = m.likes;
@@ -386,9 +390,9 @@
     post("/like", { id: id, unlike: liked })
       .then(res => { if (m) { m.likes = res.likes; const n = listEl.querySelector('.gb-like[data-id="' + id + '"] .gb-likenum'); if (n) n.textContent = res.likes; } })
       .catch(() => {
-        if (m) m.likes = Math.max(0, (m.likes || 0) + (liked ? 1 : -1));
+        if (m) m.likes = Math.max(0, (Math.max(0,Number(m.likes)||0)) + (liked ? 1 : -1));
         if (liked) likedSet.add(id); else likedSet.delete(id);
-        localStorage.setItem(LS_LIKES, JSON.stringify([...likedSet]));
+        storeSet(LS_LIKES, JSON.stringify([...likedSet]));
         if (btn) {
           btn.classList.toggle("liked", liked);
           const num = btn.querySelector(".gb-likenum"); if (num && m) num.textContent = m.likes;
@@ -416,14 +420,14 @@
     if (clicks >= 3) { clicks = 0; adminPrompt(); }
   });
   function adminPrompt() {
-    if (isAdmin) { if (confirm("退出管理员模式？")) { isAdmin = false; adminKey = ""; sessionStorage.removeItem(LS_ADMIN); render(); toast("已退出管理员模式"); } return; }
+    if (isAdmin) { if (confirm("退出管理员模式？")) { isAdmin = false; adminKey = ""; storeRemove(LS_ADMIN); render(); toast("已退出管理员模式"); } return; }
     const key = prompt("请输入管理员密码："); if (!key) return;
     fetch(API + "/verify", { method: "POST", headers: { "Content-Type": "application/json", "X-Admin-Key": key }, body: "{}" })
       .then(r => r.json())
-      .then(res => { if (res && res.ok) { adminKey = key; isAdmin = true; sessionStorage.setItem(LS_ADMIN, key); render(); toast("已进入管理员模式"); } else { toast("密码错误"); } })
+      .then(res => { if (res && res.ok) { adminKey = key; isAdmin = true; storeSet(LS_ADMIN,key,true); render(); toast("已进入管理员模式"); } else { toast("密码错误"); } })
       .catch(() => toast("验证失败，后台可能没连通～"));
   }
-  function adminFail() { isAdmin = false; adminKey = ""; sessionStorage.removeItem(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
+  function adminFail() { isAdmin = false; adminKey = ""; storeRemove(LS_ADMIN); render(); toast("管理员身份已失效，请重新解锁"); }
 
   // ===== 左侧滚动定位条（第一根=顶部，之后每根对应一天）=====
   (function () {
