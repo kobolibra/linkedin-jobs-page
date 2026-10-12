@@ -8,7 +8,9 @@
     const box=card.querySelector('.mono'),src=manifest?.[key(card.dataset.comp)];
     if(!box||box.dataset.logoTried||!src||failed.has(src)||!/^assets\/company-logos\/[a-f0-9]{24}\.webp$/.test(src))return;
     box.dataset.logoTried='true';
-    const img=new Image(24,24);img.alt='';img.decoding='async';img.loading='lazy';img.fetchPriority='low';
+    // IntersectionObserver already limits requests to visible/nearby cards.
+    // Detached lazy images can wait forever before onload, so start this one now.
+    const img=new Image(24,24);img.alt='';img.decoding='async';img.loading='eager';img.fetchPriority='low';
     img.onload=()=>{if(box.isConnected){box.replaceChildren(img);box.classList.add('has-company-logo');}};
     img.onerror=()=>failed.add(src);img.src=src;
   };

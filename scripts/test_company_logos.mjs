@@ -21,7 +21,7 @@ async function setup(manifest,ok=true){
 }
 test('visible logos replace the letter only after a successful load without changing dimensions',async()=>{
   const s=await setup({'dbs bank':'assets/company-logos/'+'a'.repeat(24)+'.webp'});
-  assert.equal(s.images.length,1);const img=s.images[0];assert.equal(img.fetchPriority,'low');assert.equal(img.decoding,'async');assert.equal(img.loading,'lazy');assert.equal(img.width,24);assert.equal(s.box.letter,'D');img.onload();assert.equal(s.box.image,img);
+  assert.equal(s.images.length,1);const img=s.images[0];assert.equal(img.fetchPriority,'low');assert.equal(img.decoding,'async');assert.equal(img.loading,'eager');assert.equal(img.width,24);assert.equal(s.box.letter,'D');img.onload();assert.equal(s.box.image,img);
   s.intersect([{target:s.card,isIntersecting:true}]);assert.equal(s.images.length,1);
 });
 test('an image failure preserves the letter',async()=>{const s=await setup({'dbs bank':'assets/company-logos/'+'a'.repeat(24)+'.webp'});s.images[0].onerror();assert.equal(s.box.letter,'D');});
