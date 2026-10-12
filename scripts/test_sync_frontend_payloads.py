@@ -46,7 +46,7 @@ class FrontendPayloadSyncTests(unittest.TestCase):
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / "scripts" / "jobspy" / name, target)
             (checkout / "jobs.json").write_text(json.dumps({"jobs": [{"title": "Engineer", "company": "Acme", "link": "https://www.linkedin.com/jobs/view/12345678", "descriptionText": "Build and operate reliable data pipelines for business applications."}]}), encoding="utf-8")
-            (checkout / "company-logos.json").write_text(json.dumps({"acme": "assets/company-logos/" + "a" * 24 + ".svg"}), encoding="utf-8")
+            (checkout / "company-logos.json").write_text(json.dumps({"acme": "assets/company-logos/" + "a" * 24 + ".svg", "historical": "assets/company-logos/" + "b" * 24 + ".webp"}), encoding="utf-8")
             state = checkout / "data" / "company-logos" / "state.json"
             state.parent.mkdir(parents=True, exist_ok=True)
             state.write_text(json.dumps({"acme": {"status": "ready", "imageKind": "placeholder"}}), encoding="utf-8")
@@ -62,9 +62,13 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             subprocess.run((*command, "--publish"), cwd=checkout, check=True, capture_output=True)
             index = json.loads((checkout / "jobs-index.json").read_text(encoding="utf-8"))
             self.assertEqual(len(index["jobs"]), 1)
-            self.assertEqual(len(index["companyLogos"]), 1)
+            self.assertEqual(len(index["companyLogos"]), 2)
             self.assertEqual(index["companyLogoFallback"], index["companyLogos"]["acme"])
             subprocess.run(command, cwd=checkout, check=True, capture_output=True)
+            subprocess.run((sys.executable, "scripts/jobspy/build_frontend_payload.py"), cwd=checkout, check=True, capture_output=True)
+            python_index = (checkout / "jobs-index.json").read_bytes()
+            subprocess.run(("node", "scripts/build_jd_shards.mjs"), cwd=checkout, check=True, capture_output=True)
+            self.assertEqual((checkout / "jobs-index.json").read_bytes(), python_index)
             jobs = checkout / "jobs.json"
             jobs.write_text(jobs.read_text(encoding="utf-8").replace("Engineer", "Analyst"), encoding="utf-8")
             self.assertNotEqual(subprocess.run(command, cwd=checkout, capture_output=True).returncode, 0)
