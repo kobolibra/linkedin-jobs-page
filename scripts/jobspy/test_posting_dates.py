@@ -135,7 +135,7 @@ class PostingTests(unittest.TestCase):
                 if key.startswith('7'): html=html.replace('<a data-tracking-control-name="public_jobs_apply-link-onsite">Apply</a>','')
                 return Mock(status_code=200,text=html)
             session=Mock();session.get.side_effect=reply
-            with patch('requests.Session',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
             got=json.loads((p/'out').read_text())
             self.assertEqual(got['stats']['guardedRegions'],['HK'])
             self.assertEqual(got['stats']['unknown'],10)
@@ -190,10 +190,11 @@ class PostingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp); (p/'jobs').write_text(json.dumps({"jobs":[row(sourceJobId="li-"+str(500000000+i)) for i in range(5)]}))
             session=Mock(); session.get.return_value=Mock(status_code=429,text='blocked')
-            with patch('requests.Session',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]): probe_main()
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]): probe_main()
             got=json.loads((p/'out').read_text())
             self.assertEqual(got['stats']['probed'],3)
             self.assertTrue(got['stats']['circuitOpen'])
             self.assertEqual(got['stats']['postingDates'],0)
 
 if __name__ == '__main__': unittest.main()
+
