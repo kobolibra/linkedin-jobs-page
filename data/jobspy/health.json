@@ -233,6 +233,36 @@
         },
         "selectorGuardTripped": false
       }
+    },
+    {
+      "runId": "logos:38314429663:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-12T22:04:16.647572+00:00",
+      "requests": 0,
+      "retries": 0,
+      "httpStatuses": {},
+      "outcomes": {},
+      "stages": {},
+      "detailEndpoints": {},
+      "queries": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791843733.2569437,
+          "stopUntil": 1791843733.2569437,
+          "reason": "login/challenge or HTTP 200"
+        }
+      },
+      "logos": {
+        "candidates": 5,
+        "downloaded": 0,
+        "missing": 1,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "shared circuit open: login/challenge or HTTP 200"
+      }
     }
   ],
   "queryFailureStreaks": {
