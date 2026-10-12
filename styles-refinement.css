@@ -24,7 +24,7 @@
 .stats {
   gap:0; margin-top:20px; padding:4px 0; overflow:hidden;
   background:var(--glass-soft); border:0; border-radius:14px;
-  box-shadow:var(--ui-glass-shadow); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  box-shadow:none; backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
 }
 .stats .stat,
 [data-theme="dark"] .stats .stat {
@@ -41,7 +41,7 @@
 .analytics { margin-top:16px; }
 .analytics-card {
   gap:0; overflow:hidden; background:var(--glass-soft); border:0; border-radius:16px;
-  box-shadow:var(--ui-glass-shadow); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
+  box-shadow:none; backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
 }
 .analytics-card > .ac-col:not(.ac-col-top50),
 .analytics-card > .ac-col-top50 { border:0; border-radius:0; background:transparent; box-shadow:none; }
