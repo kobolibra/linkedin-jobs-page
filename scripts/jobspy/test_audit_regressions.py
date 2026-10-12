@@ -62,7 +62,7 @@ class AuditRegressions(unittest.TestCase):
 
     def test_per_row_newer_expiry_survives_delayed_snapshot(self):
         row = {'sourceJobId': 'li-12345678', 'company': 'HSBC', 'jobStatus': 'expired', 'expiredAt': '2026-10-12T12:00:00Z', 'expiredReason': 'linkedin_closed', 'title': 'New title'}
-        snapshot = {'jobs': [{**row, 'title': 'Old title'}], 'statusSummary': {'HSBC': 'ok: 1 jobs'}}
+        snapshot = {'jobs': [{**row, 'title': 'Old title'}], 'statusSummary': {'HSBC': 'ok: 1 jobs'}, 'companies': {'HSBC': 'ok: 1 jobs'}}
         self.assertEqual(reconcile({'jobs': [row]}, snapshot, '2026-10-12T10:00:00Z')['jobs'][0], row)
 
     def test_unchanged_repost_clears_previous_revision_and_detail_error(self):
