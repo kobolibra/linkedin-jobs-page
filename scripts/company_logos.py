@@ -1,5 +1,6 @@
 """Cache verified LinkedIn employer logos; never mutate job records."""
 import argparse, hashlib, io, json, re, shutil, time, unicodedata
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -13,7 +14,7 @@ Image.MAX_IMAGE_PIXELS=4000000
 # Verified historical display names, scoped to logo identity only.
 LOGO_IDENTITIES={'ateca':'ateca executive search','charterhouse partnership | asia':'charterhouse partnership','drake international singapore':'drake international – singapore','efg international':'efg private banking'}
 LOGO_IDENTITIES.update({'mercer':('marsh','marsh people solutions'),'oaktree capital management, l.p.':'oaktree','orion james':'orion james limited','privee associates':'privee associates limited','verition fund management llc':'verition'})
-PARSER_VERSION=3
+PARSER_VERSION=4
 
 def supported_names(expected):
     k=key(expected);aliases=LOGO_IDENTITIES.get(k,())
@@ -42,6 +43,10 @@ def linkedin_url(url):
 def image_url(url):
     p=urlsplit(str(url)); return p.scheme=='https' and (p.hostname=='media.licdn.com' or bool(re.fullmatch(r'media-exp\d+\.licdn\.com',p.hostname or '')))
 
+def logo_image_url(url):
+    p=urlsplit(str(url))
+    return image_url(url) or (p.scheme=='https' and p.hostname=='static.licdn.com' and bool(re.fullmatch(r'/aero-v1/sc/h/[a-z0-9]+',p.path)))
+
 def extract(html, expected):
     soup=BeautifulSoup(html,'html.parser')
     org=soup.select_one('a.topcard__org-name-link')
@@ -52,10 +57,38 @@ def extract(html, expected):
     if not linkedin_url(company_url) or not re.match(r'^/(company|school|showcase)/[^/]+/?$',urlsplit(company_url).path): return None
     top=org.find_parent(class_='top-card-layout') or soup
     img=top.select_one('img.artdeco-entity-image')
-    if not img or is_placeholder(img): return None
+    if not img: return None
+    placeholder=is_placeholder(img)
     url=img.get('data-delayed-url') or img.get('src','')
-    if not image_url(url) or not re.search(r'/(company-logo_|school-logo_|img-crop_)',urlsplit(url).path): return None
-    return url,company_url
+    if placeholder:
+        if not logo_image_url(url): return None
+    elif not image_url(url) or not re.search(r'/(company-logo_|school-logo_|img-crop_)',urlsplit(url).path): return None
+    return url,company_url,placeholder
+
+def placeholder_svg(raw):
+    # LinkedIn's default employer image is SVG. Preserve its actual shapes,
+    # accepting only inert, bounded vector markup without external references.
+    if len(raw)>12000 or b'<!DOCTYPE' in raw.upper() or b'<!ENTITY' in raw.upper(): raise ValueError('unsafe placeholder SVG')
+    try: root=ET.fromstring(raw)
+    except ET.ParseError as error: raise ValueError('invalid placeholder SVG') from error
+    ns='http://www.w3.org/2000/svg'
+    if root.tag!='{'+ns+'}svg' or not re.fullmatch(r'[\d.eE+\-\s,]+',root.get('viewBox','')): raise ValueError('invalid placeholder SVG root')
+    viewbox=[float(n) for n in root.get('viewBox').replace(',',' ').split()]
+    if len(viewbox)!=4 or not (8<=viewbox[2]<=4096 and 8<=viewbox[3]<=4096): raise ValueError('invalid placeholder SVG dimensions')
+    tags={'svg','g','path','rect','circle','ellipse','line','polygon','polyline'}
+    attrs={'viewBox','width','height','id','d','fill','fill-rule','stroke','stroke-width','stroke-linecap','stroke-linejoin','opacity','fill-opacity','stroke-opacity','transform','x','y','x1','y1','x2','y2','cx','cy','r','rx','ry','points'}
+    nodes=list(root.iter())
+    if len(nodes)>150: raise ValueError('placeholder SVG exceeds budget')
+    for node in nodes:
+        if node.tag not in {'{'+ns+'}'+tag for tag in tags} or any(a not in attrs for a in node.attrib): raise ValueError('unsupported placeholder SVG markup')
+        for attr in ('fill','stroke'):
+            if attr in node.attrib and not re.fullmatch(r'#[a-fA-F0-9]{3,8}|[a-zA-Z]+',node.attrib[attr]): raise ValueError('unsafe placeholder SVG paint')
+    ET.register_namespace('',ns)
+    return ET.tostring(root,encoding='utf-8')
+
+def cached_image(raw, placeholder):
+    if placeholder and raw.lstrip().startswith(b'<'): return placeholder_svg(raw),'svg'
+    return thumbnail(raw),'webp'
 
 def thumbnail(raw):
     if len(raw)>1000000: raise ValueError('image too large')
@@ -74,18 +107,18 @@ def candidates(jobs, rss, state, mode):
     for row in rows(jobs):
         k=key(row.get('company'))
         if k and linkedin_url(row.get('link','')): grouped.setdefault(k,[]).append(row)
-    wanted=set(grouped) if mode in ('bootstrap','repair') else {key(r.get('company')) for r in rows(rss)} & set(grouped)
+    # Every RSS publication retries all retained companies without a cached
+    # logo, even when the latest RSS batch does not mention them. Keep the rss
+    # argument for compatibility; canonical jobs determine the candidate set.
+    wanted=set(grouped)
     result=[]
     for k in sorted(wanted):
         old=state.get(k,{})
         if old.get('status')=='ready': continue
-        # Retry failures only when RSS mentions the company again, after seven days.
-        if old and mode!='repair':
-            if mode=='bootstrap':
-                if old.get('parserVersion',1)>=PARSER_VERSION: continue
-            else:
-                checked=datetime.fromisoformat(old['checkedAt'])
-                if (datetime.now(timezone.utc)-checked).total_seconds()<7*86400: continue
+        # Bootstrap revisits failures after parser upgrades. RSS and explicit
+        # repair runs retry unresolved entries without a cooldown. Legacy
+        # placeholder records remain unresolved until their image is cached.
+        if old and mode=='bootstrap' and old.get('parserVersion',1)>=PARSER_VERSION: continue
         group=sorted(grouped[k],key=lambda r:(r.get('jobStatus')!='expired',str(r.get('pushTime') or r.get('firstSeen') or '')),reverse=True)
         corrective=mode=='repair' or (mode=='bootstrap' and old and old.get('parserVersion',1)<PARSER_VERSION)
         result.append((k,group[:6] if corrective else group[:2]))
@@ -94,7 +127,7 @@ def candidates(jobs, rss, state, mode):
 def fetch_bytes(session,url,limit):
     with session.get(url,timeout=(15,15),stream=True) as response:
         response.raise_for_status()
-        allowed=image_url if image_url(url) else linkedin_url
+        allowed=logo_image_url if logo_image_url(url) else linkedin_url
         if not allowed(response.url): raise ValueError('unexpected redirect')
         data=bytearray()
         for chunk in response.iter_content(16384):
@@ -104,9 +137,9 @@ def fetch_bytes(session,url,limit):
 
 def collect(args):
     state=read(args.state,{})
-    batch=candidates(read(args.jobs,{}),read(args.rss,{}),state,args.mode)
+    batch=candidates(read(args.jobs,{}),None,state,args.mode)
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
-    changes={};blocked=0;stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0}
+    changes={};images={};blocked=0;stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0}
     started=time.monotonic()
     with requests.Session() as session:
         session.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'en-US,en;q=0.9'})
@@ -128,13 +161,12 @@ def collect(args):
                         placeholder=is_placeholder(top.select_one('img.artdeco-entity-image'))
                         matched=org and key(observed) in supported_names(row['company'])
                         entry['attempts'].append({'jobId':match[1],'reason':'no_employer' if not org else 'name_mismatch' if not matched else 'placeholder_image' if placeholder else 'no_supported_image','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
-                        if matched and placeholder:
-                            entry['status']='placeholder';break
                         continue
-                    data=thumbnail(fetch_bytes(session,found[0],1000000))
-                    filename=hashlib.sha256(data).hexdigest()[:24]+'.webp'
+                    if found[0] not in images: images[found[0]]=cached_image(fetch_bytes(session,found[0],1000000),found[2])
+                    data,extension=images[found[0]]
+                    filename=hashlib.sha256(data).hexdigest()[:24]+'.'+extension
                     (out/filename).write_bytes(data)
-                    entry.update(status='ready',asset=filename,companyUrl=found[1],sourceJobId=match[1]);blocked=0;break
+                    entry.update(status='ready',asset=filename,imageKind='placeholder' if found[2] else 'company',sourceUrl=found[0],companyUrl=found[1],sourceJobId=match[1]);blocked=0;break
                 except requests.HTTPError as error:
                     entry['attempts'].append({'jobId':match[1],'reason':'http_error','status':error.response.status_code})
                     if error.response.status_code in (403,429,999):
@@ -144,7 +176,7 @@ def collect(args):
                 finally: time.sleep(args.delay)
             changes[k]=entry
             stats['downloaded' if entry['status']=='ready' else 'missing']+=1
-            if entry['status']=='placeholder': stats['placeholders']+=1
+            if entry.get('imageKind')=='placeholder': stats['placeholders']+=1
             print(json.dumps({'company':entry['name'],'status':entry['status']}),flush=True)
             if blocked>=5: break  # No challenge retries or alternate routes.
     (out/'updates.json').write_text(json.dumps(changes,ensure_ascii=False,indent=2)+'\n')
@@ -160,7 +192,7 @@ def apply(args):
         if old.get('status')=='ready' or old.get('checkedAt','')>entry['checkedAt']: continue
         if entry['status']=='ready':
             filename=entry['asset']
-            if not re.fullmatch(r'[a-f0-9]{24}\.webp',filename): raise ValueError('unsafe asset name')
+            if not re.fullmatch(r'[a-f0-9]{24}\.(webp|svg)',filename): raise ValueError('unsafe asset name')
             shutil.copyfile(out/filename,dest/filename)
         state[k]=entry
     Path(args.state).parent.mkdir(parents=True,exist_ok=True)
