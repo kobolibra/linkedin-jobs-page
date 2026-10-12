@@ -5,6 +5,7 @@ import argparse, json
 from datetime import datetime, timezone
 from pathlib import Path
 from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time
+from logo_sources import validate_hint
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=10); args=ap.parse_args()
@@ -28,6 +29,8 @@ def main():
         if row.get("liveCheckedAt") == old_check:
             stats["stale_observations"] += 1
             continue
+        hint=obs.get('companyLogoSource')
+        if validate_hint(hint,row.get('company'),row.get('link')): row['companyLogoSource']=hint
         stats["reposts"] += int(row.get("pushTime") != old_push)
         if result=="open": stats["open"]+=1; stats["reactivated"]+=int(before=="expired" and row.get("jobStatus")=="active")
         elif result=="closed": stats["expired_closed"]+=int(row.get("expiredReason")=="linkedin_closed")

@@ -5,6 +5,19 @@ from PIL import Image
 from company_logos import apply, candidates, extract, image_url, logo_image_url, key, thumbnail, cached_image, PARSER_VERSION
 
 class LogosTests(unittest.TestCase):
+    def test_verified_source_reuses_existing_html_without_requesting_job_page(self):
+        from unittest.mock import patch
+        from company_logos import collect
+        from jobspy.logo_sources import source_hint
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d);link='https://www.linkedin.com/jobs/view/12345'
+            hint=source_hint(self.html(), 'DBS Bank',link,'2026-10-12')
+            (p/'jobs.json').write_text(json.dumps([{'company':'DBS','link':link,'companyLogoSource':hint}]))
+            args=SimpleNamespace(state=str(p/'state.json'),jobs=str(p/'jobs.json'),mode='rss',output=str(p/'out'),limit=1000,delay=0)
+            buf=io.BytesIO();Image.new('RGB',(64,64),'red').save(buf,'PNG')
+            with patch('company_logos.fetch_bytes',return_value=buf.getvalue()) as fetch:collect(args)
+            self.assertEqual(fetch.call_count,1);self.assertEqual(fetch.call_args.args[1],hint['url'])
+            self.assertEqual(json.loads((p/'out/updates.json').read_text())['dbs bank']['status'],'ready')
     def svg(self):
         # Actual LinkedIn company-accent-4 placeholder, verified from its CDN.
         return b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" id="company-accent-4"><path fill="#e7e2dc" d="M0 0h128v128H0z"/><path fill="#9db3c8" d="M48 16h64v112H48z"/><path fill="#788fa5" d="M16 80h32v48H16z"/><path fill="#56687a" d="M48 80h32v48H48z"/></svg>'
