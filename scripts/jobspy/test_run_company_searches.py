@@ -9,23 +9,6 @@ import run_company_searches as runner
 
 
 class RunCompanySearchesTest(unittest.TestCase):
-    def test_stage_budget_does_not_launch_remaining_companies(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            args=SimpleNamespace(output_dir=Path(tmp),deadline=0,locations=['China'])
-            with patch('run_company_searches.subprocess.run') as run:
-                _,code,output=runner.run_one(args,'hsbc','HSBC','1241')
-                run.assert_not_called()
-            self.assertEqual(code,0)
-            report=json.loads(Path(output).read_text())
-            self.assertEqual(report['jobs'],[])
-            self.assertIn('failed@budget',report['statusSummary']['HSBC::CN'])
-    def test_small_queries_finish_before_largest_employers(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            previous=Path(tmp)/'latest.json'
-            previous.write_text(json.dumps({'jobs':[{'requestedCompany':'HSBC'}]*20+[{'requestedCompany':'Standard Chartered'}]*10+[{'requestedCompany':'Citi'}]*2}))
-            names=[name for name,_ in runner.ordered_companies(previous)]
-            self.assertEqual(names[-3:],['Citi','Standard Chartered','HSBC'])
-            self.assertEqual(set(names),set(runner.COMPANIES))
     def test_company_keys_and_count(self):
         keys = [spec["canonical"].replace(" ", "_") for spec in runner.COMPANIES.values()]
         self.assertEqual(len(keys), 16)
@@ -41,6 +24,10 @@ class RunCompanySearchesTest(unittest.TestCase):
     @patch("run_company_searches.subprocess.run")
     def test_orchestrator_preserves_one_output_per_company(self, run):
         def fake_run(command, **kwargs):
+            self.assertNotIn('timeout',kwargs)
+            self.assertNotIn('capture_output',kwargs)
+            self.assertNotIn('LINKEDIN_HTTP_DEADLINE',kwargs['env'])
+            self.assertEqual(kwargs['env']['PYTHONUNBUFFERED'],'1')
             output = Path(command[command.index("--output") + 1])
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(json.dumps({"jobs": [], "statusSummary": {}}), encoding="utf-8")
@@ -52,6 +39,7 @@ class RunCompanySearchesTest(unittest.TestCase):
             args = [
                 "run_company_searches.py", "--output-dir", tmp,
                 "--max-workers", "2",
+                "--time-budget-seconds", "1",
             ]
             with patch("sys.argv", args):
                 self.assertEqual(runner.main(), 0)

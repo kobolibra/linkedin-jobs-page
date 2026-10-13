@@ -196,5 +196,34 @@ class PostingTests(unittest.TestCase):
             self.assertTrue(got['stats']['circuitOpen'])
             self.assertEqual(got['stats']['postingDates'],0)
 
-if __name__ == '__main__': unittest.main()
+    def test_one_recoverable_429_does_not_discard_remaining_liveness_candidates(self):
+        from linkedin_http import RequestStopped
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            jobs=[row(title='',sourceJobId='li-'+str(500000000+i)) for i in range(2)]
+            (p/'jobs').write_text(json.dumps({'jobs':jobs}))
+            session=Mock()
+            session.get.side_effect=[RequestStopped('short HTTP 429 pause',recoverable=True),
+                                     Mock(status_code=200,text=PAGE.replace(KEY,'500000001'))]
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
+            got=json.loads((p/'out').read_text())
+            self.assertEqual(session.get.call_count,2)
+            self.assertEqual(got['stats']['unknown'],1)
+            self.assertEqual(got['stats']['open'],1)
+            self.assertFalse(got['stats']['circuitOpen'])
 
+    def test_login_or_persistent_quota_stop_still_protects_liveness(self):
+        from linkedin_http import RequestStopped
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            jobs=[row(title='',sourceJobId='li-'+str(500000000+i)) for i in range(2)]
+            (p/'jobs').write_text(json.dumps({'jobs':jobs}))
+            session=Mock();session.get.side_effect=RequestStopped('login/challenge')
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
+            got=json.loads((p/'out').read_text())
+            self.assertEqual(session.get.call_count,1)
+            self.assertTrue(got['stats']['circuitOpen'])
+            self.assertEqual(got['stats']['unknown'],1)
+            self.assertEqual(got['stats']['skippedCircuitOpen'],1)
+
+if __name__ == '__main__': unittest.main()
