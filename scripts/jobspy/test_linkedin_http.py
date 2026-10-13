@@ -87,6 +87,19 @@ class PolicyTests(unittest.TestCase):
             peer=Coordinator(self.coordinator.path,clock=lambda:0)
             self.assertEqual(peer.deadline,123)
 
+    def test_search_retains_legacy_linear_retry_timing(self):
+        self.session.linear_backoff=True
+        self.session.attempts=6
+        with patch('requests.Session.request',return_value=response(429)),patch('linkedin_http.random.uniform',return_value=1):
+            with self.assertRaises(RequestStopped):self.session.get('https://www.linkedin.com')
+        self.assertEqual(self.sleeps,[16,31,46,61,76])
+
+    def test_linear_retry_still_honors_server_retry_after(self):
+        self.session.linear_backoff=True
+        with patch('requests.Session.request',side_effect=[response(429,headers={'Retry-After':'100'}),response()]):
+            self.session.get('https://www.linkedin.com')
+        self.assertEqual(self.sleeps,[100])
+
     def test_long_wait_is_not_shortened_and_persists(self):
         with patch('requests.Session.request', return_value=response(429, headers={'Retry-After':'3600'})) as get:
             with self.assertRaises(RequestStopped): self.session.get('https://www.linkedin.com')

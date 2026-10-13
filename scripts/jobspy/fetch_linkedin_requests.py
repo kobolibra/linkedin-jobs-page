@@ -211,7 +211,10 @@ def main() -> int:
     page_attempts = max(1, args.page_attempts)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    session = LinkedInSession(attempts=page_attempts, user_agents=USER_AGENTS)
+    # Preserve the previously successful searcher's linear retry timing.
+    # Explicit Retry-After remains authoritative in the shared transport.
+    session = LinkedInSession(attempts=page_attempts, user_agents=USER_AGENTS,
+                              linear_backoff=True)
     session.headers.update({
         "User-Agent": USER_AGENTS[0],
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
@@ -242,7 +245,8 @@ def main() -> int:
                 LOG.info("%s [%s] search start=%s", company, region, start)
                 response = None
                 last_error = ""
-                session.context = {"stage": "search", "company": company, "region": region}
+                session.context = {"stage": "search", "company": company, "region": region,
+                                   "pageStart": start}
                 try:
                     rotate_user_agent(session, 0)
                     response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))

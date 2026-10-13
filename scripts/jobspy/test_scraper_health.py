@@ -81,6 +81,20 @@ class HealthTests(unittest.TestCase):
             self.assertEqual(report['detailEndpoints'],{'guest':1})
             self.assertEqual(report['details']['ok'],1)
 
+    def test_collect_locates_rate_limits_by_query_and_page_without_inflating_requests(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            events=[{'stage':'search','company':'Citi','region':'CN','pageStart':30,'status':429,'attempt':1,'retryAfterSeconds':60},
+                    {'stage':'search','company':'Citi','region':'CN','pageStart':30,'status':429,'attempt':2,'retryAfterSeconds':120},
+                    {'stage':'search','company':'Citi','region':'CN','pageStart':30,'status':200,'attempt':3},
+                    {'stage':'details','status':200,'attempt':1},
+                    {'stage':'details','outcome':'parsed','endpoint':'guest'}]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            report=collect(args)
+            self.assertEqual(report['requests'],4)
+            self.assertEqual(report['searchTransport']['Citi::CN'],{'requests':3,'retries':2,'httpStatuses':{'429':2,'200':1},'rateLimitedPages':[30],'maxRetryAfterSeconds':120})
+
     def test_capture_marks_all_failed_search_as_failed_even_when_job_status_is_success(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp);search=p/'search';search.mkdir()
