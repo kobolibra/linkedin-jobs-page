@@ -6,28 +6,45 @@
     "HK",
     "SG"
   ],
-  "observedAt": "2026-10-13T03:41:47.544385+00:00",
+  "observedAt": "2026-10-13T04:24:01.960063+00:00",
   "observations": [
     {
-      "sourceJobId": "li-bnef%C2%A0downstream-oil-and-chemical-analysis-researcher-at-bloomberg-4475698924",
-      "jobId": "4475698924",
+      "sourceJobId": "li-senior-manager-business-consulting-at-lseg-4477504100",
+      "jobId": "4477504100",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-13T04:23:54.868114+00:00",
+      "datePosted": "2026-10-12",
+      "dateSource": "linkedin-detail-relative-day",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQEfgZXAuQXg6w/company-logo_100_100/B56ZfK6LczHUAQ-/0/1751455938973/london_stock_exchange_group_logo?e=2147483647&v=beta&t=5ZFP4xHS24_BnpZHtT7ZbuN_opspJmRO698ZnXJSlOU",
+        "companyUrl": "https://uk.linkedin.com/company/london-stock-exchange-group",
+        "employerName": "LSEG",
+        "imageKind": "company",
+        "sourceJobId": "4477504100",
+        "observedAt": "2026-10-13T04:23:54.868114+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-head-of-property-asset-management-china-at-hays-4476884734",
+      "jobId": "4476884734",
       "location": "CN",
       "result": "unknown",
-      "checkedAt": "2026-10-13T03:41:47.544286+00:00"
+      "checkedAt": "2026-10-13T04:24:01.959988+00:00"
     }
   ],
   "stats": {
     "circuitOpen": true,
-    "skippedCircuitOpen": 149,
-    "probed": 1,
-    "open": 0,
+    "skippedCircuitOpen": 148,
+    "probed": 2,
+    "open": 1,
     "closed": 0,
     "not_accepting": 0,
     "gone": 0,
     "unknown": 1,
-    "postingDates": 0,
+    "postingDates": 1,
     "regions": {
-      "CN": 1,
+      "CN": 2,
       "HK": 0,
       "SG": 0
     },
