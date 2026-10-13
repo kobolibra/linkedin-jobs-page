@@ -325,6 +325,78 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "jobs:38341994989:1",
+      "task": "jobs",
+      "workflowStatus": "failure",
+      "observedAt": "2026-10-13T03:41:49.318669+00:00",
+      "requests": 57,
+      "retries": 12,
+      "httpStatuses": {
+        "200": 44,
+        "429": 13
+      },
+      "outcomes": {
+        "response": 44,
+        "rate_limited": 13
+      },
+      "stages": {
+        "search": 57
+      },
+      "detailEndpoints": {},
+      "queries": {
+        "Bank of America::CN": "ok: 4 jobs",
+        "BBVA::CN": "ok: 4 jobs",
+        "BlackRock::CN": "ok: 1 jobs",
+        "BNP Paribas::CN": "ok: 4 jobs",
+        "Citi::CN": "failed@start=30: server cooldown exceeds remaining request budget",
+        "DBS Bank::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Deutsche Bank::CN": "ok: 11 jobs",
+        "Fidelity International::CN": "ok: 14 jobs",
+        "Goldman Sachs::CN": "ok: 8 jobs",
+        "HSBC::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "JPMorgan Chase::CN": "ok: 43 jobs",
+        "Morgan Stanley::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "Natixis::CN": "ok: 12 jobs",
+        "Societe Generale::CN": "ok: 6 jobs",
+        "Standard Chartered::CN": "failed@start=0: shared circuit open: HTTP 429",
+        "UBS::CN": "ok: 14 jobs"
+      },
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791862958.2153344,
+          "stopUntil": 1791862958.2153344,
+          "paceUntil": 1791863796.9590333,
+          "minInterval": 8,
+          "reason": "HTTP 429"
+        }
+      },
+      "details": {
+        "attempted": 1,
+        "candidates": 1,
+        "ok": 0,
+        "blocked": 1,
+        "failed": 0,
+        "gone": 0
+      },
+      "liveness": {
+        "circuitOpen": true,
+        "skippedCircuitOpen": 149,
+        "probed": 1,
+        "open": 0,
+        "closed": 0,
+        "not_accepting": 0,
+        "gone": 0,
+        "unknown": 1,
+        "postingDates": 0,
+        "regions": {
+          "CN": 1,
+          "HK": 0,
+          "SG": 0
+        },
+        "selectorGuardTripped": false
+      }
     }
   ],
   "queryFailureStreaks": {
@@ -332,17 +404,17 @@
     "BBVA::CN": 0,
     "BlackRock::CN": 0,
     "BNP Paribas::CN": 0,
-    "Citi::CN": 0,
-    "DBS Bank::CN": 0,
+    "Citi::CN": 1,
+    "DBS Bank::CN": 1,
     "Deutsche Bank::CN": 0,
     "Fidelity International::CN": 0,
     "Goldman Sachs::CN": 0,
-    "HSBC::CN": 0,
+    "HSBC::CN": 1,
     "JPMorgan Chase::CN": 0,
-    "Morgan Stanley::CN": 0,
+    "Morgan Stanley::CN": 1,
     "Natixis::CN": 0,
     "Societe Generale::CN": 0,
-    "Standard Chartered::CN": 0,
+    "Standard Chartered::CN": 1,
     "UBS::CN": 0
   }
 }
