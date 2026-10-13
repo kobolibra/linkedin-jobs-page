@@ -6,45 +6,130 @@
     "HK",
     "SG"
   ],
-  "observedAt": "2026-10-13T04:24:01.960063+00:00",
+  "observedAt": "2026-10-13T05:18:10.019056+00:00",
   "observations": [
     {
       "sourceJobId": "li-senior-manager-business-consulting-at-lseg-4477504100",
       "jobId": "4477504100",
       "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-13T04:23:54.868114+00:00",
-      "datePosted": "2026-10-12",
-      "dateSource": "linkedin-detail-relative-day",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEfgZXAuQXg6w/company-logo_100_100/B56ZfK6LczHUAQ-/0/1751455938973/london_stock_exchange_group_logo?e=2147483647&v=beta&t=5ZFP4xHS24_BnpZHtT7ZbuN_opspJmRO698ZnXJSlOU",
-        "companyUrl": "https://uk.linkedin.com/company/london-stock-exchange-group",
-        "employerName": "LSEG",
-        "imageKind": "company",
-        "sourceJobId": "4477504100",
-        "observedAt": "2026-10-13T04:23:54.868114+00:00"
-      }
+      "result": "unknown",
+      "checkedAt": "2026-10-13T05:12:52.022968+00:00"
     },
     {
       "sourceJobId": "li-head-of-property-asset-management-china-at-hays-4476884734",
       "jobId": "4476884734",
       "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-13T05:13:52.762453+00:00",
+      "datePosted": "2026-10-10",
+      "dateSource": "linkedin-search-id",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQETReujByGYaw/company-logo_100_100/B4EZfKYuQyGwAQ-/0/1751447168431/hays_logo?e=2147483647&v=beta&t=jn8kLrMaqs_JUIpLEsqWvkjYdwTJh6D5WqGehB9VMfA",
+        "companyUrl": "https://uk.linkedin.com/company/hays",
+        "employerName": "Hays",
+        "imageKind": "company",
+        "sourceJobId": "4476884734",
+        "observedAt": "2026-10-13T05:13:52.762453+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-avp-senior-channel-manager-at-alliancebernstein-4426330793",
+      "jobId": "4426330793",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-13T05:13:57.241159+00:00",
+      "datePosted": "2026-09-25",
+      "dateSource": "linkedin-search-id",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQELcO3RSsixGQ/company-logo_100_100/company-logo_100_100/0/1719842303489?e=2147483647&v=beta&t=VqPoh6f3d5A6OcUPcmhln1BW9IsuCK9haFCvKyyE4BY",
+        "companyUrl": "https://www.linkedin.com/company/abglobal",
+        "employerName": "AllianceBernstein",
+        "imageKind": "company",
+        "sourceJobId": "4426330793",
+        "observedAt": "2026-10-13T05:13:57.241159+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-vp-avp-risk-manager-at-alliancebernstein-4426340175",
+      "jobId": "4426340175",
+      "location": "CN",
       "result": "unknown",
-      "checkedAt": "2026-10-13T04:24:01.959988+00:00"
+      "checkedAt": "2026-10-13T05:14:02.923291+00:00"
+    },
+    {
+      "sourceJobId": "li-cyber-graduate-china-at-targetjobs-uk-4473874111",
+      "jobId": "4473874111",
+      "location": "CN",
+      "result": "unknown",
+      "checkedAt": "2026-10-13T05:15:03.020252+00:00"
+    },
+    {
+      "sourceJobId": "li-analyst-marketing-at-mastercard-4466920000",
+      "jobId": "4466920000",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-13T05:16:03.797988+00:00",
+      "datePosted": "2026-10-10",
+      "dateSource": "linkedin-search-id",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
+        "companyUrl": "https://www.linkedin.com/company/mastercard",
+        "employerName": "Mastercard",
+        "imageKind": "company",
+        "sourceJobId": "4466920000",
+        "observedAt": "2026-10-13T05:16:03.797988+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-analyst-marketing-at-mastercard-4466916051",
+      "jobId": "4466916051",
+      "location": "CN",
+      "result": "unknown",
+      "checkedAt": "2026-10-13T05:16:07.952362+00:00"
+    },
+    {
+      "sourceJobId": "li-senior-manager-renewable-energy-asset-management-at-schroders-4477657495",
+      "jobId": "4477657495",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-13T05:17:08.592894+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFXB5l7s3m4Iw/company-logo_100_100/B56ZfPSWXQHEAQ-/0/1751529386968/schroders_logo?e=2147483647&v=beta&t=TH_FkTHz6-UnwDAU2xpg_NUhR9JfRXb8vvWiqymKkQQ",
+        "companyUrl": "https://uk.linkedin.com/company/schroders",
+        "employerName": "Schroders",
+        "imageKind": "company",
+        "sourceJobId": "4477657495",
+        "observedAt": "2026-10-13T05:17:08.592894+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-alternative-ops-fund-accounting-officer-at-state-street-4477629717",
+      "jobId": "4477629717",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-13T05:18:09.683762+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
+        "companyUrl": "https://www.linkedin.com/company/state-street",
+        "employerName": "State Street",
+        "imageKind": "company",
+        "sourceJobId": "4477629717",
+        "observedAt": "2026-10-13T05:18:09.683762+00:00"
+      }
     }
   ],
   "stats": {
     "circuitOpen": true,
-    "skippedCircuitOpen": 148,
-    "probed": 2,
-    "open": 1,
+    "skippedCircuitOpen": 141,
+    "probed": 9,
+    "open": 5,
     "closed": 0,
     "not_accepting": 0,
     "gone": 0,
-    "unknown": 1,
-    "postingDates": 1,
+    "unknown": 4,
+    "postingDates": 3,
     "regions": {
-      "CN": 2,
+      "CN": 9,
       "HK": 0,
       "SG": 0
     },
