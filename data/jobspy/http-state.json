@@ -3,7 +3,8 @@
     "cooldownUntil": 1791862958.2153344,
     "stopUntil": 1791862958.2153344,
     "paceUntil": 1791864906.8199577,
-    "minInterval": 30,
+    "minInterval": 8,
+    "pacingUpdatedAt": 0,
     "reason": "HTTP 429"
   }
 }
