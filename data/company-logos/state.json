@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-13T11:00:04.460730+00:00",
+    "checkedAt": "2026-10-13T16:04:30.395425+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2707,21 +2707,10 @@
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "status": 404,
         "contentType": "",
-        "attempt": 2,
+        "attempt": 1,
         "jobId": "4461002131",
         "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.0077159344489,
-        "retried": true
       }
     ]
   },
@@ -3030,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-13T11:01:12.505687+00:00",
+    "checkedAt": "2026-10-13T16:04:36.269083+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3193,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-13T11:01:18.481105+00:00",
+    "checkedAt": "2026-10-13T16:04:42.315036+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3884,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-13T11:01:21.494222+00:00",
+    "checkedAt": "2026-10-13T16:04:45.307791+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5419,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-13T11:00:03.170874+00:00",
+    "checkedAt": "2026-10-13T16:04:27.376545+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6471,5 +6460,41 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/undisclosed_4",
     "sourceJobId": "4477977836"
+  },
+  "conning": {
+    "name": "Conning",
+    "checkedAt": "2026-10-13T16:04:20.123466+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c63f4e595d01402d0d2f5d99.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE-m2Uef55GBA/company-logo_100_100/B56Z8gvQmHKcAI-/0/1782960687774/conning_logo?e=2147483647&v=beta&t=AslzOS4o-9FOKyI_9G--EOBwzIgqqLT-27LPrGqwuAA",
+    "companyUrl": "https://www.linkedin.com/company/conning",
+    "sourceJobId": "4478798047"
+  },
+  "nice talent asset management limited": {
+    "name": "Nice Talent Asset Management Limited",
+    "checkedAt": "2026-10-13T16:04:21.428436+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a6b7c337e0814130d6b2bf76.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEDAnJMU459pQ/company-logo_100_100/company-logo_100_100/0/1684982901482/nice_talent_asset_management_limited_logo?e=2147483647&v=beta&t=JwVZTwYfCFk3Be5_W60BqNv-U9s4U1TmJU6i9kMrKOM",
+    "companyUrl": "https://hk.linkedin.com/company/nice-talent-asset-management-limited",
+    "sourceJobId": "4478102994"
+  },
+  "whitecrow research": {
+    "name": "WhiteCrow Research",
+    "checkedAt": "2026-10-13T16:04:24.374252+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "301f10b3f24350f108471bce.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEoSz9pZhQqGg/company-logo_100_100/company-logo_100_100/0/1662383026369/whitecrow_research_pvt__ltd_logo?e=2147483647&v=beta&t=LLuERJhCuamy4IORxSNrb5sBO6nWI78j-NNLaCzvsD0",
+    "companyUrl": "https://in.linkedin.com/company/whitecrow-research-pvt--ltd",
+    "sourceJobId": "4479033182"
   }
 }
