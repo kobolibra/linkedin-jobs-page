@@ -1,7 +1,0 @@
-{
-  "name": "linkedin-jobs-page",
-  "private": true,
-  "scripts": {
-    "postinstall": "node scripts/build_jd_shards.mjs"
-  }
-}
