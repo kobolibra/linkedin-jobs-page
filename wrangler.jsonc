@@ -9,7 +9,7 @@
   "migrations": [{"tag": "visitor-counter-v1", "new_sqlite_classes": ["VisitorCounter"]}],
   "build": {"command": "node scripts/build_jd_shards.mjs"},
   "assets": {
-    "directory": ".",
+    "directory": "./public-assets",
     "binding": "ASSETS",
     "not_found_handling": "none",
     "run_worker_first": ["/"]
