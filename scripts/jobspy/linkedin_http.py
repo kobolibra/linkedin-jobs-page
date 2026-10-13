@@ -122,11 +122,16 @@ class Coordinator:
                 raise RequestStopped("request time budget exhausted")
             with self.locked() as state:
                 slot = state.setdefault(host, {})
-                if slot.get("stopUntil", 0) > now:
+                stop_until = slot.get("stopUntil", 0)
+                # A short 429 pause is recoverable. Do not discard every
+                # subsequent company/JD before the shared pause can expire.
+                # Login/challenge circuits still stop immediately; long rate
+                # limits cannot outlive max_wait or the stage deadline below.
+                if stop_until > now and slot.get("reason") != "HTTP 429":
                     raise RequestStopped("shared circuit open: " + slot.get("reason", "rate limited"))
                 leases = {k: v for k, v in slot.get("leases", {}).items() if v > now}
                 slot["leases"] = leases
-                delay = max(slot.get("cooldownUntil", 0), slot.get("nextRequestAt", 0)) - now
+                delay = max(stop_until, slot.get("cooldownUntil", 0), slot.get("nextRequestAt", 0)) - now
                 pacing = min(8, slot.get("minInterval", 0)) if slot.get("paceUntil", 0) > now else 0
                 concurrent = 1 if pacing else self.max_concurrent
                 if delay <= 0 and len(leases) < concurrent:
