@@ -15,7 +15,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment, NavigableString
 
 from linkedin_ids import linkedin_job_id
 from posting_dates import is_repost
@@ -35,7 +35,8 @@ def jid(row):
 def plain_text(row):
     raw_html = str(row.get("descriptionHtml") or "").strip()
     if raw_html:
-        text = BeautifulSoup(raw_html, "html.parser").get_text("\n")
+        soup=BeautifulSoup(raw_html, "html.parser")
+        text = (soup.select_one('.show-more-less-html__markup') or soup).get_text("\n")
     else:
         text = str(row.get("descriptionText") or row.get("description") or "")
     lines = []
@@ -66,12 +67,57 @@ def diff_tokens(old_text: str, new_text: str) -> str:
     return "".join(output).replace("\n", "<br>")
 
 
+def formatted_diff(old_text: str, current_html: str) -> str:
+    """Annotate text inside the current source DOM without flattening its tags."""
+    soup = BeautifulSoup(current_html, "html.parser")
+    nodes = [node for node in soup.descendants if isinstance(node, NavigableString)
+             and not isinstance(node, Comment) and node.parent.name not in {"script", "style", "template"}]
+    current_words = [word for node in nodes for word in re.findall(r"\S+", str(node))]
+    old_words = re.findall(r"\S+", old_text)
+    if not current_words or not old_words or current_words == old_words:
+        return current_html
+    inserted = set()
+    deleted = {}
+    for kind, i1, i2, j1, j2 in difflib.SequenceMatcher(a=old_words, b=current_words, autojunk=False).get_opcodes():
+        if kind in {"insert", "replace"}: inserted.update(range(j1,j2))
+        if kind in {"delete", "replace"}: deleted[j1] = " ".join(old_words[i1:i2])
+    position=0
+    last=None
+    for node in nodes:
+        replacements=[]; insertion=None
+        for token in re.findall(r"\s+|\S+",str(node)):
+            word=not token.isspace()
+            if word and position in deleted:
+                insertion=None
+                deletion=soup.new_tag('del');deletion.string=deleted.pop(position)+' '
+                replacements.append(deletion)
+            mark=position in inserted if word else position-1 in inserted and position in inserted
+            if mark:
+                if insertion is None:
+                    insertion=soup.new_tag('ins');replacements.append(insertion)
+                insertion.append(NavigableString(token))
+            else:
+                insertion=None;replacements.append(NavigableString(token))
+            if word: position+=1
+        if replacements:
+            last=replacements[-1]
+            node.replace_with(*replacements)
+    if position in deleted and last is not None:
+        suffix=soup.new_tag('del');suffix.string=' '+deleted[position]
+        while last.parent and last.parent.name not in {'p','div','li','td','th','blockquote','[document]'}:
+            last=last.parent
+        last.insert_after(suffix)
+    return str(soup)
+
+
 def build_diff(old_row, new_row) -> str:
     old_text = plain_text(old_row)
     new_text = plain_text(new_row)
     if not old_text or not new_text or old_text == new_text:
         return ""
-    return diff_tokens(old_text, new_text)
+    if re.findall(r'\S+',old_text)==re.findall(r'\S+',new_text):return ""
+    current_html=str(new_row.get('descriptionHtml') or '').strip()
+    return formatted_diff(old_text,current_html) if current_html else diff_tokens(old_text, new_text)
 
 
 def annotate(existing_doc, snapshot_doc, observed_at=None):

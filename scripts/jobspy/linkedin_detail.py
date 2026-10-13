@@ -32,7 +32,7 @@ def parse_detail(response, item, job_id, *, guest):
     org = soup.select_one('a.topcard__org-name-link')
     if not title or not org or key(org.get_text(" ", strip=True)) not in supported_names(item.get("company")):
         return None
-    block = soup.select_one('.show-more-less-html__markup, .description__text')
+    block = soup.select_one('.show-more-less-html__markup') or soup.select_one('.description__text')
     text = block.get_text("\n", strip=True) if block else ""
     if not text:
         return None
