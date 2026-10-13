@@ -2,12 +2,23 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import run_company_searches as runner
 
 
 class RunCompanySearchesTest(unittest.TestCase):
+    def test_stage_budget_does_not_launch_remaining_companies(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            args=SimpleNamespace(output_dir=Path(tmp),deadline=0,locations=['China'])
+            with patch('run_company_searches.subprocess.run') as run:
+                _,code,output=runner.run_one(args,'hsbc','HSBC','1241')
+                run.assert_not_called()
+            self.assertEqual(code,0)
+            report=json.loads(Path(output).read_text())
+            self.assertEqual(report['jobs'],[])
+            self.assertIn('failed@budget',report['statusSummary']['HSBC::CN'])
     def test_small_queries_finish_before_largest_employers(self):
         with tempfile.TemporaryDirectory() as tmp:
             previous=Path(tmp)/'latest.json'
