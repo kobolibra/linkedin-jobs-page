@@ -38,13 +38,31 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(get.call_count, 2)
         self.assertEqual(self.sleeps, [7])
 
-    def test_persistent_429_stops_other_sessions(self):
+    def test_exhausted_429_pauses_peers_then_allows_recovery(self):
         with patch('requests.Session.request', return_value=response(429, headers={'Retry-After':'2'})) as get:
             with self.assertRaises(RequestStopped): self.session.get('https://www.linkedin.com')
-            peer = LinkedInSession(coordinator=self.coordinator)
-            self.addCleanup(peer.close)
-            with self.assertRaises(RequestStopped): peer.get('https://linkedin.com/jobs/view/777777777')
             self.assertEqual(get.call_count, 3)
+        stopped=json.loads(self.coordinator.path.read_text())['linkedin.com']['stopUntil']
+        peer=LinkedInSession(coordinator=self.coordinator);self.addCleanup(peer.close)
+        with patch('requests.Session.request',return_value=response()) as get:
+            self.assertEqual(peer.get('https://linkedin.com/jobs/view/777777777').status_code,200)
+            self.assertGreaterEqual(self.now,stopped)
+            self.assertEqual(get.call_count,1)
+
+    def test_shared_429_pause_longer_than_stage_budget_sends_no_request(self):
+        self.coordinator.defer('https://www.linkedin.com',120,stop=True)
+        self.coordinator.deadline=100
+        with patch('requests.Session.request') as get:
+            with self.assertRaises(RequestStopped):self.session.get('https://www.linkedin.com')
+            get.assert_not_called()
+        self.assertEqual(self.sleeps,[])
+
+    def test_explicit_long_server_pause_is_not_bypassed_by_peers(self):
+        self.coordinator.defer('https://www.linkedin.com',3600,stop=True)
+        with patch('requests.Session.request') as get:
+            with self.assertRaises(RequestStopped):self.session.get('https://www.linkedin.com')
+            get.assert_not_called()
+        self.assertEqual(self.sleeps,[])
 
     def test_rate_limit_keeps_slower_pacing_after_recovery_and_shares_it(self):
         with patch('requests.Session.request', side_effect=[response(429, headers={'Retry-After':'7'}), response(), response()]) as get:
