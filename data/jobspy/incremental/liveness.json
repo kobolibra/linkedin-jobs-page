@@ -6,14 +6,14 @@
     "HK",
     "SG"
   ],
-  "observedAt": "2026-10-12T21:52:16.045053+00:00",
+  "observedAt": "2026-10-13T03:41:47.544385+00:00",
   "observations": [
     {
-      "sourceJobId": "li-bnef%C2%A0downstream-oil-and-chemical-analysis-researcher-at-bloomberg-4476007595",
-      "jobId": "4476007595",
+      "sourceJobId": "li-bnef%C2%A0downstream-oil-and-chemical-analysis-researcher-at-bloomberg-4475698924",
+      "jobId": "4475698924",
       "location": "CN",
       "result": "unknown",
-      "checkedAt": "2026-10-12T21:52:16.044986+00:00"
+      "checkedAt": "2026-10-13T03:41:47.544286+00:00"
     }
   ],
   "stats": {

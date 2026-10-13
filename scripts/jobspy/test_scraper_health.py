@@ -18,6 +18,9 @@ class HealthTests(unittest.TestCase):
     def test_failed_details_warn_without_marking_jobs_gone(self):
         self.assertTrue(alerts({'details':{'attempted':3,'ok':0}})[1])
 
+    def test_all_blocked_details_are_not_reported_as_a_successful_pipeline(self):
+        self.assertTrue(alerts({'task':'jobs','queries':{'HSBC::CN':'ok: 10 jobs'},'details':{'attempted':3,'blocked':3,'ok':0}})[0])
+
     def test_replaying_same_run_does_not_inflate_streak(self):
         r={'runId':'1','observedAt':'2026-10-12T00:00:00Z','queries':{'A':'failed'}}
         a=merge_history({},r);b=merge_history(a,r)
@@ -35,6 +38,35 @@ class HealthTests(unittest.TestCase):
     def test_expired_cooldowns_are_removed(self):
         self.assertEqual(cooldowns({'linkedin.com':{'stopUntil':99}},now=100),{})
 
+    def test_pacing_survives_expired_cooldown_without_persisting_leases(self):
+        state={'linkedin.com':{'cooldownUntil':99,'paceUntil':200,'minInterval':16,'leases':{'live':300}}}
+        result=cooldowns(state,now=100)
+        self.assertEqual(result['linkedin.com']['minInterval'],8)
+        self.assertEqual(result['linkedin.com']['paceUntil'],200)
+        self.assertNotIn('leases',result['linkedin.com'])
+        self.assertEqual(cooldowns(state,now=201),{})
+
+    def test_new_recovered_pacing_supersedes_legacy_slow_state(self):
+        old={'linkedin.com':{'cooldownUntil':150,'paceUntil':900,'minInterval':30}}
+        recovered={'linkedin.com':{'cooldownUntil':120,'paceUntil':500,'minInterval':2.5,'pacingUpdatedAt':105}}
+        for states in ((old,recovered),(recovered,old)):
+            slot=cooldowns(*states,now=110)['linkedin.com']
+            self.assertEqual(slot['minInterval'],2.5)
+            self.assertEqual(slot['paceUntil'],500)
+            self.assertEqual(slot['cooldownUntil'],150)
+            self.assertEqual(slot['pacingUpdatedAt'],105)
+
+    def test_stale_report_cannot_override_newer_pacing(self):
+        stale={'linkedin.com':{'paceUntil':900,'minInterval':8,'pacingUpdatedAt':101}}
+        new={'linkedin.com':{'paceUntil':500,'minInterval':4,'pacingUpdatedAt':105}}
+        for states in ((stale,new),(new,stale)):
+            self.assertEqual(cooldowns(*states,now=110)['linkedin.com']['minInterval'],4)
+
+    def test_new_expired_pacing_does_not_resurrect_older_active_pacing(self):
+        old={'linkedin.com':{'paceUntil':900,'minInterval':30}}
+        new={'linkedin.com':{'paceUntil':105,'minInterval':2.5,'pacingUpdatedAt':106}}
+        self.assertEqual(cooldowns(old,new,now=110),{})
+
     def test_collect_reports_real_attempts_and_guest_parsing(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)
@@ -48,6 +80,20 @@ class HealthTests(unittest.TestCase):
             self.assertEqual(report['requests'],2);self.assertEqual(report['retries'],1)
             self.assertEqual(report['detailEndpoints'],{'guest':1})
             self.assertEqual(report['details']['ok'],1)
+
+    def test_collect_locates_rate_limits_by_query_and_page_without_inflating_requests(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            events=[{'stage':'search','company':'Citi','region':'CN','pageStart':30,'status':429,'attempt':1,'retryAfterSeconds':60},
+                    {'stage':'search','company':'Citi','region':'CN','pageStart':30,'status':429,'attempt':2,'retryAfterSeconds':120},
+                    {'stage':'search','company':'Citi','region':'CN','pageStart':30,'status':200,'attempt':3},
+                    {'stage':'details','status':200,'attempt':1},
+                    {'stage':'details','outcome':'parsed','endpoint':'guest'}]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            report=collect(args)
+            self.assertEqual(report['requests'],4)
+            self.assertEqual(report['searchTransport']['Citi::CN'],{'requests':3,'retries':2,'httpStatuses':{'429':2,'200':1},'rateLimitedPages':[30],'maxRetryAfterSeconds':120})
 
     def test_capture_marks_all_failed_search_as_failed_even_when_job_status_is_success(self):
         with tempfile.TemporaryDirectory() as tmp:

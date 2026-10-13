@@ -17,7 +17,7 @@ def www(url: str) -> str:
 def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: float) -> dict:
     out = dict(item)
     out["link"] = www(out.get("link", ""))
-    with LinkedInSession(attempts=attempts, coordinator=Coordinator(min_interval=random.uniform(delay_min, delay_max)), context={"stage": "details"}) as session:
+    with LinkedInSession(attempts=attempts, coordinator=Coordinator(min_interval=max(2.5,random.uniform(delay_min, delay_max))), context={"stage": "details"}) as session:
         session.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"})
         return fetch_detail(session, out, (10, timeout))
 
@@ -49,4 +49,3 @@ def main() -> int:
     ok = sum(x.get("detailStatus") == "ok" for x in rows); failed = sum(x.get("detailStatus") in ("failed", "blocked", "gone") for x in rows); empty = sum(x.get("detailStatus") == "empty" for x in rows)
     print(json.dumps({"total":len(rows),"ok":ok,"empty":empty,"failed":failed}, ensure_ascii=False)); return 0
 if __name__ == "__main__": raise SystemExit(main())
-

@@ -24,10 +24,24 @@ def cooldowns(*states, now=None):
             slot = result.setdefault(host, {})
             for field in ("cooldownUntil", "stopUntil"):
                 slot[field] = max(slot.get(field, 0), record.get(field, 0))
+            if "paceUntil" in record:
+                # Pacing can recover after successful responses. Taking the
+                # maximum would resurrect an older slow setting on every push.
+                # Keep the newest policy, while server cooldowns above remain
+                # conservative even when reports arrive out of order.
+                updated = record.get("pacingUpdatedAt", 0)
+                current = slot.get("pacingUpdatedAt", 0)
+                interval = min(8, max(0, record.get("minInterval", 0)))
+                if "paceUntil" not in slot or updated > current:
+                    slot.update(paceUntil=record["paceUntil"], minInterval=interval,
+                                pacingUpdatedAt=updated)
+                elif updated == current:
+                    slot["paceUntil"] = max(slot["paceUntil"], record["paceUntil"])
+                    slot["minInterval"] = max(slot["minInterval"], interval)
             if record.get("stopUntil", 0) >= slot.get("stopUntil", 0):
                 slot["reason"] = record.get("reason", "")
     return {host: slot for host, slot in result.items()
-            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0)) > now}
+            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0), slot.get("paceUntil", 0)) > now}
 
 
 def collect(args):
@@ -45,6 +59,21 @@ def collect(args):
             except (ValueError, TypeError):
                 statuses[path.stem] = "unreadable"
     responses = [event for event in events if "status" in event]
+    search_transport = {}
+    for event in responses:
+        if event.get("stage") != "search" or not event.get("company"):
+            continue
+        query = str(event["company"]) + "::" + str(event.get("region", "unknown"))
+        stats = search_transport.setdefault(query, {"requests": 0, "retries": 0,
+                                                    "httpStatuses": {}, "rateLimitedPages": []})
+        stats["requests"] += 1
+        stats["retries"] += event.get("attempt", 1) > 1
+        code = str(event["status"])
+        stats["httpStatuses"][code] = stats["httpStatuses"].get(code, 0) + 1
+        if code == "429" and "pageStart" in event and event["pageStart"] not in stats["rateLimitedPages"]:
+            stats["rateLimitedPages"].append(event["pageStart"])
+        if code == "429" and event.get("retryAfterSeconds") is not None:
+            stats["maxRetryAfterSeconds"] = max(stats.get("maxRetryAfterSeconds", 0), event["retryAfterSeconds"])
     report = {
         "runId": args.task + ":" + os.environ.get("GITHUB_RUN_ID", "local") + ":" + os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
         "task": args.task, "workflowStatus": args.workflow_status, "observedAt": datetime.now(timezone.utc).isoformat(),
@@ -54,6 +83,7 @@ def collect(args):
         "stages": dict(Counter(event.get("stage", "unknown") for event in responses)),
         "detailEndpoints": dict(Counter(event.get("endpoint", "unknown") for event in events if event.get("outcome") == "parsed")),
         "queries": statuses,
+        "searchTransport": search_transport,
         "cooldowns": cooldowns(read(args.state, {})),
     }
     if args.task == "jobs":
@@ -62,7 +92,9 @@ def collect(args):
         report["liveness"] = read(args.liveness, {}).get("stats", {})
         # The health step runs after skipped publishing steps, when job.status
         # can still say success. Record the known all-source failure honestly.
-        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()):
+        details = report["details"]
+        all_details_blocked = bool(details.get("attempted")) and details.get("blocked") == details.get("attempted") and not details.get("ok")
+        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()) or all_details_blocked:
             report["workflowStatus"] = "failure"
     else:
         report["logos"] = read(args.logo_report, {})
@@ -85,21 +117,27 @@ def alerts(report):
     statuses = list(report.get("queries", {}).values())
     failures = [x for x in statuses if str(x).startswith(("failed", "process-failed", "unreadable"))]
     reliable = any(str(x).startswith(("ok:", "empty")) for x in statuses)
-    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses)
+    details = report.get("details", {})
+    all_details_blocked = bool(details.get("attempted")) and details.get("blocked") == details.get("attempted") and not details.get("ok")
+    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses) or all_details_blocked
     issues = []
     if critical:
-        issues.append("Scraping run failed or no reliable search report; last good jobs must remain unchanged")
+        issues.append("Search coverage or detail enrichment failed; preserve verified observations and existing JD, and never expire jobs from incomplete queries")
     elif statuses and any(not str(x).startswith(("ok:", "empty")) for x in statuses):
         issues.append("Company search incomplete or zero results untrusted; inspect health queries")
     if report.get("httpStatuses", {}).get("429") or report.get("outcomes", {}).get("blocked"):
         issues.append("LinkedIn rate limit or login/challenge detected; shared cooldown applied")
     if report.get("liveness", {}).get("selectorGuardTripped") or report.get("liveness", {}).get("circuitOpen"):
         issues.append("Liveness guard or circuit opened; uncertain observations are not expiry evidence")
+    if report.get("liveness", {}).get("budgetExhausted"):
+        issues.append("Liveness stage budget reached; unprocessed jobs remain due for a later run")
     if report.get("logos", {}).get("stoppedReason"):
         issues.append("Logo collection stopped: " + report["logos"]["stoppedReason"])
     details = report.get("details", {})
     if details.get("attempted") and not details.get("ok"):
         issues.append("No attempted job details parsed successfully; existing JD retained")
+    elif details.get("blocked"):
+        issues.append("Some job details deferred by limits or stage budget; existing JD retained")
     return critical, issues
 
 

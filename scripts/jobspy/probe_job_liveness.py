@@ -81,8 +81,12 @@ def main():
             if hint: observation['companyLogoSource']=hint
             out["observations"].append(observation)
             if shared_stop or breaker >= args.breaker:
-                out["stats"]["circuitOpen"] = True
-                out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
+                if shared_stop and time.time() >= session.coordinator.deadline:
+                    out["stats"]["budgetExhausted"] = True
+                    out["stats"]["skippedBudget"] = len(candidates)-i-1
+                else:
+                    out["stats"]["circuitOpen"] = True
+                    out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
                 break
             if i+1 < len(candidates): time.sleep(random.uniform(args.delay_min,args.delay_max))
         meaningful=[x for x in classified if x != "unknown"]
