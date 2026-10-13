@@ -152,6 +152,7 @@ class Coordinator:
                 previous = slot.get("minInterval", 0) if slot.get("paceUntil", 0) > now else 0
                 slot["minInterval"] = min(8, max(4, max(self.min_interval, previous) * 1.5))
                 slot["paceUntil"] = now + 900
+                slot["pacingUpdatedAt"] = now
                 slot["healthyResponses"] = 0
             if stop:
                 slot["stopUntil"] = max(slot.get("stopUntil", 0), until, now + 60)
@@ -166,6 +167,7 @@ class Coordinator:
             # Bound old persisted pacing too; sustained successful requests
             # gradually return toward the baseline instead of staying slow.
             slot["minInterval"] = min(8, slot.get("minInterval", self.min_interval))
+            slot["pacingUpdatedAt"] = now
             slot["healthyResponses"] = slot.get("healthyResponses", 0) + 1
             if slot["healthyResponses"] >= 5:
                 slot["healthyResponses"] = 0
