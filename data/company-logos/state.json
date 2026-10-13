@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-13T09:13:59.704274+00:00",
+    "checkedAt": "2026-10-13T10:20:37.286812+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-13T10:04:15.497797+00:00",
+    "checkedAt": "2026-10-13T10:20:43.229198+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-13T10:04:20.677573+00:00",
+    "checkedAt": "2026-10-13T10:20:49.247783+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,38 +3873,19 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-13T10:04:23.695111+00:00",
+    "checkedAt": "2026-10-13T10:20:52.197534+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "jobId": "4458711512",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
-        "waitSeconds": 60.63543735191842,
-        "retried": true
-      },
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "waitSeconds": 60.80803183031212
+        "jobId": "4458711512",
+        "reason": "http_error",
+        "stage": "job"
       }
     ]
   },
@@ -5427,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-13T09:13:56.456470+00:00",
+    "checkedAt": "2026-10-13T10:20:36.058346+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
