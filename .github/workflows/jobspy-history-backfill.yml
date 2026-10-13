@@ -38,7 +38,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check requests beautifulsoup4
       - name: Initialize bounded shared request state
         run: |
-          cp data/jobspy/http-state.json "$LINKEDIN_HTTP_STATE"
+          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
           : > "$LINKEDIN_HEALTH_EVENTS"
           mkdir -p /tmp/linkedin-backfill-search
       - name: Fetch historical search results
@@ -57,7 +57,7 @@ jobs:
             --delay-min 2 \
             --delay-max 5 \
             --page-timeout 20 \
-            --page-attempts 6 \
+            --page-attempts 3 \
             --output /tmp/linkedin-backfill-search/search.json
       - name: Fetch historical JD details
         run: |

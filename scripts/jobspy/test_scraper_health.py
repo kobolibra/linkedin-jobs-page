@@ -3,7 +3,7 @@ import tempfile
 import json
 from pathlib import Path
 from types import SimpleNamespace
-from scraper_health import alerts,cooldowns,merge_history,collect
+from scraper_health import alerts,cooldowns,merge_history,collect,initialize_runtime
 
 
 class HealthTests(unittest.TestCase):
@@ -108,3 +108,29 @@ class HealthTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+class RuntimeInitializationTests(unittest.TestCase):
+    def test_runtime_seed_excludes_old_leases_pacing_and_expired_circuit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source=Path(tmp)/'durable.json';target=Path(tmp)/'runtime.json'
+            old={'linkedin.com':{'cooldownUntil':150,'stopUntil':90,'reason':'old challenge',
+                                'leases':{'old-worker':999},'nextRequestAt':800,
+                                'consecutive429':5,'minInterval':30,'paceUntil':900},
+                 'licdn.com':{'stopUntil':99}}
+            source.write_text(json.dumps(old))
+            initialize_runtime(source,target,now=100)
+            self.assertEqual(json.loads(target.read_text()),{'linkedin.com':{'cooldownUntil':150}})
+            self.assertEqual(json.loads(source.read_text()),old)
+
+    def test_runtime_preserves_unexpired_authentication_circuit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source=Path(tmp)/'durable.json';target=Path(tmp)/'runtime.json'
+            source.write_text(json.dumps({'linkedin.com':{'stopUntil':500,'reason':'HTTP 403'}}))
+            initialize_runtime(source,target,now=100)
+            self.assertEqual(json.loads(target.read_text())['linkedin.com'],{'stopUntil':500,'reason':'HTTP 403'})
+            with self.assertRaises(ValueError):initialize_runtime(source,source,now=100)
+
+    def test_malformed_cooldown_is_not_silently_reset(self):
+        for invalid in ([],{'linkedin.com':{'stopUntil':'tomorrow'}},{'linkedin.com':{'stopUntil':float('nan')}}):
+            with self.assertRaises(ValueError):cooldowns(invalid,now=100)

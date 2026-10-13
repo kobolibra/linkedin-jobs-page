@@ -17,14 +17,14 @@ SEARCH_URL = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/se
 def rows(doc):
     return doc if isinstance(doc, list) else doc.get("jobs", []) if isinstance(doc, dict) else []
 
-def lookup_posting_date(session, row, html, checked_at, timeout):
+def lookup_posting_date(session, row, html, checked_at, timeout, allow_search=True):
     key = jid(row)
     posted, source = detail_posting_date(html, key, checked_at)
     if posted:
         return posted, source, False
     # Relative days/weeks often cross a calendar boundary. Resolve the date
     # from ONE search page, requiring the same numeric LinkedIn job ID.
-    if not row.get("title") or not row.get("company"):
+    if not allow_search or not row.get("title") or not row.get("company"):
         return None, None, False
     try:
         response = session.get(SEARCH_URL, params={
@@ -58,7 +58,7 @@ def main():
             min_interval_hours=args.min_interval_hours, gone_confirm_hours=args.gone_confirm_hours,
             recheck_expired_hours=args.recheck_expired_hours, recheck_expired_days=args.recheck_expired_days)
         session=LinkedInSession(attempts=1, context={"stage":"liveness"}); session.headers.update({"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
-        breaker=0; classified=[]
+        breaker=0; classified=[]; search_dates=True
         for i,row in enumerate(candidates):
             key=jid(row); url=f"https://www.linkedin.com/jobs/view/{key}"
             posted=source=hint=None; blocked=False; shared_stop=False
@@ -69,8 +69,14 @@ def main():
                 if response.status_code==200: hint=source_hint(response.text,row.get('company'),url,checked_at)
                 blocked=response.status_code in {403,429,999} or response.status_code >= 500
                 if result == "open":
-                    posted,source,date_blocked=lookup_posting_date(session,row,response.text,checked_at,args.timeout)
-                    blocked=blocked or date_blocked
+                    posted,source,date_blocked=lookup_posting_date(session,row,response.text,checked_at,args.timeout,allow_search=search_dates)
+                    if date_blocked:
+                        # An optional date lookup failing does not invalidate
+                        # the verified open job page or its liveness coverage.
+                        # Pause only that fallback; dates in job HTML still work.
+                        search_dates=False
+                        out["stats"]["postingDateSearchPaused"] = True
+                        print("posting_date_search_paused", key, "transport failure; continue verified liveness checks", flush=True)
             except requests.RequestException as exc:
                 checked_at=datetime.now(timezone.utc).isoformat()
                 result="unknown"; blocked=True; shared_stop=isinstance(exc,RequestStopped) and not exc.recoverable; print("probe_error",key,type(exc).__name__,str(exc),flush=True)

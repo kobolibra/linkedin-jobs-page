@@ -41,7 +41,7 @@ class PolicyTests(unittest.TestCase):
     def test_exhausted_429_pauses_peers_then_allows_recovery(self):
         with patch('requests.Session.request', return_value=response(429, headers={'Retry-After':'2'})) as get:
             with self.assertRaises(RequestStopped): self.session.get('https://www.linkedin.com')
-            self.assertEqual(get.call_count, 3)
+            self.assertEqual(get.call_count, 2)
         stopped=json.loads(self.coordinator.path.read_text())['linkedin.com']['stopUntil']
         peer=LinkedInSession(coordinator=self.coordinator);self.addCleanup(peer.close)
         with patch('requests.Session.request',return_value=response()) as get:
@@ -98,11 +98,11 @@ class PolicyTests(unittest.TestCase):
         peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep)
         first=peer.acquire('https://www.linkedin.com');peer.release(first)
         second=peer.acquire('https://www.linkedin.com');peer.release(second)
-        self.assertEqual(self.sleeps,[.5])
+        self.assertEqual(self.sleeps,[3])
         published=cooldowns(old,json.loads(self.coordinator.path.read_text()),now=self.now)
         self.assertEqual(published,{})
         self.coordinator.path.write_text(json.dumps(published))
-        self.assertEqual(Coordinator(self.coordinator.path,clock=lambda:self.now).max_concurrent,2)
+        self.assertEqual(Coordinator(self.coordinator.path,clock=lambda:self.now).max_concurrent,1)
 
     def test_legacy_stage_deadline_does_not_truncate_default_collection(self):
         with patch.dict('os.environ',{'LINKEDIN_HTTP_DEADLINE':'123'}):
@@ -117,9 +117,12 @@ class PolicyTests(unittest.TestCase):
         self.assertTrue(caught.exception.recoverable)
         self.assertEqual(caught.exception.response.status_code,429)
 
-    def test_six_consecutive_real_429s_stop_the_shared_quota_episode(self):
-        self.session.attempts=6
+    def test_six_consecutive_real_429s_across_pages_open_persistent_circuit(self):
+        self.session.attempts=6  # Even legacy callers cannot hammer one page six times.
         with patch('requests.Session.request',return_value=response(429,headers={'Retry-After':'2'})) as get:
+            for _ in range(2):
+                with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
+                self.assertTrue(caught.exception.recoverable)
             with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
             self.assertFalse(caught.exception.recoverable)
             peer=LinkedInSession(coordinator=self.coordinator);self.addCleanup(peer.close)
@@ -129,12 +132,34 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(state['consecutive429'],6)
         self.assertGreaterEqual(state['stopUntil'],self.now+900)
 
-    def test_search_retains_legacy_linear_retry_timing(self):
+    def test_missing_retry_after_waits_one_minute_then_defers_page(self):
         self.session.linear_backoff=True
         self.session.attempts=6
-        with patch('requests.Session.request',return_value=response(429)),patch('linkedin_http.random.uniform',return_value=1):
-            with self.assertRaises(RequestStopped):self.session.get('https://www.linkedin.com')
-        self.assertEqual(self.sleeps,[16,31,46,61,76])
+        with patch('requests.Session.request',return_value=response(429)) as get,patch('linkedin_http.random.uniform',return_value=0):
+            with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
+            self.assertEqual(get.call_count,2)
+            self.assertTrue(caught.exception.recoverable)
+        self.assertEqual(self.sleeps,[60])
+
+    def test_default_global_slot_rejects_a_simultaneous_peer_request(self):
+        first=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep)
+        peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,deadline=1)
+        lease=first.acquire('https://www.linkedin.com')
+        with self.assertRaises(RequestStopped):peer.acquire('https://linkedin.com')
+        first.release(lease)
+        self.assertEqual(first.min_interval,3)
+
+    def test_cooldown_is_visible_before_request_lease_is_released(self):
+        observed=[]
+        release=self.coordinator.release
+        def checking_release(lease):
+            state=json.loads(self.coordinator.path.read_text())['linkedin.com']
+            observed.append((state.get('cooldownUntil',0),bool(state['leases'])))
+            release(lease)
+        self.coordinator.release=checking_release
+        with patch('requests.Session.request',side_effect=[response(429,headers={'Retry-After':'7'}),response()]):
+            self.session.get('https://www.linkedin.com')
+        self.assertEqual(observed[0],(7,True))
 
     def test_linear_retry_still_honors_server_retry_after(self):
         self.session.linear_backoff=True
@@ -201,6 +226,33 @@ class PolicyTests(unittest.TestCase):
         third=self.coordinator.acquire('https://www.linkedin.com')
         self.coordinator.release(first);self.coordinator.release(third)
         self.assertFalse(json.loads(self.coordinator.path.read_text())['linkedin.com']['leases'])
+
+    def test_two_real_processes_share_one_network_slot(self):
+        import os
+        import subprocess
+        import sys
+        code = """import json,sys,time
+from linkedin_http import Coordinator
+c=Coordinator(sys.argv[1],min_interval=.03)
+for _ in range(2):
+    lease=c.acquire('https://www.linkedin.com')
+    start=time.time()
+    time.sleep(.05)
+    end=time.time()
+    c.release(lease)
+    print(json.dumps([start,end]),flush=True)
+"""
+        env={**os.environ,'PYTHONPATH':str(Path(__file__).parent)}
+        workers=[subprocess.Popen([sys.executable,'-c',code,str(self.coordinator.path)],
+                                 stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,env=env) for _ in range(2)]
+        spans=[]
+        for worker in workers:
+            stdout,stderr=worker.communicate(timeout=10)
+            self.assertEqual(worker.returncode,0,stderr)
+            spans.extend(json.loads(line) for line in stdout.splitlines())
+        self.assertEqual(len(spans),4)
+        spans.sort()
+        self.assertTrue(all(spans[i][0]>=spans[i-1][1] for i in range(1,len(spans))))
 
     def test_stale_leases_recover(self):
         self.coordinator.path.write_text(json.dumps({'linkedin.com':{'leases':{'dead':-1}}}))
