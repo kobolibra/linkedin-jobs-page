@@ -18,6 +18,9 @@ class HealthTests(unittest.TestCase):
     def test_failed_details_warn_without_marking_jobs_gone(self):
         self.assertTrue(alerts({'details':{'attempted':3,'ok':0}})[1])
 
+    def test_all_blocked_details_are_not_reported_as_a_successful_pipeline(self):
+        self.assertTrue(alerts({'task':'jobs','queries':{'HSBC::CN':'ok: 10 jobs'},'details':{'attempted':3,'blocked':3,'ok':0}})[0])
+
     def test_replaying_same_run_does_not_inflate_streak(self):
         r={'runId':'1','observedAt':'2026-10-12T00:00:00Z','queries':{'A':'failed'}}
         a=merge_history({},r);b=merge_history(a,r)
@@ -34,6 +37,14 @@ class HealthTests(unittest.TestCase):
 
     def test_expired_cooldowns_are_removed(self):
         self.assertEqual(cooldowns({'linkedin.com':{'stopUntil':99}},now=100),{})
+
+    def test_pacing_survives_expired_cooldown_without_persisting_leases(self):
+        state={'linkedin.com':{'cooldownUntil':99,'paceUntil':200,'minInterval':16,'leases':{'live':300}}}
+        result=cooldowns(state,now=100)
+        self.assertEqual(result['linkedin.com']['minInterval'],16)
+        self.assertEqual(result['linkedin.com']['paceUntil'],200)
+        self.assertNotIn('leases',result['linkedin.com'])
+        self.assertEqual(cooldowns(state,now=201),{})
 
     def test_collect_reports_real_attempts_and_guest_parsing(self):
         with tempfile.TemporaryDirectory() as tmp:

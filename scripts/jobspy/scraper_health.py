@@ -24,10 +24,13 @@ def cooldowns(*states, now=None):
             slot = result.setdefault(host, {})
             for field in ("cooldownUntil", "stopUntil"):
                 slot[field] = max(slot.get(field, 0), record.get(field, 0))
+            if record.get("paceUntil", 0) > now:
+                slot["paceUntil"] = max(slot.get("paceUntil", 0), record["paceUntil"])
+                slot["minInterval"] = max(slot.get("minInterval", 0), record.get("minInterval", 0))
             if record.get("stopUntil", 0) >= slot.get("stopUntil", 0):
                 slot["reason"] = record.get("reason", "")
     return {host: slot for host, slot in result.items()
-            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0)) > now}
+            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0), slot.get("paceUntil", 0)) > now}
 
 
 def collect(args):
@@ -62,7 +65,9 @@ def collect(args):
         report["liveness"] = read(args.liveness, {}).get("stats", {})
         # The health step runs after skipped publishing steps, when job.status
         # can still say success. Record the known all-source failure honestly.
-        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()):
+        details = report["details"]
+        all_details_blocked = bool(details.get("attempted")) and details.get("blocked") == details.get("attempted") and not details.get("ok")
+        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()) or all_details_blocked:
             report["workflowStatus"] = "failure"
     else:
         report["logos"] = read(args.logo_report, {})
@@ -85,10 +90,12 @@ def alerts(report):
     statuses = list(report.get("queries", {}).values())
     failures = [x for x in statuses if str(x).startswith(("failed", "process-failed", "unreadable"))]
     reliable = any(str(x).startswith(("ok:", "empty")) for x in statuses)
-    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses)
+    details = report.get("details", {})
+    all_details_blocked = bool(details.get("attempted")) and details.get("blocked") == details.get("attempted") and not details.get("ok")
+    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses) or all_details_blocked
     issues = []
     if critical:
-        issues.append("Scraping run failed or no reliable search report; last good jobs must remain unchanged")
+        issues.append("Search coverage or detail enrichment failed; preserve verified observations and existing JD, and never expire jobs from incomplete queries")
     elif statuses and any(not str(x).startswith(("ok:", "empty")) for x in statuses):
         issues.append("Company search incomplete or zero results untrusted; inspect health queries")
     if report.get("httpStatuses", {}).get("429") or report.get("outcomes", {}).get("blocked"):

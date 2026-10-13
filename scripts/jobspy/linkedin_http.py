@@ -15,6 +15,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import requests
+from bs4 import BeautifulSoup
 
 
 class RequestStopped(requests.RequestException):
@@ -46,10 +47,18 @@ def block_page(html, final_url=""):
     path = urlsplit(final_url).path.lower()
     if re.search(r"/(authwall|checkpoint|login|uas/login)(?:/|$)", path):
         return True
-    return bool(re.search(
-        r'(?:class=[\"\'][^\"\']*authwall|id=[\"\']challenge|'
-        r'class=[\"\'][^\"\']*login__form|name=[\"\']session_key|'
-        r'captcha|security verification)', str(html or ""), re.I))
+    soup = BeautifulSoup(str(html or ""), "html.parser")
+    # Public job pages contain a sign-in modal and recaptcha configuration.
+    # A readable listing/JD is not an authentication wall; identity is checked
+    # separately by the listing/detail parser before any data is accepted.
+    public = soup.select("div.base-search-card h3.base-search-card__title, .show-more-less-html__markup, .description__text")
+    if any(element.get_text(" ", strip=True) for element in public):
+        return False
+    if soup.select_one(".authwall, #challenge, form.login__form, input[name=session_key]"):
+        return True
+    for element in soup.select("script, style, template"):
+        element.decompose()
+    return bool(re.search(r"captcha|security verification", soup.get_text(" ", strip=True), re.I))
 
 
 def record_event(**event):
@@ -72,7 +81,7 @@ class Coordinator:
     Different GitHub runners do not share a file lock.
     """
     def __init__(self, path=None, *, clock=time.time, sleep=time.sleep,
-                 max_concurrent=2, min_interval=1.5, max_wait=180, deadline=None):
+                 max_concurrent=1, min_interval=4, max_wait=180, deadline=None):
         self.path = Path(path or os.environ.get("LINKEDIN_HTTP_STATE", "data/jobspy/http-state.json"))
         self.clock, self.sleep = clock, sleep
         self.max_concurrent, self.min_interval = max(1, max_concurrent), max(0, min_interval)
@@ -118,11 +127,13 @@ class Coordinator:
                 leases = {k: v for k, v in slot.get("leases", {}).items() if v > now}
                 slot["leases"] = leases
                 delay = max(slot.get("cooldownUntil", 0), slot.get("nextRequestAt", 0)) - now
-                if delay <= 0 and len(leases) < self.max_concurrent:
+                pacing = slot.get("minInterval", 0) if slot.get("paceUntil", 0) > now else 0
+                concurrent = 1 if pacing else self.max_concurrent
+                if delay <= 0 and len(leases) < concurrent:
                     leases[token] = now + 120
-                    slot["nextRequestAt"] = now + self.min_interval
+                    slot["nextRequestAt"] = now + max(self.min_interval, pacing)
                     return host, token
-                if len(leases) >= self.max_concurrent:
+                if len(leases) >= concurrent:
                     delay = max(delay, min(.25, min(leases.values()) - now))
             self.wait(max(.01, delay))
 
@@ -137,6 +148,10 @@ class Coordinator:
         with self.locked() as state:
             slot = state.setdefault(host_key(url), {})
             slot["cooldownUntil"] = max(slot.get("cooldownUntil", 0), until)
+            if reason == "HTTP 429":
+                previous = slot.get("minInterval", 0) if slot.get("paceUntil", 0) > now else 0
+                slot["minInterval"] = min(30, max(8, max(self.min_interval, previous) * 2))
+                slot["paceUntil"] = now + 3600
             if stop:
                 slot["stopUntil"] = max(slot.get("stopUntil", 0), until, now + 60)
                 slot["reason"] = reason
