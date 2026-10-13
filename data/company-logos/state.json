@@ -5408,21 +5408,38 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-13T16:04:27.376545+00:00",
+    "checkedAt": "2026-10-13T22:07:40.831914+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 200,
-        "contentType": "text/html; charset=utf-8",
-        "attempt": 1,
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 2,
         "jobId": "4467705418",
-        "reason": "no_employer",
-        "stage": "job",
-        "observedName": "",
-        "companyUrl": ""
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.15961615681274,
+        "retried": true
+      },
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 2,
+        "waitSeconds": 60.01442470355484
       }
     ]
   },
@@ -6496,5 +6513,40 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEoSz9pZhQqGg/company-logo_100_100/company-logo_100_100/0/1662383026369/whitecrow_research_pvt__ltd_logo?e=2147483647&v=beta&t=LLuERJhCuamy4IORxSNrb5sBO6nWI78j-NNLaCzvsD0",
     "companyUrl": "https://in.linkedin.com/company/whitecrow-research-pvt--ltd",
     "sourceJobId": "4479033182"
+  },
+  "penguin solutions": {
+    "name": "Penguin Solutions",
+    "checkedAt": "2026-10-13T22:06:33.948289+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "eb4fcb789befe0b800346065.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQETvFm9OKu_pw/company-logo_100_100/company-logo_100_100/0/1736463886657/penguinsolutions_logo?e=2147483647&v=beta&t=sATfYcwJUOr2cgvIty4yo34Obw79RintBP-CB95XpZ4",
+    "companyUrl": "https://www.linkedin.com/company/penguinsolutions",
+    "sourceJobId": "4479035755"
+  },
+  "the ascott limited": {
+    "name": "The Ascott Limited",
+    "checkedAt": "2026-10-13T22:06:35.383470+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b74531c479f9f7147fe64765.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGFVLcDYiMtfA/company-logo_100_100/company-logo_100_100/0/1634719519029/the_ascott_limited_logo?e=2147483647&v=beta&t=gyJO5WRs9hxwWRt-qNlR_f7_DefHVvMicPC01_RW3Co",
+    "companyUrl": "https://sg.linkedin.com/company/the-ascott-limited",
+    "sourceJobId": "4474189427",
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4474189427",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4474189427",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.611977911297004,
+        "retried": true
+      }
+    ]
   }
 }

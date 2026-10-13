@@ -2246,6 +2246,46 @@
         },
         "selectorGuardTripped": false
       }
+    },
+    {
+      "runId": "logos:38475404187:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-13T22:08:43.050876+00:00",
+      "requests": 7,
+      "retries": 2,
+      "httpStatuses": {
+        "200": 4,
+        "429": 3
+      },
+      "outcomes": {
+        "response": 4,
+        "rate_limited": 3
+      },
+      "stages": {
+        "logos": 7
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791929382.978285,
+          "stopUntil": 1791929382.978285,
+          "reason": "HTTP 429"
+        }
+      },
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 7,
+        "downloaded": 2,
+        "missing": 1,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 2,
+        "stoppedReason": "HTTP 429 request deferred after repeated rate limit"
+      }
     }
   ],
   "queryFailureStreaks": {
