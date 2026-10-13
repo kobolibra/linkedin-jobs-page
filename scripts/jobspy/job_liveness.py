@@ -50,7 +50,9 @@ def in_scope(row, location="CN"):
 def _page_matches(html, job_id):
     text = str(html or "")
     canonical = _CANONICAL.search(text)
-    canonical_ok = bool(canonical and linkedin_job_id(canonical.group(1)) == str(job_id))
+    host = (urlparse(canonical.group(1)).hostname or "").lower() if canonical else ""
+    canonical_ok = bool(canonical and (host == "linkedin.com" or host.endswith(".linkedin.com"))
+                        and linkedin_job_id(canonical.group(1)) == str(job_id))
     title_ok = bool(re.search(r'class=["\'][^"\']*top-card-layout__title[^"\']*["\']', text, re.I))
     body_ok = bool(re.search(r'class=["\'][^"\']*show-more-less-html__markup[^"\']*["\']', text, re.I))
     return canonical_ok and title_ok and body_ok

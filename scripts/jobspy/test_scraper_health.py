@@ -107,7 +107,19 @@ class HealthTests(unittest.TestCase):
         self.assertTrue(alerts({'workflowStatus':'failure'})[0])
 
 
-if __name__=='__main__':unittest.main()
+
+
+class LivenessTransportTests(unittest.TestCase):
+    def test_liveness_transport_distinguishes_page_and_optional_date_failures(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            events=[{'stage':'liveness','endpoint':'view','status':200},
+                    {'stage':'liveness','endpoint':'posting-date-search','status':500}]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            report=collect(args)
+            self.assertEqual(report['livenessTransport']['view'],{'requests':1,'httpStatuses':{'200':1}})
+            self.assertEqual(report['livenessTransport']['posting-date-search'],{'requests':1,'httpStatuses':{'500':1}})
 
 
 class RuntimeInitializationTests(unittest.TestCase):
@@ -134,3 +146,7 @@ class RuntimeInitializationTests(unittest.TestCase):
     def test_malformed_cooldown_is_not_silently_reset(self):
         for invalid in ([],{'linkedin.com':{'stopUntil':'tomorrow'}},{'linkedin.com':{'stopUntil':float('nan')}}):
             with self.assertRaises(ValueError):cooldowns(invalid,now=100)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -37,6 +37,12 @@ class DetailTests(unittest.TestCase):
         result=fetch_detail(self.session(response(text='<html></html>',url=GUEST),response(text=view,url=VIEW)),ITEM)
         self.assertEqual(result['detailStatus'],'ok');self.assertEqual(result['detailEndpoint'],'view')
 
+    def test_full_page_accepts_regional_linkedin_canonical_but_rejects_foreign_host(self):
+        for host,expected in (('cn.linkedin.com','ok'),('sg.linkedin.com','ok'),('notlinkedin.com','failed')):
+            view='<link rel="canonical" href="https://'+host+'/jobs/view/'+ID+'">'+HTML
+            result=fetch_detail(self.session(response(text='<html></html>',url=GUEST),response(text=view,url=VIEW)),ITEM)
+            self.assertEqual(result['detailStatus'],expected)
+
     def test_wrong_guest_canonical_falls_back(self):
         wrong='<link rel="canonical" href="https://www.linkedin.com/jobs/view/999999999">'+HTML
         view='<link rel="canonical" href="'+VIEW+'">'+HTML
