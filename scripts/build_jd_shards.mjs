@@ -1,6 +1,7 @@
 import {readFileSync, mkdirSync, writeFileSync, rmSync, existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {buildPublicAssets} from './public_assets.mjs';
 
 export function jdShard(id) {
   let hash=0;
@@ -33,4 +34,4 @@ export function buildJdShards(source='jobs-details.json', output='jd-parts') {
   });
   return {entries:Object.keys(doc.details).length,partitions:256,maxBytes:Math.max(...sizes)};
 }
-if(process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1])).href){embedCompanyLogos();console.log(JSON.stringify(buildJdShards()));}
+if(process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1])).href){embedCompanyLogos();console.log(JSON.stringify(buildJdShards()));console.log('public_assets_verified '+JSON.stringify(buildPublicAssets()));}

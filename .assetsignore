@@ -12,3 +12,25 @@ wrangler.jsonc
 # Build inputs; browsers use jobs-index.json and jd-parts instead.
 jobs.json
 jobs-details.json
+# Defense for source-root publishing tools; production uses public-assets only.
+worker.js
+jev-taxonomy.mjs
+gen-taxonomy-doc.mjs
+auto-daily-companies.py
+package.json
+requirements-jobspy.txt
+requirements-logos.txt
+pv.json
+financial_blacklist.json
+company_industries.json
+public-assets
+*.map
+*.bak
+*.gz
+*.zip
+*.py
+*.mjs
+.env*
+.dev.vars*
+*.pem
+*.key
