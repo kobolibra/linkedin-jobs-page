@@ -63,6 +63,11 @@ class LivenessTests(unittest.TestCase):
         self.assertEqual(classify(200,base,'123456789'),'not_accepting')
         self.assertEqual(classify(404,'','123456789'),'gone')
         self.assertEqual(classify(200,'captcha input[name=session_key]','123456789'),'unknown')
+    def test_regional_canonical_is_trusted_but_foreign_same_id_is_unknown(self):
+        base='<link rel="canonical" href="https://cn.linkedin.com/jobs/view/123456789"><h1 class="top-card-layout__title">A</h1><div class="show-more-less-html__markup">JD</div><a data-tracking-control-name="public_jobs_apply-link-onsite">Apply</a>'
+        self.assertEqual(classify(200,base,'123456789'),'open')
+        self.assertEqual(classify(200,base.replace('cn.linkedin.com','notlinkedin.com'),'123456789'),'unknown')
+
     def test_scope_and_covered(self):
         self.assertTrue(in_scope(self.row()))
         self.assertFalse(in_scope(self.row(companyCanonical='hsbc')))

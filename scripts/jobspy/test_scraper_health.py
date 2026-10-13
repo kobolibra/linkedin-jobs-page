@@ -3,7 +3,7 @@ import tempfile
 import json
 from pathlib import Path
 from types import SimpleNamespace
-from scraper_health import alerts,cooldowns,merge_history,collect
+from scraper_health import alerts,cooldowns,merge_history,collect,initialize_runtime
 
 
 class HealthTests(unittest.TestCase):
@@ -38,29 +38,27 @@ class HealthTests(unittest.TestCase):
     def test_expired_cooldowns_are_removed(self):
         self.assertEqual(cooldowns({'linkedin.com':{'stopUntil':99}},now=100),{})
 
-    def test_pacing_survives_expired_cooldown_without_persisting_leases(self):
+    def test_legacy_pacing_does_not_survive_expired_server_cooldown(self):
         state={'linkedin.com':{'cooldownUntil':99,'paceUntil':200,'minInterval':16,'leases':{'live':300}}}
         result=cooldowns(state,now=100)
-        self.assertEqual(result['linkedin.com']['minInterval'],8)
-        self.assertEqual(result['linkedin.com']['paceUntil'],200)
-        self.assertNotIn('leases',result['linkedin.com'])
+        self.assertEqual(result,{})
         self.assertEqual(cooldowns(state,now=201),{})
 
-    def test_new_recovered_pacing_supersedes_legacy_slow_state(self):
+    def test_legacy_slow_state_is_removed_without_shortening_server_cooldown(self):
         old={'linkedin.com':{'cooldownUntil':150,'paceUntil':900,'minInterval':30}}
         recovered={'linkedin.com':{'cooldownUntil':120,'paceUntil':500,'minInterval':2.5,'pacingUpdatedAt':105}}
         for states in ((old,recovered),(recovered,old)):
             slot=cooldowns(*states,now=110)['linkedin.com']
-            self.assertEqual(slot['minInterval'],2.5)
-            self.assertEqual(slot['paceUntil'],500)
+            self.assertNotIn('minInterval',slot)
+            self.assertNotIn('paceUntil',slot)
             self.assertEqual(slot['cooldownUntil'],150)
-            self.assertEqual(slot['pacingUpdatedAt'],105)
+            self.assertNotIn('pacingUpdatedAt',slot)
 
     def test_stale_report_cannot_override_newer_pacing(self):
         stale={'linkedin.com':{'paceUntil':900,'minInterval':8,'pacingUpdatedAt':101}}
         new={'linkedin.com':{'paceUntil':500,'minInterval':4,'pacingUpdatedAt':105}}
         for states in ((stale,new),(new,stale)):
-            self.assertEqual(cooldowns(*states,now=110)['linkedin.com']['minInterval'],4)
+            self.assertEqual(cooldowns(*states,now=110),{})
 
     def test_new_expired_pacing_does_not_resurrect_older_active_pacing(self):
         old={'linkedin.com':{'paceUntil':900,'minInterval':30}}
@@ -109,4 +107,46 @@ class HealthTests(unittest.TestCase):
         self.assertTrue(alerts({'workflowStatus':'failure'})[0])
 
 
-if __name__=='__main__':unittest.main()
+
+
+class LivenessTransportTests(unittest.TestCase):
+    def test_liveness_transport_distinguishes_page_and_optional_date_failures(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            events=[{'stage':'liveness','endpoint':'view','status':200},
+                    {'stage':'liveness','endpoint':'posting-date-search','status':500}]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            report=collect(args)
+            self.assertEqual(report['livenessTransport']['view'],{'requests':1,'httpStatuses':{'200':1}})
+            self.assertEqual(report['livenessTransport']['posting-date-search'],{'requests':1,'httpStatuses':{'500':1}})
+
+
+class RuntimeInitializationTests(unittest.TestCase):
+    def test_runtime_seed_excludes_old_leases_pacing_and_expired_circuit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source=Path(tmp)/'durable.json';target=Path(tmp)/'runtime.json'
+            old={'linkedin.com':{'cooldownUntil':150,'stopUntil':90,'reason':'old challenge',
+                                'leases':{'old-worker':999},'nextRequestAt':800,
+                                'consecutive429':5,'minInterval':30,'paceUntil':900},
+                 'licdn.com':{'stopUntil':99}}
+            source.write_text(json.dumps(old))
+            initialize_runtime(source,target,now=100)
+            self.assertEqual(json.loads(target.read_text()),{'linkedin.com':{'cooldownUntil':150}})
+            self.assertEqual(json.loads(source.read_text()),old)
+
+    def test_runtime_preserves_unexpired_authentication_circuit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source=Path(tmp)/'durable.json';target=Path(tmp)/'runtime.json'
+            source.write_text(json.dumps({'linkedin.com':{'stopUntil':500,'reason':'HTTP 403'}}))
+            initialize_runtime(source,target,now=100)
+            self.assertEqual(json.loads(target.read_text())['linkedin.com'],{'stopUntil':500,'reason':'HTTP 403'})
+            with self.assertRaises(ValueError):initialize_runtime(source,source,now=100)
+
+    def test_malformed_cooldown_is_not_silently_reset(self):
+        for invalid in ([],{'linkedin.com':{'stopUntil':'tomorrow'}},{'linkedin.com':{'stopUntil':float('nan')}}):
+            with self.assertRaises(ValueError):cooldowns(invalid,now=100)
+
+
+if __name__ == "__main__":
+    unittest.main()

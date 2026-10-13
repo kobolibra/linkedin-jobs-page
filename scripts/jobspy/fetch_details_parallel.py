@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, json, os, random
+import argparse, json, os, random, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
 from urllib.parse import urlsplit, urlunsplit
-from linkedin_http import LinkedInSession, Coordinator
+from linkedin_http import Coordinator, LinkedInSession
 from linkedin_detail import fetch_detail
 
 def www(url: str) -> str:
@@ -14,10 +14,11 @@ def www(url: str) -> str:
     host = "www.linkedin.com" if (p.hostname == "linkedin.com" or str(p.hostname).endswith(".linkedin.com")) else p.netloc
     return urlunsplit(("https", host, p.path.rstrip("/"), p.query, ""))
 
-def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: float) -> dict:
+def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: float, coordinator=None) -> dict:
     out = dict(item)
     out["link"] = www(out.get("link", ""))
-    with LinkedInSession(attempts=attempts, coordinator=Coordinator(min_interval=max(2.5,random.uniform(delay_min, delay_max))), context={"stage": "details"}) as session:
+    time.sleep(random.uniform(delay_min, delay_max))
+    with LinkedInSession(attempts=attempts, coordinator=coordinator, context={"stage": "details"}) as session:
         session.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"})
         return fetch_detail(session, out, (10, timeout))
 
@@ -40,7 +41,8 @@ def main() -> int:
         print(json.dumps({"total":len(rows),"ok":0,"empty":0,"failed":0,"skipped":"no detail candidates"}, ensure_ascii=False), flush=True)
         return 0
     with ThreadPoolExecutor(max_workers=max(1, a.workers)) as pool:
-        fs = {pool.submit(one, rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max): i for i in todo}
+        coordinator = Coordinator()
+        fs = {pool.submit(one, rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max, coordinator): i for i in todo}
         for f in as_completed(fs):
             i = fs[f]; rows[i] = f.result(); done += 1
             with lock: save()

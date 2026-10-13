@@ -1,6 +1,7 @@
 """Persist scraping health separately from the last known good job snapshot."""
 import argparse
 import json
+import math
 import os
 import time
 from collections import Counter
@@ -18,30 +19,30 @@ def cooldowns(*states, now=None):
     now = time.time() if now is None else now
     result = {}
     for state in states:
+        if not isinstance(state, dict):
+            raise ValueError("HTTP cooldown state must be an object")
         for host, record in state.items():
             if not isinstance(record, dict):
-                continue
+                raise ValueError("HTTP cooldown record must be an object")
             slot = result.setdefault(host, {})
             for field in ("cooldownUntil", "stopUntil"):
-                slot[field] = max(slot.get(field, 0), record.get(field, 0))
-            if "paceUntil" in record:
-                # Pacing can recover after successful responses. Taking the
-                # maximum would resurrect an older slow setting on every push.
-                # Keep the newest policy, while server cooldowns above remain
-                # conservative even when reports arrive out of order.
-                updated = record.get("pacingUpdatedAt", 0)
-                current = slot.get("pacingUpdatedAt", 0)
-                interval = min(8, max(0, record.get("minInterval", 0)))
-                if "paceUntil" not in slot or updated > current:
-                    slot.update(paceUntil=record["paceUntil"], minInterval=interval,
-                                pacingUpdatedAt=updated)
-                elif updated == current:
-                    slot["paceUntil"] = max(slot["paceUntil"], record["paceUntil"])
-                    slot["minInterval"] = max(slot["minInterval"], interval)
+                value = record.get(field, 0)
+                if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                    raise ValueError("Invalid HTTP cooldown timestamp: " + field)
+                slot[field] = max(slot.get(field, 0), value)
             if record.get("stopUntil", 0) >= slot.get("stopUntil", 0):
                 slot["reason"] = record.get("reason", "")
-    return {host: slot for host, slot in result.items()
-            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0), slot.get("paceUntil", 0)) > now}
+    return {host: {key: value for key, value in slot.items()
+                   if key == "reason" and slot.get("stopUntil", 0) > now or key != "reason" and value > now}
+            for host, slot in result.items()
+            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0)) > now}
+
+
+def initialize_runtime(source, target, now=None):
+    """Seed an isolated runner with active server pauses, never live leases/pacing."""
+    if Path(source).resolve() == Path(target).resolve():
+        raise ValueError("Runtime HTTP state must be separate from persisted cooldowns")
+    write(target, cooldowns(read(source, {}), now=now))
 
 
 def collect(args):
@@ -86,6 +87,16 @@ def collect(args):
         "searchTransport": search_transport,
         "cooldowns": cooldowns(read(args.state, {})),
     }
+    liveness_transport = {}
+    for event in responses:
+        if event.get("stage") != "liveness":
+            continue
+        endpoint = str(event.get("endpoint", "unknown"))
+        stats = liveness_transport.setdefault(endpoint, {"requests": 0, "httpStatuses": {}})
+        stats["requests"] += 1
+        code = str(event["status"])
+        stats["httpStatuses"][code] = stats["httpStatuses"].get(code, 0) + 1
+    report["livenessTransport"] = liveness_transport
     if args.task == "jobs":
         # Inputs are only supplied when those steps ran in this invocation.
         report["details"] = read(args.details, {}).get("health", {})
@@ -129,6 +140,8 @@ def alerts(report):
         issues.append("LinkedIn rate limit or login/challenge detected; shared cooldown applied")
     if report.get("liveness", {}).get("selectorGuardTripped") or report.get("liveness", {}).get("circuitOpen"):
         issues.append("Liveness guard or circuit opened; uncertain observations are not expiry evidence")
+    if report.get("liveness", {}).get("postingDateSearchPaused"):
+        issues.append("Optional posting-date search paused after transport failure; verified liveness checks retained")
     if report.get("liveness", {}).get("budgetExhausted"):
         issues.append("Liveness stage budget reached; unprocessed jobs remain due for a later run")
     if report.get("logos", {}).get("stoppedReason"):
@@ -159,8 +172,12 @@ def main():
     parser.add_argument("--logo-report")
     parser.add_argument("--snapshot")
     parser.add_argument("--apply")
+    parser.add_argument("--initialize-runtime", help="Seed an isolated runtime file from --state and exit")
     parser.add_argument("--history", default="data/jobspy/health.json")
     args = parser.parse_args()
+    if args.initialize_runtime:
+        initialize_runtime(args.state, args.initialize_runtime)
+        return 0
     if args.snapshot:
         write(args.snapshot, collect(args))
         return 0
