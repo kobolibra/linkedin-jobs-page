@@ -397,6 +397,46 @@
         },
         "selectorGuardTripped": false
       }
+    },
+    {
+      "runId": "logos:38344681308:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-13T04:05:50.659774+00:00",
+      "requests": 9,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 6,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 9
+      },
+      "stages": {
+        "logos": 9
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791862958.2153344,
+          "stopUntil": 1791862958.2153344,
+          "paceUntil": 1791864906.8199577,
+          "minInterval": 8,
+          "pacingUpdatedAt": 0,
+          "reason": "HTTP 429"
+        }
+      },
+      "logos": {
+        "candidates": 6,
+        "downloaded": 1,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
