@@ -102,11 +102,15 @@ def alerts(report):
         issues.append("LinkedIn rate limit or login/challenge detected; shared cooldown applied")
     if report.get("liveness", {}).get("selectorGuardTripped") or report.get("liveness", {}).get("circuitOpen"):
         issues.append("Liveness guard or circuit opened; uncertain observations are not expiry evidence")
+    if report.get("liveness", {}).get("budgetExhausted"):
+        issues.append("Liveness stage budget reached; unprocessed jobs remain due for a later run")
     if report.get("logos", {}).get("stoppedReason"):
         issues.append("Logo collection stopped: " + report["logos"]["stoppedReason"])
     details = report.get("details", {})
     if details.get("attempted") and not details.get("ok"):
         issues.append("No attempted job details parsed successfully; existing JD retained")
+    elif details.get("blocked"):
+        issues.append("Some job details deferred by limits or stage budget; existing JD retained")
     return critical, issues
 
 

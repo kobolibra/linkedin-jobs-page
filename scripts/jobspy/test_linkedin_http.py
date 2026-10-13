@@ -53,11 +53,24 @@ class PolicyTests(unittest.TestCase):
             other=LinkedInSession(coordinator=peer);self.addCleanup(other.close)
             other.get('https://linkedin.com/jobs/view/88888888')
             self.assertEqual(get.call_count,3)
-        self.assertEqual(self.sleeps,[7,8])
+        self.assertEqual(self.sleeps,[7,4])
         state=json.loads(self.coordinator.path.read_text())['linkedin.com']
-        self.assertEqual(state['minInterval'],8)
+        self.assertEqual(state['minInterval'],4)
         self.coordinator.defer('https://www.linkedin.com',2)
-        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],16)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],6)
+
+    def test_successful_responses_gradually_restore_pacing(self):
+        self.coordinator.defer('https://www.linkedin.com',0)
+        self.coordinator.defer('https://www.linkedin.com',0)
+        self.coordinator.defer('https://www.linkedin.com',0)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],8)
+        for _ in range(5):self.coordinator.succeeded('https://www.linkedin.com')
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],7)
+
+    def test_stage_deadline_is_shared_by_new_coordinators(self):
+        with patch.dict('os.environ',{'LINKEDIN_HTTP_DEADLINE':'123'}):
+            peer=Coordinator(self.coordinator.path,clock=lambda:0)
+            self.assertEqual(peer.deadline,123)
 
     def test_long_wait_is_not_shortened_and_persists(self):
         with patch('requests.Session.request', return_value=response(429, headers={'Retry-After':'3600'})) as get:

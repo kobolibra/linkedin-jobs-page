@@ -11,8 +11,10 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import os
 import subprocess
 import sys
+import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -36,6 +38,9 @@ def ordered_companies(previous: Path):
 def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -> tuple[str, int, str]:
     output = args.output_dir / f"{key}.json"
     output.unlink(missing_ok=True)
+    if time.time() >= args.deadline:
+        output.write_text(json.dumps({'jobs':[], 'statusSummary':{f'{company}::{code}':'failed@budget: search stage deadline reached' for code in (['CN','HK','SG'] if len(args.locations)>1 else ['CN'])}}),encoding='utf-8')
+        return key, 0, str(output)
     command = [
         sys.executable,
         str(Path(__file__).with_name("fetch_linkedin_requests.py")),
@@ -50,7 +55,11 @@ def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -
     for location in args.locations:
         command.extend(["--location", location])
     LOG.info("starting %s (%s)", key, company)
-    completed = subprocess.run(command, text=True, capture_output=True)
+    env=os.environ.copy();env['LINKEDIN_HTTP_DEADLINE']=str(args.deadline)
+    try:
+        completed = subprocess.run(command, text=True, capture_output=True, env=env, timeout=max(1,args.deadline-time.time())+args.page_timeout+10)
+    except subprocess.TimeoutExpired:
+        completed = subprocess.CompletedProcess(command, 124, '', 'Company search exceeded the stage budget')
     if completed.stdout:
         LOG.info("%s stdout:\n%s", key, completed.stdout.rstrip())
     if completed.stderr:
@@ -88,6 +97,7 @@ def main() -> int:
     parser.add_argument("--delay-max", type=float, default=5)
     parser.add_argument("--page-timeout", type=int, default=20)
     parser.add_argument("--max-workers", type=int, default=2)
+    parser.add_argument("--time-budget-seconds", type=float, default=None)
     parser.add_argument(
         "--location",
         dest="locations",
@@ -98,6 +108,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     args.locations = args.locations or ["China"]
+    args.deadline=time.time()+(args.time_budget_seconds if args.time_budget_seconds is not None else (1500 if len(args.locations)>1 else 720))
     args.output_dir.mkdir(parents=True, exist_ok=True)
     if args.max_workers < 1:
         parser.error("--max-workers must be >= 1")

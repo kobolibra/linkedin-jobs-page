@@ -81,12 +81,12 @@ class Coordinator:
     Different GitHub runners do not share a file lock.
     """
     def __init__(self, path=None, *, clock=time.time, sleep=time.sleep,
-                 max_concurrent=1, min_interval=4, max_wait=180, deadline=None):
+                 max_concurrent=1, min_interval=2.5, max_wait=180, deadline=None):
         self.path = Path(path or os.environ.get("LINKEDIN_HTTP_STATE", "data/jobspy/http-state.json"))
         self.clock, self.sleep = clock, sleep
         self.max_concurrent, self.min_interval = max(1, max_concurrent), max(0, min_interval)
         self.max_wait = max_wait
-        self.deadline = deadline if deadline is not None else clock() + 2400
+        self.deadline = deadline if deadline is not None else float(os.environ.get("LINKEDIN_HTTP_DEADLINE", clock() + 2400))
 
     @contextlib.contextmanager
     def locked(self):
@@ -127,7 +127,7 @@ class Coordinator:
                 leases = {k: v for k, v in slot.get("leases", {}).items() if v > now}
                 slot["leases"] = leases
                 delay = max(slot.get("cooldownUntil", 0), slot.get("nextRequestAt", 0)) - now
-                pacing = slot.get("minInterval", 0) if slot.get("paceUntil", 0) > now else 0
+                pacing = min(8, slot.get("minInterval", 0)) if slot.get("paceUntil", 0) > now else 0
                 concurrent = 1 if pacing else self.max_concurrent
                 if delay <= 0 and len(leases) < concurrent:
                     leases[token] = now + 120
@@ -150,11 +150,27 @@ class Coordinator:
             slot["cooldownUntil"] = max(slot.get("cooldownUntil", 0), until)
             if reason == "HTTP 429":
                 previous = slot.get("minInterval", 0) if slot.get("paceUntil", 0) > now else 0
-                slot["minInterval"] = min(30, max(8, max(self.min_interval, previous) * 2))
-                slot["paceUntil"] = now + 3600
+                slot["minInterval"] = min(8, max(4, max(self.min_interval, previous) * 1.5))
+                slot["paceUntil"] = now + 900
+                slot["healthyResponses"] = 0
             if stop:
                 slot["stopUntil"] = max(slot.get("stopUntil", 0), until, now + 60)
                 slot["reason"] = reason
+
+    def succeeded(self, url):
+        now = self.clock()
+        with self.locked() as state:
+            slot = state.setdefault(host_key(url), {})
+            if slot.get("paceUntil", 0) <= now:
+                return
+            # Bound old persisted pacing too; sustained successful requests
+            # gradually return toward the baseline instead of staying slow.
+            slot["minInterval"] = min(8, slot.get("minInterval", self.min_interval))
+            slot["healthyResponses"] = slot.get("healthyResponses", 0) + 1
+            if slot["healthyResponses"] >= 5:
+                slot["healthyResponses"] = 0
+                slot["minInterval"] = max(self.min_interval, slot["minInterval"] - 1)
+            slot["nextRequestAt"] = min(slot.get("nextRequestAt", now), now + max(self.min_interval, slot["minInterval"]))
 
 
 class LinkedInSession(requests.Session):
@@ -200,6 +216,8 @@ class LinkedInSession(requests.Session):
                 response.close()
                 raise RequestStopped("LinkedIn blocked/login response", response=response)
             if status != 429 and status not in (500, 502, 503, 504):
+                if status == 200:
+                    self.coordinator.succeeded(url)
                 return response
             delay = retry_after_seconds(response.headers.get("Retry-After"))
             if delay is None:
