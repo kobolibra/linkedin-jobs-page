@@ -6,6 +6,7 @@ completion evidence instead of treating every returned partial list as complete.
 from __future__ import annotations
 
 import re
+import random
 from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
@@ -147,6 +148,8 @@ def fetch_snapshot(session, record, region, selected_ids, timeout, progress=None
                 "complete": False, "requests": 0, "jobs": {}, "reason": "partial"}
     empty = 0
     original = session.context
+    attempts = getattr(session, 'attempts', None)
+    if isinstance(attempts,int): session.attempts=max(3,attempts)
     try:
         for start in range(0, 1000, 10):
             session.context = {"stage": "liveness", "endpoint": "company-list", "company": record["employerName"],
@@ -186,6 +189,9 @@ def fetch_snapshot(session, record, region, selected_ids, timeout, progress=None
                     break
             if progress:
                 progress(snapshot)
+            # Match the established company listing/JobSpy pagination pace.
+            # The shared coordinator adds only any remaining global pause.
+            session.coordinator.wait(random.uniform(3,7))
         else:
             snapshot["reason"] = "linkedin-pagination-boundary"
     except RequestStopped as exc:
@@ -194,6 +200,7 @@ def fetch_snapshot(session, record, region, selected_ids, timeout, progress=None
         snapshot["reason"] = type(exc).__name__
     finally:
         session.context = original
+        if isinstance(attempts,int): session.attempts=attempts
     if progress:
         progress(snapshot)
     return snapshot

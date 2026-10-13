@@ -68,10 +68,12 @@ class CompanyLivenessTests(unittest.TestCase):
         self.assertNotIn('datePosted',parse_listing(card(day='2099-01-01'),IDENTITY,'CN',NOW)[0]['123456789'])
 
     def test_all_selected_found_requires_one_list_and_no_full_company_scan(self):
-        session=Mock(context={});session.get.return_value=response(text=card()+card('123456790'))
+        session=Mock(context={},attempts=1);session.get.return_value=response(text=card()+card('123456790'))
         snapshot=fetch_snapshot(session,IDENTITY,'CN',{'123456789','123456790'},20)
         self.assertEqual(snapshot['reason'],'all-selected-found');self.assertFalse(snapshot['complete'])
         self.assertEqual(session.get.call_count,1)
+        self.assertEqual(session.attempts,1)
+        session.coordinator.wait.assert_not_called()
         self.assertEqual(session.get.call_args.kwargs['params'],{'f_C':'1767','location':'China','start':0})
 
     def test_complete_snapshot_absence_expires_immediately(self):
