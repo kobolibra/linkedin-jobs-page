@@ -28,7 +28,7 @@ class PolicyTests(unittest.TestCase):
             self.sleeps.append(seconds)
             self.now += seconds
         self.coordinator = Coordinator(Path(self.tmp.name)/'http.json', clock=lambda: self.now,
-                                       sleep=sleep, min_interval=0, deadline=10000)
+                                       sleep=sleep, min_interval=0, max_concurrent=2, deadline=10000)
         self.session = LinkedInSession(coordinator=self.coordinator)
         self.addCleanup(self.session.close)
 
@@ -45,6 +45,19 @@ class PolicyTests(unittest.TestCase):
             self.addCleanup(peer.close)
             with self.assertRaises(RequestStopped): peer.get('https://linkedin.com/jobs/view/777777777')
             self.assertEqual(get.call_count, 3)
+
+    def test_rate_limit_keeps_slower_pacing_after_recovery_and_shares_it(self):
+        with patch('requests.Session.request', side_effect=[response(429, headers={'Retry-After':'7'}), response(), response()]) as get:
+            self.session.get('https://www.linkedin.com')
+            peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,min_interval=0,max_concurrent=2,deadline=10000)
+            other=LinkedInSession(coordinator=peer);self.addCleanup(other.close)
+            other.get('https://linkedin.com/jobs/view/88888888')
+            self.assertEqual(get.call_count,3)
+        self.assertEqual(self.sleeps,[7,8])
+        state=json.loads(self.coordinator.path.read_text())['linkedin.com']
+        self.assertEqual(state['minInterval'],8)
+        self.coordinator.defer('https://www.linkedin.com',2)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],16)
 
     def test_long_wait_is_not_shortened_and_persists(self):
         with patch('requests.Session.request', return_value=response(429, headers={'Retry-After':'3600'})) as get:
@@ -69,6 +82,17 @@ class PolicyTests(unittest.TestCase):
             with self.assertRaises(RequestStopped): self.session.get('https://www.linkedin.com')
             self.assertEqual(get.call_count, 1)
 
+    def test_readable_jd_with_signin_modal_and_recaptcha_config_is_not_blocked(self):
+        html='<div data-recaptcha-v3-integration-lix-value="enabled"><div class="show-more-less-html__markup">Analyse risk and prepare business reports.</div><form><input name="session_key"></form></div>'
+        with patch('requests.Session.request', return_value=response(text=html)):
+            self.assertEqual(self.session.get('https://www.linkedin.com/jobs/view/123456789').status_code,200)
+        self.assertNotIn('stopUntil',json.loads(self.coordinator.path.read_text())['linkedin.com'])
+
+    def test_actual_checkpoint_url_remains_blocked_even_with_job_markup(self):
+        html='<div class="show-more-less-html__markup">Example content</div>'
+        with patch('requests.Session.request', return_value=response(text=html,url='https://www.linkedin.com/checkpoint/challenge')):
+            with self.assertRaises(RequestStopped):self.session.get('https://www.linkedin.com/jobs/view/123456789')
+
     def test_404_is_returned_without_retry(self):
         with patch('requests.Session.request', return_value=response(404)) as get:
             self.assertEqual(self.session.get('https://www.linkedin.com').status_code,404)
@@ -85,7 +109,7 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(get.call_count,3)
 
     def test_separate_coordinators_share_lease_limit_and_release(self):
-        peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,min_interval=0,deadline=1)
+        peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,min_interval=0,max_concurrent=2,deadline=1)
         first=self.coordinator.acquire('https://www.linkedin.com')
         second=peer.acquire('https://linkedin.com')
         with self.assertRaises(RequestStopped):peer.acquire('https://www.linkedin.com')

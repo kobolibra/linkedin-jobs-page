@@ -8,6 +8,13 @@ import run_company_searches as runner
 
 
 class RunCompanySearchesTest(unittest.TestCase):
+    def test_small_queries_finish_before_largest_employers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            previous=Path(tmp)/'latest.json'
+            previous.write_text(json.dumps({'jobs':[{'requestedCompany':'HSBC'}]*20+[{'requestedCompany':'Standard Chartered'}]*10+[{'requestedCompany':'Citi'}]*2}))
+            names=[name for name,_ in runner.ordered_companies(previous)]
+            self.assertEqual(names[-3:],['Citi','Standard Chartered','HSBC'])
+            self.assertEqual(set(names),set(runner.COMPANIES))
     def test_company_keys_and_count(self):
         keys = [spec["canonical"].replace(" ", "_") for spec in runner.COMPANIES.values()]
         self.assertEqual(len(keys), 16)

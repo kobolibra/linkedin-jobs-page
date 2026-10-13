@@ -14,7 +14,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import requests
 from bs4 import BeautifulSoup
 from logo_sources import source_hint
-from linkedin_http import LinkedInSession
+from linkedin_http import LinkedInSession, block_page
 from linkedin_detail import fetch_detail
 from linkedin_ids import linkedin_job_id
 
@@ -107,11 +107,7 @@ def rotate_user_agent(session: requests.Session, attempt: int) -> None:
 
 
 def looks_like_block_page(html: str) -> bool:
-    soup = BeautifulSoup(html, "html.parser")
-    if soup.select_one(".authwall, #challenge, form.login__form, input[name=session_key]"):
-        return True
-    text = soup.get_text(" ", strip=True).casefold()
-    return "captcha" in text or "security verification" in text
+    return block_page(html)
 
 
 def is_empty_search_page(html: str) -> bool:

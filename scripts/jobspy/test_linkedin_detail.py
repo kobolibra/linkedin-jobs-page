@@ -20,7 +20,8 @@ class DetailTests(unittest.TestCase):
         s=Mock();s.get.side_effect=responses;return s
 
     def test_guest_preserves_city_logo_and_job_identity(self):
-        session=self.session(response(text=HTML,url=GUEST))
+        modal='<form><input id="csm-v2_session_key" name="session_key"></form><script>recaptchaConfiguration=true;</script>'
+        session=self.session(response(text=HTML+modal,url=GUEST))
         result=fetch_detail(session,ITEM)
         self.assertEqual(result['detailEndpoint'],'guest')
         self.assertEqual(result['city'],'Shanghai')

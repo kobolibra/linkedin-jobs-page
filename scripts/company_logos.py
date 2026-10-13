@@ -10,10 +10,10 @@ from PIL import Image, ImageOps
 
 from jobspy.logo_sources import extract, key, linkedin_url, image_url, logo_image_url, validate_hint, supported_names
 from logo_http import RequestPolicy, CollectionStopped, RateLimitStopped
-from jobspy.linkedin_http import Coordinator
+from jobspy.linkedin_http import Coordinator, block_page
 
 Image.MAX_IMAGE_PIXELS=4000000
-PARSER_VERSION=5
+PARSER_VERSION=6
 
 def read(path, default):
     return json.loads(Path(path).read_text()) if Path(path).exists() else default
@@ -133,7 +133,7 @@ def collect(args):
                     if not found:
                         soup=BeautifulSoup(html,'html.parser');org=soup.select_one('a.topcard__org-name-link')
                         observed=org.get_text(' ',strip=True) if org else ''
-                        blocked_page=bool(soup.select_one('.authwall, #challenge, form.login__form, input[name=session_key]'))
+                        blocked_page=block_page(html.decode('utf-8','replace'))
                         reason='login_or_challenge' if blocked_page else 'no_employer' if not org else 'name_mismatch' if key(observed) not in supported_names(row['company']) else 'no_supported_image'
                         entry['attempts'].append({**(policy.last or {}),'jobId':job_id,'reason':reason,'stage':'job','observedName':observed,'companyUrl':org.get('href','').split('?')[0] if org else ''})
                         if blocked_page:

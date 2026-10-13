@@ -13,12 +13,24 @@ import json
 import logging
 import subprocess
 import sys
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from fetch_linkedin_requests import COMPANIES
 
 LOG = logging.getLogger("jobspy-orchestrator")
+
+
+def ordered_companies(previous: Path):
+    try:
+        doc = json.loads(previous.read_text(encoding="utf-8"))
+        counts = Counter(str(item.get("requestedCompany") or item.get("company") or "") for item in doc.get("jobs", []))
+    except (OSError, ValueError, TypeError, AttributeError):
+        return list(COMPANIES.items())
+    # Complete the smaller queries before the largest employers consume the
+    # request budget. Stable ordering keeps equal/unknown counts predictable.
+    return sorted(COMPANIES.items(), key=lambda item: counts[item[0]])
 
 
 def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -> tuple[str, int, str]:
@@ -90,7 +102,7 @@ def main() -> int:
     if args.max_workers < 1:
         parser.error("--max-workers must be >= 1")
 
-    selected = list(COMPANIES.items())
+    selected = ordered_companies(args.output_dir.parent / "latest.json")
     failures = []
     with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
         futures = [
@@ -115,4 +127,3 @@ def main() -> int:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     raise SystemExit(main())
-
