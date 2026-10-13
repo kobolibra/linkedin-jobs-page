@@ -24,24 +24,10 @@ def cooldowns(*states, now=None):
             slot = result.setdefault(host, {})
             for field in ("cooldownUntil", "stopUntil"):
                 slot[field] = max(slot.get(field, 0), record.get(field, 0))
-            if "paceUntil" in record:
-                # Pacing can recover after successful responses. Taking the
-                # maximum would resurrect an older slow setting on every push.
-                # Keep the newest policy, while server cooldowns above remain
-                # conservative even when reports arrive out of order.
-                updated = record.get("pacingUpdatedAt", 0)
-                current = slot.get("pacingUpdatedAt", 0)
-                interval = min(8, max(0, record.get("minInterval", 0)))
-                if "paceUntil" not in slot or updated > current:
-                    slot.update(paceUntil=record["paceUntil"], minInterval=interval,
-                                pacingUpdatedAt=updated)
-                elif updated == current:
-                    slot["paceUntil"] = max(slot["paceUntil"], record["paceUntil"])
-                    slot["minInterval"] = max(slot["minInterval"], interval)
             if record.get("stopUntil", 0) >= slot.get("stopUntil", 0):
                 slot["reason"] = record.get("reason", "")
     return {host: slot for host, slot in result.items()
-            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0), slot.get("paceUntil", 0)) > now}
+            if max(slot.get("cooldownUntil", 0), slot.get("stopUntil", 0)) > now}
 
 
 def collect(args):

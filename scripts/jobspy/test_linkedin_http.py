@@ -64,46 +64,70 @@ class PolicyTests(unittest.TestCase):
             get.assert_not_called()
         self.assertEqual(self.sleeps,[])
 
-    def test_rate_limit_keeps_slower_pacing_after_recovery_and_shares_it(self):
+    def test_rate_limit_shares_wait_without_permanent_slow_pacing(self):
         with patch('requests.Session.request', side_effect=[response(429, headers={'Retry-After':'7'}), response(), response()]) as get:
             self.session.get('https://www.linkedin.com')
             peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,min_interval=0,max_concurrent=2,deadline=10000)
             other=LinkedInSession(coordinator=peer);self.addCleanup(other.close)
             other.get('https://linkedin.com/jobs/view/88888888')
             self.assertEqual(get.call_count,3)
-        self.assertEqual(self.sleeps,[7,4])
+        self.assertEqual(self.sleeps,[7])
         state=json.loads(self.coordinator.path.read_text())['linkedin.com']
-        self.assertEqual(state['minInterval'],4)
-        self.coordinator.defer('https://www.linkedin.com',2)
-        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],6)
+        self.assertNotIn('minInterval',state)
+        self.assertEqual(state['consecutive429'],0)
 
-    def test_successful_responses_gradually_restore_pacing(self):
+    def test_successful_responses_reset_actual_quota_failure_streak(self):
         self.coordinator.defer('https://www.linkedin.com',0)
         self.coordinator.defer('https://www.linkedin.com',0)
         self.coordinator.defer('https://www.linkedin.com',0)
-        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],8)
-        for _ in range(5):self.coordinator.succeeded('https://www.linkedin.com')
-        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],7)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['consecutive429'],3)
+        self.coordinator.succeeded('https://www.linkedin.com')
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['consecutive429'],0)
 
-    def test_recovered_pacing_survives_health_publish_and_next_runner(self):
+    def test_non_rate_limited_404_breaks_consecutive_quota_streak(self):
+        self.coordinator.defer('https://www.linkedin.com',0)
+        with patch('requests.Session.request',return_value=response(404)):
+            self.assertEqual(self.session.get('https://www.linkedin.com').status_code,404)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['consecutive429'],0)
+
+    def test_legacy_pacing_is_ignored_and_not_republished_for_next_runner(self):
         from scraper_health import cooldowns
         old={'linkedin.com':{'paceUntil':900,'minInterval':30}}
         self.coordinator.path.write_text(json.dumps(old))
         self.now=100
-        for _ in range(5):self.coordinator.succeeded('https://www.linkedin.com')
-        runtime=json.loads(self.coordinator.path.read_text())
-        published=cooldowns(old,cooldowns(runtime,now=self.now),now=self.now)
-        self.assertEqual(published['linkedin.com']['minInterval'],7)
-        self.coordinator.path.write_text(json.dumps(published))
-        peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,min_interval=2.5,deadline=10000)
+        peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep)
         first=peer.acquire('https://www.linkedin.com');peer.release(first)
         second=peer.acquire('https://www.linkedin.com');peer.release(second)
-        self.assertEqual(self.sleeps,[7])
+        self.assertEqual(self.sleeps,[.5])
+        published=cooldowns(old,json.loads(self.coordinator.path.read_text()),now=self.now)
+        self.assertEqual(published,{})
+        self.coordinator.path.write_text(json.dumps(published))
+        self.assertEqual(Coordinator(self.coordinator.path,clock=lambda:self.now).max_concurrent,2)
 
-    def test_stage_deadline_is_shared_by_new_coordinators(self):
+    def test_legacy_stage_deadline_does_not_truncate_default_collection(self):
         with patch.dict('os.environ',{'LINKEDIN_HTTP_DEADLINE':'123'}):
             peer=Coordinator(self.coordinator.path,clock=lambda:0)
-            self.assertEqual(peer.deadline,123)
+            self.assertEqual(peer.deadline,float('inf'))
+
+    def test_single_quota_failure_is_recoverable_for_next_liveness_probe(self):
+        session=LinkedInSession(attempts=1,coordinator=self.coordinator)
+        self.addCleanup(session.close)
+        with patch('requests.Session.request',return_value=response(429)):
+            with self.assertRaises(RequestStopped) as caught:session.get('https://www.linkedin.com')
+        self.assertTrue(caught.exception.recoverable)
+        self.assertEqual(caught.exception.response.status_code,429)
+
+    def test_six_consecutive_real_429s_stop_the_shared_quota_episode(self):
+        self.session.attempts=6
+        with patch('requests.Session.request',return_value=response(429,headers={'Retry-After':'2'})) as get:
+            with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
+            self.assertFalse(caught.exception.recoverable)
+            peer=LinkedInSession(coordinator=self.coordinator);self.addCleanup(peer.close)
+            with self.assertRaises(RequestStopped):peer.get('https://www.linkedin.com')
+            self.assertEqual(get.call_count,6)
+        state=json.loads(self.coordinator.path.read_text())['linkedin.com']
+        self.assertEqual(state['consecutive429'],6)
+        self.assertGreaterEqual(state['stopUntil'],self.now+900)
 
     def test_search_retains_legacy_linear_retry_timing(self):
         self.session.linear_backoff=True
@@ -124,6 +148,7 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(get.call_count, 1)
         self.assertEqual(self.sleeps, [])
         self.assertGreaterEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['stopUntil'],3600)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['consecutive429'],1)
 
     def test_http_date_and_invalid_retry_after(self):
         from datetime import datetime,timezone

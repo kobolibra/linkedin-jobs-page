@@ -73,20 +73,17 @@ def main():
                     blocked=blocked or date_blocked
             except requests.RequestException as exc:
                 checked_at=datetime.now(timezone.utc).isoformat()
-                result="unknown"; blocked=True; shared_stop=isinstance(exc,RequestStopped); print("probe_error",key,type(exc).__name__,flush=True)
+                result="unknown"; blocked=True; shared_stop=isinstance(exc,RequestStopped) and not exc.recoverable; print("probe_error",key,type(exc).__name__,str(exc),flush=True)
             breaker=breaker+1 if blocked else 0
             classified.append(result)
             observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
             if posted: observation.update({"datePosted":posted,"dateSource":source})
             if hint: observation['companyLogoSource']=hint
             out["observations"].append(observation)
+            print("liveness",f"{i+1}/{len(candidates)}",key,result,flush=True)
             if shared_stop or breaker >= args.breaker:
-                if shared_stop and time.time() >= session.coordinator.deadline:
-                    out["stats"]["budgetExhausted"] = True
-                    out["stats"]["skippedBudget"] = len(candidates)-i-1
-                else:
-                    out["stats"]["circuitOpen"] = True
-                    out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
+                out["stats"]["circuitOpen"] = True
+                out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
                 break
             if i+1 < len(candidates): time.sleep(random.uniform(args.delay_min,args.delay_max))
         meaningful=[x for x in classified if x != "unknown"]
