@@ -2688,13 +2688,28 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-12T22:04:16.577016+00:00",
+    "checkedAt": "2026-10-13T04:05:34.676658+00:00",
     "status": "missing",
-    "parserVersion": 5,
+    "parserVersion": 6,
     "attempts": [
       {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "status": 404,
+        "contentType": "",
+        "attempt": 1,
         "jobId": "4461013126",
-        "reason": "rate_limited",
+        "reason": "http_error",
+        "stage": "job"
+      },
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 404,
+        "contentType": "",
+        "attempt": 1,
+        "jobId": "4461002131",
+        "reason": "http_error",
         "stage": "job"
       }
     ]
@@ -3004,9 +3019,9 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-12T10:19:02.623122+00:00",
+    "checkedAt": "2026-10-13T04:04:54.923722+00:00",
     "status": "missing",
-    "parserVersion": 5,
+    "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
@@ -3015,7 +3030,19 @@
         "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "login_or_challenge",
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
+      },
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
+        "attempt": 1,
+        "jobId": "4445423723",
+        "reason": "no_employer",
         "stage": "job",
         "observedName": "",
         "companyUrl": ""
@@ -3155,9 +3182,9 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-12T12:56:23.091371+00:00",
+    "checkedAt": "2026-10-13T04:05:10.649977+00:00",
     "status": "missing",
-    "parserVersion": 5,
+    "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
@@ -3166,7 +3193,7 @@
         "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4441170948",
-        "reason": "login_or_challenge",
+        "reason": "no_employer",
         "stage": "job",
         "observedName": "",
         "companyUrl": ""
@@ -3846,9 +3873,9 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-12T16:05:54.962761+00:00",
+    "checkedAt": "2026-10-13T04:05:18.630627+00:00",
     "status": "missing",
-    "parserVersion": 5,
+    "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
@@ -5381,9 +5408,9 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-12T16:05:56.228330+00:00",
+    "checkedAt": "2026-10-13T04:05:26.497769+00:00",
     "status": "missing",
-    "parserVersion": 5,
+    "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
@@ -5392,7 +5419,7 @@
         "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4467705418",
-        "reason": "login_or_challenge",
+        "reason": "no_employer",
         "stage": "job",
         "observedName": "",
         "companyUrl": ""
@@ -6385,5 +6412,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQFswmDPZuY8Sw/company-logo_100_100/company-logo_100_100/0/1630538546300/tiger_recruitment_ltd_logo?e=2147483647&v=beta&t=GpSl0jOH6v7MVDSQxCa91FOMqrmDBdYn_-Fb9Sj30X4",
     "companyUrl": "https://uk.linkedin.com/company/tiger-recruitment-ltd",
     "sourceJobId": "4478512122"
+  },
+  "mangostar": {
+    "name": "Mangostar",
+    "checkedAt": "2026-10-13T04:04:53.382691+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "961f004fdb5486fcb5b97c45.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFJCqxwb4og5g/company-logo_100_100/B56Z_1CtawK0AI-/0/1786522556298/mangostar_logo?e=2147483647&v=beta&t=O-XxaRFEwtXp4l7UkOpsZvX-F2Bm1HeXhyI_W2JUzBE",
+    "companyUrl": "https://sg.linkedin.com/company/mangostar",
+    "sourceJobId": "4476082495"
   }
 }
