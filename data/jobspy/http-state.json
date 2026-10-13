@@ -1,10 +1,7 @@
 {
   "linkedin.com": {
-    "cooldownUntil": 1791865459.1733446,
-    "stopUntil": 1791865501.9596837,
-    "paceUntil": 1791866341.9596837,
-    "minInterval": 8,
-    "pacingUpdatedAt": 1791865441.9596837,
+    "cooldownUntil": 1791868705.7158175,
+    "stopUntil": 1791868750.0185943,
     "reason": "HTTP 429"
   }
 }
