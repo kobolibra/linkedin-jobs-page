@@ -1703,6 +1703,40 @@
         "reusedSources": 0,
         "httpRetries": 0
       }
+    },
+    {
+      "runId": "logos:38387103024:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-13T11:01:24.532862+00:00",
+      "requests": 8,
+      "retries": 1,
+      "httpStatuses": {
+        "200": 4,
+        "404": 3,
+        "429": 1
+      },
+      "outcomes": {
+        "response": 7,
+        "rate_limited": 1
+      },
+      "stages": {
+        "logos": 8
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 5,
+        "downloaded": 0,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 1
+      }
     }
   ],
   "queryFailureStreaks": {
