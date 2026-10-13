@@ -59,6 +59,21 @@ def collect(args):
             except (ValueError, TypeError):
                 statuses[path.stem] = "unreadable"
     responses = [event for event in events if "status" in event]
+    search_transport = {}
+    for event in responses:
+        if event.get("stage") != "search" or not event.get("company"):
+            continue
+        query = str(event["company"]) + "::" + str(event.get("region", "unknown"))
+        stats = search_transport.setdefault(query, {"requests": 0, "retries": 0,
+                                                    "httpStatuses": {}, "rateLimitedPages": []})
+        stats["requests"] += 1
+        stats["retries"] += event.get("attempt", 1) > 1
+        code = str(event["status"])
+        stats["httpStatuses"][code] = stats["httpStatuses"].get(code, 0) + 1
+        if code == "429" and "pageStart" in event and event["pageStart"] not in stats["rateLimitedPages"]:
+            stats["rateLimitedPages"].append(event["pageStart"])
+        if code == "429" and event.get("retryAfterSeconds") is not None:
+            stats["maxRetryAfterSeconds"] = max(stats.get("maxRetryAfterSeconds", 0), event["retryAfterSeconds"])
     report = {
         "runId": args.task + ":" + os.environ.get("GITHUB_RUN_ID", "local") + ":" + os.environ.get("GITHUB_RUN_ATTEMPT", "1"),
         "task": args.task, "workflowStatus": args.workflow_status, "observedAt": datetime.now(timezone.utc).isoformat(),
@@ -68,6 +83,7 @@ def collect(args):
         "stages": dict(Counter(event.get("stage", "unknown") for event in responses)),
         "detailEndpoints": dict(Counter(event.get("endpoint", "unknown") for event in events if event.get("outcome") == "parsed")),
         "queries": statuses,
+        "searchTransport": search_transport,
         "cooldowns": cooldowns(read(args.state, {})),
     }
     if args.task == "jobs":

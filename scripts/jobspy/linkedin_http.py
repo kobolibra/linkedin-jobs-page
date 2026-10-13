@@ -176,12 +176,14 @@ class Coordinator:
 
 
 class LinkedInSession(requests.Session):
-    def __init__(self, *, attempts=3, coordinator=None, context=None, user_agents=None):
+    def __init__(self, *, attempts=3, coordinator=None, context=None, user_agents=None,
+                 linear_backoff=False):
         super().__init__()
         self.attempts = max(1, attempts)
         self.coordinator = coordinator or Coordinator()
         self.context = context or {}
         self.user_agents = tuple(user_agents or ())
+        self.linear_backoff = linear_backoff
 
     def request(self, method, url, **kwargs):
         kwargs.setdefault("timeout", (10, 20))
@@ -210,8 +212,10 @@ class LinkedInSession(requests.Session):
                 blocked = blocked or block_page(response.text, response.url)
             if status in (301, 302, 303, 307, 308):
                 blocked = blocked or block_page("", response.headers.get("Location", ""))
+            retry_after = retry_after_seconds(response.headers.get("Retry-After")) if status == 429 or status in (500, 502, 503, 504) else None
             record_event(**self.context, host=host_key(url), status=status, attempt=attempt,
                          outcome="blocked" if blocked else "rate_limited" if status == 429 else "response",
+                         retryAfterSeconds=retry_after,
                          elapsedSeconds=round(self.coordinator.clock() - started, 3))
             if blocked:
                 self.coordinator.defer(url, 1800, stop=True, reason="login/challenge or HTTP " + str(status))
@@ -221,9 +225,11 @@ class LinkedInSession(requests.Session):
                 if status == 200:
                     self.coordinator.succeeded(url)
                 return response
-            delay = retry_after_seconds(response.headers.get("Retry-After"))
+            delay = retry_after
             if delay is None:
-                delay = min(180, 15 * 2 ** (attempt - 1) + random.uniform(0, 3))
+                delay = (min(180, 15 * attempt + random.uniform(1, 8))
+                         if self.linear_backoff else
+                         min(180, 15 * 2 ** (attempt - 1) + random.uniform(0, 3)))
             response.close()
             if status == 429:
                 self.coordinator.defer(url, delay, stop=attempt == self.attempts)
