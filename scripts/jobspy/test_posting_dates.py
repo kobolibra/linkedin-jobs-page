@@ -272,6 +272,18 @@ class PostingTests(unittest.TestCase):
             self.assertFalse(got['stats']['circuitOpen'])
             self.assertEqual(session.get.call_count,7)
 
+    def test_interruption_keeps_completed_individual_observations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp);jobs=[row(title='',sourceJobId='li-'+str(500000000+i)) for i in range(2)]
+            (p/'jobs').write_text(json.dumps({'jobs':jobs}))
+            session=Mock();session.get.side_effect=[Mock(status_code=200,text=PAGE.replace(KEY,'500000000')),KeyboardInterrupt()]
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):
+                with self.assertRaises(KeyboardInterrupt):probe_main()
+            got=json.loads((p/'out').read_text())
+            self.assertEqual(got['stats']['probed'],1)
+            self.assertEqual(got['observations'][0]['jobId'],'500000000')
+            self.assertEqual(got['observations'][0]['result'],'open')
+
     def test_optional_date_limit_does_not_trip_liveness_or_repeat_failed_search(self):
         from linkedin_http import RequestStopped
         with tempfile.TemporaryDirectory() as tmp:
