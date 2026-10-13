@@ -87,6 +87,16 @@ def collect(args):
         "searchTransport": search_transport,
         "cooldowns": cooldowns(read(args.state, {})),
     }
+    liveness_transport = {}
+    for event in responses:
+        if event.get("stage") != "liveness":
+            continue
+        endpoint = str(event.get("endpoint", "unknown"))
+        stats = liveness_transport.setdefault(endpoint, {"requests": 0, "httpStatuses": {}})
+        stats["requests"] += 1
+        code = str(event["status"])
+        stats["httpStatuses"][code] = stats["httpStatuses"].get(code, 0) + 1
+    report["livenessTransport"] = liveness_transport
     if args.task == "jobs":
         # Inputs are only supplied when those steps ran in this invocation.
         report["details"] = read(args.details, {}).get("health", {})

@@ -3,7 +3,11 @@ name: Publish n8n RSS into canonical jobs
 on:
   push:
     branches: [main]
-    paths: [data/n8n/rss-latest.json]
+    paths:
+      - data/n8n/rss-latest.json
+      - data/jobspy/incremental/latest.completed_at
+      - data/jobspy/incremental/liveness.json
+      - .github/workflows/publish-n8n-rss.yml
   workflow_dispatch:
 
 concurrency:

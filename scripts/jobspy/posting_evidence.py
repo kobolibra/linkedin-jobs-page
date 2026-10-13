@@ -3,28 +3,74 @@ import json
 import re
 from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
+from urllib.parse import urlsplit
 from linkedin_ids import linkedin_job_id
 from posting_dates import LOCAL_TZ, posting_day
 
 
-def search_posting_date(html, job_id):
-    soup = BeautifulSoup(html or "", "html.parser")
-    found = set()
+def markup(html):
+    return html if isinstance(html, BeautifulSoup) else BeautifulSoup(html or "", "html.parser")
+
+
+def matches_job(soup, job_id):
+    canonical = soup.select_one('link[rel="canonical"]')
+    if not canonical:
+        return False
+    url = canonical.get("href", "")
+    host = (urlsplit(url).hostname or "").lower()
+    return (host == "linkedin.com" or host.endswith(".linkedin.com")) and linkedin_job_id(url) == str(job_id)
+
+
+def relative_posting_bounds(html, job_id, checked_at):
+    """Day bounds for a rounded age; never an invented exact date."""
+    soup = markup(html)
+    if not matches_job(soup, job_id):
+        return None
+    header = soup.select_one(".posted-time-ago__text")
+    if not header:
+        return None
+    match = re.fullmatch(r"(?:reposted\s+)?(\d+)\s+(minute|hour|day|week)s?\s+ago", header.get_text(" ", strip=True).casefold())
+    if not match:
+        return None
+    span = {"minute": 60, "hour": 3600, "day": 86400, "week": 604800}[match[2]]
+    try:
+        now = datetime.fromisoformat(str(checked_at).replace("Z", "+00:00"))
+        if not now.tzinfo:
+            now = now.replace(tzinfo=timezone.utc)
+        # Include a full unit on either side: a rounded label is not proof
+        # that the platform always floors the age. This protects midnight.
+        recent = (now - timedelta(seconds=max(0, int(match[1]) - 1) * span)).astimezone(LOCAL_TZ).date()
+        early = (now - timedelta(seconds=(int(match[1]) + 1) * span)).astimezone(LOCAL_TZ).date()
+        return early, recent
+    except (ValueError, OverflowError):
+        return None
+
+
+def search_posting_dates(html):
+    soup = markup(html)
+    found = {}
     for card in soup.select(".base-search-card, .main-job-card, .aside-job-card"):
         link = card.select_one('a[href*="/jobs/view/"]')
-        if not link or linkedin_job_id(link.get("href")) != str(job_id):
+        if not link:
             continue
+        host = (urlsplit(link.get("href", "")).hostname or "").lower()
+        if host and host != "linkedin.com" and not host.endswith(".linkedin.com"):
+            continue
+        job_id = linkedin_job_id(link.get("href"))
         time = card.select_one("time[datetime]")
         day = posting_day(time.get("datetime")) if time else None
-        if day:
-            found.add(day.isoformat())
-    return next(iter(found)) if len(found) == 1 else None
+        if job_id and day:
+            found.setdefault(job_id, set()).add(day.isoformat())
+    return {job_id: next(iter(days)) for job_id, days in found.items() if len(days) == 1}
+
+
+def search_posting_date(html, job_id):
+    return search_posting_dates(html).get(str(job_id))
 
 
 def detail_posting_date(html, job_id, checked_at):
-    soup = BeautifulSoup(html or "", "html.parser")
-    canonical = soup.select_one('link[rel="canonical"]')
-    if not canonical or linkedin_job_id(canonical.get("href")) != str(job_id):
+    soup = markup(html)
+    if not matches_job(soup, job_id):
         return None, None
     header = soup.select_one(".posted-time-ago__text")
     if header:
@@ -34,19 +80,10 @@ def detail_posting_date(html, job_id, checked_at):
             return exact.isoformat(), "linkedin-detail-datetime"
         # LinkedIn rounds relative ages. Only accept a day when the entire
         # rounding interval lies within it; never invent an exact timestamp.
-        label = header.get_text(" ", strip=True).casefold()
-        match = re.fullmatch(r"(?:reposted\s+)?(\d+)\s+(minute|hour|day|week)s?\s+ago", label)
-        if match:
-            units = {"minute": 60, "hour": 3600, "day": 86400, "week": 604800}
-            span = units[match[2]]; age = int(match[1]) * span
-            now = datetime.fromisoformat(str(checked_at).replace("Z", "+00:00"))
-            if not now.tzinfo:
-                now = now.replace(tzinfo=timezone.utc)
-            recent = (now - timedelta(seconds=age)).astimezone(LOCAL_TZ).date()
-            early = (now - timedelta(seconds=age + span)).astimezone(LOCAL_TZ).date()
-            if recent == early:
-                return recent.isoformat(), "linkedin-detail-relative-day"
-    exact = search_posting_date(html, job_id)
+        bounds = relative_posting_bounds(soup, job_id, checked_at)
+        if bounds and bounds[0] == bounds[1]:
+            return bounds[0].isoformat(), "linkedin-detail-relative-day"
+    exact = search_posting_date(soup, job_id)
     if exact:
         return exact, "linkedin-detail-matching-card"
     # Structured data is accepted only for a JobPosting belonging to this ID.

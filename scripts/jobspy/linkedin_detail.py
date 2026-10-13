@@ -15,8 +15,11 @@ def parse_detail(response, item, job_id, *, guest):
         return None
     soup = BeautifulSoup(response.text, "html.parser")
     canonical = soup.select_one('link[rel="canonical"]')
-    if canonical and (urlsplit(canonical.get("href", "")).hostname not in ("www.linkedin.com", "linkedin.com") or linkedin_job_id(canonical.get("href")) != job_id):
-        return None
+    if canonical:
+        canonical_host = (urlsplit(canonical.get("href", "")).hostname or "").lower()
+        if ((canonical_host != "linkedin.com" and not canonical_host.endswith(".linkedin.com"))
+                or linkedin_job_id(canonical.get("href")) != job_id):
+            return None
     final = urlsplit(response.url)
     if final.hostname not in ("www.linkedin.com", "linkedin.com"):
         return None
