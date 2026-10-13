@@ -41,7 +41,7 @@ class FrontendPayloadSyncTests(unittest.TestCase):
                 target = checkout / "scripts" / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / "scripts" / name, target)
-            for name in ("build_frontend_payload.py", "jev_preprocess.py", "linkedin_ids.py", "logo_sources.py"):
+            for name in ("build_frontend_payload.py", "jev_preprocess.py", "linkedin_ids.py", "logo_sources.py", "track_jd_changes.py", "posting_dates.py"):
                 target = checkout / "scripts" / "jobspy" / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / "scripts" / "jobspy" / name, target)

@@ -9,6 +9,8 @@ on:
       - 'scripts/test_frontend_resilience.mjs'
       - 'guestbook.js'
       - 'scripts/company_logos.py'
+      - 'scripts/rss_publication.py'
+      - 'scripts/test_rss_publication.py'
       - 'scripts/logo_http.py'
       - 'scripts/test_logo_http.py'
       - 'scripts/test_company_logos.py'
@@ -77,7 +79,7 @@ jobs:
       - name: Test company logo identity and cache publication
         run: |
           python -m pip install --disable-pip-version-check -r requirements-logos.txt
-          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_logo_http.py
+          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_logo_http.py scripts/test_rss_publication.py
           node --check company-logos.js
           node --test scripts/test_company_logos.mjs
       - name: Test JEV Worker and visitor counter

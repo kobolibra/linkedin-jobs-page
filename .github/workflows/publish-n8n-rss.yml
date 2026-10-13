@@ -3,11 +3,7 @@ name: Publish n8n RSS into canonical jobs
 on:
   push:
     branches: [main]
-    paths:
-      - data/n8n/rss-latest.json
-      - data/jobspy/incremental/latest.completed_at
-      - data/jobspy/incremental/liveness.json
-      - .github/workflows/publish-n8n-rss.yml
+    paths: [data/n8n/rss-latest.json]
   workflow_dispatch:
 
 concurrency:
@@ -21,6 +17,9 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      LINKEDIN_HTTP_STATE: /tmp/rss-logo-http-runtime.json
+      LINKEDIN_HEALTH_EVENTS: /tmp/rss-logo-health.jsonl
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,16 +27,35 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install JobSpy dependencies
-        run: python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
-      - name: Validate merger
+      - name: Install merger and logo dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-jobspy.txt -r requirements-logos.txt
+      - name: Validate merger and logo publication
         run: |
-          python -m py_compile scripts/jobspy/*.py
+          python -m py_compile scripts/rss_publication.py scripts/jobspy/*.py
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
           PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py scripts/jobspy/test_liveness.py scripts/jobspy/test_reconcile_full_snapshots.py
-      - name: Merge and publish canonical jobs
-        shell: bash
+          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_rss_publication.py
+      - name: Freeze publication inputs and merge jobs before logo collection
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+          python scripts/rss_publication.py --inputs /tmp/rss-publication --capture
+          python scripts/rss_publication.py --inputs /tmp/rss-publication --output /tmp/rss-publication/merged-jobs.json
+          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
+          : > "$LINKEDIN_HEALTH_EVENTS"
+      - name: Reuse cached logos and collect retained missing companies before deployment
+        id: logos
+        continue-on-error: true
+        run: python scripts/company_logos.py --mode rss --jobs /tmp/rss-publication/merged-jobs.json --output /tmp/rss-company-logos
+      - name: Capture logo results before publication retries reset the checkout
+        if: always() && steps.logos.outcome != 'skipped'
+        run: |
+          python scripts/jobspy/scraper_health.py --task logos --workflow-status '${{ steps.logos.outcome }}' --logo-report /tmp/rss-company-logos/report.json --snapshot /tmp/rss-logo-health.json
+          if [[ '${{ steps.logos.outcome }}' != 'success' ]]; then
+            echo "::warning title=RSS logo collection::Logo collection failed; retain cached images and publish verified job data. Missing companies remain eligible for the next RSS retry."
+          fi
+      - name: Commit merged jobs and collected logos together and deploy once
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -45,55 +63,38 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            if [[ -s data/jobspy/incremental/search_combined.json && -s data/jobspy/incremental/latest.completed_at ]]; then
-              observed_at="$(cat data/jobspy/incremental/latest.completed_at)"
-              python scripts/jobspy/track_jd_changes.py \
-                --existing jobs.json \
-                --snapshot data/jobspy/incremental/search_combined.json \
-                --observed-at "$observed_at" \
-                --output /tmp/search_with_jd_changes.json
-              python scripts/jobspy/reconcile_full_snapshots.py \
-                --existing jobs.json \
-                --snapshot /tmp/search_with_jd_changes.json \
-                --observed-at "$observed_at" \
-                --output /tmp/jobs.jobspy.json
-            else
-              echo "No dated JobSpy snapshot available; merging RSS against current canonical jobs only"
-              cp jobs.json /tmp/jobs.jobspy.json
-            fi
-            python scripts/jobspy/merge_n8n_incremental.py \
-              --baseline /tmp/jobs.jobspy.json \
-              --batch data/n8n/rss-latest.json \
-              --output /tmp/jobs.merged.json
-            if [[ -s data/jobspy/incremental/liveness.json ]]; then
-              python scripts/jobspy/apply_liveness.py \
-                --jobs /tmp/jobs.merged.json \
-                --liveness data/jobspy/incremental/liveness.json \
-                --delete-after-days 10 \
-                --output /tmp/jobs.liveness.json
-              mv /tmp/jobs.liveness.json /tmp/jobs.merged.json
-            fi
-            mv /tmp/jobs.merged.json jobs.json
+            python scripts/rss_publication.py --inputs /tmp/rss-publication --output jobs.json
+            python scripts/company_logos.py --apply /tmp/rss-company-logos
+            health_rc=0
+            python scripts/jobspy/scraper_health.py --apply /tmp/rss-logo-health.json --state data/jobspy/http-state.json || health_rc=$?
+            if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
             python scripts/jobspy/compact_published_jobs.py
             python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-            git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json
+            git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
+            deploy_needed=false
+            if ! git diff --cached --quiet -- jobs.json jobs-index.json jobs-details.json company-logos.json assets/company-logos; then deploy_needed=true; fi
             if git diff --cached --quiet; then
-              echo "No canonical job changes"
+              echo "No publication changes"
               exit 0
             fi
-            git commit -m "[rss-merged] publish n8n RSS into lifecycle snapshot"
+            git commit -m "[rss-merged] publish merged jobs with collected company logos"
             if git push origin HEAD:main; then
-              GH_TOKEN="${{ github.token }}" gh workflow run deploy.yml --ref main
-              echo "Dispatched exactly one Pages deployment for the canonical commit"
+              if [[ "$deploy_needed" == true ]]; then
+                GH_TOKEN="${{ github.token }}" gh workflow run deploy.yml --ref main
+                echo "Dispatched one deployment after jobs and logos were published together"
+              fi
               exit 0
             fi
             sleep $((attempt * 5))
           done
           echo "Unable to publish canonical RSS merge" >&2
           exit 1
-
-      - name: Queue all retained missing company logo retries after RSS publication
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run company-logos.yml --ref main -f mode=rss
+      - name: Save logo collection evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rss-company-logo-report
+          path: |
+            /tmp/rss-company-logos/*.json
+            /tmp/rss-publication/inputs.json
+          if-no-files-found: ignore
