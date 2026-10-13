@@ -9,6 +9,8 @@ from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
 from jev_preprocess import build_boilerplate_table, preprocess
+from track_jd_changes import formatted_diff
+from bs4 import BeautifulSoup
 
 
 def job_id(link: object) -> str:
@@ -36,6 +38,9 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
         item = {key: job.get(key) for key in index_fields if key in job}
         key = job_id(job.get("link"))
         html = str(job.get("descriptionHtml") or "").strip()
+        if html:
+            markup=BeautifulSoup(html,'html.parser').select_one('.show-more-less-html__markup')
+            if markup is not None: html=str(markup)
         # JobSpy/n8n records frequently retain the JD in HTML while
         # descriptionText is empty. JEV must preprocess the actual JD rather
         # than classifying an empty string as insufficient evidence.
@@ -58,8 +63,12 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
                 ),
             }
             if str(job.get("jdDiffHtml") or "").strip():
+                previous=str(job.get('jdDiffPreviousText') or '').strip()
+                # Upgrade already-published flat revisions from the preserved
+                # source HTML, without refetching JD or changing lifecycle data.
+                revision=formatted_diff(previous,html) if previous and html else str(job['jdDiffHtml'])
                 details[key].update({
-                    "jdDiffHtml": str(job["jdDiffHtml"]),
+                    "jdDiffHtml": revision,
                     "jdChangeStatus": job.get("jdChangeStatus") or "changed",
                     "jdChangedAt": job.get("jdChangedAt") or "",
                     "jdDiffPreviousText": job.get("jdDiffPreviousText") or "",

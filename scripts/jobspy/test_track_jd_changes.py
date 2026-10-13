@@ -1,9 +1,30 @@
 import unittest
 
-from track_jd_changes import annotate, diff_tokens
+from track_jd_changes import annotate, diff_tokens, formatted_diff
+from bs4 import BeautifulSoup
 
 
 class TrackJdChangesTests(unittest.TestCase):
+    def test_revision_keeps_source_blocks_emphasis_and_current_text_exactly(self):
+        source='<div><p><strong>Responsibilities</strong></p><ul><li>Manage weekly reporting and controls.</li><li><em>Support clients</em></li></ul></div>'
+        result=formatted_diff('Responsibilities Manage daily reporting. Support clients',source)
+        soup=BeautifulSoup(result,'html.parser');original=BeautifulSoup(source,'html.parser')
+        for tag in ('div','p','strong','ul','li','em'):
+            self.assertEqual(len(soup.select(tag)),len(original.select(tag)))
+        self.assertIn('daily', ' '.join(x.get_text() for x in soup.select('del')))
+        self.assertTrue(soup.select('ins'))
+        for deleted in soup.select('del'):deleted.decompose()
+        for inserted in soup.select('ins'):inserted.unwrap()
+        self.assertEqual(str(soup),str(original))
+
+    def test_trailing_deletions_and_special_characters_keep_original_markup(self):
+        source='<p><b>Risk &amp; controls</b></p>'
+        result=formatted_diff('Risk & controls worldwide',source)
+        soup=BeautifulSoup(result,'html.parser')
+        self.assertEqual(soup.select_one('b').get_text(),'Risk & controls')
+        self.assertEqual(soup.select_one('del').get_text().strip(),'worldwide')
+        self.assertEqual(formatted_diff('Risk & controls',source),source)
+
     def test_diff_marks_insertions_and_deletions(self):
         diff = diff_tokens("Manage risk reporting", "Manage credit risk reporting")
         self.assertIn("<ins> credit</ins>", diff)
@@ -38,9 +59,10 @@ class TrackJdChangesTests(unittest.TestCase):
         }]}
         row = annotate(existing, snapshot, "2026-09-28T00:00:00Z")["jobs"][0]
         self.assertEqual(row["jdChangeStatus"], "changed")
-        self.assertIn("<del>daily</del>", row["jdDiffHtml"])
-        self.assertIn("<ins>weekly</ins>", row["jdDiffHtml"])
-        self.assertIn("<ins>reporting and controls.</ins>", row["jdDiffHtml"])
+        diff=BeautifulSoup(row['jdDiffHtml'],'html.parser')
+        self.assertIn('daily', ' '.join(x.get_text() for x in diff.select('del')))
+        self.assertIn('weekly reporting and controls.', ' '.join(x.get_text() for x in diff.select('ins')))
+        self.assertEqual(len(diff.select('p')),1)
         self.assertEqual(row["descriptionHtml"], snapshot["jobs"][0]["descriptionHtml"])
 
     def test_non_repost_is_not_diffed(self):
