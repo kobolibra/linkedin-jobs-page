@@ -437,24 +437,133 @@
         "reusedSources": 0,
         "httpRetries": 0
       }
+    },
+    {
+      "runId": "jobs:38341994989:2",
+      "task": "jobs",
+      "workflowStatus": "failure",
+      "observedAt": "2026-10-13T04:24:09.667269+00:00",
+      "requests": 86,
+      "retries": 15,
+      "httpStatuses": {
+        "429": 16,
+        "200": 70
+      },
+      "outcomes": {
+        "rate_limited": 16,
+        "response": 70,
+        "parsed": 11
+      },
+      "stages": {
+        "search": 70,
+        "details": 14,
+        "liveness": 2
+      },
+      "detailEndpoints": {
+        "guest": 11
+      },
+      "queries": {
+        "Bank of America::CN": "failed@budget: search stage deadline reached",
+        "BBVA::CN": "failed@budget: search stage deadline reached",
+        "BlackRock::CN": "failed@budget: search stage deadline reached",
+        "BNP Paribas::CN": "failed@budget: search stage deadline reached",
+        "Citi::CN": "failed@budget: search stage deadline reached",
+        "DBS Bank::CN": "failed@start=0: server cooldown exceeds remaining request budget",
+        "Deutsche Bank::CN": "failed@budget: search stage deadline reached",
+        "Fidelity International::CN": "failed@budget: search stage deadline reached",
+        "Goldman Sachs::CN": "failed@budget: search stage deadline reached",
+        "HSBC::CN": "failed@start=310: request time budget exhausted",
+        "JPMorgan Chase::CN": "failed@budget: search stage deadline reached",
+        "Morgan Stanley::CN": "failed@budget: search stage deadline reached",
+        "Natixis::CN": "failed@budget: search stage deadline reached",
+        "Societe Generale::CN": "failed@budget: search stage deadline reached",
+        "Standard Chartered::CN": "failed@start=270: server cooldown exceeds remaining request budget",
+        "UBS::CN": "failed@budget: search stage deadline reached"
+      },
+      "searchTransport": {
+        "Standard Chartered::CN": {
+          "requests": 35,
+          "retries": 8,
+          "httpStatuses": {
+            "429": 8,
+            "200": 27
+          },
+          "rateLimitedPages": [
+            0,
+            40,
+            80,
+            120,
+            130,
+            210
+          ]
+        },
+        "HSBC::CN": {
+          "requests": 35,
+          "retries": 4,
+          "httpStatuses": {
+            "200": 31,
+            "429": 4
+          },
+          "rateLimitedPages": [
+            30,
+            130,
+            230
+          ]
+        }
+      },
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1791865459.1733446,
+          "stopUntil": 1791865501.9596837,
+          "paceUntil": 1791866341.9596837,
+          "minInterval": 8,
+          "pacingUpdatedAt": 1791865441.9596837,
+          "reason": "HTTP 429"
+        }
+      },
+      "details": {
+        "attempted": 11,
+        "candidates": 11,
+        "ok": 11,
+        "blocked": 0,
+        "failed": 0,
+        "gone": 0
+      },
+      "liveness": {
+        "circuitOpen": true,
+        "skippedCircuitOpen": 148,
+        "probed": 2,
+        "open": 1,
+        "closed": 0,
+        "not_accepting": 0,
+        "gone": 0,
+        "unknown": 1,
+        "postingDates": 1,
+        "regions": {
+          "CN": 2,
+          "HK": 0,
+          "SG": 0
+        },
+        "selectorGuardTripped": false
+      }
     }
   ],
   "queryFailureStreaks": {
-    "Bank of America::CN": 0,
-    "BBVA::CN": 0,
-    "BlackRock::CN": 0,
-    "BNP Paribas::CN": 0,
-    "Citi::CN": 1,
-    "DBS Bank::CN": 1,
-    "Deutsche Bank::CN": 0,
-    "Fidelity International::CN": 0,
-    "Goldman Sachs::CN": 0,
-    "HSBC::CN": 1,
-    "JPMorgan Chase::CN": 0,
-    "Morgan Stanley::CN": 1,
-    "Natixis::CN": 0,
-    "Societe Generale::CN": 0,
-    "Standard Chartered::CN": 1,
-    "UBS::CN": 0
+    "Bank of America::CN": 1,
+    "BBVA::CN": 1,
+    "BlackRock::CN": 1,
+    "BNP Paribas::CN": 1,
+    "Citi::CN": 2,
+    "DBS Bank::CN": 2,
+    "Deutsche Bank::CN": 1,
+    "Fidelity International::CN": 1,
+    "Goldman Sachs::CN": 1,
+    "HSBC::CN": 2,
+    "JPMorgan Chase::CN": 1,
+    "Morgan Stanley::CN": 2,
+    "Natixis::CN": 1,
+    "Societe Generale::CN": 1,
+    "Standard Chartered::CN": 2,
+    "UBS::CN": 1
   }
 }
