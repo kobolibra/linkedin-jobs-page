@@ -41,10 +41,31 @@ class HealthTests(unittest.TestCase):
     def test_pacing_survives_expired_cooldown_without_persisting_leases(self):
         state={'linkedin.com':{'cooldownUntil':99,'paceUntil':200,'minInterval':16,'leases':{'live':300}}}
         result=cooldowns(state,now=100)
-        self.assertEqual(result['linkedin.com']['minInterval'],16)
+        self.assertEqual(result['linkedin.com']['minInterval'],8)
         self.assertEqual(result['linkedin.com']['paceUntil'],200)
         self.assertNotIn('leases',result['linkedin.com'])
         self.assertEqual(cooldowns(state,now=201),{})
+
+    def test_new_recovered_pacing_supersedes_legacy_slow_state(self):
+        old={'linkedin.com':{'cooldownUntil':150,'paceUntil':900,'minInterval':30}}
+        recovered={'linkedin.com':{'cooldownUntil':120,'paceUntil':500,'minInterval':2.5,'pacingUpdatedAt':105}}
+        for states in ((old,recovered),(recovered,old)):
+            slot=cooldowns(*states,now=110)['linkedin.com']
+            self.assertEqual(slot['minInterval'],2.5)
+            self.assertEqual(slot['paceUntil'],500)
+            self.assertEqual(slot['cooldownUntil'],150)
+            self.assertEqual(slot['pacingUpdatedAt'],105)
+
+    def test_stale_report_cannot_override_newer_pacing(self):
+        stale={'linkedin.com':{'paceUntil':900,'minInterval':8,'pacingUpdatedAt':101}}
+        new={'linkedin.com':{'paceUntil':500,'minInterval':4,'pacingUpdatedAt':105}}
+        for states in ((stale,new),(new,stale)):
+            self.assertEqual(cooldowns(*states,now=110)['linkedin.com']['minInterval'],4)
+
+    def test_new_expired_pacing_does_not_resurrect_older_active_pacing(self):
+        old={'linkedin.com':{'paceUntil':900,'minInterval':30}}
+        new={'linkedin.com':{'paceUntil':105,'minInterval':2.5,'pacingUpdatedAt':106}}
+        self.assertEqual(cooldowns(old,new,now=110),{})
 
     def test_collect_reports_real_attempts_and_guest_parsing(self):
         with tempfile.TemporaryDirectory() as tmp:

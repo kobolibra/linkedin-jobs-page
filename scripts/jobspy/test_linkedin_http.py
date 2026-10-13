@@ -67,6 +67,21 @@ class PolicyTests(unittest.TestCase):
         for _ in range(5):self.coordinator.succeeded('https://www.linkedin.com')
         self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['minInterval'],7)
 
+    def test_recovered_pacing_survives_health_publish_and_next_runner(self):
+        from scraper_health import cooldowns
+        old={'linkedin.com':{'paceUntil':900,'minInterval':30}}
+        self.coordinator.path.write_text(json.dumps(old))
+        self.now=100
+        for _ in range(5):self.coordinator.succeeded('https://www.linkedin.com')
+        runtime=json.loads(self.coordinator.path.read_text())
+        published=cooldowns(old,cooldowns(runtime,now=self.now),now=self.now)
+        self.assertEqual(published['linkedin.com']['minInterval'],7)
+        self.coordinator.path.write_text(json.dumps(published))
+        peer=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep,min_interval=2.5,deadline=10000)
+        first=peer.acquire('https://www.linkedin.com');peer.release(first)
+        second=peer.acquire('https://www.linkedin.com');peer.release(second)
+        self.assertEqual(self.sleeps,[7])
+
     def test_stage_deadline_is_shared_by_new_coordinators(self):
         with patch.dict('os.environ',{'LINKEDIN_HTTP_DEADLINE':'123'}):
             peer=Coordinator(self.coordinator.path,clock=lambda:0)
