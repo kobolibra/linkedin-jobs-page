@@ -1639,6 +1639,38 @@
         "circuitOpen": false,
         "selectorGuardTripped": false
       }
+    },
+    {
+      "runId": "logos:38382649372:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-13T10:20:55.252882+00:00",
+      "requests": 7,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 4,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 7
+      },
+      "stages": {
+        "logos": 7
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 5,
+        "downloaded": 0,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
