@@ -9,6 +9,7 @@ import os
 import random
 import re
 import time
+import tempfile
 import uuid
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -19,6 +20,8 @@ import requests
 from bs4 import BeautifulSoup
 
 LOG = logging.getLogger("linkedin-http")
+RATE_LIMIT_COOLDOWN = 60
+MAX_CONSECUTIVE_PAGE_429 = 2
 
 
 class RequestStopped(requests.RequestException):
@@ -87,8 +90,8 @@ class Coordinator:
     Different GitHub runners do not share a file lock.
     """
     def __init__(self, path=None, *, clock=time.time, sleep=time.sleep,
-                 max_concurrent=2, min_interval=.5, max_wait=180, deadline=None):
-        self.path = Path(path or os.environ.get("LINKEDIN_HTTP_STATE", "data/jobspy/http-state.json"))
+                 max_concurrent=1, min_interval=3, max_wait=180, deadline=None):
+        self.path = Path(path or os.environ.get("LINKEDIN_HTTP_STATE", str(Path(tempfile.gettempdir()) / "linkedin-http-runtime.json")))
         self.clock, self.sleep = clock, sleep
         self.max_concurrent, self.min_interval = max(1, max_concurrent), max(0, min_interval)
         self.max_wait = max_wait
@@ -136,7 +139,7 @@ class Coordinator:
                 # A short 429 pause is recoverable. Do not discard every
                 # subsequent company/JD before the shared pause can expire.
                 # Login/challenge circuits still stop immediately; long rate
-                # limits cannot outlive max_wait or the stage deadline below.
+                # limits cannot outlive max_wait or an explicit caller deadline.
                 if stop_until > now and slot.get("reason") != "HTTP 429":
                     raise RequestStopped("shared circuit open: " + slot.get("reason", "rate limited"))
                 leases = {k: v for k, v in slot.get("leases", {}).items() if v > now}
@@ -197,6 +200,7 @@ class LinkedInSession(requests.Session):
     def request(self, method, url, **kwargs):
         kwargs.setdefault("timeout", (10, 20))
         kwargs.setdefault("allow_redirects", False)
+        consecutive_429 = 0
         for attempt in range(1, self.attempts + 1):
             if self.user_agents:
                 self.headers["User-Agent"] = self.user_agents[(attempt - 1) % len(self.user_agents)]
@@ -204,56 +208,67 @@ class LinkedInSession(requests.Session):
             started = self.coordinator.clock()
             response = None
             try:
-                response = super().request(method, url, **kwargs)
-            except requests.RequestException as exc:
-                record_event(**self.context, host=host_key(url), status=0, attempt=attempt,
-                             outcome="network_error", error=type(exc).__name__)
-                if attempt == self.attempts:
-                    raise
+                try:
+                    response = super().request(method, url, **kwargs)
+                except requests.RequestException as exc:
+                    record_event(**self.context, host=host_key(url), status=0, attempt=attempt,
+                                 outcome="network_error", error=type(exc).__name__)
+                    if attempt == self.attempts:
+                        raise
+                if response is not None:
+                    status = response.status_code
+                    blocked = status in (401, 403, 999)
+                    if host_key(url) == "linkedin.com" and status == 200:
+                        blocked = blocked or block_page(response.text, response.url)
+                    if status in (301, 302, 303, 307, 308):
+                        blocked = blocked or block_page("", response.headers.get("Location", ""))
+                    retry_after = (retry_after_seconds(response.headers.get("Retry-After"))
+                                   if status in (429, 500, 502, 503, 504) else None)
+                    record_event(**self.context, host=host_key(url), status=status, attempt=attempt,
+                                 outcome="blocked" if blocked else "rate_limited" if status == 429 else "response",
+                                 retryAfterSeconds=retry_after,
+                                 elapsedSeconds=round(self.coordinator.clock() - started, 3))
+                    if blocked:
+                        self.coordinator.defer(url, 1800, stop=True, reason="login/challenge or HTTP " + str(status))
+                        response.close()
+                        raise RequestStopped("LinkedIn blocked/login response", response=response)
+                    if status != 429:
+                        consecutive_429 = 0
+                        self.coordinator.succeeded(url)
+                    if status not in (429, 500, 502, 503, 504):
+                        return response
+                    delay = retry_after
+                    if delay is None:
+                        if status == 429:
+                            delay = RATE_LIMIT_COOLDOWN + random.uniform(0, 5)
+                        elif self.linear_backoff:
+                            delay = min(180, 15 * attempt + random.uniform(1, 8))
+                        else:
+                            delay = min(180, 15 * 2 ** (attempt - 1) + random.uniform(0, 3))
+                    response.close()
+                    if status == 429:
+                        consecutive_429 += 1
+                        exhausted = attempt == self.attempts or consecutive_429 >= MAX_CONSECUTIVE_PAGE_429
+                        persistent = self.coordinator.defer(url, delay, stop=exhausted)
+                        LOG.warning("LinkedIn %s %s::%s start=%s: HTTP 429 attempt=%s/%s; minimum shared pause=%.1fs; %s",
+                                    self.context.get("stage", "request"), self.context.get("company", "unknown"),
+                                    self.context.get("region", "unknown"), self.context.get("pageStart", "unknown"),
+                                    attempt, self.attempts, max(900, delay) if persistent else max(60, delay) if exhausted else delay,
+                                    "persistent quota circuit opened" if persistent else "page deferred after repeated rate limit" if exhausted else "retry after pause")
+                        if persistent:
+                            raise RequestStopped("persistent LinkedIn rate limit; shared circuit opened", response=response)
+                        if exhausted:
+                            raise RequestStopped("HTTP 429 page deferred; retry on a later run", response=response,
+                                                 recoverable=delay <= self.coordinator.max_wait)
+                    if attempt == self.attempts:
+                        response.raise_for_status()
             finally:
+                # Publish a server pause BEFORE freeing the request slot, so a
+                # waiting process cannot slip a request into that pause.
                 self.coordinator.release(lease)
             if response is None:
                 self.coordinator.wait(min(60, 5 * 2 ** (attempt - 1) + random.uniform(0, 2)))
                 continue
-            status = response.status_code
-            blocked = status in (401, 403, 999)
-            if host_key(url) == "linkedin.com" and status == 200:
-                blocked = blocked or block_page(response.text, response.url)
-            if status in (301, 302, 303, 307, 308):
-                blocked = blocked or block_page("", response.headers.get("Location", ""))
-            retry_after = retry_after_seconds(response.headers.get("Retry-After")) if status == 429 or status in (500, 502, 503, 504) else None
-            record_event(**self.context, host=host_key(url), status=status, attempt=attempt,
-                         outcome="blocked" if blocked else "rate_limited" if status == 429 else "response",
-                         retryAfterSeconds=retry_after,
-                         elapsedSeconds=round(self.coordinator.clock() - started, 3))
-            if blocked:
-                self.coordinator.defer(url, 1800, stop=True, reason="login/challenge or HTTP " + str(status))
-                response.close()
-                raise RequestStopped("LinkedIn blocked/login response", response=response)
-            if status != 429:
-                self.coordinator.succeeded(url)
-            if status != 429 and status not in (500, 502, 503, 504):
-                return response
-            delay = retry_after
-            if delay is None:
-                delay = (min(180, 15 * attempt + random.uniform(1, 8))
-                         if self.linear_backoff else
-                         min(180, 15 * 2 ** (attempt - 1) + random.uniform(0, 3)))
-            response.close()
-            if status == 429:
-                persistent = self.coordinator.defer(url, delay, stop=attempt == self.attempts)
-                LOG.warning("LinkedIn %s %s::%s start=%s: HTTP 429 attempt=%s/%s; minimum shared pause=%.1fs; %s",
-                            self.context.get("stage", "request"), self.context.get("company", "unknown"),
-                            self.context.get("region", "unknown"), self.context.get("pageStart", "unknown"),
-                            attempt, self.attempts, max(900, delay) if persistent else max(60, delay) if attempt == self.attempts else delay,
-                            "persistent quota circuit opened" if persistent else "request retry budget exhausted" if attempt == self.attempts else "retry after pause")
-                if persistent:
-                    raise RequestStopped("persistent LinkedIn rate limit; shared circuit opened", response=response)
-            if attempt == self.attempts:
-                if status == 429:
-                    raise RequestStopped("HTTP 429 retry budget exhausted", response=response,
-                                         recoverable=delay <= self.coordinator.max_wait)
-                response.raise_for_status()
             try:
                 self.coordinator.wait(delay)
             except RequestStopped:

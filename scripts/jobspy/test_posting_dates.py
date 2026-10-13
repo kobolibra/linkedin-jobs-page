@@ -196,6 +196,32 @@ class PostingTests(unittest.TestCase):
             self.assertTrue(got['stats']['circuitOpen'])
             self.assertEqual(got['stats']['postingDates'],0)
 
+    def test_optional_date_limit_does_not_trip_liveness_or_repeat_failed_search(self):
+        from linkedin_http import RequestStopped
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(5)]
+            (p/'jobs').write_text(json.dumps({'jobs':jobs}))
+            def reply(url, **kwargs):
+                if 'seeMoreJobPostings' in url:
+                    raise RequestStopped('short HTTP 429 pause',recoverable=True)
+                key=url.rsplit('/',1)[-1]
+                html=PAGE.replace(KEY,key)
+                if key=='500000004':
+                    data={'@type':'JobPosting','identifier':{'value':key},'datePosted':'2026-10-01'}
+                    html+='<script type="application/ld+json">'+json.dumps(data)+'</script>'
+                return Mock(status_code=200,text=html)
+            session=Mock();session.get.side_effect=reply
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
+            got=json.loads((p/'out').read_text())
+            self.assertEqual(got['stats']['open'],5)
+            self.assertEqual(got['stats']['probed'],5)
+            self.assertFalse(got['stats']['circuitOpen'])
+            self.assertTrue(got['stats']['postingDateSearchPaused'])
+            self.assertEqual(got['stats']['postingDates'],1)
+            self.assertEqual(session.get.call_count,6)
+            self.assertEqual(sum('seeMoreJobPostings' in call.args[0] for call in session.get.call_args_list),1)
+
     def test_one_recoverable_429_does_not_discard_remaining_liveness_candidates(self):
         from linkedin_http import RequestStopped
         with tempfile.TemporaryDirectory() as tmp:

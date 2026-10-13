@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      LINKEDIN_HTTP_STATE: ${{ github.workspace }}/data/jobspy/http-state.json
+      LINKEDIN_HTTP_STATE: /tmp/linkedin-logo-http-runtime.json
       LINKEDIN_HEALTH_EVENTS: /tmp/linkedin-logo-health.jsonl
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,9 @@ jobs:
       - name: Install logo-only dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-logos.txt
       - name: Initialize logo request health
-        run: ': > "$LINKEDIN_HEALTH_EVENTS"'
+        run: |
+          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
+          : > "$LINKEDIN_HEALTH_EVENTS"
       - name: Reuse verified sources and cache unresolved images with bounded retries
         env:
           MODE: ${{ github.event.inputs.mode || 'bootstrap' }}
@@ -79,7 +81,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             health_rc=0
-            python scripts/jobspy/scraper_health.py --apply /tmp/linkedin-logo-health.json || health_rc=$?
+            python scripts/jobspy/scraper_health.py --apply /tmp/linkedin-logo-health.json --state data/jobspy/http-state.json || health_rc=$?
             if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
             git add data/jobspy/health.json data/jobspy/http-state.json
             if git diff --cached --quiet; then

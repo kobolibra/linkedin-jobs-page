@@ -46,6 +46,25 @@ class FetchMultiRegionTests(unittest.TestCase):
         self.assertEqual(got['statusSummary'],{'HSBC::CN':'ok: 440 jobs'})
         self.assertEqual(session.offsets,list(range(0,460,10)))
 
+    def test_repeated_429_retains_verified_rows_and_stops_further_pages(self):
+        from linkedin_http import Coordinator, LinkedInSession
+        from test_linkedin_http import response
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp);now=[0]
+            def sleep(seconds):now[0]+=seconds
+            coordinator=Coordinator(p/'http.json',clock=lambda:now[0],sleep=sleep,min_interval=0)
+            session=LinkedInSession(attempts=3,coordinator=coordinator)
+            self.addCleanup(session.close)
+            output=p/'search.json'
+            argv=['search','--company','HSBC','--output',str(output),'--delay-min','0','--delay-max','0']
+            with patch('fetch_linkedin_requests.LinkedInSession',return_value=session),patch('fetch_linkedin_requests.time.sleep'),patch.object(sys,'argv',argv),patch('requests.Session.request',side_effect=[response(text=HTML),response(429,headers={'Retry-After':'7'}),response(429,headers={'Retry-After':'7'})]) as request:
+                self.assertEqual(main(),0)
+            got=json.loads(output.read_text())
+            self.assertEqual(request.call_count,3)
+            self.assertEqual([c.kwargs['params']['start'] for c in request.call_args_list],[0,10,10])
+            self.assertEqual(got['count'],1)
+            self.assertIn('failed@start=10: HTTP 429 page deferred',got['statusSummary']['HSBC::CN'])
+
     def test_hk_row_is_lifecycle_only(self):
         rows = parse_search(HTML, "HSBC", "2026-09-23T00:00:00+00:00", "HK")
         self.assertEqual(len(rows), 1)

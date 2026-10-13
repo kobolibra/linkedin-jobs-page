@@ -204,15 +204,15 @@ def main() -> int:
     parser.add_argument("--detail-timeout", type=int, default=15)
     parser.add_argument("--delay-min", type=float, default=3)
     parser.add_argument("--delay-max", type=float, default=7)
-    parser.add_argument("--page-attempts", type=int, default=6, help="Attempts per search page before giving up on the company")
+    parser.add_argument("--page-attempts", type=int, default=3, help="Maximum attempts per search page; two consecutive 429s defer the company")
     args = parser.parse_args()
     if args.results_per_company < 1:
         raise SystemExit("--results-per-company must be >= 1")
     page_attempts = max(1, args.page_attempts)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-    # Preserve the previously successful searcher's linear retry timing.
-    # Explicit Retry-After remains authoritative in the shared transport.
+    # Keep linear backoff for transient server errors. The shared transport
+    # handles 429 separately and always honors an explicit Retry-After.
     session = LinkedInSession(attempts=page_attempts, user_agents=USER_AGENTS,
                               linear_backoff=True)
     session.headers.update({
