@@ -9,3 +9,6 @@ node_modules
 test-jev-worker.mjs
 wrangler.jsonc
 *.md
+# Build inputs; browsers use jobs-index.json and jd-parts instead.
+jobs.json
+jobs-details.json
