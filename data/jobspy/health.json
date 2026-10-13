@@ -810,6 +810,30 @@
         },
         "selectorGuardTripped": false
       }
+    },
+    {
+      "runId": "logos:38359639020:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-13T06:57:28.450772+00:00",
+      "requests": 0,
+      "retries": 0,
+      "httpStatuses": {},
+      "outcomes": {},
+      "stages": {},
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "logos": {
+        "candidates": 0,
+        "downloaded": 0,
+        "missing": 0,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
