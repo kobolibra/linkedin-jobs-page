@@ -59,8 +59,8 @@ jobs:
         with:
           github_token: "\u0024\u007B\u007B secrets.GITHUB_TOKEN \u007D\u007D"
           publish_dir: ./
-          # Match the Cloudflare exclusions; keep private build inputs off Pages.
-          exclude_assets: '.github,.git,.gitignore,.assetsignore,.wrangler,node_modules,data,scripts,test-jev-worker.mjs,wrangler.jsonc,*.md,jobs.json,jobs-details.json'
+          # Exclude private build inputs; the action manages its own .git workspace.
+          exclude_assets: '.github,.gitignore,.assetsignore,.wrangler,node_modules,data,scripts,test-jev-worker.mjs,wrangler.jsonc,*.md,jobs.json,jobs-details.json'
       - name: Install pinned Cloudflare deploy CLI
         run: npm install --no-save --package-lock=false wrangler@4.149.0
       - name: Deploy to Cloudflare Worker with bounded transient retries
