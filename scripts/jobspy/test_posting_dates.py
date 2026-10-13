@@ -245,6 +245,33 @@ class PostingTests(unittest.TestCase):
             self.assertTrue(got['stats']['circuitOpen'])
             self.assertEqual(got['stats']['postingDates'],0)
 
+    def test_one_temporary_date_error_does_not_pause_following_jobs(self):
+        import requests
+        from test_linkedin_http import response
+        session=Mock();stats={}
+        session.get.side_effect=[requests.HTTPError('500',response=response(500)),Mock(status_code=200,text=card())]
+        self.assertEqual(lookup_posting_date(session,row(),PAGE,'2026-10-09T14:00:00Z',20,stats=stats),(None,None,False))
+        self.assertEqual(lookup_posting_date(session,row(),PAGE,'2026-10-09T14:00:00Z',20,stats=stats)[0],'2026-10-09')
+        self.assertEqual(stats['postingDateSearchErrors'],1)
+        self.assertEqual(stats['postingDateSearchConsecutiveErrors'],0)
+
+    def test_three_consecutive_date_service_errors_pause_only_date_fallback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp);jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(4)]
+            (p/'jobs').write_text(json.dumps({'jobs':jobs}))
+            def reply(url,**kw):
+                if 'seeMoreJobPostings' in url:return Mock(status_code=500,text='server error')
+                return Mock(status_code=200,text=PAGE.replace(KEY,url.rsplit('/',1)[-1]))
+            session=Mock();session.get.side_effect=reply
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
+            got=json.loads((p/'out').read_text())
+            self.assertEqual(got['stats']['probed'],4)
+            self.assertEqual(got['stats']['open'],4)
+            self.assertEqual(got['stats']['postingDateSearchErrors'],3)
+            self.assertTrue(got['stats']['postingDateSearchPaused'])
+            self.assertFalse(got['stats']['circuitOpen'])
+            self.assertEqual(session.get.call_count,7)
+
     def test_optional_date_limit_does_not_trip_liveness_or_repeat_failed_search(self):
         from linkedin_http import RequestStopped
         with tempfile.TemporaryDirectory() as tmp:

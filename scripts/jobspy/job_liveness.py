@@ -104,7 +104,8 @@ def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gon
             rank = 2
         else:
             continue
-        priorities.append((rank, last or datetime.min.replace(tzinfo=timezone.utc), parse_time(row.get("firstSeen")) or datetime.min.replace(tzinfo=timezone.utc), row))
+        attempted = parse_time(row.get("liveAttemptedAt"))
+        priorities.append((rank, max(t for t in (last, attempted, datetime.min.replace(tzinfo=timezone.utc)) if t), parse_time(row.get("firstSeen")) or datetime.min.replace(tzinfo=timezone.utc), row))
     priorities.sort(key=lambda item: (item[0], item[1], -item[2].timestamp()))
     return [item[3] for item in priorities[:max(0, int(max_probes))]]
 
@@ -133,11 +134,17 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
     result = str(result or "unknown")
     # An old negative probe cannot overwrite a newer verified observation.
     newer = [parse_time(row.get(k)) for k in ("lastSeenAt", "liveVerifiedAt")]
-    if result in {"closed", "gone", "not_accepting"} and any(t and t > when for t in newer):
+    if result in {"closed", "gone", "not_accepting", "absent"} and any(t and t > when for t in newer):
         return row
-    row["liveCheckedAt"] = observed_at
     if result == "unknown":
+        # A failed attempt must not masquerade as a completed check and impose
+        # the 20-hour/72-hour successful-check interval. Keep retry ordering.
+        attempt = parse_time(row.get("liveAttemptedAt"))
+        if not attempt or when > attempt: row["liveAttemptedAt"] = observed_at
         return row
+    if result not in {"open", "closed", "gone", "not_accepting", "absent"}: return row
+    row["liveCheckedAt"] = observed_at
+    row["liveAttemptedAt"] = observed_at
     if result == "open":
         if date_posted:
             apply_posting_date(row, date_posted, observed_at, date_source or "linkedin-liveness")
@@ -150,6 +157,15 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
             row["jobStatus"] = "active"
             row.pop("expiredAt", None)
             row.pop("expiredReason", None)
+        return row
+    if result == "absent":
+        row["liveStatus"] = "gone"
+        row["liveMissCount"] = int(row.get("liveMissCount") or 0) + 1
+        row["jobStatus"] = "expired"
+        row.pop("liveFirstMissAt", None)
+        if row.get("expiredReason") != "linkedin_removed" or not row.get("expiredAt"):
+            row["expiredAt"] = observed_at
+            row["expiredReason"] = "linkedin_removed"
         return row
     if result == "closed":
         row["liveStatus"] = "closed"

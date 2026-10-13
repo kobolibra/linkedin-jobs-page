@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time
 from logo_sources import validate_hint
+from company_liveness import absence_matches
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=10); args=ap.parse_args()
@@ -24,6 +25,11 @@ def main():
     for obs in live["observations"]:
         row=by.get(str(obs.get("jobId") or "")) or by.get(jid(obs)); result=obs.get("result")
         if not row or not eligible_scope(row): stats["skipped_out_of_scope"]+=1; continue
+        if result=="absent" and not absence_matches(row,obs,live.get("companyQueries",{})):
+            stats["unknown"]+=1; continue
+        if result=="unknown":
+            apply_observation(row,result,obs.get("checkedAt"))
+            stats["unknown"]+=1; continue
         before=row.get("jobStatus"); old_push=row.get("pushTime"); old_check=row.get("liveCheckedAt")
         apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours,obs.get("datePosted"),obs.get("dateSource"))
         if row.get("liveCheckedAt") == old_check:
@@ -34,7 +40,7 @@ def main():
         stats["reposts"] += int(row.get("pushTime") != old_push)
         if result=="open": stats["open"]+=1; stats["reactivated"]+=int(before=="expired" and row.get("jobStatus")=="active")
         elif result=="closed": stats["expired_closed"]+=int(row.get("expiredReason")=="linkedin_closed")
-        elif result=="gone": stats["expired_gone"]+=int(row.get("expiredReason")=="linkedin_removed"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_removed")
+        elif result in {"gone","absent"}: stats["expired_gone"]+=int(row.get("expiredReason")=="linkedin_removed"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_removed")
         elif result=="not_accepting": stats["expired_not_accepting"]+=int(row.get("expiredReason")=="linkedin_not_accepting"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_not_accepting")
         else: stats["unknown"]+=1
     now=datetime.now(timezone.utc); kept=[]; deleted=0

@@ -181,7 +181,7 @@ def merge_documents(baseline, batch_doc):
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
                     "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
                     "rssObservedAt", "jobStatus", "expiredAt", "expiredReason",
-                    "lastSeenAt", "liveCheckedAt", "liveVerifiedAt", "liveStatus",
+                    "lastSeenAt", "liveCheckedAt", "liveAttemptedAt", "liveVerifiedAt", "liveStatus",
                     "liveMissCount", "liveFirstMissAt",
                 } or not nonempty(value):
                     continue

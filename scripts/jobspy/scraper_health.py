@@ -105,7 +105,9 @@ def collect(args):
         # can still say success. Record the known all-source failure honestly.
         details = report["details"]
         all_details_blocked = bool(details.get("attempted")) and details.get("blocked") == details.get("attempted") and not details.get("ok")
-        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()) or all_details_blocked:
+        live=report['liveness']
+        verified=sum(live.get(k,0) for k in ('open','closed','not_accepting','gone','absent'))
+        if not any(str(value).startswith(("ok:", "empty")) for value in statuses.values()) or all_details_blocked or live.get('selected') and not verified:
             report["workflowStatus"] = "failure"
     else:
         report["logos"] = read(args.logo_report, {})
@@ -130,7 +132,10 @@ def alerts(report):
     reliable = any(str(x).startswith(("ok:", "empty")) for x in statuses)
     details = report.get("details", {})
     all_details_blocked = bool(details.get("attempted")) and details.get("blocked") == details.get("attempted") and not details.get("ok")
-    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses) or all_details_blocked
+    live=report.get('liveness',{})
+    verified=sum(live.get(k,0) for k in ('open','closed','not_accepting','gone','absent'))
+    all_liveness_failed=bool(live.get('selected')) and not verified
+    critical = (bool(statuses) and not reliable) or report.get("workflowStatus") == "failure" or (report.get("task") == "jobs" and not statuses) or all_details_blocked or all_liveness_failed
     issues = []
     if critical:
         issues.append("Search coverage or detail enrichment failed; preserve verified observations and existing JD, and never expire jobs from incomplete queries")
@@ -142,6 +147,10 @@ def alerts(report):
         issues.append("Liveness guard or circuit opened; uncertain observations are not expiry evidence")
     if report.get("liveness", {}).get("postingDateSearchPaused"):
         issues.append("Optional posting-date search paused after transport failure; verified liveness checks retained")
+    live=report.get('liveness',{})
+    verified=sum(live.get(k,0) for k in ('open','closed','not_accepting','gone','absent'))
+    if live.get('selected',0)>verified:
+        issues.append(f"Non-target liveness verified {verified}/{live['selected']} selected jobs; incomplete or blocked queries remain due")
     if report.get("liveness", {}).get("budgetExhausted"):
         issues.append("Liveness stage budget reached; unprocessed jobs remain due for a later run")
     if report.get("logos", {}).get("stoppedReason"):
