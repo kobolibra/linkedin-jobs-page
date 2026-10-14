@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-14T05:19:59.743719+00:00",
+    "checkedAt": "2026-10-14T16:11:38.562959+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-14T05:20:05.467048+00:00",
+    "checkedAt": "2026-10-14T16:11:44.241946+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-14T05:20:11.642257+00:00",
+    "checkedAt": "2026-10-14T16:11:50.284342+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-14T05:20:14.689236+00:00",
+    "checkedAt": "2026-10-14T16:11:53.281807+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-14T05:20:17.430835+00:00",
+    "checkedAt": "2026-10-14T16:11:56.227249+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6595,39 +6595,109 @@
   },
   "citic telecom international cpc limited": {
     "name": "CITIC Telecom International CPC Limited",
-    "checkedAt": "2026-10-14T10:33:02.068515+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-14T16:11:59.548314+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "jobId": "4478413547",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
+    "attempts": [],
+    "asset": "cb16f05ed15c36b07ff4a1ed.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQGi6U2C0FjzCw/company-logo_100_100/company-logo_100_100/0/1630601085716/citic_telecom_international_cpc_limited_logo?e=2147483647&v=beta&t=Z2MVcyp2Fklp723sEpLqBuwgXIDInsa-oVxH77VI2zc",
+    "companyUrl": "https://hk.linkedin.com/company/citic-telecom-international-cpc-limited",
+    "sourceJobId": "4478413547"
+  },
+  "capital fund management (cfm)": {
+    "name": "Capital Fund Management (CFM)",
+    "checkedAt": "2026-10-14T16:10:18.808494+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dd1b5bdbdd9018128b8a65a9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHzx8gmbGG0Kg/company-logo_100_100/company-logo_100_100/0/1631344624809?e=2147483647&v=beta&t=IZmPLjQdDf8k4jDMNl1GFdrr29zE-CzC34qaUYxWD4Y",
+    "companyUrl": "https://fr.linkedin.com/company/capital-fund-management",
+    "sourceJobId": "4476655796",
     "httpRetries": [
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4476655796",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4476655796",
         "status": 429,
         "contentType": "text/html",
         "attempt": 1,
-        "waitSeconds": 62.04779960588355,
+        "waitSeconds": 60.13104395996577,
         "retried": true
-      },
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "waitSeconds": 61.517527774997156
       }
     ]
+  },
+  "charles schwab": {
+    "name": "Charles Schwab",
+    "checkedAt": "2026-10-14T16:11:20.450780+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "769bf208ca831eba0694b093.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEhQXJ0SwK6mw/company-logo_100_100/B56Zom8DevJ4AU-/0/1761589868955/charles_schwab_logo?e=2147483647&v=beta&t=hSY6R1pxAiEJJ_elGBQCfvpy8WxaoCNa71IyDze8Ww8",
+    "companyUrl": "https://www.linkedin.com/company/charles-schwab",
+    "sourceJobId": "4476685187"
+  },
+  "citadel search": {
+    "name": "Citadel Search",
+    "checkedAt": "2026-10-14T16:11:23.378363+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1f5ba7bae6f10d575acc68a6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHYXw5zAVhiVw/company-logo_100_100/company-logo_100_100/0/1630598209139/citadel_search_logo?e=2147483647&v=beta&t=kxlV_kQmW33dmgOyuB14OhuHWMZywfKlwbkwduT3fC4",
+    "companyUrl": "https://sg.linkedin.com/company/citadel-search",
+    "sourceJobId": "4478194726"
+  },
+  "peak performance recruitment": {
+    "name": "Peak Performance Recruitment",
+    "checkedAt": "2026-10-14T16:11:26.380193+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e1fe6c90a247883173c5c570.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHl7eVpXya1gg/company-logo_100_100/company-logo_100_100/0/1631340202780?e=2147483647&v=beta&t=v1cSeOcp4sNfk9l0mgcYTP-oAgTkKcvm1DXDqSPiIU0",
+    "companyUrl": "https://ie.linkedin.com/company/peak-performance-recruitment",
+    "sourceJobId": "4479551638"
+  },
+  "width": {
+    "name": "Width",
+    "checkedAt": "2026-10-14T16:11:29.562892+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d40f609a179a47ef764e1a77.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHGixgxfW75zQ/company-logo_100_100/B56aDnLS9AI4AI-/0/1790584893594/widthgrc_logo?e=2147483647&v=beta&t=zeTH3J6DSzin3jJBGHFI2oHUQL0nxdLrcOHmTfOikRw",
+    "companyUrl": "https://sg.linkedin.com/company/widthgrc",
+    "sourceJobId": "4479272893"
+  },
+  "中核核信信息技术(北京)有限公司": {
+    "name": "中核核信信息技术(北京)有限公司",
+    "checkedAt": "2026-10-14T16:11:32.566355+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E4%B8%AD%E6%A0%B8%E6%A0%B8%E4%BF%A1%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4476621467"
+  },
+  "同程旅行": {
+    "name": "同程旅行",
+    "checkedAt": "2026-10-14T16:11:35.620319+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "060ef0450d866630d8ea0637.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHYFsyyHCnY7A/company-logo_100_100/company-logo_100_100/0/1630577260756/_logo?e=2147483647&v=beta&t=4ETYrf0_i-3isAmz_uZCQV_lU_uUFNybIGmyjvN8qj8",
+    "companyUrl": "https://cn.linkedin.com/company/%E5%90%8C%E7%A8%8B%E6%97%85%E8%A1%8C",
+    "sourceJobId": "4478193812"
   }
 }

@@ -3168,6 +3168,40 @@
         "httpRetries": 1,
         "stoppedReason": "HTTP 429 request deferred after repeated rate limit"
       }
+    },
+    {
+      "runId": "logos:38595672217:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-14T16:12:02.402429+00:00",
+      "requests": 24,
+      "retries": 1,
+      "httpStatuses": {
+        "429": 1,
+        "200": 20,
+        "404": 3
+      },
+      "outcomes": {
+        "rate_limited": 1,
+        "response": 23
+      },
+      "stages": {
+        "logos": 24
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 13,
+        "downloaded": 8,
+        "missing": 5,
+        "placeholders": 1,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 1
+      }
     }
   ],
   "queryFailureStreaks": {
