@@ -685,7 +685,7 @@ jobsDataPromise
         // representation as JD-available so the lazy details loader and its
         // expand-only Analytics control remain reachable.
         const hasJd=job.hasJd===true||Boolean(job.descriptionHtml||job.descriptionText);
-        rows.push('<article class="job'+(reads.has(id)?' read':'')+(favs.has(id)?' is-favorite':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'>'+(window.CompanyLogos?window.CompanyLogos.markup(canonicalCompany(job.company),monogram(canonicalCompany(job.company)),first&&idx<12):'<div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div>')+'<div class="job-main"><div class="job-heading">'+(expired?'<span class="job-state-closed">关闭</span>':'')+'<a class="job-title" href="'+esc(safeJobLink(job.link))+'" target="_blank" rel="noopener">'+esc(job.title)+'</a></div><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div>'+expiredCompanyHtml+'<div class="job-detail-line"><div class="job-jd-row">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics" hidden>Analytics</span></summary><div class="job-jd-text"></div></details>':'')+'</div><div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span></div></div></div></div><div class="job-right"><div class="job-status">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+(lvl!=="Other"?'<span class="lvl">'+lvl+'</span>':'')+'<span class="tag">'+r+'</span></div><div class="job-actions" role="group" aria-label="职位操作"><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="'+(favs.has(id)?'取消收藏':'收藏')+'" aria-pressed="'+favs.has(id)+'" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></div></article>');
+        rows.push('<article class="job'+(reads.has(id)?' read':'')+(favs.has(id)?' is-favorite':'')+(expired?' expired':'')+'" data-status="'+(expired?'expired':'active')+'" data-region="'+r+'" data-city="'+esc(cityFilterValue)+'" data-comp="'+esc(canonicalCompany(job.company))+'" data-level="'+lvl+'" data-age="'+(_ad==null?'':_ad)+'" data-id="'+esc(id)+'" data-search="'+esc(((job.title||'')+' '+canonicalCompany(job.company)+' '+cityLabel).toLowerCase())+'" data-title="'+esc((job.title||'').toLowerCase())+'"'+delay+'>'+(window.CompanyLogos?window.CompanyLogos.markup(canonicalCompany(job.company),monogram(canonicalCompany(job.company)),first&&idx<12):'<div class="mono">'+esc(monogram(canonicalCompany(job.company)))+'</div>')+'<div class="job-main"><div class="job-heading">'+(expired?'<span class="job-state-closed">关闭</span>':'')+'<a class="job-title" href="'+esc(safeJobLink(job.link))+'" target="_blank" rel="noopener">'+esc(job.title)+'</a></div><div class="job-meta-line"><div class="job-sub'+(job.company?' job-sub-link':'')+'"'+(job.company?' role="button" tabindex="0" title="查看'+esc(job.company)+'的全部职位"':'')+'><span class="company-name">'+esc(canonicalCompany(job.company)||"未知机构")+_coHtml+'</span></div><div class="job-detail-line"><div class="job-jd-row">'+(cityLabel?'<span class="job-city">'+esc(cityLabel)+'</span>':'')+(hasJd?'<details class="job-jd"><summary aria-label="展开职位描述"><span class="job-jd-analytics" role="button" tabindex="0" aria-label="Analytics" hidden>Analytics</span></summary><div class="job-jd-text"></div></details>':'')+'</div><div class="job-right-mobile">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span></div></div><div class="job-meta-end">'+expiredCompanyHtml+'<div class="job-actions" role="group" aria-label="职位操作"><button class="icon-btn star'+(favs.has(id)?' on':'')+'" aria-label="'+(favs.has(id)?'取消收藏':'收藏')+'" aria-pressed="'+favs.has(id)+'" title="'+(favs.has(id)?'取消收藏':'收藏')+'"></button><button class="icon-btn ban" aria-label="屏蔽机构" title="屏蔽该机构"></button></div></div></div></div><div class="job-right"><div class="job-status">'+(_ad!=null?'<span class="age">'+(_ad===0?'今天':_ad<=7?'1周内':_ad<=14?'2周内':_ad<=21?'3周内':'3周+')+'</span>':'')+'<span class="tag">'+r+'</span></div></div></article>');
       });
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
@@ -851,19 +851,43 @@ totop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
     sheet.querySelector('.job-sheet-company').textContent=card.dataset.comp||'';
     refresh();if(!sheet.open)sheet.showModal();
   };
+  const resetSwipe=start=>{
+    if(!start)return;
+    if(start.frame)cancelAnimationFrame(start.frame);
+    start.card.classList.remove('is-swiping');
+    if(start.amount>0){
+      start.card.classList.add('swipe-return');
+      start.card.style.setProperty('--job-swipe-size','0px');
+      const token=start.card._swipeResetToken=(start.card._swipeResetToken||0)+1;
+      window.setTimeout(()=>{if(start.card._swipeResetToken!==token)return;start.card.classList.remove('swipe-return');start.card.style.removeProperty('--job-swipe-size');},220);
+    }else {
+      start.card.style.removeProperty('--job-swipe-size');
+    }
+  };
   jobsEl.addEventListener('pointerdown',event=>{
-    gesture=null;
+    resetSwipe(gesture);gesture=null;
     if(!mobile()||event.pointerType==='mouse'||!event.isPrimary||event.target.closest('details,button,input,textarea,select,[contenteditable]'))return;
     const card=event.target.closest('.job');if(!card)return;
-    gesture={card,id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp};
+    card._swipeResetToken=(card._swipeResetToken||0)+1;
+    card.classList.remove('swipe-return');
+    gesture={card,id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp,frame:0,amount:0};
+  },{passive:true});
+  jobsEl.addEventListener('pointermove',event=>{
+    const start=gesture;if(!start||start.id!==event.pointerId)return;
+    const dx=start.x-event.clientX,dy=Math.abs(start.y-event.clientY);
+    if(dy>12&&dy>Math.abs(dx)){resetSwipe(start);gesture=null;return;}
+    if(!start.amount&&(dx<12||dx<dy*1.5))return;
+    start.amount=Math.max(0,Math.min(96,dx));start.card.classList.add('is-swiping');
+    if(!start.frame)start.frame=requestAnimationFrame(()=>{start.frame=0;start.card.style.setProperty('--job-swipe-size',start.amount+'px');});
   },{passive:true});
   jobsEl.addEventListener('pointerup',event=>{
     const start=gesture;gesture=null;if(!start||start.id!==event.pointerId)return;
     const dx=start.x-event.clientX,dy=Math.abs(start.y-event.clientY);
+    resetSwipe(start);
     if(dx<56||dx<dy*1.8||event.timeStamp-start.time>1000||window.getSelection()?.toString())return;
     swipedCard=start.card;suppressUntil=performance.now()+500;open(start.card);
   },{passive:true});
-  jobsEl.addEventListener('pointercancel',()=>{gesture=null;},{passive:true});
+  jobsEl.addEventListener('pointercancel',()=>{resetSwipe(gesture);gesture=null;},{passive:true});
   jobsEl.addEventListener('click',event=>{
     if(performance.now()<suppressUntil&&event.target.closest('.job')===swipedCard&&event.isTrusted){event.preventDefault();event.stopImmediatePropagation();}
   },true);

@@ -186,7 +186,7 @@
     if(!right||!company)return;
 
     /* Level remains removed everywhere. */
-    right.querySelectorAll(':scope > .lvl').forEach(node=>node.remove());
+    right.querySelectorAll('.lvl').forEach(node=>node.remove());
 
     const link=article.querySelector('.job-title')?.href||'';
     const id=article.dataset.id||jobId(link);
@@ -203,9 +203,10 @@
     if(!desktopBadge){
       desktopBadge=document.createElement('span');
       desktopBadge.className='salary-ref salary-ref-desktop';
-      const age=right.querySelector(':scope > .age');
-      const region=right.querySelector(':scope > .tag');
-      right.insertBefore(desktopBadge,age||region||right.firstChild);
+      // Preserve the original desktop order: salary, age, region.
+      const status=right.querySelector('.job-status')||right;
+      const age=status.querySelector('.age'),region=status.querySelector('.tag');
+      status.insertBefore(desktopBadge,age||region||status.firstChild);
     }
     if(!mobileBadge){
       mobileBadge=document.createElement('span');
