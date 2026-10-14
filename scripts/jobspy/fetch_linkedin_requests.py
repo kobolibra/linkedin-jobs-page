@@ -284,15 +284,13 @@ def main() -> int:
                     if empty_pages >= 2:
                         ended_cleanly = True
                         break
-                    time.sleep(random.uniform(args.delay_min, args.delay_max))
+                    # LinkedInSession coordinates the next request across all workers.
                     continue
                 empty_pages = 0
                 for job in page_jobs:
                     jobs_by_id.setdefault(job["sourceJobId"], job)
                 LOG.info("%s [%s] start=%s cards=%s accepted_total=%s", company, region, start, len(page_jobs), len(jobs_by_id))
                 start += 10
-                if len(jobs_by_id) < args.results_per_company:
-                    time.sleep(random.uniform(args.delay_min, args.delay_max))
             company_jobs = list(jobs_by_id.values())[: args.results_per_company]
             if status_key not in status_summary:
                 if ended_cleanly and company_jobs:
@@ -309,12 +307,8 @@ def main() -> int:
                 for index, job in enumerate(company_jobs, 1):
                     LOG.info("%s [%s] detail %s/%s %s", company, region, index, len(company_jobs), job["sourceJobId"])
                     enrich_detail(session, job, (10, args.detail_timeout))
-                    if index < len(company_jobs):
-                        time.sleep(random.uniform(args.delay_min, args.delay_max))
             all_jobs.extend(company_jobs)
             LOG.info("%s [%s] finished: %s jobs", company, region, len(company_jobs))
-            if company != companies[-1] or location != locations[-1]:
-                time.sleep(random.uniform(args.delay_min, args.delay_max))
 
     unique = {job["sourceJobId"]: job for job in all_jobs}
     output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
