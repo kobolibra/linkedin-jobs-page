@@ -6,7 +6,7 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const guestbook=readFileSync(new URL('../guestbook.js',import.meta.url),'utf8');
 function indexHarness(fetch){
-  const context={AbortController,setTimeout,clearTimeout,fetch};
+  const context={AbortController,TextDecoder,setTimeout,clearTimeout,fetch};
   vm.createContext(context);
   vm.runInContext(source.slice(source.indexOf('async function fetchJobsIndex('),source.indexOf('// Keep conditional cache validation')),context);
   return context.fetchJobsIndex;
@@ -31,6 +31,22 @@ test('index retry covers a failed response and a stalled JSON body',async()=>{
   const result=await load({attemptTimeouts:[5,20],retryDelay:1});
   assert.equal(result.jobs[0].title,'Ready');
   assert.equal(requests,2);
+});
+test('progressing index chunks may exceed the idle interval without restarting the download',async()=>{
+  let requests=0,aborts=0;
+  const bytes=new TextEncoder().encode(JSON.stringify({jobs:[{title:'Slow mobile network'}]}));
+  const load=indexHarness(async(_url,options)=>{
+    requests++;options.signal.addEventListener('abort',()=>aborts++);
+    let offset=0;
+    return {ok:true,body:{getReader:()=>({async read(){await new Promise(resolve=>setTimeout(resolve,6));if(offset>=bytes.length)return {done:true};const value=bytes.slice(offset,offset+8);offset+=8;return {done:false,value};},releaseLock(){}})}};
+  });
+  const data=await load({attemptTimeouts:[250],idleTimeout:20,retryDelay:1});
+  assert.equal(data.jobs[0].title,'Slow mobile network');assert.equal(requests,1);assert.equal(aborts,0);
+});
+test('an index body that stops sending chunks aborts before the total deadline',async()=>{
+  let aborted=false;
+  const load=indexHarness(async(_url,options)=>{options.signal.addEventListener('abort',()=>aborted=true);return {ok:true,body:{getReader:()=>({read:()=>new Promise(()=>{}),releaseLock(){}})}};});
+  await assert.rejects(load({attemptTimeouts:[1000],idleTimeout:5}),/timeout/);assert.equal(aborted,true);
 });
 test('denied browser storage and corrupt list preferences do not break initialization',()=>{
   const context={};
