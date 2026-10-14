@@ -65,6 +65,21 @@ class HealthTests(unittest.TestCase):
         new={'linkedin.com':{'paceUntil':105,'minInterval':2.5,'pacingUpdatedAt':106}}
         self.assertEqual(cooldowns(old,new,now=110),{})
 
+    def test_wait_sources_and_deferred_retries_are_reported_separately(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            events=[{'stage':'search','company':'A','region':'CN','status':429,'retryAfterSeconds':None,'cooldownSource':'client'},
+                    {'stage':'search','outcome':'query_deferred'},
+                    {'stage':'search','company':'B','region':'CN','status':429,'retryAfterSeconds':90,'cooldownSource':'server'},
+                    {'stage':'search','company':'A','region':'CN','status':200,'retryRound':1}]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            report=collect(args)
+            self.assertEqual(report['rateLimitWaits'], {'serverHints':1,'clientFallbacks':1,'deferredQueries':1})
+            self.assertEqual(report['retries'],1)
+            self.assertEqual(report['searchTransport']['A::CN']['retries'],1)
+            self.assertEqual(cooldowns({'linkedin.com':{'runtimeQueries':{'A':{'until':500}},'runtimePacing':{'interval':6}}}, now=100), {})
+
     def test_collect_reports_real_attempts_and_guest_parsing(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)

@@ -52,6 +52,20 @@ class RunCompanySearchesTest(unittest.TestCase):
             })
             self.assertEqual(run.call_count, 16)
 
+    def test_rate_limited_page_recovery_follows_other_companies_and_is_bounded(self):
+        calls = []
+        selected = {'A':{'canonical':'a','company_id':'1'}, 'B':{'canonical':'b','company_id':'2'}}
+        def run_one(args, key, company, company_id, *, resume=False):
+            calls.append((company, resume))
+            path = args.output_dir / f'{key}.json'
+            status = 'failed@start=10: HTTP 429 query deferred' if company == 'A' else 'ok: 1 jobs'
+            path.write_text(json.dumps({'jobs':[{'sourceJobId':'li-123456789'}], 'statusSummary':{company+'::CN':status}}))
+            return key, 0, str(path)
+        with tempfile.TemporaryDirectory() as tmp, patch.object(runner,'COMPANIES',selected), patch.object(runner,'run_one',side_effect=run_one), patch('sys.argv',['run','--output-dir',tmp,'--max-workers','1']):
+            self.assertEqual(runner.main(), 0)
+            self.assertEqual(calls, [('A',False),('B',False),('A',True),('A',True)])
+            self.assertEqual(len(json.loads((Path(tmp)/'a.json').read_text())['jobs']), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

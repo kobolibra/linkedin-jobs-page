@@ -139,7 +139,56 @@ class PolicyTests(unittest.TestCase):
             with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
             self.assertEqual(get.call_count,3)
             self.assertTrue(caught.exception.recoverable)
-        self.assertEqual(self.sleeps,[60,120])
+        self.assertEqual(self.sleeps,[30,60])
+
+    def scoped(self, company):
+        session = LinkedInSession(coordinator=self.coordinator,
+                                  context={'stage':'search','company':company,'region':'CN'})
+        self.addCleanup(session.close)
+        return session
+
+    def test_deferred_page_yields_to_other_company_then_resumes_same_query(self):
+        first, other = self.scoped('A'), self.scoped('B')
+        with patch('requests.Session.request', side_effect=[response(429), response(), response()]) as get, patch('linkedin_http.random.uniform', return_value=0):
+            with self.assertRaises(RequestStopped) as stopped: first.get('https://www.linkedin.com')
+            self.assertTrue(stopped.exception.recoverable)
+            self.assertEqual(stopped.exception.retry_at, 60)
+            self.assertEqual(self.now, 0)  # No inline retry or blocking sleep.
+            other.get('https://www.linkedin.com')
+            self.assertEqual(self.now, 30)  # Host pause honored, not the A query pause.
+            first.get('https://www.linkedin.com')
+            self.assertEqual(self.now, 60)
+            self.assertEqual(get.call_count, 3)
+        self.assertEqual(json.loads(self.coordinator.path.read_text())['linkedin.com']['runtimeQueries'], {})
+
+    def test_switching_company_never_bypasses_server_retry_after(self):
+        first, other = self.scoped('A'), self.scoped('B')
+        with patch('requests.Session.request', side_effect=[response(429, headers={'Retry-After':'120'}), response()]):
+            with self.assertRaises(RequestStopped): first.get('https://www.linkedin.com')
+            other.get('https://www.linkedin.com')
+        self.assertEqual(self.sleeps, [120])
+
+    def test_failures_across_companies_escalate_host_pause_and_open_circuit(self):
+        sessions = [self.scoped(str(i)) for i in range(7)]
+        with patch('requests.Session.request', return_value=response(429)) as get, patch('linkedin_http.random.uniform', return_value=0):
+            for index, session in enumerate(sessions):
+                with self.assertRaises(RequestStopped) as stopped: session.get('https://www.linkedin.com')
+                self.assertEqual(stopped.exception.recoverable, index < 5)
+            self.assertEqual(get.call_count, 6)
+        self.assertEqual(self.sleeps, [30,60,120,120,120])
+
+    def test_recovery_pacing_is_bounded_and_restored_after_five_healthy_responses(self):
+        coordinator = Coordinator(self.coordinator.path, clock=lambda:self.now, sleep=self.coordinator.sleep)
+        coordinator.recovery_pacing = True
+        for _ in range(4): coordinator.defer('https://www.linkedin.com', 30)
+        self.assertEqual(json.loads(coordinator.path.read_text())['linkedin.com']['runtimePacing']['interval'], 6)
+        for _ in range(5): coordinator.succeeded('https://www.linkedin.com')
+        self.assertEqual(json.loads(coordinator.path.read_text())['linkedin.com']['runtimePacing']['interval'], 4)
+        for _ in range(5): coordinator.succeeded('https://www.linkedin.com')
+        self.assertNotIn('runtimePacing', json.loads(coordinator.path.read_text())['linkedin.com'])
+        # Successful traffic does not erase the observed host cooldown.
+        lease = coordinator.acquire('https://www.linkedin.com'); coordinator.release(lease)
+        self.assertEqual(self.now, 30)
 
     def test_default_global_slot_rejects_a_simultaneous_peer_request(self):
         first=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep)

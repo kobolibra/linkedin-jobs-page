@@ -2,7 +2,7 @@
 """Run the existing per-company LinkedIn searcher with bounded concurrency.
 
 Delegate pagination and shared request pacing to fetch_linkedin_requests.py.
-After the initial company pass, resume recoverable rate-limited pages once from
+After the initial company pass, resume recoverable rate-limited pages up to twice from
 their checkpoints. Verified prefixes and completed regions remain intact.
 """
 from __future__ import annotations
@@ -119,26 +119,26 @@ def main() -> int:
                 LOG.error("company search failed: %s exit=%s output=%s", key, returncode, output)
                 failures.append(key)
 
-    # Give rate-limited pages one later opportunity after the other companies
-    # have run. Reuse their verified prefix instead of restarting page zero.
-    recoveries = []
-    for company, spec in selected:
-        key = spec['canonical'].replace(' ', '_')
-        path = args.output_dir / f'{key}.json'
-        try:
-            report = json.loads(path.read_text(encoding='utf-8'))
-            if any(re.match(r'^failed@start=\d+:.*HTTP 429', str(status)) for status in report.get('statusSummary', {}).values()):
-                recoveries.append((key, company, spec['company_id']))
-        except (OSError, ValueError, TypeError, AttributeError):
-            continue
-    if recoveries:
-        LOG.info('Recover rate-limited company pages after initial pass: %s', [x[0] for x in recoveries])
-        with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
-            pending = [pool.submit(run_one, args, key, company, company_id, resume=True) for key, company, company_id in recoveries]
-            for future in as_completed(pending):
-                key, returncode, output = future.result()
-                LOG.info('resume completed %s exit=%s output=%s', key, returncode, output)
-
+    # Finish other companies before revisiting a rate-limited page, at most twice.
+    for recovery_round in range(1, 3):
+        recoveries = []
+        for company, spec in selected:
+            key = spec['canonical'].replace(' ', '_')
+            path = args.output_dir / f'{key}.json'
+            try:
+                report = json.loads(path.read_text(encoding='utf-8'))
+                if any(re.match(r'^failed@start=\d+:.*HTTP 429', str(status)) for status in report.get('statusSummary', {}).values()):
+                    recoveries.append((key, company, spec['company_id']))
+            except (OSError, ValueError, TypeError, AttributeError):
+                continue
+        if recoveries:
+            LOG.info('Recover rate-limited company pages round %s after other work: %s', recovery_round, [x[0] for x in recoveries])
+            with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
+                pending = [pool.submit(run_one, args, key, company, company_id, resume=True) for key, company, company_id in recoveries]
+                for future in as_completed(pending):
+                    key, returncode, output = future.result()
+                    LOG.info('resume completed %s exit=%s output=%s', key, returncode, output)
+    
     # Preserve the old matrix's non-fatal company behavior: the downstream
     # combiner decides whether any valid company result can be published.
     LOG.info("company searches complete: total=%s failed=%s", len(selected), len(failures))

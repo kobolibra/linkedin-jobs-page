@@ -23,13 +23,17 @@ LOG = logging.getLogger("linkedin-http")
 RATE_LIMIT_COOLDOWN = 60
 MAX_CONSECUTIVE_PAGE_429 = 2  # Existing logo collector policy remains unchanged.
 MAX_CONSECUTIVE_JOB_429 = 3
-RECOVERY_MAX_INTERVAL = 9
-RECOVERY_HEALTHY_RESPONSES = 20
+RECOVERY_MAX_INTERVAL = 6
+RECOVERY_HEALTHY_RESPONSES = 5
+RECOVERY_PACING_TTL = 300
+GLOBAL_429_BASE = 30
+GLOBAL_429_MAX = 120
 
 
 class RequestStopped(requests.RequestException):
     """A shared cooldown or circuit makes another request unsafe this run."""
-    def __init__(self, *args, recoverable=False, **kwargs):
+    def __init__(self, *args, recoverable=False, retry_at=None, **kwargs):
+        self.retry_at = retry_at
         super().__init__(*args, **kwargs)
         self.recoverable = recoverable
 
@@ -128,7 +132,23 @@ class Coordinator:
         if seconds > 0:
             self.sleep(seconds)
 
-    def acquire(self, url):
+    def fallback_429_delay(self, url):
+        # Missing Retry-After does not establish a one-minute server embargo.
+        # Escalate a short host pause only if distinct requests also keep failing.
+        with self.locked() as state:
+            streak = state.get(host_key(url), {}).get('consecutive429', 0)
+        return min(GLOBAL_429_MAX, GLOBAL_429_BASE * 2 ** min(streak, 2) + random.uniform(0, 2))
+
+    def defer_query(self, url, query, server_delay=0):
+        with self.locked() as state:
+            slot = state.setdefault(host_key(url), {})
+            entry = slot.setdefault('runtimeQueries', {}).setdefault(query, {})
+            failures = entry.get('failures', 0) + 1
+            pause = max(server_delay, min(180, RATE_LIMIT_COOLDOWN * 2 ** min(failures - 1, 2)))
+            entry.update(failures=failures, until=self.clock() + pause)
+            return entry['until']
+
+    def acquire(self, url, query=None):
         host = host_key(url)
         token = uuid.uuid4().hex
         while True:
@@ -148,13 +168,16 @@ class Coordinator:
                     raise RequestStopped("shared circuit open: " + slot.get("reason", "rate limited"))
                 leases = {k: v for k, v in slot.get("leases", {}).items() if v > now}
                 slot["leases"] = leases
-                delay = max(stop_until, slot.get("cooldownUntil", 0), slot.get("nextRequestAt", 0)) - now
+                query_until = slot.get("runtimeQueries", {}).get(query, {}).get("until", 0) if query else 0
+                delay = max(stop_until, slot.get("cooldownUntil", 0), slot.get("nextRequestAt", 0), query_until) - now
                 concurrent = self.max_concurrent
                 if delay <= 0 and len(leases) < concurrent:
                     leases[token] = now + 120
                     # Recovery pacing is shared by all threads/subprocesses on
                     # this runner, but is excluded from persisted cooldowns.
                     recovery = slot.get("runtimePacing", {})
+                    if recovery.get("expiresAt", 0) <= now:
+                        slot.pop("runtimePacing", None); recovery = {}
                     interval = max(self.min_interval, recovery.get("interval", 0)) if self.min_interval else 0
                     slot["nextRequestAt"] = now + interval
                     return host, token
@@ -181,7 +204,7 @@ class Coordinator:
                     if self.recovery_pacing and self.min_interval:
                         pacing = slot.setdefault("runtimePacing", {})
                         interval = max(self.min_interval, pacing.get("interval", self.min_interval))
-                        pacing.update(interval=min(max(self.min_interval, RECOVERY_MAX_INTERVAL), interval * 1.5), healthy=0)
+                        pacing.update(interval=min(max(self.min_interval, RECOVERY_MAX_INTERVAL), interval * 1.5), healthy=0, expiresAt=until + RECOVERY_PACING_TTL)
                         LOG.warning("Shared LinkedIn recovery interval %.2fs; restore gradually after %s healthy responses", pacing["interval"], RECOVERY_HEALTHY_RESPONSES)
                 if slot.get("consecutive429", 0) >= 6:
                     persistent = True
@@ -190,14 +213,16 @@ class Coordinator:
                     until = max(until, now + 900)
             slot["cooldownUntil"] = max(slot.get("cooldownUntil", 0), until)
             if stop:
-                slot["stopUntil"] = max(slot.get("stopUntil", 0), until, now + 60)
+                slot["stopUntil"] = max(slot.get("stopUntil", 0), until, now + (0 if reason == "HTTP 429" else 60))
                 slot["reason"] = reason
             return persistent
 
-    def succeeded(self, url, *, healthy=True):
+    def succeeded(self, url, *, healthy=True, query=None):
         with self.locked() as state:
             slot = state.setdefault(host_key(url), {})
             slot["consecutive429"] = 0
+            if healthy and query:
+                slot.get("runtimeQueries", {}).pop(query, None)
             pacing = slot.get("runtimePacing")
             # A single successful response does not establish quota recovery.
             # Error responses break the 429 streak but never accelerate traffic.
@@ -229,10 +254,13 @@ class LinkedInSession(requests.Session):
         kwargs.setdefault("timeout", (10, 20))
         kwargs.setdefault("allow_redirects", False)
         consecutive_429 = 0
+        stage = self.context.get('stage')
+        query = (f"search:{self.context.get('company')}::{self.context.get('region')}" if stage == 'search' and self.context.get('company')
+                 else f"job:{self.context.get('jobId')}" if stage in ('details', 'liveness') and self.context.get('jobId') else None)
         for attempt in range(1, self.attempts + 1):
             if self.user_agents:
                 self.headers["User-Agent"] = self.user_agents[(attempt - 1) % len(self.user_agents)]
-            lease = self.coordinator.acquire(url)
+            lease = self.coordinator.acquire(url, query=query)
             started = self.coordinator.clock()
             response = None
             try:
@@ -252,9 +280,11 @@ class LinkedInSession(requests.Session):
                         blocked = blocked or block_page("", response.headers.get("Location", ""))
                     retry_after = (retry_after_seconds(response.headers.get("Retry-After"))
                                    if status in (429, 500, 502, 503, 504) else None)
+                    rate_limit_delay = (retry_after if retry_after is not None else self.coordinator.fallback_429_delay(url)) if status == 429 else None
                     record_event(**self.context, host=host_key(url), status=status, attempt=attempt,
                                  outcome="blocked" if blocked else "rate_limited" if status == 429 else "response",
                                  retryAfterSeconds=retry_after,
+                                 cooldownSeconds=rate_limit_delay, cooldownSource=("server" if retry_after is not None else "client") if status == 429 else None,
                                  elapsedSeconds=round(self.coordinator.clock() - started, 3))
                     if blocked:
                         self.coordinator.defer(url, 1800, stop=True, reason="login/challenge or HTTP " + str(status))
@@ -262,16 +292,12 @@ class LinkedInSession(requests.Session):
                         raise RequestStopped("LinkedIn blocked/login response", response=response)
                     if status != 429:
                         consecutive_429 = 0
-                        self.coordinator.succeeded(url, healthy=200 <= status < 300)
+                        self.coordinator.succeeded(url, healthy=200 <= status < 300, query=query)
                     if status not in (429, 500, 502, 503, 504):
                         return response
-                    delay = retry_after
+                    delay = rate_limit_delay if status == 429 else retry_after
                     if delay is None:
-                        if status == 429:
-                            # Repeated failures of the same page need a longer
-                            # recovery pause, not the same one-minute retry loop.
-                            delay = min(180, RATE_LIMIT_COOLDOWN * 2 ** consecutive_429 + random.uniform(0, 5))
-                        elif self.linear_backoff:
+                        if self.linear_backoff:
                             delay = min(180, 15 * attempt + random.uniform(1, 8))
                         else:
                             delay = min(180, 15 * 2 ** (attempt - 1) + random.uniform(0, 3))
@@ -279,14 +305,20 @@ class LinkedInSession(requests.Session):
                     if status == 429:
                         consecutive_429 += 1
                         exhausted = attempt == self.attempts or consecutive_429 >= MAX_CONSECUTIVE_JOB_429
-                        persistent = self.coordinator.defer(url, delay, stop=exhausted)
+                        persistent = self.coordinator.defer(url, delay, stop=exhausted and not query)
                         LOG.warning("LinkedIn %s %s::%s start=%s: HTTP 429 attempt=%s/%s; minimum shared pause=%.1fs; %s",
                                     self.context.get("stage", "request"), self.context.get("company", "unknown"),
                                     self.context.get("region", "unknown"), self.context.get("pageStart", "unknown"),
-                                    attempt, self.attempts, max(900, delay) if persistent else max(60, delay) if exhausted else delay,
-                                    "persistent quota circuit opened" if persistent else "page deferred after repeated rate limit" if exhausted else "retry after pause")
+                                    attempt, self.attempts, max(900, delay) if persistent else delay,
+                                    "persistent quota circuit opened" if persistent else "query deferred for later recovery" if query else "page deferred after repeated rate limit" if exhausted else "retry after pause")
                         if persistent:
                             raise RequestStopped("persistent LinkedIn rate limit; shared circuit opened", response=response)
+                        if query:
+                            retry_at = self.coordinator.defer_query(url, query, server_delay=delay)
+                            record_event(**self.context, outcome="query_deferred", retryAt=retry_at)
+                            LOG.info("Defer %s until %.3f; verified prefix is retained and other work can proceed after the shared pause", query, retry_at)
+                            raise RequestStopped("HTTP 429 query deferred; resume after other work", response=response,
+                                                 recoverable=delay <= self.coordinator.max_wait, retry_at=retry_at)
                         if exhausted:
                             raise RequestStopped("HTTP 429 page deferred; retry on a later run", response=response,
                                                  recoverable=delay <= self.coordinator.max_wait)

@@ -205,7 +205,7 @@ def main() -> int:
     parser.add_argument("--detail-timeout", type=int, default=15)
     parser.add_argument("--delay-min", type=float, default=3)
     parser.add_argument("--delay-max", type=float, default=7)
-    parser.add_argument("--page-attempts", type=int, default=3, help="Maximum attempts per search page; two consecutive 429s defer the company")
+    parser.add_argument("--page-attempts", type=int, default=3, help="Maximum inline attempts for transient errors; 429 defers the query for checkpoint recovery")
     args = parser.parse_args()
     if args.results_per_company < 1:
         raise SystemExit("--results-per-company must be >= 1")
@@ -264,7 +264,7 @@ def main() -> int:
                 LOG.info("%s [%s] search start=%s", company, region, start)
                 response = None
                 last_error = ""
-                session.context = {"stage": "search", "company": company, "region": region,
+                session.context = {"stage": "search", "retryRound": int(args.resume), "company": company, "region": region,
                                    "pageStart": start}
                 try:
                     rotate_user_agent(session, 0)
@@ -275,7 +275,7 @@ def main() -> int:
                     last_error = str(exc)
                     response = None
                 if response is None:
-                    LOG.error("%s [%s] search failed at start=%s after %s attempts: %s", company, region, start, page_attempts, last_error)
+                    LOG.error("%s [%s] search failed at start=%s (maximum inline attempts=%s; deferred 429 resumes later): %s", company, region, start, page_attempts, last_error)
                     blocked = start == 0
                     status_summary[status_key] = f"failed@start={start}: {last_error}"
                     break
