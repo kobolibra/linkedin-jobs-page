@@ -17,7 +17,8 @@ def www(url: str) -> str:
 def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: float, coordinator=None) -> dict:
     out = dict(item)
     out["link"] = www(out.get("link", ""))
-    time.sleep(random.uniform(delay_min, delay_max))
+    # The shared coordinator paces guest and fallback requests, including retries.
+    # Legacy delay arguments remain accepted during executor rolling upgrades.
     with LinkedInSession(attempts=attempts, coordinator=coordinator, context={"stage": "details"}) as session:
         session.headers.update({"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"})
         return fetch_detail(session, out, (10, timeout))
