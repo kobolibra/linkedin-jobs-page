@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-13T16:04:30.395425+00:00",
+    "checkedAt": "2026-10-14T05:19:59.743719+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-13T16:04:36.269083+00:00",
+    "checkedAt": "2026-10-14T05:20:05.467048+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-13T16:04:42.315036+00:00",
+    "checkedAt": "2026-10-14T05:20:11.642257+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-13T16:04:45.307791+00:00",
+    "checkedAt": "2026-10-14T05:20:14.689236+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,38 +5408,21 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-13T22:07:40.831914+00:00",
+    "checkedAt": "2026-10-14T05:20:17.430835+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "jobId": "4467705418",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
-        "waitSeconds": 60.15961615681274,
-        "retried": true
-      },
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "waitSeconds": 60.01442470355484
+        "jobId": "4467705418",
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
       }
     ]
   },
@@ -6585,5 +6568,17 @@
         "waitSeconds": 61.42217487233086
       }
     ]
+  },
+  "veolia | hong kong & macau": {
+    "name": "Veolia | Hong Kong & Macau",
+    "checkedAt": "2026-10-14T05:19:58.264944+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f2fb6b1b5785a099f54f7bf5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEa2aDbdk3iqw/company-logo_100_100/B56ZsAzSu3L4AQ-/0/1765245005137/veolia_hongkong_macau_logo?e=2147483647&v=beta&t=Cu2A0KMrU_KSZISAROrhpspVRQmh-AuViDYwTmOuA3I",
+    "companyUrl": "https://hk.linkedin.com/company/veolia-hongkong-macau",
+    "sourceJobId": "4476603432"
   }
 }
