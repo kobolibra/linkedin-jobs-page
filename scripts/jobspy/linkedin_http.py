@@ -21,7 +21,8 @@ from bs4 import BeautifulSoup
 
 LOG = logging.getLogger("linkedin-http")
 RATE_LIMIT_COOLDOWN = 60
-MAX_CONSECUTIVE_PAGE_429 = 3
+MAX_CONSECUTIVE_PAGE_429 = 2  # Existing logo collector policy remains unchanged.
+MAX_CONSECUTIVE_JOB_429 = 3
 RECOVERY_MAX_INTERVAL = 9
 RECOVERY_HEALTHY_RESPONSES = 20
 
@@ -97,6 +98,7 @@ class Coordinator:
         self.clock, self.sleep = clock, sleep
         self.max_concurrent, self.min_interval = max(1, max_concurrent), max(0, min_interval)
         self.max_wait = max_wait
+        self.recovery_pacing = False
         # Normal collection completes its work rather than truncating a stage.
         # Explicit caller deadlines remain available for dedicated utilities.
         self.deadline = deadline if deadline is not None else float("inf")
@@ -176,7 +178,7 @@ class Coordinator:
             if reason == "HTTP 429":
                 if observed:
                     slot["consecutive429"] = slot.get("consecutive429", 0) + 1
-                    if self.min_interval:
+                    if self.recovery_pacing and self.min_interval:
                         pacing = slot.setdefault("runtimePacing", {})
                         interval = max(self.min_interval, pacing.get("interval", self.min_interval))
                         pacing.update(interval=min(max(self.min_interval, RECOVERY_MAX_INTERVAL), interval * 1.5), healthy=0)
@@ -218,6 +220,7 @@ class LinkedInSession(requests.Session):
         super().__init__()
         self.attempts = max(1, attempts)
         self.coordinator = coordinator or Coordinator()
+        self.coordinator.recovery_pacing = True
         self.context = context or {}
         self.user_agents = tuple(user_agents or ())
         self.linear_backoff = linear_backoff
@@ -275,7 +278,7 @@ class LinkedInSession(requests.Session):
                     response.close()
                     if status == 429:
                         consecutive_429 += 1
-                        exhausted = attempt == self.attempts or consecutive_429 >= MAX_CONSECUTIVE_PAGE_429
+                        exhausted = attempt == self.attempts or consecutive_429 >= MAX_CONSECUTIVE_JOB_429
                         persistent = self.coordinator.defer(url, delay, stop=exhausted)
                         LOG.warning("LinkedIn %s %s::%s start=%s: HTTP 429 attempt=%s/%s; minimum shared pause=%.1fs; %s",
                                     self.context.get("stage", "request"), self.context.get("company", "unknown"),
