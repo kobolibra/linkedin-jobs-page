@@ -565,24 +565,41 @@ function renderTop50(rows,mode="all"){
 }
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
-// Bound the whole transfer, including JSON parsing, so a stalled index cannot leave skeletons forever.
-async function fetchJobsIndex({attemptTimeouts=[12000,7000],retryDelay=350}={}){
+// Allow a slow but progressing transfer; abort idle connections and cap total time.
+async function fetchJobsIndex({attemptTimeouts=[60000,30000],idleTimeout=12000,retryDelay=350}={}){
   let lastError;
   for(let attempt=0;attempt<attemptTimeouts.length;attempt++){
     const controller=new AbortController();
-    let timer;
-    const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(new Error("jobs-index.json timeout"));},attemptTimeouts[attempt]);});
+    let timer,idleTimer,armIdle;
+    const timeout=new Promise((_,reject)=>{
+      const fail=()=>{controller.abort();reject(new Error("jobs-index.json timeout"));};
+      timer=setTimeout(fail,attemptTimeouts[attempt]);
+      armIdle=()=>{clearTimeout(idleTimer);idleTimer=setTimeout(fail,idleTimeout);};
+      armIdle();
+    });
     try{
       return await Promise.race([
-        fetch("jobs-index.json",{cache:"no-cache",signal:controller.signal}).then(r=>{
-          if(!r.ok)throw new Error("jobs-index.json HTTP "+r.status);
-          return r.json();
-        }),
+        (async()=>{
+          const response=await fetch("jobs-index.json",{cache:"no-cache",signal:controller.signal});
+          if(!response.ok)throw new Error("jobs-index.json HTTP "+response.status);
+          armIdle();
+          if(!response.body?.getReader)return response.json();
+          const reader=response.body.getReader(),decoder=new TextDecoder();
+          let text="";
+          try{
+            while(true){
+              const {done,value}=await reader.read();
+              if(done)break;
+              if(value?.byteLength){armIdle();text+=decoder.decode(value,{stream:true});}
+            }
+            return JSON.parse(text+decoder.decode());
+          }finally{reader.releaseLock();}
+        })(),
         timeout,
       ]);
     }catch(error){
       lastError=error;
-    }finally{clearTimeout(timer);}
+    }finally{clearTimeout(timer);clearTimeout(idleTimer);}
     if(attempt+1<attemptTimeouts.length)await new Promise(resolve=>setTimeout(resolve,retryDelay));
   }
   throw lastError;
