@@ -57,11 +57,11 @@ class FetchMultiRegionTests(unittest.TestCase):
             self.addCleanup(session.close)
             output=p/'search.json'
             argv=['search','--company','HSBC','--output',str(output),'--delay-min','0','--delay-max','0']
-            with patch('fetch_linkedin_requests.LinkedInSession',return_value=session),patch('fetch_linkedin_requests.time.sleep'),patch.object(sys,'argv',argv),patch('requests.Session.request',side_effect=[response(text=HTML),response(429,headers={'Retry-After':'7'}),response(429,headers={'Retry-After':'7'})]) as request:
+            with patch('fetch_linkedin_requests.LinkedInSession',return_value=session),patch('fetch_linkedin_requests.time.sleep'),patch.object(sys,'argv',argv),patch('requests.Session.request',side_effect=[response(text=HTML),response(429,headers={'Retry-After':'7'}),response(429,headers={'Retry-After':'7'}),response(429,headers={'Retry-After':'7'})]) as request:
                 self.assertEqual(main(),0)
             got=json.loads(output.read_text())
-            self.assertEqual(request.call_count,3)
-            self.assertEqual([c.kwargs['params']['start'] for c in request.call_args_list],[0,10,10])
+            self.assertEqual(request.call_count,4)
+            self.assertEqual([c.kwargs['params']['start'] for c in request.call_args_list],[0,10,10,10])
             self.assertEqual(got['count'],1)
             self.assertIn('failed@start=10: HTTP 429 page deferred',got['statusSummary']['HSBC::CN'])
 

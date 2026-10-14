@@ -41,7 +41,7 @@ class PolicyTests(unittest.TestCase):
     def test_exhausted_429_pauses_peers_then_allows_recovery(self):
         with patch('requests.Session.request', return_value=response(429, headers={'Retry-After':'2'})) as get:
             with self.assertRaises(RequestStopped): self.session.get('https://www.linkedin.com')
-            self.assertEqual(get.call_count, 2)
+            self.assertEqual(get.call_count, 3)
         stopped=json.loads(self.coordinator.path.read_text())['linkedin.com']['stopUntil']
         peer=LinkedInSession(coordinator=self.coordinator);self.addCleanup(peer.close)
         with patch('requests.Session.request',return_value=response()) as get:
@@ -118,9 +118,9 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(caught.exception.response.status_code,429)
 
     def test_six_consecutive_real_429s_across_pages_open_persistent_circuit(self):
-        self.session.attempts=6  # Even legacy callers cannot hammer one page six times.
+        self.session.attempts=6  # Even legacy callers cannot exceed three attempts per page.
         with patch('requests.Session.request',return_value=response(429,headers={'Retry-After':'2'})) as get:
-            for _ in range(2):
+            for _ in range(1):
                 with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
                 self.assertTrue(caught.exception.recoverable)
             with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
@@ -132,14 +132,14 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(state['consecutive429'],6)
         self.assertGreaterEqual(state['stopUntil'],self.now+900)
 
-    def test_missing_retry_after_waits_one_minute_then_defers_page(self):
+    def test_missing_retry_after_increases_pause_before_third_attempt(self):
         self.session.linear_backoff=True
         self.session.attempts=6
         with patch('requests.Session.request',return_value=response(429)) as get,patch('linkedin_http.random.uniform',return_value=0):
             with self.assertRaises(RequestStopped) as caught:self.session.get('https://www.linkedin.com')
-            self.assertEqual(get.call_count,2)
+            self.assertEqual(get.call_count,3)
             self.assertTrue(caught.exception.recoverable)
-        self.assertEqual(self.sleeps,[60])
+        self.assertEqual(self.sleeps,[60,120])
 
     def test_default_global_slot_rejects_a_simultaneous_peer_request(self):
         first=Coordinator(self.coordinator.path,clock=lambda:self.now,sleep=self.coordinator.sleep)

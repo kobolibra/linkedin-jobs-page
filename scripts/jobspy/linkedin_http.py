@@ -21,7 +21,9 @@ from bs4 import BeautifulSoup
 
 LOG = logging.getLogger("linkedin-http")
 RATE_LIMIT_COOLDOWN = 60
-MAX_CONSECUTIVE_PAGE_429 = 2
+MAX_CONSECUTIVE_PAGE_429 = 3
+RECOVERY_MAX_INTERVAL = 9
+RECOVERY_HEALTHY_RESPONSES = 20
 
 
 class RequestStopped(requests.RequestException):
@@ -148,7 +150,11 @@ class Coordinator:
                 concurrent = self.max_concurrent
                 if delay <= 0 and len(leases) < concurrent:
                     leases[token] = now + 120
-                    slot["nextRequestAt"] = now + self.min_interval
+                    # Recovery pacing is shared by all threads/subprocesses on
+                    # this runner, but is excluded from persisted cooldowns.
+                    recovery = slot.get("runtimePacing", {})
+                    interval = max(self.min_interval, recovery.get("interval", 0)) if self.min_interval else 0
+                    slot["nextRequestAt"] = now + interval
                     return host, token
                 if len(leases) >= concurrent:
                     delay = max(delay, min(.25, min(leases.values()) - now))
@@ -170,6 +176,11 @@ class Coordinator:
             if reason == "HTTP 429":
                 if observed:
                     slot["consecutive429"] = slot.get("consecutive429", 0) + 1
+                    if self.min_interval:
+                        pacing = slot.setdefault("runtimePacing", {})
+                        interval = max(self.min_interval, pacing.get("interval", self.min_interval))
+                        pacing.update(interval=min(max(self.min_interval, RECOVERY_MAX_INTERVAL), interval * 1.5), healthy=0)
+                        LOG.warning("Shared LinkedIn recovery interval %.2fs; restore gradually after %s healthy responses", pacing["interval"], RECOVERY_HEALTHY_RESPONSES)
                 if slot.get("consecutive429", 0) >= 6:
                     persistent = True
                     stop = True
@@ -181,10 +192,24 @@ class Coordinator:
                 slot["reason"] = reason
             return persistent
 
-    def succeeded(self, url):
+    def succeeded(self, url, *, healthy=True):
         with self.locked() as state:
             slot = state.setdefault(host_key(url), {})
             slot["consecutive429"] = 0
+            pacing = slot.get("runtimePacing")
+            # A single successful response does not establish quota recovery.
+            # Error responses break the 429 streak but never accelerate traffic.
+            if pacing and healthy:
+                pacing["healthy"] = pacing.get("healthy", 0) + 1
+                if pacing["healthy"] >= RECOVERY_HEALTHY_RESPONSES:
+                    interval = max(self.min_interval, pacing["interval"] / 1.5)
+                    if interval <= self.min_interval:
+                        slot.pop("runtimePacing", None)
+                    else:
+                        pacing.update(interval=interval, healthy=0)
+                    LOG.info("Shared LinkedIn recovery interval restored to %.2fs", interval)
+            elif pacing:
+                pacing["healthy"] = 0
 
 
 class LinkedInSession(requests.Session):
@@ -234,13 +259,15 @@ class LinkedInSession(requests.Session):
                         raise RequestStopped("LinkedIn blocked/login response", response=response)
                     if status != 429:
                         consecutive_429 = 0
-                        self.coordinator.succeeded(url)
+                        self.coordinator.succeeded(url, healthy=200 <= status < 300)
                     if status not in (429, 500, 502, 503, 504):
                         return response
                     delay = retry_after
                     if delay is None:
                         if status == 429:
-                            delay = RATE_LIMIT_COOLDOWN + random.uniform(0, 5)
+                            # Repeated failures of the same page need a longer
+                            # recovery pause, not the same one-minute retry loop.
+                            delay = min(180, RATE_LIMIT_COOLDOWN * 2 ** consecutive_429 + random.uniform(0, 5))
                         elif self.linear_backoff:
                             delay = min(180, 15 * attempt + random.uniform(1, 8))
                         else:
