@@ -6580,5 +6580,54 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEa2aDbdk3iqw/company-logo_100_100/B56ZsAzSu3L4AQ-/0/1765245005137/veolia_hongkong_macau_logo?e=2147483647&v=beta&t=Cu2A0KMrU_KSZISAROrhpspVRQmh-AuViDYwTmOuA3I",
     "companyUrl": "https://hk.linkedin.com/company/veolia-hongkong-macau",
     "sourceJobId": "4476603432"
+  },
+  "bct group - bct financial ltd & bank consortium trust co ltd": {
+    "name": "BCT Group - BCT Financial Ltd & Bank Consortium Trust Co Ltd",
+    "checkedAt": "2026-10-14T10:33:00.574416+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c02b51f54c8569593fcebd10.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFlIEG-MNrx5g/company-logo_100_100/B56ZsRirWzIAAQ-/0/1765525864053/bcthk_logo?e=2147483647&v=beta&t=Nq5F8L_ULkEpivEl1SdYQDtpgrhwAb7kd4N31rWx3Sc",
+    "companyUrl": "https://hk.linkedin.com/company/bcthk",
+    "sourceJobId": "4478433284"
+  },
+  "citic telecom international cpc limited": {
+    "name": "CITIC Telecom International CPC Limited",
+    "checkedAt": "2026-10-14T10:33:02.068515+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 2,
+        "jobId": "4478413547",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.04779960588355,
+        "retried": true
+      },
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478413547",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 2,
+        "waitSeconds": 61.517527774997156
+      }
+    ]
   }
 }
