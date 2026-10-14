@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-14T16:11:38.562959+00:00",
+    "checkedAt": "2026-10-14T16:48:10.955798+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-14T16:11:44.241946+00:00",
+    "checkedAt": "2026-10-14T16:48:16.672651+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-14T16:11:50.284342+00:00",
+    "checkedAt": "2026-10-14T16:48:22.758696+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-14T16:11:53.281807+00:00",
+    "checkedAt": "2026-10-14T16:48:25.755415+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-14T16:11:56.227249+00:00",
+    "checkedAt": "2026-10-14T16:48:29.405260+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6699,5 +6699,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHYFsyyHCnY7A/company-logo_100_100/company-logo_100_100/0/1630577260756/_logo?e=2147483647&v=beta&t=4ETYrf0_i-3isAmz_uZCQV_lU_uUFNybIGmyjvN8qj8",
     "companyUrl": "https://cn.linkedin.com/company/%E5%90%8C%E7%A8%8B%E6%97%85%E8%A1%8C",
     "sourceJobId": "4478193812"
+  },
+  "武汉启瑞药业有限公司": {
+    "name": "武汉启瑞药业有限公司",
+    "checkedAt": "2026-10-14T16:48:09.482612+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "36404639c12edc4ab85acc97.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFqIqHgne-hNg/company-logo_100_100/company-logo_100_100/0/1647498935680/_logo?e=2147483647&v=beta&t=YjKrOzJZ7pAlbY3cqCJ67ElQ3-G4to6BYjW2SVf60uw",
+    "companyUrl": "https://www.linkedin.com/company/%E6%AD%A6%E6%B1%89%E5%90%AF%E7%91%9E%E8%8D%AF%E4%B8%9A%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4476614698"
   }
 }
