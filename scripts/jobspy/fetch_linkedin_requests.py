@@ -200,6 +200,7 @@ def main() -> int:
     parser.add_argument("--hours-old", type=int, default=None)
     parser.add_argument("--fetch-description", action="store_true")
     parser.add_argument("--output", type=Path, default=Path("linkedin_requests_jobs.json"))
+    parser.add_argument("--resume", action="store_true", help="Resume recoverable 429 pages from this company's previous output")
     parser.add_argument("--page-timeout", type=int, default=20)
     parser.add_argument("--detail-timeout", type=int, default=15)
     parser.add_argument("--delay-min", type=float, default=3)
@@ -225,6 +226,11 @@ def main() -> int:
     status_summary = {}
     locations = args.location or ["China"]
     companies = args.company or list(COMPANIES)
+    previous = {}
+    if args.resume:
+        previous = json.loads(args.output.read_text(encoding="utf-8"))
+        if not isinstance(previous, dict) or not isinstance(previous.get("jobs"), list) or not isinstance(previous.get("statusSummary"), dict):
+            raise ValueError("invalid company resume checkpoint")
     for location in locations:
         region = location_code(location)
         for company in companies:
@@ -235,8 +241,21 @@ def main() -> int:
             empty_pages = 0
             ended_cleanly = False
             status_key = f"{company}::{region}"
+            if args.resume:
+                retained = [dict(item) for item in previous['jobs'] if item.get('requestedCompany') == company and item.get('location') == region]
+                old_status = str(previous['statusSummary'].get(status_key, 'unreadable resume checkpoint'))
+                failed_page = re.match(r'^failed@start=(\d+):.*HTTP 429', old_status)
+                if not failed_page:
+                    # Completed regions and other failures are not queried again.
+                    all_jobs.extend(retained); status_summary[status_key] = old_status
+                    continue
+                jobs_by_id = {item['sourceJobId']: item for item in retained}
+                start = int(failed_page[1])
+                LOG.info("%s [%s] resume start=%s retained=%s", company, region, start, len(jobs_by_id))
             while len(jobs_by_id) < args.results_per_company and start < 1000:
-                params = {"keywords": company, "location": location, "distance": 50, "pageNum": 0, "start": start}
+                # Request newest-first discovery on every page. Server ordering
+                # is never treated as proof that a partial query is complete.
+                params = {"keywords": company, "location": location, "distance": 50, "pageNum": 0, "start": start, "sortBy": "DD"}
                 strict_company_id = args.company_id or COMPANIES[company]["company_id"]
                 if strict_company_id:
                     params["f_C"] = strict_company_id
@@ -294,7 +313,10 @@ def main() -> int:
             company_jobs = list(jobs_by_id.values())[: args.results_per_company]
             if status_key not in status_summary:
                 if ended_cleanly and company_jobs:
-                    status_summary[status_key] = f"ok: {len(company_jobs)} jobs"
+                    # A resumed tail and its earlier prefix were observed at
+                    # different times. Publish their jobs, but never use absence
+                    # in that stitched result to expire canonical records.
+                    status_summary[status_key] = f"partial@resumed-end: {len(company_jobs)} jobs" if args.resume else f"ok: {len(company_jobs)} jobs"
                 elif ended_cleanly:
                     status_summary[status_key] = "no-results-untrusted"
                 elif len(jobs_by_id) >= args.results_per_company or start >= 1000:
@@ -312,7 +334,9 @@ def main() -> int:
 
     unique = {job["sourceJobId"]: job for job in all_jobs}
     output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
-    args.output.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary = args.output.with_suffix(args.output.suffix + '.tmp')
+    temporary.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(args.output)
     LOG.info("Wrote %s unique jobs to %s", len(unique), args.output)
     LOG.info("status summary: %s", json.dumps(status_summary, ensure_ascii=False))
     return 0

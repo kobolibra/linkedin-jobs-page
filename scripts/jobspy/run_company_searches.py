@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Run the existing per-company LinkedIn searcher with bounded concurrency.
 
-This intentionally delegates each company to fetch_linkedin_requests.py instead
-of changing its request logic. The workflow therefore keeps the same per-company
-pagination, delays, retries, output schema, and a maximum of two simultaneous
-company searches as the former matrix configuration.
+Delegate pagination and shared request pacing to fetch_linkedin_requests.py.
+After the initial company pass, resume recoverable rate-limited pages once from
+their checkpoints. Verified prefixes and completed regions remain intact.
 """
 from __future__ import annotations
 
@@ -12,6 +11,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -22,9 +22,10 @@ from fetch_linkedin_requests import COMPANIES
 LOG = logging.getLogger("jobspy-orchestrator")
 
 
-def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -> tuple[str, int, str]:
+def run_one(args: argparse.Namespace, key: str, company: str, company_id: str, *, resume=False) -> tuple[str, int, str]:
     output = args.output_dir / f"{key}.json"
-    output.unlink(missing_ok=True)
+    if not resume:
+        output.unlink(missing_ok=True)
     command = [
         sys.executable,
         str(Path(__file__).with_name("fetch_linkedin_requests.py")),
@@ -36,6 +37,8 @@ def run_one(args: argparse.Namespace, key: str, company: str, company_id: str) -
         "--page-timeout", str(args.page_timeout),
         "--output", str(output),
     ]
+    if resume:
+        command.append("--resume")
     for location in args.locations:
         command.extend(["--location", location])
     LOG.info("starting %s (%s)", key, company)
@@ -115,6 +118,26 @@ def main() -> int:
             else:
                 LOG.error("company search failed: %s exit=%s output=%s", key, returncode, output)
                 failures.append(key)
+
+    # Give rate-limited pages one later opportunity after the other companies
+    # have run. Reuse their verified prefix instead of restarting page zero.
+    recoveries = []
+    for company, spec in selected:
+        key = spec['canonical'].replace(' ', '_')
+        path = args.output_dir / f'{key}.json'
+        try:
+            report = json.loads(path.read_text(encoding='utf-8'))
+            if any(re.match(r'^failed@start=\d+:.*HTTP 429', str(status)) for status in report.get('statusSummary', {}).values()):
+                recoveries.append((key, company, spec['company_id']))
+        except (OSError, ValueError, TypeError, AttributeError):
+            continue
+    if recoveries:
+        LOG.info('Recover rate-limited company pages after initial pass: %s', [x[0] for x in recoveries])
+        with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
+            pending = [pool.submit(run_one, args, key, company, company_id, resume=True) for key, company, company_id in recoveries]
+            for future in as_completed(pending):
+                key, returncode, output = future.result()
+                LOG.info('resume completed %s exit=%s output=%s', key, returncode, output)
 
     # Preserve the old matrix's non-fatal company behavior: the downstream
     # combiner decides whether any valid company result can be published.
