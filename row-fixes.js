@@ -19,6 +19,10 @@
       const badge = job.querySelector('.status-expired-company');
       const line = job.querySelector('.job-meta-line');
       if (!badge || !line) return;
+      // New row footers align in CSS; preserve the footer and skip geometry reads.
+      if (badge.parentElement?.classList?.contains('job-meta-end')) {
+        badge.style.top = ''; badge.style.right = ''; return;
+      }
       if (badge.parentElement !== line || line.lastElementChild !== badge) line.appendChild(badge);
       if (!desktop.matches) {
         badge.style.top = '';
