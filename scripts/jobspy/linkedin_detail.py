@@ -58,6 +58,8 @@ def fetch_detail(session, item, timeout=(10, 20)):
         out.update(detailStatus="failed", detailError="invalid or mismatched LinkedIn job identity")
         return out
     out["link"] = f"https://www.linkedin.com/jobs/view/{job_id}"
+    out.pop("detailRetryable", None)
+    out.pop("detailRetryAt", None)
     attempts = []
     for endpoint, url in (("guest", f"https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/{job_id}"),
                           ("view", out["link"])):
@@ -71,6 +73,8 @@ def fetch_detail(session, item, timeout=(10, 20)):
                     break
         except RequestStopped as exc:
             out.update(detailStatus="blocked", detailError=str(exc))
+            if exc.recoverable:
+                out.update(detailRetryable=True, detailRetryAt=exc.retry_at)
             attempts.append({"endpoint": endpoint, "outcome": "blocked"})
             break
         except requests.RequestException as exc:

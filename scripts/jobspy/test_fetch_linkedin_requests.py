@@ -60,10 +60,33 @@ class FetchMultiRegionTests(unittest.TestCase):
             with patch('fetch_linkedin_requests.LinkedInSession',return_value=session),patch('fetch_linkedin_requests.time.sleep'),patch.object(sys,'argv',argv),patch('requests.Session.request',side_effect=[response(text=HTML),response(429,headers={'Retry-After':'7'}),response(429,headers={'Retry-After':'7'}),response(429,headers={'Retry-After':'7'})]) as request:
                 self.assertEqual(main(),0)
             got=json.loads(output.read_text())
-            self.assertEqual(request.call_count,4)
-            self.assertEqual([c.kwargs['params']['start'] for c in request.call_args_list],[0,10,10,10])
+            self.assertEqual(request.call_count,2)
+            self.assertEqual([c.kwargs['params']['start'] for c in request.call_args_list],[0,10])
             self.assertEqual(got['count'],1)
-            self.assertIn('failed@start=10: HTTP 429 page deferred',got['statusSummary']['HSBC::CN'])
+            self.assertIn('failed@start=10: HTTP 429 query deferred',got['statusSummary']['HSBC::CN'])
+
+    def test_resume_uses_failed_offset_keeps_prefix_and_skips_completed_region(self):
+        from linkedin_http import Coordinator, LinkedInSession
+        from test_linkedin_http import response
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp); now=[0]
+            coordinator=Coordinator(p/'http.json',clock=lambda:now[0],sleep=lambda sec:now.__setitem__(0,now[0]+sec),min_interval=0)
+            session=LinkedInSession(coordinator=coordinator); self.addCleanup(session.close)
+            output=p/'search.json'
+            prefix={'sourceJobId':'li-111111111','requestedCompany':'HSBC','location':'CN'}
+            hk={'sourceJobId':'li-222222222','requestedCompany':'HSBC','location':'HK'}
+            output.write_text(json.dumps({'jobs':[prefix,hk], 'statusSummary':{'HSBC::CN':'failed@start=10: HTTP 429 query deferred', 'HSBC::HK':'ok: 1 jobs'}}))
+            argv=['search','--company','HSBC','--location','China','--location','Hong Kong','--output',str(output),'--resume']
+            end='<!DOCTYPE html>\n\n<!---->  '
+            with patch('fetch_linkedin_requests.LinkedInSession',return_value=session),patch.object(sys,'argv',argv),patch('requests.Session.request',side_effect=[response(text=HTML),response(text=end),response(text=end)]) as request:
+                self.assertEqual(main(),0)
+            got=json.loads(output.read_text())
+            self.assertEqual([c.kwargs['params']['start'] for c in request.call_args_list], [10,20,30])
+            self.assertTrue(all(c.kwargs['params']['location']=='China' for c in request.call_args_list))
+            self.assertTrue(all(c.kwargs['params']['sortBy']=='DD' for c in request.call_args_list))
+            self.assertEqual({j['sourceJobId'] for j in got['jobs']},{'li-111111111','li-222222222','li-987654321'})
+            self.assertEqual(got['statusSummary']['HSBC::HK'],'ok: 1 jobs')
+            self.assertEqual(got['statusSummary']['HSBC::CN'],'partial@resumed-end: 2 jobs')
 
     def test_hk_row_is_lifecycle_only(self):
         rows = parse_search(HTML, "HSBC", "2026-09-23T00:00:00+00:00", "HK")
