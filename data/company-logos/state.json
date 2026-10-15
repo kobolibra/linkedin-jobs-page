@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-14T22:07:09.994905+00:00",
+    "checkedAt": "2026-10-15T04:06:44.520038+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-14T22:07:15.834801+00:00",
+    "checkedAt": "2026-10-15T04:06:50.399203+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-14T22:07:21.839802+00:00",
+    "checkedAt": "2026-10-15T04:06:56.381118+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-14T22:07:24.828593+00:00",
+    "checkedAt": "2026-10-15T04:06:59.391929+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-14T22:07:27.811672+00:00",
+    "checkedAt": "2026-10-15T04:07:02.365627+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6723,5 +6723,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFIZOJujh54EA/company-logo_100_100/company-logo_100_100/0/1631355236782?e=2147483647&v=beta&t=lhPwSkQKaJenlXuum8IsC7uGmaudoHINIPGd-rzieXI",
     "companyUrl": "https://hk.linkedin.com/company/cl-technical-services-limited",
     "sourceJobId": "4478487360"
+  },
+  "fitch group, inc.": {
+    "name": "Fitch Group, Inc.",
+    "checkedAt": "2026-10-15T04:06:34.208234+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b49437aaf831eb8325e69aea.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFkeqy-I29jpg/company-logo_100_100/B56ZfL2pEXHQAU-/0/1751471788898/fitchgroup_logo?e=2147483647&v=beta&t=h3VJWwx3mPMnQF3HDnYVp7baY7l0e8_nvBz12PwboGk",
+    "companyUrl": "https://uk.linkedin.com/company/fitchgroup",
+    "sourceJobId": "4478837415"
+  },
+  "hong kong international school": {
+    "name": "Hong Kong International School",
+    "checkedAt": "2026-10-15T04:06:35.628161+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "05429737e3042ff21067161d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHyJ46pwC4H7Q/company-logo_100_100/company-logo_100_100/0/1679024341730/hong_kong_international_school_logo?e=2147483647&v=beta&t=wEsHiWZuTpmBNvIOSc9aw3RZIX-ii6_rkUPR3ik_U8E",
+    "companyUrl": "https://hk.linkedin.com/school/hong-kong-international-school/",
+    "sourceJobId": "4478476730"
+  },
+  "rotaract club, sggscc": {
+    "name": "Rotaract Club, SGGSCC",
+    "checkedAt": "2026-10-15T04:06:38.515477+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c0e8b07c14dd876edf0d6712.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGNGtatpZmJJA/company-logo_100_100/company-logo_100_100/0/1630654206399?e=2147483647&v=beta&t=yfMn2HFCFOcDFn4eYmT476ksg7llSbTEQ7NoDOGxElA",
+    "companyUrl": "https://www.linkedin.com/company/rcsggscc",
+    "sourceJobId": "4477047288"
+  },
+  "swedtel": {
+    "name": "Swedtel",
+    "checkedAt": "2026-10-15T04:06:41.538479+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5a33cc23afac70b4e3f3c4a0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQEBvBGbiegxJQ/company-logo_100_100/B4DZxNS7KsI8AU-/0/1770823333727?e=2147483647&v=beta&t=bHmYdvMsEOmtLUl08--kvfeC1Faz9SFSl5fzoxG2T9o",
+    "companyUrl": "https://sa.linkedin.com/company/swedtel",
+    "sourceJobId": "4478487358"
   }
 }
