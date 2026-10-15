@@ -13,6 +13,7 @@ from posting_dates import apply_posting_date
 LIVENESS_EXPIRED_REASONS = {
     "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
 }
+NON_TARGET_RETENTION_DAYS = 15
 COVERED = {str(spec.get("canonical", "")).strip().casefold() for spec in COMPANIES.values()}
 _APPLY_CONTROL = re.compile(r'data-tracking-control-name\s*=\s*["\']public_jobs_apply-link-(?:offsite|onsite)', re.I)
 _CANONICAL = re.compile(r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)', re.I)
@@ -74,7 +75,26 @@ def classify(status_code, html, job_id):
 def _last(row):
     return parse_time(row.get("liveCheckedAt"))
 
-def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gone_confirm_hours=12, recheck_expired_hours=72, recheck_expired_days=30, location="CN"):
+def deletion_check_confirmed(row, now=None, delete_after_days=NON_TARGET_RETENTION_DAYS):
+    """A terminal recheck must belong to this expiry episode and follow retention."""
+    expiry=parse_time(row.get('expiredAt'))
+    anchor=parse_time(row.get('liveDeletionExpiryAt'))
+    checked=parse_time(row.get('liveDeletionCheckedAt'))
+    last=parse_time(row.get('liveCheckedAt'))
+    now=parse_time(now) or datetime.now(timezone.utc)
+    return bool(expiry and anchor == expiry and checked and
+                expiry + timedelta(days=delete_after_days) <= checked <= now and
+                (last is None or last <= checked))
+
+
+def mark_deletion_check(row, observed_at, delete_after_days):
+    expiry=parse_time(row.get('expiredAt')); checked=parse_time(observed_at)
+    if expiry and checked and checked >= expiry + timedelta(days=delete_after_days):
+        row['liveDeletionExpiryAt']=row['expiredAt']
+        row['liveDeletionCheckedAt']=observed_at
+
+
+def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gone_confirm_hours=12, recheck_expired_hours=None, recheck_expired_days=None, location="CN", delete_after_days=NON_TARGET_RETENTION_DAYS):
     now = parse_time(now) or datetime.now(timezone.utc)
     priorities = []
     for row in rows:
@@ -87,13 +107,13 @@ def select_candidates(rows, now=None, max_probes=150, min_interval_hours=20, gon
         # Expired jobs have their own clock, including legacy rows with a
         # leftover first-miss marker. They must not enter active-job branches.
         if status == "expired":
-            expired_at = parse_time(row.get("expiredAt")) or last
-            checked_at = last or expired_at
-            if expired_at is None or checked_at is None:
+            # Confirmed expired jobs do not undergo periodic checks. They enter
+            # one final recheck at the retention boundary; failed/unknown checks
+            # remain pending, while a verified negative is consumed by cleanup.
+            expired_at = parse_time(row.get("expiredAt"))
+            if expired_at is None or now < expired_at + timedelta(days=delete_after_days):
                 continue
-            expired_age = (now - expired_at).total_seconds() / 3600
-            check_age = (now - checked_at).total_seconds() / 3600
-            if not (0 <= expired_age <= recheck_expired_days * 24 and check_age >= recheck_expired_hours):
+            if deletion_check_confirmed(row, now, delete_after_days):
                 continue
             rank = 3
         elif first_miss and age_hours is not None and (now - first_miss).total_seconds() >= gone_confirm_hours * 3600:
@@ -123,7 +143,7 @@ def select_regional_candidates(rows, locations, **options):
     return picked
 
 
-def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date_posted=None, date_source=None):
+def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date_posted=None, date_source=None, delete_after_days=NON_TARGET_RETENTION_DAYS):
     """Mutate and return one row; stale observations are ignored."""
     observed_at = iso(observed_at)
     when = parse_time(observed_at)
@@ -150,15 +170,19 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
             row["jobStatus"] = "active"
             row.pop("expiredAt", None)
             row.pop("expiredReason", None)
+            row.pop("liveDeletionExpiryAt", None)
+            row.pop("liveDeletionCheckedAt", None)
         return row
     if result == "closed":
+        was_expired = row.get("jobStatus") == "expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS
         row["liveStatus"] = "closed"
         row["liveMissCount"] = int(row.get("liveMissCount") or 0) + 1
         row["jobStatus"] = "expired"
         row.pop("liveFirstMissAt", None)
-        if row.get("expiredReason") != "linkedin_closed" or not row.get("expiredAt"):
+        if not was_expired or not row.get("expiredAt"):
             row["expiredAt"] = observed_at
-            row["expiredReason"] = "linkedin_closed"
+        row["expiredReason"] = "linkedin_closed"
+        mark_deletion_check(row, observed_at, delete_after_days)
         return row
     reason = "linkedin_removed" if result == "gone" else "linkedin_not_accepting"
     if row.get("jobStatus") == "expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS:
@@ -166,6 +190,7 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
         row["liveStatus"] = result
         row["liveMissCount"] = int(row.get("liveMissCount") or 0) + 1
         row.pop("liveFirstMissAt", None)
+        mark_deletion_check(row, observed_at, delete_after_days)
         return row
     first = parse_time(row.get("liveFirstMissAt"))
     if not first:

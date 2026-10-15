@@ -64,7 +64,7 @@ def merge(root: Path, inputs: Path, output: Path):
         merged=work/'rss.json'
         if 'liveness.json' in hashes:
             run('apply_liveness.py','--jobs',merged,'--liveness',inputs/'liveness.json',
-                '--delete-after-days','10','--output',work/'liveness.json')
+                '--delete-after-days','15','--output',work/'liveness.json')
             merged=work/'liveness.json'
         shutil.copyfile(merged,output)
 

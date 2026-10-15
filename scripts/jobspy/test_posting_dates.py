@@ -229,7 +229,7 @@ class PostingTests(unittest.TestCase):
         merged=merge_documents({"jobs":jobs},{"jobs":[dict(jobs[0],pushTime="2026-10-09")]})
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp); (p/'jobs').write_text(json.dumps(merged))
-            (p/'live').write_text(json.dumps({"schemaVersion":"1.1","mode":"job-liveness","scopeLocations":["CN","HK","SG"],"observations":[]}))
+            (p/'live').write_text(json.dumps({"schemaVersion":"1.1","mode":"job-liveness","scopeLocations":["CN","HK","SG"],"observations":[{"jobId":str(400000000+i),"result":"closed","checkedAt":datetime.now(timezone.utc).isoformat()} for i in range(3)]}))
             with patch('sys.argv',['apply_liveness','--jobs',str(p/'jobs'),'--liveness',str(p/'live'),'--output',str(p/'out')]): apply_main()
             got=json.loads((p/'out').read_text())
             self.assertEqual([x["sourceJobId"] for x in got["jobs"]],["li-400000003"])

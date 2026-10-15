@@ -3,7 +3,7 @@ import tempfile
 import unittest
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from unittest.mock import patch
 from types import SimpleNamespace
@@ -92,6 +92,21 @@ class RssPublicationTests(unittest.TestCase):
             self.assertEqual(rows['li-100000002']['jobStatus'],'expired')
             self.assertNotIn('li-100000003',rows)
             self.assertEqual((inputs/'jobspy.json').read_bytes(),before)
+
+    def test_rss_cleanup_keeps_fifteen_days_and_requires_a_terminal_final_check(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory); inputs=root/'inputs'; output=root/'out.json'
+            now=datetime.now(timezone.utc)
+            rows=[self.job('100000001',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=14)).isoformat()),
+                  self.job('100000002',jobStatus='expired',expiredReason='linkedin_removed',expiredAt=(now-timedelta(days=16)).isoformat()),
+                  self.job('100000003',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=16)).isoformat()),
+                  self.job('100000004','HSBC',companyCanonical='hsbc',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=16)).isoformat())]
+            self.write(root,'jobs.json',{'jobs':rows})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            self.write(root,'data/jobspy/incremental/liveness.json',{'schemaVersion':'1.1','mode':'job-liveness','scopeLocations':['CN'],'observations':[
+                {'jobId':key,'result':result,'checkedAt':now.isoformat()} for key,result in [('100000001','closed'),('100000002','closed'),('100000003','unknown'),('100000004','closed')]]})
+            capture(root,inputs);merge(root,inputs,output)
+            self.assertEqual({item['sourceJobId'] for item in json.loads(output.read_text())['jobs']},{'li-100000001','li-100000003','li-100000004'})
 
     def test_tampered_or_invalid_inputs_fail_before_publication(self):
         with tempfile.TemporaryDirectory() as directory:

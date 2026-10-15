@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
-from job_liveness import classify, jid, select_regional_candidates
+from job_liveness import classify, jid, select_regional_candidates, NON_TARGET_RETENTION_DAYS
 from reconcile_full_snapshots import location_key
 from posting_evidence import detail_posting_date, relative_posting_bounds, search_posting_dates
 from posting_dates import posting_day
@@ -87,8 +87,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--jobs", required=True); ap.add_argument("--output", required=True)
     ap.add_argument("--max-probes", type=int, default=150, help="Total job cap across all regions; due CN jobs first, HK/SG share spare places (not an HTTP request cap)"); ap.add_argument("--min-interval-hours", type=float, default=20)
-    ap.add_argument("--gone-confirm-hours", type=float, default=12); ap.add_argument("--recheck-expired-hours", type=float, default=72)
-    ap.add_argument("--recheck-expired-days", type=float, default=30); ap.add_argument("--delay-min", type=float, default=None, help=argparse.SUPPRESS)
+    ap.add_argument("--gone-confirm-hours", type=float, default=12); ap.add_argument("--recheck-expired-hours", type=float, default=None, help=argparse.SUPPRESS)
+    ap.add_argument("--recheck-expired-days", type=float, default=None, help=argparse.SUPPRESS);
+    ap.add_argument("--delete-after-days",type=float,default=NON_TARGET_RETENTION_DAYS,help="Confirmed expired jobs receive one final recheck after this age"); ap.add_argument("--delay-min", type=float, default=None, help=argparse.SUPPRESS)
     ap.add_argument("--delay-max", type=float, default=None, help=argparse.SUPPRESS); ap.add_argument("--timeout", type=float, default=20)
     ap.add_argument("--breaker", type=int, default=3); ap.add_argument("--guard-ratio", type=float, default=.6)
     ap.add_argument("--guard-min", type=int, default=10)
@@ -105,7 +106,7 @@ def main():
         doc=json.loads(Path(args.jobs).read_text(encoding="utf-8"))
         candidates=select_regional_candidates(rows(doc), locations, now=now, max_probes=args.max_probes,
             min_interval_hours=args.min_interval_hours, gone_confirm_hours=args.gone_confirm_hours,
-            recheck_expired_hours=args.recheck_expired_hours, recheck_expired_days=args.recheck_expired_days)
+            delete_after_days=args.delete_after_days)
         # Only this stage uses a shorter bounded randomized interval: 2.25–2.75s.
         # List/detail pacing, global Retry-After and shared circuits are unchanged.
         coordinator=Coordinator(min_interval=2.25, interval_jitter=.5)

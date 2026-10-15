@@ -4,11 +4,11 @@ from __future__ import annotations
 import argparse, json
 from datetime import datetime, timezone
 from pathlib import Path
-from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time
+from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time, deletion_check_confirmed, NON_TARGET_RETENTION_DAYS
 from logo_sources import validate_hint
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=10); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument("--jobs",required=True); ap.add_argument("--liveness",required=True); ap.add_argument("--output",required=True); ap.add_argument("--gone-confirm-hours",type=float,default=12); ap.add_argument("--delete-after-days",type=float,default=NON_TARGET_RETENTION_DAYS); args=ap.parse_args()
     doc=json.loads(Path(args.jobs).read_text(encoding="utf-8")); out=dict(doc) if isinstance(doc,dict) else {"jobs":doc}
     try: live=json.loads(Path(args.liveness).read_text(encoding="utf-8"))
     except (FileNotFoundError,json.JSONDecodeError):
@@ -25,7 +25,7 @@ def main():
         row=by.get(str(obs.get("jobId") or "")) or by.get(jid(obs)); result=obs.get("result")
         if not row or not eligible_scope(row): stats["skipped_out_of_scope"]+=1; continue
         before=row.get("jobStatus"); old_push=row.get("pushTime"); old_check=row.get("liveCheckedAt")
-        apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours,obs.get("datePosted"),obs.get("dateSource"))
+        apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours,obs.get("datePosted"),obs.get("dateSource"),args.delete_after_days)
         if row.get("liveCheckedAt") == old_check:
             stats["stale_observations"] += 1
             continue
@@ -40,7 +40,7 @@ def main():
     now=datetime.now(timezone.utc); kept=[]; deleted=0
     for row in by.values():
         expired_at=parse_time(row.get("expiredAt"))
-        eligible=(eligible_scope(row) and row.get("jobStatus")=="expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and expired_at and (now-expired_at).total_seconds() >= args.delete_after_days*24*3600)
+        eligible=(eligible_scope(row) and row.get("jobStatus")=="expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and expired_at and (now-expired_at).total_seconds() >= args.delete_after_days*24*3600 and deletion_check_confirmed(row,now,args.delete_after_days))
         if eligible:
             deleted += 1
         else:

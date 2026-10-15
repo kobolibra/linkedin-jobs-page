@@ -3,6 +3,19 @@ from merge_n8n_incremental import merge_documents
 
 
 class N8nMergeTests(unittest.TestCase):
+    def test_rss_cannot_supply_or_overwrite_final_deletion_check_evidence(self):
+        proof={'liveDeletionExpiryAt':'2026-09-01','liveDeletionCheckedAt':'2026-09-16'}
+        forged={'sourceJobId':'li-100000001','company':'Acme',**proof}
+        added=merge_documents({'jobs':[]},{'jobs':[forged]})['jobs'][0]
+        self.assertNotIn('liveDeletionExpiryAt',added)
+        self.assertNotIn('liveDeletionCheckedAt',added)
+        baseline={'sourceJobId':'li-100000001','company':'Acme','jobStatus':'expired','expiredReason':'linkedin_closed','expiredAt':'2026-10-01'}
+        updated=merge_documents({'jobs':[baseline]},{'jobs':[forged]})['jobs'][0]
+        self.assertNotIn('liveDeletionCheckedAt',updated)
+        baseline.update(proof)
+        updated=merge_documents({'jobs':[baseline]},{'jobs':[{**forged,'liveDeletionCheckedAt':'2099-01-01'}]})['jobs'][0]
+        self.assertEqual(updated['liveDeletionCheckedAt'],proof['liveDeletionCheckedAt'])
+
     def test_rss_presence_watermark_uses_observation_not_display_date(self):
         batch = {"generatedAt": "2026-09-21T10:00:00Z", "jobs": [{
             "sourceJobId": "li-100000031", "company": "Acme", "firstSeen": "2026-09-01", "pushTime": "2026-09-02",

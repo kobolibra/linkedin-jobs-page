@@ -183,6 +183,7 @@ def merge_documents(baseline, batch_doc):
                     "rssObservedAt", "jobStatus", "expiredAt", "expiredReason",
                     "lastSeenAt", "liveCheckedAt", "liveVerifiedAt", "liveStatus",
                     "liveMissCount", "liveFirstMissAt",
+                    "liveDeletionExpiryAt", "liveDeletionCheckedAt",
                 } or not nonempty(value):
                     continue
                 merged[field] = value
@@ -204,7 +205,7 @@ def merge_documents(baseline, batch_doc):
             rows[by_key[key]] = merged
             updated += 1
         else:
-            merged = {k: v for k, v in incoming.items() if nonempty(v)}
+            merged = {k: v for k, v in incoming.items() if nonempty(v) and k not in {"liveDeletionExpiryAt", "liveDeletionCheckedAt"}}
             merged.setdefault("sourceJobId", f"li-{key}")
             merged.setdefault("firstSeen", merged.get("pushTime") or observed_at)
             merged["dataSources"] = merge_sources({}, merged)
