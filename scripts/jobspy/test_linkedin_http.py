@@ -32,6 +32,21 @@ class PolicyTests(unittest.TestCase):
         self.session = LinkedInSession(coordinator=self.coordinator)
         self.addCleanup(self.session.close)
 
+    def test_request_fingerprint_tracks_failed_page_without_exposing_query(self):
+        self.session.context={'stage':'search','company':'A','region':'CN','pageStart':10}
+        events=[]
+        with patch('requests.Session.request',side_effect=[response(429,headers={'Retry-After':'2'}),response(),response()]),patch('linkedin_http.record_event',side_effect=lambda **event:events.append(event)):
+            with self.assertRaises(RequestStopped):self.session.get('https://www.linkedin.com/jobs/search',params={'start':10,'keywords':'A'})
+            self.session.context['retryRound']=1
+            self.session.get('https://www.linkedin.com/jobs/search',params={'keywords':'A','start':10})
+            self.session.context['pageStart']=20
+            self.session.get('https://www.linkedin.com/jobs/search',params={'keywords':'A','start':20})
+        responses=[event for event in events if 'status' in event]
+        self.assertEqual(responses[0]['requestKey'],responses[1]['requestKey'])
+        self.assertNotEqual(responses[1]['requestKey'],responses[2]['requestKey'])
+        self.assertEqual(len(responses[0]['requestKey']),24)
+        self.assertNotIn('keywords',responses[0]['requestKey'])
+
     def test_retry_after_then_success(self):
         with patch('requests.Session.request', side_effect=[response(429, headers={'Retry-After':'7'}), response()]) as get:
             self.assertEqual(self.session.get('https://www.linkedin.com').status_code, 200)

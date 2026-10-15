@@ -60,15 +60,26 @@ def collect(args):
             except (ValueError, TypeError):
                 statuses[path.stem] = "unreadable"
     responses = [event for event in events if "status" in event]
-    search_transport = {}
+    # A recovery round also fetches previously unseen tail pages. Only repeated
+    # HTTP identities are retries; do not label that entire round as retries.
+    seen_requests = set()
+    retry_flags = []
     for event in responses:
+        identity = event.get('requestKey')
+        if not identity and event.get('stage') == 'search' and 'pageStart' in event:
+            identity = ('search', event.get('company'), event.get('region'), event['pageStart'])
+        repeated = identity in seen_requests if identity else event.get('attempt', 1) > 1
+        retry_flags.append(repeated)
+        if identity: seen_requests.add(identity)
+    search_transport = {}
+    for event, repeated in zip(responses, retry_flags):
         if event.get("stage") != "search" or not event.get("company"):
             continue
         query = str(event["company"]) + "::" + str(event.get("region", "unknown"))
         stats = search_transport.setdefault(query, {"requests": 0, "retries": 0,
                                                     "httpStatuses": {}, "rateLimitedPages": []})
         stats["requests"] += 1
-        stats["retries"] += (event.get("attempt", 1) > 1 or event.get("retryRound", 0) > 0)
+        stats["retries"] += repeated
         code = str(event["status"])
         stats["httpStatuses"][code] = stats["httpStatuses"].get(code, 0) + 1
         if code == "429" and "pageStart" in event and event["pageStart"] not in stats["rateLimitedPages"]:
@@ -81,7 +92,7 @@ def collect(args):
         "rateLimitWaits": {"serverHints":sum(e.get("status") == 429 and e.get("retryAfterSeconds") is not None for e in responses),
                            "clientFallbacks":sum(e.get("status") == 429 and e.get("cooldownSource") == "client" for e in responses),
                            "deferredQueries":sum(e.get("outcome") == "query_deferred" for e in events)},
-        "requests": len(responses), "retries": sum((event.get("attempt", 1) > 1 or event.get("retryRound", 0) > 0) for event in responses),
+        "requests": len(responses), "retries": sum(retry_flags),
         "httpStatuses": dict(Counter(str(event["status"]) for event in responses)),
         "outcomes": dict(Counter(event.get("outcome", "unknown") for event in events)),
         "stages": dict(Counter(event.get("stage", "unknown") for event in responses)),
