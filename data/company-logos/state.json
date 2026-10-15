@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-15T16:11:10.006674+00:00",
+    "checkedAt": "2026-10-15T22:05:53.276861+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-15T16:11:15.885725+00:00",
+    "checkedAt": "2026-10-15T22:05:57.453518+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3028,7 +3028,7 @@
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "status": 200,
         "contentType": "text/html; charset=utf-8",
-        "attempt": 2,
+        "attempt": 1,
         "jobId": "4445434545",
         "reason": "no_employer",
         "stage": "job",
@@ -3046,17 +3046,6 @@
         "stage": "job",
         "observedName": "",
         "companyUrl": ""
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.90643277393177,
-        "retried": true
       }
     ]
   },
@@ -3193,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-15T16:12:24.912594+00:00",
+    "checkedAt": "2026-10-15T22:06:03.535018+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3884,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-15T16:12:27.956592+00:00",
+    "checkedAt": "2026-10-15T22:06:06.494231+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5419,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-15T16:12:30.862437+00:00",
+    "checkedAt": "2026-10-15T22:06:09.404251+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
