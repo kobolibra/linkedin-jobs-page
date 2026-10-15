@@ -278,7 +278,7 @@ class LinkedInSession(requests.Session):
         kwargs.setdefault("allow_redirects", False)
         consecutive_429 = 0
         stage = self.context.get('stage')
-        query = (f"search:{self.context.get('company')}::{self.context.get('region')}" if stage == 'search' and self.context.get('company')
+        query = (f"search:{self.context.get('company')}" if stage == 'search' and self.context.get('company')
                  else f"liveness:{self.context.get('endpoint', 'view')}:{self.context.get('jobId')}" if stage == 'liveness' and self.context.get('jobId')
                  else f"job:{self.context.get('jobId')}" if stage == 'details' and self.context.get('jobId') else None)
         if not self.defer_queries:
@@ -310,7 +310,10 @@ class LinkedInSession(requests.Session):
                         blocked = blocked or block_page("", response.headers.get("Location", ""))
                     retry_after = (retry_after_seconds(response.headers.get("Retry-After"))
                                    if status in (429, 500, 502, 503, 504) else None)
-                    rate_limit_delay = (retry_after if retry_after is not None else self.coordinator.fallback_429_delay(url)) if status == 429 else None
+                    # A list 429 without a server hint defers this employer,
+                    # not every employer on the runner. Keep shared pacing and
+                    # the persistent-failure circuit; never invent a host ban.
+                    rate_limit_delay = (retry_after if retry_after is not None else 0 if stage == 'search' and query else self.coordinator.fallback_429_delay(url)) if status == 429 else None
                     record_event(**self.context, host=host_key(url), status=status, attempt=attempt, requestKey=request_key,
                                  outcome="blocked" if blocked else "rate_limited" if status == 429 else "response",
                                  retryAfterSeconds=retry_after,

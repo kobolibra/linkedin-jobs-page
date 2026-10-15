@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -127,6 +128,9 @@ def main() -> int:
             path = args.output_dir / f'{key}.json'
             try:
                 report = json.loads(path.read_text(encoding='utf-8'))
+                if report.get('retryAt',0) > time.time():
+                    LOG.info('Keep %s deferred; no idle wait for employer cooldown', key)
+                    continue
                 if any(re.match(r'^failed@start=\d+:.*HTTP 429', str(status)) for status in report.get('statusSummary', {}).values()):
                     recoveries.append((key, company, spec['company_id']))
             except (OSError, ValueError, TypeError, AttributeError):
