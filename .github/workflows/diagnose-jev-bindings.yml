@@ -40,4 +40,22 @@ jobs:
               if name == "JEV_MODEL" and kind == "plain_text":
                   print("provider_model", binding.get("text", ""))
           print("provider_key_present", any(b.get("name") in ("JEV_API_KEY", "TYPESAFE_API_KEY") for b in bindings))
+          base = f"https://api.cloudflare.com/client/v4/accounts/{account}/workers/scripts/linkedin"
+          def read(path):
+              req = urllib.request.Request(base + path, headers={"Authorization": f"Bearer {token}"})
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  return json.load(response).get("result", {})
+          versions = read("/versions").get("items", [])
+          for item in versions[:20]:
+              version = read("/versions/" + item["id"])
+              safe = []
+              for b in version.get("resources", {}).get("bindings", []):
+                  if b.get("name") == "JEV_API_URL" and b.get("type") == "plain_text":
+                      p = urlsplit(b.get("text", ""))
+                      safe.append(["endpoint", p.hostname, p.path])
+                  elif b.get("name") == "JEV_MODEL" and b.get("type") == "plain_text":
+                      safe.append(["model", b.get("text", "")])
+                  elif b.get("name") in ("JEV_API_KEY", "TYPESAFE_API_KEY"):
+                      safe.append(["key", b.get("name"), b.get("type")])
+              print("historical_version", item["id"], version.get("metadata", {}).get("created_on"), safe)
           PY
