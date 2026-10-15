@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-15T04:06:44.520038+00:00",
+    "checkedAt": "2026-10-15T07:17:50.945096+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-15T04:06:50.399203+00:00",
+    "checkedAt": "2026-10-15T07:17:56.845790+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-15T04:06:56.381118+00:00",
+    "checkedAt": "2026-10-15T07:18:02.866741+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-15T04:06:59.391929+00:00",
+    "checkedAt": "2026-10-15T07:18:05.854542+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-15T04:07:02.365627+00:00",
+    "checkedAt": "2026-10-15T07:18:08.816794+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6771,5 +6771,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQEBvBGbiegxJQ/company-logo_100_100/B4DZxNS7KsI8AU-/0/1770823333727?e=2147483647&v=beta&t=bHmYdvMsEOmtLUl08--kvfeC1Faz9SFSl5fzoxG2T9o",
     "companyUrl": "https://sa.linkedin.com/company/swedtel",
     "sourceJobId": "4478487358"
+  },
+  "digitec financial technologies and services": {
+    "name": "DIGITEC Financial Technologies and Services",
+    "checkedAt": "2026-10-15T07:17:46.756265+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "72fc7215169edf50e93c2325.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQH2U_NmmyGssg/company-logo_100_100/company-logo_100_100/0/1660902423472/digitec_gmbh_logo?e=2147483647&v=beta&t=mP_n4WlHb272lsAZfv0QZBCs_OJAeQ4swHYPYMyumGE",
+    "companyUrl": "https://de.linkedin.com/company/digitec-gmbh",
+    "sourceJobId": "4476695323"
+  },
+  "microsoft germany": {
+    "name": "Microsoft Germany",
+    "checkedAt": "2026-10-15T07:17:47.999746+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "59476312a08f31f0c53457bd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQELj98pL7d0GQ/company-logo_100_100/company-logo_100_100/0/1640736210061/microsoft_germany_logo?e=2147483647&v=beta&t=0dSGBOClJ1RDvP2cxQzJXwEt7nmvLD23BOkpmH4Dni0",
+    "companyUrl": "https://www.linkedin.com/company/microsoft-germany",
+    "sourceJobId": "4477062094"
   }
 }
