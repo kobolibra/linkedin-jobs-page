@@ -17,7 +17,7 @@ A, B = '500000000', '500000001'
 
 
 class LivenessSinglePassTests(unittest.TestCase):
-    def run_fixture(self, network, *, jobs=None, max_probes=150):
+    def run_fixture(self, network, *, jobs=None, max_probes=150, max_seconds=900):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp); now=[0.0]; calls=[]; events=[]
             def sleep(seconds): now[0]+=seconds
@@ -30,7 +30,7 @@ class LivenessSinglePassTests(unittest.TestCase):
                 call={'time':now[0],'url':url,'params':kwargs.get('params',{})}
                 calls.append(call)
                 return network(call,len(calls))
-            argv=['probe','--jobs',str(p/'jobs'),'--output',str(p/'out'),'--max-probes',str(max_probes)]
+            argv=['probe','--jobs',str(p/'jobs'),'--output',str(p/'out'),'--max-probes',str(max_probes),'--max-seconds',str(max_seconds)]
             with patch('probe_job_liveness.Coordinator',return_value=coordinator),patch('requests.Session.request',side_effect=send),patch('linkedin_http.random.uniform',return_value=0),patch('linkedin_http.record_event',side_effect=lambda **event:events.append(event)),patch.object(sys,'argv',argv),contextlib.redirect_stdout(io.StringIO()) as output:
                 main()
             return json.loads((p/'out').read_text()),calls,now[0],events,output.getvalue()
@@ -77,13 +77,14 @@ class LivenessSinglePassTests(unittest.TestCase):
         def network(call,count):
             return response(429,url=call['url']) if count%5==0 else self.open_page(call,count)
         result,calls,_,events,log=self.run_fixture(network,jobs=jobs)
-        self.assertEqual(len(calls),150)
-        self.assertEqual(len({x['url'] for x in calls}),150)
-        self.assertEqual(result['stats']['rateLimitedSkipped'],30)
-        self.assertEqual(result['stats']['unknown'],30)
-        self.assertEqual(result['stats']['open'],120)
+        self.assertLess(len(calls),150)
+        self.assertEqual(len({x['url'] for x in calls}),len(calls))
+        self.assertEqual(result['stats']['rateLimitedSkipped'],len(calls)//5)
+        self.assertEqual(result['stats']['unknown'],len(calls)//5)
+        self.assertEqual(result['stats']['open'],len(calls)-len(calls)//5)
+        self.assertTrue(result['stats']['budgetExhausted'])
         self.assertFalse(any(e.get('outcome')=='query_deferred' for e in events))
-        self.assertEqual(sum('liveness 150/150' in line for line in log.splitlines()),1)
+        self.assertNotIn('liveness 150/150',log)
 
     def test_later_page_cache_fills_earlier_job_without_extra_requests(self):
         def network(call,count):
@@ -103,12 +104,15 @@ class LivenessSinglePassTests(unittest.TestCase):
         jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(150)]
         def network(call,count):
             return response(429,url=call['url']) if count in limited else self.open_page(call,count)
-        result,calls,_,_,log=self.run_fixture(network,jobs=jobs)
-        self.assertEqual(len(calls),150)
-        self.assertEqual(result['stats']['rateLimitedSkipped'],30)
-        self.assertEqual(result['stats']['unknown'],30)
+        result,calls,elapsed,_,log=self.run_fixture(network,jobs=jobs)
+        self.assertLess(len(calls),150)
+        self.assertEqual(len({x['url'] for x in calls}),len(calls))
+        self.assertLessEqual(elapsed,900)
+        self.assertTrue(result['stats']['budgetExhausted'])
+        self.assertEqual(result['stats']['rateLimitedSkipped'],sum(n <= len(calls) for n in limited))
+        self.assertEqual(result['stats']['unknown'],result['stats']['rateLimitedSkipped'])
         self.assertEqual(result['stats']['postingDateSearchRequests'],0)
-        self.assertEqual(sum('liveness 150/150' in line for line in log.splitlines()),1)
+        self.assertNotIn('liveness 150/150',log)
 
     def test_later_conflicting_cached_date_cannot_be_published_as_repost_evidence(self):
         jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(3)]

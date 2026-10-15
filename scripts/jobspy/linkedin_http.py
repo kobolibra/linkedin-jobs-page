@@ -9,6 +9,7 @@ import logging
 import os
 import random
 import re
+import signal
 import time
 import tempfile
 import uuid
@@ -37,6 +38,10 @@ class RequestStopped(requests.RequestException):
         self.retry_at = retry_at
         super().__init__(*args, **kwargs)
         self.recoverable = recoverable
+
+
+class RequestDeadlineExceeded(RequestStopped):
+    """An explicit caller deadline prevents a wait or request from starting."""
 
 
 def retry_after_seconds(value, now=None):
@@ -125,13 +130,21 @@ class Coordinator:
             except (ValueError, TypeError) as exc:
                 raise RequestStopped("shared HTTP state unreadable; refusing uncoordinated requests") from exc
             yield state
-            handle.seek(0)
-            handle.truncate()
-            json.dump(state, handle)
-            handle.flush()
+            # A caller with a wall-clock alarm must not interrupt a truncated
+            # state write. Deliver a pending alarm immediately after flushing.
+            old_mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGALRM}) if self.deadline != float('inf') else None
+            try:
+                handle.seek(0)
+                handle.truncate()
+                json.dump(state, handle)
+                handle.flush()
+            finally:
+                if old_mask is not None: signal.pthread_sigmask(signal.SIG_SETMASK, old_mask)
 
     def wait(self, seconds):
-        if seconds > self.max_wait or self.clock() + seconds >= self.deadline:
+        if self.clock() + seconds >= self.deadline:
+            raise RequestDeadlineExceeded("caller deadline would be exceeded by cooldown")
+        if seconds > self.max_wait:
             raise RequestStopped("server cooldown exceeds remaining request budget")
         if seconds > 0:
             self.sleep(seconds)
@@ -158,7 +171,7 @@ class Coordinator:
         while True:
             now = self.clock()
             if now >= self.deadline:
-                raise RequestStopped("request time budget exhausted")
+                raise RequestDeadlineExceeded("request time budget exhausted")
             with self.locked() as state:
                 slot = state.setdefault(host, {})
                 for field in ("paceUntil", "minInterval", "pacingUpdatedAt", "healthyResponses"):

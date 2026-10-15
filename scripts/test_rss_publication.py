@@ -108,6 +108,33 @@ class RssPublicationTests(unittest.TestCase):
             capture(root,inputs);merge(root,inputs,output)
             self.assertEqual({item['sourceJobId'] for item in json.loads(output.read_text())['jobs']},{'li-100000001','li-100000003','li-100000004'})
 
+    def test_publication_uses_listing_times_and_accepts_partial_liveness_after_deadline(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';output=root/'out.json'
+            start='2026-10-15T03:16:00Z';page='2026-10-15T03:17:00Z';rss='2026-10-15T03:25:00Z';finish='2026-10-15T03:35:00Z'
+            current=self.job('100000001','HSBC',rssObservedAt=rss,title='Current title',descriptionHtml='<p><strong>Current JD</strong></p>')
+            new_rss=self.job('100000002','HSBC',rssObservedAt=rss,firstSeen='2026-01-01')
+            old_missing=self.job('100000003','HSBC',firstSeen='2026-01-01')
+            checked=self.job('100000004','Other');not_checked=self.job('100000005','Other')
+            self.write(root,'jobs.json',{'jobs':[current,new_rss,old_missing,checked,not_checked]})
+            self.write(root,'data/n8n/rss-latest.json',{'generatedAt':finish,'jobs':[]})
+            self.write(root,'data/jobspy/incremental/search_combined.json',{
+                'jobs':[self.job('100000001','HSBC',title='Old title',descriptionHtml='<p>Old JD</p>',jobspyFetchedAt=page)],
+                'scopeLocations':['CN'],'statusSummary':{'HSBC::CN':'ok: 1 jobs'},'companies':{'HSBC::CN':'ok: 1 jobs'},
+                'queryStartedAt':{'HSBC::CN':start}})
+            (root/'data/jobspy/incremental/latest.completed_at').write_text(finish)
+            self.write(root,'data/jobspy/incremental/liveness.json',{
+                'schemaVersion':'1.1','mode':'job-liveness','scopeLocations':['CN'],'stats':{'budgetExhausted':True},
+                'observedAt':finish,'observations':[{'jobId':'100000004','result':'closed','checkedAt':finish}]})
+            capture(root,inputs);merge(root,inputs,output)
+            got=json.loads(output.read_text());items={row['sourceJobId']:row for row in got['jobs']}
+            self.assertEqual(items['li-100000001']['title'],'Current title')
+            self.assertEqual(items['li-100000001']['descriptionHtml'],current['descriptionHtml'])
+            self.assertEqual(items['li-100000002']['jobStatus'],'active')
+            self.assertEqual(items['li-100000003']['jobStatus'],'expired')
+            self.assertEqual(items['li-100000004']['jobStatus'],'expired')
+            self.assertEqual(items['li-100000005']['jobStatus'],'active')
+
     def test_tampered_or_invalid_inputs_fail_before_publication(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);inputs=root/'inputs'

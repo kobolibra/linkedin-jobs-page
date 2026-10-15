@@ -224,6 +224,7 @@ def main() -> int:
     })
     all_jobs = []
     status_summary = {}
+    query_started_at = {}
     locations = args.location or ["China"]
     companies = args.company or list(COMPANIES)
     previous = {}
@@ -241,8 +242,14 @@ def main() -> int:
             empty_pages = 0
             ended_cleanly = False
             status_key = f"{company}::{region}"
+            query_started_at[status_key] = fetched_at
             if args.resume:
                 retained = [dict(item) for item in previous['jobs'] if item.get('requestedCompany') == company and item.get('location') == region]
+                # A completed region is not observed again during recovery.
+                # Keep its original boundary, including legacy row timestamps.
+                starts = previous.get('queryStartedAt', {})
+                old_times = [str(item.get('jobspyFetchedAt') or item.get('fetchedAt')) for item in retained if item.get('jobspyFetchedAt') or item.get('fetchedAt')]
+                query_started_at[status_key] = starts.get(status_key) if isinstance(starts,dict) and status_key in starts else min(old_times,default=None)
                 old_status = str(previous['statusSummary'].get(status_key, 'unreadable resume checkpoint'))
                 failed_page = re.match(r'^failed@start=(\d+):.*HTTP 429', old_status)
                 if not failed_page:
@@ -268,6 +275,7 @@ def main() -> int:
                                    "pageStart": start}
                 try:
                     rotate_user_agent(session, 0)
+                    page_started_at = datetime.now(timezone.utc).isoformat()
                     response = session.get(SEARCH_URL, params=params, timeout=(10, args.page_timeout))
                     LOG.info("%s [%s] start=%s http=%s bytes=%s", company, region, start, response.status_code, len(response.content))
                     response.raise_for_status()
@@ -283,7 +291,7 @@ def main() -> int:
                     status_summary[status_key] = f"failed@start={start}: HTTP 200 block/login page"
                     blocked = True
                     break
-                page_jobs = parse_search(response.text, company, fetched_at, region)
+                page_jobs = parse_search(response.text, company, page_started_at, region)
                 markup = BeautifulSoup(response.text, "html.parser")
                 cards = markup.select("div.base-search-card")
                 if ((not cards and not is_empty_search_page(response.text)) or
@@ -333,7 +341,7 @@ def main() -> int:
             LOG.info("%s [%s] finished: %s jobs", company, region, len(company_jobs))
 
     unique = {job["sourceJobId"]: job for job in all_jobs}
-    output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
+    output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "queryStartedAt": query_started_at, "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
     temporary = args.output.with_suffix(args.output.suffix + '.tmp')
     temporary.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     temporary.replace(args.output)

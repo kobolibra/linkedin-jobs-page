@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -67,6 +68,36 @@ def status_ok(status):
     return str(status or "").startswith(("ok:", "empty"))
 
 
+def query_observation_times(snapshot, incoming, completed):
+    """Absence is only evidence as of this company/region query's start.
+
+    Old immutable snapshots have row timestamps but no query metadata. Their
+    earliest row observation is a conservative compatibility boundary. Explicit
+    but invalid/missing metadata is never replaced by the later run completion.
+    """
+    result = {}
+    for item in incoming:
+        key = company_location_key(company_key(item), location_key(item))
+        when = timestamp(item.get('jobspyFetchedAt') or item.get('fetchedAt'))
+        if when and when <= completed:
+            result[key] = min(result.get(key, when), when)
+    row_times = dict(result)
+    if isinstance(snapshot,dict) and 'queryStartedAt' in snapshot:
+        starts = snapshot['queryStartedAt']
+        keys = set(snapshot.get('statusSummary', {})) | set(snapshot.get('companies', {}))
+        explicit = {}
+        for raw in keys:
+            key = company_location_key(*str(raw).rsplit('::',1)) if '::' in str(raw) else company_location_key(raw,'CN')
+            when = timestamp(starts.get(raw)) if isinstance(starts,dict) else None
+            # A claimed start later than one of its rows is contradictory too.
+            boundary = when if when and when <= row_times.get(key,completed) else None
+            if key in explicit and explicit[key] != boundary:
+                boundary = None
+            explicit[key] = boundary
+        result.update(explicit)
+    return result
+
+
 
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
@@ -75,6 +106,9 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     observed_time = timestamp(observed_at)
     if observed_time is None:
         raise ValueError("snapshot observed_at must be a valid timestamp")
+    # The existing executor marker is rounded down to whole seconds. A row
+    # fetched within that final second is not a future observation.
+    completed_through = observed_time if re.search(r'[T ]\d{2}:\d{2}:\d{2}[.,]\d+',str(observed_at)) else observed_time + timedelta(microseconds=999999)
     previous_snapshot = existing_doc.get("jobspySnapshot", {}) if isinstance(existing_doc, dict) else {}
     previous_time = timestamp(previous_snapshot.get("observedAt"))
     # RSS merges can run several times against one immutable JobSpy snapshot.
@@ -82,6 +116,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     if previous_time and observed_time <= previous_time:
         return {**existing_doc, "jobs": existing}
     by_id = {jid(x): x for x in existing if jid(x)}
+    query_times = query_observation_times(snapshot_doc, incoming, completed_through)
     reactivated = 0
     protected_ids = set()
     scope_locations = {
@@ -105,8 +140,12 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         if not key or location_key(item) not in scope_locations:
             continue
         old = by_id.get(key, {})
-        # A snapshot finishing later can still precede a more recent probe/RSS observation.
-        if any((when := timestamp(old.get(field))) and when > observed_time
+        query_key = company_location_key(company_key(item),location_key(item))
+        raw_time = item.get('jobspyFetchedAt') or item.get('fetchedAt')
+        item_time = timestamp(raw_time) if raw_time else query_times.get(query_key,observed_time)
+        # Run completion follows detail/liveness work; it is not a listing
+        # observation. Never let an older row undo newer RSS/probe evidence.
+        if item_time is None or item_time > completed_through or any((when := timestamp(old.get(field))) and when > item_time
                for field in ("lastSeenAt", "rssObservedAt", "liveVerifiedAt", "expiredAt")):
             protected_ids.add(key)
             continue
@@ -168,7 +207,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             merged["firstSeen"] = item.get("jobspyFirstSeen") or item.get("datePosted") or observed_at
 
         merged["jobStatus"] = "active"
-        merged["lastSeenAt"] = observed_at
+        merged["lastSeenAt"] = item_time.isoformat()
         merged.pop("expiredAt", None)
         merged.pop("expiredReason", None)
         by_id[key] = merged
@@ -183,12 +222,15 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         if location not in scope_locations or company_location not in observed_companies or company_location not in successful:
             continue
         if key not in snapshot_ids:
+            cutoff = query_times.get(company_location,observed_time)
+            if cutoff is None:
+                continue
             # RSS observation time is separate from firstSeen/datePosted, which
             # may be backfilled. Retain legacy timestamps for older records.
             presence_times = [timestamp(item.get(field)) for field in (
                 "rssObservedAt", "observedAt", "lastSeenAt", "liveVerifiedAt", "firstSeen",
             )]
-            if any(when is not None and when >= observed_time for when in presence_times):
+            if any(when is not None and when >= cutoff for when in presence_times):
                 continue
             if item.get("jobStatus") != "expired":
                 item["expiredAt"] = observed_at
@@ -213,6 +255,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         "scopeLocations": sorted(scope_locations),
         "expired": expired,
         "reactivated": reactivated,
+        "queryStartedAt": {key: when.isoformat() if when else None for key,when in sorted(query_times.items())},
     }
     return result
 

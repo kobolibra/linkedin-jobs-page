@@ -10,6 +10,7 @@ from linkedin_ids import linkedin_job_id
 
 def combine(directory, scope):
     rows, statuses, per_company = {}, {}, {}
+    query_started_at = {}
     for path in sorted(Path(directory).glob("*.json")):
         try:
             doc = json.loads(path.read_text(encoding="utf-8"))
@@ -29,6 +30,9 @@ def combine(directory, scope):
                     raise ValueError("unverified listing")
                 verified.append((key, item))
             statuses.update(doc.get("statusSummary", {}))
+            if 'queryStartedAt' in doc:
+                starts = doc['queryStartedAt']
+                query_started_at.update({key: starts.get(key) if isinstance(starts,dict) else None for key in doc.get('statusSummary', {})})
             per_company[path.name] = len(items)
             rows.update(verified)
         except (OSError, ValueError, TypeError, AttributeError):
@@ -37,6 +41,8 @@ def combine(directory, scope):
     doc = {"schemaVersion": "2.0", "mode": "full-company-snapshot", "scope": scope,
            "scopeLocations": ["CN", "HK", "SG"] if scope == "expanded" else ["CN"],
            "jobs": list(rows.values()), "statusSummary": statuses, "companies": dict(statuses)}
+    if query_started_at:
+        doc['queryStartedAt'] = query_started_at
     publishable = bool(rows) or any(str(value).startswith(("ok:", "empty")) for value in statuses.values())
     return doc, publishable, per_company
 
