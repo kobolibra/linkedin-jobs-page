@@ -14,7 +14,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 import requests
 from bs4 import BeautifulSoup
 from logo_sources import source_hint
-from linkedin_http import LinkedInSession, block_page
+from linkedin_http import LinkedInSession, RequestStopped, block_page
 from linkedin_detail import fetch_detail
 from linkedin_ids import linkedin_job_id
 
@@ -225,6 +225,8 @@ def main() -> int:
     all_jobs = []
     status_summary = {}
     query_started_at = {}
+    paused_companies = set()
+    retry_times = []
     locations = args.location or ["China"]
     companies = args.company or list(COMPANIES)
     previous = {}
@@ -243,6 +245,16 @@ def main() -> int:
             ended_cleanly = False
             status_key = f"{company}::{region}"
             query_started_at[status_key] = fetched_at
+            if company in paused_companies:
+                # Yield the whole employer after a 429; its other regions
+                # must not consume another request before other employers run.
+                retained = [dict(item) for item in previous.get('jobs', []) if item.get('requestedCompany') == company and item.get('location') == region]
+                all_jobs.extend(retained)
+                status_summary[status_key] = previous.get('statusSummary', {}).get(status_key, 'failed@start=0: HTTP 429 company deferred')
+                starts = previous.get('queryStartedAt', {})
+                query_started_at[status_key] = starts.get(status_key) if isinstance(starts,dict) else None
+                continue
+            resumed_tail = False
             if args.resume:
                 retained = [dict(item) for item in previous['jobs'] if item.get('requestedCompany') == company and item.get('location') == region]
                 # A completed region is not observed again during recovery.
@@ -258,6 +270,8 @@ def main() -> int:
                     continue
                 jobs_by_id = {item['sourceJobId']: item for item in retained}
                 start = int(failed_page[1])
+                resumed_tail = bool(start or retained)
+                if not resumed_tail: query_started_at[status_key] = fetched_at
                 LOG.info("%s [%s] resume start=%s retained=%s", company, region, start, len(jobs_by_id))
             while len(jobs_by_id) < args.results_per_company and start < 1000:
                 # Request newest-first discovery on every page. Server ordering
@@ -281,6 +295,9 @@ def main() -> int:
                     response.raise_for_status()
                 except requests.RequestException as exc:
                     last_error = str(exc)
+                    if isinstance(exc,RequestStopped) and exc.response is not None and exc.response.status_code == 429:
+                        paused_companies.add(company)
+                        retry_times.append(exc.retry_at or 0)
                     response = None
                 if response is None:
                     LOG.error("%s [%s] search failed at start=%s (maximum inline attempts=%s; deferred 429 resumes later): %s", company, region, start, page_attempts, last_error)
@@ -324,7 +341,7 @@ def main() -> int:
                     # A resumed tail and its earlier prefix were observed at
                     # different times. Publish their jobs, but never use absence
                     # in that stitched result to expire canonical records.
-                    status_summary[status_key] = f"partial@resumed-end: {len(company_jobs)} jobs" if args.resume else f"ok: {len(company_jobs)} jobs"
+                    status_summary[status_key] = f"partial@resumed-end: {len(company_jobs)} jobs" if resumed_tail else f"ok: {len(company_jobs)} jobs"
                 elif ended_cleanly:
                     status_summary[status_key] = "no-results-untrusted"
                 elif len(jobs_by_id) >= args.results_per_company or start >= 1000:
@@ -341,7 +358,7 @@ def main() -> int:
             LOG.info("%s [%s] finished: %s jobs", company, region, len(company_jobs))
 
     unique = {job["sourceJobId"]: job for job in all_jobs}
-    output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "queryStartedAt": query_started_at, "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
+    output = {"schemaVersion": "1.2", "generatedAt": datetime.now(timezone.utc).isoformat(), "queryStartedAt": query_started_at, "retryAt": max(retry_times,default=0), "country": "Multi-region", "scopeLocations": sorted({location_code(x) for x in locations}), "descriptionFetchEnabled": args.fetch_description, "count": len(unique), "statusSummary": status_summary, "jobs": list(unique.values())}
     temporary = args.output.with_suffix(args.output.suffix + '.tmp')
     temporary.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     temporary.replace(args.output)

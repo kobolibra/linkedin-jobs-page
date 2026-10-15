@@ -170,7 +170,7 @@ class PolicyTests(unittest.TestCase):
             self.assertEqual(stopped.exception.retry_at, 60)
             self.assertEqual(self.now, 0)  # No inline retry or blocking sleep.
             other.get('https://www.linkedin.com')
-            self.assertEqual(self.now, 30)  # Host pause honored, not the A query pause.
+            self.assertEqual(self.now, 0)  # No client-invented host pause when switching employer.
             first.get('https://www.linkedin.com')
             self.assertEqual(self.now, 60)
             self.assertEqual(get.call_count, 3)
@@ -190,7 +190,7 @@ class PolicyTests(unittest.TestCase):
                 with self.assertRaises(RequestStopped) as stopped: session.get('https://www.linkedin.com')
                 self.assertEqual(stopped.exception.recoverable, index < 5)
             self.assertEqual(get.call_count, 6)
-        self.assertEqual(self.sleeps, [30,60,120,120,120])
+        self.assertEqual(self.sleeps, [])
 
     def test_recovery_pacing_is_bounded_and_restored_after_five_healthy_responses(self):
         coordinator = Coordinator(self.coordinator.path, clock=lambda:self.now, sleep=self.coordinator.sleep)
