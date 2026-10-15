@@ -9,7 +9,7 @@ from posting_evidence import detail_posting_date, search_posting_date, relative_
 from update_jobspy_history import enrich_history
 from reconcile_full_snapshots import reconcile
 from job_liveness import apply_observation, in_scope, select_regional_candidates
-from probe_job_liveness import lookup_posting_date, main as probe_main
+from probe_job_liveness import lookup_posting_date, remember_posting_dates, main as probe_main
 from apply_liveness import main as apply_main
 from merge_n8n_incremental import merge_documents
 
@@ -83,63 +83,55 @@ class PostingTests(unittest.TestCase):
         self.assertEqual(detail_posting_date(html,KEY,"2026-10-09T14:00:00Z")[0],"2026-10-08")
         self.assertIsNone(detail_posting_date(html.replace('"value": "'+KEY+'"','"value": "999999999"'),KEY,"2026-10-09T14:00:00Z")[0])
 
-    def test_ambiguous_age_uses_only_one_search_and_never_other_jobs(self):
-        session=Mock(); session.get.return_value=Mock(status_code=200,text=card("999999999"))
-        self.assertEqual(lookup_posting_date(session,row("HK"),PAGE,'2026-10-09T14:00:00Z',20),(None,None,False))
-        session.get.assert_called_once()
-        self.assertEqual(session.get.call_args.kwargs["params"]["location"],"Hong Kong")
-        session.get.reset_mock()
-        html=PAGE+'<span class="posted-time-ago__text">7 hours ago</span>'
-        self.assertEqual(lookup_posting_date(session,row(),html,'2026-10-09T14:00:00Z',20)[0],"2026-10-09")
-        session.get.assert_not_called()
+    def test_ambiguous_age_skips_without_any_extra_request(self):
+        with patch('requests.Session.request',side_effect=AssertionError('No date HTTP')):
+            self.assertEqual(lookup_posting_date(row('HK'),PAGE,'2026-10-09T14:00:00Z'),(None,None))
+            html=PAGE+'<span class="posted-time-ago__text">7 hours ago</span>'
+            self.assertEqual(lookup_posting_date(row(),html,'2026-10-09T14:00:00Z')[0],'2026-10-09')
 
     def test_known_source_day_rules_out_repost_without_inventing_exact_date(self):
-        session=Mock();stats={}
         html=PAGE+'<span class="posted-time-ago__text">Reposted 2 days ago</span>'
         bounds=relative_posting_bounds(html,KEY,'2026-10-09T14:00:00Z')
         self.assertEqual(tuple(x.isoformat() for x in bounds),('2026-10-06','2026-10-08'))
-        known=row(postingLastDate='2026-10-08')
-        before=dict(known)
-        self.assertEqual(lookup_posting_date(session,known,html,'2026-10-09T14:00:00Z',20,stats=stats),(None,None,False))
+        known=row(postingLastDate='2026-10-08'); before=dict(known)
+        self.assertEqual(lookup_posting_date(known,html,'2026-10-09T14:00:00Z'),(None,None))
         self.assertEqual(known,before)
-        self.assertEqual(stats['postingDateSearchSkippedKnown'],1)
-        session.get.assert_not_called()
 
-    def test_possible_repost_and_untrusted_rss_date_still_search(self):
+    def test_possible_repost_uses_verified_cache_and_never_rss_discovery_as_source(self):
         html=PAGE+'<span class="posted-time-ago__text">1 day ago</span>'
         for candidate in (row(postingLastDate='2026-10-07'),row(postingLastDate='2026-10-08'),row(datePosted='2026-10-08',firstSeen='2026-10-08'),row(postingLastDate='2026-10-10')):
-            session=Mock();session.get.return_value=Mock(status_code=200,text=card(posted='2026-10-08'))
-            self.assertEqual(lookup_posting_date(session,candidate,html,'2026-10-09T14:00:00Z',20)[0],'2026-10-08')
-            session.get.assert_called_once()
+            self.assertIsNone(lookup_posting_date(candidate,html,'2026-10-09T14:00:00Z')[0])
+            self.assertEqual(lookup_posting_date(candidate,html,'2026-10-09T14:00:00Z',cache={KEY:'2026-10-08'})[0],'2026-10-08')
 
     def test_rounding_near_midnight_cannot_manufacture_an_exact_day(self):
         html=PAGE+'<span class="posted-time-ago__text">8 hours ago</span>'
         self.assertEqual(detail_posting_date(html,KEY,'2026-10-09T07:30:00+08:00'),(None,None))
 
-    def test_one_search_page_reuses_other_candidates_by_exact_id(self):
-        second='999999999';cache={};stats={}
-        session=Mock();session.get.return_value=Mock(status_code=200,text=card()+card(second,'2026-10-08'))
-        self.assertEqual(lookup_posting_date(session,row(),PAGE,'2026-10-09T14:00:00Z',20,cache=cache,stats=stats)[0],'2026-10-09')
-        candidate=row(sourceJobId='li-'+second,title='Other title')
-        self.assertEqual(lookup_posting_date(session,candidate,PAGE.replace(KEY,second),'2026-10-09T14:00:00Z',20,cache=cache,stats=stats)[0],'2026-10-08')
-        session.get.assert_called_once()
-        self.assertEqual(stats['postingDateSearchRequests'],1)
-        self.assertEqual(stats['postingDateSearchCacheHits'],1)
+    def test_only_exact_id_cached_cards_are_usable(self):
+        cache={}; stats={}; conflicts=set()
+        remember_posting_dates(cache,conflicts,card()+card('999999999','2026-10-08'),'2026-10-09T14:00:00Z')
+        self.assertEqual(lookup_posting_date(row(),PAGE,'2026-10-09T14:00:00Z',cache=cache,stats=stats)[0],'2026-10-09')
+        other=row(sourceJobId='li-999999999')
+        self.assertEqual(lookup_posting_date(other,PAGE.replace(KEY,'999999999'),'2026-10-09T14:00:00Z',cache=cache,stats=stats)[0],'2026-10-08')
+        self.assertEqual(stats['postingDateCacheHits'],2)
+        self.assertIsNone(lookup_posting_date(row(sourceJobId='li-888888888'),PAGE.replace(KEY,'888888888'),'2026-10-09T14:00:00Z',cache=cache)[0])
 
-    def test_cached_date_cannot_hide_a_newer_repost_age(self):
-        cache={KEY:'2026-09-01'}
-        session=Mock();session.get.return_value=Mock(status_code=200,text=card(posted='2026-10-08'))
+    def test_cached_date_cannot_hide_a_newer_repost_age_or_invent_future_date(self):
         html=PAGE+'<span class="posted-time-ago__text">1 day ago</span>'
-        self.assertEqual(lookup_posting_date(session,row(),html,'2026-10-09T14:00:00Z',20,cache=cache)[0],'2026-10-08')
-        session.get.assert_called_once()
+        for day in ('2026-09-01','2026-10-10','invalid'):
+            self.assertIsNone(lookup_posting_date(row(),html,'2026-10-09T14:00:00Z',cache={KEY:day})[0])
+        future=PAGE+'<span class="posted-time-ago__text" datetime="2026-10-10">Tomorrow</span>'
+        self.assertIsNone(lookup_posting_date(row(),future,'2026-10-09T14:00:00Z')[0])
 
-    def test_missing_conflicting_foreign_and_failed_dates_are_not_cached(self):
-        for html,status in ((card('999999999'),200),(card()+card(posted='2026-10-08'),200),(card().replace('www.linkedin.com','notlinkedin.com'),200),('error',500)):
-            session=Mock();session.get.return_value=Mock(status_code=status,text=html)
+    def test_conflicting_foreign_and_future_cards_are_never_reused(self):
+        cache={}; conflicts=set()
+        remember_posting_dates(cache,conflicts,card(),'2026-10-09T14:00:00Z')
+        remember_posting_dates(cache,conflicts,card(posted='2026-10-08'),'2026-10-09T14:00:00Z')
+        remember_posting_dates(cache,conflicts,card(),'2026-10-09T14:00:00Z')
+        self.assertNotIn(KEY,cache); self.assertIn(KEY,conflicts)
+        for html in (card().replace('www.linkedin.com','notlinkedin.com'),card(posted='2026-10-10'),card()+card(posted='2026-10-08')):
             cache={}
-            for _ in range(2):
-                self.assertIsNone(lookup_posting_date(session,row(),PAGE,'2026-10-09T14:00:00Z',20,cache=cache)[0])
-            self.assertEqual(session.get.call_count,2)
+            remember_posting_dates(cache,set(),html,'2026-10-09T14:00:00Z')
             self.assertNotIn(KEY,cache)
 
     def test_non_target_all_regions_repost_and_reactivation_preserve_first_seen(self):
@@ -245,32 +237,22 @@ class PostingTests(unittest.TestCase):
             self.assertTrue(got['stats']['circuitOpen'])
             self.assertEqual(got['stats']['postingDates'],0)
 
-    def test_one_temporary_date_error_does_not_pause_following_jobs(self):
-        import requests
-        from test_linkedin_http import response
-        session=Mock();stats={}
-        session.get.side_effect=[requests.HTTPError('500',response=response(500)),Mock(status_code=200,text=card())]
-        self.assertEqual(lookup_posting_date(session,row(),PAGE,'2026-10-09T14:00:00Z',20,stats=stats),(None,None,False))
-        self.assertEqual(lookup_posting_date(session,row(),PAGE,'2026-10-09T14:00:00Z',20,stats=stats)[0],'2026-10-09')
-        self.assertEqual(stats['postingDateSearchErrors'],1)
-        self.assertEqual(stats['postingDateSearchConsecutiveErrors'],0)
-
-    def test_three_consecutive_date_service_errors_pause_only_date_fallback(self):
+    def test_ambiguous_pages_do_not_call_the_date_service(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp);jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(4)]
             (p/'jobs').write_text(json.dumps({'jobs':jobs}))
             def reply(url,**kw):
-                if 'seeMoreJobPostings' in url:return Mock(status_code=500,text='server error')
+                self.assertIn('/jobs/view/',url)
                 return Mock(status_code=200,text=PAGE.replace(KEY,url.rsplit('/',1)[-1]))
             session=Mock();session.get.side_effect=reply
             with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
             got=json.loads((p/'out').read_text())
             self.assertEqual(got['stats']['probed'],4)
             self.assertEqual(got['stats']['open'],4)
-            self.assertEqual(got['stats']['postingDateSearchErrors'],3)
-            self.assertTrue(got['stats']['postingDateSearchPaused'])
+            self.assertEqual(got['stats']['postingDateSearchRequests'],0)
+            self.assertEqual(got['stats']['postingDateSkippedNoEvidence'],4)
             self.assertFalse(got['stats']['circuitOpen'])
-            self.assertEqual(session.get.call_count,7)
+            self.assertEqual(session.get.call_count,4)
 
     def test_interruption_keeps_completed_individual_observations(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -284,32 +266,29 @@ class PostingTests(unittest.TestCase):
             self.assertEqual(got['observations'][0]['jobId'],'500000000')
             self.assertEqual(got['observations'][0]['result'],'open')
 
-    def test_date_rate_limits_retry_later_without_losing_verified_open_jobs(self):
-        from linkedin_http import RequestStopped
+    def test_page_date_repost_survives_without_date_search(self):
         with tempfile.TemporaryDirectory() as tmp:
-            p=Path(tmp)
-            jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(5)]
+            p=Path(tmp);jobs=[row(sourceJobId='li-'+str(500000000+i)) for i in range(5)]
             (p/'jobs').write_text(json.dumps({'jobs':jobs}))
-            def reply(url, **kwargs):
-                if 'seeMoreJobPostings' in url:
-                    raise RequestStopped('short HTTP 429 pause',recoverable=True)
-                key=url.rsplit('/',1)[-1]
-                html=PAGE.replace(KEY,key)
+            def reply(url,**kwargs):
+                self.assertIn('/jobs/view/',url)
+                key=url.rsplit('/',1)[-1];html=PAGE.replace(KEY,key)
                 if key=='500000004':
                     data={'@type':'JobPosting','identifier':{'value':key},'datePosted':'2026-10-01'}
                     html+='<script type="application/ld+json">'+json.dumps(data)+'</script>'
                 return Mock(status_code=200,text=html)
             session=Mock();session.get.side_effect=reply
-            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
+            with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
             got=json.loads((p/'out').read_text())
             self.assertEqual(got['stats']['open'],5)
-            self.assertEqual(got['stats']['probed'],5)
-            self.assertFalse(got['stats']['circuitOpen'])
-            self.assertFalse(got['stats'].get('postingDateSearchPaused',False))
-            self.assertEqual(got['stats']['rateLimitedExhausted'],4)
             self.assertEqual(got['stats']['postingDates'],1)
-            self.assertEqual(session.get.call_count,17)
-            self.assertEqual(sum('seeMoreJobPostings' in call.args[0] for call in session.get.call_args_list),12)
+            self.assertEqual(got['stats']['postingDateSearchRequests'],0)
+            self.assertEqual(session.get.call_count,5)
+            observation=next(x for x in got['observations'] if x['jobId']=='500000004')
+            item=row(sourceJobId='li-500000004')
+            apply_observation(item,'open',observation['checkedAt'],date_posted=observation['datePosted'],date_source=observation['dateSource'])
+            self.assertEqual(item['pushTime'],'2026-10-01')
+            self.assertEqual(item['firstSeen'],'2026-08-01')
 
     def test_shared_pacer_handles_waits_without_second_per_job_sleep(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -333,9 +312,9 @@ class PostingTests(unittest.TestCase):
                                      Mock(status_code=200,text=PAGE.replace(KEY,'500000000'))]
             with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
             got=json.loads((p/'out').read_text())
-            self.assertEqual(session.get.call_count,3)
-            self.assertEqual(got['stats']['unknown'],0)
-            self.assertEqual(got['stats']['open'],2)
+            self.assertEqual(session.get.call_count,2)
+            self.assertEqual(got['stats']['unknown'],1)
+            self.assertEqual(got['stats']['open'],1)
             self.assertFalse(got['stats']['circuitOpen'])
 
     def test_login_or_persistent_quota_stop_still_protects_liveness(self):
