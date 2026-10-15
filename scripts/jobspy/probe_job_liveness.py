@@ -2,6 +2,7 @@
 """Check non-target CN/HK/SG jobs and their posting dates in one bounded pass."""
 from __future__ import annotations
 import argparse, json, time
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 import requests
@@ -50,6 +51,7 @@ def lookup_posting_date(session, row, html, checked_at, timeout, allow_search=Tr
         stats["postingDateSearchConsecutiveErrors"] = streak
         return streak >= 3
     context = getattr(session, "context", None)
+    response = None
     try:
         if isinstance(context, dict):
             session.context = {**context, "endpoint": "posting-date-search"}
@@ -60,7 +62,9 @@ def lookup_posting_date(session, row, html, checked_at, timeout, allow_search=Tr
             "start": 0,
         }, timeout=timeout, allow_redirects=False)
         if response.status_code != 200:
-            if response.status_code in {401,403,429,999}: return None, None, True
+            if response.status_code == 429:
+                raise RequestStopped('HTTP 429 posting-date search deferred', response=response, recoverable=True)
+            if response.status_code in {401,403,999}: return None, None, True
             return None, None, transient_failure() if response.status_code >= 500 else False
         stats["postingDateSearchConsecutiveErrors"] = 0
         dates = search_posting_dates(response.text)
@@ -69,11 +73,13 @@ def lookup_posting_date(session, row, html, checked_at, timeout, allow_search=Tr
             cache.update(dates)
         posted = dates.get(key)
         return posted, "linkedin-search-id" if posted else None, False
-    except RequestStopped:
+    except RequestStopped as exc:
+        if exc.recoverable: raise
         return None, None, True
     except requests.RequestException:
         return None, None, transient_failure()
     finally:
+        if response is not None: response.close()
         if isinstance(context, dict):
             session.context = context
 
@@ -100,46 +106,97 @@ def main():
         candidates=select_regional_candidates(rows(doc), locations, now=now, max_probes=args.max_probes,
             min_interval_hours=args.min_interval_hours, gone_confirm_hours=args.gone_confirm_hours,
             recheck_expired_hours=args.recheck_expired_hours, recheck_expired_days=args.recheck_expired_days)
-        session=LinkedInSession(attempts=1, coordinator=Coordinator(), context={"stage":"liveness"}); session.headers.update({"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
-        breaker=0; classified=[]; search_dates=True; cache={}; started=time.monotonic()
-        for i,row in enumerate(candidates):
-            key=jid(row); url=f"https://www.linkedin.com/jobs/view/{key}"
-            posted=source=hint=None; blocked=False; shared_stop=False
-            try:
-                session.context={"stage":"liveness","jobId":key,"endpoint":"view"}
-                response=session.get(url, timeout=args.timeout, allow_redirects=False)
-                checked_at=datetime.now(timezone.utc).isoformat()
-                result=classify(response.status_code, response.text, key)
-                soup=BeautifulSoup(response.text,"html.parser") if response.status_code==200 else None
-                if soup is not None: hint=source_hint(soup,row.get('company'),url,checked_at)
-                blocked=response.status_code in {403,429,999} or response.status_code >= 500
-                if result == "open":
-                    posted,source,date_blocked=lookup_posting_date(session,row,soup,checked_at,args.timeout,allow_search=search_dates,cache=cache,stats=out["stats"])
-                    if date_blocked:
-                        # An optional date lookup failing does not invalidate
-                        # the verified open job page or its liveness coverage.
-                        # Pause only that fallback; dates in job HTML still work.
-                        search_dates=False
-                        out["stats"]["postingDateSearchPaused"] = True
-                        print("posting_date_search_paused", key, "transport failure; continue verified liveness checks", flush=True)
-            except requests.RequestException as exc:
-                checked_at=datetime.now(timezone.utc).isoformat()
-                result="unknown"; blocked=True; shared_stop=isinstance(exc,RequestStopped) and not exc.recoverable; print("probe_error",key,type(exc).__name__,str(exc),flush=True)
-            breaker=breaker+1 if blocked else 0
-            classified.append(result)
-            observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
-            if posted: observation.update({"datePosted":posted,"dateSource":source})
-            if hint: observation['companyLogoSource']=hint
-            out["observations"].append(observation)
-            out["stats"]["probed"]=len(out["observations"])
-            save()
-            print("liveness",f"{i+1}/{len(candidates)}",key,result,flush=True)
-            if shared_stop or breaker >= args.breaker:
-                out["stats"]["circuitOpen"] = True
-                out["stats"]["skippedCircuitOpen"] = len(candidates)-i-1
-                break
-            # Coordinator already spaces every job and date request. Do not
-            # add another random wait between observations.
+        # Only this stage uses a shorter bounded randomized interval: 2.25–2.75s.
+        # List/detail pacing, global Retry-After and shared circuits are unchanged.
+        coordinator=Coordinator(min_interval=2.25, interval_jitter=.5)
+        session=LinkedInSession(attempts=1, coordinator=coordinator, context={"stage":"liveness"}); session.headers.update({"User-Agent":UA,"Accept-Language":"en-US,en;q=0.9"})
+        breaker=0; search_dates=True; cache={}; started=time.monotonic()
+        pending=deque({'index':i, 'kind':'view', 'attempt':1, 'readyAt':0} for i in range(len(candidates)))
+        observations={}
+        try:
+            while pending:
+                # A different successful lookup may already have resolved a
+                # cooling date task. Consume that verified cache without waiting.
+                for waiting in pending:
+                    if waiting['kind'] == 'date' and waiting['readyAt'] > coordinator.clock() and jid(candidates[waiting['index']]) in cache:
+                        day,source,_=lookup_posting_date(session,candidates[waiting['index']],waiting['html'],waiting['checkedAt'],args.timeout,allow_search=False,cache=cache,stats=out['stats'])
+                        if day:
+                            waiting.update(cachedDate=(day,source),readyAt=0)
+                # A cooling query must not hold up a different ready job/date.
+                ready=next((i for i,task in enumerate(pending) if task['readyAt'] <= coordinator.clock()), None)
+                if ready is None:
+                    coordinator.wait(max(0, min(t['readyAt'] for t in pending)-coordinator.clock()))
+                    continue
+                pending.rotate(-ready); task=pending.popleft(); pending.rotate(ready)
+                i=task['index']; row=candidates[i]; key=jid(row)
+                kind=task['kind']; url=f"https://www.linkedin.com/jobs/view/{key}"
+                if kind == 'date' and not search_dates: continue
+                posted=source=hint=None; blocked=False; shared_stop=False
+                result='unknown'; checked_at=datetime.now(timezone.utc).isoformat()
+                observation=observations.get(i)
+                session.context={"stage":"liveness","jobId":key,"endpoint":"view" if kind == 'view' else "posting-date-search", "retryRound":task['attempt']-1}
+                if task['attempt'] > 1:
+                    out['stats']['deferredTasksRetried']=out['stats'].get('deferredTasksRetried',0)+1
+                try:
+                    if kind == 'view':
+                        response=session.get(url, timeout=args.timeout, allow_redirects=False)
+                        try:
+                            checked_at=datetime.now(timezone.utc).isoformat()
+                            if response.status_code == 429:
+                                raise RequestStopped('HTTP 429 job page deferred', response=response, recoverable=True)
+                            result=classify(response.status_code, response.text, key)
+                            soup=BeautifulSoup(response.text,'html.parser') if response.status_code==200 else None
+                            if soup is not None: hint=source_hint(soup,row.get('company'),url,checked_at)
+                            blocked=response.status_code in {403,999} or response.status_code >= 500
+                            if result == 'open':
+                                skipped=out['stats'].get('postingDateSearchSkippedKnown',0)
+                                posted,source,_=lookup_posting_date(session,row,soup,checked_at,args.timeout,allow_search=False,cache=cache,stats=out['stats'])
+                                if not posted and search_dates and row.get('title') and row.get('company') and skipped == out['stats'].get('postingDateSearchSkippedKnown',0):
+                                    pending.append({'index':i,'kind':'date','attempt':1,'readyAt':0,'html':soup,'checkedAt':checked_at})
+                        finally:
+                            response.close()
+                    else:
+                        # Reuse the verified page; retry only the failed date endpoint.
+                        if 'cachedDate' in task:
+                            posted,source=task['cachedDate']; date_blocked=False
+                        else:
+                            posted,source,date_blocked=lookup_posting_date(session,row,task['html'],task['checkedAt'],args.timeout,cache=cache,stats=out['stats'])
+                        if date_blocked:
+                            search_dates=False
+                            out['stats']['postingDateSearchPaused']=True
+                            print('posting_date_search_paused',key,'transport failure; verified liveness is retained',flush=True)
+                except requests.RequestException as exc:
+                    checked_at=datetime.now(timezone.utc).isoformat()
+                    shared_stop=isinstance(exc,RequestStopped) and not exc.recoverable
+                    recoverable=isinstance(exc,RequestStopped) and exc.recoverable
+                    if recoverable and task['attempt'] < 3:
+                        pending.append({**task,'attempt':task['attempt']+1,'readyAt':exc.retry_at or 0})
+                        out['stats']['rateLimitedDeferred']=out['stats'].get('rateLimitedDeferred',0)+1
+                    elif recoverable:
+                        out['stats']['rateLimitedExhausted']=out['stats'].get('rateLimitedExhausted',0)+1
+                    blocked=kind == 'view' or shared_stop
+                    print('probe_error',kind,key,type(exc).__name__,str(exc),flush=True)
+                if kind == 'view':
+                    observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
+                    if hint: observation['companyLogoSource']=hint
+                    observations[i]=observation
+                if posted and observation is not None:
+                    observation.update(datePosted=posted,dateSource=source)
+                out['observations']=[observations[j] for j in sorted(observations)]
+                out['stats']['probed']=len(observations)
+                save()
+                print('liveness',f"{len(observations)}/{len(candidates)}",kind,key,observation['result'] if observation else 'unknown',f"attempt={task['attempt']}",flush=True)
+                # Optional date limits do not erase open evidence. The transport
+                # still opens its host circuit after six consecutive real 429s.
+                breaker=breaker+1 if blocked else 0
+                if shared_stop or breaker >= args.breaker:
+                    out['stats']['circuitOpen']=True
+                    out['stats']['skippedCircuitOpen']=len(candidates)-len(observations)
+                    out['stats']['skippedDeferred']=len(pending)
+                    break
+        finally:
+            session.close()
+        classified=[x['result'] for x in out['observations']]
         meaningful=[x for x in classified if x != "unknown"]
         ratio=(meaningful.count("not_accepting")/len(meaningful)) if meaningful else 0
         if len(meaningful) >= args.guard_min and ratio > args.guard_ratio:

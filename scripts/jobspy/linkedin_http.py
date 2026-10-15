@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import fcntl
 import json
 import logging
@@ -14,7 +15,7 @@ import uuid
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 
 import requests
 from bs4 import BeautifulSoup
@@ -97,11 +98,12 @@ class Coordinator:
     Different GitHub runners do not share a file lock.
     """
     def __init__(self, path=None, *, clock=time.time, sleep=time.sleep,
-                 max_concurrent=1, min_interval=3, max_wait=180, deadline=None):
+                 max_concurrent=1, min_interval=3, max_wait=180, deadline=None, interval_jitter=0):
         self.path = Path(path or os.environ.get("LINKEDIN_HTTP_STATE", str(Path(tempfile.gettempdir()) / "linkedin-http-runtime.json")))
         self.clock, self.sleep = clock, sleep
         self.max_concurrent, self.min_interval = max(1, max_concurrent), max(0, min_interval)
         self.max_wait = max_wait
+        self.interval_jitter = max(0, interval_jitter)
         self.recovery_pacing = False
         # Normal collection completes its work rather than truncating a stage.
         # Explicit caller deadlines remain available for dedicated utilities.
@@ -179,7 +181,7 @@ class Coordinator:
                     if recovery.get("expiresAt", 0) <= now:
                         slot.pop("runtimePacing", None); recovery = {}
                     interval = max(self.min_interval, recovery.get("interval", 0)) if self.min_interval else 0
-                    slot["nextRequestAt"] = now + interval
+                    slot["nextRequestAt"] = now + interval + (random.uniform(0, self.interval_jitter) if self.interval_jitter else 0)
                     return host, token
                 if len(leases) >= concurrent:
                     delay = max(delay, min(.25, min(leases.values()) - now))
@@ -256,7 +258,12 @@ class LinkedInSession(requests.Session):
         consecutive_429 = 0
         stage = self.context.get('stage')
         query = (f"search:{self.context.get('company')}::{self.context.get('region')}" if stage == 'search' and self.context.get('company')
-                 else f"job:{self.context.get('jobId')}" if stage in ('details', 'liveness') and self.context.get('jobId') else None)
+                 else f"liveness:{self.context.get('endpoint', 'view')}:{self.context.get('jobId')}" if stage == 'liveness' and self.context.get('jobId')
+                 else f"job:{self.context.get('jobId')}" if stage == 'details' and self.context.get('jobId') else None)
+        prepared = requests.Request(method, url, params=kwargs.get('params')).prepare().url
+        parts = urlsplit(prepared)
+        canonical = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(sorted(parse_qsl(parts.query, keep_blank_values=True))), ''))
+        request_key = hashlib.sha256((method.upper() + '\0' + canonical).encode()).hexdigest()[:24]
         for attempt in range(1, self.attempts + 1):
             if self.user_agents:
                 self.headers["User-Agent"] = self.user_agents[(attempt - 1) % len(self.user_agents)]
@@ -267,7 +274,7 @@ class LinkedInSession(requests.Session):
                 try:
                     response = super().request(method, url, **kwargs)
                 except requests.RequestException as exc:
-                    record_event(**self.context, host=host_key(url), status=0, attempt=attempt,
+                    record_event(**self.context, host=host_key(url), status=0, attempt=attempt, requestKey=request_key,
                                  outcome="network_error", error=type(exc).__name__)
                     if attempt == self.attempts:
                         raise
@@ -281,7 +288,7 @@ class LinkedInSession(requests.Session):
                     retry_after = (retry_after_seconds(response.headers.get("Retry-After"))
                                    if status in (429, 500, 502, 503, 504) else None)
                     rate_limit_delay = (retry_after if retry_after is not None else self.coordinator.fallback_429_delay(url)) if status == 429 else None
-                    record_event(**self.context, host=host_key(url), status=status, attempt=attempt,
+                    record_event(**self.context, host=host_key(url), status=status, attempt=attempt, requestKey=request_key,
                                  outcome="blocked" if blocked else "rate_limited" if status == 429 else "response",
                                  retryAfterSeconds=retry_after,
                                  cooldownSeconds=rate_limit_delay, cooldownSource=("server" if retry_after is not None else "client") if status == 429 else None,

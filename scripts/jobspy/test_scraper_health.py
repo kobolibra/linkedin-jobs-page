@@ -68,10 +68,10 @@ class HealthTests(unittest.TestCase):
     def test_wait_sources_and_deferred_retries_are_reported_separately(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)
-            events=[{'stage':'search','company':'A','region':'CN','status':429,'retryAfterSeconds':None,'cooldownSource':'client'},
+            events=[{'stage':'search','company':'A','region':'CN','pageStart':10,'status':429,'retryAfterSeconds':None,'cooldownSource':'client'},
                     {'stage':'search','outcome':'query_deferred'},
                     {'stage':'search','company':'B','region':'CN','status':429,'retryAfterSeconds':90,'cooldownSource':'server'},
-                    {'stage':'search','company':'A','region':'CN','status':200,'retryRound':1}]
+                    {'stage':'search','company':'A','region':'CN','pageStart':10,'status':200,'retryRound':1}]
             (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
             args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
             report=collect(args)
@@ -79,6 +79,31 @@ class HealthTests(unittest.TestCase):
             self.assertEqual(report['retries'],1)
             self.assertEqual(report['searchTransport']['A::CN']['retries'],1)
             self.assertEqual(cooldowns({'linkedin.com':{'runtimeQueries':{'A':{'until':500}},'runtimePacing':{'interval':6}}}, now=100), {})
+
+    def test_resume_tail_is_not_counted_as_failed_page_retries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            base={'stage':'search','company':'A','region':'CN','attempt':1}
+            events=[{**base,'status':429,'pageStart':210}]
+            events += [{**base,'status':200,'pageStart':start,'retryRound':1} for start in range(210,440,10)]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            report=collect(args)
+            self.assertEqual(report['requests'],24)
+            self.assertEqual(report['retries'],1)
+            self.assertEqual(report['searchTransport']['A::CN']['retries'],1)
+
+    def test_hashed_request_identity_counts_network_and_deferred_retries(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)
+            events=[{'stage':'details','status':0,'requestKey':'guest-A'},
+                    {'stage':'details','status':429,'requestKey':'guest-A','attempt':2},
+                    {'stage':'details','status':200,'requestKey':'guest-B'},
+                    {'stage':'details','status':200,'requestKey':'guest-A','retryRound':1},
+                    {'stage':'details','status':200,'requestKey':'view-A','retryRound':1}]
+            (p/'events').write_text('\n'.join(json.dumps(x) for x in events))
+            args=SimpleNamespace(events=str(p/'events'),state=str(p/'absent'),task='jobs',workflow_status='success',search_dir=None,details=None,liveness=None)
+            self.assertEqual(collect(args)['retries'],2)
 
     def test_collect_reports_real_attempts_and_guest_parsing(self):
         with tempfile.TemporaryDirectory() as tmp:

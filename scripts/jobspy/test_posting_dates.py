@@ -284,7 +284,7 @@ class PostingTests(unittest.TestCase):
             self.assertEqual(got['observations'][0]['jobId'],'500000000')
             self.assertEqual(got['observations'][0]['result'],'open')
 
-    def test_optional_date_limit_does_not_trip_liveness_or_repeat_failed_search(self):
+    def test_date_rate_limits_retry_later_without_losing_verified_open_jobs(self):
         from linkedin_http import RequestStopped
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)
@@ -305,10 +305,11 @@ class PostingTests(unittest.TestCase):
             self.assertEqual(got['stats']['open'],5)
             self.assertEqual(got['stats']['probed'],5)
             self.assertFalse(got['stats']['circuitOpen'])
-            self.assertTrue(got['stats']['postingDateSearchPaused'])
+            self.assertFalse(got['stats'].get('postingDateSearchPaused',False))
+            self.assertEqual(got['stats']['rateLimitedExhausted'],4)
             self.assertEqual(got['stats']['postingDates'],1)
-            self.assertEqual(session.get.call_count,6)
-            self.assertEqual(sum('seeMoreJobPostings' in call.args[0] for call in session.get.call_args_list),1)
+            self.assertEqual(session.get.call_count,17)
+            self.assertEqual(sum('seeMoreJobPostings' in call.args[0] for call in session.get.call_args_list),12)
 
     def test_shared_pacer_handles_waits_without_second_per_job_sleep(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -328,12 +329,13 @@ class PostingTests(unittest.TestCase):
             (p/'jobs').write_text(json.dumps({'jobs':jobs}))
             session=Mock()
             session.get.side_effect=[RequestStopped('short HTTP 429 pause',recoverable=True),
-                                     Mock(status_code=200,text=PAGE.replace(KEY,'500000001'))]
+                                     Mock(status_code=200,text=PAGE.replace(KEY,'500000001')),
+                                     Mock(status_code=200,text=PAGE.replace(KEY,'500000000'))]
             with patch('probe_job_liveness.LinkedInSession',return_value=session),patch('time.sleep'),patch('sys.argv',['probe','--jobs',str(p/'jobs'),'--output',str(p/'out')]):probe_main()
             got=json.loads((p/'out').read_text())
-            self.assertEqual(session.get.call_count,2)
-            self.assertEqual(got['stats']['unknown'],1)
-            self.assertEqual(got['stats']['open'],1)
+            self.assertEqual(session.get.call_count,3)
+            self.assertEqual(got['stats']['unknown'],0)
+            self.assertEqual(got['stats']['open'],2)
             self.assertFalse(got['stats']['circuitOpen'])
 
     def test_login_or_persistent_quota_stop_still_protects_liveness(self):
