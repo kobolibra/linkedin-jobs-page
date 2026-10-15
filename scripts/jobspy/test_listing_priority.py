@@ -35,7 +35,7 @@ class ListingPriorityTests(unittest.TestCase):
             self.assertEqual(len(snapshot['jobs']),2)
             self.assertTrue(snapshot['statusSummary']['HSBC::CN'].startswith('failed@start=10:'))
             old={'sourceJobId':'li-888888888','link':'https://www.linkedin.com/jobs/view/888888888','company':'HSBC','requestedCompany':'HSBC','location':'CN','title':'Existing job','jobStatus':'active'}
-            merged = reconcile({'jobs':[old]},snapshot,'2026-10-14T04:00:00Z')
+            merged = reconcile({'jobs':[old]},snapshot,json.loads(output.read_text())['generatedAt'])
             self.assertEqual({x['sourceJobId'] for x in merged['jobs']},{'li-888888888','li-700000001','li-700000002'})
             self.assertTrue(all(x['jobStatus']=='active' for x in merged['jobs']))
             self.assertEqual(merged['jobspySnapshot']['expired'],0)
@@ -67,7 +67,7 @@ class ListingPriorityTests(unittest.TestCase):
             snapshot,publishable,_=combine(tmp,'expanded')
             self.assertTrue(publishable)
             old=job('888888888','CN');old['jobStatus']='active'
-            merged=reconcile({'jobs':[old]},snapshot,'2026-10-14T04:00:00Z')
+            merged=reconcile({'jobs':[old]},snapshot,json.loads(output.read_text())['generatedAt'])
             self.assertEqual(next(x for x in merged['jobs'] if x['sourceJobId']=='li-888888888')['jobStatus'],'active')
             self.assertFalse(output.with_suffix('.json.tmp').exists())
         self.assertEqual([x['start'] for x in session.params],[10,20,30])
