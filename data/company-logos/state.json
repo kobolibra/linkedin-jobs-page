@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-15T07:17:50.945096+00:00",
+    "checkedAt": "2026-10-15T10:03:43.517423+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-15T07:17:56.845790+00:00",
+    "checkedAt": "2026-10-15T10:03:49.355555+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-15T07:18:02.866741+00:00",
+    "checkedAt": "2026-10-15T10:03:55.391802+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-15T07:18:05.854542+00:00",
+    "checkedAt": "2026-10-15T10:03:58.404557+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-15T07:18:08.816794+00:00",
+    "checkedAt": "2026-10-15T10:04:01.330265+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6795,5 +6795,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQELj98pL7d0GQ/company-logo_100_100/company-logo_100_100/0/1640736210061/microsoft_germany_logo?e=2147483647&v=beta&t=0dSGBOClJ1RDvP2cxQzJXwEt7nmvLD23BOkpmH4Dni0",
     "companyUrl": "https://www.linkedin.com/company/microsoft-germany",
     "sourceJobId": "4477062094"
+  },
+  "black sun asia pacific": {
+    "name": "Black Sun Asia Pacific",
+    "checkedAt": "2026-10-15T10:03:39.198360+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ade5680638841c2a2f525eea.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQENunfgxxNBpQ/company-logo_100_100/company-logo_100_100/0/1630541757703/black_sun_asia_pacific_logo?e=2147483647&v=beta&t=WCxEkKbWzUGxfpPvM5asMgK79jj7AJSP2AB61iRdqgg",
+    "companyUrl": "https://sg.linkedin.com/company/black-sun-asia-pacific",
+    "sourceJobId": "4477059850"
+  },
+  "the esplanade co ltd": {
+    "name": "The Esplanade Co Ltd",
+    "checkedAt": "2026-10-15T10:03:40.614133+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "093ac2986fb0e33386a817ac.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEKVbyhJGIUFQ/company-logo_100_100/company-logo_100_100/0/1679543913140/the_esplanade_co_ltd_logo?e=2147483647&v=beta&t=5dr2DcM78Os7FaB1zX31G97_Z5yRy4x7lk6DlDPWGto",
+    "companyUrl": "https://sg.linkedin.com/company/the-esplanade-co-ltd",
+    "sourceJobId": "4479797932"
   }
 }

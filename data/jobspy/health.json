@@ -5037,6 +5037,43 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:38717448263:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-15T10:04:04.588687+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 11,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 8,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 11
+      },
+      "stages": {
+        "logos": 11
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 7,
+        "downloaded": 2,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
