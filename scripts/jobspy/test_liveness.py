@@ -7,26 +7,22 @@ from job_liveness import apply_observation, classify, in_scope, select_candidate
 from apply_liveness import main as apply_main
 class LivenessTests(unittest.TestCase):
     def row(self, **kw): return {"sourceJobId":"li-123456789","company":"Small Co","companyCanonical":"small co","location":"CN","jobStatus":"active",**kw}
-    def test_expired_jobs_obey_72_hours_even_with_pending_marker(self):
-        now = datetime(2026, 10, 6, 12, tzinfo=timezone.utc)
-        for hours in (6, 21, 24, 71.999, 72, 73):
-            for pending in (False, True):
-                with self.subTest(hours=hours, pending=pending):
-                    row = self.row(jobStatus='expired', expiredReason='linkedin_closed', expiredAt=(now-timedelta(days=5)).isoformat(), liveCheckedAt=(now-timedelta(hours=hours)).isoformat())
-                    if pending:
-                        row['liveFirstMissAt'] = (now-timedelta(days=6)).isoformat()
-                    self.assertEqual(bool(select_candidates([row], now=now)), hours >= 72)
+    def test_expired_jobs_are_not_periodically_rechecked_before_retention(self):
+        now=datetime(2026,10,6,12,tzinfo=timezone.utc)
+        for days in (1,3,5,10,14,14.999):
+            for pending in (False,True):
+                item=self.row(jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=days)).isoformat(),liveCheckedAt=(now-timedelta(hours=73)).isoformat())
+                if pending:item['liveFirstMissAt']=(now-timedelta(days=20)).isoformat()
+                self.assertEqual(select_candidates([item],now=now),[])
 
-    def test_expired_window_and_missing_check_time(self):
-        now = datetime(2026, 10, 6, 12, tzinfo=timezone.utc)
-        for days, expected in ((2, False), (3, True), (30, True), (30.001, False)):
-            with self.subTest(days=days):
-                row = self.row(jobStatus='expired', expiredReason='linkedin_removed', expiredAt=(now-timedelta(days=days)).isoformat())
-                self.assertEqual(bool(select_candidates([row], now=now)), expected)
-        row = self.row(jobStatus='expired', expiredReason='linkedin_removed', expiredAt='invalid', liveCheckedAt=(now-timedelta(hours=73)).isoformat())
-        self.assertEqual(select_candidates([row], now=now), [row])
-        row.pop('liveCheckedAt')
-        self.assertEqual(select_candidates([row], now=now), [])
+    def test_expired_final_recheck_at_fifteen_days_has_no_thirty_day_cutoff(self):
+        now=datetime(2026,10,6,12,tzinfo=timezone.utc)
+        for days,expected in ((14.999,False),(15,True),(30,True),(45,True)):
+            item=self.row(jobStatus='expired',expiredReason='linkedin_removed',expiredAt=(now-timedelta(days=days)).isoformat())
+            self.assertEqual(bool(select_candidates([item],now=now)),expected)
+            self.assertEqual(bool(select_candidates([item],now=now,recheck_expired_hours=72,recheck_expired_days=30)),expected)
+        invalid=self.row(jobStatus='expired',expiredReason='linkedin_removed',expiredAt='invalid',liveCheckedAt=(now-timedelta(days=20)).isoformat())
+        self.assertEqual(select_candidates([invalid],now=now),[])
 
     def test_active_rules_and_candidate_budget_remain_intact(self):
         now = datetime(2026, 10, 6, 12, tzinfo=timezone.utc)
@@ -36,7 +32,7 @@ class LivenessTests(unittest.TestCase):
         recent = self.row(sourceJobId='li-100000004', liveCheckedAt=(now-timedelta(hours=19)).isoformat())
         expired = self.row(sourceJobId='li-100000005', jobStatus='expired', expiredReason='linkedin_closed', expiredAt=(now-timedelta(days=5)).isoformat(), liveCheckedAt=(now-timedelta(hours=73)).isoformat())
         rows = [expired, recent, due, never, pending]
-        self.assertEqual(select_candidates(rows, now=now), [pending, never, due, expired])
+        self.assertEqual(select_candidates(rows, now=now), [pending, never, due])
         self.assertEqual(select_candidates(rows, now=now, max_probes=2), [pending, never])
         self.assertEqual(select_candidates(rows, now=now, max_probes=0), [])
 
@@ -83,16 +79,16 @@ class LivenessTests(unittest.TestCase):
     def test_open_clears_pending_and_reactivates(self):
         row=self.row(jobStatus='expired',expiredReason='linkedin_not_accepting',expiredAt='2026-09-01T00:00:00+00:00',liveFirstMissAt='2026-09-01T00:00:00+00:00'); apply_observation(row,'open','2026-10-01T00:00:00+00:00'); self.assertEqual(row['jobStatus'],'active'); self.assertNotIn('expiredReason',row); self.assertEqual(row['liveMissCount'],0)
 
-    def test_apply_liveness_deletes_only_cn_non_target_after_ten_days(self):
+    def test_legacy_scope_deletes_only_cn_after_fifteen_days_and_final_check(self):
         now=datetime.now(timezone.utc)
-        old=(now-timedelta(days=11)).isoformat(); recent=(now-timedelta(days=9)).isoformat()
+        old=(now-timedelta(days=16)).isoformat(); recent=(now-timedelta(days=14)).isoformat()
         doc={"jobs":[
             self.row(sourceJobId='li-100000001',jobStatus='expired',expiredAt=old,expiredReason='linkedin_closed'),
             self.row(sourceJobId='li-100000002',jobStatus='expired',expiredAt=recent,expiredReason='linkedin_closed'),
             self.row(sourceJobId='li-100000003',location='HK',jobStatus='expired',expiredAt=old,expiredReason='linkedin_closed'),
             self.row(sourceJobId='li-100000004',company='HSBC',companyCanonical='hsbc',jobStatus='expired',expiredAt=old,expiredReason='linkedin_closed'),
         ]}
-        live={"schemaVersion":"1.0","mode":"cn-job-liveness","observedAt":now.isoformat(),"observations":[]}
+        live={"schemaVersion":"1.0","mode":"cn-job-liveness","observedAt":now.isoformat(),"observations":[{"jobId":"100000001","result":"closed","checkedAt":now.isoformat()}]}
         with tempfile.TemporaryDirectory() as d:
             jobs=Path(d)/'jobs.json'; obs=Path(d)/'live.json'; out=Path(d)/'out.json'
             jobs.write_text(json.dumps(doc)); obs.write_text(json.dumps(live))
@@ -107,7 +103,7 @@ class LivenessTests(unittest.TestCase):
     def test_idempotent_and_candidate_priority(self):
         row=self.row(); apply_observation(row,'gone','2026-10-01T00:00:00+00:00'); snapshot=dict(row); apply_observation(row,'gone','2026-10-01T00:00:00+00:00'); self.assertEqual(row,snapshot); picked=select_candidates([self.row(liveFirstMissAt='2026-09-01T00:00:00+00:00',liveCheckedAt='2026-09-01T00:00:00+00:00'),self.row(sourceJobId='li-123456790')],now='2026-10-01T00:00:00+00:00',max_probes=1); self.assertEqual(picked[0]['sourceJobId'],'li-123456789')
 
-    def test_ten_day_boundary_all_regions_and_protected_records(self):
+    def test_fifteen_day_boundary_all_regions_requires_final_check_and_protects_targets(self):
         now=datetime(2026,10,12,4,tzinfo=timezone.utc)
         class FrozenDatetime(datetime):
             @classmethod
@@ -119,13 +115,17 @@ class LivenessTests(unittest.TestCase):
             if keep: expected.add(row['sourceJobId'])
             return row
         for region in ('CN','HK','SG'):
-            for seconds, keep in ((10*86400-1,True),(10*86400,False),(10*86400+1,False)):
-                add(keep,location=region,jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(seconds=seconds)).isoformat())
+            for seconds, keep in ((15*86400-1,True),(15*86400,False),(15*86400+1,False)):
+                expired=add(keep,location=region,jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(seconds=seconds)).isoformat())
+                observations.append({'jobId':expired['sourceJobId'].removeprefix('li-'),'result':'closed','checkedAt':now.isoformat()})
             add(True,location=region,company='HSBC',companyCanonical='hsbc',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=20)).isoformat())
         add(True,jobStatus='active',expiredAt=(now-timedelta(days=20)).isoformat())
         add(True,jobStatus='expired',expiredReason='missing_from_full_company_snapshot',expiredAt=(now-timedelta(days=20)).isoformat())
         add(True,jobStatus='expired',expiredReason='linkedin_closed',expiredAt='invalid')
         add(True,jobStatus='expired',expiredReason='linkedin_closed')
+        add(True,jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=20)).isoformat())
+        unknown=add(True,jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=20)).isoformat())
+        observations.append({'jobId':unknown['sourceJobId'].removeprefix('li-'),'result':'unknown','checkedAt':now.isoformat()})
         reopened=add(True,location='HK',jobStatus='expired',expiredReason='linkedin_closed',expiredAt=(now-timedelta(days=20)).isoformat())
         observations.append({'jobId':reopened['sourceJobId'].removeprefix('li-'),'result':'open','checkedAt':now.isoformat()})
         live={'schemaVersion':'1.1','mode':'job-liveness','scopeLocations':['CN','HK','SG'],'observedAt':now.isoformat(),'observations':observations}
@@ -138,5 +138,30 @@ class LivenessTests(unittest.TestCase):
         self.assertEqual({row['sourceJobId'] for row in result['jobs']},expected)
         self.assertEqual(result['liveness']['deleted_after_days'],6)
         self.assertEqual(next(row for row in result['jobs'] if row['sourceJobId']==reopened['sourceJobId'])['jobStatus'],'active')
+
+    def test_final_negative_check_is_once_per_expiry_and_unknown_stays_pending(self):
+        now=datetime(2026,10,20,12,tzinfo=timezone.utc)
+        for reason in ('linkedin_closed','linkedin_removed','linkedin_not_accepting'):
+            for result in ('closed','gone','not_accepting'):
+                with self.subTest(reason=reason,result=result):
+                    item=self.row(jobStatus='expired',expiredReason=reason,expiredAt=(now-timedelta(days=16)).isoformat())
+                    original_expiry=item['expiredAt']
+                    apply_observation(item,'unknown',(now-timedelta(hours=1)).isoformat())
+                    self.assertEqual(select_candidates([item],now=now),[item])
+                    apply_observation(item,result,now.isoformat())
+                    self.assertEqual(item['expiredAt'],original_expiry)
+                    self.assertEqual(item['liveDeletionExpiryAt'],original_expiry)
+                    self.assertEqual(select_candidates([item],now=now),[])
+                    self.assertEqual(select_candidates([item],now=now+timedelta(days=4)),[])
+                    apply_observation(item,'open',(now+timedelta(hours=1)).isoformat())
+                    self.assertEqual(item['jobStatus'],'active')
+                    self.assertNotIn('liveDeletionCheckedAt',item)
+                    apply_observation(item,'closed',(now+timedelta(hours=2)).isoformat())
+                    self.assertNotIn('liveDeletionCheckedAt',item)
+
+    def test_old_final_check_cannot_authorize_a_different_expiry_episode(self):
+        now=datetime(2026,10,20,12,tzinfo=timezone.utc)
+        item=self.row(jobStatus='expired',expiredReason='linkedin_closed',expiredAt='2026-10-01T00:00:00Z',liveDeletionExpiryAt='2026-09-01T00:00:00Z',liveDeletionCheckedAt=now.isoformat())
+        self.assertEqual(select_candidates([item],now=now),[item])
 
 if __name__=='__main__': unittest.main()
