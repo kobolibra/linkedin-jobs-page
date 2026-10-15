@@ -1,0 +1,43 @@
+name: Diagnose JEV bindings (read only)
+on:
+  push:
+    branches: [diagnostic/jev-bindings-readonly]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Read Worker binding metadata without exposing secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          from urllib.parse import urlsplit
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          url = f"https://api.cloudflare.com/client/v4/accounts/{account}/workers/scripts/linkedin/settings"
+          request = urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"})
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+          except urllib.error.HTTPError as error:
+              print("settings_http_status", error.code)
+              raise SystemExit(1)
+          if not payload.get("success"):
+              print("settings_success", False)
+              raise SystemExit(1)
+          bindings = payload.get("result", {}).get("bindings", [])
+          for binding in bindings:
+              name, kind = binding.get("name", ""), binding.get("type", "")
+              print("binding", name, kind)
+              if name == "JEV_API_URL" and kind == "plain_text":
+                  parsed = urlsplit(binding.get("text", ""))
+                  print("provider_endpoint", parsed.scheme, parsed.hostname, parsed.path)
+              if name == "JEV_MODEL" and kind == "plain_text":
+                  print("provider_model", binding.get("text", ""))
+          print("provider_key_present", any(b.get("name") in ("JEV_API_KEY", "TYPESAFE_API_KEY") for b in bindings))
+          PY
