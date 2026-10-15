@@ -98,13 +98,15 @@ class Coordinator:
     Different GitHub runners do not share a file lock.
     """
     def __init__(self, path=None, *, clock=time.time, sleep=time.sleep,
-                 max_concurrent=1, min_interval=3, max_wait=180, deadline=None, interval_jitter=0):
+                 max_concurrent=1, min_interval=3, max_wait=180, deadline=None, interval_jitter=0,
+                 restore_recovery_pacing=True):
         self.path = Path(path or os.environ.get("LINKEDIN_HTTP_STATE", str(Path(tempfile.gettempdir()) / "linkedin-http-runtime.json")))
         self.clock, self.sleep = clock, sleep
         self.max_concurrent, self.min_interval = max(1, max_concurrent), max(0, min_interval)
         self.max_wait = max_wait
         self.interval_jitter = max(0, interval_jitter)
         self.recovery_pacing = False
+        self.restore_recovery_pacing = restore_recovery_pacing
         # Normal collection completes its work rather than truncating a stage.
         # Explicit caller deadlines remain available for dedicated utilities.
         self.deadline = deadline if deadline is not None else float("inf")
@@ -228,7 +230,12 @@ class Coordinator:
             pacing = slot.get("runtimePacing")
             # A single successful response does not establish quota recovery.
             # Error responses break the 429 streak but never accelerate traffic.
-            if pacing and healthy:
+            if pacing and not self.restore_recovery_pacing:
+                # A single-pass liveness run must not repeatedly accelerate
+                # into the same quota. Keep its bounded slower cadence until
+                # this stage ends; it is never persisted to the next runner.
+                pacing.update(healthy=0, expiresAt=self.clock() + RECOVERY_PACING_TTL)
+            elif pacing and healthy:
                 pacing["healthy"] = pacing.get("healthy", 0) + 1
                 if pacing["healthy"] >= RECOVERY_HEALTHY_RESPONSES:
                     interval = max(self.min_interval, pacing["interval"] / 1.5)
@@ -243,7 +250,7 @@ class Coordinator:
 
 class LinkedInSession(requests.Session):
     def __init__(self, *, attempts=3, coordinator=None, context=None, user_agents=None,
-                 linear_backoff=False):
+                 linear_backoff=False, defer_queries=True):
         super().__init__()
         self.attempts = max(1, attempts)
         self.coordinator = coordinator or Coordinator()
@@ -251,6 +258,7 @@ class LinkedInSession(requests.Session):
         self.context = context or {}
         self.user_agents = tuple(user_agents or ())
         self.linear_backoff = linear_backoff
+        self.defer_queries = defer_queries
 
     def request(self, method, url, **kwargs):
         kwargs.setdefault("timeout", (10, 20))
@@ -260,6 +268,8 @@ class LinkedInSession(requests.Session):
         query = (f"search:{self.context.get('company')}::{self.context.get('region')}" if stage == 'search' and self.context.get('company')
                  else f"liveness:{self.context.get('endpoint', 'view')}:{self.context.get('jobId')}" if stage == 'liveness' and self.context.get('jobId')
                  else f"job:{self.context.get('jobId')}" if stage == 'details' and self.context.get('jobId') else None)
+        if not self.defer_queries:
+            query = None
         prepared = requests.Request(method, url, params=kwargs.get('params')).prepare().url
         parts = urlsplit(prepared)
         canonical = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(sorted(parse_qsl(parts.query, keep_blank_values=True))), ''))
