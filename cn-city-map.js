@@ -95,7 +95,7 @@
   function render(atlas,rows) {
     const s=summarize(rows,atlas);panel.replaceChildren();
     const summary=html('div','cn-map-summary');
-    for(const [n,label]of [[s.mapped,'可定位职位'],[s.counts.size,'涉及城市'],[s.multi,'跨城职位']]) {
+    for(const [n,label]of [[s.mapped,'职位'],[s.counts.size,'城市'],[s.multi,'跨城职位']]) {
       const item=html('div','cn-map-metric');item.append(html('strong','',number(n)),html('span','',label));summary.append(item);
     }
     panel.append(summary);
@@ -106,8 +106,8 @@
     for(const city of atlas.cities) {
       const count=s.counts.get(city.id)||0;
       const p=node('path',{d:city.path,class:'cn-map-city heat-'+bucket(count,s.max),'data-city-id':city.id,'fill-rule':'evenodd'});
-      p.append(node('title',{},city.name+' · '+number(count)+' 个涉及职位'));
-      if(count){p.setAttribute('tabindex','0');p.setAttribute('role','button');p.setAttribute('aria-label',city.name+'，'+number(count)+'个涉及职位');}
+      p.append(node('title',{},city.name+' · '+number(count)+' 职位'));
+      if(count){p.setAttribute('tabindex','0');p.setAttribute('role','button');p.setAttribute('aria-label',city.name+'，'+number(count)+'职位');}
       paths.set(city.id,p);svg.append(p);
     }
     svg.append(node('rect',{x:761,y:429,width:127,height:138,rx:3,class:'cn-map-inset-frame'}));
@@ -119,7 +119,7 @@
     stage.append(svg);layout.append(stage);
     const aside=html('aside','cn-map-aside'),detail=html('div','cn-map-detail');detail.setAttribute('aria-live','polite');
     const detailName=html('h4',''),detailCount=html('p','cn-map-detail-count'),detailHint=html('p','cn-map-detail-hint','悬浮、轻点或使用键盘查看城市');detail.append(detailName,detailCount,detailHint);aside.append(detail);
-    const rank=html('ol','cn-map-ranking');rank.setAttribute('aria-label','涉及职位最多的城市');
+    const rank=html('ol','cn-map-ranking');rank.setAttribute('aria-label','职位最多的城市');
     const rankButtons=new Map();
     for(const [id,count]of s.ranked.slice(0,6)) {
       const item=html('li',''),button=html('button','cn-map-rank');button.type='button';button.dataset.cityId=id;
@@ -127,18 +127,17 @@
       button.append(html('span','cn-map-rank-name',s.index.byId.get(id).name.replace(/市$/,'')),html('strong','',number(count)));item.append(button);rank.append(item);rankButtons.set(id,button);
     }
     aside.append(rank);layout.append(aside);panel.append(layout);
-    const legend=html('div','cn-map-legend');legend.setAttribute('aria-label','色阶图例，0至'+number(s.max)+'个涉及职位');
+    const legend=html('div','cn-map-legend');legend.setAttribute('aria-label','色阶图例，0至'+number(s.max)+'职位');
     legend.append(html('span','','0'));
     for(let b=0;b<=5;b++)legend.append(html('i','heat-'+b));
-    legend.append(html('span','',number(s.max)),html('span','cn-map-legend-label','涉及职位数'));panel.append(legend);
-    const note=html('p','cn-map-note',`仅统计有效CN职位。跨城职位在每个明确涉及的城市各计1次，${number(s.mapped)}条可定位职位涉及${number(s.mentions)}次城市；CN总数${number(s.total)}条，未定位至城市${number(s.unmapped)}条。`);panel.append(note);
+    legend.append(html('span','',number(s.max)),html('span','cn-map-legend-label','职位数'));panel.append(legend);
     const source=html('a','cn-map-source','地图数据来源与许可');source.href='assets/maps/NOTICE.txt';source.target='_blank';source.rel='noopener';panel.append(source);
     let selected='';
     function select(id) {
       if(!s.index.byId.has(id)||selected===id)return;
       paths.get(selected)?.classList.remove('is-selected');rankButtons.get(selected)?.setAttribute('aria-pressed','false');
       selected=id;paths.get(id)?.classList.add('is-selected');rankButtons.get(id)?.setAttribute('aria-pressed','true');
-      detailName.textContent=s.index.byId.get(id).name;detailCount.replaceChildren(html('strong','',number(s.counts.get(id)||0)),document.createTextNode(' 个涉及职位'));
+      detailName.textContent=s.index.byId.get(id).name;detailCount.replaceChildren(html('strong','',number(s.counts.get(id)||0)),document.createTextNode(' 职位'));
     }
     const inspect=e=>{const target=e.target.closest('[data-city-id]');if(target)select(target.dataset.cityId);};
     for(const event of ['pointerover','focusin','click'])layout.addEventListener(event,inspect);

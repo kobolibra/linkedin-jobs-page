@@ -5,7 +5,7 @@
   --map-boundary:rgba(250,251,250,.92);--map-edge:rgba(73,100,118,.19);
 }
 .cn-map-head {display:flex;align-items:center;justify-content:space-between;gap:16px;}
-.cn-map-head h3 {margin:0;flex:1;font:600 11px/1.4 var(--sans);letter-spacing:.04em;text-transform:none;}
+.analytics-card > .ac-col-cn-map .cn-map-head h3 {margin:0;flex:1;font:600 11px/1.4 var(--sans);letter-spacing:.04em;text-transform:none;}
 .cn-map-head .top50-toggle {flex:0 0 auto;}
 #cnCityMap[hidden] {display:none !important;}
 .cn-map-summary {display:flex;gap:36px;padding:24px 0 2px;}
@@ -42,7 +42,6 @@
 .ac-col-cn-map .heat-3 {fill:var(--map-3);background:var(--map-3);}
 .ac-col-cn-map .heat-4 {fill:var(--map-4);background:var(--map-4);}
 .ac-col-cn-map .heat-5 {fill:var(--map-5);background:var(--map-5);}
-.cn-map-note {max-width:780px;margin:0;color:var(--ink-faint);font:400 10px/1.7 var(--sans);}
 .cn-map-source {display:inline-block;margin-top:8px;color:var(--ink-faint);font:400 9px/1.5 var(--sans);text-decoration:none;opacity:.75;}
 .cn-map-source:hover {text-decoration:underline;}
 .cn-map-state {padding:28px 0 16px;margin:0;color:var(--ink-soft);font:12px/1.6 var(--sans);}
@@ -64,6 +63,5 @@
   .cn-map-rank {font-size:10px;padding:5px 7px;}
   .cn-map-legend {margin:16px 0 12px;gap:4px;font-size:9px;}
   .cn-map-legend i {width:18px;}
-  .cn-map-note {font-size:9px;}
 }
 @media(prefers-reduced-motion:reduce) {.cn-map-city {transition:none;}}
