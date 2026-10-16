@@ -55,7 +55,9 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             for name in public_files:
                 if name in ("jobs-index.json", "company-logos.json"):
                     continue
-                (checkout / name).write_text("<html></html>" if name == "index.html" else "", encoding="utf-8")
+                target = checkout / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("<html></html>" if name == "index.html" else "", encoding="utf-8")
             for name in ("a" * 24 + ".svg", "b" * 24 + ".webp"):
                 asset = checkout / "assets" / "company-logos" / name
                 asset.parent.mkdir(parents=True, exist_ok=True)
