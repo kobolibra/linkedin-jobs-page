@@ -2,68 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "jobs:38270689745:3",
-      "task": "jobs",
-      "workflowStatus": "cancelled",
-      "observedAt": "2026-10-13T03:25:53.538338+00:00",
-      "requests": 155,
-      "retries": 11,
-      "httpStatuses": {
-        "200": 144,
-        "429": 10,
-        "0": 1
-      },
-      "outcomes": {
-        "response": 144,
-        "rate_limited": 10,
-        "network_error": 1,
-        "parsed": 4
-      },
-      "stages": {
-        "search": 151,
-        "details": 4
-      },
-      "detailEndpoints": {
-        "guest": 4
-      },
-      "queries": {
-        "Bank of America::CN": "ok: 4 jobs",
-        "BBVA::CN": "ok: 4 jobs",
-        "BlackRock::CN": "ok: 1 jobs",
-        "BNP Paribas::CN": "ok: 4 jobs",
-        "Citi::CN": "ok: 48 jobs",
-        "DBS Bank::CN": "ok: 79 jobs",
-        "Deutsche Bank::CN": "ok: 11 jobs",
-        "Fidelity International::CN": "ok: 14 jobs",
-        "Goldman Sachs::CN": "ok: 8 jobs",
-        "HSBC::CN": "ok: 443 jobs",
-        "JPMorgan Chase::CN": "ok: 43 jobs",
-        "Morgan Stanley::CN": "ok: 19 jobs",
-        "Natixis::CN": "ok: 12 jobs",
-        "Societe Generale::CN": "ok: 6 jobs",
-        "Standard Chartered::CN": "ok: 279 jobs",
-        "UBS::CN": "ok: 14 jobs"
-      },
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1791861323.9062157,
-          "stopUntil": 1791843733.2569437,
-          "paceUntil": 1791864906.8199577,
-          "minInterval": 30,
-          "reason": "login/challenge or HTTP 200"
-        }
-      },
-      "details": {
-        "attempted": 4,
-        "candidates": 12,
-        "ok": 4,
-        "blocked": 0,
-        "failed": 0,
-        "gone": 0
-      },
-      "liveness": {}
-    },
-    {
       "runId": "jobs:38341994989:1",
       "task": "jobs",
       "workflowStatus": "failure",
@@ -6388,6 +6326,43 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:38884576710:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-16T10:03:42.698974+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 15,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 12,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 15
+      },
+      "stages": {
+        "logos": 15
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 9,
+        "downloaded": 4,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {

@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-16T04:07:15.945566+00:00",
+    "checkedAt": "2026-10-16T10:03:36.723686+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,31 +2705,12 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "jobId": "4461002131",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
-        "waitSeconds": 62.72564475981141,
-        "retried": true
-      },
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 2,
-        "waitSeconds": 60.52202751428246
+        "jobId": "4461002131",
+        "reason": "http_error",
+        "stage": "job"
       }
     ]
   },
@@ -3038,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-15T22:05:57.453518+00:00",
+    "checkedAt": "2026-10-16T10:03:21.619280+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3201,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-15T22:06:03.535018+00:00",
+    "checkedAt": "2026-10-16T10:03:27.850451+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3892,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-15T22:06:06.494231+00:00",
+    "checkedAt": "2026-10-16T10:03:30.490220+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5427,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-15T22:06:09.404251+00:00",
+    "checkedAt": "2026-10-16T10:03:33.434793+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -6970,5 +6951,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQG6apyww1E3HQ/company-logo_100_100/company-logo_100_100/0/1630654290948?e=2147483647&v=beta&t=88Tb5Q6OLqEtbV1dSmAFHJCLTcu7KNB6YzUIe_7hLGs",
     "companyUrl": "https://www.linkedin.com/company/%E8%B5%9B%E9%BA%A6%E5%BE%B7%E4%BF%A1%E6%81%AF%E5%92%A8%E8%AF%A2%EF%BC%88%E5%8C%97%E4%BA%AC%EF%BC%89%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4477360063"
+  },
+  "cxg": {
+    "name": "CXG",
+    "checkedAt": "2026-10-16T10:03:11.317618+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "200d813568ebcef1732545c3.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQEdzR027LLB0A/company-logo_100_100/B4DZyfOknbGQAQ-/0/1772197924532/cxgroup_logo?e=2147483647&v=beta&t=ZVFtq7tYGwtCV-py5zAoLsegSXGs4rtQ267NFwQF1N8",
+    "companyUrl": "https://ae.linkedin.com/company/cxgroup",
+    "sourceJobId": "4480340535"
+  },
+  "fhi 360": {
+    "name": "FHI 360",
+    "checkedAt": "2026-10-16T10:03:12.725619+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7b074e0218c455f5c21c84d2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHPX3Fa8pmKGw/company-logo_100_100/company-logo_100_100/0/1680493079668/fhi_360_logo?e=2147483647&v=beta&t=r_8jaPa-Qfo2xn8cq0X5RlUsXqez-XrRGZY9XHB4M_o",
+    "companyUrl": "https://www.linkedin.com/company/fhi-360",
+    "sourceJobId": "4480337569"
+  },
+  "foreign, commonwealth & development office asia pacific": {
+    "name": "Foreign, Commonwealth & Development Office Asia Pacific",
+    "checkedAt": "2026-10-16T10:03:15.622065+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8ba1224988d1328904d6d137.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFAYse5cStFMg/company-logo_100_100/B56Z_0GHPNJkAQ-/0/1786506671257/fcdoapac_logo?e=2147483647&v=beta&t=9YZtRcHJguUgyMoW-kEr5x0Qc3W1iwS1E6G5fCmJKLY",
+    "companyUrl": "https://uk.linkedin.com/company/fcdoapac",
+    "sourceJobId": "4479326488"
+  },
+  "sunlife": {
+    "name": "Sunlife",
+    "checkedAt": "2026-10-16T10:03:18.620907+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f1451f6b8e66b876bbdba543.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF6LRIkshx5Rw/company-logo_100_100/B4EaE_Ntb8JAAQ-/0/1792061921290/sun_life_financial_logo?e=2147483647&v=beta&t=vXRvx4WB1C0_uShWnfqRhSseQjGFTBGLBj_F5QsXidg",
+    "companyUrl": "https://ca.linkedin.com/company/sun-life-financial",
+    "sourceJobId": "4479340033"
   }
 }
