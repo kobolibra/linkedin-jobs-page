@@ -2,78 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "jobs:38311007615:1",
-      "task": "jobs",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-12T21:52:17.866170+00:00",
-      "requests": 187,
-      "retries": 47,
-      "httpStatuses": {
-        "429": 47,
-        "200": 140
-      },
-      "outcomes": {
-        "rate_limited": 47,
-        "response": 139,
-        "blocked": 1
-      },
-      "stages": {
-        "search": 186,
-        "details": 1
-      },
-      "detailEndpoints": {},
-      "queries": {
-        "Bank of America::CN": "ok: 4 jobs",
-        "BBVA::CN": "ok: 4 jobs",
-        "BlackRock::CN": "ok: 1 jobs",
-        "BNP Paribas::CN": "ok: 4 jobs",
-        "Citi::CN": "ok: 48 jobs",
-        "DBS Bank::CN": "ok: 79 jobs",
-        "Deutsche Bank::CN": "ok: 11 jobs",
-        "Fidelity International::CN": "ok: 14 jobs",
-        "Goldman Sachs::CN": "ok: 8 jobs",
-        "HSBC::CN": "ok: 430 jobs",
-        "JPMorgan Chase::CN": "ok: 43 jobs",
-        "Morgan Stanley::CN": "ok: 19 jobs",
-        "Natixis::CN": "ok: 12 jobs",
-        "Societe Generale::CN": "ok: 6 jobs",
-        "Standard Chartered::CN": "ok: 280 jobs",
-        "UBS::CN": "ok: 14 jobs"
-      },
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1791843733.2569437,
-          "stopUntil": 1791843733.2569437,
-          "reason": "login/challenge or HTTP 200"
-        }
-      },
-      "details": {
-        "attempted": 43,
-        "candidates": 43,
-        "ok": 0,
-        "blocked": 43,
-        "failed": 0,
-        "gone": 0
-      },
-      "liveness": {
-        "circuitOpen": true,
-        "skippedCircuitOpen": 149,
-        "probed": 1,
-        "open": 0,
-        "closed": 0,
-        "not_accepting": 0,
-        "gone": 0,
-        "unknown": 1,
-        "postingDates": 0,
-        "regions": {
-          "CN": 1,
-          "HK": 0,
-          "SG": 0
-        },
-        "selectorGuardTripped": false
-      }
-    },
-    {
       "runId": "logos:38314429663:1",
       "task": "logos",
       "workflowStatus": "success",
@@ -5959,6 +5887,52 @@
         },
         "circuitOpen": false,
         "selectorGuardTripped": false
+      }
+    },
+    {
+      "runId": "logos:38848868319:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-16T04:08:23.995392+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 15,
+      "retries": 1,
+      "httpStatuses": {
+        "200": 12,
+        "404": 1,
+        "429": 2
+      },
+      "outcomes": {
+        "response": 13,
+        "rate_limited": 2
+      },
+      "stages": {
+        "logos": 15
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1792123764.4434388,
+          "stopUntil": 1792123764.4434388,
+          "reason": "HTTP 429"
+        }
+      },
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 11,
+        "downloaded": 6,
+        "missing": 1,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 1,
+        "stoppedReason": "HTTP 429 request deferred after repeated rate limit"
       }
     }
   ],
