@@ -60,3 +60,24 @@ test('map is appended after Top 30, starts collapsed, reuses the index and lazy-
  const pub=readFileSync(new URL('./public_assets.mjs',import.meta.url),'utf8');
  for(const file of ['cn-city-map.js','cn-city-map.css','assets/maps/cn-cities.json','assets/maps/NOTICE.txt'])assert.ok(pub.includes("'"+file+"'"));
 });
+
+
+test('city company totals deduplicate employers and share explicit cross-city incidence',()=>{
+ const s=summarize([
+  job('Guangzhou-Foshan Metropolitan Area',{company:'Acme'}),job('Guangzhou',{company:'Acme'}),
+  job('Guangzhou-Foshan Metropolitan Area',{company:'HSBC'}),job('Foshan',{company:'Closed',jobStatus:'expired'}),
+  job('Guangzhou',{company:'Elsewhere',location:'HK'}),job('Guangzhou',{company:'  '}),job('Guangdong',{company:'Unlocated'})
+ ],atlas);
+ assert.equal(s.counts.get('440100'),4);assert.equal(s.companies.get('440100').size,2);
+ assert.equal(s.counts.get('440600'),2);assert.equal(s.companies.get('440600').size,2);
+ assert.deepEqual([...s.companies.get('440100')].sort(),['Acme','HSBC']);
+ assert.equal(s.companies.has('310000'),false);
+});
+test('company totals use the app canonical employer names when available',()=>{
+ const saved=globalThis.canonicalCompany;
+ globalThis.canonicalCompany=name=>String(name||'').trim().toUpperCase();
+ try {
+  const s=summarize([job('Dalian',{company:'Acme'}),job('Dalian',{company:' acme '}),job('Dalian',{company:'HSBC'})],atlas);
+  assert.equal(s.counts.get('210200'),3);assert.equal(s.companies.get('210200').size,2);
+ }finally{if(saved===undefined)delete globalThis.canonicalCompany;else globalThis.canonicalCompany=saved;}
+});
