@@ -154,5 +154,49 @@ class N8nMergeTests(unittest.TestCase):
         self.assertEqual(result["jobs"][0]["salary"], "15-30k")
 
 
+    def test_salary_snapshot_matches_non_target_cn_employers(self):
+        baseline = {"jobs": [
+            {"sourceJobId": "li-4453438927", "company": "Apex Group Ltd", "title": "Senior Account Manager", "location": "CN"},
+            {"sourceJobId": "li-100000019", "company": "Another Employer", "title": "Senior Account Manager", "location": "CN"},
+        ]}
+        batch = {"jobs": [], "salaryRows": [
+            {"Company": "Apex Group Ltd", "Title": "Senior Account Manager", "Location": "20-40k"},
+            {"Company": "Another Employer", "Title": "Senior Account Manager", "Location": "30-50k"},
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual([j.get("salary") for j in result["jobs"]], ["20-40k", "30-50k"])
+        self.assertEqual(result["n8nIncrementalMerge"]["salaryMatches"], 2)
+
+    def test_non_target_salary_matching_keeps_region_company_and_title_boundaries(self):
+        baseline = {"jobs": [
+            {"sourceJobId": "li-100000020", "company": "Apex Group Ltd", "title": "Senior Account Manager", "location": "HK", "salary": "HK existing"},
+            {"sourceJobId": "li-100000021", "company": "Apex Group Ltd", "title": "Senior Account Manager", "location": "SG"},
+            {"sourceJobId": "li-100000022", "company": "Other Company", "title": "Senior Account Manager", "location": "CN"},
+            {"sourceJobId": "li-100000023", "company": "Apex Group Ltd", "title": "Account Manager", "location": "CN", "salary": "10-20k"},
+            {"sourceJobId": "li-100000024", "company": "", "title": "Senior Account Manager", "location": "CN"},
+        ]}
+        batch = {"jobs": [], "salaryRows": [
+            {"Company": "Apex Group Ltd", "Title": "Senior Account Manager", "Location": "20-40k"},
+            {"Company": "", "Title": "Senior Account Manager", "Location": "99-100k"},
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual([j.get("salary") for j in result["jobs"]], ["HK existing", None, None, "10-20k", None])
+        self.assertEqual(result["n8nIncrementalMerge"]["salaryMatches"], 0)
+        self.assertEqual(result["n8nIncrementalMerge"]["salaryPreserved"], 1)
+
+    def test_non_target_salary_retains_existing_title_normalization_and_preservation(self):
+        baseline = {"jobs": [
+            {"sourceJobId": "li-100000025", "company": " APEX GROUP LTD ", "title": "高级客户经理 Senior Account Manager", "location": "CN"},
+            {"sourceJobId": "li-100000026", "company": "Apex Group Ltd", "title": "Unmatched title", "location": "CN", "salary": "15-25k"},
+        ]}
+        batch = {"jobs": [], "salaryRows": [
+            {"Company": "Apex Group Ltd", "Title": "Senior Account Manager", "Location": "20-40k"},
+        ]}
+        result = merge_documents(baseline, batch)
+        self.assertEqual([j.get("salary") for j in result["jobs"]], ["20-40k", "15-25k"])
+        self.assertEqual(result["n8nIncrementalMerge"]["salaryMatches"], 1)
+        self.assertEqual(result["n8nIncrementalMerge"]["salaryPreserved"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()
