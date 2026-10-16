@@ -66,7 +66,7 @@
     return [...new Set(resolved)];
   }
   function summarize(rows,atlas) {
-    const index=buildIndex(atlas),counts=new Map(),memo=new Map();let total=0,mapped=0,multi=0,mentions=0;
+    const index=buildIndex(atlas),counts=new Map(),companies=new Map(),memo=new Map();let total=0,mapped=0,multi=0,mentions=0;
     // Keep exactly the app's canonical ID deduplication when available.
     const data=typeof keepLatestSameCityTitle==='function'?keepLatestSameCityTitle(rows):rows;
     for(const job of data) {
@@ -75,10 +75,14 @@
       if(!memo.has(key))memo.set(key,locate(job,index));
       const ids=memo.get(key);if(!ids.length)continue;
       mapped++;if(ids.length>1)multi++;
-      for(const id of ids){counts.set(id,(counts.get(id)||0)+1);mentions++;}
+      const company=typeof canonicalCompany==='function'?canonicalCompany(job.company):String(job.company||'').trim();
+      for(const id of ids){
+        counts.set(id,(counts.get(id)||0)+1);mentions++;
+        if(company){if(!companies.has(id))companies.set(id,new Set());companies.get(id).add(company);}
+      }
     }
     const ranked=[...counts].sort((a,b)=>b[1]-a[1]||index.byId.get(a[0]).name.localeCompare(index.byId.get(b[0]).name,'zh-CN'));
-    return {total,mapped,multi,mentions,unmapped:total-mapped,counts,ranked,index,max:ranked[0]?.[1]||0};
+    return {total,mapped,multi,mentions,unmapped:total-mapped,counts,companies,ranked,index,max:ranked[0]?.[1]||0};
   }
   const bucket=(count,max)=>!count?0:Math.min(5,Math.max(1,Math.ceil(Math.sqrt(count/Math.max(1,max))*5)));
   const api={simplify,buildIndex,locate,summarize,bucket};
@@ -137,7 +141,11 @@
       if(!s.index.byId.has(id)||selected===id)return;
       paths.get(selected)?.classList.remove('is-selected');rankButtons.get(selected)?.setAttribute('aria-pressed','false');
       selected=id;paths.get(id)?.classList.add('is-selected');rankButtons.get(id)?.setAttribute('aria-pressed','true');
-      detailName.textContent=s.index.byId.get(id).name;detailCount.replaceChildren(html('strong','',number(s.counts.get(id)||0)),document.createTextNode(' 职位'));
+      detailName.textContent=s.index.byId.get(id).name;
+      const jobsMetric=html('span','cn-map-detail-metric'),companyMetric=html('span','cn-map-detail-metric cn-map-company-count');
+      jobsMetric.append(html('strong','',number(s.counts.get(id)||0)),document.createTextNode('职位'));
+      companyMetric.append(html('strong','',number(s.companies.get(id)?.size||0)),document.createTextNode('公司'));
+      detailCount.replaceChildren(jobsMetric,companyMetric);
     }
     const inspect=e=>{const target=e.target.closest('[data-city-id]');if(target)select(target.dataset.cityId);};
     for(const event of ['pointerover','focusin','click'])layout.addEventListener(event,inspect);

@@ -24,8 +24,10 @@
 .cn-map-inset-label,.cn-map-place-label {fill:var(--ink-faint);font:12px var(--sans);letter-spacing:.04em;pointer-events:none;}
 .cn-map-detail {padding-bottom:18px;border-bottom:1px solid var(--ui-divider);}
 .cn-map-detail h4 {margin:0 0 10px;color:var(--ink);font:500 14px/1.4 var(--sans);}
-.cn-map-detail-count {margin:0;color:var(--ink-soft);font:400 11px var(--sans);}
+.cn-map-detail-count {display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px;margin:0;color:var(--ink-soft);font:400 11px var(--sans);}
 .cn-map-detail-count strong {font:500 32px/1.1 var(--sans);color:var(--navy);letter-spacing:-.05em;font-variant-numeric:tabular-nums;}
+.cn-map-detail-metric {display:inline-flex;align-items:baseline;gap:4px;white-space:nowrap;}
+.cn-map-company-count strong {font-size:20px;letter-spacing:-.02em;}
 .cn-map-detail-hint {margin:12px 0 0;font:400 9px/1.6 var(--sans);color:var(--ink-faint);}
 .cn-map-ranking {list-style:none;margin:16px 0 0;padding:0;display:grid;gap:7px;}
 .cn-map-rank {position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:7px 8px;border:0;border-radius:4px;background:transparent;color:var(--ink-soft);font:400 11px/1.4 var(--sans);text-align:left;cursor:pointer;}
@@ -58,6 +60,7 @@
   .cn-map-aside {display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:center;}
   .cn-map-detail {border:0;padding:0;}
   .cn-map-detail-count strong {font-size:26px;}
+  .cn-map-company-count strong {font-size:18px;}
   .cn-map-detail-hint {font-size:9px;}
   .cn-map-ranking {margin:0;gap:2px;}
   .cn-map-rank {font-size:10px;padding:5px 7px;}
