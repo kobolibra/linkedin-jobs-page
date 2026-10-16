@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-16T16:07:11.788255+00:00",
+    "checkedAt": "2026-10-16T22:08:28.621322+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-16T16:06:56.834846+00:00",
+    "checkedAt": "2026-10-16T22:07:11.346423+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3028,7 +3028,7 @@
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "status": 200,
         "contentType": "text/html; charset=utf-8",
-        "attempt": 1,
+        "attempt": 2,
         "jobId": "4445434545",
         "reason": "no_employer",
         "stage": "job",
@@ -3046,6 +3046,17 @@
         "stage": "job",
         "observedName": "",
         "companyUrl": ""
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.24545131557982,
+        "retried": true
       }
     ]
   },
@@ -3182,7 +3193,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-16T16:07:02.690686+00:00",
+    "checkedAt": "2026-10-16T22:08:19.864085+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3884,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-16T16:07:05.683758+00:00",
+    "checkedAt": "2026-10-16T22:08:22.509021+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5419,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-16T16:07:08.679525+00:00",
+    "checkedAt": "2026-10-16T22:08:25.463371+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7047,5 +7058,52 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGBpZncJDm7pg/company-logo_100_100/B56Z1sdmLMKMAQ-/0/1775641191536/solvecube_logo?e=2147483647&v=beta&t=bn6NfRvDQ__5-OmuUj-kB9-3-OnnuaLQJw_dNxHIqnE",
     "companyUrl": "https://sg.linkedin.com/company/solvecube",
     "sourceJobId": "4480314948"
+  },
+  "atlas air": {
+    "name": "Atlas Air",
+    "checkedAt": "2026-10-16T22:06:01.719676+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3f6c12d89b4119120dea2275.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFl4hwOUe-74A/company-logo_100_100/company-logo_100_100/0/1688169572602/atlas_air_logo?e=2147483647&v=beta&t=_tCMgH-4aUV47XjCxfXqDLfSZF36guMl2IkyS_nlh6c",
+    "companyUrl": "https://www.linkedin.com/company/atlas-air",
+    "sourceJobId": "4480374592",
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480374592",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480374592",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.26046911216524,
+        "retried": true
+      }
+    ]
+  },
+  "china overseas land & investment ltd.": {
+    "name": "China Overseas Land & Investment Ltd.",
+    "checkedAt": "2026-10-16T22:07:05.406886+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a972b94b9e66de0603ff1dba.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGBovxBjbG57Q/company-logo_100_100/B56Zr7ik0GJwAQ-/0/1765156736629/coli688_logo?e=2147483647&v=beta&t=pOPEKMqAKh8wKv5bMhsVWg6wCu_kMK47QFVNBRqMZhU",
+    "companyUrl": "https://hk.linkedin.com/company/coli688",
+    "sourceJobId": "4479388663"
+  },
+  "wristcheck": {
+    "name": "WRISTCHECK",
+    "checkedAt": "2026-10-16T22:07:08.377111+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "acec000b3b3090970502b60e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEG0CwBsH0NMA/company-logo_100_100/company-logo_100_100/0/1667816789595/wristcheck_logo?e=2147483647&v=beta&t=htecx8VFcnrZOKlGDsG41j2HxhQT-WRXh5vODmaq1bA",
+    "companyUrl": "https://hk.linkedin.com/company/wristcheck",
+    "sourceJobId": "4477349686"
   }
 }
