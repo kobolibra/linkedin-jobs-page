@@ -383,12 +383,19 @@ body.compact .job > .mono { margin-top:2px; }
   .job > .mono, [data-theme="dark"] .job > .mono { margin-top:1px; }
   body.compact .job > .mono { margin-top:0; }
 }
-/* Reader-like hover rail uses the exact selected region-filter color. */
+/* One shared rail sits outside the logo gutter and glides between hovered rows. */
+#jobs > .job-hover-rail { display:none; }
 @media (hover:hover) and (pointer:fine) {
-  .job::before, .job.expired::before {
-    left:0;top:8px;bottom:8px;width:4px;border-radius:2px;
-    background:var(--region,var(--navy));opacity:0;pointer-events:none;
+  #jobs { position:relative; }
+  .job::before, .job.expired::before { display:none; }
+  #jobs > .job-hover-rail {
+    display:block;position:absolute;left:-12px;top:0;width:4px;border-radius:2px;
+    pointer-events:none;z-index:2;opacity:0;
+    transition:transform .18s cubic-bezier(.2,.8,.2,1),height .18s cubic-bezier(.2,.8,.2,1),background-color .14s ease,opacity .10s ease;
   }
-  body.compact .job::before { top:6px;bottom:6px; }
-  .job:hover::before, .job.expired:hover::before { opacity:1; }
+  #jobs > .job-hover-rail.is-visible { opacity:1; }
+  #jobs > .job-hover-rail.is-instant { transition:none; }
+}
+@media (prefers-reduced-motion:reduce) {
+  #jobs > .job-hover-rail { transition:none; }
 }

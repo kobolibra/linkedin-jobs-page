@@ -8,7 +8,7 @@ export const PUBLIC_FILES = [
   'index.html', '_headers', 'jobs-index.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'app.js', 'company-insight.js', 'company-logos.js', 'editorial-mapping.js',
-  'guestbook.js', 'row-fixes.js', 'salary-display.js', 'top30-layout.js',
+  'guestbook.js', 'row-fixes.js', 'row-hover.js', 'salary-display.js', 'top30-layout.js',
   'ui-refinement.js', 'visitor-count.js', 'layout-fixes.css', 'styles-company.css',
   'styles-cursor.css', 'styles-list.css', 'styles-refinement.css', 'styles.css',
 ];
