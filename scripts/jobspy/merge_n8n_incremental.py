@@ -9,11 +9,6 @@ from pathlib import Path
 from linkedin_ids import linkedin_job_id
 from reconcile_full_snapshots import timestamp
 
-TARGET_COMPANIES = {
-    "ubs", "state street", "jpmorgan chase", "dbs bank", "morgan stanley", "anz",
-    "standard chartered", "hsbc", "citi", "societe generale", "bnp paribas",
-    "deutsche bank", "goldman sachs", "blackrock", "bbva", "natixis", "bank of america",
-}
 LIVENESS_EXPIRED_REASONS = {
     "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
 }
@@ -121,7 +116,8 @@ def apply_salary_snapshot(rows, batch_doc):
         title = normalize_title(row.get("Title"), company)
         english_title = normalize_title(row.get("Title"), company, strip_chinese=True)
         salary = str(row.get("Location") or "").strip()
-        if company in TARGET_COMPANIES and salary:
+        # WIP salary references cover all employers, not only JobSpy targets.
+        if company and salary:
             if title:
                 salary_by_full_key[f"{company}|{title}"] = salary
             if english_title:
@@ -130,7 +126,7 @@ def apply_salary_snapshot(rows, batch_doc):
     preserved = 0
     for job in rows:
         company = normalize_company(job.get("company"))
-        if str(job.get("location") or "").upper() != "CN" or company not in TARGET_COMPANIES:
+        if str(job.get("location") or "").upper() != "CN" or not company:
             continue
         full_key = f"{company}|{normalize_title(job.get('title'), company)}"
         english_key = f"{company}|{normalize_title(job.get('title'), company, strip_chinese=True)}"
