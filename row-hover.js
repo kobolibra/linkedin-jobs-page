@@ -21,7 +21,9 @@
     }
     if(instant)rail.classList.add('is-instant');
     rail.style.transform='translate3d(0,'+(box.top-parent.top+host.scrollTop)+'px,0)';
-    rail.style.height=box.height+'px';rail.style.backgroundColor=color||'var(--navy)';
+    rail.style.height=box.height+'px';rail.style.color=color||'var(--navy)';
+    if(current.classList.contains('expired'))rail.classList.add('is-expired');
+    else rail.classList.remove('is-expired');
     if(instant){
       // Flush once on entry so the first rail appears at its row, never gliding from page top.
       void rail.offsetWidth;rail.classList.remove('is-instant');
