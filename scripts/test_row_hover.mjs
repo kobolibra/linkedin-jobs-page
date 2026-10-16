@@ -18,7 +18,7 @@ function setup(){
 test('one shared full-height rail follows rows; moving inside a row does no extra measurement',()=>{
  const h=setup(),a=h.row(150,80),b=h.row(230,116,'#b07c22');h.over(a);h.flush();
  assert.equal(h.created.length,1);const rail=h.created[0];assert.equal(rail.style.height,'80px');assert.equal(rail.style.transform,'translate3d(0,50px,0)');assert.equal(rail['aria-hidden'],'true');
- h.over(a);h.flush();assert.equal(a.reads,1);h.over(b);h.flush();assert.equal(h.created.length,1);assert.equal(rail.style.height,'116px');assert.equal(rail.style.transform,'translate3d(0,130px,0)');assert.equal(rail.style.backgroundColor,'#b07c22');assert.ok(rail.classList.contains('is-visible'));assert.equal(h.hostReads,2);
+ h.over(a);h.flush();assert.equal(a.reads,1);h.over(b);h.flush();assert.equal(h.created.length,1);assert.equal(rail.style.height,'116px');assert.equal(rail.style.transform,'translate3d(0,130px,0)');assert.equal(rail.style.color,'#b07c22');assert.ok(rail.classList.contains('is-visible'));assert.equal(h.hostReads,2);
 });
 test('rapid switching batches only the last row and never scans offscreen jobs',()=>{
  const h=setup(),a=h.row(150,80),b=h.row(300,90);h.over(a);h.over(b);h.flush();assert.equal(a.reads,0);assert.equal(b.reads,1);assert.equal(h.created.length,1);
@@ -35,4 +35,8 @@ test('touch/coarse input creates no marker; hidden or detached rows are never me
 });
 test('scroll offsets and resize follow only the active row; a breakpoint change clears it',()=>{
  const h=setup(),a=h.row(150,80);h.host.scrollTop=20;h.over(a);h.flush();assert.equal(h.created[0].style.transform,'translate3d(0,70px,0)');h.windowEvents.resize();h.flush();assert.equal(a.reads,2);h.fine.matches=false;h.fine.changed();assert.ok(!h.created[0].classList.contains('is-visible'));
+});
+
+test('expired background is scoped to the current row and cleared for active rows',()=>{
+ const h=setup(),closed=h.row(150,80),active=h.row(230,80);closed.classList.add('expired');h.over(closed);h.flush();assert.ok(h.created[0].classList.contains('is-expired'));h.over(active);h.flush();assert.ok(!h.created[0].classList.contains('is-expired'));
 });
