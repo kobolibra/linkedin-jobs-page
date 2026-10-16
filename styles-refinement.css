@@ -375,3 +375,20 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
 [data-theme="dark"] .job-sheet-options button { background:#ffffff08; }
 @media(prefers-reduced-motion:reduce) { .job-actions,.job::after,.job > * { transition:none!important; } }
 @media print { .job-actions,.job-action-sheet { display:none!important; } }
+
+/* Align the logo's visible top with title text without changing the row grid. */
+.job > .mono, [data-theme="dark"] .job > .mono { margin-top:4px; }
+body.compact .job > .mono { margin-top:2px; }
+@media (max-width:720px) {
+  .job > .mono, [data-theme="dark"] .job > .mono { margin-top:1px; }
+  body.compact .job > .mono { margin-top:0; }
+}
+/* Reader-like hover rail uses the exact selected region-filter color. */
+@media (hover:hover) and (pointer:fine) {
+  .job::before, .job.expired::before {
+    left:0;top:8px;bottom:8px;width:4px;border-radius:2px;
+    background:var(--region,var(--navy));opacity:0;pointer-events:none;
+  }
+  body.compact .job::before { top:6px;bottom:6px; }
+  .job:hover::before, .job.expired:hover::before { opacity:1; }
+}
