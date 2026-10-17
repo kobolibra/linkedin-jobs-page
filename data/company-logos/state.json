@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-17T16:07:02.814113+00:00",
+    "checkedAt": "2026-10-17T22:06:50.716285+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-17T16:06:49.533160+00:00",
+    "checkedAt": "2026-10-17T22:06:35.552164+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-17T16:06:53.657628+00:00",
+    "checkedAt": "2026-10-17T22:06:41.663437+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-17T16:06:56.692766+00:00",
+    "checkedAt": "2026-10-17T22:06:44.728550+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-17T16:06:59.608420+00:00",
+    "checkedAt": "2026-10-17T22:06:47.424477+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7226,5 +7226,29 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E4%B8%AD%E7%BE%8E%E7%91%9E%E5%BA%B7%E6%A0%B8%E9%85%B8%E6%8A%80%E6%9C%AF%EF%BC%88%E5%8D%97%E9%80%9A%EF%BC%89%E7%A0%94%E7%A9%B6%E9%99%A2%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4477748974"
+  },
+  "eos": {
+    "name": "EOS",
+    "checkedAt": "2026-10-17T22:06:31.294563+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0e22cee2a65386dc55880e82.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFxOwUs4R7nwg/company-logo_100_100/company-logo_100_100/0/1720552189768/eos_logo?e=2147483647&v=beta&t=APTrfA5KF2pnHPDtqhElZ_A8z5KJJEY5G4Y6UhR7C5w",
+    "companyUrl": "https://de.linkedin.com/company/eos",
+    "sourceJobId": "4342039151"
+  },
+  "sptel pte ltd": {
+    "name": "SPTel Pte Ltd",
+    "checkedAt": "2026-10-17T22:06:32.613860+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "04c6057b8ca54b13068e522a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHntrZ88aeeHA/company-logo_100_100/company-logo_100_100/0/1630585342182/sp_telecom_logo?e=2147483647&v=beta&t=emUumWL3rF8EpPz_IySRXUr-owCBpaTvl3ik-KXyCQI",
+    "companyUrl": "https://sg.linkedin.com/company/sptel",
+    "sourceJobId": "4479665933"
   }
 }
