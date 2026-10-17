@@ -2,46 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:38380732249:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-13T10:05:26.443546+00:00",
-      "requests": 11,
-      "retries": 1,
-      "httpStatuses": {
-        "200": 9,
-        "429": 2
-      },
-      "outcomes": {
-        "response": 9,
-        "rate_limited": 2
-      },
-      "stages": {
-        "logos": 11
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1791885987.1602101,
-          "stopUntil": 1791885987.1602101,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 8,
-        "downloaded": 3,
-        "missing": 3,
-        "placeholders": 1,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 1,
-        "stoppedReason": "HTTP 429 request deferred after repeated rate limit"
-      }
-    },
-    {
       "runId": "jobs:38377466845:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7212,6 +7172,50 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:39023604596:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-17T10:06:19.012325+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 1,
+      "retries": 0,
+      "httpStatuses": {
+        "429": 1
+      },
+      "outcomes": {
+        "rate_limited": 1
+      },
+      "stages": {
+        "logos": 1
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1792231639.5247529,
+          "stopUntil": 1792231639.5247529,
+          "reason": "HTTP 429"
+        }
+      },
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 9,
+        "downloaded": 0,
+        "missing": 1,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 60.6s",
+        "deferred": 8
+      }
     }
   ],
   "queryFailureStreaks": {

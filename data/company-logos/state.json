@@ -7116,5 +7116,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEG0CwBsH0NMA/company-logo_100_100/company-logo_100_100/0/1667816789595/wristcheck_logo?e=2147483647&v=beta&t=htecx8VFcnrZOKlGDsG41j2HxhQT-WRXh5vODmaq1bA",
     "companyUrl": "https://hk.linkedin.com/company/wristcheck",
     "sourceJobId": "4477349686"
+  },
+  "cz": {
+    "name": "CZ",
+    "checkedAt": "2026-10-17T10:06:18.823433+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4479360831",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.59786896889879,
+        "deferred": true
+      }
+    ]
   }
 }
