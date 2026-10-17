@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-16T22:08:28.621322+00:00",
+    "checkedAt": "2026-10-17T04:07:20.593175+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2697,7 +2697,7 @@
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
         "status": 404,
         "contentType": "",
-        "attempt": 1,
+        "attempt": 2,
         "jobId": "4461013126",
         "reason": "http_error",
         "stage": "job"
@@ -2711,6 +2711,17 @@
         "jobId": "4461002131",
         "reason": "http_error",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.32884771957582,
+        "retried": true
       }
     ]
   },
@@ -3019,7 +3030,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-16T22:07:11.346423+00:00",
+    "checkedAt": "2026-10-17T04:06:04.718094+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3055,7 +3066,7 @@
         "status": 429,
         "contentType": "text/html",
         "attempt": 1,
-        "waitSeconds": 62.24545131557982,
+        "waitSeconds": 62.51025014075612,
         "retried": true
       }
     ]
@@ -3193,7 +3204,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-16T22:08:19.864085+00:00",
+    "checkedAt": "2026-10-17T04:07:11.478509+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3884,7 +3895,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-16T22:08:22.509021+00:00",
+    "checkedAt": "2026-10-17T04:07:14.479796+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5419,7 +5430,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-16T22:08:25.463371+00:00",
+    "checkedAt": "2026-10-17T04:07:17.456560+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
