@@ -96,7 +96,7 @@ def collect(args):
     out=Path(args.output);out.mkdir(parents=True,exist_ok=True)
     changes={};images={};blocked=0;stop_reason=None
     stats={'candidates':len(batch),'downloaded':0,'missing':0,'placeholders':0,'blocked':0,'reusedSources':0}
-    policy=RequestPolicy(time.monotonic()+2400,attempts=getattr(args,'http_attempts',3),base_delay=getattr(args,'retry_base',15),coordinator=Coordinator())
+    policy=RequestPolicy(time.monotonic()+2400,attempts=getattr(args,'http_attempts',3),base_delay=getattr(args,'retry_base',15),coordinator=Coordinator(),defer_on_429=args.mode=='rss')
     with requests.Session() as session:
         session.logo_policy=policy
         session.headers.update({'User-Agent':'Mozilla/5.0','Accept-Language':'en-US,en;q=0.9'})
@@ -162,7 +162,9 @@ def collect(args):
             print(json.dumps({'company':entry['name'],'status':entry['status']}),flush=True)
             if stop_reason or blocked>=5: break
     stats['httpRetries']=sum(bool(event.get('retried')) for event in policy.events)
-    if stop_reason: stats['stoppedReason']=stop_reason
+    if stop_reason:
+        stats['stoppedReason']=stop_reason
+        stats['deferred']=max(0,min(len(batch),args.limit)-len(changes))
     (out/'updates.json').write_text(json.dumps(changes,ensure_ascii=False,indent=2)+'\n')
     (out/'report.json').write_text(json.dumps(stats,indent=2)+'\n')
     print(json.dumps(stats),flush=True)
@@ -189,3 +191,4 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--mode',choices=['bootstrap','rss','repair'],default='rss');p.add_argument('--jobs',default='jobs.json');p.add_argument('--rss',default='data/n8n/rss-latest.json');p.add_argument('--state',default='data/company-logos/state.json');p.add_argument('--assets',default='assets/company-logos');p.add_argument('--manifest',default='company-logos.json');p.add_argument('--output',default='/tmp/company-logos');p.add_argument('--apply');p.add_argument('--limit',type=int,default=1000);p.add_argument('--delay',type=float,default=1);p.add_argument('--http-attempts',type=int,default=3);p.add_argument('--retry-base',type=float,default=15)
     args=p.parse_args();apply(args) if args.apply else collect(args)
 if __name__=='__main__': main()
+

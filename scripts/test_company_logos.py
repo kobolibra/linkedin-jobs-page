@@ -5,6 +5,32 @@ from PIL import Image
 from company_logos import apply, candidates, extract, image_url, logo_image_url, key, thumbnail, cached_image, PARSER_VERSION
 
 class LogosTests(unittest.TestCase):
+    def test_rss_deferral_keeps_completed_images_and_unfinished_companies_retryable(self):
+        from unittest.mock import patch
+        from company_logos import collect
+        from logo_http import RateLimitStopped
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);jobs=root/'jobs.json';state=root/'state.json';out=root/'out'
+            rows=[{'company':name,'link':'https://www.linkedin.com/jobs/view/'+str(12345000+i)}
+                  for i,name in enumerate(('A New','B Limited','C Later'))]
+            jobs.write_text(json.dumps(rows))
+            args=SimpleNamespace(state=str(state),jobs=str(jobs),mode='rss',output=str(out),limit=1000,delay=0)
+            calls=[]
+            def fetch(session,url,limit):
+                self.assertTrue(session.logo_policy.defer_on_429);calls.append(url)
+                if len(calls)==1:
+                    return self.html('A New','https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u').encode()
+                if len(calls)==2:return self.svg()
+                raise RateLimitStopped('RSS logo HTTP 429 deferred to the next publication')
+            with patch('company_logos.fetch_bytes',side_effect=fetch):collect(args)
+            self.assertEqual(len(calls),3)
+            report=json.loads((out/'report.json').read_text())
+            self.assertEqual((report['downloaded'],report['missing'],report['deferred']),(1,1,1))
+            apply(SimpleNamespace(apply=str(out),state=str(state),assets=str(root/'assets'),manifest=str(root/'manifest.json')))
+            saved=json.loads(state.read_text())
+            self.assertEqual(saved['a new']['status'],'ready')
+            self.assertEqual({k for k,_ in candidates(rows,None,saved,'rss')},{'b limited','c later'})
+
     def test_verified_source_reuses_existing_html_without_requesting_job_page(self):
         from unittest.mock import patch
         from company_logos import collect
@@ -151,3 +177,4 @@ class LogosTests(unittest.TestCase):
             self.assertEqual(json.loads((p/'manifest.json').read_text()),{'a':'assets/company-logos/'+name})
             self.assertEqual(jobs.read_text(),'preserved')
 if __name__=='__main__': unittest.main()
+

@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -38,7 +38,7 @@ jobs:
           PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_rss_publication.py
       - name: Freeze publication inputs and merge jobs before logo collection
         run: |
-          git fetch origin main
+          git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
           git reset --hard origin/main
           python scripts/rss_publication.py --inputs /tmp/rss-publication --capture
           python scripts/rss_publication.py --inputs /tmp/rss-publication --output /tmp/rss-publication/merged-jobs.json
@@ -61,7 +61,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           for attempt in 1 2 3 4 5; do
-            git fetch origin main
+            git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
             git reset --hard origin/main
             python scripts/rss_publication.py --inputs /tmp/rss-publication --output jobs.json
             python scripts/company_logos.py --apply /tmp/rss-company-logos
@@ -98,3 +98,4 @@ jobs:
             /tmp/rss-company-logos/*.json
             /tmp/rss-publication/inputs.json
           if-no-files-found: ignore
+

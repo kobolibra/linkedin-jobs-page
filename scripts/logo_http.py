@@ -20,13 +20,15 @@ class RateLimitStopped(requests.HTTPError):
 
 class RequestPolicy:
     def __init__(self, deadline, attempts=3, base_delay=15, max_delay=120,
-                 clock=time.monotonic, sleep=time.sleep, jitter=None, coordinator=None):
+                 clock=time.monotonic, sleep=time.sleep, jitter=None, coordinator=None,
+                 defer_on_429=False):
         self.deadline = deadline
         self.attempts = max(1, attempts)
         self.base_delay, self.max_delay = base_delay, max_delay
         self.coordinator, self.clock, self.sleep = coordinator, clock, sleep
         self.jitter = jitter or (lambda: random.uniform(0, 3))
         self.events, self.last = [], None
+        self.defer_on_429 = defer_on_429
 
     def wait(self, seconds):
         if seconds > self.max_delay or self.clock() + seconds >= self.deadline:
@@ -70,7 +72,13 @@ class RequestPolicy:
                 response.close()
                 persistent = False
                 if self.coordinator and status == 429:
-                    persistent = self.coordinator.defer(url, seconds, stop=exhausted)
+                    persistent = self.coordinator.defer(url, seconds, stop=exhausted or self.defer_on_429)
+                if status == 429 and self.defer_on_429:
+                    event['deferred'] = True
+                    raise RateLimitStopped(
+                        f'RSS logo HTTP 429 deferred to the next publication; cooldown {seconds:.1f}s',
+                        response=response,
+                    )
                 if persistent or exhausted:
                     if status == 429:
                         raise RateLimitStopped('HTTP 429 request deferred after repeated rate limit', response=response)
@@ -90,3 +98,4 @@ class RequestPolicy:
                 raise
             event['retried'] = True
         raise CollectionStopped('request budget exhausted')
+

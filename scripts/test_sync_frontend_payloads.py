@@ -71,8 +71,16 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             subprocess.run(("git", "-C", str(checkout), "-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "-m", "seed"), check=True, capture_output=True)
             subprocess.run(("git", "-C", str(checkout), "branch", "-M", "main"), check=True, capture_output=True)
             subprocess.run(("git", "-C", str(checkout), "push", "-u", "origin", "main"), check=True, capture_output=True)
+            # Production checkouts and main refreshes need only the current tree.
+            shallow=root/'shallow'
+            subprocess.run(('git','clone','--depth=1','--branch','main',remote.as_uri(),str(shallow)),check=True,capture_output=True)
+            checkout=shallow
+            self.assertEqual(subprocess.check_output(('git','rev-parse','--is-shallow-repository'),cwd=checkout,text=True).strip(),'true')
             command = (sys.executable, "scripts/sync_frontend_payloads.py")
-            subprocess.run((*command, "--publish"), cwd=checkout, check=True, capture_output=True)
+            repaired=subprocess.run((*command, "--publish"), cwd=checkout, check=True, capture_output=True,text=True)
+            self.assertEqual(repaired.stdout.count('frontend_index_jobs'),2)
+            clean=subprocess.run((*command, "--publish"), cwd=checkout, check=True, capture_output=True,text=True)
+            self.assertEqual(clean.stdout.count('frontend_index_jobs'),1)
             index = json.loads((checkout / "jobs-index.json").read_text(encoding="utf-8"))
             self.assertEqual(len(index["jobs"]), 1)
             self.assertEqual(len(index["companyLogos"]), 2)
@@ -89,3 +97,4 @@ class FrontendPayloadSyncTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
