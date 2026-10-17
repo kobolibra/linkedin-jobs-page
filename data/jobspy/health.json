@@ -2,38 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:38382649372:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-13T10:20:55.252882+00:00",
-      "requests": 7,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 4,
-        "404": 3
-      },
-      "outcomes": {
-        "response": 7
-      },
-      "stages": {
-        "logos": 7
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 5,
-        "downloaded": 0,
-        "missing": 5,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 0,
-        "httpRetries": 0
-      }
-    },
-    {
       "runId": "logos:38383099444:1",
       "task": "logos",
       "workflowStatus": "success",
@@ -6906,6 +6874,43 @@
         },
         "circuitOpen": false,
         "selectorGuardTripped": false
+      }
+    },
+    {
+      "runId": "logos:39047930684:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-17T16:07:09.784663+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 25,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 22,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 25
+      },
+      "stages": {
+        "logos": 25
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 16,
+        "downloaded": 11,
+        "missing": 5,
+        "placeholders": 2,
+        "blocked": 0,
+        "reusedSources": 3,
+        "httpRetries": 0
       }
     }
   ],

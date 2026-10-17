@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-17T04:07:20.593175+00:00",
+    "checkedAt": "2026-10-17T16:07:02.814113+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2697,7 +2697,7 @@
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
         "status": 404,
         "contentType": "",
-        "attempt": 2,
+        "attempt": 1,
         "jobId": "4461013126",
         "reason": "http_error",
         "stage": "job"
@@ -2711,17 +2711,6 @@
         "jobId": "4461002131",
         "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.32884771957582,
-        "retried": true
       }
     ]
   },
@@ -3030,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-17T04:06:04.718094+00:00",
+    "checkedAt": "2026-10-17T16:06:49.533160+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3039,7 +3028,7 @@
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "status": 200,
         "contentType": "text/html; charset=utf-8",
-        "attempt": 2,
+        "attempt": 1,
         "jobId": "4445434545",
         "reason": "no_employer",
         "stage": "job",
@@ -3057,17 +3046,6 @@
         "stage": "job",
         "observedName": "",
         "companyUrl": ""
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.51025014075612,
-        "retried": true
       }
     ]
   },
@@ -3204,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-17T04:07:11.478509+00:00",
+    "checkedAt": "2026-10-17T16:06:53.657628+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3895,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-17T04:07:14.479796+00:00",
+    "checkedAt": "2026-10-17T16:06:56.692766+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5430,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-17T04:07:17.456560+00:00",
+    "checkedAt": "2026-10-17T16:06:59.608420+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7119,31 +7097,134 @@
   },
   "cz": {
     "name": "CZ",
-    "checkedAt": "2026-10-17T10:06:18.823433+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-17T16:07:08.669989+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4479360831",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479360831",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.59786896889879,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "f2f34d89299f0d6fa7e37477.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGL_snDTt49CA/company-logo_100_100/company-logo_100_100/0/1630548887638/czarnikow_logo?e=2147483647&v=beta&t=ToRIKzk_-6Hfda07XnMFe8pDCSMaBP2RXFUD19_v22M",
+    "companyUrl": "https://uk.linkedin.com/company/czarnikow",
+    "sourceJobId": "4479360831"
+  },
+  "gleneagles hospital hong kong": {
+    "name": "Gleneagles Hospital Hong Kong",
+    "checkedAt": "2026-10-17T16:06:23.292895+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "764aa1a3f129fd677005d68a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGAq9aUS5xztw/company-logo_100_100/B56ZsBIK6KGkAQ-/0/1765250478178/gleneagleshospitalhongkong_logo?e=2147483647&v=beta&t=YkxcPxrx2y1njnkJDDRqcboIJE3jBerWunk6S5X3uY0",
+    "companyUrl": "https://hk.linkedin.com/company/gleneagleshospitalhongkong",
+    "sourceJobId": "4479392549"
+  },
+  "hong kong proptech association": {
+    "name": "Hong Kong PropTech Association",
+    "checkedAt": "2026-10-17T16:06:24.624369+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a97841278d9dbb41bc220072.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEo2Ve4ex_AhQ/company-logo_100_100/B56ZrqwbRZLwAU-/0/1764875155188/hkproptech_logo?e=2147483647&v=beta&t=9v-QBDT4nj9rjz_SjrsqTMRA_kPKQstkDkNpXQHmbmM",
+    "companyUrl": "https://hk.linkedin.com/company/hkproptech",
+    "sourceJobId": "4479685253"
+  },
+  "keppel (infrastructure division)": {
+    "name": "Keppel (Infrastructure Division)",
+    "checkedAt": "2026-10-17T16:06:27.526318+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "64e99f7598e15620306d1dff.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFOfR4nKGFz7g/company-logo_100_100/company-logo_100_100/0/1702432520761/keppel_infrastructure_holdings_pte_ltd_logo?e=2147483647&v=beta&t=rKADUB5O07cGVQOBcARSo9vSZusNl9JVVre3RbEc0xc",
+    "companyUrl": "https://sg.linkedin.com/company/keppel-infrastructure-division",
+    "sourceJobId": "4470155244"
+  },
+  "meology": {
+    "name": "Meology",
+    "checkedAt": "2026-10-17T16:06:30.528694+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "675a4c942b1409f48380ed3a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGDfHX5ye8ERQ/company-logo_100_100/company-logo_100_100/0/1679543002015/meology_logo?e=2147483647&v=beta&t=NSrDxtlV2YfvFEYwDIbFhhgVOtEFUi3MvbMXxgq0ciA",
+    "companyUrl": "https://hk.linkedin.com/company/meology",
+    "sourceJobId": "4458066958"
+  },
+  "panerai": {
+    "name": "Panerai",
+    "checkedAt": "2026-10-17T16:06:33.538996+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b0bc420181bd0f6ed2493521.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQFQUJQsVwehXA/company-logo_100_100/company-logo_100_100/0/1649751074816/officine_panerai_logo?e=2147483647&v=beta&t=vmeBboOYJjeq_apPOu6YEtSAClHiHlV9e1OIiWCBJXE",
+    "companyUrl": "https://ch.linkedin.com/company/officine-panerai",
+    "sourceJobId": "4452971714"
+  },
+  "parameta solutions": {
+    "name": "Parameta Solutions",
+    "checkedAt": "2026-10-17T16:06:36.535650+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "541391d9cd142de06d5b58d1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEY2tZe6cMXNQ/company-logo_100_100/company-logo_100_100/0/1694617783455/parametasolutions_logo?e=2147483647&v=beta&t=7DY0sQYVX5wU5aTF1DCzcF-PkRHdAvdZXdIDjeP35Gg",
+    "companyUrl": "https://uk.linkedin.com/company/parametasolutions",
+    "sourceJobId": "4451230434"
+  },
+  "r.j. crocker consultants pte ltd": {
+    "name": "R.J. Crocker Consultants Pte Ltd",
+    "checkedAt": "2026-10-17T16:06:39.538920+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "9af72cf62439356c62c2321c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQH6XJBbDQPK8A/company-logo_100_100/company-logo_100_100/0/1631357516703?e=2147483647&v=beta&t=XBx5H4m7k98I0PFkzGVAaEEKLQeib-GuoiYQC_pIDrY",
+    "companyUrl": "https://sg.linkedin.com/company/r-j-crocker-consultants-pte-ltd",
+    "sourceJobId": "4477752108"
+  },
+  "recruit ave": {
+    "name": "Recruit Ave",
+    "checkedAt": "2026-10-17T16:06:42.539549+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/recruit-ave",
+    "sourceJobId": "4479386577"
+  },
+  "singapore land authority (sla)": {
+    "name": "Singapore Land Authority (SLA)",
+    "checkedAt": "2026-10-17T16:06:45.567518+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8939091ad211b24310789a28.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHlcjzwPK_7xQ/company-logo_100_100/B4EZ6F1nKIGQAI-/0/1780361885731/singapore_land_authority_logo?e=2147483647&v=beta&t=fibak4d9s7G2QShXtWtsRKdPvwa9eKWLORoQE7-Vqow",
+    "companyUrl": "https://sg.linkedin.com/company/singapore-land-authority",
+    "sourceJobId": "4438580151"
+  },
+  "中美瑞康核酸技术(南通)研究院有限公司": {
+    "name": "中美瑞康核酸技术（南通）研究院有限公司",
+    "checkedAt": "2026-10-17T16:06:48.532435+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E4%B8%AD%E7%BE%8E%E7%91%9E%E5%BA%B7%E6%A0%B8%E9%85%B8%E6%8A%80%E6%9C%AF%EF%BC%88%E5%8D%97%E9%80%9A%EF%BC%89%E7%A0%94%E7%A9%B6%E9%99%A2%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4477748974"
   }
 }
