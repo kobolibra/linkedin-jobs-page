@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -73,3 +73,4 @@ jobs:
         run: python scripts/deploy_cloudflare.py --attempts 3 --timeout 240
       - name: Verify production visitor counter assets
         run: python scripts/verify_visitor_counter.py
+

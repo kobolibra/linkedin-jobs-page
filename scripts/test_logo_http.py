@@ -12,6 +12,23 @@ def response(status,headers=None):
     return SimpleNamespace(status_code=status,headers=headers or {},url='https://www.linkedin.com/jobs/view/12345',close=Mock())
 
 class HttpTests(unittest.TestCase):
+    def test_rss_429_is_deferred_without_sleep_or_another_request(self):
+        for headers, pause in (({}, 60), ({'Retry-After':'3600'}, 3600)):
+            with self.subTest(headers=headers), tempfile.TemporaryDirectory() as tmp:
+                coordinator=Coordinator(Path(tmp)/'state.json',clock=lambda:0,min_interval=0)
+                session=Mock();session.get.return_value=response(429,headers);sleep=Mock()
+                policy=RequestPolicy(1000,clock=lambda:0,sleep=sleep,jitter=lambda:0,
+                                     coordinator=coordinator,defer_on_429=True)
+                with self.assertRaises(RateLimitStopped):
+                    policy.get(session,'https://www.linkedin.com/jobs/view/12345')
+                self.assertEqual(session.get.call_count,1);sleep.assert_not_called()
+                session.get.return_value.close.assert_called_once()
+                state=json.loads(coordinator.path.read_text())['linkedin.com']
+                self.assertEqual(state['consecutive429'],1)
+                self.assertGreaterEqual(state['stopUntil'],pause)
+                self.assertTrue(policy.events[0]['deferred'])
+                self.assertFalse(policy.events[0].get('retried',False))
+
     def test_retry_after_seconds_and_http_date(self):
         self.assertEqual(retry_after_seconds('3'),3)
         self.assertEqual(retry_after_seconds('Mon, 12 Oct 2026 10:00:03 GMT',datetime(2026,10,12,10,tzinfo=timezone.utc)),3)
@@ -52,3 +69,4 @@ class HttpTests(unittest.TestCase):
             self.assertEqual(policy.get(session,'https://www.linkedin.com/jobs/view/12345').status_code,200)
             self.assertEqual(now[0],60)
             self.assertEqual(json.loads(coordinator.path.read_text())['linkedin.com']['consecutive429'],0)
+
