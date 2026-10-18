@@ -437,6 +437,7 @@
     nav.setAttribute("aria-hidden", "true");
     document.body.appendChild(nav);
 
+    const desktopNav=matchMedia("(min-width:721px)");
     let targets = [];
     function toolbarH() { const t = document.querySelector(".toolbar"); return t ? t.getBoundingClientRect().height : 0; }
     function offset() { return toolbarH() + 14; }
@@ -449,6 +450,7 @@
     }
 
     function build() {
+      if(!desktopNav.matches){targets=[];nav.classList.remove("ready");return;}
       const seenDays = new Set();
       const days = jobsEl ? Array.prototype.slice.call(jobsEl.querySelectorAll(".day")).filter(d => {
         if (d.style.display === "none" || seenDays.has(d.dataset.dayKey)) return false;
@@ -476,7 +478,7 @@
     }
 
     function buildPreview(data) {
-      if (targets.length || !Array.isArray(data)) return;
+      if (!desktopNav.matches || targets.length || !Array.isArray(data)) return;
       const keys = [...new Set(data.map(j => j && (j.pushTime || j.firstSeen)).filter(Boolean).map(v => {
         const d = new Date(v); return Number.isNaN(d.getTime()) ? "" : d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
       }).filter(Boolean))].sort().reverse();
@@ -493,10 +495,12 @@
     }
 
     function update() {
-      if (!targets.length) return;
+      if (!desktopNav.matches || !targets.length) return;
       const off = offset();
       let active = 0;
-      for (let i = 1; i < targets.length; i++) {
+      const view=jobsEl?._jobView;
+      if(view){const key=view.activeDay();active=Math.max(0,targets.findIndex(t=>t.el?.dataset.dayKey===key));}
+      for (let i = 1; !view && i < targets.length; i++) {
         const el = targets[i].el || (targets[i].label && jobsEl && jobsEl.querySelector('.day[data-day-key="' + targets[i].label + '"]'));
         if (el) targets[i].el = el;
         if (!el) continue;
@@ -518,13 +522,14 @@
       if (el) tgt.el = el;
       if (!tgt || (!el && i === 0)) { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
       if (!el) return;
+      if(jobsEl?._jobView){jobsEl._jobView.scrollToDay(el.dataset.dayKey);return;}
       const y = scrollTop() + el.getBoundingClientRect().top - offset();
       window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     });
 
     let raf = 0;
     function scheduleUpdate() {
-      if (raf) return;
+      if (!desktopNav.matches || raf) return;
       raf = requestAnimationFrame(() => { raf = 0; update(); });
     }
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
@@ -540,6 +545,7 @@
       if (buildRaf) return;
       buildRaf = requestAnimationFrame(() => { buildRaf = 0; build(); });
     };
+    desktopNav.addEventListener("change",scheduleBuild);
     document.addEventListener("jobsfilterchange", scheduleBuild);
     if (window.__jobsDataPromise) window.__jobsDataPromise.then(buildPreview).catch(() => {});
 

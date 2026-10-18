@@ -67,7 +67,7 @@
     if (list) {
       register(list);
       new MutationObserver(mutations => {
-        mutations.forEach(mutation => mutation.addedNodes.forEach(register));
+        mutations.forEach(mutation => {mutation.addedNodes.forEach(register);mutation.removedNodes.forEach(root=>{if(root.nodeType!==1)return;const jobs=root.matches?.('.job.expired')?[root]:root.querySelectorAll('.job.expired');jobs.forEach(job=>{observer.unobserve(job);visible.delete(job);observed.delete(job);});});});
       }).observe(list, {childList:true, subtree:true});
     }
     new MutationObserver(queue).observe(document.body, {attributes:true, attributeFilter:['class']});
