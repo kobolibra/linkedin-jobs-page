@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-18T04:06:44.759217+00:00",
+    "checkedAt": "2026-10-18T10:05:45.601745+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-18T04:06:29.406064+00:00",
+    "checkedAt": "2026-10-18T10:05:30.428943+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-18T04:06:35.609433+00:00",
+    "checkedAt": "2026-10-18T10:05:36.332551+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-18T04:06:38.556946+00:00",
+    "checkedAt": "2026-10-18T10:05:39.337416+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-18T04:06:41.516036+00:00",
+    "checkedAt": "2026-10-18T10:05:42.305144+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7274,5 +7274,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEqi0xvuMeuew/company-logo_100_100/B4EZfF35ikHYAQ-/0/1751371454940/jacobs_logo?e=2147483647&v=beta&t=UKW8ggrtSMTSOWMS5cGkK1CV1VF4AhGsIFEwlJkbfSQ",
     "companyUrl": "https://www.linkedin.com/company/jacobs",
     "sourceJobId": "4444423388"
+  },
+  "careerowl.in": {
+    "name": "Careerowl.in",
+    "checkedAt": "2026-10-18T10:05:20.196064+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c0397d09b860feff2bbfb191.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGffS4jATaQTA/company-logo_100_100/B4DaDxr2ThJAAI-/0/1790761199024?e=2147483647&v=beta&t=KMd_c5v5_lpWPtjvsQZwTWHRAoQqXaOpAQotugCPMzM",
+    "companyUrl": "https://www.linkedin.com/company/careerowl-in",
+    "sourceJobId": "4480884269"
+  },
+  "cdr (citigate dewe rogerson)": {
+    "name": "CDR (Citigate Dewe Rogerson)",
+    "checkedAt": "2026-10-18T10:05:21.488147+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "39c6cf1141d9334f57979fd6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGsHB-OQ34pVg/company-logo_100_100/company-logo_100_100/0/1737121935046/citigate_dewe_rogerson_logo?e=2147483647&v=beta&t=Gi6p9Dd1CnlwFLxRXt4ikYLTulbfqGmXXyXMFJCbUeQ",
+    "companyUrl": "https://uk.linkedin.com/company/citigate-dewe-rogerson",
+    "sourceJobId": "4435033724"
+  },
+  "上海北广投私募基金管理有限公司": {
+    "name": "上海北广投私募基金管理有限公司",
+    "checkedAt": "2026-10-18T10:05:24.417187+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E5%8C%97%E5%B9%BF%E6%8A%95%E7%A7%81%E5%8B%9F%E5%9F%BA%E9%87%91%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4478201874"
+  },
+  "华创证券有限责任公司": {
+    "name": "华创证券有限责任公司",
+    "checkedAt": "2026-10-18T10:05:27.505968+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3d0d9282b7f149b8e8faa0c5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEVYPkC_MRhKQ/company-logo_100_100/company-logo_100_100/0/1638701341585/_logo?e=2147483647&v=beta&t=Wx-UrDVJVXAvupy-5VTKiWeEf9_jKpjtXGQFIO-p4x4",
+    "companyUrl": "https://cn.linkedin.com/company/%E5%8D%8E%E5%88%9B%E8%AF%81%E5%88%B8%E6%9C%89%E9%99%90%E8%B4%A3%E4%BB%BB%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4477797942"
   }
 }

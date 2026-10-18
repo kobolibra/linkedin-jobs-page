@@ -2,46 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:38475404187:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-13T22:08:43.050876+00:00",
-      "requests": 7,
-      "retries": 2,
-      "httpStatuses": {
-        "200": 4,
-        "429": 3
-      },
-      "outcomes": {
-        "response": 4,
-        "rate_limited": 3
-      },
-      "stages": {
-        "logos": 7
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1791929382.978285,
-          "stopUntil": 1791929382.978285,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 7,
-        "downloaded": 2,
-        "missing": 1,
-        "placeholders": 0,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 2,
-        "stoppedReason": "HTTP 429 request deferred after repeated rate limit"
-      }
-    },
-    {
       "runId": "jobs:38505355568:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7630,6 +7590,43 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:39117845050:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-18T10:05:51.441819+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 15,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 12,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 15
+      },
+      "stages": {
+        "logos": 15
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 9,
+        "downloaded": 4,
+        "missing": 5,
+        "placeholders": 1,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
