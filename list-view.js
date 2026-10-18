@@ -3,10 +3,10 @@
   const raf=()=>new Promise(requestAnimationFrame),escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   class JobListView{
     constructor({host,render,onMount}){
-      this.host=host;this.render=render;this.onMount=onMount;this.blocks=[];this.open=new Set();this.frame=0;this.jump=0;this.full=false;this.dead=false;
+      this.host=host;this.render=render;this.onMount=onMount;this.blocks=[];this.cache=[];this.open=new Set();this.frame=0;this.jump=0;this.full=false;this.dead=false;
       host._jobView=this;host.classList.add('job-windowed');
       this.scroll=()=>this.schedule();window.addEventListener('scroll',this.scroll,{passive:true});
-      this.resize=()=>this.invalidate();window.addEventListener('resize',this.resize,{passive:true});
+      this.resize=()=>{if(this.host.clientWidth!==this.estimateWidth)this.invalidate();else this.schedule(true);};window.addEventListener('resize',this.resize,{passive:true});
       this.cancelJump=()=>{this.jump++;};for(const type of ['wheel','touchstart','pointerdown'])window.addEventListener(type,this.cancelJump,{passive:true});
       host.addEventListener('pointerdown',event=>this.interaction=event.target.closest('.day'),{passive:true});
       this.observer=new ResizeObserver(()=>this.schedule(true));
@@ -25,7 +25,7 @@
     remember(block){for(const card of block.el._jobCards||[]){const opened=card.querySelector('details.job-jd')?.open||card.querySelector('.job-jd-toggle')?.getAttribute('aria-expanded')==='true';if(opened)this.open.add(card.dataset.id);else this.open.delete(card.dataset.id);}}
     set(rows,meta,{anchor=null}={}){
       this.jump++;for(const block of this.blocks)if(block.mounted)this.remember(block);
-      this.estimateWidth=this.host.clientWidth;this.compact=document.body.classList.contains("compact");this.full=false;this.rows=rows;this.meta=meta;this.blocks=[];const days=new Map();
+      this.estimateWidth=this.host.clientWidth;this.compact=document.body.classList.contains("compact");this.full=false;this.rows=rows;this.meta=meta;this.blocks=[];this.cache=[];const days=new Map();
       for(const index of rows){const r=meta[index];let day=days.get(r.day);if(!day){day={key:r.day,label:r.label,indices:[],active:0};days.set(r.day,day);}day.indices.push(index);if(r.status!=='expired')day.active++;}
       this.days=[...days.values()];const fragment=document.createDocumentFragment();
       for(const day of this.days)for(let offset=0;offset<day.indices.length;offset+=64){
@@ -49,28 +49,34 @@
     }
     mount(block){
       if(block.mounted)return;block.mounted=true;block.el.style.height='auto';
-      const template=document.createElement('template');template.innerHTML=block.indices.map((index,i)=>this.render(index,i)).join('');
-      block.el.appendChild(template.content);block.el._jobCards=[...block.el.querySelectorAll('.job')];block.el._favoriteCards=new Set(block.el._jobCards.filter(card=>card.classList.contains('is-favorite')));
+      if(block.cached){block.el.appendChild(block.cached);block.cached=null;this.cache=this.cache.filter(b=>b!==block);}
+      else{const template=document.createElement('template');template.innerHTML=block.indices.map((index,i)=>this.render(index,i)).join('');block.el.appendChild(template.content);}block.el._jobCards=[...block.el.querySelectorAll('.job')];block.el._favoriteCards=new Set(block.el._jobCards.filter(card=>card.classList.contains('is-favorite')));
       queueMicrotask(()=>{for(const card of block.el._jobCards)if(this.open.has(card.dataset.id)){const details=card.querySelector('details.job-jd'),button=card.querySelector('.job-jd-toggle');if(button&&button.getAttribute('aria-expanded')!=='true')button.click();else if(details)details.open=true;}});
     }
     pinned(block){const selection=getSelection();return block.el.contains(document.activeElement)||(selection&&!selection.isCollapsed&&block.el.contains(selection.anchorNode))||(document.querySelector('.job-action-sheet[open]')&&this.interaction===block.el);}
     unmount(block){
-      if(!block.mounted||this.pinned(block))return;this.remember(block);block.el.style.height=block.height+'px';for(const card of block.el._jobCards)card.remove();block.el._jobCards=[];block.el._favoriteCards.clear();block.mounted=false;
+      if(!block.mounted||this.pinned(block))return;this.remember(block);
+      block.height=block.el.getBoundingClientRect().height;block.el.style.height=block.height+'px';
+      // Keep recent DOM and decoded logos intact for natural reverse scrolling.
+      block.cached=document.createDocumentFragment();for(const card of block.el._jobCards)block.cached.appendChild(card);
+      block.el._jobCards=[];block.el._favoriteCards.clear();block.mounted=false;this.cache.push(block);
+      while(this.cache.length>8){const oldest=this.cache.shift();oldest.cached=null;}
+
     }
     indexAt(y){let low=0,high=this.blocks.length-1,result=0;while(low<=high){const mid=(low+high)>>1;if(this.blocks[mid].top<=y){result=mid;low=mid+1;}else high=mid-1;}return result;}
     update(){
       if(!this.blocks.length)return;
       if(this.full){for(const block of this.blocks)this.mount(block);this.read();this.onMount?.();return;}
       const low=scrollY-innerHeight*.7,high=scrollY+innerHeight*1.7,start=Math.max(0,this.indexAt(low)),end=Math.min(this.blocks.length-1,this.indexAt(high));let changed=false;const anchor=this.capture();
-      for(let i=0;i<this.blocks.length;i++){const block=this.blocks[i];if(i>=start&&i<=end){if(!block.mounted){this.mount(block);changed=true;}}else if(block.mounted&&!this.pinned(block)){this.unmount(block);changed=true;}}
+      for(let i=0;i<this.blocks.length;i++){const block=this.blocks[i];if(i>=start&&i<=end){if(!block.mounted){this.mount(block);changed=true;}}else if(block.mounted&&!this.pinned(block)&&(block.top+block.height<scrollY-innerHeight*3||block.top>scrollY+innerHeight*4)){this.unmount(block);changed=true;}}
       if(changed){this.read();this.restore(anchor);this.onMount?.();requestAnimationFrame(()=>{if(!this.dead)this.read();});}
     }
     schedule(read=false){this.needsRead||=read;if(this.frame)return;this.frame=requestAnimationFrame(()=>{this.frame=0;if(this.dead)return;if(this.needsRead){this.needsRead=false;this.read();}this.update();});}
     restore(anchor){if(!anchor)return;const card=this.host.querySelector('.job[data-id="'+CSS.escape(anchor.id)+'"]');if(card){const delta=card.getBoundingClientRect().top-anchor.top;if(Math.abs(delta)>.5&&scrollY>0)scrollBy({top:delta,behavior:'instant'});}}
     resetTop(){if(scrollY>this.top-this.toolbar())scrollTo({top:Math.max(0,this.top-this.toolbar()-14),behavior:'instant'});}
     invalidate(anchor=this.capture()){
-      this.estimateWidth=this.host.clientWidth;this.compact=document.body.classList.contains("compact");
-      for(const block of this.blocks){if(block.mounted)this.remember(block);block.el._jobCards.forEach(card=>card.remove());block.el._jobCards=[];block.el._favoriteCards.clear();block.mounted=false;block.height=block.indices.reduce((sum,i)=>sum+this.estimate(this.meta[i]),0)+(block.el.dataset.dayContinuation==='1'?0:36);block.el.style.height=block.height+'px';}
+      this.estimateWidth=this.host.clientWidth;this.compact=document.body.classList.contains("compact");this.cache=[];
+      for(const block of this.blocks){if(block.mounted)this.remember(block);block.cached=null;block.el._jobCards.forEach(card=>card.remove());block.el._jobCards=[];block.el._favoriteCards.clear();block.mounted=false;block.height=block.indices.reduce((sum,i)=>sum+this.estimate(this.meta[i]),0)+(block.el.dataset.dayContinuation==='1'?0:36);block.el.style.height=block.height+'px';}
       this.read();if(anchor){const block=this.blocks.find(b=>b.indices.some(i=>this.meta[i].id===anchor.id));if(block)this.mount(block);this.read();this.restore(anchor);}this.update();
     }
     activeDay(){if(scrollY<this.top-this.toolbar())return null;const block=this.blocks[this.indexAt(scrollY+this.toolbar()+15)];return block?.el.dataset.dayKey||null;}
