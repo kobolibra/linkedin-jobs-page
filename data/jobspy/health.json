@@ -2,44 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:38509490571:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-14T04:05:44.804302+00:00",
-      "requests": 2,
-      "retries": 1,
-      "httpStatuses": {
-        "429": 2
-      },
-      "outcomes": {
-        "rate_limited": 2
-      },
-      "stages": {
-        "logos": 2
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1791950806.162197,
-          "stopUntil": 1791950806.162197,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 7,
-        "downloaded": 0,
-        "missing": 1,
-        "placeholders": 0,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 1,
-        "stoppedReason": "HTTP 429 request deferred after repeated rate limit"
-      }
-    },
-    {
       "runId": "logos:38516001717:1",
       "task": "logos",
       "workflowStatus": "success",
@@ -7627,6 +7589,43 @@
         },
         "circuitOpen": false,
         "selectorGuardTripped": false
+      }
+    },
+    {
+      "runId": "logos:39143401226:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-18T16:06:12.589508+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 19,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 16,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 19
+      },
+      "stages": {
+        "logos": 19
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 11,
+        "downloaded": 6,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
       }
     }
   ],

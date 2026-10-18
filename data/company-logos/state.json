@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-18T10:05:45.601745+00:00",
+    "checkedAt": "2026-10-18T16:06:06.616631+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-18T10:05:30.428943+00:00",
+    "checkedAt": "2026-10-18T16:05:51.569568+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-18T10:05:36.332551+00:00",
+    "checkedAt": "2026-10-18T16:05:57.515562+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-18T10:05:39.337416+00:00",
+    "checkedAt": "2026-10-18T16:06:00.515054+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-18T10:05:42.305144+00:00",
+    "checkedAt": "2026-10-18T16:06:03.460578+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7322,5 +7322,77 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEVYPkC_MRhKQ/company-logo_100_100/company-logo_100_100/0/1638701341585/_logo?e=2147483647&v=beta&t=Wx-UrDVJVXAvupy-5VTKiWeEf9_jKpjtXGQFIO-p4x4",
     "companyUrl": "https://cn.linkedin.com/company/%E5%8D%8E%E5%88%9B%E8%AF%81%E5%88%B8%E6%9C%89%E9%99%90%E8%B4%A3%E4%BB%BB%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4477797942"
+  },
+  "arup": {
+    "name": "Arup",
+    "checkedAt": "2026-10-18T16:05:35.309316+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "99503b9e29d497e850116710.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQEXVU2xG70xZg/company-logo_100_100/B4DZ96ONXGGYAM-/0/1784461973334/arup_logo?e=2147483647&v=beta&t=vYu616UDAdwz4wd-p_CBRvt-Zi3j84XYq743Lo9zMng",
+    "companyUrl": "https://uk.linkedin.com/company/arup",
+    "sourceJobId": "4408764709"
+  },
+  "cover genius": {
+    "name": "Cover Genius",
+    "checkedAt": "2026-10-18T16:05:36.724399+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "614763694fc8089e1298f5d4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHNYNgZHZUhrg/company-logo_100_100/company-logo_100_100/0/1658282877655/cover_genius_logo?e=2147483647&v=beta&t=Jy1DhmpHIT1U7G9SfUiMhd1_unDiEDy3wEzfjA-fWgg",
+    "companyUrl": "https://www.linkedin.com/company/cover-genius",
+    "sourceJobId": "4436141411"
+  },
+  "emq inc.": {
+    "name": "EMQ Inc.",
+    "checkedAt": "2026-10-18T16:05:39.587064+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "24e235d8d9117c7d0f5c3fcf.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHknswsx21YBg/company-logo_100_100/company-logo_100_100/0/1630623208609/emq_logo?e=2147483647&v=beta&t=cVUSvb9HtptGIaYrKZm_jlLGQ_wW3Vh7kfyetUqTURA",
+    "companyUrl": "https://hk.linkedin.com/company/emq",
+    "sourceJobId": "4456157049"
+  },
+  "fpt software": {
+    "name": "FPT Software",
+    "checkedAt": "2026-10-18T16:05:42.603148+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "64efa210645a736c5216bb46.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEomupwSTKvWA/company-logo_100_100/B56Zh4Hgj3HMAU-/0/1754361892047/fpt_software_logo?e=2147483647&v=beta&t=UYcsvXSeYXJm5a9HK_dR-UKQlaXaffcPkJnWIOt19Ww",
+    "companyUrl": "https://vn.linkedin.com/company/fpt-software",
+    "sourceJobId": "4477031354"
+  },
+  "it solution pte ltd": {
+    "name": "IT Solution Pte Ltd",
+    "checkedAt": "2026-10-18T16:05:45.596875+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "345b50d968d43af4a086cd9c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQE86XtSg6Wbow/company-logo_100_100/company-logo_100_100/0/1631337754903?e=2147483647&v=beta&t=8gms7LVjZshkzkglXiwkpiSeMH8KWay_a7U4dxVgWLM",
+    "companyUrl": "https://sg.linkedin.com/company/it-solution-pte-ltd",
+    "sourceJobId": "4480866916"
+  },
+  "path": {
+    "name": "PATH",
+    "checkedAt": "2026-10-18T16:05:48.731228+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a377218e4feecf2bc63ba084.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFfq8gi8i9X4A/company-logo_100_100/company-logo_100_100/0/1719842228483/path_logo?e=2147483647&v=beta&t=mSlrvAFNdNyCBsvjNZ_DDtplBAR2xw-tYZJMqPzMlXI",
+    "companyUrl": "https://www.linkedin.com/company/path",
+    "sourceJobId": "4480907060"
   }
 }
