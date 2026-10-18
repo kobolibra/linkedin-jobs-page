@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-18T16:06:06.616631+00:00",
+    "checkedAt": "2026-10-18T22:06:31.928929+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-18T16:05:51.569568+00:00",
+    "checkedAt": "2026-10-18T22:06:16.924774+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-18T16:05:57.515562+00:00",
+    "checkedAt": "2026-10-18T22:06:22.820693+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-18T16:06:00.515054+00:00",
+    "checkedAt": "2026-10-18T22:06:25.864778+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-18T16:06:03.460578+00:00",
+    "checkedAt": "2026-10-18T22:06:28.778378+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7394,5 +7394,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFfq8gi8i9X4A/company-logo_100_100/company-logo_100_100/0/1719842228483/path_logo?e=2147483647&v=beta&t=mSlrvAFNdNyCBsvjNZ_DDtplBAR2xw-tYZJMqPzMlXI",
     "companyUrl": "https://www.linkedin.com/company/path",
     "sourceJobId": "4480907060"
+  },
+  "evonik": {
+    "name": "Evonik",
+    "checkedAt": "2026-10-18T22:06:12.641801+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "21d345230d3cf789ac7e3acb.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGzu04S7qhv-g/company-logo_100_100/company-logo_100_100/0/1630506253296/evonik_logo?e=2147483647&v=beta&t=Inv0xsMztRe0buot5tDdLxPVAw8POrcrrem_BUzSoY0",
+    "companyUrl": "https://de.linkedin.com/company/evonik",
+    "sourceJobId": "4453560173"
+  },
+  "jsw": {
+    "name": "JSW",
+    "checkedAt": "2026-10-18T22:06:13.991607+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b9fa459532ea2e9137408b88.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQG497L93uhyQA/company-logo_100_100/company-logo_100_100/0/1630614041519/jswgroup_logo?e=2147483647&v=beta&t=K75kwST4SCwPVE2xnPGK9J18QNWl_pmI0Y1MOzetFEU",
+    "companyUrl": "https://in.linkedin.com/company/jswgroup",
+    "sourceJobId": "4478200547"
   }
 }
