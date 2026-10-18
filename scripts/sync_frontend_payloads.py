@@ -8,7 +8,7 @@ import sys
 import time
 
 
-GENERATED = ("jobs-index.json", "jobs-details.json", "data/jev-boilerplate.json")
+GENERATED = ("jobs-index.json", "jobs-details.json", "data/jev-boilerplate.json", "jobs-version.json")
 
 
 def run(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:

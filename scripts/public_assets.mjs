@@ -5,8 +5,9 @@ import {pathToFileURL} from 'node:url';
 // Only files needed by the browser belong in either public deployment.
 // Worker entry points, provider rules, build inputs and repository metadata stay private.
 export const PUBLIC_FILES = [
-  'index.html', '_headers', 'jobs-index.json', 'company-logos.json',
+  'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
+  'job-store.js', 'list-query.js', 'list-view.js',
   'app.js', 'company-insight.js', 'company-logos.js', 'editorial-mapping.js',
   'guestbook.js', 'row-fixes.js', 'row-hover.js', 'salary-display.js', 'top30-layout.js',
   'ui-refinement.js', 'visitor-count.js', 'layout-fixes.css', 'styles-company.css',

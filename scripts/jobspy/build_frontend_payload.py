@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import hashlib
+from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode, quote
 import re
 from pathlib import Path
 
@@ -36,6 +38,16 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
         if not isinstance(job, dict):
             continue
         item = {key: job.get(key) for key in index_fields if key in job}
+        # Tracking keys carry no job identity and inflate the download.
+        try:
+            url=urlsplit(str(item.get("link") or ""))
+            params=parse_qsl(url.query,keep_blank_values=True)
+            tracking={"position","pageNum","refId","trackingId"}
+            if (url.hostname or "").lower().endswith(".linkedin.com") or (url.hostname or "").lower()=="linkedin.com":
+                if any(k in tracking for k,v in params):
+                    item["link"]=urlunsplit((url.scheme,url.netloc,quote(url.path,safe="/%:@!$&'()*+,;=-._~"),urlencode([(k,v) for k,v in params if k not in tracking]),url.fragment))
+        except (ValueError,TypeError):
+            pass
         key = job_id(job.get("link"))
         html = str(job.get("descriptionHtml") or "").strip()
         if html:
@@ -90,6 +102,8 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             if isinstance(state,dict):
                 fallback=next((logos[name] for name,entry in state.items() if name in logos and isinstance(entry,dict) and entry.get('status')=='ready' and entry.get('imageKind')=='placeholder'),'')
     index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows,"companyLogos":logos,"companyLogoFallback":fallback}
+    index_doc["dataVersion"]=hashlib.sha256(json.dumps(index_doc,ensure_ascii=False,separators=(",", ":")).encode("utf-8")).hexdigest()
+    (index_out.parent/"jobs-version.json").write_text(json.dumps({"dataVersion":index_doc["dataVersion"]},separators=(",", ":"))+"\n",encoding="utf-8")
     details_doc = {"schemaVersion": "1.1", "source": "jobs.json", "details": details}
     index_out.write_text(json.dumps(index_doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     details_out.write_text(json.dumps(details_doc, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")

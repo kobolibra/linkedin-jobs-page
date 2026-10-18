@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {readFileSync, mkdirSync, writeFileSync, rmSync, existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
@@ -18,7 +19,13 @@ export function embedCompanyLogos(index='jobs-index.json',manifest='company-logo
   try{records=JSON.parse(readFileSync(state,'utf8'));}catch{}
   doc.companyLogos=catalog&&typeof catalog==='object'&&!Array.isArray(catalog)?Object.fromEntries(Object.entries(catalog).filter(([,src])=>safe(src))):{};
   doc.companyLogoFallback=records&&typeof records==='object'&&!Array.isArray(records)?Object.entries(records).map(([name,record])=>record?.status==='ready'&&record?.imageKind==='placeholder'?doc.companyLogos[name]:null).find(Boolean)||'':'';
-  writeFileSync(index,JSON.stringify(doc)+'\n');return Object.keys(doc.companyLogos).length;
+  // Presentation URLs retain identity and meaningful query parameters only.
+  for(const job of doc.jobs||[]){try{const url=new URL(job.link);if(/(^|\.)linkedin\.com$/i.test(url.hostname)&&['position','pageNum','refId','trackingId'].some(key=>url.searchParams.has(key))){for(const key of ['position','pageNum','refId','trackingId'])url.searchParams.delete(key);job.link=url.href;}}catch{}}
+  delete doc.dataVersion;
+  doc.dataVersion=createHash('sha256').update(JSON.stringify(doc)).digest('hex');
+  writeFileSync(index,JSON.stringify(doc)+'\n');
+  writeFileSync(resolve(index,'..','jobs-version.json'),JSON.stringify({dataVersion:doc.dataVersion})+'\n');
+  return Object.keys(doc.companyLogos).length;
 }
 export function buildJdShards(source='jobs-details.json', output='jd-parts') {
   const doc=JSON.parse(readFileSync(source,'utf8'));

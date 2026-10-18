@@ -505,3 +505,6 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
 .count .active-only-toggle[aria-pressed="true"] { background:var(--navy);color:#f4f1e9; }
 [data-theme="dark"] .count .active-only-toggle[aria-pressed="true"] { background:var(--gold);color:#131210; }
 .count .active-only-toggle:focus-visible { outline:2px solid var(--ink-soft);outline-offset:3px; }
+
+/* Buffered cards own their geometry; date shells retain the full scroll range. */
+#jobs.job-windowed .day{content-visibility:visible;overflow-anchor:none}

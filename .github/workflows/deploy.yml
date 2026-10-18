@@ -6,6 +6,8 @@ on:
     paths:
       - 'jobs.json'
       - 'jobs-index.json'
+      - 'jobs-version.json'
+      - 'assets/mast-backgrounds/**'
       - 'jobs-details.json'
       - 'company-logos.json'
       - 'data/company-logos/state.json'
