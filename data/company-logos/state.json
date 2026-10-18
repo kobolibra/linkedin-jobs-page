@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-17T22:06:50.716285+00:00",
+    "checkedAt": "2026-10-18T04:06:44.759217+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-17T22:06:35.552164+00:00",
+    "checkedAt": "2026-10-18T04:06:29.406064+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-17T22:06:41.663437+00:00",
+    "checkedAt": "2026-10-18T04:06:35.609433+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-17T22:06:44.728550+00:00",
+    "checkedAt": "2026-10-18T04:06:38.556946+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-17T22:06:47.424477+00:00",
+    "checkedAt": "2026-10-18T04:06:41.516036+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7250,5 +7250,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHntrZ88aeeHA/company-logo_100_100/company-logo_100_100/0/1630585342182/sp_telecom_logo?e=2147483647&v=beta&t=emUumWL3rF8EpPz_IySRXUr-owCBpaTvl3ik-KXyCQI",
     "companyUrl": "https://sg.linkedin.com/company/sptel",
     "sourceJobId": "4479665933"
+  },
+  "firmus technologies": {
+    "name": "Firmus Technologies",
+    "checkedAt": "2026-10-18T04:06:25.062351+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f739ef507b96916ca91d5749.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH1ozdR4j1v8A/company-logo_100_100/B56ZvUiRaVHsAQ-/0/1768797313069/firmustechnologies_logo?e=2147483647&v=beta&t=3YamczI0Ee_FpzynNEix-lE-GNch84CYexkcD0LJIoU",
+    "companyUrl": "https://au.linkedin.com/company/firmustechnologies",
+    "sourceJobId": "4479903779"
+  },
+  "jacobs": {
+    "name": "Jacobs",
+    "checkedAt": "2026-10-18T04:06:26.479793+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ad35f5cb70d7161c6b5f9ae6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEqi0xvuMeuew/company-logo_100_100/B4EZfF35ikHYAQ-/0/1751371454940/jacobs_logo?e=2147483647&v=beta&t=UKW8ggrtSMTSOWMS5cGkK1CV1VF4AhGsIFEwlJkbfSQ",
+    "companyUrl": "https://www.linkedin.com/company/jacobs",
+    "sourceJobId": "4444423388"
   }
 }
