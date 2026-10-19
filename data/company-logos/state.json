@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-18T22:06:31.928929+00:00",
+    "checkedAt": "2026-10-19T16:04:41.686860+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-18T22:06:16.924774+00:00",
+    "checkedAt": "2026-10-19T16:04:28.455139+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-18T22:06:22.820693+00:00",
+    "checkedAt": "2026-10-19T16:04:32.578126+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-18T22:06:25.864778+00:00",
+    "checkedAt": "2026-10-19T16:04:35.598472+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-18T22:06:28.778378+00:00",
+    "checkedAt": "2026-10-19T16:04:38.539918+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7474,31 +7474,182 @@
   },
   "gotion high-tech": {
     "name": "GOTION HIGH-TECH",
-    "checkedAt": "2026-10-19T10:03:06.970567+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-19T16:04:47.583900+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4477121190",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.57547662686825,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "b91d7d19727c9d35f5158bb5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQE-eY7AtgdcFA/company-logo_100_100/company-logo_100_100/0/1630644700472/_logo?e=2147483647&v=beta&t=hs9B0h5neibUF4J7KczP0N4nca6mgLRXzpWp8nxUMZ4",
+    "companyUrl": "https://cn.linkedin.com/company/gotion-high-tech",
+    "sourceJobId": "4477121190"
+  },
+  "danos group": {
+    "name": "Danos Group",
+    "checkedAt": "2026-10-19T16:03:48.262722+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5f9b5bf46ed00d52c471f935.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHWkK8fcm5fuw/company-logo_100_100/company-logo_100_100/0/1630581293423/danos_associates_logo?e=2147483647&v=beta&t=yfXTd8tzOLfF4oRDmrJpyZSKVmwYkjumPBY7gOeMLnQ",
+    "companyUrl": "https://uk.linkedin.com/company/danos-group",
+    "sourceJobId": "4479987306"
+  },
+  "exyte": {
+    "name": "Exyte",
+    "checkedAt": "2026-10-19T16:03:49.520798+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "919fd0b9203e95e1b39eaed1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQH876An2cAOgQ/company-logo_100_100/company-logo_100_100/0/1671631862911/exyte_group_logo?e=2147483647&v=beta&t=EA06o7-XDjHjBEvlyCBM9feUi_l4pYxqlpYgNBRupoU",
+    "companyUrl": "https://de.linkedin.com/company/exyte-group",
+    "sourceJobId": "4479986473"
+  },
+  "granite asia": {
+    "name": "Granite Asia",
+    "checkedAt": "2026-10-19T16:03:52.444712+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2a9fe9470b9e01dcf3fee615.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHH5O2UKuCgWg/company-logo_100_100/company-logo_100_100/0/1711734524626/ggv_asia_logo?e=2147483647&v=beta&t=aGotOWjwrXmbwhx8dAaZzm_1on5t9-0OQr_UrXB3X1g",
+    "companyUrl": "https://sg.linkedin.com/company/granite-asia",
+    "sourceJobId": "4479941909"
+  },
+  "intact": {
+    "name": "Intact",
+    "checkedAt": "2026-10-19T16:03:55.445729+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8452ba9f2bfb60f58df63bc2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGa4yoMnJYW2Q/company-logo_100_100/B4EZjS4GnEHEAQ-/0/1755884579607/intact_logo?e=2147483647&v=beta&t=Dsu3kdZULhIachqBup3vkkYgogRDMXLw7ZeaUssd8jw",
+    "companyUrl": "https://ca.linkedin.com/company/intact",
+    "sourceJobId": "4432941577"
+  },
+  "jupiter wealth advisors limited": {
+    "name": "Jupiter Wealth Advisors Limited",
+    "checkedAt": "2026-10-19T16:03:58.448266+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7ba5a32a6fd1cc8fd5b46552.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHkfLh142m3Eg/company-logo_100_100/company-logo_100_100/0/1714414545903/jupiter_wealth_advisors_logo?e=2147483647&v=beta&t=JNm6NiEPsfD9uD1iTby0gNoBxDigtY5GtyNNpNNKClM",
+    "companyUrl": "https://ae.linkedin.com/company/jupiter-wealth-advisors",
+    "sourceJobId": "4480983197"
+  },
+  "oneconnect financial technology": {
+    "name": "OneConnect Financial Technology",
+    "checkedAt": "2026-10-19T16:04:01.453349+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "30c7bccf09d517437ada314b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFE2feyPpLa7Q/company-logo_100_100/B56Zzk3cMeGgAQ-/0/1773366265927/oneconnectft_sg_logo?e=2147483647&v=beta&t=Tc1K1JRqNRvxjpFvUzD1VXqWMMeJFtRkZRnu_H08m5U",
+    "companyUrl": "https://sg.linkedin.com/company/oneconnectft-sg",
+    "sourceJobId": "4479961875"
+  },
+  "oysterly media": {
+    "name": "Oysterly Media",
+    "checkedAt": "2026-10-19T16:04:04.451297+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2b108d84596446fda7cb2247.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF88mLiFfjslg/company-logo_100_100/B56ZwrhCubKcAU-/0/1770256608860/oysterlymedia_logo?e=2147483647&v=beta&t=5HT6dpB3rn1vWOStCf9OmhuN_DDMaKGuwJlPBj6aexw",
+    "companyUrl": "https://sg.linkedin.com/company/oysterlymedia",
+    "sourceJobId": "4479986405"
+  },
+  "six": {
+    "name": "SIX",
+    "checkedAt": "2026-10-19T16:04:07.451004+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d480ba0919101dda1fab7dc2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGVP6EZFa6twQ/company-logo_100_100/company-logo_100_100/0/1631372812997/sixgroup_logo?e=2147483647&v=beta&t=t_DJoaLU_2OTBouqpmCZB1O6F6yKcWj9zD4tGUUiHLg",
+    "companyUrl": "https://ch.linkedin.com/company/sixgroup",
+    "sourceJobId": "4480940894"
+  },
+  "stavian singapore": {
+    "name": "Stavian Singapore",
+    "checkedAt": "2026-10-19T16:04:10.447884+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1d30af70be4bb5d44f02e32c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQETIIEznOW3uw/company-logo_100_100/B56Zheu4glH0AU-/0/1753936005922?e=2147483647&v=beta&t=AMtCII1v8qIx1PoLY0S81IS5rjxZVT1vWPsH05D1z9o",
+    "companyUrl": "https://www.linkedin.com/company/stavian-singapore-pte-ltd",
+    "sourceJobId": "4479964918"
+  },
+  "velocity": {
+    "name": "Velocity",
+    "checkedAt": "2026-10-19T16:04:13.456114+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "68144225f91b387fb99181fd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQH29OQ7-1dBYw/company-logo_100_100/B4DZmUb8CWIEAQ-/0/1759131976218/velocityxyz_logo?e=2147483647&v=beta&t=AcPrX93OwrJQP_RthZjmEIaIRJtwAA-rJJvbOxMKPew",
+    "companyUrl": "https://uk.linkedin.com/company/velocityxyz",
+    "sourceJobId": "4479947922"
+  },
+  "watson-marlow fluid technology solutions": {
+    "name": "Watson-Marlow Fluid Technology Solutions",
+    "checkedAt": "2026-10-19T16:04:16.462670+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5bb69cdb4e3c2cd77eab8b5c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEiQtXwwk1B1A/company-logo_100_100/B4EZp4z9z7IoAQ-/0/1762963482019/watson_marlow_fluid_technology_solutions_logo?e=2147483647&v=beta&t=DsfKsr7-qI5JCFg1sIoRmH3mK4HiAn8sMYTM2Zj-juQ",
+    "companyUrl": "https://uk.linkedin.com/company/watson-marlow-fluid-technology-solutions",
+    "sourceJobId": "4471096105"
+  },
+  "x-press feeders": {
+    "name": "X-Press Feeders",
+    "checkedAt": "2026-10-19T16:04:19.454678+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e1990808ad8b50dc59a9a118.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHznDxQfSKTog/company-logo_100_100/company-logo_100_100/0/1630563838971/x_press_feeders_logo?e=2147483647&v=beta&t=zd5XlzhEPfQH6fLXx9i3bbB6VEoqn37NFW_o8rmIbWI",
+    "companyUrl": "https://sg.linkedin.com/company/x-press-feeders",
+    "sourceJobId": "4470401259"
+  },
+  "xsolla": {
+    "name": "Xsolla",
+    "checkedAt": "2026-10-19T16:04:22.458076+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a8382d4228c44210ff66f6e4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG0IGoyJCsEpw/company-logo_100_100/B56ZsTL9BmJEAU-/0/1765553459922?e=2147483647&v=beta&t=Oryy5ZtQgtV8JbK7jksCan3mTLytVOClQMPx_Mg0SF0",
+    "companyUrl": "https://www.linkedin.com/company/xsolla",
+    "sourceJobId": "4478262936"
+  },
+  "遺善最樂 forevergift.hk": {
+    "name": "遺善最樂 ForeverGift.hk",
+    "checkedAt": "2026-10-19T16:04:25.451438+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ab42c38c941d1e7b1de3d7e2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHhcUrpS0eHrg/company-logo_100_100/company-logo_100_100/0/1716434433484/forevergift_logo?e=2147483647&v=beta&t=kRlTo4tZ1XA0oAojs5oMIZwgExrC4ioAdG8KiMufagQ",
+    "companyUrl": "https://hk.linkedin.com/company/forevergift",
+    "sourceJobId": "4479979522"
   }
 }
