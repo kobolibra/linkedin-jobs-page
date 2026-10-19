@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-19T16:04:41.686860+00:00",
+    "checkedAt": "2026-10-19T22:03:50.281288+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,12 +2705,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.65801145641263,
+        "deferred": true
       }
     ]
   },
@@ -3019,7 +3030,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-19T16:04:28.455139+00:00",
+    "checkedAt": "2026-10-19T22:03:35.483902+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3193,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-19T16:04:32.578126+00:00",
+    "checkedAt": "2026-10-19T22:03:41.180115+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3884,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-19T16:04:35.598472+00:00",
+    "checkedAt": "2026-10-19T22:03:44.168914+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5419,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-19T16:04:38.539918+00:00",
+    "checkedAt": "2026-10-19T22:03:47.121768+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7651,5 +7662,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHhcUrpS0eHrg/company-logo_100_100/company-logo_100_100/0/1716434433484/forevergift_logo?e=2147483647&v=beta&t=kRlTo4tZ1XA0oAojs5oMIZwgExrC4ioAdG8KiMufagQ",
     "companyUrl": "https://hk.linkedin.com/company/forevergift",
     "sourceJobId": "4479979522"
+  },
+  "fitch learning": {
+    "name": "Fitch Learning",
+    "checkedAt": "2026-10-19T22:03:34.026446+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d6ac384a4d1a93f2afc1c603.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGJ0GSnCZYxfQ/company-logo_100_100/B4EZiYyM32HoAQ-/0/1754909954402/fitch_learning_logo?e=2147483647&v=beta&t=BmxPnklNWrO1GgmSo1-ZEto5jaWSA2QLJTrVKjuiH2I",
+    "companyUrl": "https://uk.linkedin.com/company/fitch-learning",
+    "sourceJobId": "4471504539"
   }
 }
