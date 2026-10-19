@@ -14,6 +14,8 @@ on:
       - 'assets/company-logos/**'
       - 'pv.json'
       - 'index.html'
+      - 'login.html'
+      - 'privacy.html'
       - '*.js'
       - 'account-auth.mjs'
       - 'migrations/**'
