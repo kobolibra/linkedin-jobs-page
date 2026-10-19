@@ -4,14 +4,40 @@
   "main": "worker.js",
   "compatibility_date": "2026-09-28",
   "durable_objects": {
-    "bindings": [{"name": "VISITS", "class_name": "VisitorCounter"}]
+    "bindings": [
+      {
+        "name": "VISITS",
+        "class_name": "VisitorCounter"
+      }
+    ]
   },
-  "migrations": [{"tag": "visitor-counter-v1", "new_sqlite_classes": ["VisitorCounter"]}],
-  "build": {"command": "node scripts/build_jd_shards.mjs"},
+  "migrations": [
+    {
+      "tag": "visitor-counter-v1",
+      "new_sqlite_classes": [
+        "VisitorCounter"
+      ]
+    }
+  ],
+  "build": {
+    "command": "node scripts/build_jd_shards.mjs"
+  },
   "assets": {
     "directory": "./public-assets",
     "binding": "ASSETS",
     "not_found_handling": "none",
-    "run_worker_first": ["/"]
-  }
+    "run_worker_first": true
+  },
+  "vars": {
+    "AUTH_ENABLED": "false",
+    "AUTH_ORIGIN": "https://linkedin.claudecowork.workers.dev"
+  },
+  "d1_databases": [
+    {
+      "binding": "AUTH_DB",
+      "database_name": "linkedin-accounts",
+      "database_id": "7a8f7c3d-ed96-41ed-a1bb-364c6abb56db",
+      "migrations_dir": "migrations"
+    }
+  ]
 }

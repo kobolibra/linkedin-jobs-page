@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages and Cloudflare
+name: Deploy to Cloudflare
 
 on:
   push:
@@ -15,6 +15,8 @@ on:
       - 'pv.json'
       - 'index.html'
       - '*.js'
+      - 'account-auth.mjs'
+      - 'migrations/**'
       - '*.css'
       - 'avatars/**'
       - 'wrangler.jsonc'
@@ -34,7 +36,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: pages
+  group: cloudflare-site
   cancel-in-progress: true
 
 permissions:
@@ -57,13 +59,8 @@ jobs:
           node-version: '22'
       - name: Synchronize and verify generated frontend payloads
         run: python scripts/sync_frontend_payloads.py --publish
-      - name: Verify the exact public asset directory before either deployment
+      - name: Verify the exact protected asset directory before deployment
         run: node scripts/public_assets.mjs --check
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: "\u0024\u007B\u007B secrets.GITHUB_TOKEN \u007D\u007D"
-          publish_dir: ./public-assets
       - name: Install pinned Cloudflare deploy CLI
         run: npm install --no-save --package-lock=false wrangler@4.149.0
       - name: Deploy to Cloudflare Worker with bounded transient retries
