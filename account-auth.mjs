@@ -47,7 +47,11 @@ async function callback(request,env,provider){const url=new URL(request.url),sta
  }catch{return redirect('/login?error=login_failed',[clear]);}}
 async function loginPage(request,env){const url=new URL('/login.html',request.url);const response=await env.ASSETS.fetch(new Request(url.href,{method:'GET'}));const headers=new Headers(response.headers);headers.set('cache-control','no-store');headers.set('referrer-policy','no-referrer');headers.set('x-frame-options','DENY');headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");return new Response(response.body,{status:response.status,headers});}
 export async function accountGate(request,env){const url=new URL(request.url),path=url.pathname;
- if(env.AUTH_ENABLED!=='true'){if(path==='/auth/session'||path==='/auth/providers')return {response:json(200,{enabled:false})};if(path.startsWith('/auth/'))return {response:json(503,{error:'accounts_not_enabled'})};return null;}
+ // Verification mode exposes only login routes; existing page access stays unchanged.
+ const verifying=env.AUTH_ENABLED==='verify';
+ if(verifying&&path==='/auth/session')return {response:json(200,{enabled:false})};
+ if(verifying&&!path.startsWith('/auth/')&&!['/login','/login.html','/privacy','/auth-login.js','/auth.css'].includes(path))return null;
+ if(env.AUTH_ENABLED!=='true'&&!verifying){if(path==='/auth/session'||path==='/auth/providers')return {response:json(200,{enabled:false})};if(path.startsWith('/auth/'))return {response:json(503,{error:'accounts_not_enabled'})};return null;}
  if(url.origin!==origin(env))return {response:json(421,{error:'wrong_origin'})};
  const methods=['GET','HEAD','POST'];if(!methods.includes(request.method))return {response:json(405,{error:'method_not_allowed'})};
  if(path==='/auth/providers')return {response:json(200,{enabled:true,providers:Object.keys(providers).filter(p=>configured(env,p))})};
@@ -61,6 +65,7 @@ export async function accountGate(request,env){const url=new URL(request.url),pa
  const user=await session(request,env);
  if(!user){if((path==='/'||path==='/index.html')&&request.method==='GET')return {response:redirect('/login?next='+encodeURIComponent(returnPath(path+url.search)))};return {response:json(401,{error:'sign_in_required'})};}
  if(path==='/auth/session'&&request.method==='GET')return {response:json(200,await userResponse(env,user))};
+ if(verifying&&path==='/auth/verify'&&request.method==='GET')return {response:json(200,await userResponse(env,user))};
  if(path==='/auth/logout'&&request.method==='POST'){if(!sameOrigin(request,env)||request.headers.get('x-csrf-token')!==user.csrf)return {response:json(403,{error:'csrf_failed'})};await env.AUTH_DB.prepare('DELETE FROM account_sessions WHERE token_hash=?').bind(user.tokenHash).run();return {response:json(200,{ok:true},{'set-cookie':cookie(SESSION,'',0)})};}
  match=path.match(/^\/auth\/link\/(google|github)$/);if(match&&request.method==='POST'){if(!sameOrigin(request,env)||request.headers.get('x-csrf-token')!==user.csrf)return {response:json(403,{error:'csrf_failed'})};return {response:await start(request,env,match[1],user)};}
  if(path.startsWith('/auth/'))return {response:json(404,{error:'not_found'})};return {user};
