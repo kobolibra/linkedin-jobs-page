@@ -12,8 +12,19 @@ def verify(fetch=urlopen, report=print):
         with fetch(BASE + '/', timeout=15) as response:
             html = response.read().decode()
             assert response.status == 200
-            assert 'visitor-count.js?v=counter-live-3' in html, 'unexpected homepage version'
+            protected = 'data-auth-page="login"' in html
+            if not protected:
+                assert 'visitor-count.js?v=counter-live-3' in html, 'unexpected homepage version'
             assert 'no-store' in response.headers.get('cache-control', ''), 'homepage may be stale'
+        if protected:
+            for path in ('/auth/session', '/jobs-index.json', '/jd-parts/00.json', '/app.js'):
+                try:
+                    with fetch(BASE + path, timeout=15) as response:
+                        raise AssertionError('Unauthenticated protected endpoint was accessible: ' + path)
+                except HTTPError as blocked:
+                    assert blocked.code == 401, 'unexpected protected endpoint status: ' + path
+            report('Production login and protected job assets verified without synthetic page views.')
+            return True
         with fetch(BASE + '/visitor-count.js?v=counter-live-3', timeout=15) as response:
             script = response.read().decode()
             assert response.status == 200

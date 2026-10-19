@@ -2,9 +2,10 @@ import {cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, rmS
 import {relative, resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-// Only files needed by the browser belong in either public deployment.
+// Only browser assets belong in the Worker static asset bundle.
 // Worker entry points, provider rules, build inputs and repository metadata stay private.
 export const PUBLIC_FILES = [
+  'account.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
   'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'job-store.js', 'list-query.js', 'list-view.js',
@@ -20,7 +21,7 @@ const secrets = [
   ['AWS access key', /\bAKIA[0-9A-Z]{16}\b/],
   ['GitHub token', /\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})\b/],
   ['provider secret key', /\bsk-(?:proj-|svcacct-)?[A-Za-z0-9_-]{32,}\b/],
-  ['assigned service credential', /\b(?:JEV_API_KEY|TYPESAFE_API_KEY|PRIVATE_REPO_TOKEN|CLOUDFLARE_API_TOKEN|GITHUB_TOKEN)\s*[:=]\s*["'][^"'\r\n]{12,}["']/],
+  ['assigned service credential', /\b(?:GOOGLE_CLIENT_SECRET|GITHUB_CLIENT_SECRET|JEV_API_KEY|TYPESAFE_API_KEY|PRIVATE_REPO_TOKEN|CLOUDFLARE_API_TOKEN|GITHUB_TOKEN)\s*[:=]\s*["'][^"'\r\n]{12,}["']/],
 ];
 
 export function isPublicAsset(path) {

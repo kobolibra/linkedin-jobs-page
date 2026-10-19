@@ -8,6 +8,17 @@ class Response(io.BytesIO):
     headers = {'cache-control': 'no-store'}
 
 class VerificationTests(unittest.TestCase):
+    def test_protected_login_checks_that_direct_data_and_source_requests_are_denied(self):
+        requests=[]
+        def fetch(url, **kwargs):
+            requests.append(url)
+            if url.endswith('/'):
+                return Response(b'<main data-auth-page="login">Sign in</main>')
+            raise HTTPError(url,401,'Unauthorized',{},io.BytesIO(b'{"error":"sign_in_required"}'))
+        self.assertTrue(verify(fetch,lambda _:None))
+        self.assertEqual(len(requests),5)
+        self.assertTrue(any(url.endswith('/jobs-index.json') for url in requests))
+
     def test_published_assets_are_checked_without_counting_visits(self):
         requests = []
         def fetch(url, **kwargs):

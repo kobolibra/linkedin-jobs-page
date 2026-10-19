@@ -26,17 +26,17 @@ function withFixture(t) {const root=fixture();t.after(()=>rmSync(root,{recursive
 
 test('both public deployments contain only browser assets, unchanged JD and working dependencies',t=>{
   const root=withFixture(t);
-  for(const name of ['worker.js','jev-taxonomy.mjs','auto-daily-companies.py','gen-taxonomy-doc.mjs','package.json','pv.json','financial_blacklist.json','company_industries.json','jobs.json','jobs-details.json.bak.gz','.env','data/private.json','scripts/private.js','server-new.js','app.js.map','assets/private.py','assets/.env.svg'])write(root,name,'private input');
+  for(const name of ['worker.js','account-auth.mjs','migrations/0001_accounts.sql','jev-taxonomy.mjs','auto-daily-companies.py','gen-taxonomy-doc.mjs','package.json','pv.json','financial_blacklist.json','company_industries.json','jobs.json','jobs-details.json.bak.gz','.env','data/private.json','scripts/private.js','server-new.js','app.js.map','assets/private.py','assets/.env.svg'])write(root,name,'private input');
   const result=buildPublicAssets(root);assert.ok(result.files>256);
   const out=join(root,'public-assets');
-  for(const name of ['worker.js','jobs.json','jobs-details.json','pv.json','data','scripts','server-new.js','app.js.map','assets/private.py','assets/.env.svg'])assert.equal(isPublicAsset(name),false,name);
+  for(const name of ['worker.js','account-auth.mjs','migrations/0001_accounts.sql','jobs.json','jobs-details.json','pv.json','data','scripts','server-new.js','app.js.map','assets/private.py','assets/.env.svg'])assert.equal(isPublicAsset(name),false,name);
   assert.equal(readdirSync(out).includes('worker.js'),false);
   for(const name of PUBLIC_FILES.concat([logo,'avatars/backgrounds/public.jpg','jd-parts/'+jdShard('ln:12345')+'.json']))assert.deepEqual(readFileSync(join(out,name)),readFileSync(join(root,name)),name);
   write(out,'jobs.json','stale previous export');buildPublicAssets(root);assert.equal(readdirSync(out).includes('jobs.json'),false);
 });
 test('the predeploy gate rejects injected source, raw data, archives and source maps',t=>{
   const root=withFixture(t);const out=join(root,'public-assets');
-  for(const name of ['worker.js','jobs.json','data/raw.json','app.js.map','jobs-index.json.gz']){
+  for(const name of ['worker.js','account-auth.mjs','migrations/0001_accounts.sql','jobs.json','data/raw.json','app.js.map','jobs-index.json.gz']){
     buildPublicAssets(root);write(out,name,'injected');assert.throws(()=>verifyPublicAssets(out),/Private or unapproved/);
   }
 });
@@ -62,12 +62,13 @@ test('public builds cannot erase the checkout or follow links to private inputs'
   rmSync(join(root,'assets','private.svg'));symlinkSync(join(root,'assets'),join(root,'public-assets'));
   assert.throws(()=>buildPublicAssets(root),/symbolic link/);
 });
-test('GitHub Pages and Wrangler publish the same allowlisted directory and all build paths enforce the gate',()=>{
+test('only Cloudflare publishes the protected asset bundle and the Worker intercepts all requests',()=>{
   const root=new URL('../',import.meta.url);
   const config=JSON.parse(readFileSync(new URL('wrangler.jsonc',root),'utf8'));
   assert.equal(config.assets.directory,'./public-assets');assert.equal(config.main,'worker.js');
   const workflow=readFileSync(new URL('.github/workflows/deploy.yml',root),'utf8');
-  assert.match(workflow,/publish_dir: \.\/public-assets/);assert.doesNotMatch(workflow,/exclude_assets:.*\.git,/);
-  assert.ok(workflow.indexOf('public_assets.mjs --check')<workflow.indexOf('uses: peaceiris/actions-gh-pages'));
+  assert.doesNotMatch(workflow,/peaceiris\/actions-gh-pages|publish_dir:/);
+  assert.equal(config.assets.run_worker_first,true);
+  assert.ok(workflow.indexOf('public_assets.mjs --check')<workflow.indexOf('Deploy to Cloudflare Worker'));
   const build=readFileSync(new URL('scripts/build_jd_shards.mjs',root),'utf8');assert.match(build,/buildPublicAssets\(\)/);
 });
