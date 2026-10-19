@@ -7418,5 +7418,46 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQG497L93uhyQA/company-logo_100_100/company-logo_100_100/0/1630614041519/jswgroup_logo?e=2147483647&v=beta&t=K75kwST4SCwPVE2xnPGK9J18QNWl_pmI0Y1MOzetFEU",
     "companyUrl": "https://in.linkedin.com/company/jswgroup",
     "sourceJobId": "4478200547"
+  },
+  "asia gulf cloud": {
+    "name": "Asia Gulf Cloud",
+    "checkedAt": "2026-10-19T04:05:42.768675+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5fbae9ac078b353be5244562.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGRYrD0Wq6pGw/company-logo_100_100/B56ZyZbjKvHgAQ-/0/1772100663179/asia_gulf_cloud_pte_ltd_logo?e=2147483647&v=beta&t=Upq91_UpE2HWWeoMIv3DUcmku974SngpkjDuYwRYGvU",
+    "companyUrl": "https://www.linkedin.com/company/asia-gulf-cloud-pte-ltd",
+    "sourceJobId": "4479947758"
+  },
+  "combuilder pte ltd": {
+    "name": "Combuilder Pte Ltd",
+    "checkedAt": "2026-10-19T04:05:44.079740+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478246142",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478246142",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4478246142",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478246142",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478246142",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.88427472297452,
+        "deferred": true
+      }
+    ]
   }
 }
