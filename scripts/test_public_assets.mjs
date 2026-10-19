@@ -68,7 +68,7 @@ test('only Cloudflare publishes the protected asset bundle and the Worker interc
   assert.equal(config.assets.directory,'./public-assets');assert.equal(config.main,'worker.js');
   const workflow=readFileSync(new URL('.github/workflows/deploy.yml',root),'utf8');
   assert.doesNotMatch(workflow,/peaceiris\/actions-gh-pages|publish_dir:/);
-  assert.equal(config.assets.run_worker_first,true);
+  assert.equal(config.assets.run_worker_first,true);assert.equal(config.preview_urls,false);
   assert.ok(workflow.indexOf('public_assets.mjs --check')<workflow.indexOf('Deploy to Cloudflare Worker'));
   const build=readFileSync(new URL('scripts/build_jd_shards.mjs',root),'utf8');assert.match(build,/buildPublicAssets\(\)/);
 });
