@@ -7459,5 +7459,46 @@
         "deferred": true
       }
     ]
+  },
+  "alphatimes": {
+    "name": "AlphaTimes",
+    "checkedAt": "2026-10-19T10:03:04.607356+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ff9c7614755fc3230f40cd15.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHMCdrIewjmIA/company-logo_100_100/B56aD70jWoGcAI-/0/1790931252877/alphatimes_technologies_inc_logo?e=2147483647&v=beta&t=1fQtQp-FXNcgmcM9RNFD9jXO2-15qdlKVUYgSB34zEo",
+    "companyUrl": "https://hk.linkedin.com/company/alphatimes-technologies-inc",
+    "sourceJobId": "4479958385"
+  },
+  "gotion high-tech": {
+    "name": "GOTION HIGH-TECH",
+    "checkedAt": "2026-10-19T10:03:06.970567+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4477121190",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477121190",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.57547662686825,
+        "deferred": true
+      }
+    ]
   }
 }
