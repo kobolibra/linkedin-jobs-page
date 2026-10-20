@@ -46,3 +46,11 @@ test('Google full callback verifies PKCE and signed identity, creates one accoun
 });
 
 test('OAuth token redirects are rejected without forwarding client credentials to another origin',async()=>{const f=fixture(),flow=await begin(f,'google'),old=globalThis.fetch,calls=[];globalThis.fetch=async(url,options)=>{calls.push(String(url));assert.equal(options.redirect,'manual');return new Response(null,{status:302,headers:{location:'https://other.example/token'}});};try{const result=await accountGate(request('/auth/callback/google?code=redirected-code&state='+flow.state,{headers:{cookie:flow.cookie}}),f.env);assert.match(result.response.headers.get('location'),/reason=google_token_http_302$/);assert.deepEqual(calls,['https://oauth2.googleapis.com/token']);assert.equal(f.db.sql.prepare('SELECT count(*) n FROM account_users').get().n,0);}finally{globalThis.fetch=old;}});
+
+test('all login styles and scripts are accessible without a session',async()=>{
+ const f=fixture(),html=readFileSync(new URL('../login.html',import.meta.url),'utf8');
+ const sources=[...html.matchAll(/(?:href|src)="([^"]+)"/g)].map(x=>x[1]).filter(x=>/\.(?:css|js)(?:\?|$)/.test(x));
+ assert.ok(sources.some(x=>x.startsWith('/auth-login-design.css')));
+ for(const path of sources){const result=await accountGate(request(path),f.env);assert.equal(result?.response.status,200,path+' must be public');assert.equal(await result.response.text(),'asset',path);}
+ const protectedData=await accountGate(request('/jobs-index.json'),f.env);assert.equal(protectedData.response.status,401);
+});

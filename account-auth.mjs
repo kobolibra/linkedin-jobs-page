@@ -52,12 +52,12 @@ export async function accountGate(request,env){const url=new URL(request.url),pa
  // Verification mode exposes only login routes; existing page access stays unchanged.
  const verifying=env.AUTH_ENABLED==='verify';
  if(verifying&&path==='/auth/session')return {response:json(200,{enabled:false})};
- if(verifying&&!path.startsWith('/auth/')&&!['/login','/login.html','/privacy','/auth-login.js','/auth.css'].includes(path))return null;
+ if(verifying&&!path.startsWith('/auth/')&&!['/login','/login.html','/privacy','/auth-login.js','/auth.css','/auth-login-design.css'].includes(path))return null;
  if(env.AUTH_ENABLED!=='true'&&!verifying){if(path==='/auth/session'||path==='/auth/providers')return {response:json(200,{enabled:false})};if(path.startsWith('/auth/'))return {response:json(503,{error:'accounts_not_enabled'})};return null;}
  if(url.origin!==origin(env))return {response:json(421,{error:'wrong_origin'})};
  const methods=['GET','HEAD','POST'];if(!methods.includes(request.method))return {response:json(405,{error:'method_not_allowed'})};
  if(path==='/auth/providers')return {response:json(200,{enabled:true,providers:Object.keys(providers).filter(p=>configured(env,p))})};
- if(['/auth-login.js','/auth.css'].includes(path)&&request.method!=='POST')return {response:await env.ASSETS.fetch(request)};
+ if(['/auth-login.js','/auth.css','/auth-login-design.css'].includes(path)&&request.method!=='POST')return {response:await env.ASSETS.fetch(request)};
  if(path==='/privacy'&&request.method==='GET'){const response=await env.ASSETS.fetch(new Request(new URL('/privacy.html',request.url)));return {response:privateResponse(response)};}
  if(['/login','/login.html'].includes(path)&&request.method==='GET')return {response:await loginPage(request,env)};
  if(!env.AUTH_DB)return {response:json(503,{error:'accounts_not_configured'})};
