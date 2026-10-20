@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-20T10:03:25.873116+00:00",
+    "checkedAt": "2026-10-20T22:03:08.462431+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,30 +3019,33 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-20T10:25:46.674453+00:00",
+    "checkedAt": "2026-10-20T22:03:14.382263+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
+      },
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 429,
-        "contentType": "text/html",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
-        "waitSeconds": 61.55544158787539,
-        "deferred": true
+        "jobId": "4445423723",
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
       }
     ]
   },
@@ -3179,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-20T16:03:45.401726+00:00",
+    "checkedAt": "2026-10-20T22:03:20.410800+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3870,30 +3873,19 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-20T16:03:48.174645+00:00",
+    "checkedAt": "2026-10-20T22:03:23.410057+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4458711512",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.495775451975916,
-        "deferred": true
       }
     ]
   },
@@ -5416,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-20T10:03:22.713242+00:00",
+    "checkedAt": "2026-10-20T22:03:05.502759+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7791,5 +7783,41 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/reloc-tax-advisory-pte-ltd",
     "sourceJobId": "4480444680"
+  },
+  "lux research": {
+    "name": "Lux Research",
+    "checkedAt": "2026-10-20T22:02:58.254511+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "70697b5ab26ee6411ee9ce89.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEG3y_kevDKZA/company-logo_100_100/company-logo_100_100/0/1645039633467/lux_research_logo?e=2147483647&v=beta&t=i0G8SFQ6ZmYS6lQybeEyVWqqF-LoXvFqPN-dtnczfCw",
+    "companyUrl": "https://www.linkedin.com/company/lux-research",
+    "sourceJobId": "4481744149"
+  },
+  "riskpod": {
+    "name": "RiskPod",
+    "checkedAt": "2026-10-20T22:02:59.597861+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d66d3cb32db4101b5a8ba1d9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGDDPdQSbF4Rw/company-logo_100_100/B4EZotFp.6GoAQ-/0/1761693049183/riskpod_compliance_logo?e=2147483647&v=beta&t=peNqxRVoFopR2xl-SyECooz7qyAWD3WIRrs4wwKK56Q",
+    "companyUrl": "https://uk.linkedin.com/company/riskpod-compliance",
+    "sourceJobId": "4480255306"
+  },
+  "stefanini north america and apac": {
+    "name": "Stefanini North America and APAC",
+    "checkedAt": "2026-10-20T22:03:02.501496+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "330978e76b3dd02054120d72.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHIL4yH9JOTcQ/company-logo_100_100/company-logo_100_100/0/1721146534044/stefanini_na_apac_logo?e=2147483647&v=beta&t=mbbH6QjgptfV3jkFTruYlQoEsau39MqWm_E30IA5sJM",
+    "companyUrl": "https://br.linkedin.com/company/stefanini-na-apac",
+    "sourceJobId": "4481760531"
   }
 }
