@@ -7674,5 +7674,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGJ0GSnCZYxfQ/company-logo_100_100/B4EZiYyM32HoAQ-/0/1754909954402/fitch_learning_logo?e=2147483647&v=beta&t=BmxPnklNWrO1GgmSo1-ZEto5jaWSA2QLJTrVKjuiH2I",
     "companyUrl": "https://uk.linkedin.com/company/fitch-learning",
     "sourceJobId": "4471504539"
+  },
+  "privee associates limited": {
+    "name": "Privee Associates Limited",
+    "checkedAt": "2026-10-20T04:02:57.640324+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4480408171",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.831257009452074,
+        "deferred": true
+      }
+    ]
   }
 }
