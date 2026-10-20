@@ -6,2281 +6,1774 @@
     "HK",
     "SG"
   ],
-  "observedAt": "2026-10-19T15:44:20.888388+00:00",
+  "observedAt": "2026-10-20T03:39:05.866073+00:00",
   "observations": [
     {
-      "sourceJobId": "li-%E6%8A%95%E8%B5%84%E6%80%BB%E7%9B%91-at-gotion-high-tech-4477121190",
-      "jobId": "4477121190",
+      "sourceJobId": "li-business-development-manager-at-xsolla-4478262936",
+      "jobId": "4478262936",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:29:28.842685+00:00",
+      "checkedAt": "2026-10-20T03:24:14.002545+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQE-eY7AtgdcFA/company-logo_100_100/company-logo_100_100/0/1630644700472/_logo?e=2147483647&v=beta&t=hs9B0h5neibUF4J7KczP0N4nca6mgLRXzpWp8nxUMZ4",
-        "companyUrl": "https://cn.linkedin.com/company/gotion-high-tech",
-        "employerName": "GOTION HIGH-TECH",
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQG0IGoyJCsEpw/company-logo_100_100/B56ZsTL9BmJEAU-/0/1765553459922?e=2147483647&v=beta&t=Oryy5ZtQgtV8JbK7jksCan3mTLytVOClQMPx_Mg0SF0",
+        "companyUrl": "https://www.linkedin.com/company/xsolla",
+        "employerName": "Xsolla",
         "imageKind": "company",
-        "sourceJobId": "4477121190",
-        "observedAt": "2026-10-19T15:29:28.842685+00:00"
+        "sourceJobId": "4478262936",
+        "observedAt": "2026-10-20T03:24:14.002545+00:00"
       },
       "datePosted": "2026-10-19",
       "dateSource": "linkedin-detail-relative-day"
     },
     {
-      "sourceJobId": "li-%E8%A1%8C%E4%B8%9A%E7%A0%94%E7%A9%B6%E5%AE%9E%E4%B9%A0%E7%94%9F-at-shanxi-securities-company-limited-4478234819",
-      "jobId": "4478234819",
+      "sourceJobId": "li-assistant-manager-corporate-services-at-vistra-4478280047",
+      "jobId": "4478280047",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:29:31.676720+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQFUNts2UlPtOg/company-logo_100_100/company-logo_100_100/0/1630671014831/shanxi_securities_company_limited_logo?e=2147483647&v=beta&t=s1tXqCgovxtJX2zXVqbkWM_S7IukW_9Uh1lZIsl0_KQ",
-        "companyUrl": "https://cn.linkedin.com/company/shanxi-securities-company-limited",
-        "employerName": "Shanxi Securities Company Limited",
-        "imageKind": "company",
-        "sourceJobId": "4478234819",
-        "observedAt": "2026-10-19T15:29:31.676720+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-director-business-development-china-at-paypal-4478507210",
-      "jobId": "4478507210",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:34.835358+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQGlX0cKdGRk-w/company-logo_100_100/company-logo_100_100/0/1725506319701?e=2147483647&v=beta&t=EfHoqyaVYveWMzdT_6PpJbGNGS1P4dUk3ZryqIQRhjc",
-        "companyUrl": "https://www.linkedin.com/company/paypal",
-        "employerName": "PayPal",
-        "imageKind": "company",
-        "sourceJobId": "4478507210",
-        "observedAt": "2026-10-19T15:29:34.835358+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-manager-business-development-china-at-paypal-4478390870",
-      "jobId": "4478390870",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:37.801834+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQGlX0cKdGRk-w/company-logo_100_100/company-logo_100_100/0/1725506319701?e=2147483647&v=beta&t=EfHoqyaVYveWMzdT_6PpJbGNGS1P4dUk3ZryqIQRhjc",
-        "companyUrl": "https://www.linkedin.com/company/paypal",
-        "employerName": "PayPal",
-        "imageKind": "company",
-        "sourceJobId": "4478390870",
-        "observedAt": "2026-10-19T15:29:37.801834+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-facilities-manager-china-at-paypal-4467947362",
-      "jobId": "4467947362",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:40.745197+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQGlX0cKdGRk-w/company-logo_100_100/company-logo_100_100/0/1725506319701?e=2147483647&v=beta&t=EfHoqyaVYveWMzdT_6PpJbGNGS1P4dUk3ZryqIQRhjc",
-        "companyUrl": "https://www.linkedin.com/company/paypal",
-        "employerName": "PayPal",
-        "imageKind": "company",
-        "sourceJobId": "4467947362",
-        "observedAt": "2026-10-19T15:29:40.745197+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-agentic-engineering-principal-vp-at-state-street-4475938568",
-      "jobId": "4475938568",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:43.674307+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4475938568",
-        "observedAt": "2026-10-19T15:29:43.674307+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-associate-2-at-state-street-4478759484",
-      "jobId": "4478759484",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:46.749321+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4478759484",
-        "observedAt": "2026-10-19T15:29:46.749321+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-commercial-director-at-apex-group-ltd-4477348534",
-      "jobId": "4477348534",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:49.911000+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4477348534",
-        "observedAt": "2026-10-19T15:29:49.911000+00:00"
-      },
-      "datePosted": "2026-10-16",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-sales-operations-analyst-at-apex-group-ltd-4475229733",
-      "jobId": "4475229733",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:52.772334+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4475229733",
-        "observedAt": "2026-10-19T15:29:52.772334+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-corporate-accountant-at-apex-group-ltd-4477089889",
-      "jobId": "4477089889",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:55.726149+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4477089889",
-        "observedAt": "2026-10-19T15:29:55.726149+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-corporate-accountant-at-apex-group-ltd-4462579234",
-      "jobId": "4462579234",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:29:58.638103+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4462579234",
-        "observedAt": "2026-10-19T15:29:58.638103+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-spc-accountant-at-apex-group-ltd-4466279425",
-      "jobId": "4466279425",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:01.797025+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4466279425",
-        "observedAt": "2026-10-19T15:30:01.797025+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-compliance-officer-at-apex-group-ltd-4420197710",
-      "jobId": "4420197710",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:04.736202+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4420197710",
-        "observedAt": "2026-10-19T15:30:04.736202+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-account-manager-hedge-fund-administration-at-apex-group-ltd-4423148045",
-      "jobId": "4423148045",
-      "location": "CN",
-      "result": "unknown",
-      "checkedAt": "2026-10-19T15:30:07.245691+00:00"
-    },
-    {
-      "sourceJobId": "li-senior-fund-accountant-at-apex-group-ltd-4463974013",
-      "jobId": "4463974013",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:39.165734+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4463974013",
-        "observedAt": "2026-10-19T15:30:39.165734+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-alternative-ops-clearance-settlement-trading-ops-senior-associate-at-state-street-4479783239",
-      "jobId": "4479783239",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:43.555496+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4479783239",
-        "observedAt": "2026-10-19T15:30:43.555496+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-investment-director-tmt-frontier-ai-deep-tech-at-zpeed-recruitment-4478472296",
-      "jobId": "4478472296",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:48.023397+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHpOY9CsFXvcw/company-logo_100_100/B4EaDw_jDyH4AI-/0/1790749585915/zpeed_recruitment_logo?e=2147483647&v=beta&t=Tr8aaH0NfeBWgrNAiG0yNg5lHoM3DpW77G3hG0bzmro",
-        "companyUrl": "https://hk.linkedin.com/company/zpeed-recruitment",
-        "employerName": "ZPEED Recruitment",
-        "imageKind": "company",
-        "sourceJobId": "4478472296",
-        "observedAt": "2026-10-19T15:30:48.023397+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-vp-manager-corporate-finance-trade-finance-fintech-at-interfill-4479747383",
-      "jobId": "4479747383",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:52.620817+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQHU0bS65ho-dQ/company-logo_100_100/company-logo_100_100/0/1654508104214/interfill_logo?e=2147483647&v=beta&t=MJadVnnuVKQKtagjH40zOuf1wqXszF5IQaigoHcnzds",
-        "companyUrl": "https://hk.linkedin.com/company/interfill",
-        "employerName": "Interfill",
-        "imageKind": "company",
-        "sourceJobId": "4479747383",
-        "observedAt": "2026-10-19T15:30:52.620817+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-investment-advisor-at-fargo-wealth-group-4478831514",
-      "jobId": "4478831514",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:30:57.121731+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C510BAQELiCheCu8RVA/company-logo_100_100/company-logo_100_100/0/1630576626618?e=2147483647&v=beta&t=UnFbmfA6YIKuVSATfH0_ByS6dBn3vOrcroP48ZEUL28",
-        "companyUrl": "https://hk.linkedin.com/company/fargowealth",
-        "employerName": "Fargo Wealth Group",
-        "imageKind": "company",
-        "sourceJobId": "4478831514",
-        "observedAt": "2026-10-19T15:30:57.121731+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-information-security-engineer-avp-at-hong-kong-exchanges-and-clearing-limited-hkex-4477157584",
-      "jobId": "4477157584",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:31:01.558246+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQF88DClMNCucQ/company-logo_100_100/B56aDBlDOZG0AI-/0/1789954110601/hkex_logo?e=2147483647&v=beta&t=PBuOUdxuF07fZnkTtupxj2rOIyHKVwVS_c--44CAotE",
-        "companyUrl": "https://hk.linkedin.com/company/hkex",
-        "employerName": "Hong Kong Exchanges and Clearing Limited (HKEX)",
-        "imageKind": "company",
-        "sourceJobId": "4477157584",
-        "observedAt": "2026-10-19T15:31:01.558246+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-quantitative-researcher-%E2%80%93-cta-systematic-macro-at-man-group-4479058352",
-      "jobId": "4479058352",
-      "location": "CN",
-      "result": "unknown",
-      "checkedAt": "2026-10-19T15:31:05.601737+00:00"
-    },
-    {
-      "sourceJobId": "li-quantitative-researcher-mid-frequency-intraday-signals-at-man-group-4479048701",
-      "jobId": "4479048701",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:31:37.724741+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHexdGb3vxYaQ/company-logo_100_100/B4EZfRAq17G4AY-/0/1751558303474/man_group_plc_logo?e=2147483647&v=beta&t=sUocThNf_tuyLuNPHLeaDflY3Z0g_9tkjhvf0ACmEgY",
-        "companyUrl": "https://uk.linkedin.com/company/man-group-plc",
-        "employerName": "Man Group",
-        "imageKind": "company",
-        "sourceJobId": "4479048701",
-        "observedAt": "2026-10-19T15:31:37.724741+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-bnef%C2%A0downstream-oil-and-chemical-analysis-researcher-at-bloomberg-4475698924",
-      "jobId": "4475698924",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:31:43.749837+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQF0uyE7RGKDGg/company-logo_100_100/company-logo_100_100/0/1631374698859/bloomberg_lp_logo?e=2147483647&v=beta&t=GSA0lizuXUS399nB8pjg8WMi81RAtg-5c8IBsevzsyY",
-        "companyUrl": "https://www.linkedin.com/company/bloomberg",
-        "employerName": "Bloomberg",
-        "imageKind": "company",
-        "sourceJobId": "4475698924",
-        "observedAt": "2026-10-19T15:31:43.749837+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-manager-business-consulting-at-lseg-4477504100",
-      "jobId": "4477504100",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:31:49.892435+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEfgZXAuQXg6w/company-logo_100_100/B56ZfK6LczHUAQ-/0/1751455938973/london_stock_exchange_group_logo?e=2147483647&v=beta&t=5ZFP4xHS24_BnpZHtT7ZbuN_opspJmRO698ZnXJSlOU",
-        "companyUrl": "https://uk.linkedin.com/company/london-stock-exchange-group",
-        "employerName": "LSEG",
-        "imageKind": "company",
-        "sourceJobId": "4477504100",
-        "observedAt": "2026-10-19T15:31:49.892435+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-head-of-property-asset-management-china-at-hays-4476884734",
-      "jobId": "4476884734",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:31:55.755040+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQETReujByGYaw/company-logo_100_100/B4EZfKYuQyGwAQ-/0/1751447168431/hays_logo?e=2147483647&v=beta&t=jn8kLrMaqs_JUIpLEsqWvkjYdwTJh6D5WqGehB9VMfA",
-        "companyUrl": "https://uk.linkedin.com/company/hays",
-        "employerName": "Hays",
-        "imageKind": "company",
-        "sourceJobId": "4476884734",
-        "observedAt": "2026-10-19T15:31:55.755040+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-avp-senior-channel-manager-at-alliancebernstein-4426330793",
-      "jobId": "4426330793",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:01.854419+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQELcO3RSsixGQ/company-logo_100_100/company-logo_100_100/0/1719842303489?e=2147483647&v=beta&t=VqPoh6f3d5A6OcUPcmhln1BW9IsuCK9haFCvKyyE4BY",
-        "companyUrl": "https://www.linkedin.com/company/abglobal",
-        "employerName": "AllianceBernstein",
-        "imageKind": "company",
-        "sourceJobId": "4426330793",
-        "observedAt": "2026-10-19T15:32:01.854419+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-vp-avp-risk-manager-at-alliancebernstein-4426340175",
-      "jobId": "4426340175",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:07.836083+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQELcO3RSsixGQ/company-logo_100_100/company-logo_100_100/0/1719842303489?e=2147483647&v=beta&t=VqPoh6f3d5A6OcUPcmhln1BW9IsuCK9haFCvKyyE4BY",
-        "companyUrl": "https://www.linkedin.com/company/abglobal",
-        "employerName": "AllianceBernstein",
-        "imageKind": "company",
-        "sourceJobId": "4426340175",
-        "observedAt": "2026-10-19T15:32:07.836083+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-manager-renewable-energy-asset-management-at-schroders-4477657495",
-      "jobId": "4477657495",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:13.731811+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFXB5l7s3m4Iw/company-logo_100_100/B56ZfPSWXQHEAQ-/0/1751529386968/schroders_logo?e=2147483647&v=beta&t=TH_FkTHz6-UnwDAU2xpg_NUhR9JfRXb8vvWiqymKkQQ",
-        "companyUrl": "https://uk.linkedin.com/company/schroders",
-        "employerName": "Schroders",
-        "imageKind": "company",
-        "sourceJobId": "4477657495",
-        "observedAt": "2026-10-19T15:32:13.731811+00:00"
-      },
-      "datePosted": "2026-10-09",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-officer-at-state-street-4477629717",
-      "jobId": "4477629717",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:19.644491+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4477629717",
-        "observedAt": "2026-10-19T15:32:19.644491+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-director-solutions-architect-tech-partnership-at-visa-4475750402",
-      "jobId": "4475750402",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:25.816226+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAxoD4chKrgg/company-logo_100_100/B4EZfR2e4JHcAk-/0/1751572410148/visa_logo?e=2147483647&v=beta&t=mZYikLJ1nOM9RYXsRYavU2c7xuzCKWDqH8Q0UzAGrhw",
-        "companyUrl": "https://www.linkedin.com/company/visa",
-        "employerName": "Visa",
-        "imageKind": "company",
-        "sourceJobId": "4475750402",
-        "observedAt": "2026-10-19T15:32:25.816226+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-business-development-manager-trilingual-cantonese-mandarin-english-at-one-advisors-4474266002",
-      "jobId": "4474266002",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:31.848372+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQGRj4STuesB2g/company-logo_100_100/company-logo_100_100/0/1734072455272/one_advisors_services_logo?e=2147483647&v=beta&t=o-226TuwF4ixHXyXv94DP-eXNM13yOhTxnhP7vebCTw",
-        "companyUrl": "https://hk.linkedin.com/company/oneadvisorsco",
-        "employerName": "One Advisors",
-        "imageKind": "company",
-        "sourceJobId": "4474266002",
-        "observedAt": "2026-10-19T15:32:31.848372+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-associate-director-asset-servicing-operations-at-cmu-omniclear-limited-4473132171",
-      "jobId": "4473132171",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:37.727188+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEgMgiqKMBpqQ/company-logo_100_100/B56aDBp5KYI8AI-/0/1789955381006/cmu_omniclear_logo?e=2147483647&v=beta&t=smz8OBiPqwGeMvowt7ya7VVtYlMbOBhdksWNx5OwC8I",
-        "companyUrl": "https://hk.linkedin.com/company/cmu-omniclear",
-        "employerName": "CMU OmniClear Limited",
-        "imageKind": "company",
-        "sourceJobId": "4473132171",
-        "observedAt": "2026-10-19T15:32:37.727188+00:00"
-      },
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-senior-statarb-portfolio-manager-quantitative-researcher-at-optiver-4423647763",
-      "jobId": "4423647763",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:43.751035+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQE5InV7BZ_Wjg/company-logo_100_100/company-logo_100_100/0/1659345131981/optiver_logo?e=2147483647&v=beta&t=wBHu2Ix8G2WhYM1TmqFx50iCc4fv8HUsqQQxn9a-srQ",
-        "companyUrl": "https://nl.linkedin.com/company/optiver",
-        "employerName": "Optiver",
-        "imageKind": "company",
-        "sourceJobId": "4423647763",
-        "observedAt": "2026-10-19T15:32:43.751035+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-portfolio-manager-quantitative-researcher-%E2%80%93-intraday-trading-strategy-at-optiver-4423645805",
-      "jobId": "4423645805",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:49.740306+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQE5InV7BZ_Wjg/company-logo_100_100/company-logo_100_100/0/1659345131981/optiver_logo?e=2147483647&v=beta&t=wBHu2Ix8G2WhYM1TmqFx50iCc4fv8HUsqQQxn9a-srQ",
-        "companyUrl": "https://nl.linkedin.com/company/optiver",
-        "employerName": "Optiver",
-        "imageKind": "company",
-        "sourceJobId": "4423645805",
-        "observedAt": "2026-10-19T15:32:49.740306+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-associate-software-developer-%E2%80%93-ai-vulnerability-triage-lme-at-hong-kong-exchanges-and-clearing-limited-hkex-4472114620",
-      "jobId": "4472114620",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:32:55.786396+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQF88DClMNCucQ/company-logo_100_100/B56aDBlDOZG0AI-/0/1789954110601/hkex_logo?e=2147483647&v=beta&t=PBuOUdxuF07fZnkTtupxj2rOIyHKVwVS_c--44CAotE",
-        "companyUrl": "https://hk.linkedin.com/company/hkex",
-        "employerName": "Hong Kong Exchanges and Clearing Limited (HKEX)",
-        "imageKind": "company",
-        "sourceJobId": "4472114620",
-        "observedAt": "2026-10-19T15:32:55.786396+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-student-trainee-at-schroders-4473588769",
-      "jobId": "4473588769",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:01.816456+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFXB5l7s3m4Iw/company-logo_100_100/B56ZfPSWXQHEAQ-/0/1751529386968/schroders_logo?e=2147483647&v=beta&t=TH_FkTHz6-UnwDAU2xpg_NUhR9JfRXb8vvWiqymKkQQ",
-        "companyUrl": "https://uk.linkedin.com/company/schroders",
-        "employerName": "Schroders",
-        "imageKind": "company",
-        "sourceJobId": "4473588769",
-        "observedAt": "2026-10-19T15:33:01.816456+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-business-analyst-at-vistra-4471227588",
-      "jobId": "4471227588",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:07.750846+00:00",
+      "checkedAt": "2026-10-20T03:24:19.868545+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
         "companyUrl": "https://sg.linkedin.com/company/vistra",
         "employerName": "VISTRA",
         "imageKind": "company",
-        "sourceJobId": "4471227588",
-        "observedAt": "2026-10-19T15:33:07.750846+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-director-%E2%80%93-migrations-global-delivery-hub-at-vistra-4435981894",
-      "jobId": "4435981894",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:13.710721+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4435981894",
-        "observedAt": "2026-10-19T15:33:13.710721+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-associate-strategist-at-morgan-mckinley-4448968285",
-      "jobId": "4448968285",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:19.754181+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQG3AZHiZxLLWg/company-logo_100_100/company-logo_100_100/0/1665991664218/morgan_mckinley_logo?e=2147483647&v=beta&t=hcrowdFXsf7uuZ5EcbWotEprnxvDjmtGw9xOZWH1pc0",
-        "companyUrl": "https://ie.linkedin.com/company/morgan-mckinley",
-        "employerName": "Morgan McKinley",
-        "imageKind": "company",
-        "sourceJobId": "4448968285",
-        "observedAt": "2026-10-19T15:33:19.754181+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4448979200",
-      "jobId": "4448979200",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:25.731911+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQG3AZHiZxLLWg/company-logo_100_100/company-logo_100_100/0/1665991664218/morgan_mckinley_logo?e=2147483647&v=beta&t=hcrowdFXsf7uuZ5EcbWotEprnxvDjmtGw9xOZWH1pc0",
-        "companyUrl": "https://ie.linkedin.com/company/morgan-mckinley",
-        "employerName": "Morgan McKinley",
-        "imageKind": "company",
-        "sourceJobId": "4448979200",
-        "observedAt": "2026-10-19T15:33:25.731911+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4448687772",
-      "jobId": "4448687772",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:31.725021+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFwmHv7O_XVNg/company-logo_100_100/B4EZfGC.oWG4AQ-/0/1751374359452/selby_jennings_logo?e=2147483647&v=beta&t=1M1QONPqqa-DR2740qOg7HjBYbhiH0M6YuwPi41US7M",
-        "companyUrl": "https://uk.linkedin.com/company/selby-jennings",
-        "employerName": "Selby Jennings",
-        "imageKind": "company",
-        "sourceJobId": "4448687772",
-        "observedAt": "2026-10-19T15:33:31.725021+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4442617421",
-      "jobId": "4442617421",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:33:37.695823+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQG3AZHiZxLLWg/company-logo_100_100/company-logo_100_100/0/1665991664218/morgan_mckinley_logo?e=2147483647&v=beta&t=hcrowdFXsf7uuZ5EcbWotEprnxvDjmtGw9xOZWH1pc0",
-        "companyUrl": "https://ie.linkedin.com/company/morgan-mckinley",
-        "employerName": "Morgan McKinley",
-        "imageKind": "company",
-        "sourceJobId": "4442617421",
-        "observedAt": "2026-10-19T15:33:37.695823+00:00"
+        "sourceJobId": "4478280047",
+        "observedAt": "2026-10-20T03:24:19.868545+00:00"
       },
-      "datePosted": "2026-07-30",
-      "dateSource": "linkedin-cached-card"
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
     },
     {
-      "sourceJobId": "li-4446723211",
-      "jobId": "4446723211",
+      "sourceJobId": "li-associate-china-equities-1-yr-contract-at-gic-4476029993",
+      "jobId": "4476029993",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:33:43.929556+00:00",
+      "checkedAt": "2026-10-20T03:24:25.791316+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQG3AZHiZxLLWg/company-logo_100_100/company-logo_100_100/0/1665991664218/morgan_mckinley_logo?e=2147483647&v=beta&t=hcrowdFXsf7uuZ5EcbWotEprnxvDjmtGw9xOZWH1pc0",
-        "companyUrl": "https://ie.linkedin.com/company/morgan-mckinley",
-        "employerName": "Morgan McKinley",
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQESmMpWAJblLg/company-logo_100_100/company-logo_100_100/0/1630638209873/gic_logo?e=2147483647&v=beta&t=ZHM_CHS8FZcSPt8A-zYmEmiRvM9K6KY5u0k1vmbFgUs",
+        "companyUrl": "https://sg.linkedin.com/company/gic",
+        "employerName": "GIC",
         "imageKind": "company",
-        "sourceJobId": "4446723211",
-        "observedAt": "2026-10-19T15:33:43.929556+00:00"
+        "sourceJobId": "4476029993",
+        "observedAt": "2026-10-20T03:24:25.791316+00:00"
       }
     },
     {
-      "sourceJobId": "li-director-specialist-sales-consumer-acquisition-engagement-at-mastercard-4440196243",
-      "jobId": "4440196243",
+      "sourceJobId": "li-senior-business-development-officer-1-at-hang-seng-bank-4453688013",
+      "jobId": "4453688013",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:33:49.813332+00:00",
+      "checkedAt": "2026-10-20T03:24:31.849603+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
-        "companyUrl": "https://www.linkedin.com/company/mastercard",
-        "employerName": "Mastercard",
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
+        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
+        "employerName": "Hang Seng Bank",
         "imageKind": "company",
-        "sourceJobId": "4440196243",
-        "observedAt": "2026-10-19T15:33:49.813332+00:00"
+        "sourceJobId": "4453688013",
+        "observedAt": "2026-10-20T03:24:31.849603+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-business-development-manager-at-thomson-reuters-4479379450",
+      "jobId": "4479379450",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:24:37.963297+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
+        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
+        "employerName": "Thomson Reuters",
+        "imageKind": "company",
+        "sourceJobId": "4479379450",
+        "observedAt": "2026-10-20T03:24:37.963297+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-business-development-manager-at-thomson-reuters-4479382312",
+      "jobId": "4479382312",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:24:43.990054+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
+        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
+        "employerName": "Thomson Reuters",
+        "imageKind": "company",
+        "sourceJobId": "4479382312",
+        "observedAt": "2026-10-20T03:24:43.990054+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-customer-success-manager-at-thomson-reuters-4479373687",
+      "jobId": "4479373687",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:24:49.881697+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
+        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
+        "employerName": "Thomson Reuters",
+        "imageKind": "company",
+        "sourceJobId": "4479373687",
+        "observedAt": "2026-10-20T03:24:49.881697+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-customer-success-manager-at-thomson-reuters-4479379454",
+      "jobId": "4479379454",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:24:55.909228+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
+        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
+        "employerName": "Thomson Reuters",
+        "imageKind": "company",
+        "sourceJobId": "4479379454",
+        "observedAt": "2026-10-20T03:24:55.909228+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-senior-associate-vice-president-m-f-d-equity-index-management-at-solactive-4477330402",
+      "jobId": "4477330402",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:25:01.869590+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQEE_BZ2XYZqqw/company-logo_100_100/B4EZ8okE4VKQAM-/0/1783091973988/solactive_logo?e=2147483647&v=beta&t=eW1FkhKV4waO0Oqu2mPBY_1uVIarDmhVCMSlzaFHZiE",
+        "companyUrl": "https://de.linkedin.com/company/solactive",
+        "employerName": "Solactive",
+        "imageKind": "company",
+        "sourceJobId": "4477330402",
+        "observedAt": "2026-10-20T03:25:01.869590+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-fund-administration-associate-2-at-state-street-4479292913",
+      "jobId": "4479292913",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:25:07.806029+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
+        "companyUrl": "https://www.linkedin.com/company/state-street",
+        "employerName": "State Street",
+        "imageKind": "company",
+        "sourceJobId": "4479292913",
+        "observedAt": "2026-10-20T03:25:07.806029+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-business-development-manager-at-thomson-reuters-4439425109",
+      "jobId": "4439425109",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:25:13.866709+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
+        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
+        "employerName": "Thomson Reuters",
+        "imageKind": "company",
+        "sourceJobId": "4439425109",
+        "observedAt": "2026-10-20T03:25:13.866709+00:00"
       },
       "datePosted": "2026-10-15",
       "dateSource": "linkedin-cached-card"
     },
     {
-      "sourceJobId": "li-manager-deal-management-strategic-finance-partner-at-mastercard-4434827866",
-      "jobId": "4434827866",
+      "sourceJobId": "li-corporate-actions-associate-1-at-state-street-4478793396",
+      "jobId": "4478793396",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:33:55.845944+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
-        "companyUrl": "https://www.linkedin.com/company/mastercard",
-        "employerName": "Mastercard",
-        "imageKind": "company",
-        "sourceJobId": "4434827866",
-        "observedAt": "2026-10-19T15:33:55.845944+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-china-industry-specialist-ai-e-commerce-gaming-at-capital-group-4435017135",
-      "jobId": "4435017135",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:01.807681+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQG9sNXMn6bhdw/company-logo_100_100/company-logo_100_100/0/1694190842733/capital_group_logo?e=2147483647&v=beta&t=OkHgzZ0Pqc_bqw23MtQZND-boSC1MOO5Kn-Y2qLhhlM",
-        "companyUrl": "https://www.linkedin.com/company/capital-group",
-        "employerName": "Capital Group",
-        "imageKind": "company",
-        "sourceJobId": "4435017135",
-        "observedAt": "2026-10-19T15:34:01.807681+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-vp-investment-manager-pam-multi-asset-fi-at-alliancebernstein-4419416879",
-      "jobId": "4419416879",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:07.748310+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQELcO3RSsixGQ/company-logo_100_100/company-logo_100_100/0/1719842303489?e=2147483647&v=beta&t=VqPoh6f3d5A6OcUPcmhln1BW9IsuCK9haFCvKyyE4BY",
-        "companyUrl": "https://www.linkedin.com/company/abglobal",
-        "employerName": "AllianceBernstein",
-        "imageKind": "company",
-        "sourceJobId": "4419416879",
-        "observedAt": "2026-10-19T15:34:07.748310+00:00"
-      },
-      "datePosted": "2026-10-04",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-research-analyst-china-coverage-at-william-blair-4385702296",
-      "jobId": "4385702296",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:13.941700+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQE63WLd1DEgkw/company-logo_100_100/company-logo_100_100/0/1669143293900/william_blair__company_logo?e=2147483647&v=beta&t=DdudoAlD_csNLk7kA50llmy8geULH2ccqaRMX-woPVI",
-        "companyUrl": "https://www.linkedin.com/company/william-blair-company",
-        "employerName": "William Blair",
-        "imageKind": "company",
-        "sourceJobId": "4385702296",
-        "observedAt": "2026-10-19T15:34:13.941700+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-director-of-research-at-alliancebernstein-4419819412",
-      "jobId": "4419819412",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:19.789150+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQELcO3RSsixGQ/company-logo_100_100/company-logo_100_100/0/1719842303489?e=2147483647&v=beta&t=VqPoh6f3d5A6OcUPcmhln1BW9IsuCK9haFCvKyyE4BY",
-        "companyUrl": "https://www.linkedin.com/company/abglobal",
-        "employerName": "AllianceBernstein",
-        "imageKind": "company",
-        "sourceJobId": "4419819412",
-        "observedAt": "2026-10-19T15:34:19.789150+00:00"
-      },
-      "datePosted": "2026-10-03",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-business-development-officer-hsh-at-hang-seng-bank-4450329282",
-      "jobId": "4450329282",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:25.852611+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
-        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
-        "employerName": "Hang Seng Bank",
-        "imageKind": "company",
-        "sourceJobId": "4450329282",
-        "observedAt": "2026-10-19T15:34:25.852611+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-relationship-associate-at-hang-seng-bank-4447262474",
-      "jobId": "4447262474",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:31.778021+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
-        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
-        "employerName": "Hang Seng Bank",
-        "imageKind": "company",
-        "sourceJobId": "4447262474",
-        "observedAt": "2026-10-19T15:34:31.778021+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-portfolio-manager-quantitative-researcher-at-alexander-chapman-4473283660",
-      "jobId": "4473283660",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:37.680961+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQHetz_sr_qHBQ/company-logo_100_100/company-logo_100_100/0/1647822869660/alexander_chapman_logo?e=2147483647&v=beta&t=fXf23KD1xm92km0--__xsbUDUOxFVSIlMPe2k053cE0",
-        "companyUrl": "https://uk.linkedin.com/company/alexander-chapman",
-        "employerName": "Alexander Chapman",
-        "imageKind": "company",
-        "sourceJobId": "4473283660",
-        "observedAt": "2026-10-19T15:34:37.680961+00:00"
-      },
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-id90m0153180-listed-company-secretary-ai-at-randstad-china-4473092984",
-      "jobId": "4473092984",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:43.984356+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEWHjjGAeuF1Q/company-logo_100_100/B56Z8lyPz5IMAI-/0/1783045357014/randstad_china_logo?e=2147483647&v=beta&t=Dxhf56ROfH3UpsGify0nMZihsqf0AbIyzPvOooLaygA",
-        "companyUrl": "https://cn.linkedin.com/company/randstad-china",
-        "employerName": "Randstad China",
-        "imageKind": "company",
-        "sourceJobId": "4473092984",
-        "observedAt": "2026-10-19T15:34:43.984356+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-associate-director-business-development-global-incorporations-at-vistra-4459937955",
-      "jobId": "4459937955",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:49.784763+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4459937955",
-        "observedAt": "2026-10-19T15:34:49.784763+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-associate-director-fund-services-at-vistra-4471255181",
-      "jobId": "4471255181",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:34:56.119391+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4471255181",
-        "observedAt": "2026-10-19T15:34:56.119391+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-manager-account-management-at-vistra-4451187607",
-      "jobId": "4451187607",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:01.840909+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4451187607",
-        "observedAt": "2026-10-19T15:35:01.840909+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-marketing-manager-at-vistra-4458880556",
-      "jobId": "4458880556",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:07.844250+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4458880556",
-        "observedAt": "2026-10-19T15:35:07.844250+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-software-engineer-analyst-programmer-gov-contract-up-to-%2465k-at-vistra-4441179548",
-      "jobId": "4441179548",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:13.711416+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4441179548",
-        "observedAt": "2026-10-19T15:35:13.711416+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-manager-account-management-at-vistra-4451193562",
-      "jobId": "4451193562",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:20.037002+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4451193562",
-        "observedAt": "2026-10-19T15:35:20.037002+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-manager-settlement-operation-regional-bank-at-trius-consulting-4471331916",
-      "jobId": "4471331916",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:25.733658+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQENk2FQmnaa4A/company-logo_100_100/B56ZdsfeTgGoAQ-/0/1749871879829?e=2147483647&v=beta&t=L1b4-ryqlWN39cLvoJ2Uv1Kscohc1an_5am4DWNB7vw",
-        "companyUrl": "https://hk.linkedin.com/company/trius-consulting",
-        "employerName": "TRIUS Consulting",
-        "imageKind": "company",
-        "sourceJobId": "4471331916",
-        "observedAt": "2026-10-19T15:35:25.733658+00:00"
-      },
-      "datePosted": "2026-09-28",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-fund-administration-associate-2-at-state-street-4471443852",
-      "jobId": "4471443852",
-      "location": "CN",
-      "result": "not_accepting",
-      "checkedAt": "2026-10-19T15:35:31.632857+00:00",
+      "checkedAt": "2026-10-20T03:25:19.768258+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
         "companyUrl": "https://www.linkedin.com/company/state-street",
         "employerName": "State Street",
         "imageKind": "company",
-        "sourceJobId": "4471443852",
-        "observedAt": "2026-10-19T15:35:31.632857+00:00"
+        "sourceJobId": "4478793396",
+        "observedAt": "2026-10-20T03:25:19.768258+00:00"
       }
     },
     {
-      "sourceJobId": "li-core-operations-senior-associate-at-state-street-4464439759",
-      "jobId": "4464439759",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:37.664170+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4464439759",
-        "observedAt": "2026-10-19T15:35:37.664170+00:00"
-      },
-      "datePosted": "2026-09-17",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-investment-analyst-at-schroders-4470905602",
-      "jobId": "4470905602",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:44.273624+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFXB5l7s3m4Iw/company-logo_100_100/B56ZfPSWXQHEAQ-/0/1751529386968/schroders_logo?e=2147483647&v=beta&t=TH_FkTHz6-UnwDAU2xpg_NUhR9JfRXb8vvWiqymKkQQ",
-        "companyUrl": "https://uk.linkedin.com/company/schroders",
-        "employerName": "Schroders",
-        "imageKind": "company",
-        "sourceJobId": "4470905602",
-        "observedAt": "2026-10-19T15:35:44.273624+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-analyst-transfer-agency-at-apex-group-ltd-4468558276",
-      "jobId": "4468558276",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:49.776923+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4468558276",
-        "observedAt": "2026-10-19T15:35:49.776923+00:00"
-      },
-      "datePosted": "2026-10-13",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-deep-learning-quantitative-researcher-at-millennium-4444615307",
-      "jobId": "4444615307",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:35:55.736328+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQERyyseYCjemg/company-logo_100_100/B4EZ348VzUHUAI-/0/1777998060987/millennium_partners_logo?e=2147483647&v=beta&t=a7jZRcg4a0ySlvT1AMzA6REJFxqMbHhxABa0zhMqrb8",
-        "companyUrl": "https://www.linkedin.com/company/millennium-partners",
-        "employerName": "Millennium",
-        "imageKind": "company",
-        "sourceJobId": "4444615307",
-        "observedAt": "2026-10-19T15:35:55.736328+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-quant-research-engineer-at-millennium-4444657634",
-      "jobId": "4444657634",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:01.758576+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQERyyseYCjemg/company-logo_100_100/B4EZ348VzUHUAI-/0/1777998060987/millennium_partners_logo?e=2147483647&v=beta&t=a7jZRcg4a0ySlvT1AMzA6REJFxqMbHhxABa0zhMqrb8",
-        "companyUrl": "https://www.linkedin.com/company/millennium-partners",
-        "employerName": "Millennium",
-        "imageKind": "company",
-        "sourceJobId": "4444657634",
-        "observedAt": "2026-10-19T15:36:01.758576+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-quantitative-researcher-quantitative-strategies-at-millennium-4439444256",
-      "jobId": "4439444256",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:07.680111+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQERyyseYCjemg/company-logo_100_100/B4EZ348VzUHUAI-/0/1777998060987/millennium_partners_logo?e=2147483647&v=beta&t=a7jZRcg4a0ySlvT1AMzA6REJFxqMbHhxABa0zhMqrb8",
-        "companyUrl": "https://www.linkedin.com/company/millennium-partners",
-        "employerName": "Millennium",
-        "imageKind": "company",
-        "sourceJobId": "4439444256",
-        "observedAt": "2026-10-19T15:36:07.680111+00:00"
-      },
-      "datePosted": "2026-10-07",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4446495345",
-      "jobId": "4446495345",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:13.861014+00:00",
-      "companyLogoSource": {
-        "url": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
-        "companyUrl": "https://www.linkedin.com/company/idc%E5%92%A8%E8%AF%A2-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
-        "employerName": "IDC咨询(北京)有限公司",
-        "imageKind": "placeholder",
-        "sourceJobId": "4446495345",
-        "observedAt": "2026-10-19T15:36:13.861014+00:00"
-      },
-      "datePosted": "2026-07-30",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-quantitative-developer-systematic-at-man-group-4433349793",
-      "jobId": "4433349793",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:19.720305+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHexdGb3vxYaQ/company-logo_100_100/B4EZfRAq17G4AY-/0/1751558303474/man_group_plc_logo?e=2147483647&v=beta&t=sUocThNf_tuyLuNPHLeaDflY3Z0g_9tkjhvf0ACmEgY",
-        "companyUrl": "https://uk.linkedin.com/company/man-group-plc",
-        "employerName": "Man Group",
-        "imageKind": "company",
-        "sourceJobId": "4433349793",
-        "observedAt": "2026-10-19T15:36:19.720305+00:00"
-      },
-      "datePosted": "2026-10-12",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-senior-software-engineer-at-man-group-4433591824",
-      "jobId": "4433591824",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:25.848989+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHexdGb3vxYaQ/company-logo_100_100/B4EZfRAq17G4AY-/0/1751558303474/man_group_plc_logo?e=2147483647&v=beta&t=sUocThNf_tuyLuNPHLeaDflY3Z0g_9tkjhvf0ACmEgY",
-        "companyUrl": "https://uk.linkedin.com/company/man-group-plc",
-        "employerName": "Man Group",
-        "imageKind": "company",
-        "sourceJobId": "4433591824",
-        "observedAt": "2026-10-19T15:36:25.848989+00:00"
-      },
-      "datePosted": "2026-10-11",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-investment-operations-specialist-at-man-group-4468381959",
-      "jobId": "4468381959",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:31.785949+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHexdGb3vxYaQ/company-logo_100_100/B4EZfRAq17G4AY-/0/1751558303474/man_group_plc_logo?e=2147483647&v=beta&t=sUocThNf_tuyLuNPHLeaDflY3Z0g_9tkjhvf0ACmEgY",
-        "companyUrl": "https://uk.linkedin.com/company/man-group-plc",
-        "employerName": "Man Group",
-        "imageKind": "company",
-        "sourceJobId": "4468381959",
-        "observedAt": "2026-10-19T15:36:31.785949+00:00"
-      },
-      "datePosted": "2026-10-08",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-sales-director-china-at-man-group-4438590473",
-      "jobId": "4438590473",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:37.880544+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHexdGb3vxYaQ/company-logo_100_100/B4EZfRAq17G4AY-/0/1751558303474/man_group_plc_logo?e=2147483647&v=beta&t=sUocThNf_tuyLuNPHLeaDflY3Z0g_9tkjhvf0ACmEgY",
-        "companyUrl": "https://uk.linkedin.com/company/man-group-plc",
-        "employerName": "Man Group",
-        "imageKind": "company",
-        "sourceJobId": "4438590473",
-        "observedAt": "2026-10-19T15:36:37.880544+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-project-manager-at-thomson-reuters-4466870276",
-      "jobId": "4466870276",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:43.953054+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
-        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
-        "employerName": "Thomson Reuters",
-        "imageKind": "company",
-        "sourceJobId": "4466870276",
-        "observedAt": "2026-10-19T15:36:43.953054+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-sales-executive-asia-legal-business-at-thomson-reuters-4466883094",
-      "jobId": "4466883094",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:49.852768+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
-        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
-        "employerName": "Thomson Reuters",
-        "imageKind": "company",
-        "sourceJobId": "4466883094",
-        "observedAt": "2026-10-19T15:36:49.852768+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4439810713",
-      "jobId": "4439810713",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:36:55.810535+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C510BAQEveyF_KhS3CQ/company-logo_100_100/company-logo_100_100/0/1630618602999/chapter_international_logo?e=2147483647&v=beta&t=62iaUTJ1MBMfL2gW8lfkj7i7uL92EJDDkdoK6hPw0FA",
-        "companyUrl": "https://cn.linkedin.com/company/chapter-international",
-        "employerName": "Chapter Recruitment",
-        "imageKind": "company",
-        "sourceJobId": "4439810713",
-        "observedAt": "2026-10-19T15:36:55.810535+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4439965319",
-      "jobId": "4439965319",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:01.770747+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHLDOEo8UZQZg/company-logo_100_100/company-logo_100_100/0/1697016864262?e=2147483647&v=beta&t=R4w81nX1nywrEL3X2oZxzzszgF45OBMb38ioHczS7I4",
-        "companyUrl": "https://hk.linkedin.com/company/icbc-asia",
-        "employerName": "ICBC (Asia)",
-        "imageKind": "company",
-        "sourceJobId": "4439965319",
-        "observedAt": "2026-10-19T15:37:01.770747+00:00"
-      },
-      "datePosted": "2026-07-15",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4439160239",
-      "jobId": "4439160239",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:07.837427+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQHEsNNMLYnU8g/company-logo_100_100/company-logo_100_100/0/1631348652858?e=2147483647&v=beta&t=KoPSciLo0fF9kxOxxhFasksl4DIs_pz9uDMKD0kHwRM",
-        "companyUrl": "https://cn.linkedin.com/company/cicc",
-        "employerName": "CICC",
-        "imageKind": "company",
-        "sourceJobId": "4439160239",
-        "observedAt": "2026-10-19T15:37:07.837427+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4362074602",
-      "jobId": "4362074602",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:13.822088+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFgF0X6zG8WKA/company-logo_100_100/B56Zjwy2RpHUAU-/0/1756386518504/jump_trading_logo?e=2147483647&v=beta&t=ww9UwYI68TCg4htoKI2AAtHj4qFGw6H3lmc_flb32G0",
-        "companyUrl": "https://www.linkedin.com/company/jump-trading",
-        "employerName": "Jump Trading",
-        "imageKind": "company",
-        "sourceJobId": "4362074602",
-        "observedAt": "2026-10-19T15:37:13.822088+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-director-%E2%80%93-migrations-project-management-at-vistra-4435916679",
-      "jobId": "4435916679",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:19.761411+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAb37ktDQY0g/company-logo_100_100/company-logo_100_100/0/1711395280634/vistra_logo?e=2147483647&v=beta&t=eoVk3QiTWcaVIQGt9sg1_FHuyi89LQgysRGvpFnYOAk",
-        "companyUrl": "https://sg.linkedin.com/company/vistra",
-        "employerName": "VISTRA",
-        "imageKind": "company",
-        "sourceJobId": "4435916679",
-        "observedAt": "2026-10-19T15:37:19.761411+00:00"
-      },
-      "datePosted": "2026-07-10",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4415014464",
-      "jobId": "4415014464",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:25.698327+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFgF0X6zG8WKA/company-logo_100_100/B56Zjwy2RpHUAU-/0/1756386518504/jump_trading_logo?e=2147483647&v=beta&t=ww9UwYI68TCg4htoKI2AAtHj4qFGw6H3lmc_flb32G0",
-        "companyUrl": "https://www.linkedin.com/company/jump-trading",
-        "employerName": "Jump Trading",
-        "imageKind": "company",
-        "sourceJobId": "4415014464",
-        "observedAt": "2026-10-19T15:37:25.698327+00:00"
-      },
-      "datePosted": "2026-10-13",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4427911877",
-      "jobId": "4427911877",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:31.733569+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQE4aQiVQqVi4Q/company-logo_100_100/company-logo_100_100/0/1630672261629/mingshi_investment_logo?e=2147483647&v=beta&t=3GcArNSRKsVtCQgqtk_Zt6nCGoXELuBthp2Lxla11Iw",
-        "companyUrl": "https://cn.linkedin.com/company/mingshiim",
-        "employerName": "Mingshi Investment Management",
-        "imageKind": "company",
-        "sourceJobId": "4427911877",
-        "observedAt": "2026-10-19T15:37:31.733569+00:00"
-      },
-      "datePosted": "2026-06-12",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-%E6%95%B0%E6%8D%AE%E7%A7%91%E5%AD%A6%E5%AE%B6-at-shanghai-yanfu-investments-co-ltd-4338917596",
-      "jobId": "4338917596",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:37.787974+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQH-w9rCywowbQ/company-logo_100_100/company-logo_100_100/0/1630668723768?e=2147483647&v=beta&t=Nqp76IopkcllsJ4PHIAqeLS9xlToHRohHYSEhd-XYTU",
-        "companyUrl": "https://cn.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E8%A1%8D%E5%A4%8D%E6%8A%95%E8%B5%84%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
-        "employerName": "Shanghai Yanfu Investments Co., Ltd.",
-        "imageKind": "company",
-        "sourceJobId": "4338917596",
-        "observedAt": "2026-10-19T15:37:37.787974+00:00"
-      },
-      "datePosted": "2026-09-23",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-quant-research-analyst-intern-at-man-group-4468563119",
-      "jobId": "4468563119",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:37:43.752872+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHexdGb3vxYaQ/company-logo_100_100/B4EZfRAq17G4AY-/0/1751558303474/man_group_plc_logo?e=2147483647&v=beta&t=sUocThNf_tuyLuNPHLeaDflY3Z0g_9tkjhvf0ACmEgY",
-        "companyUrl": "https://uk.linkedin.com/company/man-group-plc",
-        "employerName": "Man Group",
-        "imageKind": "company",
-        "sourceJobId": "4468563119",
-        "observedAt": "2026-10-19T15:37:43.752872+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-quant-research-analyst-intern-at-man-group-4405629462",
-      "jobId": "4405629462",
+      "sourceJobId": "li-data-engineer-associate-at-capital-fund-management-cfm-4476655796",
+      "jobId": "4476655796",
       "location": "CN",
       "result": "unknown",
-      "checkedAt": "2026-10-19T15:37:49.276308+00:00"
+      "checkedAt": "2026-10-20T03:25:25.282718+00:00"
     },
     {
-      "sourceJobId": "li-senior-solution-architect-at-thomson-reuters-4466874307",
-      "jobId": "4466874307",
+      "sourceJobId": "li-senior-prestige-relationship-manager-at-hang-seng-bank-4479521153",
+      "jobId": "4479521153",
       "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:38:20.800390+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHtf0NHyUa92g/company-logo_100_100/company-logo_100_100/0/1719933220460/thomson_reuters_logo?e=2147483647&v=beta&t=ML9NnTk2lfPONL3Ft_HeSGyq0tQPb7SrfP_LSYjC6c0",
-        "companyUrl": "https://ca.linkedin.com/company/thomson-reuters",
-        "employerName": "Thomson Reuters",
-        "imageKind": "company",
-        "sourceJobId": "4466874307",
-        "observedAt": "2026-10-19T15:38:20.800390+00:00"
-      }
+      "result": "unknown",
+      "checkedAt": "2026-10-20T03:25:55.746139+00:00"
     },
     {
-      "sourceJobId": "li-director-product-management-customer-acquisition-and-engagement-at-mastercard-4466903836",
-      "jobId": "4466903836",
+      "sourceJobId": "li-prestige-relationship-manager-1-at-hang-seng-bank-4479505956",
+      "jobId": "4479505956",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:38:26.871278+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
-        "companyUrl": "https://www.linkedin.com/company/mastercard",
-        "employerName": "Mastercard",
-        "imageKind": "company",
-        "sourceJobId": "4466903836",
-        "observedAt": "2026-10-19T15:38:26.871278+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-associate-content-analyst-korean-at-lseg-4467551116",
-      "jobId": "4467551116",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:38:32.747368+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEfgZXAuQXg6w/company-logo_100_100/B56ZfK6LczHUAQ-/0/1751455938973/london_stock_exchange_group_logo?e=2147483647&v=beta&t=5ZFP4xHS24_BnpZHtT7ZbuN_opspJmRO698ZnXJSlOU",
-        "companyUrl": "https://uk.linkedin.com/company/london-stock-exchange-group",
-        "employerName": "LSEG",
-        "imageKind": "company",
-        "sourceJobId": "4467551116",
-        "observedAt": "2026-10-19T15:38:32.747368+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-senior-associate-at-state-street-4469131966",
-      "jobId": "4469131966",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:38:38.656400+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4469131966",
-        "observedAt": "2026-10-19T15:38:38.656400+00:00"
-      },
-      "datePosted": "2026-10-01",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-manager-area-marketing-strategy-innovation-greater-china-at-mastercard-4465541086",
-      "jobId": "4465541086",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:38:44.805898+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
-        "companyUrl": "https://www.linkedin.com/company/mastercard",
-        "employerName": "Mastercard",
-        "imageKind": "company",
-        "sourceJobId": "4465541086",
-        "observedAt": "2026-10-19T15:38:44.805898+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-director-tech-partnerships-at-visa-4467722218",
-      "jobId": "4467722218",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:38:50.779063+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAxoD4chKrgg/company-logo_100_100/B4EZfR2e4JHcAk-/0/1751572410148/visa_logo?e=2147483647&v=beta&t=mZYikLJ1nOM9RYXsRYavU2c7xuzCKWDqH8Q0UzAGrhw",
-        "companyUrl": "https://www.linkedin.com/company/visa",
-        "employerName": "Visa",
-        "imageKind": "company",
-        "sourceJobId": "4467722218",
-        "observedAt": "2026-10-19T15:38:50.779063+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-director-east-asia-exchange-management-at-lseg-4379189333",
-      "jobId": "4379189333",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:38:56.817140+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEfgZXAuQXg6w/company-logo_100_100/B56ZfK6LczHUAQ-/0/1751455938973/london_stock_exchange_group_logo?e=2147483647&v=beta&t=5ZFP4xHS24_BnpZHtT7ZbuN_opspJmRO698ZnXJSlOU",
-        "companyUrl": "https://uk.linkedin.com/company/london-stock-exchange-group",
-        "employerName": "LSEG",
-        "imageKind": "company",
-        "sourceJobId": "4379189333",
-        "observedAt": "2026-10-19T15:38:56.817140+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-prestige-relationship-manager1-at-hang-seng-bank-4465620524",
-      "jobId": "4465620524",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:02.742580+00:00",
+      "checkedAt": "2026-10-20T03:26:56.755848+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
         "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
         "employerName": "Hang Seng Bank",
         "imageKind": "company",
-        "sourceJobId": "4465620524",
-        "observedAt": "2026-10-19T15:39:02.742580+00:00"
+        "sourceJobId": "4479505956",
+        "observedAt": "2026-10-20T03:26:56.755848+00:00"
       }
     },
     {
-      "sourceJobId": "li-senior-fund-accountant-at-apex-group-ltd-4463959896",
-      "jobId": "4463959896",
+      "sourceJobId": "li-alternative-ops-fund-accounting-associate-1-at-state-street-4478779902",
+      "jobId": "4478779902",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:39:08.739376+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4463959896",
-        "observedAt": "2026-10-19T15:39:08.739376+00:00"
-      },
-      "datePosted": "2026-10-02",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-avp-senior-test-manager-itd-at-hong-kong-exchanges-and-clearing-limited-hkex-4464444480",
-      "jobId": "4464444480",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:14.769139+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQF88DClMNCucQ/company-logo_100_100/B56aDBlDOZG0AI-/0/1789954110601/hkex_logo?e=2147483647&v=beta&t=PBuOUdxuF07fZnkTtupxj2rOIyHKVwVS_c--44CAotE",
-        "companyUrl": "https://hk.linkedin.com/company/hkex",
-        "employerName": "Hong Kong Exchanges and Clearing Limited (HKEX)",
-        "imageKind": "company",
-        "sourceJobId": "4464444480",
-        "observedAt": "2026-10-19T15:39:14.769139+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-%E6%8A%95%E8%B5%84%E8%80%85%E5%85%B3%E7%B3%BB-at-baidu-inc-4464176454",
-      "jobId": "4464176454",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:20.723973+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQHZjF01MQpX9w/company-logo_100_100/company-logo_100_100/0/1631350755176?e=2147483647&v=beta&t=H9ZRh26a-2cCvpIxgADIRlzwcVcNlY9DFWjSb0WDpLs",
-        "companyUrl": "https://cn.linkedin.com/company/baidu-inc",
-        "employerName": "Baidu, Inc.",
-        "imageKind": "company",
-        "sourceJobId": "4464176454",
-        "observedAt": "2026-10-19T15:39:20.723973+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-officer-at-computershare-4463248778",
-      "jobId": "4463248778",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:26.814630+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGxLeQ98ONK5A/company-logo_100_100/B4EZU37fJ4GgAQ-/0/1740400096277/computershare_logo?e=2147483647&v=beta&t=t08t7-jzsax_USAwl8l_VEJZj-OD3kslKBl6BFq4US8",
-        "companyUrl": "https://au.linkedin.com/company/computershare",
-        "employerName": "Computershare",
-        "imageKind": "company",
-        "sourceJobId": "4463248778",
-        "observedAt": "2026-10-19T15:39:26.814630+00:00"
-      },
-      "datePosted": "2026-09-29",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-associate-2-at-state-street-4463341425",
-      "jobId": "4463341425",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:32.729572+00:00",
+      "checkedAt": "2026-10-20T03:27:02.628749+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
         "companyUrl": "https://www.linkedin.com/company/state-street",
         "employerName": "State Street",
         "imageKind": "company",
-        "sourceJobId": "4463341425",
-        "observedAt": "2026-10-19T15:39:32.729572+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-fund-accountant-at-apex-group-ltd-4410194462",
-      "jobId": "4410194462",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:38.722007+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4410194462",
-        "observedAt": "2026-10-19T15:39:38.722007+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4462436996",
-      "jobId": "4462436996",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:44.862998+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4D0BAQGVRxhl9ugIOA/company-logo_100_100/company-logo_100_100/0/1719830522728/banco_santander_logo?e=2147483647&v=beta&t=NzlwTW_1n3Koa5L2zVnpgQQaqW6pbYBSIK9jxSvIOCw",
-        "companyUrl": "https://es.linkedin.com/company/banco-santander",
-        "employerName": "Santander",
-        "imageKind": "company",
-        "sourceJobId": "4462436996",
-        "observedAt": "2026-10-19T15:39:44.862998+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-sr-manager-tech-partnerships-at-visa-4461722542",
-      "jobId": "4461722542",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:50.824761+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAxoD4chKrgg/company-logo_100_100/B4EZfR2e4JHcAk-/0/1751572410148/visa_logo?e=2147483647&v=beta&t=mZYikLJ1nOM9RYXsRYavU2c7xuzCKWDqH8Q0UzAGrhw",
-        "companyUrl": "https://www.linkedin.com/company/visa",
-        "employerName": "Visa",
-        "imageKind": "company",
-        "sourceJobId": "4461722542",
-        "observedAt": "2026-10-19T15:39:50.824761+00:00"
-      },
-      "datePosted": "2026-10-06",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4446052029",
-      "jobId": "4446052029",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:39:56.779944+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHZQyZvv_D_wg/company-logo_100_100/company-logo_100_100/0/1707908777330?e=2147483647&v=beta&t=a2fLX56UFRXd6sq2ZHhYSuhY_Jr16fWdgA6rE4HpJgM",
-        "companyUrl": "https://www.linkedin.com/company/talent-genesis-partners",
-        "employerName": "Genesis Partners",
-        "imageKind": "company",
-        "sourceJobId": "4446052029",
-        "observedAt": "2026-10-19T15:39:56.779944+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-team-leader-pse-gzu-at-hang-seng-bank-4422680381",
-      "jobId": "4422680381",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:03.173802+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
-        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
-        "employerName": "Hang Seng Bank",
-        "imageKind": "company",
-        "sourceJobId": "4422680381",
-        "observedAt": "2026-10-19T15:40:03.173802+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4459871972",
-      "jobId": "4459871972",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:08.865116+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQF88DClMNCucQ/company-logo_100_100/B56aDBlDOZG0AI-/0/1789954110601/hkex_logo?e=2147483647&v=beta&t=PBuOUdxuF07fZnkTtupxj2rOIyHKVwVS_c--44CAotE",
-        "companyUrl": "https://hk.linkedin.com/company/hkex",
-        "employerName": "Hong Kong Exchanges and Clearing Limited (HKEX)",
-        "imageKind": "company",
-        "sourceJobId": "4459871972",
-        "observedAt": "2026-10-19T15:40:08.865116+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-middle-office-senior-associate-at-state-street-4459185463",
-      "jobId": "4459185463",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:14.707867+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4459185463",
-        "observedAt": "2026-10-19T15:40:14.707867+00:00"
-      },
-      "datePosted": "2026-09-09",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-senior-technical-specialist-at-lseg-4454969993",
-      "jobId": "4454969993",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:20.838198+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEfgZXAuQXg6w/company-logo_100_100/B56ZfK6LczHUAQ-/0/1751455938973/london_stock_exchange_group_logo?e=2147483647&v=beta&t=5ZFP4xHS24_BnpZHtT7ZbuN_opspJmRO698ZnXJSlOU",
-        "companyUrl": "https://uk.linkedin.com/company/london-stock-exchange-group",
-        "employerName": "LSEG",
-        "imageKind": "company",
-        "sourceJobId": "4454969993",
-        "observedAt": "2026-10-19T15:40:20.838198+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-fund-accountant-at-apex-group-ltd-4446616648",
-      "jobId": "4446616648",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:26.726836+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4446616648",
-        "observedAt": "2026-10-19T15:40:26.726836+00:00"
-      },
-      "datePosted": "2026-10-08",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-c%2B%2B-software-engineer-at-citadel-securities-4281724238",
-      "jobId": "4281724238",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:32.720779+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGEXIzoPly7ug/company-logo_100_100/company-logo_100_100/0/1688579596328/citadel_securities_logo?e=2147483647&v=beta&t=0ocSWMOyzdmPisdfDFEefIuWcXx39SaQQWSeXV6lYC4",
-        "companyUrl": "https://www.linkedin.com/company/citadel-securities",
-        "employerName": "Citadel Securities",
-        "imageKind": "company",
-        "sourceJobId": "4281724238",
-        "observedAt": "2026-10-19T15:40:32.720779+00:00"
-      },
-      "datePosted": "2026-10-16",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4450311305",
-      "jobId": "4450311305",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:38.678748+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4450311305",
-        "observedAt": "2026-10-19T15:40:38.678748+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4456474315",
-      "jobId": "4456474315",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:44.765089+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4456474315",
-        "observedAt": "2026-10-19T15:40:44.765089+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-at-pamo-jiangsu-branch-at-manulife-4455607259",
-      "jobId": "4455607259",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:50.811737+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFg7ju66JebMQ/company-logo_100_100/B56ZsJsHLTG8AQ-/0/1765394117675/manulife_financial_logo?e=2147483647&v=beta&t=lcF7zGHRd9blFeRQg2Qx8DpNnipYoHH2rHiGZHE4WYY",
-        "companyUrl": "https://ca.linkedin.com/company/manulife-financial",
-        "employerName": "Manulife",
-        "imageKind": "company",
-        "sourceJobId": "4455607259",
-        "observedAt": "2026-10-19T15:40:50.811737+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4453438927",
-      "jobId": "4453438927",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:40:56.704811+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4453438927",
-        "observedAt": "2026-10-19T15:40:56.704811+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-ai-engineer-at-millennium-4455670044",
-      "jobId": "4455670044",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:02.734112+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQERyyseYCjemg/company-logo_100_100/B4EZ348VzUHUAI-/0/1777998060987/millennium_partners_logo?e=2147483647&v=beta&t=a7jZRcg4a0ySlvT1AMzA6REJFxqMbHhxABa0zhMqrb8",
-        "companyUrl": "https://www.linkedin.com/company/millennium-partners",
-        "employerName": "Millennium",
-        "imageKind": "company",
-        "sourceJobId": "4455670044",
-        "observedAt": "2026-10-19T15:41:02.734112+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4454254394",
-      "jobId": "4454254394",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:08.806064+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQFfuuX786h3Ug/company-logo_100_100/company-logo_100_100/0/1630491285902?e=2147483647&v=beta&t=T0IPaY6k6dOmr-yZzDDOtfECiWqB1fHo7998jwtBYJc",
-        "companyUrl": "https://cn.linkedin.com/company/china-international-capital-corporation-ltd",
-        "employerName": "China International Capital Corp",
-        "imageKind": "company",
-        "sourceJobId": "4454254394",
-        "observedAt": "2026-10-19T15:41:08.806064+00:00"
-      },
-      "datePosted": "2026-08-17",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-4265088557",
-      "jobId": "4265088557",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:14.790639+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGkcf7qKLd6mQ/company-logo_100_100/B4EZpKb3XwKkAc-/0/1762185410414/adyen_logo?e=2147483647&v=beta&t=M6Mdj7p11YGFRyAH-Le6ZHMwDyXeU5blY4ypt8xOGfk",
-        "companyUrl": "https://nl.linkedin.com/company/adyen",
-        "employerName": "Adyen",
-        "imageKind": "company",
-        "sourceJobId": "4265088557",
-        "observedAt": "2026-10-19T15:41:14.790639+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-accountant-manager-private-equity-rmb-fund-at-apex-group-ltd-4422272093",
-      "jobId": "4422272093",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:20.767320+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQEci2n9cyv-MA/company-logo_100_100/company-logo_100_100/0/1630585030396/apex_fund_services_logo?e=2147483647&v=beta&t=u4t-FWFvx484boRmR5wZq8CXtYrSq-jfy11KcAxVyAk",
-        "companyUrl": "https://bm.linkedin.com/company/the-apex-group-ltd",
-        "employerName": "Apex Group Ltd",
-        "imageKind": "company",
-        "sourceJobId": "4422272093",
-        "observedAt": "2026-10-19T15:41:20.767320+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4452185402",
-      "jobId": "4452185402",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:26.894936+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHZ4uukTAzbCg/company-logo_100_100/company-logo_100_100/0/1719790136202/aig_logo?e=2147483647&v=beta&t=Ap1VpZvAEt82Uf1CX3GN7oIBdZAM6z2OLpJltoenM9M",
-        "companyUrl": "https://www.linkedin.com/company/aig",
-        "employerName": "AIG",
-        "imageKind": "company",
-        "sourceJobId": "4452185402",
-        "observedAt": "2026-10-19T15:41:26.894936+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-marketing-executive-at-schroders-4451515209",
-      "jobId": "4451515209",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:32.837951+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFXB5l7s3m4Iw/company-logo_100_100/B56ZfPSWXQHEAQ-/0/1751529386968/schroders_logo?e=2147483647&v=beta&t=TH_FkTHz6-UnwDAU2xpg_NUhR9JfRXb8vvWiqymKkQQ",
-        "companyUrl": "https://uk.linkedin.com/company/schroders",
-        "employerName": "Schroders",
-        "imageKind": "company",
-        "sourceJobId": "4451515209",
-        "observedAt": "2026-10-19T15:41:32.837951+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-manager-transfer-solutions-at-mastercard-4447399155",
-      "jobId": "4447399155",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:38.880705+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
-        "companyUrl": "https://www.linkedin.com/company/mastercard",
-        "employerName": "Mastercard",
-        "imageKind": "company",
-        "sourceJobId": "4447399155",
-        "observedAt": "2026-10-19T15:41:38.880705+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4445422745",
-      "jobId": "4445422745",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:44.829757+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGxLeQ98ONK5A/company-logo_100_100/B4EZU37fJ4GgAQ-/0/1740400096277/computershare_logo?e=2147483647&v=beta&t=t08t7-jzsax_USAwl8l_VEJZj-OD3kslKBl6BFq4US8",
-        "companyUrl": "https://au.linkedin.com/company/computershare",
-        "employerName": "Computershare",
-        "imageKind": "company",
-        "sourceJobId": "4445422745",
-        "observedAt": "2026-10-19T15:41:44.829757+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-4444925318",
-      "jobId": "4444925318",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:50.692738+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQHYIkiLAUHp2w/company-logo_100_100/company-logo_100_100/0/1631339839680?e=2147483647&v=beta&t=Hoo8xvYZkPpGF0MlPyq1xXXUpQr5e17JoHbxzJp3Xa8",
-        "companyUrl": "https://cn.linkedin.com/company/zhenfund",
-        "employerName": "ZhenFund 真格基金",
-        "imageKind": "company",
-        "sourceJobId": "4444925318",
-        "observedAt": "2026-10-19T15:41:50.692738+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-alternative-ops-fund-accounting-associate-2-at-state-street-4478783839",
-      "jobId": "4478783839",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:41:56.662304+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4478783839",
-        "observedAt": "2026-10-19T15:41:56.662304+00:00"
+        "sourceJobId": "4478779902",
+        "observedAt": "2026-10-20T03:27:02.628749+00:00"
       },
       "datePosted": "2026-10-13",
       "dateSource": "linkedin-cached-card"
     },
     {
-      "sourceJobId": "li-%E8%B4%A2%E5%8A%A1%E7%BB%8F%E7%90%86-pe-at-selby-jennings-4479269305",
-      "jobId": "4479269305",
+      "sourceJobId": "li-alternative-ops-fund-accounting-associate-2-at-state-street-4479000012",
+      "jobId": "4479000012",
       "location": "CN",
       "result": "open",
-      "checkedAt": "2026-10-19T15:42:02.766597+00:00",
+      "checkedAt": "2026-10-20T03:27:08.563244+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
+        "companyUrl": "https://www.linkedin.com/company/state-street",
+        "employerName": "State Street",
+        "imageKind": "company",
+        "sourceJobId": "4479000012",
+        "observedAt": "2026-10-20T03:27:08.563244+00:00"
+      },
+      "datePosted": "2026-10-13",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-alternative-ops-fund-accounting-associate-2-at-state-street-4478790469",
+      "jobId": "4478790469",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:27:14.502046+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
+        "companyUrl": "https://www.linkedin.com/company/state-street",
+        "employerName": "State Street",
+        "imageKind": "company",
+        "sourceJobId": "4478790469",
+        "observedAt": "2026-10-20T03:27:14.502046+00:00"
+      },
+      "datePosted": "2026-10-13",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-alternative-ops-fund-accounting-associate-1-at-state-street-4478784817",
+      "jobId": "4478784817",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:27:20.751527+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
+        "companyUrl": "https://www.linkedin.com/company/state-street",
+        "employerName": "State Street",
+        "imageKind": "company",
+        "sourceJobId": "4478784817",
+        "observedAt": "2026-10-20T03:27:20.751527+00:00"
+      },
+      "datePosted": "2026-10-20",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-manager-specialist-sales-at-mastercard-4476409812",
+      "jobId": "4476409812",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:27:26.620984+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQGOW4NIyYRRqQ/company-logo_100_100/company-logo_100_100/0/1631340300330?e=2147483647&v=beta&t=xq1ySX9pM18Xr0xQJaRgCbH1ap_xO8Yn0h21FM105Ls",
+        "companyUrl": "https://www.linkedin.com/company/mastercard",
+        "employerName": "Mastercard",
+        "imageKind": "company",
+        "sourceJobId": "4476409812",
+        "observedAt": "2026-10-20T03:27:26.620984+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-bnef%C2%A0downstream-oil-and-chemical-analysis-researcher-at-bloomberg-4476007595",
+      "jobId": "4476007595",
+      "location": "CN",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:27:32.621701+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQF0uyE7RGKDGg/company-logo_100_100/company-logo_100_100/0/1631374698859/bloomberg_lp_logo?e=2147483647&v=beta&t=GSA0lizuXUS399nB8pjg8WMi81RAtg-5c8IBsevzsyY",
+        "companyUrl": "https://www.linkedin.com/company/bloomberg",
+        "employerName": "Bloomberg",
+        "imageKind": "company",
+        "sourceJobId": "4476007595",
+        "observedAt": "2026-10-20T03:27:32.621701+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-trade-application-system-engineer-regulatory-organization-at-michael-page-4479934748",
+      "jobId": "4479934748",
+      "location": "HK",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:27:38.737472+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFyjMa9qVfGhg/company-logo_100_100/B4EZ994QccJIAI-/0/1784523327479/michael_page_logo?e=2147483647&v=beta&t=iKlhQNCtUy4M7WkAWZaLrsmC1xI5tqCi8LMuzvFuFKE",
+        "companyUrl": "https://uk.linkedin.com/company/michael-page",
+        "employerName": "Michael Page",
+        "imageKind": "company",
+        "sourceJobId": "4479934748",
+        "observedAt": "2026-10-20T03:27:38.737472+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-senior-manager-centre-for-information-management-cim-at-dsta-4358219998",
+      "jobId": "4358219998",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:27:44.657579+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C510BAQGBxsnmmhvsMg/company-logo_100_100/company-logo_100_100/0/1631396166213?e=2147483647&v=beta&t=mpObh6-DApS1MuZU4y-2lw7VAKHV3D9nC7qIvgrt2cA",
+        "companyUrl": "https://sg.linkedin.com/company/dsta",
+        "employerName": "DSTA",
+        "imageKind": "company",
+        "sourceJobId": "4358219998",
+        "observedAt": "2026-10-20T03:27:44.657579+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-vp-relationship-manager-asset-management-at-new-region-4479907940",
+      "jobId": "4479907940",
+      "location": "HK",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:27:50.612973+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFvGfilaPpNkg/company-logo_100_100/company-logo_100_100/0/1693451220058/newregion_logo?e=2147483647&v=beta&t=sz8fbgkLVOY_wM7ovArVsru0pY_0Ggv6Pa_nKLw375M",
+        "companyUrl": "https://hk.linkedin.com/company/newregion",
+        "employerName": "New Region",
+        "imageKind": "company",
+        "sourceJobId": "4479907940",
+        "observedAt": "2026-10-20T03:27:50.612973+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4461012092",
+      "jobId": "4461012092",
+      "location": "SG",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:27:56.170898+00:00"
+    },
+    {
+      "sourceJobId": "li-4465028010",
+      "jobId": "4465028010",
+      "location": "HK",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:28:02.640949+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQGok7eRZaWwUA/company-logo_100_100/company-logo_100_100/0/1647261996217/iq_eq_logo?e=2147483647&v=beta&t=lySxv_UZSuDhI6l946MIwGu74FinliAnWrcZR5LFWGc",
+        "companyUrl": "https://lu.linkedin.com/company/iq-eq",
+        "employerName": "IQ-EQ",
+        "imageKind": "company",
+        "sourceJobId": "4465028010",
+        "observedAt": "2026-10-20T03:28:02.640949+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4450700605",
+      "jobId": "4450700605",
+      "location": "SG",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:28:08.186231+00:00"
+    },
+    {
+      "sourceJobId": "li-manager-mo-asset-svcg-hfs-at-northern-trust-4478608811",
+      "jobId": "4478608811",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:14.757721+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQEhKPm5QIrRAQ/company-logo_100_100/company-logo_100_100/0/1663663012961/northern_trust_logo?e=2147483647&v=beta&t=u1yTjh_wPLHOaJEvxaO4qc0XCGWWsSxAx4KP3m8rjwk",
+        "companyUrl": "https://www.linkedin.com/company/northern-trust",
+        "employerName": "Northern Trust",
+        "imageKind": "company",
+        "sourceJobId": "4478608811",
+        "observedAt": "2026-10-20T03:28:14.757721+00:00"
+      },
+      "datePosted": "2026-10-20",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-4458763749",
+      "jobId": "4458763749",
+      "location": "SG",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:28:20.172243+00:00"
+    },
+    {
+      "sourceJobId": "li-devops-operations-development-engineer-at-%E5%9B%BD%E6%B3%B0%E5%90%9B%E5%AE%89%E5%9B%BD%E9%99%85-guotai-junan-international-4462783683",
+      "jobId": "4462783683",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:26.714362+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFaaxR_cMfS1w/company-logo_100_100/B56Z0ZnDTQKsAQ-/0/1774251163519/gtjai_logo?e=2147483647&v=beta&t=XYCazs25XqX2U6Xkce1kyLNFB9jg8eLnQW9KPLRfOeY",
+        "companyUrl": "https://hk.linkedin.com/company/gtjai",
+        "employerName": "国泰君安国际 Guotai Junan International",
+        "imageKind": "company",
+        "sourceJobId": "4462783683",
+        "observedAt": "2026-10-20T03:28:26.714362+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-operations-specialist-at-julius-baer-4481221303",
+      "jobId": "4481221303",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:32.841362+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHB87NKuiKYWg/company-logo_100_100/company-logo_100_100/0/1719989312633/julius_baer_logo?e=2147483647&v=beta&t=ahR8EW-kPOXL12T8vb0g7wS_g1TPS1b6RtqjYxsAiNM",
+        "companyUrl": "https://ch.linkedin.com/company/julius-baer",
+        "employerName": "Julius Baer",
+        "imageKind": "company",
+        "sourceJobId": "4481221303",
+        "observedAt": "2026-10-20T03:28:32.841362+00:00"
+      },
+      "datePosted": "2026-10-20",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-project-manager-delivery-project-manager-at-eteam-4480945375",
+      "jobId": "4480945375",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:38.754975+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGFjrnb1iJLDQ/company-logo_100_100/B4EZ1NhLj0HsAQ-/0/1775122037382/eteam_logo?e=2147483647&v=beta&t=2y9B7IxF6MzH7i4gTMewR1rq5jCFWzQHysH6KBGizy8",
+        "companyUrl": "https://www.linkedin.com/company/eteam",
+        "employerName": "eTeam",
+        "imageKind": "company",
+        "sourceJobId": "4480945375",
+        "observedAt": "2026-10-20T03:28:38.754975+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-executive-director-legal-at-mufg-investor-services-4480985904",
+      "jobId": "4480985904",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:44.674712+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQEKh5ivaC7PGA/company-logo_100_100/company-logo_100_100/0/1663765172997/mufg_investor_services_logo?e=2147483647&v=beta&t=NB91jhH11d8iMH0IXHxdxHUZgc-oU2cAWZsPLbZFlsw",
+        "companyUrl": "https://ky.linkedin.com/company/mufg-investor-services",
+        "employerName": "MUFG Investor Services",
+        "imageKind": "company",
+        "sourceJobId": "4480985904",
+        "observedAt": "2026-10-20T03:28:44.674712+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-vp-senior-manager-manager-data-al-governance-bank-multiple-roles-cantonese-speaking-needed-at-justonegalaxy-recruitment-4480215792",
+      "jobId": "4480215792",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:50.714233+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQEAenx-S1w5aA/company-logo_100_100/company-logo_100_100/0/1630664573962?e=2147483647&v=beta&t=EMHl2sEdU0uc0Gg5x0tYljtnIwZe8f9mWqiwMaGX6r8",
+        "companyUrl": "https://hk.linkedin.com/company/justonegalaxy-recruitment",
+        "employerName": "JustOneGalaxy Recruitment",
+        "imageKind": "company",
+        "sourceJobId": "4480215792",
+        "observedAt": "2026-10-20T03:28:50.714233+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-market-making-specialist-liquidity-provision-at-phillipcapital-4469714815",
+      "jobId": "4469714815",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:28:56.719630+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFjX4C_nUxxWw/company-logo_100_100/B56Z5y.3AJHAAI-/0/1780045541716/phillip_securities_pte_ltd_logo?e=2147483647&v=beta&t=1j2m2UlxMDVs-suiiOlDy8nCHhe6CFqBmzLrpVFvLWw",
+        "companyUrl": "https://sg.linkedin.com/company/phillip-securities-pte-ltd",
+        "employerName": "PhillipCapital",
+        "imageKind": "company",
+        "sourceJobId": "4469714815",
+        "observedAt": "2026-10-20T03:28:56.719630+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-real-estate-debt-rotational-analyst-based-in-hong-kong-at-nuveen-a-tiaa-company-4480234366",
+      "jobId": "4480234366",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:02.771313+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE8Pl3mGi7Rxw/company-logo_100_100/company-logo_100_100/0/1688157860907/nuveen_logo?e=2147483647&v=beta&t=1_BYL6zl-Q6dt0oCwfsYqlsSwo1AZ-rBN0_c6yeSICo",
+        "companyUrl": "https://www.linkedin.com/company/nuveen",
+        "employerName": "Nuveen, a TIAA company",
+        "imageKind": "company",
+        "sourceJobId": "4480234366",
+        "observedAt": "2026-10-20T03:29:02.771313+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-service-technician-at-exyte-4479986473",
+      "jobId": "4479986473",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:08.626833+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQH876An2cAOgQ/company-logo_100_100/company-logo_100_100/0/1671631862911/exyte_group_logo?e=2147483647&v=beta&t=EA06o7-XDjHjBEvlyCBM9feUi_l4pYxqlpYgNBRupoU",
+        "companyUrl": "https://de.linkedin.com/company/exyte-group",
+        "employerName": "Exyte",
+        "imageKind": "company",
+        "sourceJobId": "4479986473",
+        "observedAt": "2026-10-20T03:29:08.626833+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-ir-manager-eam-trader-at-macrowaters-asia-fund-management-limited-4480209193",
+      "jobId": "4480209193",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:14.694827+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFSuqG8dwe8UA/company-logo_100_100/company-logo_100_100/0/1702685754742?e=2147483647&v=beta&t=rFa5AcuqH4J5EZu2bMIerGD2uEL61rCgUFD1CffdUkc",
+        "companyUrl": "https://hk.linkedin.com/company/macrowaters-asia-fund-management-limited",
+        "employerName": "Macrowaters Asia Fund Management Limited",
+        "imageKind": "company",
+        "sourceJobId": "4480209193",
+        "observedAt": "2026-10-20T03:29:14.694827+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-assistant-relationship-manager-client-service-manager-%E2%80%93-mandarin-speaker-at-jupiter-wealth-advisors-limited-4480983197",
+      "jobId": "4480983197",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:20.698137+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4D0BAQHkfLh142m3Eg/company-logo_100_100/company-logo_100_100/0/1714414545903/jupiter_wealth_advisors_logo?e=2147483647&v=beta&t=JNm6NiEPsfD9uD1iTby0gNoBxDigtY5GtyNNpNNKClM",
+        "companyUrl": "https://ae.linkedin.com/company/jupiter-wealth-advisors",
+        "employerName": "Jupiter Wealth Advisors Limited",
+        "imageKind": "company",
+        "sourceJobId": "4480983197",
+        "observedAt": "2026-10-20T03:29:20.698137+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-senior-corporate-services-administrator-at-ascentium-fiduciary-4478286270",
+      "jobId": "4478286270",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:26.611357+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQEAZ9D6OaDJrw/company-logo_100_100/B4EZ3FXtRTGkAQ-/0/1777132819788/ascentium_fiduciary_logo?e=2147483647&v=beta&t=BK7OvCRSL3fo_rAcn0re66ixLWlK4YjwLZ86FT9Nid0",
+        "companyUrl": "https://vg.linkedin.com/company/ascentium-fiduciary",
+        "employerName": "Ascentium Fiduciary",
+        "imageKind": "company",
+        "sourceJobId": "4478286270",
+        "observedAt": "2026-10-20T03:29:26.611357+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-account-manager-at-oysterly-media-4479986405",
+      "jobId": "4479986405",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:32.769550+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQF88mLiFfjslg/company-logo_100_100/B56ZwrhCubKcAU-/0/1770256608860/oysterlymedia_logo?e=2147483647&v=beta&t=5HT6dpB3rn1vWOStCf9OmhuN_DDMaKGuwJlPBj6aexw",
+        "companyUrl": "https://sg.linkedin.com/company/oysterlymedia",
+        "employerName": "Oysterly Media",
+        "imageKind": "company",
+        "sourceJobId": "4479986405",
+        "observedAt": "2026-10-20T03:29:32.769550+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-otc-derivative-transaction-reporting-associate-at-nomura-4480968458",
+      "jobId": "4480968458",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:38.613760+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE7RbRrfGqcsQ/company-logo_100_100/B56ZfDmoa3HEAQ-/0/1751333374682/nomura_logo?e=2147483647&v=beta&t=XJg-KF3ZAYuS_isfAtUINhSwLSQ1mxfT2Sp7e7oOmyY",
+        "companyUrl": "https://jp.linkedin.com/company/nomura",
+        "employerName": "Nomura",
+        "imageKind": "company",
+        "sourceJobId": "4480968458",
+        "observedAt": "2026-10-20T03:29:38.613760+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-associate-director-fund-solutions-at-cambridge-associates-4480235625",
+      "jobId": "4480235625",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:44.649968+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4D0BAQHb_6JP3k--9A/company-logo_100_100/company-logo_100_100/0/1692647066897/cambridge_associates_logo?e=2147483647&v=beta&t=efQohEboNGATJtZB_AbVQmDHOooCjtoqnlQZEv_YvxA",
+        "companyUrl": "https://www.linkedin.com/company/cambridge-associates",
+        "employerName": "Cambridge Associates",
+        "imageKind": "company",
+        "sourceJobId": "4480235625",
+        "observedAt": "2026-10-20T03:29:44.649968+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-operations-officer-at-%E9%81%BA%E5%96%84%E6%9C%80%E6%A8%82-forevergift-hk-4479979522",
+      "jobId": "4479979522",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:50.664096+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHhcUrpS0eHrg/company-logo_100_100/company-logo_100_100/0/1716434433484/forevergift_logo?e=2147483647&v=beta&t=kRlTo4tZ1XA0oAojs5oMIZwgExrC4ioAdG8KiMufagQ",
+        "companyUrl": "https://hk.linkedin.com/company/forevergift",
+        "employerName": "遺善最樂 ForeverGift.hk",
+        "imageKind": "company",
+        "sourceJobId": "4479979522",
+        "observedAt": "2026-10-20T03:29:50.664096+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-senior-vice-president-executive-director-finance-and-fund-operations-at-fp-global-4480970244",
+      "jobId": "4480970244",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:29:56.593467+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE3T9UOpaWrBg/company-logo_100_100/company-logo_100_100/0/1692843418233/fp_asia_logo?e=2147483647&v=beta&t=qOrv6nlb6yM2BR42GoFQWGfnlrsVqJFnaqm7gI6uUTo",
+        "companyUrl": "https://sg.linkedin.com/company/fundspartnershipglobal",
+        "employerName": "FP Global",
+        "imageKind": "company",
+        "sourceJobId": "4480970244",
+        "observedAt": "2026-10-20T03:29:56.593467+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-managing-director-head-of-credit-trading-asia-at-mufg-4480980373",
+      "jobId": "4480980373",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:02.748996+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQEyC1DyrmO5yA/company-logo_100_100/company-logo_100_100/0/1688117556427/mufg_logo?e=2147483647&v=beta&t=C-a3FJjn0IAnxtcloT1BTAV__Je45pcbBUDGhD9vi3I",
+        "companyUrl": "https://jp.linkedin.com/company/mufg",
+        "employerName": "MUFG",
+        "imageKind": "company",
+        "sourceJobId": "4480980373",
+        "observedAt": "2026-10-20T03:30:02.748996+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-lead-securities-reference-data-global-hedge-fund-equities-futures-options-sql-python-data-quality-trading-systems-at-mondrian-alpha-4478294046",
+      "jobId": "4478294046",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:08.701130+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4E0BAQFdhOQUu7jrVA/company-logo_100_100/company-logo_100_100/0/1631337274650?e=2147483647&v=beta&t=GgXj0NswB96_UgG7aJI6wu-pKgIhhZD826amJyFGnsM",
+        "companyUrl": "https://uk.linkedin.com/company/mondrian-alpha",
+        "employerName": "Mondrian Alpha",
+        "imageKind": "company",
+        "sourceJobId": "4478294046",
+        "observedAt": "2026-10-20T03:30:08.701130+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-compliance-analyst-at-ascentium-fiduciary-4446600676",
+      "jobId": "4446600676",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:14.801761+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQEAZ9D6OaDJrw/company-logo_100_100/B4EZ3FXtRTGkAQ-/0/1777132819788/ascentium_fiduciary_logo?e=2147483647&v=beta&t=BK7OvCRSL3fo_rAcn0re66ixLWlK4YjwLZ86FT9Nid0",
+        "companyUrl": "https://vg.linkedin.com/company/ascentium-fiduciary",
+        "employerName": "Ascentium Fiduciary",
+        "imageKind": "company",
+        "sourceJobId": "4446600676",
+        "observedAt": "2026-10-20T03:30:14.801761+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-director-loan-operations-at-danos-group-4479987306",
+      "jobId": "4479987306",
+      "location": "SG",
+      "result": "unknown",
+      "checkedAt": "2026-10-20T03:30:20.141080+00:00"
+    },
+    {
+      "sourceJobId": "li-enterprise-sales-director-apac-at-velocity-4479947922",
+      "jobId": "4479947922",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:26.692289+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4D0BAQH29OQ7-1dBYw/company-logo_100_100/B4DZmUb8CWIEAQ-/0/1759131976218/velocityxyz_logo?e=2147483647&v=beta&t=AcPrX93OwrJQP_RthZjmEIaIRJtwAA-rJJvbOxMKPew",
+        "companyUrl": "https://uk.linkedin.com/company/velocityxyz",
+        "employerName": "Velocity",
+        "imageKind": "company",
+        "sourceJobId": "4479947922",
+        "observedAt": "2026-10-20T03:30:26.692289+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-middle-office-soft-commodities-at-randstad-singapore-4478254900",
+      "jobId": "4478254900",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:32.698205+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C510BAQGG_sp-9NXOIg/company-logo_100_100/company-logo_100_100/0/1631321838011?e=2147483647&v=beta&t=cjBoeL5mWQwiuGR1JRNWPIUqqebrhQVHCI6SSGs1ryQ",
+        "companyUrl": "https://sg.linkedin.com/company/randstad-singapore",
+        "employerName": "Randstad Singapore",
+        "imageKind": "company",
+        "sourceJobId": "4478254900",
+        "observedAt": "2026-10-20T03:30:32.698205+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-stat-arb-equities-quantitative-researcher-at-selby-jennings-4479268416",
+      "jobId": "4479268416",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:38.585060+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFwmHv7O_XVNg/company-logo_100_100/B4EZfGC.oWG4AQ-/0/1751374359452/selby_jennings_logo?e=2147483647&v=beta&t=1M1QONPqqa-DR2740qOg7HjBYbhiH0M6YuwPi41US7M",
         "companyUrl": "https://uk.linkedin.com/company/selby-jennings",
         "employerName": "Selby Jennings",
         "imageKind": "company",
-        "sourceJobId": "4479269305",
-        "observedAt": "2026-10-19T15:42:02.766597+00:00"
+        "sourceJobId": "4479268416",
+        "observedAt": "2026-10-20T03:30:38.585060+00:00"
       }
     },
     {
-      "sourceJobId": "li-alternative-ops-fund-accounting-officer-at-state-street-4478795247",
-      "jobId": "4478795247",
-      "location": "CN",
+      "sourceJobId": "li-strategic-account-manager-at-watson-marlow-fluid-technology-solutions-4471096105",
+      "jobId": "4471096105",
+      "location": "SG",
       "result": "open",
-      "checkedAt": "2026-10-19T15:42:08.671109+00:00",
+      "checkedAt": "2026-10-20T03:30:44.920268+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQEiQtXwwk1B1A/company-logo_100_100/B4EZp4z9z7IoAQ-/0/1762963482019/watson_marlow_fluid_technology_solutions_logo?e=2147483647&v=beta&t=DsfKsr7-qI5JCFg1sIoRmH3mK4HiAn8sMYTM2Zj-juQ",
+        "companyUrl": "https://uk.linkedin.com/company/watson-marlow-fluid-technology-solutions",
+        "employerName": "Watson-Marlow Fluid Technology Solutions",
         "imageKind": "company",
-        "sourceJobId": "4478795247",
-        "observedAt": "2026-10-19T15:42:08.671109+00:00"
+        "sourceJobId": "4471096105",
+        "observedAt": "2026-10-20T03:30:44.920268+00:00"
       },
-      "datePosted": "2026-10-13",
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-4464472472",
+      "jobId": "4464472472",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:30:50.759321+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFwmHv7O_XVNg/company-logo_100_100/B4EZfGC.oWG4AQ-/0/1751374359452/selby_jennings_logo?e=2147483647&v=beta&t=1M1QONPqqa-DR2740qOg7HjBYbhiH0M6YuwPi41US7M",
+        "companyUrl": "https://uk.linkedin.com/company/selby-jennings",
+        "employerName": "Selby Jennings",
+        "imageKind": "company",
+        "sourceJobId": "4464472472",
+        "observedAt": "2026-10-20T03:30:50.759321+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-enterprise-sales-director-apac-at-velocity-4479967019",
+      "jobId": "4479967019",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:30:56.752986+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4D0BAQH29OQ7-1dBYw/company-logo_100_100/B4DZmUb8CWIEAQ-/0/1759131976218/velocityxyz_logo?e=2147483647&v=beta&t=AcPrX93OwrJQP_RthZjmEIaIRJtwAA-rJJvbOxMKPew",
+        "companyUrl": "https://uk.linkedin.com/company/velocityxyz",
+        "employerName": "Velocity",
+        "imageKind": "company",
+        "sourceJobId": "4479967019",
+        "observedAt": "2026-10-20T03:30:56.752986+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-4464615171",
+      "jobId": "4464615171",
+      "location": "HK",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:31:02.200482+00:00"
+    },
+    {
+      "sourceJobId": "li-consultant-associate-at-finexis-advisory-pte-ltd-4479942967",
+      "jobId": "4479942967",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:31:08.683739+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQEjzg8-606Euw/company-logo_100_100/B56Zgv3uCVH0AU-/0/1753149792851/finexis_advisory_pte_ltd_logo?e=2147483647&v=beta&t=7sKyeXHCPTAczoDOmbPYCFXUsrVWFqAq3m9a3zNDErs",
+        "companyUrl": "https://sg.linkedin.com/company/finexis-advisory-pte-ltd",
+        "employerName": "finexis advisory Pte Ltd",
+        "imageKind": "company",
+        "sourceJobId": "4479942967",
+        "observedAt": "2026-10-20T03:31:08.683739+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4463244519",
+      "jobId": "4463244519",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:31:14.680749+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHHBYCfhQ_wVg/company-logo_100_100/company-logo_100_100/0/1724897131664/chandler_macleod_logo?e=2147483647&v=beta&t=gfBZDYhWdM378WbT1kTZQimI38h0ekV09hD9d0st0R0",
+        "companyUrl": "https://au.linkedin.com/company/chandler-macleod",
+        "employerName": "Chandler Macleod",
+        "imageKind": "company",
+        "sourceJobId": "4463244519",
+        "observedAt": "2026-10-20T03:31:14.680749+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-data-platform-engineer-at-hudson-singapore-4478237875",
+      "jobId": "4478237875",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:31:21.076298+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFgGj8wHD-pZA/company-logo_100_100/company-logo_100_100/0/1703032707386?e=2147483647&v=beta&t=UAWW19ynspTlhFWDw8kU1pYEnb_ZiSozfkdh2GbNgZI",
+        "companyUrl": "https://sg.linkedin.com/company/hudson-singapore",
+        "employerName": "Hudson Singapore",
+        "imageKind": "company",
+        "sourceJobId": "4478237875",
+        "observedAt": "2026-10-20T03:31:21.076298+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464619129",
+      "jobId": "4464619129",
+      "location": "HK",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:31:26.194897+00:00"
+    },
+    {
+      "sourceJobId": "li-senior-associate-program-management-at-asia-gulf-cloud-4479947758",
+      "jobId": "4479947758",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:31:32.731705+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQGRYrD0Wq6pGw/company-logo_100_100/B56ZyZbjKvHgAQ-/0/1772100663179/asia_gulf_cloud_pte_ltd_logo?e=2147483647&v=beta&t=Upq91_UpE2HWWeoMIv3DUcmku974SngpkjDuYwRYGvU",
+        "companyUrl": "https://www.linkedin.com/company/asia-gulf-cloud-pte-ltd",
+        "employerName": "Asia Gulf Cloud",
+        "imageKind": "company",
+        "sourceJobId": "4479947758",
+        "observedAt": "2026-10-20T03:31:32.731705+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4462523513",
+      "jobId": "4462523513",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:31:38.806167+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFaaxR_cMfS1w/company-logo_100_100/B56Z0ZnDTQKsAQ-/0/1774251163519/gtjai_logo?e=2147483647&v=beta&t=XYCazs25XqX2U6Xkce1kyLNFB9jg8eLnQW9KPLRfOeY",
+        "companyUrl": "https://hk.linkedin.com/company/gtjai",
+        "employerName": "国泰君安国际 Guotai Junan International",
+        "imageKind": "company",
+        "sourceJobId": "4462523513",
+        "observedAt": "2026-10-20T03:31:38.806167+00:00"
+      },
+      "datePosted": "2026-09-08",
       "dateSource": "linkedin-cached-card"
     },
     {
-      "sourceJobId": "li-systems-development-manager-avp-post-trade-systems-itd-at-hong-kong-exchanges-and-clearing-limited-hkex-4478524130",
-      "jobId": "4478524130",
-      "location": "CN",
+      "sourceJobId": "li-senior-consultant-associate-manager%E2%80%93data-loss-prevention-strategy-planner-pmo-banking-jp-speaking-kv-at-pasona-singapore-pte-ltd-4479950583",
+      "jobId": "4479950583",
+      "location": "SG",
       "result": "open",
-      "checkedAt": "2026-10-19T15:42:14.807779+00:00",
+      "checkedAt": "2026-10-20T03:31:44.699363+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQH3ic8Kk2q4dA/company-logo_100_100/company-logo_100_100/0/1630664905232/pasona_singapore_pte_ltd_logo?e=2147483647&v=beta&t=89ux85k8ONoj7SoKDJPdaPdpQcF_eaPrYvZDqXZdnAg",
+        "companyUrl": "https://sg.linkedin.com/company/pasona-singapore",
+        "employerName": "Pasona Singapore Pte. Ltd.",
+        "imageKind": "company",
+        "sourceJobId": "4479950583",
+        "observedAt": "2026-10-20T03:31:44.699363+00:00"
+      },
+      "datePosted": "2026-10-19",
+      "dateSource": "linkedin-detail-relative-day"
+    },
+    {
+      "sourceJobId": "li-4463265196",
+      "jobId": "4463265196",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:31:50.889857+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4D0BAQGGOlc99uMeJw/company-logo_100_100/company-logo_100_100/0/1715588700846?e=2147483647&v=beta&t=SfuPLQcIVB8jqBniBCsM2v494GhnIosnNxPn74lx-nc",
+        "companyUrl": "https://hk.linkedin.com/company/fortishill-consulting",
+        "employerName": "FortisHill Consulting",
+        "imageKind": "company",
+        "sourceJobId": "4463265196",
+        "observedAt": "2026-10-20T03:31:50.889857+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-regional-client-services-specialist-at-lockton-4480938147",
+      "jobId": "4480938147",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:31:56.696273+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHxiL8YIPFBTg/company-logo_100_100/B4EZ62qpG8JsAI-/0/1781181092543/lockton_companies_logo?e=2147483647&v=beta&t=0_2JKQbih2tqOflJTfyDgAz7reZKhqJxJQKeXnA26Io",
+        "companyUrl": "https://www.linkedin.com/company/lockton-companies",
+        "employerName": "Lockton",
+        "imageKind": "company",
+        "sourceJobId": "4480938147",
+        "observedAt": "2026-10-20T03:31:56.696273+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-operations-specialist-syndicate-support-at-cicc-4463271225",
+      "jobId": "4463271225",
+      "location": "HK",
+      "result": "unknown",
+      "checkedAt": "2026-10-20T03:32:02.137451+00:00"
+    },
+    {
+      "sourceJobId": "li-fund-accountant-maritime-and-investment-business-at-caliber8-recruitment-4478826874",
+      "jobId": "4478826874",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:32:32.763782+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQF5ngMtL7z57A/company-logo_100_100/B56ZbPVMn.H0AY-/0/1747235163127/caliber8_pte_ltd_logo?e=2147483647&v=beta&t=IPIGry8XlQ6jqZ84uecRLSDrcoMVRjjkNIdfSVqqCUs",
+        "companyUrl": "https://sg.linkedin.com/company/caliber8-pte-ltd",
+        "employerName": "Caliber8 Recruitment",
+        "imageKind": "company",
+        "sourceJobId": "4478826874",
+        "observedAt": "2026-10-20T03:32:32.763782+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464468907",
+      "jobId": "4464468907",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:32:38.719969+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D560BAQF88DClMNCucQ/company-logo_100_100/B56aDBlDOZG0AI-/0/1789954110601/hkex_logo?e=2147483647&v=beta&t=PBuOUdxuF07fZnkTtupxj2rOIyHKVwVS_c--44CAotE",
         "companyUrl": "https://hk.linkedin.com/company/hkex",
         "employerName": "Hong Kong Exchanges and Clearing Limited (HKEX)",
         "imageKind": "company",
-        "sourceJobId": "4478524130",
-        "observedAt": "2026-10-19T15:42:14.807779+00:00"
-      },
-      "datePosted": "2026-10-12",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-avp-fund-administration-professional-at-china-construction-bank-asia-4472837988",
-      "jobId": "4472837988",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:42:20.800119+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHLx7qHz_AILg/company-logo_100_100/B56Zr7zBfpHYAQ-/0/1765161048485/china_construction_bank_asia_corporation_ltd__logo?e=2147483647&v=beta&t=rWMT7rsIRFz4smtVPxNkNF508Dj5eRcYgfKPVOGzwF0",
-        "companyUrl": "https://hk.linkedin.com/company/china-construction-bank-asia-corporation-ltd-",
-        "employerName": "China Construction Bank (Asia)",
-        "imageKind": "company",
-        "sourceJobId": "4472837988",
-        "observedAt": "2026-10-19T15:42:20.800119+00:00"
-      },
-      "datePosted": "2026-10-14",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-investment-performance-analysis-associate-1-at-state-street-4479281097",
-      "jobId": "4479281097",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:42:26.788184+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2I4b6RVexFg/company-logo_100_100/company-logo_100_100/0/1695040265658/state_street_logo?e=2147483647&v=beta&t=Ub0oPMS_tj_W9kGjLa872fLM4oluGO4xV84-AjisJbo",
-        "companyUrl": "https://www.linkedin.com/company/state-street",
-        "employerName": "State Street",
-        "imageKind": "company",
-        "sourceJobId": "4479281097",
-        "observedAt": "2026-10-19T15:42:26.788184+00:00"
-      },
-      "datePosted": "2026-10-14",
-      "dateSource": "linkedin-cached-card"
-    },
-    {
-      "sourceJobId": "li-prestige-relationship-assistant-at-hang-seng-bank-4478770136",
-      "jobId": "4478770136",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:42:32.750562+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
-        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
-        "employerName": "Hang Seng Bank",
-        "imageKind": "company",
-        "sourceJobId": "4478770136",
-        "observedAt": "2026-10-19T15:42:32.750562+00:00"
+        "sourceJobId": "4464468907",
+        "observedAt": "2026-10-20T03:32:38.719969+00:00"
       }
     },
     {
-      "sourceJobId": "li-legal-counsel-secondary-markets-at-cicc-4477978296",
-      "jobId": "4477978296",
-      "location": "CN",
+      "sourceJobId": "li-head-of-investor-relations-portfolio-company-at-granite-asia-4479941909",
+      "jobId": "4479941909",
+      "location": "SG",
       "result": "open",
-      "checkedAt": "2026-10-19T15:42:38.776134+00:00",
+      "checkedAt": "2026-10-20T03:32:44.833310+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQHH5O2UKuCgWg/company-logo_100_100/company-logo_100_100/0/1711734524626/ggv_asia_logo?e=2147483647&v=beta&t=aGotOWjwrXmbwhx8dAaZzm_1on5t9-0OQr_UrXB3X1g",
+        "companyUrl": "https://sg.linkedin.com/company/granite-asia",
+        "employerName": "Granite Asia",
+        "imageKind": "company",
+        "sourceJobId": "4479941909",
+        "observedAt": "2026-10-20T03:32:44.833310+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-principal-client-solutions-at-hamilton-lane-4463287961",
+      "jobId": "4463287961",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:32:50.828782+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHYeV6ikiY3Pw/company-logo_100_100/B4EZfv3FqnG4AU-/0/1752075886053/hamilton_lane_logo?e=2147483647&v=beta&t=9F4Xj2NxfY6eBdpI_YreSjQnnKjDJgTLuu6G1zyDfsU",
+        "companyUrl": "https://www.linkedin.com/company/hamilton-lane",
+        "employerName": "Hamilton Lane",
+        "imageKind": "company",
+        "sourceJobId": "4463287961",
+        "observedAt": "2026-10-20T03:32:50.828782+00:00"
+      },
+      "datePosted": "2026-09-29",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-senior-fund-accounting-manager-at-linnovate-partners-4479945806",
+      "jobId": "4479945806",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:32:56.764543+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQGSkr-7_ul4Fg/company-logo_100_100/B56Zv5EFqwHcAQ-/0/1769410157717/linnovate_partners_logo?e=2147483647&v=beta&t=aophGXqv6yXxhX4yFcuOY1ZL5sZCNGBMeE8e8iK-QVg",
+        "companyUrl": "https://sg.linkedin.com/company/linnovate-partners",
+        "employerName": "Linnovate Partners",
+        "imageKind": "company",
+        "sourceJobId": "4479945806",
+        "observedAt": "2026-10-20T03:32:56.764543+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464467627",
+      "jobId": "4464467627",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:02.813190+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQETReujByGYaw/company-logo_100_100/B4EZfKYuQyGwAQ-/0/1751447168431/hays_logo?e=2147483647&v=beta&t=jn8kLrMaqs_JUIpLEsqWvkjYdwTJh6D5WqGehB9VMfA",
+        "companyUrl": "https://uk.linkedin.com/company/hays",
+        "employerName": "Hays",
+        "imageKind": "company",
+        "sourceJobId": "4464467627",
+        "observedAt": "2026-10-20T03:33:02.813190+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-consultant-associate-at-finexis-advisory-pte-ltd-4479952519",
+      "jobId": "4479952519",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:08.787192+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQEjzg8-606Euw/company-logo_100_100/B56Zgv3uCVH0AU-/0/1753149792851/finexis_advisory_pte_ltd_logo?e=2147483647&v=beta&t=7sKyeXHCPTAczoDOmbPYCFXUsrVWFqAq3m9a3zNDErs",
+        "companyUrl": "https://sg.linkedin.com/company/finexis-advisory-pte-ltd",
+        "employerName": "finexis advisory Pte Ltd",
+        "imageKind": "company",
+        "sourceJobId": "4479952519",
+        "observedAt": "2026-10-20T03:33:08.787192+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4462958783",
+      "jobId": "4462958783",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:14.876630+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQG70WGoC6btBA/company-logo_100_100/company-logo_100_100/0/1631313780289?e=2147483647&v=beta&t=7zAWrgpGMHgk3lXybF63xfY25WpxtZ_ODhDGhOhMkoI",
+        "companyUrl": "https://cn.linkedin.com/company/icbc_2",
+        "employerName": "Industrial and Commercial Bank of China",
+        "imageKind": "company",
+        "sourceJobId": "4462958783",
+        "observedAt": "2026-10-20T03:33:14.876630+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4456858680",
+      "jobId": "4456858680",
+      "location": "SG",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:33:20.279282+00:00"
+    },
+    {
+      "sourceJobId": "li-4463264167",
+      "jobId": "4463264167",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:26.812306+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGLj1PBXo4f0A/company-logo_100_100/company-logo_100_100/0/1733940173580/gravitas_recruitment_group_global_logo?e=2147483647&v=beta&t=9Vhcn8i-UHl7YU7Dm2VAHTDSuoyU5dSD0rhrCR5sqwA",
+        "companyUrl": "https://uk.linkedin.com/company/gravitas-recruitment-group-global",
+        "employerName": "Gravitas Recruitment Group (Global) Ltd",
+        "imageKind": "company",
+        "sourceJobId": "4463264167",
+        "observedAt": "2026-10-20T03:33:26.812306+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-customer-accounts-manager-at-axway-4413755157",
+      "jobId": "4413755157",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:33:32.863532+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQEmEzGhFICIDw/company-logo_100_100/company-logo_100_100/0/1630553964501/axway_logo?e=2147483647&v=beta&t=xBzYUTmPEgadB8cRk8pnRNtyqFexUh3PjyoahvuBttI",
+        "companyUrl": "https://www.linkedin.com/company/axway",
+        "employerName": "Axway",
+        "imageKind": "company",
+        "sourceJobId": "4413755157",
+        "observedAt": "2026-10-20T03:33:32.863532+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-market-data-engineer-at-millennium-4463270354",
+      "jobId": "4463270354",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:33:38.823210+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQERyyseYCjemg/company-logo_100_100/B4EZ348VzUHUAI-/0/1777998060987/millennium_partners_logo?e=2147483647&v=beta&t=a7jZRcg4a0ySlvT1AMzA6REJFxqMbHhxABa0zhMqrb8",
+        "companyUrl": "https://www.linkedin.com/company/millennium-partners",
+        "employerName": "Millennium",
+        "imageKind": "company",
+        "sourceJobId": "4463270354",
+        "observedAt": "2026-10-20T03:33:38.823210+00:00"
+      },
+      "datePosted": "2026-09-29",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-4458087288",
+      "jobId": "4458087288",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:44.769372+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE7RbRrfGqcsQ/company-logo_100_100/B56ZfDmoa3HEAQ-/0/1751333374682/nomura_logo?e=2147483647&v=beta&t=XJg-KF3ZAYuS_isfAtUINhSwLSQ1mxfT2Sp7e7oOmyY",
+        "companyUrl": "https://jp.linkedin.com/company/nomura",
+        "employerName": "Nomura",
+        "imageKind": "company",
+        "sourceJobId": "4458087288",
+        "observedAt": "2026-10-20T03:33:44.769372+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4463271061",
+      "jobId": "4463271061",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:50.842197+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHcxMPC_Sa9Wg/company-logo_100_100/company-logo_100_100/0/1720447772398/manpowergroup_logo?e=2147483647&v=beta&t=yIkpXPEBh04IXK4FflmjESRkd2cvhSU3SLBSATr9IR0",
+        "companyUrl": "https://www.linkedin.com/company/manpowergroup",
+        "employerName": "ManpowerGroup",
+        "imageKind": "company",
+        "sourceJobId": "4463271061",
+        "observedAt": "2026-10-20T03:33:50.842197+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4458746238",
+      "jobId": "4458746238",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:33:56.829048+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQGvUd4bJu-80g/company-logo_100_100/company-logo_100_100/0/1662708633659/cap_consulting_group_pte_ltd_logo?e=2147483647&v=beta&t=PtaQceG4-vdWSTSFuSTg5G9BFr7ZWy7NAK-UEy8Hk7I",
+        "companyUrl": "https://sg.linkedin.com/company/cap-consulting-group-pte-ltd",
+        "employerName": "The CAP Consulting Group Pte Ltd",
+        "imageKind": "company",
+        "sourceJobId": "4458746238",
+        "observedAt": "2026-10-20T03:33:56.829048+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-assistant-vice-president-treasury-risk-management-at-china-citic-bank-international-limited-4463234228",
+      "jobId": "4463234228",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:34:02.781114+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE8l70lHscypA/company-logo_100_100/B56Zr8xoWzH8AQ-/0/1765177460793/china_citic_bank_international_limited_logo?e=2147483647&v=beta&t=_e6nZ6PJsy_s8vdKxb8d9U80CTxuXB_XQLCO_V7ms8I",
+        "companyUrl": "https://hk.linkedin.com/company/china-citic-bank-international-limited",
+        "employerName": "China CITIC Bank International Limited",
+        "imageKind": "company",
+        "sourceJobId": "4463234228",
+        "observedAt": "2026-10-20T03:34:02.781114+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4458962377",
+      "jobId": "4458962377",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:34:08.801549+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQF4mztGcjV-Eg/company-logo_100_100/B56ZiYAovWHcAU-/0/1754896960872?e=2147483647&v=beta&t=SPQSFpcyDLP0eeE3gUrcu5VLZozOxjygQ97Knwu8r74",
+        "companyUrl": "https://hk.linkedin.com/company/peoplebank-asia",
+        "employerName": "Peoplebank Asia",
+        "imageKind": "company",
+        "sourceJobId": "4458962377",
+        "observedAt": "2026-10-20T03:34:08.801549+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-credit-risk-wealth-management-at-cicc-4462991900",
+      "jobId": "4462991900",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:34:14.902978+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/C560BAQHEsNNMLYnU8g/company-logo_100_100/company-logo_100_100/0/1631348652858?e=2147483647&v=beta&t=KoPSciLo0fF9kxOxxhFasksl4DIs_pz9uDMKD0kHwRM",
         "companyUrl": "https://cn.linkedin.com/company/cicc",
         "employerName": "CICC",
         "imageKind": "company",
-        "sourceJobId": "4477978296",
-        "observedAt": "2026-10-19T15:42:38.776134+00:00"
-      }
-    },
-    {
-      "sourceJobId": "li-senior-associate-institutional-nfr-china-at-anz-4456494479",
-      "jobId": "4456494479",
-      "location": "CN",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:42:44.870660+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQEECWx-aseqAw/company-logo_100_100/company-logo_100_100/0/1713248286913/anz_logo?e=2147483647&v=beta&t=BL-QA6LXGwAWjI7lhLLRlJwiVAeWXZHBorOIt4WYUWI",
-        "companyUrl": "https://au.linkedin.com/company/anz",
-        "employerName": "ANZ",
-        "imageKind": "company",
-        "sourceJobId": "4456494479",
-        "observedAt": "2026-10-19T15:42:44.870660+00:00"
+        "sourceJobId": "4462991900",
+        "observedAt": "2026-10-20T03:34:14.902978+00:00"
       },
-      "datePosted": "2026-10-14",
+      "datePosted": "2026-10-05",
       "dateSource": "linkedin-cached-card"
     },
     {
-      "sourceJobId": "li-business-management-director-private-banking-at-michael-page-4474768539",
-      "jobId": "4474768539",
-      "location": "HK",
-      "result": "gone",
-      "checkedAt": "2026-10-19T15:42:50.379029+00:00"
+      "sourceJobId": "li-4460326352",
+      "jobId": "4460326352",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:34:20.838753+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQETReujByGYaw/company-logo_100_100/B4EZfKYuQyGwAQ-/0/1751447168431/hays_logo?e=2147483647&v=beta&t=jn8kLrMaqs_JUIpLEsqWvkjYdwTJh6D5WqGehB9VMfA",
+        "companyUrl": "https://uk.linkedin.com/company/hays",
+        "employerName": "Hays",
+        "imageKind": "company",
+        "sourceJobId": "4460326352",
+        "observedAt": "2026-10-20T03:34:20.838753+00:00"
+      }
     },
     {
-      "sourceJobId": "li-sso-idm-production-l2-engineer-at-argyll-scott-4480939736",
-      "jobId": "4480939736",
+      "sourceJobId": "li-4463245198",
+      "jobId": "4463245198",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:34:26.899170+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGLj1PBXo4f0A/company-logo_100_100/company-logo_100_100/0/1733940173580/gravitas_recruitment_group_global_logo?e=2147483647&v=beta&t=9Vhcn8i-UHl7YU7Dm2VAHTDSuoyU5dSD0rhrCR5sqwA",
+        "companyUrl": "https://uk.linkedin.com/company/gravitas-recruitment-group-global",
+        "employerName": "Gravitas Recruitment Group (Global) Ltd",
+        "imageKind": "company",
+        "sourceJobId": "4463245198",
+        "observedAt": "2026-10-20T03:34:26.899170+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4460318380",
+      "jobId": "4460318380",
       "location": "SG",
       "result": "open",
-      "checkedAt": "2026-10-19T15:42:56.762050+00:00",
+      "checkedAt": "2026-10-20T03:34:32.846427+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQF7PXCksUv79A/company-logo_100_100/company-logo_100_100/0/1688219357695/mizuho_logo?e=2147483647&v=beta&t=fsv4hkloS6IJkLt83p_wQikl7ICvK7U4e2TRNS9c26g",
+        "companyUrl": "https://jp.linkedin.com/company/mizuho",
+        "employerName": "Mizuho",
+        "imageKind": "company",
+        "sourceJobId": "4460318380",
+        "observedAt": "2026-10-20T03:34:32.846427+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464483229",
+      "jobId": "4464483229",
+      "location": "HK",
+      "result": "unknown",
+      "checkedAt": "2026-10-20T03:34:38.220639+00:00"
+    },
+    {
+      "sourceJobId": "li-fund-accounting-vice-president-private-credit-at-the-citco-group-limited-4458401161",
+      "jobId": "4458401161",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:35:09.753840+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFzs5UNdXZhIA/company-logo_100_100/B4EaAkgY2eIkAI-/0/1787318865603/citco_group_limited_logo?e=2147483647&v=beta&t=nHbRHxYRp1rccEG-HfpE3jYvwVYbItbY_LoJdr2UzbY",
+        "companyUrl": "https://ky.linkedin.com/company/citco-group-limited",
+        "employerName": "The Citco Group Limited",
+        "imageKind": "company",
+        "sourceJobId": "4458401161",
+        "observedAt": "2026-10-20T03:35:09.753840+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4463242486",
+      "jobId": "4463242486",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:35:15.829974+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQFSMoSq5leANA/company-logo_100_100/company-logo_100_100/0/1677731779145/captar_partners_logo?e=2147483647&v=beta&t=59ydsDzXS2_blc59OHhLz69ACi3hiedO3VQBr1oaymc",
+        "companyUrl": "https://hk.linkedin.com/company/captar-partners",
+        "employerName": "Captar Partners",
+        "imageKind": "company",
+        "sourceJobId": "4463242486",
+        "observedAt": "2026-10-20T03:35:15.829974+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-financial-crime-compliance-officer-qa-and-testing-at-julius-baer-4441622169",
+      "jobId": "4441622169",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:35:21.875936+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHB87NKuiKYWg/company-logo_100_100/company-logo_100_100/0/1719989312633/julius_baer_logo?e=2147483647&v=beta&t=ahR8EW-kPOXL12T8vb0g7wS_g1TPS1b6RtqjYxsAiNM",
+        "companyUrl": "https://ch.linkedin.com/company/julius-baer",
+        "employerName": "Julius Baer",
+        "imageKind": "company",
+        "sourceJobId": "4441622169",
+        "observedAt": "2026-10-20T03:35:21.875936+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464475047",
+      "jobId": "4464475047",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:35:27.751679+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQE9h0_X6jDRPA/company-logo_100_100/B4EZy0YCMYGkAU-/0/1772552725699/ss_c_technologies_logo?e=2147483647&v=beta&t=fFplVSOghA0PyP92jj-aAmugX74jE79O6wpvpw3QIwY",
+        "companyUrl": "https://www.linkedin.com/company/ss-c-technologies",
+        "employerName": "SS&C Technologies",
+        "imageKind": "company",
+        "sourceJobId": "4464475047",
+        "observedAt": "2026-10-20T03:35:27.751679+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-specialist-client-coverage-asset-servicing-at-bny-4460337693",
+      "jobId": "4460337693",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:35:33.815625+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQE72gHn5DlpMw/company-logo_100_100/company-logo_100_100/0/1719256014898/bny_mellon_logo?e=2147483647&v=beta&t=PnwSjZO6h_PzXADc2uZm6wKVN90Qzv9xCGJsKPo4iz4",
+        "companyUrl": "https://www.linkedin.com/company/bnyglobal",
+        "employerName": "BNY",
+        "imageKind": "company",
+        "sourceJobId": "4460337693",
+        "observedAt": "2026-10-20T03:35:33.815625+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4462275852",
+      "jobId": "4462275852",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:35:40.026463+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE7RbRrfGqcsQ/company-logo_100_100/B56ZfDmoa3HEAQ-/0/1751333374682/nomura_logo?e=2147483647&v=beta&t=XJg-KF3ZAYuS_isfAtUINhSwLSQ1mxfT2Sp7e7oOmyY",
+        "companyUrl": "https://jp.linkedin.com/company/nomura",
+        "employerName": "Nomura",
+        "imageKind": "company",
+        "sourceJobId": "4462275852",
+        "observedAt": "2026-10-20T03:35:40.026463+00:00"
+      },
+      "datePosted": "2026-09-08",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-4458962509",
+      "jobId": "4458962509",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:35:45.832998+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQGyTLr4K-2jKw/company-logo_100_100/company-logo_100_100/0/1631351134984?e=2147483647&v=beta&t=C7c3r6JrmIVi_u0k3nUsJJI_D-DvWv9HrmjELRYlOwc",
+        "companyUrl": "https://de.linkedin.com/company/deutscheboersegroup",
+        "employerName": "Deutsche Börse Group",
+        "imageKind": "company",
+        "sourceJobId": "4458962509",
+        "observedAt": "2026-10-20T03:35:45.832998+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464430419",
+      "jobId": "4464430419",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:35:51.740118+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE7RbRrfGqcsQ/company-logo_100_100/B56ZfDmoa3HEAQ-/0/1751333374682/nomura_logo?e=2147483647&v=beta&t=XJg-KF3ZAYuS_isfAtUINhSwLSQ1mxfT2Sp7e7oOmyY",
+        "companyUrl": "https://jp.linkedin.com/company/nomura",
+        "employerName": "Nomura",
+        "imageKind": "company",
+        "sourceJobId": "4464430419",
+        "observedAt": "2026-10-20T03:35:51.740118+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4460330084",
+      "jobId": "4460330084",
+      "location": "SG",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:35:57.728167+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHB87NKuiKYWg/company-logo_100_100/company-logo_100_100/0/1719989312633/julius_baer_logo?e=2147483647&v=beta&t=ahR8EW-kPOXL12T8vb0g7wS_g1TPS1b6RtqjYxsAiNM",
+        "companyUrl": "https://ch.linkedin.com/company/julius-baer",
+        "employerName": "Julius Baer",
+        "imageKind": "company",
+        "sourceJobId": "4460330084",
+        "observedAt": "2026-10-20T03:35:57.728167+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4463253012",
+      "jobId": "4463253012",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:36:03.846340+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQGSsPGTTHN26Q/company-logo_100_100/B56ZTyzqq_GoAU-/0/1739240419069/links_recruitment_limited_logo?e=2147483647&v=beta&t=-HCOEtBoJ9Ch6z0TjyDn3FCXujpJHlFdqovnuUQBT5M",
+        "companyUrl": "https://hk.linkedin.com/company/links-recruitment-limited",
+        "employerName": "Links International",
+        "imageKind": "company",
+        "sourceJobId": "4463253012",
+        "observedAt": "2026-10-20T03:36:03.846340+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4460347539",
+      "jobId": "4460347539",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:36:09.871534+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQEyC1DyrmO5yA/company-logo_100_100/company-logo_100_100/0/1688117556427/mufg_logo?e=2147483647&v=beta&t=C-a3FJjn0IAnxtcloT1BTAV__Je45pcbBUDGhD9vi3I",
+        "companyUrl": "https://jp.linkedin.com/company/mufg",
+        "employerName": "MUFG",
+        "imageKind": "company",
+        "sourceJobId": "4460347539",
+        "observedAt": "2026-10-20T03:36:09.871534+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-vice-president-private-side-loan-distribution-at-mufg-4464447644",
+      "jobId": "4464447644",
+      "location": "HK",
+      "result": "not_accepting",
+      "checkedAt": "2026-10-20T03:36:15.788569+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQEyC1DyrmO5yA/company-logo_100_100/company-logo_100_100/0/1688117556427/mufg_logo?e=2147483647&v=beta&t=C-a3FJjn0IAnxtcloT1BTAV__Je45pcbBUDGhD9vi3I",
+        "companyUrl": "https://jp.linkedin.com/company/mufg",
+        "employerName": "MUFG",
+        "imageKind": "company",
+        "sourceJobId": "4464447644",
+        "observedAt": "2026-10-20T03:36:15.788569+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-sr-investor-relations-administrator-at-the-citco-group-limited-4458087239",
+      "jobId": "4458087239",
+      "location": "SG",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:36:21.848648+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFzs5UNdXZhIA/company-logo_100_100/B4EaAkgY2eIkAI-/0/1787318865603/citco_group_limited_logo?e=2147483647&v=beta&t=nHbRHxYRp1rccEG-HfpE3jYvwVYbItbY_LoJdr2UzbY",
+        "companyUrl": "https://ky.linkedin.com/company/citco-group-limited",
+        "employerName": "The Citco Group Limited",
+        "imageKind": "company",
+        "sourceJobId": "4458087239",
+        "observedAt": "2026-10-20T03:36:21.848648+00:00"
+      },
+      "datePosted": "2026-10-12",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-4463232489",
+      "jobId": "4463232489",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:36:27.805606+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFO6A-lPwd2Lw/company-logo_100_100/B56Z0JUQr4JkAQ-/0/1773977800292?e=2147483647&v=beta&t=pyimzZCHsSUrrFWt9lcOEj83o-MyWONGWyh2ylBrAzA",
+        "companyUrl": "https://hk.linkedin.com/company/pinesearch",
+        "employerName": "PineSearch Consulting",
+        "imageKind": "company",
+        "sourceJobId": "4463232489",
+        "observedAt": "2026-10-20T03:36:27.805606+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-senior-manager-corporate-services-at-apex-group-ltd-4439204701",
+      "jobId": "4439204701",
+      "location": "SG",
+      "result": "unknown",
+      "checkedAt": "2026-10-20T03:36:33.234627+00:00"
+    },
+    {
+      "sourceJobId": "li-korean-speaking-institutional-sales-associate-vice-president-global-alternative-investment-manager-at-wilson-4463247773",
+      "jobId": "4463247773",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:05.155082+00:00"
+    },
+    {
+      "sourceJobId": "li-4460327054",
+      "jobId": "4460327054",
+      "location": "SG",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:37:10.453864+00:00"
+    },
+    {
+      "sourceJobId": "li-4464439879",
+      "jobId": "4464439879",
+      "location": "HK",
+      "result": "open",
+      "checkedAt": "2026-10-20T03:37:16.923935+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
+        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
+        "employerName": "Hang Seng Bank",
+        "imageKind": "company",
+        "sourceJobId": "4464439879",
+        "observedAt": "2026-10-20T03:37:16.923935+00:00"
+      },
+      "datePosted": "2026-09-29",
+      "dateSource": "linkedin-cached-card"
+    },
+    {
+      "sourceJobId": "li-4458923788",
+      "jobId": "4458923788",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:23.098260+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQG2FWQ1R084WA/company-logo_100_100/company-logo_100_100/0/1664346724636/red_beacon_asset_management_pte_ltd_logo?e=2147483647&v=beta&t=3nhvF8jDGNl-O_zGd4UvE_HWi3cdB6qjBxHvuh69-ig",
+        "companyUrl": "https://sg.linkedin.com/company/red-beacon-asset-management",
+        "employerName": "Red Beacon Asset Management Pte Ltd",
+        "imageKind": "company",
+        "sourceJobId": "4458923788",
+        "observedAt": "2026-10-20T03:37:23.098260+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4464454554",
+      "jobId": "4464454554",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:28.934073+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQFidXA6tXuuJg/company-logo_100_100/B56aBk3fz1G0AI-/0/1788398665242/hang_seng_bank_logo?e=2147483647&v=beta&t=iXDOrCVPNPzVX5ERSTHg_Z1ojFL2ZirdBx2oezt56gA",
+        "companyUrl": "https://hk.linkedin.com/company/hang-seng-bank",
+        "employerName": "Hang Seng Bank",
+        "imageKind": "company",
+        "sourceJobId": "4464454554",
+        "observedAt": "2026-10-20T03:37:28.934073+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-4458067089",
+      "jobId": "4458067089",
+      "location": "SG",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:34.877011+00:00",
+      "companyLogoSource": {
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQE7RbRrfGqcsQ/company-logo_100_100/B56ZfDmoa3HEAQ-/0/1751333374682/nomura_logo?e=2147483647&v=beta&t=XJg-KF3ZAYuS_isfAtUINhSwLSQ1mxfT2Sp7e7oOmyY",
+        "companyUrl": "https://jp.linkedin.com/company/nomura",
+        "employerName": "Nomura",
+        "imageKind": "company",
+        "sourceJobId": "4458067089",
+        "observedAt": "2026-10-20T03:37:34.877011+00:00"
+      }
+    },
+    {
+      "sourceJobId": "li-uat-tester-28k-12-month-contract-at-argyll-scott-4462948029",
+      "jobId": "4462948029",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:41.115262+00:00",
       "companyLogoSource": {
         "url": "https://media.licdn.com/dms/image/v2/D4E0BAQEveyvVe_z3Mg/company-logo_100_100/B4EaCPuZDHIwAI-/0/1789117698478/argyll_scott_logo?e=2147483647&v=beta&t=QpHQSw9XaBaI1FDHEU2wFStE6bn4xRZi15vMAQhwDAU",
         "companyUrl": "https://hk.linkedin.com/company/argyll-scott",
         "employerName": "Argyll Scott",
         "imageKind": "company",
-        "sourceJobId": "4480939736",
-        "observedAt": "2026-10-19T15:42:56.762050+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-finance-director-hedge-fund-150k-at-michael-page-4480949645",
-      "jobId": "4480949645",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:02.929408+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFyjMa9qVfGhg/company-logo_100_100/B4EZ994QccJIAI-/0/1784523327479/michael_page_logo?e=2147483647&v=beta&t=iKlhQNCtUy4M7WkAWZaLrsmC1xI5tqCi8LMuzvFuFKE",
-        "companyUrl": "https://uk.linkedin.com/company/michael-page",
-        "employerName": "Michael Page",
-        "imageKind": "company",
-        "sourceJobId": "4480949645",
-        "observedAt": "2026-10-19T15:43:02.929408+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-it-engineer-at-oneconnect-financial-technology-4479961875",
-      "jobId": "4479961875",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:08.809083+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQFE2feyPpLa7Q/company-logo_100_100/B56Zzk3cMeGgAQ-/0/1773366265927/oneconnectft_sg_logo?e=2147483647&v=beta&t=Tc1K1JRqNRvxjpFvUzD1VXqWMMeJFtRkZRnu_H08m5U",
-        "companyUrl": "https://sg.linkedin.com/company/oneconnectft-sg",
-        "employerName": "OneConnect Financial Technology",
-        "imageKind": "company",
-        "sourceJobId": "4479961875",
-        "observedAt": "2026-10-19T15:43:08.809083+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-devsecops-ai-hong-kong-at-intact-4432941577",
-      "jobId": "4432941577",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:14.859854+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGa4yoMnJYW2Q/company-logo_100_100/B4EZjS4GnEHEAQ-/0/1755884579607/intact_logo?e=2147483647&v=beta&t=Dsu3kdZULhIachqBup3vkkYgogRDMXLw7ZeaUssd8jw",
-        "companyUrl": "https://ca.linkedin.com/company/intact",
-        "employerName": "Intact",
-        "imageKind": "company",
-        "sourceJobId": "4432941577",
-        "observedAt": "2026-10-19T15:43:14.859854+00:00"
+        "sourceJobId": "4462948029",
+        "observedAt": "2026-10-20T03:37:41.115262+00:00"
       }
     },
     {
-      "sourceJobId": "li-principal-talent-sourcing-deutsche-bank-at-ams-4479972188",
-      "jobId": "4479972188",
+      "sourceJobId": "li-4458036665",
+      "jobId": "4458036665",
       "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:20.825133+00:00",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:47.104181+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQEt9KavhZePJQ/company-logo_100_100/B4EaBc1pe5G4AI-/0/1788263962798/weareams_logo?e=2147483647&v=beta&t=hv5S5Udvqsh5YoBcMwyCF1yobj33LW5ZCtVwIXuBdoc",
-        "companyUrl": "https://uk.linkedin.com/company/weareams",
-        "employerName": "AMS",
+        "url": "https://media.licdn.com/dms/image/v2/D560BAQET9Q4uTSx-sA/company-logo_100_100/company-logo_100_100/0/1688534197087/grit_search_logo?e=2147483647&v=beta&t=-2PyCngFLYInsPAC1ynbA3FkfGxY7xvVN04n-dOQA_k",
+        "companyUrl": "https://sg.linkedin.com/company/grit-search",
+        "employerName": "GRIT",
         "imageKind": "company",
-        "sourceJobId": "4479972188",
-        "observedAt": "2026-10-19T15:43:20.825133+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+        "sourceJobId": "4458036665",
+        "observedAt": "2026-10-20T03:37:47.104181+00:00"
+      }
     },
     {
-      "sourceJobId": "li-equity-research-manager-at-selby-jennings-4478388837",
-      "jobId": "4478388837",
+      "sourceJobId": "li-4463221028",
+      "jobId": "4463221028",
       "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:26.881544+00:00",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:37:53.005437+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFwmHv7O_XVNg/company-logo_100_100/B4EZfGC.oWG4AQ-/0/1751374359452/selby_jennings_logo?e=2147483647&v=beta&t=1M1QONPqqa-DR2740qOg7HjBYbhiH0M6YuwPi41US7M",
-        "companyUrl": "https://uk.linkedin.com/company/selby-jennings",
-        "employerName": "Selby Jennings",
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGLj1PBXo4f0A/company-logo_100_100/company-logo_100_100/0/1733940173580/gravitas_recruitment_group_global_logo?e=2147483647&v=beta&t=9Vhcn8i-UHl7YU7Dm2VAHTDSuoyU5dSD0rhrCR5sqwA",
+        "companyUrl": "https://uk.linkedin.com/company/gravitas-recruitment-group-global",
+        "employerName": "Gravitas Recruitment Group (Global) Ltd",
         "imageKind": "company",
-        "sourceJobId": "4478388837",
-        "observedAt": "2026-10-19T15:43:26.881544+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+        "sourceJobId": "4463221028",
+        "observedAt": "2026-10-20T03:37:53.005437+00:00"
+      }
     },
     {
-      "sourceJobId": "li-uat-test-analyst-bank-up-to-5-5k-at-adecco-4480941243",
-      "jobId": "4480941243",
+      "sourceJobId": "li-4458946338",
+      "jobId": "4458946338",
       "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:32.831726+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQG2e3VFh4rh2g/company-logo_100_100/B4EZ8dvRLDJUAQ-/0/1782910358620/adecco_logo?e=2147483647&v=beta&t=RK5Pz6B-aSYtwwsSGqBy2QALVl5tFCuBKXpSP3TO3T0",
-        "companyUrl": "https://ch.linkedin.com/company/adecco",
-        "employerName": "Adecco",
-        "imageKind": "company",
-        "sourceJobId": "4480941243",
-        "observedAt": "2026-10-19T15:43:32.831726+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+      "result": "unknown",
+      "checkedAt": "2026-10-20T03:37:58.389848+00:00"
     },
     {
-      "sourceJobId": "li-finance-associate-avp-private-equity-70k-big-4-ts-team-at-michael-page-4480959058",
-      "jobId": "4480959058",
-      "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:38.835791+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQFyjMa9qVfGhg/company-logo_100_100/B4EZ994QccJIAI-/0/1784523327479/michael_page_logo?e=2147483647&v=beta&t=iKlhQNCtUy4M7WkAWZaLrsmC1xI5tqCi8LMuzvFuFKE",
-        "companyUrl": "https://uk.linkedin.com/company/michael-page",
-        "employerName": "Michael Page",
-        "imageKind": "company",
-        "sourceJobId": "4480959058",
-        "observedAt": "2026-10-19T15:43:38.835791+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-executive-revenue-process-slot-settlement-1-year-contract-at-x-press-feeders-4470401259",
-      "jobId": "4470401259",
-      "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:43:44.742564+00:00",
-      "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C510BAQHznDxQfSKTog/company-logo_100_100/company-logo_100_100/0/1630563838971/x_press_feeders_logo?e=2147483647&v=beta&t=zd5XlzhEPfQH6fLXx9i3bbB6VEoqn37NFW_o8rmIbWI",
-        "companyUrl": "https://sg.linkedin.com/company/x-press-feeders",
-        "employerName": "X-Press Feeders",
-        "imageKind": "company",
-        "sourceJobId": "4470401259",
-        "observedAt": "2026-10-19T15:43:44.742564+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
-    },
-    {
-      "sourceJobId": "li-head-of-operations-director-at-alphatimes-4479958385",
-      "jobId": "4479958385",
+      "sourceJobId": "li-operations-specialist-otc-derivatives-%E2%80%93-middle-office-at-cicc-4462995843",
+      "jobId": "4462995843",
       "location": "HK",
       "result": "not_accepting",
-      "checkedAt": "2026-10-19T15:43:50.886401+00:00",
+      "checkedAt": "2026-10-20T03:38:29.575088+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQHMCdrIewjmIA/company-logo_100_100/B56aD70jWoGcAI-/0/1790931252877/alphatimes_technologies_inc_logo?e=2147483647&v=beta&t=1fQtQp-FXNcgmcM9RNFD9jXO2-15qdlKVUYgSB34zEo",
-        "companyUrl": "https://hk.linkedin.com/company/alphatimes-technologies-inc",
-        "employerName": "AlphaTimes",
+        "url": "https://media.licdn.com/dms/image/v2/C560BAQHEsNNMLYnU8g/company-logo_100_100/company-logo_100_100/0/1631348652858?e=2147483647&v=beta&t=KoPSciLo0fF9kxOxxhFasksl4DIs_pz9uDMKD0kHwRM",
+        "companyUrl": "https://cn.linkedin.com/company/cicc",
+        "employerName": "CICC",
         "imageKind": "company",
-        "sourceJobId": "4479958385",
-        "observedAt": "2026-10-19T15:43:50.886401+00:00"
+        "sourceJobId": "4462995843",
+        "observedAt": "2026-10-20T03:38:29.575088+00:00"
       }
     },
     {
-      "sourceJobId": "li-customer-service-executive-hnw-at-oliver-james-4479964508",
-      "jobId": "4479964508",
+      "sourceJobId": "li-execution-asia-night-desk-officer-at-julius-baer-4460189625",
+      "jobId": "4460189625",
       "location": "SG",
       "result": "open",
-      "checkedAt": "2026-10-19T15:43:56.796539+00:00",
+      "checkedAt": "2026-10-20T03:38:35.788647+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGCCxGmim03cw/company-logo_100_100/B4EZhQdVZ6HoAQ-/0/1753696524643/oliver_james__logo?e=2147483647&v=beta&t=wJvY0-pg9YhH7PrCCxDMdK-Buw3FIBpXfLQ7pvKoYtA",
-        "companyUrl": "https://uk.linkedin.com/company/oliver-james-",
-        "employerName": "Oliver James",
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHB87NKuiKYWg/company-logo_100_100/company-logo_100_100/0/1719989312633/julius_baer_logo?e=2147483647&v=beta&t=ahR8EW-kPOXL12T8vb0g7wS_g1TPS1b6RtqjYxsAiNM",
+        "companyUrl": "https://ch.linkedin.com/company/julius-baer",
+        "employerName": "Julius Baer",
         "imageKind": "company",
-        "sourceJobId": "4479964508",
-        "observedAt": "2026-10-19T15:43:56.796539+00:00"
+        "sourceJobId": "4460189625",
+        "observedAt": "2026-10-20T03:38:35.788647+00:00"
       },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+      "datePosted": "2026-10-09",
+      "dateSource": "linkedin-cached-card"
     },
     {
-      "sourceJobId": "li-receptionist-at-susquehanna-international-group-4470828569",
-      "jobId": "4470828569",
+      "sourceJobId": "li-4462910918",
+      "jobId": "4462910918",
       "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:44:02.754356+00:00",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:38:41.681082+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGRndfnf-vqyg/company-logo_100_100/company-logo_100_100/0/1725734450282/susquehanna_international_group_llp_sig_logo?e=2147483647&v=beta&t=LVCCWArMPxS7ER0QiXtwj5gXNYhppI7v5BwYltMvxPI",
-        "companyUrl": "https://www.linkedin.com/company/susquehanna-international-group",
-        "employerName": "Susquehanna International Group",
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGLj1PBXo4f0A/company-logo_100_100/company-logo_100_100/0/1733940173580/gravitas_recruitment_group_global_logo?e=2147483647&v=beta&t=9Vhcn8i-UHl7YU7Dm2VAHTDSuoyU5dSD0rhrCR5sqwA",
+        "companyUrl": "https://uk.linkedin.com/company/gravitas-recruitment-group-global",
+        "employerName": "Gravitas Recruitment Group (Global) Ltd",
         "imageKind": "company",
-        "sourceJobId": "4470828569",
-        "observedAt": "2026-10-19T15:44:02.754356+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+        "sourceJobId": "4462910918",
+        "observedAt": "2026-10-20T03:38:41.681082+00:00"
+      }
     },
     {
-      "sourceJobId": "li-data-analyst-at-six-4480940894",
-      "jobId": "4480940894",
+      "sourceJobId": "li-4447260867",
+      "jobId": "4447260867",
       "location": "SG",
       "result": "open",
-      "checkedAt": "2026-10-19T15:44:09.317931+00:00",
+      "checkedAt": "2026-10-20T03:38:47.675006+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQGVP6EZFa6twQ/company-logo_100_100/company-logo_100_100/0/1631372812997/sixgroup_logo?e=2147483647&v=beta&t=t_DJoaLU_2OTBouqpmCZB1O6F6yKcWj9zD4tGUUiHLg",
-        "companyUrl": "https://ch.linkedin.com/company/sixgroup",
-        "employerName": "SIX",
+        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQHAxoD4chKrgg/company-logo_100_100/B4EZfR2e4JHcAk-/0/1751572410148/visa_logo?e=2147483647&v=beta&t=mZYikLJ1nOM9RYXsRYavU2c7xuzCKWDqH8Q0UzAGrhw",
+        "companyUrl": "https://www.linkedin.com/company/visa",
+        "employerName": "Visa",
         "imageKind": "company",
-        "sourceJobId": "4480940894",
-        "observedAt": "2026-10-19T15:44:09.317931+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+        "sourceJobId": "4447260867",
+        "observedAt": "2026-10-20T03:38:47.675006+00:00"
+      }
     },
     {
-      "sourceJobId": "li-director-business-development-feeds-connectivity-at-ice-4480941390",
-      "jobId": "4480941390",
+      "sourceJobId": "li-4462953827",
+      "jobId": "4462953827",
       "location": "HK",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:44:14.914596+00:00",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:38:53.590835+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D4E0BAQGyUyYm01gbSQ/company-logo_100_100/B4EZgUeOPSGwAQ-/0/1752690124069/icemarkets_logo?e=2147483647&v=beta&t=Yxhm-AGh0m4kQ3G09FDg5xWVeqPLrrmla0j_f6Smd4w",
-        "companyUrl": "https://www.linkedin.com/company/icemarkets",
-        "employerName": "ICE",
+        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQG70WGoC6btBA/company-logo_100_100/company-logo_100_100/0/1631313780289?e=2147483647&v=beta&t=7zAWrgpGMHgk3lXybF63xfY25WpxtZ_ODhDGhOhMkoI",
+        "companyUrl": "https://cn.linkedin.com/company/icbc_2",
+        "employerName": "Industrial and Commercial Bank of China",
         "imageKind": "company",
-        "sourceJobId": "4480941390",
-        "observedAt": "2026-10-19T15:44:14.914596+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+        "sourceJobId": "4462953827",
+        "observedAt": "2026-10-20T03:38:53.590835+00:00"
+      }
     },
     {
-      "sourceJobId": "li-chief-financial-officer-cfo-%E2%80%93-commodity-trading-base-singapore-at-stavian-singapore-4479964918",
-      "jobId": "4479964918",
+      "sourceJobId": "li-4460181676",
+      "jobId": "4460181676",
       "location": "SG",
-      "result": "open",
-      "checkedAt": "2026-10-19T15:44:20.829373+00:00",
+      "result": "gone",
+      "checkedAt": "2026-10-20T03:38:59.155295+00:00"
+    },
+    {
+      "sourceJobId": "li-4462959770",
+      "jobId": "4462959770",
+      "location": "HK",
+      "result": "closed",
+      "checkedAt": "2026-10-20T03:39:05.638708+00:00",
       "companyLogoSource": {
-        "url": "https://media.licdn.com/dms/image/v2/D560BAQETIIEznOW3uw/company-logo_100_100/B56Zheu4glH0AU-/0/1753936005922?e=2147483647&v=beta&t=AMtCII1v8qIx1PoLY0S81IS5rjxZVT1vWPsH05D1z9o",
-        "companyUrl": "https://www.linkedin.com/company/stavian-singapore-pte-ltd",
-        "employerName": "Stavian Singapore",
+        "url": "https://media.licdn.com/dms/image/v2/C4D0BAQG70WGoC6btBA/company-logo_100_100/company-logo_100_100/0/1631313780289?e=2147483647&v=beta&t=7zAWrgpGMHgk3lXybF63xfY25WpxtZ_ODhDGhOhMkoI",
+        "companyUrl": "https://cn.linkedin.com/company/icbc_2",
+        "employerName": "Industrial and Commercial Bank of China",
         "imageKind": "company",
-        "sourceJobId": "4479964918",
-        "observedAt": "2026-10-19T15:44:20.829373+00:00"
-      },
-      "datePosted": "2026-10-19",
-      "dateSource": "linkedin-detail-relative-day"
+        "sourceJobId": "4462959770",
+        "observedAt": "2026-10-20T03:39:05.638708+00:00"
+      }
     }
   ],
   "stats": {
     "postingDateSearchRequests": 0,
     "postingDateNetworkDisabled": true,
     "selected": 150,
-    "probed": 145,
-    "postingDateCacheHits": 35,
-    "rateLimitedSkipped": 3,
+    "probed": 120,
+    "postingDateCacheHits": 12,
+    "rateLimitedSkipped": 6,
     "budgetExhausted": true,
-    "skippedBudget": 5,
-    "elapsedSeconds": 895.322,
-    "open": 139,
-    "closed": 0,
-    "not_accepting": 2,
-    "gone": 1,
-    "unknown": 3,
-    "postingDates": 54,
-    "postingDateSkippedNoEvidence": 85,
+    "skippedBudget": 30,
+    "elapsedSeconds": 897.616,
+    "open": 58,
+    "closed": 34,
+    "not_accepting": 13,
+    "gone": 8,
+    "unknown": 7,
+    "postingDates": 36,
+    "postingDateSkippedNoEvidence": 22,
     "regions": {
-      "CN": 129,
-      "HK": 8,
-      "SG": 8
+      "CN": 21,
+      "HK": 50,
+      "SG": 49
     },
     "circuitOpen": false,
     "selectorGuardTripped": false
