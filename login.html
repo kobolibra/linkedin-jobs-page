@@ -1,1 +1,37 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>登录 · LinkedIn 金融职位</title><link rel="stylesheet" href="/auth.css?v=accounts-1"></head><body class="auth-page" data-auth-page="login"><main class="auth-card"><p class="auth-eyebrow">FINANCE ROLES · CN / HK / SG</p><h1>你的下一站，<br>从这里开始。</h1><p class="auth-intro">汇集中国大陆、香港与新加坡的金融职位。<br>使用 Google 账号，继续探索。</p><div class="auth-providers" aria-label="选择登录方式"><a class="auth-provider" id="googleLogin" href="/auth/start/google" hidden><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.36Z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.62-2.41l-3.24-2.51c-.9.6-2.05.97-3.38.97-2.6 0-4.8-1.76-5.59-4.12H3.06v2.59A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.41 13.93a6 6 0 0 1 0-3.86V7.48H3.06a10 10 0 0 0 0 9.04l3.35-2.59Z"/><path fill="#EA4335" d="M12 5.95c1.47 0 2.79.5 3.83 1.49l2.87-2.88A9.64 9.64 0 0 0 12 2a10 10 0 0 0-8.94 5.48l3.35 2.59C7.2 7.71 9.4 5.95 12 5.95Z"/></svg>使用 Google 继续<span aria-hidden="true">↗</span></a></div><p class="auth-message" id="authMessage" role="status" aria-live="polite">正在加载登录方式…</p><button class="auth-retry" id="authRetry" type="button" hidden>重试</button><p class="auth-note">首次登录自动创建账号。<br>收藏、屏蔽与已读记录随账号同步。</p><a class="auth-privacy" href="/privacy">隐私说明</a></main><script src="/auth-login.js?v=accounts-1"></script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#eff0ef">
+  <title>登录 · LinkedIn 金融职位</title>
+  <link rel="stylesheet" href="/auth-login-design.css?v=experience-2">
+</head>
+<body class="auth-page" data-auth-page="login">
+  <a class="auth-skip" href="#signIn">跳到登录</a>
+  <header class="auth-header">
+    <a class="auth-brand" href="/" aria-label="LinkedIn 金融职位首页"><span class="auth-brand-mark" aria-hidden="true">L<span>·</span></span><span>LinkedIn <span class="auth-brand-cn">金融职位</span></span></a>
+    <span class="auth-header-note">CN / HK / SG</span>
+  </header>
+  <main class="auth-layout">
+    <section class="auth-story" aria-labelledby="authHeadline">
+      <p class="auth-eyebrow">FINANCE ROLES, IN FOCUS</p>
+      <h1 id="authHeadline">下一份机会，<br><span>从这里开始。</span></h1>
+      <p class="auth-story-copy">中国大陆、香港与新加坡的金融职位，<br class="auth-desktop-break">在一个专注的空间里，找到下一步。</p>
+      <div class="auth-markets" aria-label="覆盖地区"><span><i class="market-cn" aria-hidden="true"></i><b>CN</b>中国大陆</span><span><i class="market-hk" aria-hidden="true"></i><b>HK</b>香港</span><span><i class="market-sg" aria-hidden="true"></i><b>SG</b>新加坡</span></div>
+      <p class="auth-story-foot">发现机会。留住值得继续的那一个。</p>
+    </section>
+    <section class="auth-card" id="signIn" aria-labelledby="signInTitle" data-state="loading">
+      <div class="auth-card-heading"><span class="auth-section-number" aria-hidden="true">01 / YOUR SPACE</span><h2 id="signInTitle">欢迎来到你的职位空间</h2><p class="auth-intro" id="authIntro">登录与注册，一个入口。<br>首次使用 Google 登录，即可创建账号。</p></div>
+      <div class="auth-existing" id="authExisting" hidden><span class="auth-existing-dot" aria-hidden="true"></span><span id="authExistingName"></span></div>
+      <a class="auth-continue" id="continueBrowsing" href="/" hidden>继续浏览职位<span aria-hidden="true">→</span></a>
+      <div class="auth-providers"><a class="auth-provider" id="googleLogin" href="/auth/start/google" aria-disabled="true" aria-describedby="authMessage"><svg aria-hidden="true" viewBox="0 0 24 24"><path fill="#4285F4" d="M21.6 12.23c0-.71-.06-1.39-.18-2.05H12v3.88h5.38a4.6 4.6 0 0 1-2 3.02v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.36Z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.62-2.41l-3.24-2.51c-.9.6-2.05.97-3.38.97-2.6 0-4.8-1.76-5.59-4.12H3.06v2.59A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.41 13.93a6 6 0 0 1 0-3.86V7.48H3.06a10 10 0 0 0 0 9.04l3.35-2.59Z"/><path fill="#EA4335" d="M12 5.95c1.47 0 2.79.5 3.83 1.49l2.87-2.88A9.64 9.64 0 0 0 12 2a10 10 0 0 0-8.94 5.48l3.35 2.59C7.2 7.71 9.4 5.95 12 5.95Z"/></svg><span class="auth-provider-label">使用 Google 继续</span><span class="auth-provider-spinner" aria-hidden="true"></span></a></div>
+      <div class="auth-feedback"><p class="auth-message" id="authMessage" role="status" aria-live="polite" aria-atomic="true">正在准备安全登录…</p><button class="auth-retry" id="authRetry" type="button" hidden>重新尝试<span aria-hidden="true">↗</span></button></div>
+      <div class="auth-benefit"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 4h10v16l-5-3-5 3z" stroke-linejoin="round"/></svg><p>收藏、屏蔽与已读记录<br><span>随账号保存，在不同设备间接续。</span></p></div>
+      <p class="auth-note">无需另设密码。<a href="/privacy">了解账号与隐私</a></p>
+      <noscript><p class="auth-message">请启用 JavaScript 后登录，或<a href="/auth/start/google">直接使用 Google 登录</a>。</p></noscript>
+    </section>
+  </main>
+  <footer class="auth-footer"><span>LinkedIn 金融职位</span><span>一个账号，接续每一次探索。</span><a href="/privacy">隐私说明</a></footer>
+  <script src="/auth-login.js?v=experience-2"></script>
+</body>
+</html>
