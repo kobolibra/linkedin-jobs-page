@@ -18,3 +18,7 @@
 @media(max-width:720px){.header-utility{top:6px;right:16px;gap:8px}.account-trigger{width:36px;height:36px;padding:0}.account-name,.account-chevron{display:none}.account-panel{top:44px}.account-host .masthead>.eyebrow{max-width:calc(100% - 128px)}}
 @media(prefers-reduced-motion:reduce){.account-trigger,.account-chevron,.auth-provider{transition:none}.account-panel{animation:none}}
 @media print{.header-utility{display:none}}
+
+/* Keep the masthead rule outside the account/theme controls. */
+.account-host .masthead>.eyebrow{box-sizing:border-box;max-width:none;padding-right:calc(var(--header-tools-width,160px) + 18px)}
+@media(max-width:720px){.account-host .masthead>.eyebrow{padding-right:calc(var(--header-tools-width,116px) + 14px);white-space:normal}}
