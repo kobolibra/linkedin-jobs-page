@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-19T22:03:50.281288+00:00",
+    "checkedAt": "2026-10-20T10:03:25.873116+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,23 +2705,12 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.65801145641263,
-        "deferred": true
       }
     ]
   },
@@ -3030,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-19T22:03:35.483902+00:00",
+    "checkedAt": "2026-10-20T10:03:10.932385+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3193,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-19T22:03:41.180115+00:00",
+    "checkedAt": "2026-10-20T10:03:16.752843+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3884,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-19T22:03:44.168914+00:00",
+    "checkedAt": "2026-10-20T10:03:19.820756+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5419,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-19T22:03:47.121768+00:00",
+    "checkedAt": "2026-10-20T10:03:22.713242+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7677,31 +7666,86 @@
   },
   "privee associates limited": {
     "name": "Privee Associates Limited",
-    "checkedAt": "2026-10-20T04:02:57.640324+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-20T10:03:31.752266+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4480408171",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480408171",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.831257009452074,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "ad9b34a6857329ed5df079aa.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFvJlKsSwOO6Q/company-logo_100_100/company-logo_100_100/0/1644998809657?e=2147483647&v=beta&t=3DAUnA6a5-bZEy283j7n8mSYAXSWFVHYfMPEHpHBpLc",
+    "companyUrl": "https://hk.linkedin.com/company/privee-associates",
+    "sourceJobId": "4480408171"
+  },
+  "arohi asset management": {
+    "name": "Arohi Asset Management",
+    "checkedAt": "2026-10-20T10:02:54.580820+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6dac8902bf917a4b176ab49f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQF1rC3DogKs4Q/company-logo_100_100/company-logo_100_100/0/1630603245919/arohi_asset_management_logo?e=2147483647&v=beta&t=kxoY8fhCceOOtJS0k29cC-V9iFb0VFqczhYC_1rnBT8",
+    "companyUrl": "https://sg.linkedin.com/company/arohi-asset-management",
+    "sourceJobId": "4480440247"
+  },
+  "bitword ltd": {
+    "name": "Bitword Ltd",
+    "checkedAt": "2026-10-20T10:02:55.978309+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "749380b7741f127906317d3d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGP2QAIWBAiOA/company-logo_100_100/B56Z2q78QrHEAQ-/0/1776689333929/bitword_ltd_logo?e=2147483647&v=beta&t=blMMRK3r-5W-v3WZedT0vBnZIkoguTB4UNPtfekhUOo",
+    "companyUrl": "https://www.linkedin.com/company/bitword-ltd",
+    "sourceJobId": "4481555420"
+  },
+  "rotaract club of dtu regency": {
+    "name": "Rotaract Club of DTU Regency",
+    "checkedAt": "2026-10-20T10:02:58.933548+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "570cd886e5acaa36619b9744.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFvJAkkKEMlOQ/company-logo_100_100/company-logo_100_100/0/1679427573917/rotaract_club_of_dtu_logo?e=2147483647&v=beta&t=6SivVU26C6xmfndp2kLcyPO3GrSzQrXMP_pQ56JJDkQ",
+    "companyUrl": "https://in.linkedin.com/company/rotaractclubdtu",
+    "sourceJobId": "4478661131"
+  },
+  "teamlease digital global": {
+    "name": "TeamLease Digital Global",
+    "checkedAt": "2026-10-20T10:03:01.930897+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f751c42bafd0fc8e355e67f0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEgJjxq7kg_CQ/company-logo_100_100/B56ZWj7e1WHQAU-/0/1742212035638/hrtech_singapore_logo?e=2147483647&v=beta&t=O51_CeBLpt6a069XjJa__wclH9gjImHsMgIxsF8B8m0",
+    "companyUrl": "https://sg.linkedin.com/company/tldg",
+    "sourceJobId": "4480447381"
+  },
+  "webull securities (singapore)": {
+    "name": "Webull Securities (Singapore)",
+    "checkedAt": "2026-10-20T10:03:04.933272+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3d7b73b86bbf784b8a932155.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH3M-4rKKLCBg/company-logo_100_100/company-logo_100_100/0/1690250694494/webull_securities_singapore_logo?e=2147483647&v=beta&t=rk0_LwDYSkQfKMUG7FhgH7RHGNEVi9j_vWdL_ecapeg",
+    "companyUrl": "https://sg.linkedin.com/company/webull-securities-singapore",
+    "sourceJobId": "4480296991"
+  },
+  "基准方中建筑设计有限公司": {
+    "name": "基准方中建筑设计有限公司",
+    "checkedAt": "2026-10-20T10:03:07.937242+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f212673e0e87f588a2722755.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEnfx1nOMwYiQ/company-logo_100_100/company-logo_100_100/0/1631381119267?e=2147483647&v=beta&t=S0FrzDVuqkmD8mgHGTQgbyhnc8RKBLytUI8UvkDnzp4",
+    "companyUrl": "https://cn.linkedin.com/company/jzfz-architectual-design-co-ltd",
+    "sourceJobId": "4480411693"
   }
 }
