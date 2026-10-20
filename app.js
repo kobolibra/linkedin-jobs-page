@@ -2,8 +2,8 @@
  * LinkedIn 金融职位 · 页面逻辑
  * 依赖：jobs.json
  */
-function storageGet(key, session=false){try{return (session?sessionStorage:localStorage).getItem(key);}catch{return null;}}
-function storageSet(key,value,session=false){try{(session?sessionStorage:localStorage).setItem(key,value);}catch{}}
+function storageGet(key, session=false){if(!session&&globalThis.AccountPreferences&&['favs','blocked','blockedKw','reads'].includes(key))return globalThis.AccountPreferences.get(key);try{return (session?sessionStorage:localStorage).getItem(key);}catch{return null;}}
+function storageSet(key,value,session=false){if(!session&&globalThis.AccountPreferences?.set(key,value))return;try{(session?sessionStorage:localStorage).setItem(key,value);}catch{}}
 function storageList(key){try{const list=JSON.parse(storageGet(key)||"[]");return Array.isArray(list)?list.filter(x=>typeof x==="string"):[];}catch{return [];}}
 const IC={
   star:'<svg class="star-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2.6 15.09 8.86 22 9.87 17 14.74 18.18 21.62 12 18.37 5.82 21.62 7 14.74 2 9.87 8.91 8.86 12 2.6"/></svg>',
@@ -295,6 +295,21 @@ const saveFavs=()=>storageSet("favs",JSON.stringify([...favs]));
 const saveReads=()=>storageSet("reads",JSON.stringify([...reads]));
 const saveBlocked=()=>storageSet("blocked",JSON.stringify([...blocked]));
 const saveBlockedKw=()=>storageSet("blockedKw",JSON.stringify([...blockedKw]));
+// Remote changes update the existing state and row rendering; no new row layout.
+let accountPreferenceFrame=0;
+addEventListener('account-preferences',()=>{
+  cancelAnimationFrame(accountPreferenceFrame);
+  accountPreferenceFrame=requestAnimationFrame(()=>{
+    const lists=window.AccountPreferences.snapshot();
+    for(const [key,set] of [['favs',favs],['reads',reads],['blocked',blocked],['blockedKw',blockedKw]]){set.clear();for(const value of lists[key])set.add(value);}
+    if(typeof renderReady!=='undefined'&&renderReady){
+      for(const card of jobCards){const favorite=favs.has(card.dataset.id);card.classList.toggle('read',reads.has(card.dataset.id));card.classList.toggle('is-favorite',favorite);card.querySelectorAll('.star').forEach(button=>{button.classList.toggle('on',favorite);button.classList.toggle('is-favorite',favorite);button.title=favorite?'取消收藏':'收藏';button.setAttribute('aria-pressed',String(favorite));button.setAttribute('aria-label',button.title);});}
+      for(const section of daySections)if(section._jobCards)section._favoriteCards=new Set(section._jobCards.filter(card=>favs.has(card.dataset.id)));
+      renderBlocked();renderKw();apply();
+    }
+  });
+});
+
 (function(){const values=[...blocked];blocked.clear();values.forEach(value=>blocked.add(canonicalCompany(value)));saveBlocked();})();
 (function(){if(storageGet("favKeyV")==="2")return;[favs,reads].forEach(set=>{const arr=[...set];set.clear();arr.forEach(k=>set.add(jobId(k)));});saveFavs();saveReads();storageSet("favKeyV","2");})();
 const jobsEl=document.getElementById("jobs"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search"),companyEl=document.getElementById("company"),ageEl=document.getElementById("age"),cityEl=document.getElementById("city"),regionsEl=document.getElementById("regions"),favEl=document.getElementById("favToggle"),countEl=document.getElementById("count"),blockedBar=document.getElementById("blockedBar"),compClear=document.getElementById("compClear");

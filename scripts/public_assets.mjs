@@ -5,7 +5,7 @@ import {pathToFileURL} from 'node:url';
 // Only browser assets belong in the Worker static asset bundle.
 // Worker entry points, provider rules, build inputs and repository metadata stay private.
 export const PUBLIC_FILES = [
-  'account.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
+  'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
   'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'job-store.js', 'list-query.js', 'list-view.js',

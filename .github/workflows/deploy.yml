@@ -18,6 +18,7 @@ on:
       - 'privacy.html'
       - '*.js'
       - 'account-auth.mjs'
+      - 'account-preferences.mjs'
       - 'migrations/**'
       - '*.css'
       - 'avatars/**'
