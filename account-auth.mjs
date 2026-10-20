@@ -1,3 +1,4 @@
+import {anonymousBrowserAsset} from './scripts/browser_assets.mjs';
 import {preferences} from './account-preferences.mjs';
 /* Server-only OAuth, opaque sessions. No provider tokens are persisted. */
 const SESSION='__Host-lj_session',FLOW='__Host-lj_oauth',DAY=86400;
@@ -48,7 +49,7 @@ async function callback(request,env,provider){const url=new URL(request.url),sta
  phase='session';const token=random(),csrf=random(),old=cookies(request)[SESSION];const writes=[env.AUTH_DB.prepare('INSERT INTO account_sessions(token_hash,user_id,csrf,expires_at) VALUES(?,?,?,?)').bind(await hash(token),userId,csrf,now()+30*DAY)];if(old&&/^[A-Za-z0-9_-]{43}$/.test(old))writes.push(env.AUTH_DB.prepare('DELETE FROM account_sessions WHERE token_hash=?').bind(await hash(old)));await env.AUTH_DB.batch(writes);return redirect(flow.return_to,[clear,cookie(SESSION,token,30*DAY)]);
  }catch(error){const reason=/^(?:(?:google|github)_(?:token|keys|profile)_(?:http_[0-9]{3}|timeout)|invalid_id_token)$/.test(error.message)?error.message:phase+'_failed';return redirect('/login?error=login_failed&reason='+reason,[clear]);}}
 async function loginPage(request,env){const url=new URL('/login.html',request.url);const response=await env.ASSETS.fetch(new Request(url.href,{method:'GET'}));const headers=new Headers(response.headers);headers.set('cache-control','no-store');headers.set('referrer-policy','no-referrer');headers.set('x-frame-options','DENY');headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");return new Response(response.body,{status:response.status,headers});}
-async function guestPage(request,env){const response=await env.ASSETS.fetch(new Request(new URL('/guest.html',request.url),{method:'GET'}));const headers=new Headers(response.headers);headers.set('cache-control','private, no-store');headers.set('vary','Cookie');headers.set('x-content-type-options','nosniff');headers.set('x-frame-options','DENY');headers.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'");return new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers});}
+async function guestPage(request,env){const response=await env.ASSETS.fetch(new Request(new URL('/index.html',request.url),{method:'GET'}));const headers=new Headers(response.headers);headers.set('cache-control','private, no-store');headers.set('vary','Cookie');headers.set('x-content-type-options','nosniff');headers.set('x-frame-options','DENY');const html=request.method==='HEAD'?null:(await response.text()).replace('<html ', '<html data-auth-state="guest" ');return new Response(html,{status:response.status,headers});}
 export async function accountGate(request,env){const url=new URL(request.url),path=url.pathname;
  // Verification mode exposes only login routes; existing page access stays unchanged.
  const verifying=env.AUTH_ENABLED==='verify';
@@ -58,9 +59,10 @@ export async function accountGate(request,env){const url=new URL(request.url),pa
  if(url.origin!==origin(env))return {response:json(421,{error:'wrong_origin'})};
  const methods=['GET','HEAD','POST'];if(!methods.includes(request.method))return {response:json(405,{error:'method_not_allowed'})};
  if(path==='/auth/providers')return {response:json(200,{enabled:true,providers:Object.keys(providers).filter(p=>configured(env,p))})};
- if(['/auth-login.js','/auth.css','/auth-login-design.css','/guest.css','/guest.js'].includes(path)&&request.method!=='POST')return {response:await env.ASSETS.fetch(request)};
+ if(anonymousBrowserAsset(path)&&request.method!=='POST')return {response:await env.ASSETS.fetch(request)};
  if(path==='/privacy'&&request.method==='GET'){const response=await env.ASSETS.fetch(new Request(new URL('/privacy.html',request.url)));return {response:privateResponse(response)};}
  if(['/login','/login.html'].includes(path)&&request.method==='GET')return {response:await loginPage(request,env)};
+ if(path==='/api/public-preview'&&(request.method==='GET'||request.method==='HEAD')){const response=await env.ASSETS.fetch(new Request(new URL('/preview-index.json',request.url),{method:'GET'}));return {response:privateResponse(new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers:response.headers}))};}
  if(!env.AUTH_DB)return {response:json(503,{error:'accounts_not_configured'})};
  try{
  let match=path.match(/^\/auth\/start\/(google|github)$/);if(match&&request.method==='GET')return {response:await start(request,env,match[1])};
@@ -77,4 +79,5 @@ export async function accountGate(request,env){const url=new URL(request.url),pa
 }
 export function privateResponse(response){const headers=new Headers(response.headers);headers.set('cache-control','private, no-store');headers.append('vary','Cookie');headers.set('x-content-type-options','nosniff');headers.set('x-robots-tag','noindex, nofollow');return new Response(response.body,{status:response.status,statusText:response.statusText,headers});}
 export const __test={hash,session,googleClaims,returnPath,resetKeys:()=>{googleKeys=null;}};
+
 

@@ -6,7 +6,7 @@ import {buildGuestPreview} from './guest_preview.mjs';
 // Only browser assets belong in the Worker static asset bundle.
 // Worker entry points, provider rules, build inputs and repository metadata stay private.
 export const PUBLIC_FILES = [
-  'guest.html', 'guest.css', 'guest.js', 'guest-resume.js', 'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
+  'preview-index.json', 'auth-guest.js', 'auth-guest.css', 'guest-resume.js', 'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
   'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'job-store.js', 'list-query.js', 'list-view.js',
@@ -69,7 +69,7 @@ export function verifyPublicAssets(directory = 'public-assets') {
   for (const asset of [...Object.values(catalog), ...Object.values(index.companyLogos || {}), index.companyLogoFallback].filter(Boolean)) {
     if (!/^assets\/company-logos\/[a-f0-9]{24}\.(?:svg|webp)$/.test(asset) || !published.includes(asset)) throw Error('Missing or unsafe company logo asset');
   }
-  for (const htmlFile of ['index.html','guest.html','login.html']) {
+  for (const htmlFile of ['index.html','login.html']) {
   const html = readFileSync(resolve(root, htmlFile), 'utf8');
   for (const match of html.matchAll(/\b(?:src|href)=["']([^"']+)["']/g)) {
     const value = match[1];
@@ -113,4 +113,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const result = process.argv[2] === '--check' ? verifyPublicAssets() : buildPublicAssets();
   console.log('public_assets_verified ' + JSON.stringify(result));
 }
+
 

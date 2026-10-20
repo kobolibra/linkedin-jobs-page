@@ -50,6 +50,9 @@ on:
       - 'scripts/build_jd_shards.mjs'
       - 'scripts/public_assets.mjs'
       - 'scripts/guest_preview.mjs'
+      - 'scripts/browser_assets.mjs'
+      - 'auth-guest.js'
+      - 'auth-guest.css'
       - 'scripts/test_guest_preview.mjs'
       - 'scripts/test_guest_resume.mjs'
       - 'guest.js'
@@ -123,4 +126,5 @@ jobs:
 
       - name: Test transient deployment failures and retry budgets
         run: PYTHONPATH=scripts python -m unittest scripts/test_deploy_cloudflare.py scripts/test_audit_project.py scripts/test_sync_frontend_payloads.py
+
 

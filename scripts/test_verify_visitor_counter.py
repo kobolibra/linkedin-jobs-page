@@ -24,12 +24,13 @@ class VerificationTests(unittest.TestCase):
         def fetch(url, **kwargs):
             requests.append(url)
             if url.endswith('/'):
-                return Response(b'<body data-auth-page="preview"><article class="role"></article></body>')
-            for path, marker in (('guest.css?v=1', '.role'), ('guest.js?v=1', 'signInDialog'), ('auth-login-design.css?v=guest-1', '.auth-page'), ('auth-login.js?v=guest-1', '/auth/providers')):
+                return Response(b'<body data-auth-state="guest"><article class="role"></article></body>')
+            for path, marker in (('auth-guest.css?v=1', '.auth-guest-dialog'), ('auth-guest.js?v=1', 'AuthGuest'), ('auth-login-design.css?v=guest-1', '.auth-page'), ('auth-login.js?v=guest-1', '/auth/providers')):
                 if url.endswith(path): return Response(marker.encode())
+            if '/api/public-preview' in url: return Response(b'{"jobs":[]}')
             raise HTTPError(url,401,'Unauthorized',{},io.BytesIO(b'{}'))
         self.assertTrue(verify(fetch, lambda _:None))
-        self.assertEqual(len(requests),9)
+        self.assertEqual(len(requests),10)
         self.assertTrue(all('visitor-count' not in url for url in requests))
 
     def test_published_assets_are_checked_without_counting_visits(self):
@@ -68,4 +69,5 @@ class VerificationTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
 

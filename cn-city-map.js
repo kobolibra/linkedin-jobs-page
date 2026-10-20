@@ -160,7 +160,7 @@
       try {
         const atlasPromise=fetch('assets/maps/cn-cities.json',{signal:controller.signal,cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Map HTTP '+r.status);return r.json();});
         const rowsPromise=window.__jobsDataPromise;if(!rowsPromise)throw Error('Job index is unavailable');
-        const [atlas,rows]=await Promise.all([atlasPromise,rowsPromise]);render(atlas,rows);ready=true;
+        const [atlas,rows]=await Promise.all([atlasPromise,rowsPromise]);render(atlas,window.AuthGuest?.chartRows||rows);ready=true;
       } catch(error) {
         const message=html('p','cn-map-state','城市地图暂时无法加载。');const retry=html('button','top50-toggle cn-map-retry','Retry');retry.type='button';retry.addEventListener('click',()=>load());panel.replaceChildren(message,retry);
       } finally {clearTimeout(timer);pending=null;}
@@ -170,3 +170,4 @@
     const expanded=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(expanded));toggle.textContent=expanded?'Collapse':'Expand';panel.hidden=!expanded;if(expanded)load();
   });
 })();
+

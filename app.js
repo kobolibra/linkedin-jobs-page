@@ -600,7 +600,7 @@ async function fetchJobsIndex({attemptTimeouts=[60000,30000],idleTimeout=12000,r
     try{
       return await Promise.race([
         (async()=>{
-          const response=await fetch("jobs-index.json",{cache:"no-cache",signal:controller.signal});
+          const response=await fetch(document.documentElement.dataset.authState==='guest'?"/api/public-preview":"jobs-index.json",{cache:"no-cache",signal:controller.signal});
           if(!response.ok)throw new Error("jobs-index.json HTTP "+response.status);
           armIdle();
           if(!response.body?.getReader)return response.json();
@@ -625,8 +625,8 @@ async function fetchJobsIndex({attemptTimeouts=[60000,30000],idleTimeout=12000,r
   throw lastError;
 }
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
-const jobsDataPromise=(window.JobIndexStore?window.JobIndexStore.load(fetchJobsIndex):fetchJobsIndex())
-  .then(data=>{window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
+const jobsDataPromise=(window.JobIndexStore&&document.documentElement.dataset.authState!=='guest'?window.JobIndexStore.load(fetchJobsIndex):fetchJobsIndex())
+  .then(data=>{window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
 jobsDataPromise
   .then(async data=>{
@@ -639,27 +639,28 @@ jobsDataPromise
     await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
     await new Promise(resolve=>setTimeout(resolve,0));
     const activeData=data.filter(isActiveJob);
+    const chartData=window.AuthGuest?.chartRows||activeData;
     const companyRegionCount=new Map();
-    activeData.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
+    chartData.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
     jobsEl.innerHTML="";
-    animNum(document.getElementById("stat-total"),activeData.length);
+    animNum(document.getElementById("stat-total"),window.AuthGuest?.overview?.total??activeData.length);
     const companies=[...new Set(data.map(j=>canonicalCompany(j.company)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
     const activeCompanies=new Set(activeData.map(j=>canonicalCompany(j.company)).filter(Boolean));
-    animNum(document.getElementById("stat-comp"),activeCompanies.size);
+    animNum(document.getElementById("stat-comp"),window.AuthGuest?.overview?.companies??activeCompanies.size);
     const lastUpd=activeData.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
-    const lastUpdDate=new Date(lastUpd);
+    const lastUpdDate=new Date(window.AuthGuest?.overview?.updated||lastUpd);
     const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
     document.getElementById("stat-updated").textContent=lastUpdText;
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
     activeData.forEach(j=>{const region=norm(j.location);if(regionActiveTotals[region]!=null)regionActiveTotals[region]++;});
     const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>{if(a==="N/A")return 1;if(b==="N/A")return -1;return a.localeCompare(b,"zh-Hans-CN");});
     cities.forEach(city=>{const o=document.createElement("option");o.value=city;o.textContent=city;cityEl.appendChild(o);});
-    const rc={CN:0,HK:0,SG:0,OTHER:0};activeData.forEach(j=>rc[norm(j.location)]++);
+    const rc={CN:0,HK:0,SG:0,OTHER:0};chartData.forEach(j=>rc[norm(j.location)]++);
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
     const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
-    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,activeData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
+    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const tMin=allTimes.length?Math.min(...allTimes):Date.now(),tMax=allTimes.length?Math.max(...allTimes):tMin,tSpan=Math.max(1,tMax-tMin);
     const TW=520,TH=126,left=48,right=48,top=27,rowGap=27,plotW=TW-left-right,bins=40,cellW=plotW/bins;
@@ -668,7 +669,7 @@ jobsDataPromise
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));bucketCounts[ri][bi]++;}));
     const maxBucket=Math.max(1,...bucketCounts.flat());
     const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();monthSegments.push('<line class="region-month-boundary" x1="'+x1.toFixed(1)+'" y1="'+(TH-13)+'" x2="'+x1.toFixed(1)+'" y2="'+(TH-7)+'"/><text class="region-month-label'+(segEnd===tMax?' region-month-current':'')+'" x="'+((x1+x2)/2).toFixed(1)+'" y="'+(TH-5)+'">'+label+'</text>');}monthSegments.push('<line class="region-month-boundary" x1="'+(left+plotW).toFixed(1)+'" y1="'+(TH-13)+'" x2="'+(left+plotW).toFixed(1)+'" y2="'+(TH-7)+'"/>');const axisTicks=monthSegments.join('');
-    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=activeData.length?Math.round(rc[k]/activeData.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,ratio=n/rowMax,level=n===0?0:ratio<=0.12?1:ratio<=0.32?2:ratio<=0.62?3:4,alpha=[0.18,0.38,0.62,0.82,1][level];const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density density-'+level+' '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-8)+'" width="'+w.toFixed(2)+'" height="16" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<text class="region-time-name" x="0" y="'+(y+1)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y-3)+'">'+rc[k].toLocaleString()+'</text><text class="region-time-pct" x="'+(TW-1)+'" y="'+(y+8)+'">'+pct+'%</text>'+cells;}).join('');
+    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=chartData.length?Math.round(rc[k]/chartData.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,ratio=n/rowMax,level=n===0?0:ratio<=0.12?1:ratio<=0.32?2:ratio<=0.62?3:4,alpha=[0.18,0.38,0.62,0.82,1][level];const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density density-'+level+' '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-8)+'" width="'+w.toFixed(2)+'" height="16" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<text class="region-time-name" x="0" y="'+(y+1)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y-3)+'">'+rc[k].toLocaleString()+'</text><text class="region-time-pct" x="'+(TW-1)+'" y="'+(y+8)+'">'+pct+'%</text>'+cells;}).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="按首次发现日期统计的三条地区横向时间分布；色带深浅表示时间窗口内职位密度">'+axisTicks+rows+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -678,7 +679,7 @@ jobsDataPromise
     if(distNote)distNote.textContent='统计口径为首次抓取日期：'+densityStart+'–'+densityEnd+'（共 '+densityWindowDays+' 天）';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
-    const rcounts={};activeData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
+    const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=new Date(),days=[];
     for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
@@ -692,7 +693,7 @@ jobsDataPromise
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
-    top50Rows=activeData;
+    top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);
     // Let the browser paint the stats and all three charts before the large
     // 8k-card list begins. This removes the perceived chained pause without
@@ -950,3 +951,4 @@ totop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
   jobsEl.addEventListener('keydown',event=>{if(mobile()&&event.shiftKey&&event.key==='F10'){const card=event.target.closest('.job');if(card){event.preventDefault();open(card);}}});
   window.addEventListener('resize',()=>{if(!mobile()&&sheet?.open)sheet.close();},{passive:true});
 })();
+

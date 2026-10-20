@@ -12,19 +12,23 @@ def verify(fetch=urlopen, report=print):
         with fetch(BASE + '/', timeout=15) as response:
             html = response.read().decode()
             assert response.status == 200
-            preview = 'data-auth-page="preview"' in html
+            preview = 'data-auth-state="guest"' in html
             protected = preview or 'data-auth-page="login"' in html
             if not protected:
                 assert 'visitor-count.js?v=counter-live-3' in html, 'unexpected homepage version'
             assert 'no-store' in response.headers.get('cache-control', ''), 'homepage may be stale'
         if preview:
-            assert html.count('<article class="role"') <= 12, 'preview exceeds public limit'
-            assert 'jobs-index.json' not in html, 'preview references the full index'
-            for path, marker in (('/guest.css?v=1', '.role'), ('/guest.js?v=1', 'signInDialog'), ('/auth-login-design.css?v=guest-1', '.auth-page'), ('/auth-login.js?v=guest-1', '/auth/providers')):
+            for path, marker in (('/auth-guest.css?v=1', '.auth-guest-dialog'), ('/auth-guest.js?v=1', 'AuthGuest'), ('/auth-login-design.css?v=guest-1', '.auth-page'), ('/auth-login.js?v=guest-1', '/auth/providers')):
                 with fetch(BASE + path, timeout=15) as asset:
                     assert asset.status == 200 and marker in asset.read().decode(), 'missing anonymous asset: ' + path
+        if preview:
+            import json
+            with fetch(BASE + '/api/public-preview?page=999', timeout=15) as response:
+                data = json.loads(response.read().decode())
+                assert response.status == 200 and len(data['jobs']) <= 12, 'preview exceeds public limit'
+                assert all(not job.get('hasJd') and len(job.get('previewSnippet','')) <= 241 for job in data['jobs']), 'full details in preview'
         if protected:
-            for path in ('/auth/session', '/jobs-index.json', '/jd-parts/00.json', '/app.js'):
+            for path in ('/auth/session', '/jobs-index.json', '/jd-parts/00.json', '/account-auth.mjs'):
                 try:
                     with fetch(BASE + path, timeout=15) as response:
                         raise AssertionError('Unauthenticated protected endpoint was accessible: ' + path)
@@ -55,4 +59,5 @@ if __name__ == '__main__':
     if summary:
         with Path(summary).open('a') as file:
             file.write('\nVisitor counter asset check: ' + ('verified.' if verified else '**NOT VERIFIED**: Cloudflare 1010 blocks this automated client; check recorded as a warning, not a publication failure.') + '\n')
+
 
