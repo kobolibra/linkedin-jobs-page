@@ -1,11 +1,12 @@
 import {cpSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, rmSync} from 'node:fs';
 import {relative, resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {buildGuestPreview} from './guest_preview.mjs';
 
 // Only browser assets belong in the Worker static asset bundle.
 // Worker entry points, provider rules, build inputs and repository metadata stay private.
 export const PUBLIC_FILES = [
-  'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
+  'guest.html', 'guest.css', 'guest.js', 'guest-resume.js', 'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'login.html', 'privacy.html',
   'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'job-store.js', 'list-query.js', 'list-view.js',
@@ -68,12 +69,15 @@ export function verifyPublicAssets(directory = 'public-assets') {
   for (const asset of [...Object.values(catalog), ...Object.values(index.companyLogos || {}), index.companyLogoFallback].filter(Boolean)) {
     if (!/^assets\/company-logos\/[a-f0-9]{24}\.(?:svg|webp)$/.test(asset) || !published.includes(asset)) throw Error('Missing or unsafe company logo asset');
   }
-  const html = readFileSync(resolve(root, 'index.html'), 'utf8');
+  for (const htmlFile of ['index.html','guest.html','login.html']) {
+  const html = readFileSync(resolve(root, htmlFile), 'utf8');
   for (const match of html.matchAll(/\b(?:src|href)=["']([^"']+)["']/g)) {
     const value = match[1];
     if (/^(?:[a-z]+:|\/\/|#)/i.test(value)) continue;
     const path = value.split(/[?#]/)[0].replace(/^\//, '') || 'index.html';
+    if (['login','privacy','auth/start/google'].includes(path)) continue;
     if (!published.includes(path)) throw Error('Missing local homepage dependency: ' + path);
+  }
   }
   return {files: published.length};
 }
@@ -83,6 +87,7 @@ export function buildPublicAssets(source = '.', destination = 'public-assets') {
   // Never erase the checkout, its parent, or a caller's unrelated directory.
   if (relative(root, output) !== 'public-assets') throw Error('Public output must be the checkout public-assets directory');
   if (existsSync(output) && lstatSync(output).isSymbolicLink()) throw Error('Public output is a symbolic link');
+  buildGuestPreview(root);
   const selected = PUBLIC_FILES.concat([...optional].filter(name => existsSync(resolve(root, name))));
   for (const directory of ['assets', 'avatars', 'jd-parts']) {
     const path = resolve(root, directory);
@@ -108,3 +113,4 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const result = process.argv[2] === '--check' ? verifyPublicAssets() : buildPublicAssets();
   console.log('public_assets_verified ' + JSON.stringify(result));
 }
+

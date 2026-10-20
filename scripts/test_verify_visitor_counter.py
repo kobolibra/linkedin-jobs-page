@@ -19,6 +19,19 @@ class VerificationTests(unittest.TestCase):
         self.assertEqual(len(requests),5)
         self.assertTrue(any(url.endswith('/jobs-index.json') for url in requests))
 
+    def test_preview_verifies_public_dependencies_and_private_data_boundaries(self):
+        requests=[]
+        def fetch(url, **kwargs):
+            requests.append(url)
+            if url.endswith('/'):
+                return Response(b'<body data-auth-page="preview"><article class="role"></article></body>')
+            for path, marker in (('guest.css?v=1', '.role'), ('guest.js?v=1', 'signInDialog'), ('auth-login-design.css?v=guest-1', '.auth-page'), ('auth-login.js?v=guest-1', '/auth/providers')):
+                if url.endswith(path): return Response(marker.encode())
+            raise HTTPError(url,401,'Unauthorized',{},io.BytesIO(b'{}'))
+        self.assertTrue(verify(fetch, lambda _:None))
+        self.assertEqual(len(requests),9)
+        self.assertTrue(all('visitor-count' not in url for url in requests))
+
     def test_published_assets_are_checked_without_counting_visits(self):
         requests = []
         def fetch(url, **kwargs):
@@ -55,3 +68,4 @@ class VerificationTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

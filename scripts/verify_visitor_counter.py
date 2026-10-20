@@ -12,10 +12,17 @@ def verify(fetch=urlopen, report=print):
         with fetch(BASE + '/', timeout=15) as response:
             html = response.read().decode()
             assert response.status == 200
-            protected = 'data-auth-page="login"' in html
+            preview = 'data-auth-page="preview"' in html
+            protected = preview or 'data-auth-page="login"' in html
             if not protected:
                 assert 'visitor-count.js?v=counter-live-3' in html, 'unexpected homepage version'
             assert 'no-store' in response.headers.get('cache-control', ''), 'homepage may be stale'
+        if preview:
+            assert html.count('<article class="role"') <= 12, 'preview exceeds public limit'
+            assert 'jobs-index.json' not in html, 'preview references the full index'
+            for path, marker in (('/guest.css?v=1', '.role'), ('/guest.js?v=1', 'signInDialog'), ('/auth-login-design.css?v=guest-1', '.auth-page'), ('/auth-login.js?v=guest-1', '/auth/providers')):
+                with fetch(BASE + path, timeout=15) as asset:
+                    assert asset.status == 200 and marker in asset.read().decode(), 'missing anonymous asset: ' + path
         if protected:
             for path in ('/auth/session', '/jobs-index.json', '/jd-parts/00.json', '/app.js'):
                 try:
@@ -23,7 +30,7 @@ def verify(fetch=urlopen, report=print):
                         raise AssertionError('Unauthenticated protected endpoint was accessible: ' + path)
                 except HTTPError as blocked:
                     assert blocked.code == 401, 'unexpected protected endpoint status: ' + path
-            report('Production login and protected job assets verified without synthetic page views.')
+            report('Production public preview/login and protected job assets verified without synthetic page views.')
             return True
         with fetch(BASE + '/visitor-count.js?v=counter-live-3', timeout=15) as response:
             script = response.read().decode()
@@ -48,3 +55,4 @@ if __name__ == '__main__':
     if summary:
         with Path(summary).open('a') as file:
             file.write('\nVisitor counter asset check: ' + ('verified.' if verified else '**NOT VERIFIED**: Cloudflare 1010 blocks this automated client; check recorded as a warning, not a publication failure.') + '\n')
+
