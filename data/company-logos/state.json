@@ -3179,7 +3179,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-20T10:03:16.752843+00:00",
+    "checkedAt": "2026-10-20T16:03:45.401726+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3870,19 +3870,30 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-20T10:03:19.820756+00:00",
+    "checkedAt": "2026-10-20T16:03:48.174645+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4458711512",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.495775451975916,
+        "deferred": true
       }
     ]
   },
@@ -7744,5 +7755,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEnfx1nOMwYiQ/company-logo_100_100/company-logo_100_100/0/1631381119267?e=2147483647&v=beta&t=S0FrzDVuqkmD8mgHGTQgbyhnc8RKBLytUI8UvkDnzp4",
     "companyUrl": "https://cn.linkedin.com/company/jzfz-architectual-design-co-ltd",
     "sourceJobId": "4480411693"
+  },
+  "intropic": {
+    "name": "Intropic",
+    "checkedAt": "2026-10-20T16:03:38.018792+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5eed19c0d85ca27a83f7887f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQENTuHipWkzKQ/company-logo_100_100/B4EZzY7yJoGUAU-/0/1773166077131/intropic_io_logo?e=2147483647&v=beta&t=LJcFfwepdhECvviZ9yg1a6FIWYTBQxwGOYgjlsvrHPw",
+    "companyUrl": "https://uk.linkedin.com/company/intropic-io",
+    "sourceJobId": "4481550934"
+  },
+  "ore & metal": {
+    "name": "Ore & Metal",
+    "checkedAt": "2026-10-20T16:03:39.423678+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "46e8fd9feb855292ed49a33c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQE_qg0x9rg12A/company-logo_100_100/B4DZiI.VWtGkAQ-/0/1754644699062/ore_metal_logo?e=2147483647&v=beta&t=Z05SxkICEP1SkFA0A3FIENljFWVhceZAmpNf4DximOs",
+    "companyUrl": "https://www.linkedin.com/company/ore-metal",
+    "sourceJobId": "4481577884"
+  },
+  "reloc tax advisory pte. ltd.": {
+    "name": "RELOC TAX ADVISORY PTE. LTD.",
+    "checkedAt": "2026-10-20T16:03:42.348939+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/reloc-tax-advisory-pte-ltd",
+    "sourceJobId": "4480444680"
   }
 }
