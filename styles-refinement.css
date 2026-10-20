@@ -422,3 +422,10 @@ body.compact .job > .mono { margin-top:2px; }
   .job:hover, [data-theme="dark"] .job:hover { background-color:transparent; }
   .job.expired:hover, [data-theme="dark"] .job.expired:hover { background-color:var(--closed-wash); }
 }
+
+/* Dark mode: keep separators below text in the visual hierarchy. */
+[data-theme="dark"] .masthead .eyebrow::after { background:var(--ui-divider); }
+[data-theme="dark"] .job { border-bottom-color:var(--ui-divider); }
+[data-theme="dark"] .day-head { border-bottom-color:rgba(147,180,196,.22); }
+[data-theme="dark"] .job.read .job-title:not(:hover),
+[data-theme="dark"] .job.expired .job-title:not(:hover) { color:#bcc8cc; }
