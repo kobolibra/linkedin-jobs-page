@@ -4,7 +4,7 @@
  let region='ALL',intent=null,leaving=false,timer;
  const read=()=>{try{return JSON.parse(sessionStorage.getItem('finance-preview-state')||'null');}catch{return null;}};
  const save=()=>{try{sessionStorage.setItem('finance-preview-state',JSON.stringify({region,scroll:scrollY,at:Date.now()}));}catch{}};
- function filter(value){region=['CN','HK','SG'].includes(value)?value:'ALL';let count=0;for(const row of rows){row.hidden=region!=='ALL'&&row.dataset.region!==region;if(!row.hidden)count++;}for(const button of filters)button.setAttribute('aria-pressed',String(button.dataset.filter===region));document.querySelector('.filter-note').textContent=`Showing ${count} preview role${count===1?'':'s'}`;}
+ function filter(value){region=['CN','HK','SG'].includes(value)?value:'ALL';let count=0;for(const row of rows){row.hidden=region!=='ALL'&&row.dataset.region!==region;if(!row.hidden)count++;}for(const button of filters)button.setAttribute('aria-pressed',String(button.dataset.filter===region));document.querySelector('.filter-note').textContent=`显示 ${count} 个预览职位`;}
  const previous=read();if(previous&&Date.now()-previous.at<1800000){filter(previous.region);requestAnimationFrame(()=>scrollTo(0,Math.max(0,Number(previous.scroll)||0)));}
  for(const button of filters)button.addEventListener('click',()=>{filter(button.dataset.filter);save();});
  for(const button of document.querySelectorAll('[data-open-preview]'))button.addEventListener('click',()=>{const detail=button.closest('.role').querySelector('details');detail.open=!detail.open;});
