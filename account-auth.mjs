@@ -1,3 +1,4 @@
+import {preferences} from './account-preferences.mjs';
 /* Server-only OAuth, opaque sessions. No provider tokens are persisted. */
 const SESSION='__Host-lj_session',FLOW='__Host-lj_oauth',DAY=86400;
 const utf8=new TextEncoder();
@@ -65,6 +66,7 @@ export async function accountGate(request,env){const url=new URL(request.url),pa
  match=path.match(/^\/auth\/callback\/(google|github)$/);if(match&&request.method==='GET')return {response:await callback(request,env,match[1])};
  const user=await session(request,env);
  if(!user){if((path==='/'||path==='/index.html')&&request.method==='GET')return {response:redirect('/login?next='+encodeURIComponent(returnPath(path+url.search)))};return {response:json(401,{error:'sign_in_required'})};}
+ if(path==='/auth/preferences')return {response:await preferences(request,env,user)};
  if(path==='/auth/session'&&request.method==='GET')return {response:json(200,await userResponse(env,user))};
  if(verifying&&path==='/auth/verify'&&request.method==='GET')return {response:json(200,await userResponse(env,user))};
  if(path==='/auth/logout'&&request.method==='POST'){if(!sameOrigin(request,env)||request.headers.get('x-csrf-token')!==user.csrf)return {response:json(403,{error:'csrf_failed'})};await env.AUTH_DB.prepare('DELETE FROM account_sessions WHERE token_hash=?').bind(user.tokenHash).run();return {response:json(200,{ok:true},{'set-cookie':cookie(SESSION,'',0)})};}
