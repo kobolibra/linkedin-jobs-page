@@ -28,15 +28,15 @@ export function publicPreviewPayload(data,index){
  const selected=new Map(data.jobs.map(j=>[j.id,j]));
  const jobs=[];const companyLogos={};
  for(const original of index.jobs){const match=String(original.link||'').match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const preview=selected.get(id);if(!preview)continue;
-  const job={title:preview.title,company:preview.company,link:original.link,location:preview.region,firstSeen:preview.date,city:preview.city,hasJd:false,jobStatus:'active',previewSnippet:preview.snippet};
+  const job={title:preview.title,company:preview.company,link:original.link,location:preview.region,firstSeen:preview.date,city:preview.city,hasJd:original.hasJd===true,jobStatus:'active',previewSnippet:preview.snippet};
   if(original.pushTime)job.pushTime=original.pushTime;
   if(typeof original.salary==='string'||typeof original.salary==='number')job.salary=original.salary;
   jobs.push(job);selected.delete(id);
   const key=preview.company.toLowerCase(),asset=index.companyLogos?.[key];if(/^assets\/company-logos\/[a-f0-9]{24}\.(svg|webp)$/.test(asset||''))companyLogos[key]=asset;
  }
  const buckets=new Map();
- for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(job.firstSeen||job.pushTime||''),String(job.city||''),String(job.locationRaw||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
- const chartBuckets=[...buckets].map(([key,count])=>[...JSON.parse(key),count]);
+ for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(job.firstSeen||job.pushTime||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
+ const chartBuckets=[...buckets].map(([key,count])=>[...JSON.parse(key).slice(0,5),count,JSON.parse(key)[5]]);
  return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,chartBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
 export function buildGuestPreview(root='.'){

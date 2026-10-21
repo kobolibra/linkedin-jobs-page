@@ -26,7 +26,7 @@ def verify(fetch=urlopen, report=print):
             with fetch(BASE + '/api/public-preview?page=999', timeout=15) as response:
                 data = json.loads(response.read().decode())
                 assert response.status == 200 and len(data['jobs']) <= 12, 'preview exceeds public limit'
-                assert all(not job.get('hasJd') and len(job.get('previewSnippet','')) <= 241 for job in data['jobs']), 'full details in preview'
+                assert all('descriptionHtml' not in job and 'description' not in job and len(job.get('previewSnippet','')) <= 241 for job in data['jobs']), 'full details in preview'
         if protected:
             for path in ('/auth/session', '/jobs-index.json', '/jd-parts/00.json', '/account-auth.mjs'):
                 try:

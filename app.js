@@ -763,7 +763,7 @@ function countLoadedActiveJobs(){
   return count;
 }
 function updateJobCount(count){
-  activeCountEl.textContent=count;
+  activeCountEl.textContent=window.AuthGuest?.count()??count;
   activeOnlyEl.setAttribute("aria-pressed",String(activeOnly));
   activeOnlyEl.title=activeOnly?"取消仅显示有效职位":"仅显示有效职位";
 }

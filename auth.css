@@ -22,3 +22,6 @@
 /* Keep the masthead rule outside the account/theme controls. */
 .account-host .masthead>.eyebrow{box-sizing:border-box;max-width:none;padding-right:calc(var(--header-tools-width,160px) + 18px)}
 @media(max-width:720px){.account-host .masthead>.eyebrow{padding-right:calc(var(--header-tools-width,116px) + 14px);white-space:normal}}
+
+/* Sign-in controls must be styled before they are inserted, including cold loads. */
+[data-auth-state=guest] .auth-guest-sign{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;font-size:11px;line-height:16px;min-height:32px;padding:8px;color:var(--ink-soft);cursor:pointer;box-sizing:border-box}
