@@ -24,4 +24,6 @@
 @media(max-width:720px){.account-host .masthead>.eyebrow{padding-right:calc(var(--header-tools-width,116px) + 14px);white-space:normal}}
 
 /* Sign-in controls must be styled before they are inserted, including cold loads. */
-[data-auth-state=guest] .auth-guest-sign{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;font-size:11px;line-height:16px;min-height:32px;padding:8px;color:var(--ink-soft);cursor:pointer;box-sizing:border-box}
+[data-auth-state=guest] .auth-guest-sign{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;font-size:12px;font-weight:500;line-height:16px;min-height:32px;padding:8px;color:var(--ink);cursor:pointer;box-sizing:border-box;display:inline-flex;align-items:center;text-decoration:none;border-radius:6px;transition:background .15s ease}
+
+[data-auth-state=guest] .auth-guest-sign:hover{background:var(--surface-2,#e5e9e6)}
