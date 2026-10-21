@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-21T10:02:41.525118+00:00",
+    "checkedAt": "2026-10-21T16:03:37.479217+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-21T10:02:47.501256+00:00",
+    "checkedAt": "2026-10-21T16:03:43.370940+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-21T10:02:53.485867+00:00",
+    "checkedAt": "2026-10-21T16:03:49.424439+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-21T10:02:56.443687+00:00",
+    "checkedAt": "2026-10-21T16:03:52.433556+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-21T10:02:38.591210+00:00",
+    "checkedAt": "2026-10-21T16:03:34.498608+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7872,5 +7872,77 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHiDSI_RdtFYw/company-logo_100_100/company-logo_100_100/0/1630602053622/td_ameritrade_logo?e=2147483647&v=beta&t=RbEDnnDK_wldbi8kpXmNro196oIZp-441QC5YLn1xpw",
     "companyUrl": "https://www.linkedin.com/company/td-ameritrade",
     "sourceJobId": "4478907011"
+  },
+  "campari group": {
+    "name": "Campari Group",
+    "checkedAt": "2026-10-21T16:03:18.200466+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "03eee81fa300dd01f5a38902.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEF9L8s76VzAg/company-logo_100_100/company-logo_100_100/0/1631328516688?e=2147483647&v=beta&t=4tLM-ialcpTnKpGZYfC4g07Sdg1wx5opd565TcG501U",
+    "companyUrl": "https://it.linkedin.com/company/campari-group",
+    "sourceJobId": "4482042397"
+  },
+  "festo": {
+    "name": "Festo",
+    "checkedAt": "2026-10-21T16:03:19.626949+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "790502d8cad29041adebb831.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFuq1K-ZRzkdA/company-logo_100_100/B4EZT1jNg2GYAU-/0/1739286436274/festo_logo?e=2147483647&v=beta&t=D4IRIFXYgwkp43ym_LT_fdpH2Jzjcaul-RsSihAF4vk",
+    "companyUrl": "https://de.linkedin.com/company/festo",
+    "sourceJobId": "4478966625"
+  },
+  "fundingreach holdings limited": {
+    "name": "FundingReach Holdings Limited",
+    "checkedAt": "2026-10-21T16:03:22.509029+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c3dc920b47c955fbbe3ae228.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFMTBev6EOt0w/company-logo_100_100/company-logo_100_100/0/1631373818559?e=2147483647&v=beta&t=mfoE1aAH0qNH13DYnPN38yAuj66dfYpdce-OSD3v4SY",
+    "companyUrl": "https://hk.linkedin.com/company/fundingreach",
+    "sourceJobId": "4480775733"
+  },
+  "peterson group": {
+    "name": "Peterson Group",
+    "checkedAt": "2026-10-21T16:03:25.571629+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c4b11cf2603f642e2f08afe6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH1ybmqSLOkcg/company-logo_100_100/B56Zr7v1nRIcAQ-/0/1765160213323/peterson_group_hk_logo?e=2147483647&v=beta&t=h-E7x3jHPsDeCUARqoQ_5XUUk01Jv3_5giclfWDE3Mw",
+    "companyUrl": "https://hk.linkedin.com/company/peterson-group-hk",
+    "sourceJobId": "4478981939"
+  },
+  "the growth collective": {
+    "name": "The Growth Collective",
+    "checkedAt": "2026-10-21T16:03:28.558483+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8f32f91abc3f1eacf44823af.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEBrdwU15fZDA/company-logo_100_100/B56ZZ7gm37GUAU-/0/1745828868322/the_growth_collective_asia_logo?e=2147483647&v=beta&t=QbPuTNY1vv9UnsdXJT9w4RBQUjDRVFYQ-gevXoFjhzU",
+    "companyUrl": "https://sg.linkedin.com/company/thegrowthcollectiveasia",
+    "sourceJobId": "4481133029"
+  },
+  "verition": {
+    "name": "Verition",
+    "checkedAt": "2026-10-21T16:03:31.555986+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fcbdefa9bd1ce47e3a0d7a95.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHTZYtqItpJew/company-logo_100_100/B4DZ.vVRIsI4AI-/0/1785353016227/verition_logo?e=2147483647&v=beta&t=44MpypDNpAemL20FGW_WP4J2xBTdXJxfqiBkb3IR6Pg",
+    "companyUrl": "https://www.linkedin.com/company/verition",
+    "sourceJobId": "4482088920"
   }
 }
