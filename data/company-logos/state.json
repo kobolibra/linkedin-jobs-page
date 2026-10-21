@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-20T22:03:08.462431+00:00",
+    "checkedAt": "2026-10-21T10:02:41.525118+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-20T22:03:14.382263+00:00",
+    "checkedAt": "2026-10-21T10:02:47.501256+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-20T22:03:20.410800+00:00",
+    "checkedAt": "2026-10-21T10:02:53.485867+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-20T22:03:23.410057+00:00",
+    "checkedAt": "2026-10-21T10:02:56.443687+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-20T22:03:05.502759+00:00",
+    "checkedAt": "2026-10-21T10:02:38.591210+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7860,5 +7860,17 @@
         "deferred": true
       }
     ]
+  },
+  "td ameritrade": {
+    "name": "TD Ameritrade",
+    "checkedAt": "2026-10-21T10:02:37.285186+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f4eefd13e41178d10b3b2ace.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHiDSI_RdtFYw/company-logo_100_100/company-logo_100_100/0/1630602053622/td_ameritrade_logo?e=2147483647&v=beta&t=RbEDnnDK_wldbi8kpXmNro196oIZp-441QC5YLn1xpw",
+    "companyUrl": "https://www.linkedin.com/company/td-ameritrade",
+    "sourceJobId": "4478907011"
   }
 }
