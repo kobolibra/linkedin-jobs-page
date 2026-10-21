@@ -37,3 +37,8 @@
 .header-utility .theme-toggle .tt-track{width:30px;height:17px}
 .header-utility .theme-toggle .tt-thumb{width:11px;height:11px}
 .header-utility .theme-toggle[data-mode="dark"] .tt-thumb{transform:translateX(13px)}
+
+/* A restrained Messenger-inspired mark: soft blue foreground, sage silhouette behind. */
+.header-utility .account-trigger>.account-mark{width:21px;height:21px;flex:none;overflow:visible}
+.header-utility .account-trigger:has(.account-mark){padding:5px;background:transparent}
+.header-utility .account-trigger:has(.account-mark):hover,.header-utility .account-trigger:has(.account-mark)[aria-expanded=true]{background:var(--surface-2)}
