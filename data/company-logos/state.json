@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-21T16:03:37.479217+00:00",
+    "checkedAt": "2026-10-21T22:03:20.096942+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-21T16:03:43.370940+00:00",
+    "checkedAt": "2026-10-21T22:03:26.230726+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-21T16:03:49.424439+00:00",
+    "checkedAt": "2026-10-21T22:03:32.293747+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-21T16:03:52.433556+00:00",
+    "checkedAt": "2026-10-21T22:03:35.252732+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-21T16:03:34.498608+00:00",
+    "checkedAt": "2026-10-21T22:03:17.213672+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7944,5 +7944,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHTZYtqItpJew/company-logo_100_100/B4DZ.vVRIsI4AI-/0/1785353016227/verition_logo?e=2147483647&v=beta&t=44MpypDNpAemL20FGW_WP4J2xBTdXJxfqiBkb3IR6Pg",
     "companyUrl": "https://www.linkedin.com/company/verition",
     "sourceJobId": "4482088920"
+  },
+  "cdf-lagardere company limited": {
+    "name": "cdf-Lagardere Company Limited",
+    "checkedAt": "2026-10-21T22:03:06.866759+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2da53263e036d6f34ab4db98.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHbOv1wQM19iQ/company-logo_100_100/company-logo_100_100/0/1630586760609/cdfl_logo?e=2147483647&v=beta&t=ot7f_uBaQoN0gq1CKw1U0lIMHAwyaM7U-jlLIzpUR_Y",
+    "companyUrl": "https://hk.linkedin.com/company/cdfl",
+    "sourceJobId": "4481144019"
+  },
+  "citic securities international": {
+    "name": "CITIC Securities International",
+    "checkedAt": "2026-10-21T22:03:08.333915+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "94e4b747599e30ff2671afb3.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHDLXhhwnkqkg/company-logo_100_100/B56aFXB2LrJEAI-/0/1792461464497/citicsintl_logo?e=2147483647&v=beta&t=WgQ65SWMx6y4gxLQJLYpoSZFcogtaQ0vrEQ-jlIdPyc",
+    "companyUrl": "https://hk.linkedin.com/company/citicsintl",
+    "sourceJobId": "4480740699"
+  },
+  "hoya surgical optics": {
+    "name": "HOYA Surgical Optics",
+    "checkedAt": "2026-10-21T22:03:11.206625+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2e78ec231d975cde2db2e110.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHiPCQc1E-44Q/company-logo_100_100/company-logo_100_100/0/1664964437980/hoyasurgicaloptics_logo?e=2147483647&v=beta&t=9QgGk0MrfqZyQQMKQRV0-zCbh2Ge3Dp0HqdTGfWOgqU",
+    "companyUrl": "https://sg.linkedin.com/company/hoyasurgicaloptics",
+    "sourceJobId": "4480786292"
+  },
+  "sika": {
+    "name": "Sika",
+    "checkedAt": "2026-10-21T22:03:14.205193+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e1963ba9309053d7f12222a5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHLb11dz4mjIw/company-logo_100_100/company-logo_100_100/0/1630636626339/sika_logo?e=2147483647&v=beta&t=TOm4nv0IfVfZeGdd51-DamubrQHeOS9QsbR7e5KmKjg",
+    "companyUrl": "https://ch.linkedin.com/company/sika",
+    "sourceJobId": "4478949477"
   }
 }

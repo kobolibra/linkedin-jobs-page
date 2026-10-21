@@ -2,45 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:38973598086:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-16T22:08:34.591412+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 15,
-      "retries": 2,
-      "httpStatuses": {
-        "429": 2,
-        "200": 10,
-        "404": 3
-      },
-      "outcomes": {
-        "rate_limited": 2,
-        "response": 13
-      },
-      "stages": {
-        "logos": 15
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 8,
-        "downloaded": 3,
-        "missing": 5,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 0,
-        "httpRetries": 2
-      }
-    },
-    {
       "runId": "jobs:38998372400:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7518,6 +7479,43 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:39683545854:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-21T22:03:38.273400+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 15,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 12,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 15
+      },
+      "stages": {
+        "logos": 15
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 9,
+        "downloaded": 4,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
