@@ -7819,5 +7819,46 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHIL4yH9JOTcQ/company-logo_100_100/company-logo_100_100/0/1721146534044/stefanini_na_apac_logo?e=2147483647&v=beta&t=mbbH6QjgptfV3jkFTruYlQoEsau39MqWm_E30IA5sJM",
     "companyUrl": "https://br.linkedin.com/company/stefanini-na-apac",
     "sourceJobId": "4481760531"
+  },
+  "advanced institute of information technology, peking university": {
+    "name": "Advanced Institute of Information Technology, Peking University",
+    "checkedAt": "2026-10-21T04:02:28.910313+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e919595f60d8a3984b56aab7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFyp3uGn1fs_g/company-logo_100_100/company-logo_100_100/0/1630655284484/_logo?e=2147483647&v=beta&t=c91NEVbJ5lQob6p5u3-SVq41hCMDhXQIY2Mn6Eq6KgU",
+    "companyUrl": "https://cn.linkedin.com/company/%E5%8C%97%E4%BA%AC%E5%A4%A7%E5%AD%A6%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E9%AB%98%E7%AD%89%E7%A0%94%E7%A9%B6%E9%99%A2",
+    "sourceJobId": "4478978169"
+  },
+  "otis elevator co.": {
+    "name": "Otis Elevator Co.",
+    "checkedAt": "2026-10-21T04:02:30.310080+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480473266",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480473266",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4480473266",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480473266",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480473266",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.6607676230583,
+        "deferred": true
+      }
+    ]
   }
 }
