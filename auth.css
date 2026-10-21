@@ -27,3 +27,13 @@
 [data-auth-state=guest] .auth-guest-sign{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;font-size:12px;font-weight:500;line-height:16px;min-height:32px;padding:8px;color:var(--ink);cursor:pointer;box-sizing:border-box;display:inline-flex;align-items:center;text-decoration:none;border-radius:6px;transition:background .15s ease}
 
 [data-auth-state=guest] .auth-guest-sign:hover{background:var(--surface-2,#e5e9e6)}
+
+/* Matching scale for the two header utilities, without a redundant account label. */
+.header-utility .account-trigger{width:32px;height:32px;padding:7px;border-radius:50%;color:var(--ink-soft)}
+.header-utility .account-trigger>svg{width:18px;height:18px;flex:none}
+.header-utility .account-name,.header-utility .account-chevron{display:none}
+.header-utility .theme-toggle{min-height:32px;gap:6px}
+.header-utility .theme-toggle .tt-ic svg{width:13px;height:13px}
+.header-utility .theme-toggle .tt-track{width:30px;height:17px}
+.header-utility .theme-toggle .tt-thumb{width:11px;height:11px}
+.header-utility .theme-toggle[data-mode="dark"] .tt-thumb{transform:translateX(13px)}
