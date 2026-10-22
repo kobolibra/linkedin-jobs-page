@@ -127,3 +127,47 @@
     gap:8px 12px;
   }
 }
+
+/* Final integrated editorial data band: folio + statistics share one surface.
+   This deliberately replaces the previously separate folio and floating card. */
+.masthead:has(> .nj-masthead-top) .nj-masthead-folio{
+  margin-top:0;
+  padding:16px 24px 10px;
+  border-top:1px solid var(--nj-rule);
+  border-radius:12px 12px 0 0;
+  background:var(--glass-soft);
+  align-items:center;
+}
+.masthead:has(> .nj-masthead-top) > .stats{
+  margin:0;
+  padding:0 0 5px;
+  background:var(--glass-soft);
+  border-radius:0 0 12px 12px;
+  box-shadow:none;
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
+}
+.masthead:has(> .nj-masthead-top) > .stats .stat{
+  height:76px;min-height:76px;max-height:76px;
+  padding-top:10px;
+  padding-bottom:15px;
+}
+@media(max-width:720px){
+  .masthead:has(> .nj-masthead-top) .nj-masthead-folio{
+    padding:13px 16px 9px;
+    border-radius:10px 10px 0 0;
+  }
+  .masthead:has(> .nj-masthead-top) > .stats{
+    border-radius:0 0 10px 10px;
+    padding-bottom:3px;
+  }
+  .masthead:has(> .nj-masthead-top) > .stats .stat{
+    padding-top:12px;padding-bottom:12px;
+  }
+}
+@media(max-width:420px){
+  .masthead:has(> .nj-masthead-top) .nj-masthead-folio{
+    padding-inline:14px;
+    gap:6px 10px;
+  }
+}
