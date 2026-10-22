@@ -4,39 +4,20 @@
  const ACCOUNT_MARK=`
   <svg class="account-mark" aria-hidden="true" viewBox="0 0 40 40" fill="none">
     <defs>
-      <radialGradient id="msn-classic-ground" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 8) rotate(54) scale(40)"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#dcebf1"/></radialGradient>
-      <linearGradient id="msn-classic-green-head" x1="10" y1="5" x2="16" y2="18" gradientUnits="userSpaceOnUse"><stop stop-color="#e1ff94"/><stop offset=".44" stop-color="#8bd846"/><stop offset="1" stop-color="#398b39"/></linearGradient>
-      <linearGradient id="msn-classic-green-body" x1="8" y1="20" x2="17" y2="35" gradientUnits="userSpaceOnUse"><stop stop-color="#baf75c"/><stop offset=".55" stop-color="#56bd45"/><stop offset="1" stop-color="#197148"/></linearGradient>
-      <linearGradient id="msn-classic-blue-head" x1="20" y1="4" x2="27" y2="18" gradientUnits="userSpaceOnUse"><stop stop-color="#c1fbff"/><stop offset=".42" stop-color="#55c9f4"/><stop offset="1" stop-color="#1553b5"/></linearGradient>
-      <linearGradient id="msn-classic-blue-body" x1="21" y1="19" x2="27" y2="37" gradientUnits="userSpaceOnUse"><stop stop-color="#76e1f6"/><stop offset=".48" stop-color="#158bd7"/><stop offset="1" stop-color="#123c96"/></linearGradient>
-      <linearGradient id="msn-classic-wing-blue" x1="11" y1="16" x2="19" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#d8fbff"/><stop offset=".42" stop-color="#59c9f1"/><stop offset="1" stop-color="#3160bd"/></linearGradient>
-      <linearGradient id="msn-classic-wing-orange" x1="20" y1="16" x2="29" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#fff69a"/><stop offset=".45" stop-color="#ffb340"/><stop offset="1" stop-color="#e64e35"/></linearGradient>
-      <linearGradient id="msn-classic-wing-green" x1="11" y1="23" x2="19" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#d8ff85"/><stop offset=".5" stop-color="#72ce43"/><stop offset="1" stop-color="#189b69"/></linearGradient>
-      <linearGradient id="msn-classic-wing-yellow" x1="20" y1="23" x2="29" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#fff5a3"/><stop offset=".5" stop-color="#ffcf39"/><stop offset="1" stop-color="#ee8b31"/></linearGradient>
-      <clipPath id="msn-classic-crop"><circle cx="20" cy="20" r="19"/></clipPath>
+      <radialGradient id="msn-blue-ground" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(12 7) rotate(54) scale(42)"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#d9e9f1"/></radialGradient>
+      <linearGradient id="msn-blue-buddy" x1="11" y1="5" x2="28" y2="36" gradientUnits="userSpaceOnUse"><stop stop-color="#b9f3ff"/><stop offset=".28" stop-color="#5ec9f4"/><stop offset=".62" stop-color="#2188d3"/><stop offset="1" stop-color="#174b9c"/></linearGradient>
+      <linearGradient id="msn-blue-highlight" x1="12" y1="7" x2="28" y2="27" gradientUnits="userSpaceOnUse"><stop stop-color="#ffffff" stop-opacity=".82"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
+      <clipPath id="msn-blue-crop"><circle cx="20" cy="20" r="19"/></clipPath>
     </defs>
-    <circle cx="20" cy="20" r="19.2" fill="url(#msn-classic-ground)" stroke="#cbdde5" stroke-width=".8"/>
-    <g clip-path="url(#msn-classic-crop)">
-      <path d="M2.3 35.2c.2-8.2 4.6-13.4 11-14.9l4.9 3.2 4.7-3.1c6.1 1.5 9.4 6.3 9.6 14.8l-.4 3.5H2.7l-.4-3.5Z" fill="url(#msn-classic-green-body)" stroke="#f8ffff" stroke-opacity=".9" stroke-width=".65"/>
-      <path d="M7.1 25.3c2.6-2.7 6.5-4.6 11-5.2" stroke="#efffc9" stroke-opacity=".7" stroke-width=".65" stroke-linecap="round"/>
-      <circle cx="13.1" cy="11.1" r="5.6" fill="url(#msn-classic-green-head)" stroke="#f8ffff" stroke-width=".7"/>
-      <ellipse cx="11.7" cy="8.8" rx="2.5" ry="1.1" fill="#fff" fill-opacity=".42"/>
-      <path d="M11.2 15.2c1.1 1 2.6 1.5 4.1 1.4" stroke="#276f44" stroke-opacity=".45" stroke-width=".6" stroke-linecap="round"/>
-      <path d="M12.5 35.5c.2-9.1 4.1-14.9 10.1-16.4l5.1 3.2 5-3.1c6.4 1.7 9.2 7.6 9.4 16.3l-.5 3.2H13l-.5-3.2Z" fill="url(#msn-classic-blue-body)" stroke="#f9ffff" stroke-opacity=".94" stroke-width=".7"/>
-      <path d="M19.2 23.7c2.7-2.6 6.4-3.9 10-4" stroke="#c4f8ff" stroke-opacity=".82" stroke-width=".75" stroke-linecap="round"/>
-      <circle cx="23.6" cy="10.5" r="6.2" fill="url(#msn-classic-blue-head)" stroke="#fff" stroke-width=".75"/>
-      <ellipse cx="22" cy="7.8" rx="2.8" ry="1.25" fill="#fff" fill-opacity=".52"/>
-      <path d="M20.3 15.2c1.8 1.5 4.6 1.9 6.4 1" stroke="#124e9b" stroke-opacity=".55" stroke-width=".65" stroke-linecap="round"/>
-      <g stroke="#ffffff" stroke-width=".55" stroke-linejoin="round">
-        <path d="M19.35 22.2c-2.4-1.6-6.5-6.5-8.3-5.7-1.9.9-.2 5.1 2.6 7.2 1.8 1.4 3.7 1.4 6.2.1Z" fill="url(#msn-classic-wing-blue)"/>
-        <path d="M20.65 22.2c2.4-1.6 6.5-6.5 8.3-5.7 1.9.9.2 5.1-2.6 7.2-1.8 1.4-3.7 1.4-6.2.1Z" fill="url(#msn-classic-wing-orange)"/>
-        <path d="M19.25 23c-2.6-.7-6.6-.5-7 1.6-.5 2.4 3.7 5.2 6.4 4.1 1-.4 1.5-1.8 1.7-3.3l-1.1-2.4Z" fill="url(#msn-classic-wing-green)"/>
-        <path d="M20.75 23c2.6-.7 6.6-.5 7 1.6.5 2.4-3.7 5.2-6.4 4.1-1-.4-1.5-1.8-1.7-3.3l1.1-2.4Z" fill="url(#msn-classic-wing-yellow)"/>
-      </g>
-      <path d="M19.9 21.3c-.5-1.2-1.5-2-2.7-2.5m2.8 2.5c.5-1.2 1.5-2 2.7-2.5M20 21.1v8.8" stroke="#38516b" stroke-width=".85" stroke-linecap="round"/>
-      <path d="M12.6 18.3c1.6 1.4 3.5 2 5.5 2.2m4.4-2.2c-1.6 1.4-3.5 2-5.5 2.2" stroke="#ffffff" stroke-opacity=".6" stroke-width=".5" stroke-linecap="round"/>
+    <circle cx="20" cy="20" r="19.2" fill="url(#msn-blue-ground)" stroke="#cbdde6" stroke-width=".8"/>
+    <g clip-path="url(#msn-blue-crop)">
+      <ellipse cx="20" cy="36.5" rx="12" ry="1.15" fill="#154d89" fill-opacity=".14"/>
+      <path d="M20 4.7c-4.8 0-8 3.3-8 7.9 0 3.1 1.4 5.6 3.8 6.8-5.7 1.1-9.4 5.8-10.2 12.2l-.3 2.1c-.2 1.5 1 2.7 2.5 2.7h24.4c1.5 0 2.7-1.2 2.5-2.7l-.3-2.1c-.8-6.4-4.5-11.1-10.2-12.2 2.4-1.2 3.8-3.7 3.8-6.8 0-4.6-3.2-7.9-8-7.9Z" fill="url(#msn-blue-buddy)" stroke="#f7fdff" stroke-width=".75" stroke-linejoin="round"/>
+      <path d="M14 9.5c1.2-2.1 3.1-3.2 5.7-3.2 2.4 0 4.2.9 5.4 2.8" stroke="#ffffff" stroke-opacity=".78" stroke-width="1.05" stroke-linecap="round"/>
+      <path d="M8.1 31.6c.9-5.3 3.2-8.7 7.2-10.2m9.4 0c3.8 1.5 6.1 4.7 7.1 9.9" stroke="url(#msn-blue-highlight)" stroke-width="1.1" stroke-linecap="round"/>
+      <path d="M14.8 20.1c1.5 1 3.3 1.5 5.2 1.5s3.7-.5 5.2-1.5" stroke="#d7f6ff" stroke-opacity=".62" stroke-width=".65" stroke-linecap="round"/>
     </g>
-    <circle cx="20" cy="20" r="19.2" stroke="#cbdde5" stroke-width=".8"/>
+    <circle cx="20" cy="20" r="19.2" stroke="#cbdde6" stroke-width=".8"/>
   </svg>`;
  async function api(path,options={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{return await sourceFetch(path,{credentials:'same-origin',cache:'no-store',...options,signal:controller.signal});}finally{clearTimeout(timer);}}
  function expired(){document.getElementById('jobs')?.replaceChildren();document.querySelector('.account-control')?.remove();location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));}
