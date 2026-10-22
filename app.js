@@ -693,8 +693,42 @@ jobsDataPromise
     const sy=v=>sBase-(v/smax)*sPlotH;
     const points=days.map((d,i)=>sx(i).toFixed(1)+','+sy(d.total).toFixed(1)).join(' ');
     const sticks=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1);return '<line class="rhythm-stick'+(d.weekend?' weekend':'')+'" x1="'+x+'" y1="'+sBase+'" x2="'+x+'" y2="'+y+'"/><line class="rhythm-tick'+(d.weekend?' weekend':'')+'" x1="'+x+'" y1="'+(sBase+2)+'" x2="'+x+'" y2="'+(sBase+9)+'"/>';}).join('');
+    // All 30 daily values must remain visible. Place labels around nodes,
+    // choosing non-colliding positions instead of suppressing most values.
     const peakIndex=peak>0?days.findIndex(d=>d.total===peak):-1;
-    const nodes=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1),isPeak=i===peakIndex,isCurrent=i===days.length-1,focus=isPeak||isCurrent,showValue=isCurrent||(isPeak&&i<days.length-4);return '<circle class="rhythm-node '+(d.weekend?'weekend ':'')+(focus?'focus':'')+'" cx="'+x+'" cy="'+y+'" r="'+(focus?4.6:3.2)+'"><title>'+d.label+' · '+d.total+' 个职位</title></circle>'+(showValue?'<text class="rhythm-value" x="'+x+'" y="'+(Math.max(10,sy(d.total)-10)).toFixed(1)+'" text-anchor="middle">'+d.total+'</text>':'');}).join('');
+    const labelBoxes=[];
+    const labels=Array(days.length).fill('');
+    const order=days.map((_,i)=>i).sort((i,j)=>(j===29?1:0)-(i===29?1:0)||(j===peakIndex?1:0)-(i===peakIndex?1:0)||i-j);
+    for(const i of order){
+      const d=days[i],x=sx(i),py=sy(d.total),value=String(d.total);
+      const width=Math.max(7,value.length*5.6+3),height=10;
+      const above=[-13,-25,-37,-49,-61,-73];
+      const below=[16,27,38,49,60,71];
+      const offsets=i%2===0?[...above,...below]:[...below,...above];
+      let chosen=null;
+      for(const offset of offsets){
+        const y=Math.max(11,Math.min(sBase-8,py+offset));
+        const box={left:x-width/2,right:x+width/2,top:y-height+1,bottom:y+2};
+        if(box.left<2||box.right>SW-2)continue;
+        if(labelBoxes.some(q=>box.left<q.right+2&&box.right+2>q.left&&box.top<q.bottom+2&&box.bottom+2>q.top))continue;
+        chosen={y,box};break;
+      }
+      // Reserve the nearest available vertical slot before dropping any datum.
+      if(!chosen){
+        for(let y=11;y<sBase-7;y+=11){
+          const box={left:x-width/2,right:x+width/2,top:y-height+1,bottom:y+2};
+          if(!labelBoxes.some(q=>box.left<q.right+1&&box.right+1>q.left&&box.top<q.bottom+1&&box.bottom+1>q.top)){
+            chosen={y,box};break;
+          }
+        }
+      }
+      // Always show the value: datasets of 30 days normally fit comfortably
+      // in the SVG, and the fallback retains the label even in a dense cluster.
+      const ly=chosen?chosen.y:Math.max(11,Math.min(sBase-8,py-13));
+      if(chosen)labelBoxes.push(chosen.box);
+      labels[i]='<text class="rhythm-value'+(i===29||i===peakIndex?' rhythm-value-key':'')+'" x="'+x.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle">'+value+'</text>';
+    }
+    const nodes=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1),focus=i===peakIndex||i===days.length-1;return '<circle class="rhythm-node '+(d.weekend?'weekend ':'')+(focus?'focus':'')+'" cx="'+x+'" cy="'+y+'" r="'+(focus?4.6:3.2)+'"><title>'+d.label+' · '+d.total+' 个职位</title></circle>'+labels[i];}).join('');
     const axis=[0,14,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="'+(SH-8)+'" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
