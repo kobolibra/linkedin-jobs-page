@@ -84,3 +84,46 @@
  .account-host .header-utility{right:16px;gap:2px}
  .masthead>.stats .stat .k{font-size:8.5px}
 }
+
+/* Editorial folio and the existing four metrics form one continuous unit.
+   Keep their original live values, update hooks and responsive 4-to-2 grid. */
+.masthead:has(> .nj-masthead-top) .nj-masthead-folio {
+  padding-top:12px;
+  padding-bottom:8px;
+  align-items:baseline;
+}
+.masthead:has(> .nj-masthead-top) > .stats {
+  margin-top:0;
+  margin-bottom:0;
+  border-radius:10px;
+  background:var(--glass-soft);
+}
+.masthead:has(> .nj-masthead-top) > .stats .stat {
+  align-items:flex-start;
+}
+.masthead:has(> .nj-masthead-top) > .stats .stat .k {
+  color:var(--nj-secondary);
+}
+.masthead:has(> .nj-masthead-top) > .analytics {
+  margin-top:16px;
+}
+@media(max-width:720px){
+  .masthead:has(> .nj-masthead-top) .nj-masthead-folio {
+    padding-top:11px;
+    padding-bottom:8px;
+    align-items:center;
+  }
+  .masthead:has(> .nj-masthead-top) > .stats{
+    margin-top:0;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    border-radius:10px;
+  }
+  .masthead:has(> .nj-masthead-top) > .stats .stat {
+    min-width:0;
+  }
+}
+@media(max-width:420px){
+  .masthead:has(> .nj-masthead-top) .nj-masthead-folio {
+    gap:8px 12px;
+  }
+}
