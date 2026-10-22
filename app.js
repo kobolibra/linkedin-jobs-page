@@ -668,7 +668,7 @@ jobsDataPromise
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));bucketCounts[ri][bi]++;}));
     const maxBucket=Math.max(1,...bucketCounts.flat());
-    const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];let lastMonthLabelX=-Infinity;for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();// Keep every boundary, but render a month label only when its own interval can fit it.
+    const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];let lastMonthLabelX=-Infinity;for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase()+(d.getMonth()===0?' '+String(d.getFullYear()).slice(-2):'');// Keep every boundary, but render a month label only when its own interval can fit it.
       // The 520-unit SVG shrinks on phones; even a short month name needs a
       // real visual lane or neighboring labels collide.
       const showLabel=((x1+x2)/2-lastMonthLabelX)>=44 && (x1+x2)/2>=left+10 && (x1+x2)/2<=left+plotW-10;
@@ -681,7 +681,7 @@ jobsDataPromise
     const densityStart=densityDate.format(new Date(tMin)).replaceAll('/','.');
     const densityEnd=densityDate.format(new Date(tMax)).replaceAll('/','.').replace(/^\d{4}\./,'');
     const distNote=document.getElementById('distNote');
-    if(distNote)distNote.textContent='统计口径为首次抓取日期：'+densityStart+'–'+densityEnd+'（共 '+densityWindowDays+' 天）';
+    if(distNote)distNote.textContent='首次抓取日期：'+densityStart+'–'+densityEnd+'（'+densityWindowDays+' 天）。色深表示各地区内部相对密度，不可跨地区比较。';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
