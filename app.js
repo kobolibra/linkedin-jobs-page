@@ -690,22 +690,36 @@ jobsDataPromise
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
     /* Editorial time-series: keep every daily value without floating labels.
        Trend geometry and the aligned two-row value rail are independent layers. */
-    const SW=520,SH=192,sLeft=26,sRight=20,sTop=15,sBase=115,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
+    /* Professional clean trend: two meaningful callouts and all data on demand. */
+    const SW=520,SH=150,sLeft=26,sRight=19,sTop=18,sBase=112,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
     const sy=v=>sBase-(v/smax)*sPlotH;
     const peakIndex=peak>0?days.findIndex(d=>d.total===peak):-1;
+    const latestIndex=days.length-1;
     const pts=days.map((d,i)=>({x:sx(i),y:sy(d.total),total:d.total}));
-    const points=pts.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
-    const scale=[0,.5,1].map(k=>{const y=sy(smax*k);return '<line class="rhythm-grid" x1="'+sLeft+'" y1="'+y.toFixed(1)+'" x2="'+(SW-sRight)+'" y2="'+y.toFixed(1)+'"/>';}).join('');
-    const sticks=pts.map((p,i)=>'<line class="rhythm-stick'+(days[i].weekend?' weekend':'')+'" x1="'+p.x.toFixed(1)+'" y1="'+sBase+'" x2="'+p.x.toFixed(1)+'" y2="'+p.y.toFixed(1)+'"/>').join('');
-    const nodes=pts.map((p,i)=>{const isPeak=i===peakIndex,isCurrent=i===days.length-1,focus=isPeak||isCurrent;return '<circle class="rhythm-node'+(days[i].weekend?' weekend':'')+(focus?' focus':'')+'" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(focus?3.5:2.15)+'"><title>'+days[i].label+' · '+p.total+' 个职位</title></circle>';}).join('');
-    // Two ordered numeric baselines: the column for each day stays directly below
-    // its graph point. Adjacent 3-digit counts have twice the horizontal room.
-    const values=pts.map((p,i)=>'<text class="rhythm-value'+(i===29?' rhythm-value-key':i===peakIndex?' rhythm-value-peak':'')+'" x="'+p.x.toFixed(1)+'" y="'+(i%2===0?144:160)+'" text-anchor="middle">'+p.total+'</text>').join('');
-    const ticks=pts.map((p,i)=>'<line class="rhythm-tick'+(i%2?' is-odd':'')+'" x1="'+p.x.toFixed(1)+'" y1="122" x2="'+p.x.toFixed(1)+'" y2="'+(i%2===0?133:149)+'"/>').join('');
-    const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="183" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
+    const series=pts.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
+    const lines=[0,.5,1].map(t=>'<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(smax*t).toFixed(2)+'" x2="'+(SW-sRight)+'" y2="'+sy(smax*t).toFixed(2)+'"/>').join('');
+    const stems=pts.map((p,i)=>'<line class="rhythm-stick'+(days[i].weekend?' weekend':'')+'" x1="'+p.x.toFixed(2)+'" y1="'+sBase+'" x2="'+p.x.toFixed(2)+'" y2="'+p.y.toFixed(2)+'"/>').join('');
+    const nodes=pts.map((p,i)=>{const highlight=i===peakIndex||i===latestIndex;return '<g class="rhythm-point" tabindex="0" role="button" data-day="'+i+'" aria-label="'+days[i].label+': '+p.total+' new postings"><circle class="rhythm-point-hit" cx="'+p.x.toFixed(2)+'" cy="'+p.y.toFixed(2)+'" r="8"/><circle class="rhythm-node'+(days[i].weekend?' weekend':'')+(highlight?' focus':'')+'" cx="'+p.x.toFixed(2)+'" cy="'+p.y.toFixed(2)+'" r="'+(highlight?3.7:2.35)+'"/><title>'+days[i].label+' · '+p.total+' new postings</title></g>';}).join('');
+    const keyLabel=(i,key)=>{const p=pts[i],anchor=i>25?'end':i<4?'start':'middle',dx=anchor==='end'?-4:anchor==='start'?4:0;return '<text class="rhythm-key-label rhythm-key-'+key+'" x="'+(p.x+dx).toFixed(2)+'" y="'+Math.max(11,p.y-12).toFixed(2)+'" text-anchor="'+anchor+'">'+key.toUpperCase()+' '+p.total+'</text>';};
+    // Peaks close to the last point would generate overlapping annotations:
+    // show just the latest callout and preserve peak in the summary beneath.
+    const callouts=(peakIndex>=0 && Math.abs(peakIndex-latestIndex)>3?keyLabel(peakIndex,'peak'):'')+keyLabel(latestIndex,'latest');
+    const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="144" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位；上方为趋势折线，下方为与日期对齐的完整 30 天数值。"><title>30-day new postings</title><desc>All 30 daily values are listed in two staggered rows below the trend. Date labels mark the start, weekly intervals and latest day.</desc>'+scale+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+'<line class="rhythm-data-divider" x1="'+sLeft+'" y1="121" x2="'+(SW-sRight)+'" y2="121"/>'+ticks+values+axis+'</svg>';
+    const current=days[latestIndex];
+    const peakDay=peakIndex>=0?days[peakIndex]:null;
+    const detailRows=days.map((d,i)=>'<div class="spark-detail-item'+(i===peakIndex?' is-peak':'')+(i===latestIndex?' is-latest':'')+'"><span class="spark-detail-date">'+d.label+'</span><strong class="spark-detail-value">'+d.total.toLocaleString()+'</strong></div>').join('');
+    sparkEl.innerHTML='<div class="spark-shell"><svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="group" aria-label="30-day new postings, showing peak and latest counts. Focus a date for exact values."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg><div class="spark-meta"><span class="spark-meta-item">PEAK <strong>'+(peakDay?peakDay.total.toLocaleString():'0')+'</strong><span>'+(peakDay?peakDay.label:'—')+'</span></span><span class="spark-meta-item">LATEST <strong>'+current.total.toLocaleString()+'</strong><span>'+current.label+'</span></span><button class="spark-detail-toggle" type="button" aria-expanded="false" aria-controls="spark-detail-30d">View all 30 days <span aria-hidden="true">↓</span></button></div><p class="spark-inspector" aria-live="polite">Focus or select a point to inspect its date and value.</p><div id="spark-detail-30d" class="spark-detail-panel" hidden><div class="spark-detail-grid">'+detailRows+'</div></div></div>';
+    const toggle=sparkEl.querySelector('.spark-detail-toggle'),details=sparkEl.querySelector('.spark-detail-panel'),inspector=sparkEl.querySelector('.spark-inspector');
+    toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));details.hidden=open;toggle.querySelector('span').textContent=open?'↓':'↑';});
+    sparkEl.querySelectorAll('.rhythm-point').forEach(point=>{
+      const inspect=()=>{const i=Number(point.dataset.day);inspector.textContent=days[i].label+' / '+days[i].total.toLocaleString()+' new postings';};
+      point.addEventListener('pointerenter',inspect);
+      point.addEventListener('focus',inspect);
+      point.addEventListener('click',inspect);
+      point.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inspect();}});
+    });
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);
