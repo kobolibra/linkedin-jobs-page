@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v17-monotonic-area-scale';
+  const MARK = 'editorial-ranked-active-roles-v1';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -232,8 +232,37 @@
       + pointMarkup + '</svg>';
   };
 
+
+  /* A ranked comparison is the appropriate primary encoding for "who is hiring".
+     Active role count determines ranking and bar length. Age statistics remain
+     visible but do not displace the primary measure onto an unrelated x/y plane. */
+  const buildRanked = (entries) => {
+    const rows = entries.slice(0,30);
+    const largest = Math.max(1,...rows.map(([,d])=>d.total));
+    const head = '<div class="nj-rank-head" aria-hidden="true"><span>RANK / INSTITUTION</span><span>ACTIVE ROLES</span><span>AVG. DAYS</span><span>MEDIAN DAYS</span></div>';
+    const body = rows.map(([name,datum],index)=>{
+      const ages=[...datum.ages].filter(Number.isFinite).sort((a,b)=>a-b);
+      const avg=ages.length?ages.reduce((a,b)=>a+b,0)/ages.length:null;
+      const mid=ages.length?(ages.length%2?ages[(ages.length-1)/2]:(ages[ages.length/2-1]+ages[ages.length/2])/2):null;
+      const n=Number(datum.total)||0;
+      const share=Math.max(0,Math.min(100,100*n/largest));
+      const safeName=escSvg(name);
+      const val=x=>x===null?'—':x.toFixed(1);
+      const spoken=safeName+', '+n+' active roles, average '+val(avg)+' days, median '+val(mid)+' days. Filter to this institution.';
+      return '<button type="button" class="nj-rank-row bubble-row bubble-drill" data-company="'+safeName+'" aria-label="'+spoken+'" style="--i:'+index+';--rank-share:'+share.toFixed(2)+'%">'
+        +'<span class="nj-rank-name"><span class="nj-rank-no">'+String(index+1).padStart(2,'0')+'</span><span class="nj-rank-institution" title="'+safeName+'">'+safeName+'</span></span>'
+        +'<span class="nj-rank-volume"><span class="nj-rank-track" aria-hidden="true"><span class="nj-rank-fill"></span></span><strong>'+n.toLocaleString('en-US')+'</strong></span>'
+        +'<span class="nj-rank-age"><span class="nj-rank-mobile-label">AVG</span>'+val(avg)+'</span>'
+        +'<span class="nj-rank-age"><span class="nj-rank-mobile-label">MEDIAN</span>'+val(mid)+'</span>'
+        +'</button>';
+    }).join('');
+    return '<div class="nj-rank-chart" aria-label="Top 30 institutions sorted by active role count; bars are relative to the largest institution. Select a row to filter jobs.">'
+      +'<p class="nj-rank-caption">RANKED BY ACTIVE ROLES <span aria-hidden="true">/</span> BAR SCALE RELATIVE TO LEADER <span aria-hidden="true">/</span> DAYS SINCE FIRST SEEN</p>'
+      +head+'<div class="nj-rank-rows">'+body+'</div></div>';
+  };
+
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { computeLayout, buildSvg, labelWidth, LABEL_H };
+    module.exports = { computeLayout, buildSvg, buildRanked, labelWidth, LABEL_H };
   }
   if (typeof document === 'undefined') return;
 
@@ -280,9 +309,9 @@
       .sort((a, b) => b[1].total - a[1].total || a[0].localeCompare(b[0], 'zh-Hans-CN'))
       .slice(0, 30);
     if (!top.length) return;
-    const svg = buildSvg(computeLayout(top));
+    const html = buildRanked(top);
     host.classList.remove('is-ready');
-    host.innerHTML = svg;
+    host.innerHTML = html;
     host.dataset.layout = MARK;
     requestAnimationFrame(() => host.classList.add('is-ready'));
   };
