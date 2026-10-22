@@ -2,30 +2,31 @@
 (()=>{
  const sourceFetch=window.fetch.bind(window);let account=null,lastCheck=0;
  const ACCOUNT_MARK=`
-  <svg class="account-mark" aria-hidden="true" viewBox="0 0 32 32" fill="none">
+  <svg class="account-mark" aria-hidden="true" viewBox="0 0 40 40" fill="none">
     <defs>
-      <linearGradient id="buddy-blue" x1="5" y1="6" x2="13" y2="25" gradientUnits="userSpaceOnUse"><stop stop-color="#71c9f6"/><stop offset="1" stop-color="#1879c4"/></linearGradient>
-      <linearGradient id="buddy-green" x1="19" y1="5" x2="25" y2="25" gradientUnits="userSpaceOnUse"><stop stop-color="#b4e95e"/><stop offset="1" stop-color="#55a832"/></linearGradient>
-      <linearGradient id="buddy-wing-orange" x1="12" y1="12" x2="16" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#ff8858"/><stop offset="1" stop-color="#f35325"/></linearGradient>
-      <linearGradient id="buddy-wing-blue" x1="16" y1="12" x2="20" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#43c9f1"/><stop offset="1" stop-color="#00a4ef"/></linearGradient>
-      <linearGradient id="buddy-wing-green" x1="12" y1="16" x2="16" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#a4d958"/><stop offset="1" stop-color="#7fba00"/></linearGradient>
-      <linearGradient id="buddy-wing-yellow" x1="16" y1="16" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd45a"/><stop offset="1" stop-color="#ffb900"/></linearGradient>
-      <clipPath id="buddy-avatar-clip"><circle cx="16" cy="16" r="15.1"/></clipPath>
+      <radialGradient id="account-avatar-ground" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 10) rotate(55) scale(30)"><stop stop-color="#f8fbfc"/><stop offset="1" stop-color="#dce8ee"/></radialGradient>
+      <linearGradient id="account-avatar-face" x1="15" y1="8" x2="25" y2="25" gradientUnits="userSpaceOnUse"><stop stop-color="#f4d1b2"/><stop offset="1" stop-color="#d99f7c"/></linearGradient>
+      <linearGradient id="account-avatar-hair" x1="14" y1="4" x2="26" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#394653"/><stop offset="1" stop-color="#182a3a"/></linearGradient>
+      <linearGradient id="account-avatar-suit" x1="12" y1="27" x2="29" y2="39" gradientUnits="userSpaceOnUse"><stop stop-color="#294a66"/><stop offset="1" stop-color="#122b42"/></linearGradient>
+      <clipPath id="account-avatar-crop"><circle cx="20" cy="20" r="19"/></clipPath>
     </defs>
-    <circle cx="16" cy="16" r="15.15" fill="#f4f8fb" stroke="#d8e4eb" stroke-width=".8"/>
-    <g clip-path="url(#buddy-avatar-clip)">
-      <path d="M1.8 26.2c.1-5.3 3.5-9.4 8.1-9.4 3.2 0 5.7 1.8 7.1 4.7v4.7H1.8Z" fill="url(#buddy-blue)" stroke="#fff" stroke-width=".75"/>
-      <circle cx="9.9" cy="10.2" r="4.1" fill="url(#buddy-blue)" stroke="#fff" stroke-width=".75"/>
-      <path d="M15 26.2c.1-5.3 3.5-9.4 8.1-9.4 4.6 0 7 4.1 7.1 9.4H15Z" fill="url(#buddy-green)" stroke="#fff" stroke-width=".75"/>
-      <circle cx="22.1" cy="10.2" r="4.1" fill="url(#buddy-green)" stroke="#fff" stroke-width=".75"/>
-      <g stroke="#fff" stroke-width=".45" stroke-linejoin="round">
-        <path d="M15.55 16.1c-1.2-1.1-2.8-3.4-3.7-2.9-.9.5.1 2.6 1.4 3.5.7.5 1.5.5 2.3.2Z" fill="url(#buddy-wing-orange)"/>
-        <path d="M16.45 16.1c1.2-1.1 2.8-3.4 3.7-2.9.9.5-.1 2.6-1.4 3.5-.7.5-1.5.5-2.3.2Z" fill="url(#buddy-wing-blue)"/>
-        <path d="M15.55 16.2c-1.2.1-2.7-.2-3.4.6-.7.7.4 2.1 1.5 2.1 1 0 1.6-1.1 2-2.2Z" fill="url(#buddy-wing-green)"/>
-        <path d="M16.45 16.2c1.2.1 2.7-.2 3.4.6.7.7-.4 2.1-1.5 2.1-1 0-1.6-1.1-2-2.2Z" fill="url(#buddy-wing-yellow)"/>
-      </g>
-      <path d="M16 15.2c-.3-.8-.8-1.3-1.5-1.8m1.5 1.8c.3-.8.8-1.3 1.5-1.8m-1.5 1.7v4" stroke="#38596a" stroke-width=".55" stroke-linecap="round"/>
+    <circle cx="20" cy="20" r="19.2" fill="url(#account-avatar-ground)" stroke="#d0dfe6" stroke-width=".8"/>
+    <g clip-path="url(#account-avatar-crop)">
+      <path d="M3.2 41c.2-8.7 4.8-13.4 12.4-15.2l4.4 3.1 4.4-3.1c7.6 1.8 12.2 6.5 12.4 15.2H3.2Z" fill="url(#account-avatar-suit)"/>
+      <path d="m14.8 26 5.2 4.7 5.2-4.7 3 3.3-5.5 8.2h-5.4l-5.5-8.2 3-3.3Z" fill="#f5f4ef"/>
+      <path d="m18.2 30.2 1.8 1.3 1.8-1.3 1.1 7.3h-5.8l1.1-7.3Z" fill="#9d794c"/>
+      <path d="M16.3 21.5h7.4v7.1c-1.7 1.7-5.7 1.7-7.4 0v-7.1Z" fill="url(#account-avatar-face)"/>
+      <ellipse cx="20" cy="14.2" rx="8.2" ry="9.8" fill="url(#account-avatar-hair)"/>
+      <path d="M12.8 16.2c-1.1.1-1.8 1-1.7 2 .1 1.2.9 1.9 2 1.9m13.8-3.9c1.1.1 1.8 1 1.7 2-.1 1.2-.9 1.9-2 1.9" fill="url(#account-avatar-face)" stroke="#bf8768" stroke-width=".45"/>
+      <ellipse class="avatar-face" cx="20" cy="16.7" rx="6.35" ry="8.6" fill="url(#account-avatar-face)"/>
+      <path d="M13.1 16.1c-.8-2.1-.9-4.5-.4-6.6.9-3.6 3.7-5.8 7.2-5.8 4.4 0 7.4 3.2 7.4 7.5 0 1.7-.3 3.3-.9 4.7-.4-1.4-.9-2.7-1.6-3.8-2.4.8-5.5.6-8.1-1.4-.5 2.2-1.7 4.1-3.6 5.4Z" fill="url(#account-avatar-hair)"/>
+      <path d="M16.1 16.8c.8-.5 1.6-.5 2.4-.1m3-.1c.8-.4 1.6-.4 2.4.1" stroke="#554238" stroke-width=".7" stroke-linecap="round"/>
+      <path d="M17.1 18.2v.1m5.8-.1v.1" stroke="#253746" stroke-width="1.15" stroke-linecap="round"/>
+      <path d="m20.7 18.8-.7 2 1 .2m-3.1 1.3c1.2.8 2.8.8 4.1-.1" stroke="#a86557" stroke-width=".55" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m13.3 27.2 6.7 5.1-3.4 4.4-6-7.9 2.7-1.6Zm13.4 0L20 32.3l3.4 4.4 6-7.9-2.7-1.6Z" fill="#355773" stroke="#8da4b4" stroke-opacity=".55" stroke-width=".45"/>
+      <path d="M7 35.8c2.2-3.3 4.5-5.2 7.3-6.3m18.7 6.3c-2.2-3.3-4.5-5.2-7.3-6.3" stroke="#708ba0" stroke-opacity=".65" stroke-width=".45"/>
     </g>
+    <circle cx="20" cy="20" r="19.2" stroke="#d0dfe6" stroke-width=".8"/>
   </svg>`;
  async function api(path,options={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{return await sourceFetch(path,{credentials:'same-origin',cache:'no-store',...options,signal:controller.signal});}finally{clearTimeout(timer);}}
  function expired(){document.getElementById('jobs')?.replaceChildren();document.querySelector('.account-control')?.remove();location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));}

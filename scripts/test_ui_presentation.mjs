@@ -23,13 +23,13 @@ test('shared sign-in copy has no trailing period', () => {
   assert.doesNotMatch(login, /New accounts are created automatically\./);
 });
 
-test('account avatar is the classic two-buddy Messenger motif, not the standalone butterfly mark', () => {
-  assert.match(account, /class="account-mark" aria-hidden="true" viewBox="0 0 32 32"/);
-  assert.ok(account.includes('circle cx="9.9"') && account.includes('circle cx="22.1"'), 'both buddy heads should be present');
-  for (const color of ['#1879c4', '#55a832', '#f35325', '#00a4ef', '#7fba00', '#ffb900']) {
-    assert.ok(account.includes(color), `missing Messenger palette color ${color}`);
+test('account avatar is a refined professional portrait, not a mascot or brand logo', () => {
+  assert.match(account, /class="account-mark" aria-hidden="true" viewBox="0 0 40 40"/);
+  for (const detail of ['class="avatar-face"', 'account-avatar-hair', 'account-avatar-suit', 'clip-path="url(#account-avatar-crop)"']) {
+    assert.ok(account.includes(detail), `missing portrait detail ${detail}`);
   }
-  assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:22px;height:22px/);
+  assert.doesNotMatch(account, /buddy-wing|msn-wing|butterfly/);
+  assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:24px;height:24px/);
 });
 
 test('desktop corner controls share the same edge inset and button height', () => {
@@ -54,6 +54,7 @@ test('mobile guestbook remains 40 by 40 and the dialog is unchanged', () => {
 test('changed browser assets use fresh cache keys', () => {
   assert.match(index, /styles-list\.css\?v=corner-controls-1/);
   assert.match(index, /app\.js\?v=corner-icons-1/);
-  assert.match(index, /account\.js\?v=buddy-avatar-2/);
+  assert.match(index, /auth\.css\?v=professional-avatar-1/);
+  assert.match(index, /account\.js\?v=professional-avatar-1/);
   assert.match(index, /guestbook\.js\?v=reply-like-157/);
 });
