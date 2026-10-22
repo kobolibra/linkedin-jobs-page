@@ -90,3 +90,7 @@
 @media(max-width:720px) {
   .nj-masthead-folio {padding:13px 0 3px;gap:8px 12px}
 }
+
+/* Approved relationship: transparent folio above an independent soft metric card. */
+.masthead:has(> .nj-masthead-top) > .stats {margin-top:12px}
+@media(max-width:720px){.masthead:has(> .nj-masthead-top) > .stats{margin-top:10px}}
