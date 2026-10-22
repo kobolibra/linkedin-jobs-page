@@ -2,500 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "jobs:39020719767:1",
-      "task": "jobs",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-17T09:42:13.781146+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 8,
-        "deferredQueries": 8
-      },
-      "requests": 414,
-      "retries": 8,
-      "httpStatuses": {
-        "200": 406,
-        "429": 8
-      },
-      "outcomes": {
-        "response": 406,
-        "rate_limited": 8,
-        "query_deferred": 8
-      },
-      "stages": {
-        "search": 414
-      },
-      "detailEndpoints": {},
-      "queries": {
-        "Bank of America::CN": "ok: 3 jobs",
-        "Bank of America::HK": "partial@resumed-end: 18 jobs",
-        "Bank of America::SG": "ok: 37 jobs",
-        "BBVA::CN": "partial@resumed-end: 4 jobs",
-        "BBVA::HK": "partial@resumed-end: 15 jobs",
-        "BBVA::SG": "ok: 7 jobs",
-        "BlackRock::CN": "ok: 1 jobs",
-        "BlackRock::HK": "ok: 4 jobs",
-        "BlackRock::SG": "ok: 8 jobs",
-        "BNP Paribas::CN": "ok: 5 jobs",
-        "BNP Paribas::HK": "ok: 36 jobs",
-        "BNP Paribas::SG": "ok: 24 jobs",
-        "Citi::CN": "ok: 49 jobs",
-        "Citi::HK": "ok: 85 jobs",
-        "Citi::SG": "ok: 116 jobs",
-        "DBS Bank::CN": "partial@resumed-end: 82 jobs",
-        "DBS Bank::HK": "ok: 326 jobs",
-        "DBS Bank::SG": "ok: 306 jobs",
-        "Deutsche Bank::CN": "ok: 14 jobs",
-        "Deutsche Bank::HK": "ok: 19 jobs",
-        "Deutsche Bank::SG": "ok: 36 jobs",
-        "Fidelity International::CN": "ok: 14 jobs",
-        "Fidelity International::HK": "ok: 15 jobs",
-        "Fidelity International::SG": "ok: 3 jobs",
-        "Goldman Sachs::CN": "ok: 8 jobs",
-        "Goldman Sachs::HK": "ok: 31 jobs",
-        "Goldman Sachs::SG": "ok: 16 jobs",
-        "HSBC::CN": "partial@resumed-end: 437 jobs",
-        "HSBC::HK": "ok: 133 jobs",
-        "HSBC::SG": "ok: 92 jobs",
-        "JPMorgan Chase::CN": "ok: 43 jobs",
-        "JPMorgan Chase::HK": "ok: 99 jobs",
-        "JPMorgan Chase::SG": "ok: 147 jobs",
-        "Morgan Stanley::CN": "ok: 20 jobs",
-        "Morgan Stanley::HK": "ok: 63 jobs",
-        "Morgan Stanley::SG": "ok: 20 jobs",
-        "Natixis::CN": "ok: 11 jobs",
-        "Natixis::HK": "ok: 17 jobs",
-        "Natixis::SG": "ok: 7 jobs",
-        "Societe Generale::CN": "ok: 6 jobs",
-        "Societe Generale::HK": "ok: 40 jobs",
-        "Societe Generale::SG": "ok: 10 jobs",
-        "Standard Chartered::CN": "ok: 280 jobs",
-        "Standard Chartered::HK": "partial@resumed-end: 87 jobs",
-        "Standard Chartered::SG": "ok: 9 jobs",
-        "UBS::CN": "ok: 13 jobs",
-        "UBS::HK": "partial@resumed-end: 33 jobs",
-        "UBS::SG": "ok: 40 jobs"
-      },
-      "searchTransport": {
-        "HSBC::CN": {
-          "requests": 47,
-          "retries": 1,
-          "httpStatuses": {
-            "200": 46,
-            "429": 1
-          },
-          "rateLimitedPages": [
-            10
-          ]
-        },
-        "Citi::CN": {
-          "requests": 7,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 7
-          },
-          "rateLimitedPages": []
-        },
-        "Citi::HK": {
-          "requests": 11,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 11
-          },
-          "rateLimitedPages": []
-        },
-        "Citi::SG": {
-          "requests": 14,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 14
-          },
-          "rateLimitedPages": []
-        },
-        "JPMorgan Chase::CN": {
-          "requests": 7,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 7
-          },
-          "rateLimitedPages": []
-        },
-        "JPMorgan Chase::HK": {
-          "requests": 12,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 12
-          },
-          "rateLimitedPages": []
-        },
-        "JPMorgan Chase::SG": {
-          "requests": 17,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 17
-          },
-          "rateLimitedPages": []
-        },
-        "BNP Paribas::CN": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "BNP Paribas::HK": {
-          "requests": 6,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 6
-          },
-          "rateLimitedPages": []
-        },
-        "BNP Paribas::SG": {
-          "requests": 5,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 5
-          },
-          "rateLimitedPages": []
-        },
-        "Standard Chartered::CN": {
-          "requests": 30,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 30
-          },
-          "rateLimitedPages": []
-        },
-        "Societe Generale::CN": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Societe Generale::HK": {
-          "requests": 6,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 6
-          },
-          "rateLimitedPages": []
-        },
-        "Societe Generale::SG": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "DBS Bank::CN": {
-          "requests": 13,
-          "retries": 2,
-          "httpStatuses": {
-            "200": 11,
-            "429": 2
-          },
-          "rateLimitedPages": [
-            40
-          ]
-        },
-        "Deutsche Bank::CN": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Deutsche Bank::HK": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Standard Chartered::HK": {
-          "requests": 12,
-          "retries": 1,
-          "httpStatuses": {
-            "200": 11,
-            "429": 1
-          },
-          "rateLimitedPages": [
-            10
-          ]
-        },
-        "Goldman Sachs::CN": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Goldman Sachs::HK": {
-          "requests": 6,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 6
-          },
-          "rateLimitedPages": []
-        },
-        "Goldman Sachs::SG": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Deutsche Bank::SG": {
-          "requests": 6,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 6
-          },
-          "rateLimitedPages": []
-        },
-        "BlackRock::CN": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "BlackRock::HK": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "BlackRock::SG": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Bank of America::CN": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Fidelity International::CN": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Fidelity International::HK": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Fidelity International::SG": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Bank of America::HK": {
-          "requests": 5,
-          "retries": 1,
-          "httpStatuses": {
-            "200": 4,
-            "429": 1
-          },
-          "rateLimitedPages": [
-            10
-          ]
-        },
-        "Morgan Stanley::CN": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Morgan Stanley::HK": {
-          "requests": 9,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 9
-          },
-          "rateLimitedPages": []
-        },
-        "Morgan Stanley::SG": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "BBVA::CN": {
-          "requests": 4,
-          "retries": 1,
-          "httpStatuses": {
-            "200": 3,
-            "429": 1
-          },
-          "rateLimitedPages": [
-            10
-          ]
-        },
-        "UBS::CN": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "UBS::HK": {
-          "requests": 7,
-          "retries": 1,
-          "httpStatuses": {
-            "200": 6,
-            "429": 1
-          },
-          "rateLimitedPages": [
-            30
-          ]
-        },
-        "Natixis::CN": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Natixis::HK": {
-          "requests": 4,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 4
-          },
-          "rateLimitedPages": []
-        },
-        "Natixis::SG": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Standard Chartered::SG": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "Bank of America::SG": {
-          "requests": 6,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 6
-          },
-          "rateLimitedPages": []
-        },
-        "BBVA::HK": {
-          "requests": 6,
-          "retries": 1,
-          "httpStatuses": {
-            "200": 5,
-            "429": 1
-          },
-          "rateLimitedPages": [
-            30
-          ]
-        },
-        "HSBC::HK": {
-          "requests": 16,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 16
-          },
-          "rateLimitedPages": []
-        },
-        "HSBC::SG": {
-          "requests": 12,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 12
-          },
-          "rateLimitedPages": []
-        },
-        "DBS Bank::HK": {
-          "requests": 35,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 35
-          },
-          "rateLimitedPages": []
-        },
-        "BBVA::SG": {
-          "requests": 3,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 3
-          },
-          "rateLimitedPages": []
-        },
-        "UBS::SG": {
-          "requests": 6,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 6
-          },
-          "rateLimitedPages": []
-        },
-        "DBS Bank::SG": {
-          "requests": 33,
-          "retries": 0,
-          "httpStatuses": {
-            "200": 33
-          },
-          "rateLimitedPages": []
-        }
-      },
-      "cooldowns": {},
-      "livenessTransport": {},
-      "details": {
-        "attempted": 0,
-        "candidates": 0,
-        "ok": 0,
-        "blocked": 0,
-        "failed": 0,
-        "gone": 0
-      },
-      "liveness": {}
-    },
-    {
       "runId": "logos:39023604596:1",
       "task": "logos",
       "workflowStatus": "success",
@@ -7497,55 +7003,92 @@
         "reusedSources": 0,
         "httpRetries": 0
       }
+    },
+    {
+      "runId": "logos:39760109900:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-22T10:03:38.129638+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 11,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 8,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 11
+      },
+      "stages": {
+        "logos": 11
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 7,
+        "downloaded": 2,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
     "Bank of America::CN": 0,
+    "BBVA::CN": 0,
+    "BlackRock::CN": 0,
+    "BNP Paribas::CN": 0,
+    "Citi::CN": 0,
+    "DBS Bank::CN": 0,
+    "Deutsche Bank::CN": 0,
+    "Fidelity International::CN": 0,
+    "Goldman Sachs::CN": 0,
+    "HSBC::CN": 0,
+    "JPMorgan Chase::CN": 0,
+    "Morgan Stanley::CN": 0,
+    "Natixis::CN": 0,
+    "Societe Generale::CN": 0,
+    "Standard Chartered::CN": 0,
+    "UBS::CN": 0,
     "Bank of America::HK": 0,
     "Bank of America::SG": 0,
-    "BBVA::CN": 0,
     "BBVA::HK": 0,
     "BBVA::SG": 0,
-    "BlackRock::CN": 0,
     "BlackRock::HK": 0,
     "BlackRock::SG": 0,
-    "BNP Paribas::CN": 0,
     "BNP Paribas::HK": 0,
     "BNP Paribas::SG": 0,
-    "Citi::CN": 0,
     "Citi::HK": 0,
     "Citi::SG": 0,
-    "DBS Bank::CN": 0,
     "DBS Bank::HK": 0,
     "DBS Bank::SG": 0,
-    "Deutsche Bank::CN": 0,
     "Deutsche Bank::HK": 0,
     "Deutsche Bank::SG": 0,
-    "Fidelity International::CN": 0,
     "Fidelity International::HK": 0,
     "Fidelity International::SG": 0,
-    "Goldman Sachs::CN": 0,
     "Goldman Sachs::HK": 0,
     "Goldman Sachs::SG": 0,
-    "HSBC::CN": 0,
     "HSBC::HK": 0,
     "HSBC::SG": 0,
-    "JPMorgan Chase::CN": 0,
     "JPMorgan Chase::HK": 0,
     "JPMorgan Chase::SG": 0,
-    "Morgan Stanley::CN": 0,
     "Morgan Stanley::HK": 0,
     "Morgan Stanley::SG": 0,
-    "Natixis::CN": 0,
     "Natixis::HK": 0,
     "Natixis::SG": 0,
-    "Societe Generale::CN": 0,
     "Societe Generale::HK": 0,
     "Societe Generale::SG": 0,
-    "Standard Chartered::CN": 0,
     "Standard Chartered::HK": 0,
     "Standard Chartered::SG": 0,
-    "UBS::CN": 0,
     "UBS::HK": 0,
     "UBS::SG": 0
   }

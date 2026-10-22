@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-22T04:03:12.713002+00:00",
+    "checkedAt": "2026-10-22T10:03:19.769459+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-22T04:03:18.748686+00:00",
+    "checkedAt": "2026-10-22T10:03:25.678637+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-22T04:03:24.831556+00:00",
+    "checkedAt": "2026-10-22T10:03:31.681335+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-22T04:03:27.842411+00:00",
+    "checkedAt": "2026-10-22T10:03:34.658544+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-22T04:03:09.868985+00:00",
+    "checkedAt": "2026-10-22T10:03:16.852069+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8040,5 +8040,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH0Y2QUksee2w/company-logo_100_100/B56Z1k1pTqHoAQ-/0/1775513278514/rbst_consulting_logo?e=2147483647&v=beta&t=lIR5sUEuK2yZu3WiFXWZAIESag_rdS0W4tWs5PrTH7E",
     "companyUrl": "https://www.linkedin.com/company/rbst-consulting",
     "sourceJobId": "4480786166"
+  },
+  "design bridge and partners": {
+    "name": "Design Bridge and Partners",
+    "checkedAt": "2026-10-22T10:03:12.509016+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1e39d90be1b77a2879821160.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQG3isfDNxUIIQ/company-logo_100_100/company-logo_100_100/0/1719904079601/designbridgeandpartners_logo?e=2147483647&v=beta&t=in2vIulO9RAlBjl5hydXhaPf17ruY3Dc3WkMXlbjbEc",
+    "companyUrl": "https://uk.linkedin.com/company/designbridgeandpartners",
+    "sourceJobId": "4469437238"
+  },
+  "leo pump": {
+    "name": "LEO PUMP",
+    "checkedAt": "2026-10-22T10:03:13.907263+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5ea14de36d0af62d90c602f8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH4-e2ww5KKKQ/company-logo_100_100/B56ZicOawzG4AU-/0/1754967682535/leopump_logo?e=2147483647&v=beta&t=u9kO96iLXDCgmVUJB5E5nH56-q0nU29Dh2OEoOM2HGE",
+    "companyUrl": "https://cn.linkedin.com/company/leopump",
+    "sourceJobId": "4482441736"
   }
 }
