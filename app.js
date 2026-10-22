@@ -13,14 +13,14 @@ const IC={
   up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="21" x2="12" y2="3"/><polyline points="3 12 12 3 21 12"/></svg>',
   rows:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'
 };
-const SUN='<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5" stroke="none"/><g fill="none"><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></g></svg>';
-const MOON='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const HALF_CIRCLE='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 3.5 A8.5 8.5 0 0 1 12 20.5 Z" fill="currentColor" stroke="none"/></svg>';
 const tbtn=document.getElementById('themeToggle');
-tbtn.innerHTML='<span class="tt-ic tt-sun">'+SUN+'</span><span class="tt-track"><span class="tt-thumb"></span></span><span class="tt-ic tt-moon">'+MOON+'</span>';
+tbtn.innerHTML='<span class="tt-ic tt-half">'+HALF_CIRCLE+'</span>';
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   tbtn.setAttribute('data-mode',t);
   tbtn.setAttribute('aria-checked',t==='dark'?'true':'false');
+  tbtn.setAttribute('aria-label',t==='dark'?'Switch to light mode':'Switch to dark mode');
   storageSet('theme',t);
 }
 setTheme(storageGet('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
