@@ -25,9 +25,9 @@
   .gb-fab svg { width:17px; height:17px; }
   [data-theme="dark"] .gb-fab { color:var(--navy); background:linear-gradient(180deg,var(--gold-hi),var(--gold)); }
   @media (min-width:721px){
-    .gb-fab { left:20px; bottom:20px; height:36px; gap:7px; padding:0 14px 0 12px; font-size:12px; box-shadow:0 6px 18px rgba(0,0,0,.16); }
+    .gb-fab { left:var(--corner-action-inset,20px); bottom:var(--corner-action-inset,20px); height:var(--corner-action-size,36px); gap:7px; padding:0 14px 0 12px; font-size:12px; box-shadow:0 6px 18px rgba(0,0,0,.16); }
     .gb-fab svg { width:15px; height:15px; }
-    .gb-fab:hover { transform:translateY(-1px); box-shadow:0 9px 22px rgba(0,0,0,.2); }
+    .gb-fab:hover { transform:none; box-shadow:0 9px 22px rgba(0,0,0,.2); }
   }
   @media (max-width:720px){
     .gb-fab { left:16px; bottom:max(16px,env(safe-area-inset-bottom)); width:40px; height:40px; justify-content:center; padding:0; border-color:color-mix(in srgb,var(--line-strong) 72%,transparent); }
