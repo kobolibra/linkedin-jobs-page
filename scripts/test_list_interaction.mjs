@@ -28,7 +28,7 @@ function section(cards,key='2026-10-11',continuation=false) {
   return s;
 }
 function harness(sections=[]) {
-  const c={Set,Map,CustomEvent:class{},document:{getElementById(){return element();},dispatchEvent(){}},
+  const c={Set,Map,window:{},CustomEvent:class{},document:{getElementById(){return element();},dispatchEvent(){}},
     jobsEl:element(),emptyEl:element(),searchEl:element(''),companyEl:element(),ageEl:element(),cityEl:element(),
     favEl:element(),compClear:element(),regionsEl:{querySelectorAll:()=>[]},activeCountEl:element(),activeOnlyEl:element(),
     blocked:new Set(),blockedKw:new Set(),favs:new Set(),daySections:sections,filteredCards:new Set(),
