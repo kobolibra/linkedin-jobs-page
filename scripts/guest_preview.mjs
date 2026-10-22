@@ -8,10 +8,18 @@ const number=v=>Number(v).toLocaleString('en-US');
 export function previewData(index,details={},now=Date.now()){
  if(!Array.isArray(index.jobs))throw Error('Preview requires a valid index');
  const active=index.jobs.filter(j=>j&&j.jobStatus!=='expired'&&regions.includes(j.location)&&j.title&&j.company&&/^https:\/\/(?:[a-z]{2,3}\.)?linkedin\.com\/jobs\/view\//i.test(j.link||''));
- const ordered=[...active].sort((a,b)=>(date(b.firstSeen||b.pushTime)-date(a.firstSeen||a.pushTime))||String(a.link).localeCompare(String(b.link)));
+ // Match the homepage's publication order: newest pushTime first, then
+ // firstSeen, with the same region tie-break used by app.js. Do not fill a
+ // fixed quota per region; that can pull yesterday's jobs ahead of today's feed.
+ const rank={CN:0,HK:1,SG:2};
+ const ordered=active.map((job,index)=>({job,index})).sort((a,b)=>{
+  const time=date(b.job.pushTime||b.job.firstSeen)-date(a.job.pushTime||a.job.firstSeen);
+  if(time)return time;
+  const region=(rank[a.job.location]??9)-(rank[b.job.location]??9);
+  return region||a.index-b.index;
+ });
  const selected=[],seen=new Set();
- for(const region of regions){let count=0;for(const j of ordered){if(j.location!==region||seen.has(j.link))continue;seen.add(j.link);selected.push(j);if(++count===4)break;}}
- selected.sort((a,b)=>(date(b.firstSeen||b.pushTime)-date(a.firstSeen||a.pushTime))||String(a.link).localeCompare(String(b.link)));
+ for(const {job} of ordered){if(seen.has(job.link))continue;seen.add(job.link);selected.push(job);if(selected.length===12)break;}
  const source=details.details||details;
  const jobs=selected.map(j=>{const match=j.link.match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const entry=id?source[id]:null;
   const raw=String(entry?.descriptionHtml||entry?.description||'').replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&[a-z0-9#]+;/gi,' ').replace(/\s+/g,' ').trim();
