@@ -24,7 +24,7 @@ test('shared sign-in copy has no trailing period', () => {
 });
 
 test('account avatar uses the sourced classic single blue MSN buddy asset', () => {
-  assert.match(account, /<img class="account-mark" src="\/assets\/avatars\/msn-buddy-1min\.png" alt="" aria-hidden="true">/);
+  assert.match(account, /<img class="account-mark" src="\/assets\/avatars\/misc-buddy-blue\.png" alt="" aria-hidden="true">/);
   assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:24px;height:24px;flex:none;object-fit:contain\}/);
 });
 
@@ -51,6 +51,6 @@ test('changed browser assets use fresh cache keys', () => {
   assert.match(index, /styles-list\.css\?v=corner-controls-1/);
   assert.match(index, /app\.js\?v=corner-icons-1/);
   assert.match(index, /auth\.css\?v=professional-avatar-1/);
-  assert.match(index, /account\.js\?v=msn-buddy-asset-1/);
+  assert.match(index, /account\.js\?v=msn-buddy-asset-2/);
   assert.match(index, /guestbook\.js\?v=reply-like-157/);
 });
