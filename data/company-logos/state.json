@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-22T16:03:48.576959+00:00",
+    "checkedAt": "2026-10-22T22:03:35.529833+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-22T16:03:54.460623+00:00",
+    "checkedAt": "2026-10-22T22:03:41.121822+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-22T16:04:00.628011+00:00",
+    "checkedAt": "2026-10-22T22:03:47.155914+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-22T16:04:03.495635+00:00",
+    "checkedAt": "2026-10-22T22:03:50.181042+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-22T16:03:45.794501+00:00",
+    "checkedAt": "2026-10-22T22:03:32.319729+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8088,5 +8088,41 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E5%87%AF%E7%9F%B3%E6%8A%95%E8%B5%84",
     "sourceJobId": "4478979130"
+  },
+  "auberge discovery bay hong kong": {
+    "name": "Auberge Discovery Bay Hong Kong",
+    "checkedAt": "2026-10-22T22:03:24.959233+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1f227e0bb096365d2acdd06c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGohO-ezEut8A/company-logo_100_100/B56ZsA3.nQHQAQ-/0/1765246233497/auberge_discovery_bay_hong_kong_logo?e=2147483647&v=beta&t=u9Ye-NwqTRkbVrjb3Ka7kimMe6dlmKpOAPkPosS9pAU",
+    "companyUrl": "https://hk.linkedin.com/company/auberge-discovery-bay-hong-kong",
+    "sourceJobId": "4481386215"
+  },
+  "discovery bay international school": {
+    "name": "Discovery Bay International School",
+    "checkedAt": "2026-10-22T22:03:26.404763+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "63bb48fc335d28cb3e8b79b5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQG9qQVdZsGy1w/company-logo_100_100/company-logo_100_100/0/1630666487803/discovery_bay_international_school_logo?e=2147483647&v=beta&t=hS1hyMmjpOpuiJ6PDC79c_bTt4icw72fgZMtc9bnhuA",
+    "companyUrl": "https://hk.linkedin.com/company/discovery-bay-international-school",
+    "sourceJobId": "4481380519"
+  },
+  "康诺亚生物医药科技(成都)有限公司": {
+    "name": "康诺亚生物医药科技(成都)有限公司",
+    "checkedAt": "2026-10-22T22:03:29.309022+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "008dd521afabfd9dafd2d3ad.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQH2c-oFunC8_Q/company-logo_100_100/company-logo_100_100/0/1635753235546/___logo?e=2147483647&v=beta&t=JLA84Lr_JbK6DBm76c_7ha3GCXUWzR6lqRPlv0KdUXE",
+    "companyUrl": "https://www.linkedin.com/company/%E5%BA%B7%E8%AF%BA%E4%BA%9A%E7%94%9F%E7%89%A9%E5%8C%BB%E8%8D%AF%E7%A7%91%E6%8A%80-%E6%88%90%E9%83%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4479491012"
   }
 }
