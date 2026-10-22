@@ -707,19 +707,7 @@ jobsDataPromise
     const callouts=(peakIndex>=0 && Math.abs(peakIndex-latestIndex)>3?keyLabel(peakIndex,'peak'):'')+keyLabel(latestIndex,'latest');
     const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="144" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
-    const current=days[latestIndex];
-    const peakDay=peakIndex>=0?days[peakIndex]:null;
-    const detailRows=days.map((d,i)=>'<div class="spark-detail-item'+(i===peakIndex?' is-peak':'')+(i===latestIndex?' is-latest':'')+'"><span class="spark-detail-date">'+d.label+'</span><strong class="spark-detail-value">'+d.total.toLocaleString()+'</strong></div>').join('');
-    sparkEl.innerHTML='<div class="spark-shell"><svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="group" aria-label="30-day new postings, showing peak and latest counts. Focus a date for exact values."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg><div class="spark-meta"><span class="spark-meta-item">PEAK <strong>'+(peakDay?peakDay.total.toLocaleString():'0')+'</strong><span>'+(peakDay?peakDay.label:'—')+'</span></span><span class="spark-meta-item">LATEST <strong>'+current.total.toLocaleString()+'</strong><span>'+current.label+'</span></span><button class="spark-detail-toggle" type="button" aria-expanded="false" aria-controls="spark-detail-30d">View all 30 days <span aria-hidden="true">↓</span></button></div><p class="spark-inspector" aria-live="polite">Focus or select a point to inspect its date and value.</p><div id="spark-detail-30d" class="spark-detail-panel" hidden><div class="spark-detail-grid">'+detailRows+'</div></div></div>';
-    const toggle=sparkEl.querySelector('.spark-detail-toggle'),details=sparkEl.querySelector('.spark-detail-panel'),inspector=sparkEl.querySelector('.spark-inspector');
-    toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));details.hidden=open;toggle.querySelector('span').textContent=open?'↓':'↑';});
-    sparkEl.querySelectorAll('.rhythm-point').forEach(point=>{
-      const inspect=()=>{const i=Number(point.dataset.day);inspector.textContent=days[i].label+' / '+days[i].total.toLocaleString()+' new postings';};
-      point.addEventListener('pointerenter',inspect);
-      point.addEventListener('focus',inspect);
-      point.addEventListener('click',inspect);
-      point.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inspect();}});
-    });
+    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="30-day new postings trend. Point tooltips contain each date and its value."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);
