@@ -6,7 +6,7 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const guestbook=readFileSync(new URL('../guestbook.js',import.meta.url),'utf8');
 function indexHarness(fetch){
-  const context={AbortController,TextDecoder,setTimeout,clearTimeout,fetch};
+  const context={AbortController,TextDecoder,setTimeout,clearTimeout,fetch,document:{documentElement:{dataset:{authState:'authenticated'}}}};
   vm.createContext(context);
   vm.runInContext(source.slice(source.indexOf('async function fetchJobsIndex('),source.indexOf('// Keep conditional cache validation')),context);
   return context.fetchJobsIndex;
