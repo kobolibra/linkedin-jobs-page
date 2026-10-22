@@ -23,12 +23,12 @@ test('shared sign-in copy has no trailing period', () => {
   assert.doesNotMatch(login, /New accounts are created automatically\./);
 });
 
-test('account avatar is a refined professional portrait, not a mascot or brand logo', () => {
+test('account avatar uses the classic MSN Messenger duo and four-colour butterfly', () => {
   assert.match(account, /class="account-mark" aria-hidden="true" viewBox="0 0 40 40"/);
-  for (const detail of ['class="avatar-face"', 'account-avatar-hair', 'account-avatar-suit', 'clip-path="url(#account-avatar-crop)"']) {
-    assert.ok(account.includes(detail), `missing portrait detail ${detail}`);
+  for (const detail of ['msn-classic-green-head', 'msn-classic-green-body', 'msn-classic-blue-head', 'msn-classic-blue-body', 'msn-classic-wing-blue', 'msn-classic-wing-orange', 'msn-classic-wing-green', 'msn-classic-wing-yellow']) {
+    assert.ok(account.includes(detail), `missing MSN icon detail ${detail}`);
   }
-  assert.doesNotMatch(account, /buddy-wing|msn-wing|butterfly/);
+  assert.ok(account.includes('circle cx="13.1" cy="11.1"') && account.includes('circle cx="23.6" cy="10.5"'), 'both classic buddy figures should be present');
   assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:24px;height:24px/);
 });
 
@@ -55,6 +55,6 @@ test('changed browser assets use fresh cache keys', () => {
   assert.match(index, /styles-list\.css\?v=corner-controls-1/);
   assert.match(index, /app\.js\?v=corner-icons-1/);
   assert.match(index, /auth\.css\?v=professional-avatar-1/);
-  assert.match(index, /account\.js\?v=professional-avatar-1/);
+  assert.match(index, /account\.js\?v=msn-classic-avatar-1/);
   assert.match(index, /guestbook\.js\?v=reply-like-157/);
 });
