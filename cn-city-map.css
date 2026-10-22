@@ -120,3 +120,9 @@
 @media(prefers-reduced-motion:reduce){
   .cn-map-city{transition:none}
 }
+
+/* Keep map and ranked institutions on the same fine-grained typographic grid. */
+.cn-map-ranking{padding-top:3px}
+.cn-map-rank-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.cn-map-detail-count strong{font-variant-numeric:tabular-nums}
+@media(max-width:760px){.cn-map-rank{min-height:38px}.cn-map-legend{justify-content:flex-start;margin-right:0}}
