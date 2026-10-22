@@ -4,29 +4,39 @@
  const ACCOUNT_MARK=`
   <svg class="account-mark" aria-hidden="true" viewBox="0 0 40 40" fill="none">
     <defs>
-      <radialGradient id="account-avatar-ground" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 10) rotate(55) scale(30)"><stop stop-color="#f8fbfc"/><stop offset="1" stop-color="#dce8ee"/></radialGradient>
-      <linearGradient id="account-avatar-face" x1="15" y1="8" x2="25" y2="25" gradientUnits="userSpaceOnUse"><stop stop-color="#f4d1b2"/><stop offset="1" stop-color="#d99f7c"/></linearGradient>
-      <linearGradient id="account-avatar-hair" x1="14" y1="4" x2="26" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#394653"/><stop offset="1" stop-color="#182a3a"/></linearGradient>
-      <linearGradient id="account-avatar-suit" x1="12" y1="27" x2="29" y2="39" gradientUnits="userSpaceOnUse"><stop stop-color="#294a66"/><stop offset="1" stop-color="#122b42"/></linearGradient>
-      <clipPath id="account-avatar-crop"><circle cx="20" cy="20" r="19"/></clipPath>
+      <radialGradient id="msn-classic-ground" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 8) rotate(54) scale(40)"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#dcebf1"/></radialGradient>
+      <linearGradient id="msn-classic-green-head" x1="10" y1="5" x2="16" y2="18" gradientUnits="userSpaceOnUse"><stop stop-color="#e1ff94"/><stop offset=".44" stop-color="#8bd846"/><stop offset="1" stop-color="#398b39"/></linearGradient>
+      <linearGradient id="msn-classic-green-body" x1="8" y1="20" x2="17" y2="35" gradientUnits="userSpaceOnUse"><stop stop-color="#baf75c"/><stop offset=".55" stop-color="#56bd45"/><stop offset="1" stop-color="#197148"/></linearGradient>
+      <linearGradient id="msn-classic-blue-head" x1="20" y1="4" x2="27" y2="18" gradientUnits="userSpaceOnUse"><stop stop-color="#c1fbff"/><stop offset=".42" stop-color="#55c9f4"/><stop offset="1" stop-color="#1553b5"/></linearGradient>
+      <linearGradient id="msn-classic-blue-body" x1="21" y1="19" x2="27" y2="37" gradientUnits="userSpaceOnUse"><stop stop-color="#76e1f6"/><stop offset=".48" stop-color="#158bd7"/><stop offset="1" stop-color="#123c96"/></linearGradient>
+      <linearGradient id="msn-classic-wing-blue" x1="11" y1="16" x2="19" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#d8fbff"/><stop offset=".42" stop-color="#59c9f1"/><stop offset="1" stop-color="#3160bd"/></linearGradient>
+      <linearGradient id="msn-classic-wing-orange" x1="20" y1="16" x2="29" y2="24" gradientUnits="userSpaceOnUse"><stop stop-color="#fff69a"/><stop offset=".45" stop-color="#ffb340"/><stop offset="1" stop-color="#e64e35"/></linearGradient>
+      <linearGradient id="msn-classic-wing-green" x1="11" y1="23" x2="19" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#d8ff85"/><stop offset=".5" stop-color="#72ce43"/><stop offset="1" stop-color="#189b69"/></linearGradient>
+      <linearGradient id="msn-classic-wing-yellow" x1="20" y1="23" x2="29" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#fff5a3"/><stop offset=".5" stop-color="#ffcf39"/><stop offset="1" stop-color="#ee8b31"/></linearGradient>
+      <clipPath id="msn-classic-crop"><circle cx="20" cy="20" r="19"/></clipPath>
     </defs>
-    <circle cx="20" cy="20" r="19.2" fill="url(#account-avatar-ground)" stroke="#d0dfe6" stroke-width=".8"/>
-    <g clip-path="url(#account-avatar-crop)">
-      <path d="M3.2 41c.2-8.7 4.8-13.4 12.4-15.2l4.4 3.1 4.4-3.1c7.6 1.8 12.2 6.5 12.4 15.2H3.2Z" fill="url(#account-avatar-suit)"/>
-      <path d="m14.8 26 5.2 4.7 5.2-4.7 3 3.3-5.5 8.2h-5.4l-5.5-8.2 3-3.3Z" fill="#f5f4ef"/>
-      <path d="m18.2 30.2 1.8 1.3 1.8-1.3 1.1 7.3h-5.8l1.1-7.3Z" fill="#9d794c"/>
-      <path d="M16.3 21.5h7.4v7.1c-1.7 1.7-5.7 1.7-7.4 0v-7.1Z" fill="url(#account-avatar-face)"/>
-      <ellipse cx="20" cy="14.2" rx="8.2" ry="9.8" fill="url(#account-avatar-hair)"/>
-      <path d="M12.8 16.2c-1.1.1-1.8 1-1.7 2 .1 1.2.9 1.9 2 1.9m13.8-3.9c1.1.1 1.8 1 1.7 2-.1 1.2-.9 1.9-2 1.9" fill="url(#account-avatar-face)" stroke="#bf8768" stroke-width=".45"/>
-      <ellipse class="avatar-face" cx="20" cy="16.7" rx="6.35" ry="8.6" fill="url(#account-avatar-face)"/>
-      <path d="M13.1 16.1c-.8-2.1-.9-4.5-.4-6.6.9-3.6 3.7-5.8 7.2-5.8 4.4 0 7.4 3.2 7.4 7.5 0 1.7-.3 3.3-.9 4.7-.4-1.4-.9-2.7-1.6-3.8-2.4.8-5.5.6-8.1-1.4-.5 2.2-1.7 4.1-3.6 5.4Z" fill="url(#account-avatar-hair)"/>
-      <path d="M16.1 16.8c.8-.5 1.6-.5 2.4-.1m3-.1c.8-.4 1.6-.4 2.4.1" stroke="#554238" stroke-width=".7" stroke-linecap="round"/>
-      <path d="M17.1 18.2v.1m5.8-.1v.1" stroke="#253746" stroke-width="1.15" stroke-linecap="round"/>
-      <path d="m20.7 18.8-.7 2 1 .2m-3.1 1.3c1.2.8 2.8.8 4.1-.1" stroke="#a86557" stroke-width=".55" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="m13.3 27.2 6.7 5.1-3.4 4.4-6-7.9 2.7-1.6Zm13.4 0L20 32.3l3.4 4.4 6-7.9-2.7-1.6Z" fill="#355773" stroke="#8da4b4" stroke-opacity=".55" stroke-width=".45"/>
-      <path d="M7 35.8c2.2-3.3 4.5-5.2 7.3-6.3m18.7 6.3c-2.2-3.3-4.5-5.2-7.3-6.3" stroke="#708ba0" stroke-opacity=".65" stroke-width=".45"/>
+    <circle cx="20" cy="20" r="19.2" fill="url(#msn-classic-ground)" stroke="#cbdde5" stroke-width=".8"/>
+    <g clip-path="url(#msn-classic-crop)">
+      <path d="M2.3 35.2c.2-8.2 4.6-13.4 11-14.9l4.9 3.2 4.7-3.1c6.1 1.5 9.4 6.3 9.6 14.8l-.4 3.5H2.7l-.4-3.5Z" fill="url(#msn-classic-green-body)" stroke="#f8ffff" stroke-opacity=".9" stroke-width=".65"/>
+      <path d="M7.1 25.3c2.6-2.7 6.5-4.6 11-5.2" stroke="#efffc9" stroke-opacity=".7" stroke-width=".65" stroke-linecap="round"/>
+      <circle cx="13.1" cy="11.1" r="5.6" fill="url(#msn-classic-green-head)" stroke="#f8ffff" stroke-width=".7"/>
+      <ellipse cx="11.7" cy="8.8" rx="2.5" ry="1.1" fill="#fff" fill-opacity=".42"/>
+      <path d="M11.2 15.2c1.1 1 2.6 1.5 4.1 1.4" stroke="#276f44" stroke-opacity=".45" stroke-width=".6" stroke-linecap="round"/>
+      <path d="M12.5 35.5c.2-9.1 4.1-14.9 10.1-16.4l5.1 3.2 5-3.1c6.4 1.7 9.2 7.6 9.4 16.3l-.5 3.2H13l-.5-3.2Z" fill="url(#msn-classic-blue-body)" stroke="#f9ffff" stroke-opacity=".94" stroke-width=".7"/>
+      <path d="M19.2 23.7c2.7-2.6 6.4-3.9 10-4" stroke="#c4f8ff" stroke-opacity=".82" stroke-width=".75" stroke-linecap="round"/>
+      <circle cx="23.6" cy="10.5" r="6.2" fill="url(#msn-classic-blue-head)" stroke="#fff" stroke-width=".75"/>
+      <ellipse cx="22" cy="7.8" rx="2.8" ry="1.25" fill="#fff" fill-opacity=".52"/>
+      <path d="M20.3 15.2c1.8 1.5 4.6 1.9 6.4 1" stroke="#124e9b" stroke-opacity=".55" stroke-width=".65" stroke-linecap="round"/>
+      <g stroke="#ffffff" stroke-width=".55" stroke-linejoin="round">
+        <path d="M19.35 22.2c-2.4-1.6-6.5-6.5-8.3-5.7-1.9.9-.2 5.1 2.6 7.2 1.8 1.4 3.7 1.4 6.2.1Z" fill="url(#msn-classic-wing-blue)"/>
+        <path d="M20.65 22.2c2.4-1.6 6.5-6.5 8.3-5.7 1.9.9.2 5.1-2.6 7.2-1.8 1.4-3.7 1.4-6.2.1Z" fill="url(#msn-classic-wing-orange)"/>
+        <path d="M19.25 23c-2.6-.7-6.6-.5-7 1.6-.5 2.4 3.7 5.2 6.4 4.1 1-.4 1.5-1.8 1.7-3.3l-1.1-2.4Z" fill="url(#msn-classic-wing-green)"/>
+        <path d="M20.75 23c2.6-.7 6.6-.5 7 1.6.5 2.4-3.7 5.2-6.4 4.1-1-.4-1.5-1.8-1.7-3.3l1.1-2.4Z" fill="url(#msn-classic-wing-yellow)"/>
+      </g>
+      <path d="M19.9 21.3c-.5-1.2-1.5-2-2.7-2.5m2.8 2.5c.5-1.2 1.5-2 2.7-2.5M20 21.1v8.8" stroke="#38516b" stroke-width=".85" stroke-linecap="round"/>
+      <path d="M12.6 18.3c1.6 1.4 3.5 2 5.5 2.2m4.4-2.2c-1.6 1.4-3.5 2-5.5 2.2" stroke="#ffffff" stroke-opacity=".6" stroke-width=".5" stroke-linecap="round"/>
     </g>
-    <circle cx="20" cy="20" r="19.2" stroke="#d0dfe6" stroke-width=".8"/>
+    <circle cx="20" cy="20" r="19.2" stroke="#cbdde5" stroke-width=".8"/>
   </svg>`;
  async function api(path,options={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{return await sourceFetch(path,{credentials:'same-origin',cache:'no-store',...options,signal:controller.signal});}finally{clearTimeout(timer);}}
  function expired(){document.getElementById('jobs')?.replaceChildren();document.querySelector('.account-control')?.remove();location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));}
