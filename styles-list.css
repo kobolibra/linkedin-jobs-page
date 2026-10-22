@@ -3,6 +3,8 @@
    工具栏 · 职位列表 · 页脚 · 响应式 · 打印
    ========================================================= */
 
+:root { --corner-action-inset:20px; --corner-action-size:36px; }
+
 /* ---------- Toolbar ---------- */
 .toolbar { position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);border-bottom:1px solid var(--line-strong);margin:var(--s5) 0 0;padding:var(--s3) 0; }
 .toolbar-inner { display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap; }
@@ -209,7 +211,7 @@ select.ctrl.on { border-color:var(--gold);background-color:var(--accent-soft);co
 .empty { display:none;text-align:center;padding:88px 20px;color:var(--ink-faint); }
 .empty.show { display:block; }
 .empty .big { font-family:var(--serif);font-optical-sizing:auto;font-size:21px;color:var(--ink-soft);margin-bottom:var(--s2);letter-spacing:-.02em; }
-.totop { position:fixed;right:20px;bottom:20px;width:36px;height:36px;border-radius:var(--radius);background:var(--navy);color:#f4f1e9;border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .2s,transform .2s,background .2s;box-shadow:var(--shadow-strong);z-index:30; }
+.totop { position:fixed;right:var(--corner-action-inset);bottom:var(--corner-action-inset);width:var(--corner-action-size);height:var(--corner-action-size);border-radius:var(--radius);background:var(--navy);color:#f4f1e9;border:0;cursor:pointer;display:grid;place-items:center;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .2s,transform .2s,background .2s;box-shadow:var(--shadow-strong);z-index:30; }
 .totop.show { opacity:1;pointer-events:auto;transform:none; }
 .totop svg { width:15px;height:15px; }
 .totop:hover { background:var(--navy-2); }

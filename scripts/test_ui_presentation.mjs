@@ -8,6 +8,8 @@ const login = read('login.html');
 const account = read('account.js');
 const authCss = read('auth.css');
 const guestbook = read('guestbook.js');
+const app = read('app.js');
+const listCss = read('styles-list.css');
 const index = read('index.html');
 
 test('sign-in dialog moves initial focus off the brand and clears inherited text selection', () => {
@@ -21,21 +23,37 @@ test('shared sign-in copy has no trailing period', () => {
   assert.doesNotMatch(login, /New accounts are created automatically\./);
 });
 
-test('account control uses a four-colour butterfly avatar at a legible size', () => {
+test('account avatar is the classic two-buddy Messenger motif, not the standalone butterfly mark', () => {
   assert.match(account, /class="account-mark" aria-hidden="true" viewBox="0 0 32 32"/);
-  for (const color of ['#f35325', '#00a4ef', '#7fba00', '#ffb900']) assert.ok(account.includes(color), `missing wing colour ${color}`);
+  assert.ok(account.includes('circle cx="9.9"') && account.includes('circle cx="22.1"'), 'both buddy heads should be present');
+  for (const color of ['#1879c4', '#55a832', '#f35325', '#00a4ef', '#7fba00', '#ffb900']) {
+    assert.ok(account.includes(color), `missing Messenger palette color ${color}`);
+  }
   assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:22px;height:22px/);
 });
 
-test('desktop guestbook button is smaller while the mobile control stays 40 by 40', () => {
-  assert.match(guestbook, /@media \(min-width:721px\)\{\s*\.gb-fab \{[^}]*height:36px[^}]*font-size:12px/);
+test('desktop corner controls share the same edge inset and button height', () => {
+  assert.match(listCss, /--corner-action-inset:20px; --corner-action-size:36px/);
+  assert.match(listCss, /\.totop \{ position:fixed;right:var\(--corner-action-inset\);bottom:var\(--corner-action-inset\);width:var\(--corner-action-size\);height:var\(--corner-action-size\)/);
+  assert.match(guestbook, /@media \(min-width:721px\)\{\s*\.gb-fab \{ left:var\(--corner-action-inset,20px\); bottom:var\(--corner-action-inset,20px\); height:var\(--corner-action-size,36px\)/);
+  assert.match(guestbook, /\.gb-fab:hover \{ transform:none;/);
+});
+
+test('guestbook and return-to-top glyphs have matching visual bounds and stroke weight', () => {
+  assert.match(guestbook, /\.gb-fab svg \{ width:15px; height:15px; \}/);
+  assert.match(listCss, /\.totop svg \{ width:15px;height:15px; \}/);
+  assert.match(app, /up:'<svg viewBox="0 0 24 24"[^>]*stroke-width="2"[^>]*><line x1="12" y1="21" x2="12" y2="3"\/><polyline points="3 12 12 3 21 12"\/>/);
+  assert.match(guestbook, /const BUBBLE = '<svg viewBox="0 0 24 24"[^>]*stroke-width="2"/);
+});
+
+test('mobile guestbook remains 40 by 40 and the dialog is unchanged', () => {
   assert.match(guestbook, /@media \(max-width:720px\)\{\s*\.gb-fab \{[^}]*width:40px; height:40px/);
   assert.match(guestbook, /\.gb-modal \{[^}]*max-width:480px/);
 });
 
 test('changed browser assets use fresh cache keys', () => {
-  assert.match(index, /auth\.css\?v=accounts-msn-2/);
-  assert.match(index, /account\.js\?v=msn-avatar-1/);
-  assert.match(index, /guestbook\.js\?v=reply-like-156/);
-  assert.match(account, /auth-guest\.js\?v=2/);
+  assert.match(index, /styles-list\.css\?v=corner-controls-1/);
+  assert.match(index, /app\.js\?v=corner-icons-1/);
+  assert.match(index, /account\.js\?v=buddy-avatar-2/);
+  assert.match(index, /guestbook\.js\?v=reply-like-157/);
 });
