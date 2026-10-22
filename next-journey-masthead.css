@@ -69,105 +69,24 @@
 .header-utility .auth-sign-arrow{display:inline-block;color:var(--nj-accent);font-size:15px;line-height:1;font-weight:400}
 .account-host .header-utility .account-control{display:flex;align-items:center}
 .account-host .header-utility .account-trigger{color:var(--nj-ink)}
-/* English labels only: preserve all original metric values, hooks, card geometry and spacing. */
-.masthead>.stats .stat .k{color:var(--nj-secondary);font-size:10px;letter-spacing:.065em;font-weight:600}
-.masthead>.stats .stat .status-label{display:inline-flex;align-items:center;white-space:nowrap}
-.masthead>.stats .stat .live{flex:none}
 /* Ensure the new heading never inherits the old heavyweight masthead title. */
 .masthead .nj-title{font-weight:400;letter-spacing:-.047em}
 @media(max-width:720px){
  .account-host .header-utility{right:16px;top:10px;gap:4px}
  [data-auth-state="guest"] .header-utility .auth-guest-sign{height:40px;min-height:40px;padding:0 5px;font-size:11px}
- .masthead>.stats .stat .k{font-size:9px;letter-spacing:.035em}
 }
 @media(max-width:420px){
  .account-host .header-utility{right:16px;gap:2px}
- .masthead>.stats .stat .k{font-size:8.5px}
 }
 
-/* Editorial folio and the existing four metrics form one continuous unit.
-   Keep their original live values, update hooks and responsive 4-to-2 grid. */
-.masthead:has(> .nj-masthead-top) .nj-masthead-folio {
-  padding-top:12px;
-  padding-bottom:8px;
-  align-items:baseline;
-}
-.masthead:has(> .nj-masthead-top) > .stats {
-  margin-top:0;
-  margin-bottom:0;
-  border-radius:10px;
-  background:var(--glass-soft);
-}
-.masthead:has(> .nj-masthead-top) > .stats .stat {
-  align-items:flex-start;
-}
-.masthead:has(> .nj-masthead-top) > .stats .stat .k {
-  color:var(--nj-secondary);
-}
-.masthead:has(> .nj-masthead-top) > .analytics {
-  margin-top:16px;
-}
-@media(max-width:720px){
-  .masthead:has(> .nj-masthead-top) .nj-masthead-folio {
-    padding-top:11px;
-    padding-bottom:8px;
-    align-items:center;
-  }
-  .masthead:has(> .nj-masthead-top) > .stats{
-    margin-top:0;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    border-radius:10px;
-  }
-  .masthead:has(> .nj-masthead-top) > .stats .stat {
-    min-width:0;
-  }
-}
-@media(max-width:420px){
-  .masthead:has(> .nj-masthead-top) .nj-masthead-folio {
-    gap:8px 12px;
-  }
-}
-
-/* Final integrated editorial data band: folio + statistics share one surface.
-   This deliberately replaces the previously separate folio and floating card. */
-.masthead:has(> .nj-masthead-top) .nj-masthead-folio{
-  margin-top:0;
-  padding:16px 24px 10px;
+/* Approved layout boundary: folio belongs to the editorial masthead.
+   The four pre-existing metrics that follow are NOT part of this redesign. */
+.nj-masthead-folio {
   border-top:1px solid var(--nj-rule);
-  border-radius:12px 12px 0 0;
-  background:var(--glass-soft);
-  align-items:center;
+  border-radius:0;
+  background:transparent;
+  padding:15px 0 3px;
 }
-.masthead:has(> .nj-masthead-top) > .stats{
-  margin:0;
-  padding:0 0 5px;
-  background:var(--glass-soft);
-  border-radius:0 0 12px 12px;
-  box-shadow:none;
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-}
-.masthead:has(> .nj-masthead-top) > .stats .stat{
-  height:76px;min-height:76px;max-height:76px;
-  padding-top:10px;
-  padding-bottom:15px;
-}
-@media(max-width:720px){
-  .masthead:has(> .nj-masthead-top) .nj-masthead-folio{
-    padding:13px 16px 9px;
-    border-radius:10px 10px 0 0;
-  }
-  .masthead:has(> .nj-masthead-top) > .stats{
-    border-radius:0 0 10px 10px;
-    padding-bottom:3px;
-  }
-  .masthead:has(> .nj-masthead-top) > .stats .stat{
-    padding-top:12px;padding-bottom:12px;
-  }
-}
-@media(max-width:420px){
-  .masthead:has(> .nj-masthead-top) .nj-masthead-folio{
-    padding-inline:14px;
-    gap:6px 10px;
-  }
+@media(max-width:720px) {
+  .nj-masthead-folio {padding:13px 0 3px;gap:8px 12px}
 }
