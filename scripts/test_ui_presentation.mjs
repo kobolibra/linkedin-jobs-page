@@ -25,7 +25,7 @@ test('shared sign-in copy has no trailing period', () => {
 
 test('account avatar uses the sourced classic single blue MSN buddy asset', () => {
   assert.match(account, /<img class="account-mark" src="\/assets\/avatars\/misc-buddy-blue\.png" alt="" aria-hidden="true">/);
-  assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:24px;height:24px;flex:none;object-fit:contain\}/);
+  assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:18px;height:18px;flex:none;object-fit:contain\}/);
 });
 
 test('desktop corner controls share the same edge inset and button height', () => {
