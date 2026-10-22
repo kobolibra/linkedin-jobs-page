@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-21T22:03:20.096942+00:00",
+    "checkedAt": "2026-10-22T04:03:12.713002+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-21T22:03:26.230726+00:00",
+    "checkedAt": "2026-10-22T04:03:18.748686+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-21T22:03:32.293747+00:00",
+    "checkedAt": "2026-10-22T04:03:24.831556+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-21T22:03:35.252732+00:00",
+    "checkedAt": "2026-10-22T04:03:27.842411+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-21T22:03:17.213672+00:00",
+    "checkedAt": "2026-10-22T04:03:09.868985+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -7992,5 +7992,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHLb11dz4mjIw/company-logo_100_100/company-logo_100_100/0/1630636626339/sika_logo?e=2147483647&v=beta&t=TOm4nv0IfVfZeGdd51-DamubrQHeOS9QsbR7e5KmKjg",
     "companyUrl": "https://ch.linkedin.com/company/sika",
     "sourceJobId": "4478949477"
+  },
+  "fde times": {
+    "name": "FDE Times",
+    "checkedAt": "2026-10-22T04:02:59.388529+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4b956ffe4689991a55cfc83b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGuTojhebfIgg/company-logo_100_100/B56aFe0K8YJYAM-/0/1792592097287/fde_times_logo?e=2147483647&v=beta&t=e_QsHBKc7Y_lRmQSaOtDww35Ly48P_1mPn2mgXPICPM",
+    "companyUrl": "https://www.linkedin.com/company/fde-times",
+    "sourceJobId": "4479434887"
+  },
+  "fedex logistics": {
+    "name": "FedEx Logistics",
+    "checkedAt": "2026-10-22T04:03:00.915735+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "354b136423b6bc83991d2d13.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHMfnFkgoZh8g/company-logo_100_100/company-logo_100_100/0/1630642626301?e=2147483647&v=beta&t=xlH39A25hv5ynNGf4Rs2pCpSzXYzDWVsg4gaoWoU-FU",
+    "companyUrl": "https://www.linkedin.com/company/fedex-logistics-global",
+    "sourceJobId": "4481577209"
+  },
+  "mastery hire": {
+    "name": "MASTERY HIRE",
+    "checkedAt": "2026-10-22T04:03:03.956544+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "542be78a7ebd47dcdbb67367.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFtnosHhR9d1A/company-logo_100_100/company-logo_100_100/0/1701280787437/masteryhire_logo?e=2147483647&v=beta&t=dXOxOOVQVvJLz44mGbYnxmifL8EDrhHh-1dO0QCMV8Q",
+    "companyUrl": "https://ma.linkedin.com/company/masteryhire",
+    "sourceJobId": "4479489337"
+  },
+  "rbst consulting": {
+    "name": "RBST Consulting",
+    "checkedAt": "2026-10-22T04:03:06.864632+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "762e3c0ffb30cdf8b23cf4bf.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH0Y2QUksee2w/company-logo_100_100/B56Z1k1pTqHoAQ-/0/1775513278514/rbst_consulting_logo?e=2147483647&v=beta&t=lIR5sUEuK2yZu3WiFXWZAIESag_rdS0W4tWs5PrTH7E",
+    "companyUrl": "https://www.linkedin.com/company/rbst-consulting",
+    "sourceJobId": "4480786166"
   }
 }

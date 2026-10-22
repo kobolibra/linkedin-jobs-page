@@ -2,45 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:39001241953:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-17T04:08:28.008519+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 9,
-      "retries": 2,
-      "httpStatuses": {
-        "429": 2,
-        "200": 4,
-        "404": 3
-      },
-      "outcomes": {
-        "rate_limited": 2,
-        "response": 7
-      },
-      "stages": {
-        "logos": 9
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 5,
-        "downloaded": 0,
-        "missing": 5,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 0,
-        "httpRetries": 2
-      }
-    },
-    {
       "runId": "jobs:39020719767:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7498,6 +7459,43 @@
         },
         "circuitOpen": false,
         "selectorGuardTripped": false
+      }
+    },
+    {
+      "runId": "logos:39720144984:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-22T04:03:30.885532+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 15,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 12,
+        "404": 3
+      },
+      "outcomes": {
+        "response": 15
+      },
+      "stages": {
+        "logos": 15
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 9,
+        "downloaded": 4,
+        "missing": 5,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
       }
     }
   ],
