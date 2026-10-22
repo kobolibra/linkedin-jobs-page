@@ -62,3 +62,25 @@
   .nj-data-intro{gap:4px}
 }
 @media(prefers-reduced-motion:reduce){.nj-masthead-top *{animation:none;transition:none}}
+
+/* Finish: account controls and baseline must align for guest and authenticated users. */
+.account-host .header-utility{right:32px;top:14px;gap:7px;min-height:40px;align-items:center}
+[data-auth-state="guest"] .header-utility .auth-guest-sign{min-height:40px;height:40px;padding:0 8px;display:inline-flex;align-items:center;gap:7px;font-size:12px;line-height:1.4;color:var(--nj-ink);border-radius:5px}
+.header-utility .auth-sign-arrow{display:inline-block;color:var(--nj-accent);font-size:15px;line-height:1;font-weight:400}
+.account-host .header-utility .account-control{display:flex;align-items:center}
+.account-host .header-utility .account-trigger{color:var(--nj-ink)}
+/* English labels only: preserve all original metric values, hooks, card geometry and spacing. */
+.masthead>.stats .stat .k{color:var(--nj-secondary);font-size:10px;letter-spacing:.065em;font-weight:600}
+.masthead>.stats .stat .status-label{display:inline-flex;align-items:center;white-space:nowrap}
+.masthead>.stats .stat .live{flex:none}
+/* Ensure the new heading never inherits the old heavyweight masthead title. */
+.masthead .nj-title{font-weight:400;letter-spacing:-.047em}
+@media(max-width:720px){
+ .account-host .header-utility{right:16px;top:10px;gap:4px}
+ [data-auth-state="guest"] .header-utility .auth-guest-sign{height:40px;min-height:40px;padding:0 5px;font-size:11px}
+ .masthead>.stats .stat .k{font-size:9px;letter-spacing:.035em}
+}
+@media(max-width:420px){
+ .account-host .header-utility{right:16px;gap:2px}
+ .masthead>.stats .stat .k{font-size:8.5px}
+}
