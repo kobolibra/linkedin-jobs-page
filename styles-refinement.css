@@ -554,7 +554,7 @@ body.compact .job > .mono { margin-top:2px; }
 .bubble-company,
 [data-theme="dark"] .bubble-company{
   fill:var(--viz-secondary);
-  font:600 10px var(--sans);
+  font:600 8.5px var(--sans);
 }
 .bubble-relation,
 [data-theme="dark"] .bubble-relation{
