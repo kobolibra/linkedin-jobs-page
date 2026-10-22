@@ -596,3 +596,114 @@ body.compact .job > .mono { margin-top:2px; }
   #dist .region-density,.rhythm-svg,.bubble-point{transition:none}
   .bubble-row{animation:none}
 }
+
+/* 30-DAY POSTINGS / editorial trend with an aligned complete-value rail */
+.analytics-card .spark{
+  height:auto;
+  min-height:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:var(--viz-rule) transparent;
+}
+.analytics-card .spark .rhythm-svg{
+  display:block;
+  width:100%;
+  height:auto;
+  min-width:480px;
+  max-width:none;
+  margin:0;
+}
+.rhythm-grid,
+[data-theme="dark"] .rhythm-grid{
+  stroke:var(--viz-rule);
+  stroke-width:.7;
+  opacity:.45;
+  stroke-dasharray:2 4;
+  vector-effect:non-scaling-stroke;
+}
+.rhythm-grid:first-child{opacity:.75;stroke-dasharray:none}
+.rhythm-stick,
+[data-theme="dark"] .rhythm-stick{
+  stroke:var(--viz-blue);
+  opacity:.16;
+  stroke-width:.9;
+  vector-effect:non-scaling-stroke;
+}
+.rhythm-stick.weekend,
+[data-theme="dark"] .rhythm-stick.weekend{opacity:.09}
+.rhythm-line,
+[data-theme="dark"] .rhythm-line{
+  fill:none;
+  stroke:var(--viz-blue);
+  stroke-width:2.1;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.rhythm-node,
+[data-theme="dark"] .rhythm-node{
+  fill:var(--surface);
+  stroke:var(--viz-blue);
+  stroke-width:1.45;
+  opacity:.85;
+}
+.rhythm-node.weekend,
+[data-theme="dark"] .rhythm-node.weekend{opacity:.65}
+.rhythm-node.focus,
+[data-theme="dark"] .rhythm-node.focus{
+  opacity:1;
+  fill:var(--viz-blue);
+  stroke:var(--surface);
+  stroke-width:1.8;
+}
+.rhythm-data-divider,
+[data-theme="dark"] .rhythm-data-divider{
+  stroke:var(--viz-rule);
+  stroke-width:1;
+  opacity:.85;
+}
+.rhythm-tick,
+[data-theme="dark"] .rhythm-tick{
+  stroke:var(--viz-rule);
+  stroke-width:.8;
+  opacity:.65;
+}
+.rhythm-value,
+[data-theme="dark"] .rhythm-value{
+  fill:var(--viz-quiet);
+  font:500 9px/1 var(--mono);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.035em;
+  stroke:none;
+  paint-order:normal;
+}
+.rhythm-value-peak,
+[data-theme="dark"] .rhythm-value-peak{
+  fill:var(--viz-secondary);
+  font-weight:700;
+}
+.rhythm-value-key,
+[data-theme="dark"] .rhythm-value-key{
+  fill:var(--viz-blue);
+  font-weight:700;
+}
+.rhythm-axis-label,
+[data-theme="dark"] .rhythm-axis-label{
+  fill:var(--viz-quiet);
+  font:500 9px/1 var(--mono);
+  letter-spacing:.02em;
+}
+.rhythm-axis-label:last-child,
+[data-theme="dark"] .rhythm-axis-label:last-child{
+  fill:var(--viz-secondary);
+  font-weight:700;
+}
+@media(max-width:720px){
+  .analytics-card .spark{height:auto;min-height:0}
+  .analytics-card .spark .rhythm-svg{
+    width:100%;min-width:480px;max-height:none;margin:0;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .rhythm-svg{transition:none;transform:none}
+}
