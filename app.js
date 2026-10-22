@@ -688,50 +688,24 @@ jobsDataPromise
     const today=new Date(),days=[];
     for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
-    const SW=520,SH=154,sLeft=28,sRight=22,sTop=16,sBase=118,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
+    /* Editorial time-series: keep every daily value without floating labels.
+       Trend geometry and the aligned two-row value rail are independent layers. */
+    const SW=520,SH=192,sLeft=26,sRight=20,sTop=15,sBase=115,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
     const sy=v=>sBase-(v/smax)*sPlotH;
-    const points=days.map((d,i)=>sx(i).toFixed(1)+','+sy(d.total).toFixed(1)).join(' ');
-    const sticks=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1);return '<line class="rhythm-stick'+(d.weekend?' weekend':'')+'" x1="'+x+'" y1="'+sBase+'" x2="'+x+'" y2="'+y+'"/><line class="rhythm-tick'+(d.weekend?' weekend':'')+'" x1="'+x+'" y1="'+(sBase+2)+'" x2="'+x+'" y2="'+(sBase+9)+'"/>';}).join('');
-    // All 30 daily values must remain visible. Place labels around nodes,
-    // choosing non-colliding positions instead of suppressing most values.
     const peakIndex=peak>0?days.findIndex(d=>d.total===peak):-1;
-    const labelBoxes=[];
-    const labels=Array(days.length).fill('');
-    const order=days.map((_,i)=>i).sort((i,j)=>(j===29?1:0)-(i===29?1:0)||(j===peakIndex?1:0)-(i===peakIndex?1:0)||i-j);
-    for(const i of order){
-      const d=days[i],x=sx(i),py=sy(d.total),value=String(d.total);
-      const width=Math.max(7,value.length*5.6+3),height=10;
-      const above=[-13,-25,-37,-49,-61,-73];
-      const below=[16,27,38,49,60,71];
-      const offsets=i%2===0?[...above,...below]:[...below,...above];
-      let chosen=null;
-      for(const offset of offsets){
-        const y=Math.max(11,Math.min(sBase-8,py+offset));
-        const box={left:x-width/2,right:x+width/2,top:y-height+1,bottom:y+2};
-        if(box.left<2||box.right>SW-2)continue;
-        if(labelBoxes.some(q=>box.left<q.right+2&&box.right+2>q.left&&box.top<q.bottom+2&&box.bottom+2>q.top))continue;
-        chosen={y,box};break;
-      }
-      // Reserve the nearest available vertical slot before dropping any datum.
-      if(!chosen){
-        for(let y=11;y<sBase-7;y+=11){
-          const box={left:x-width/2,right:x+width/2,top:y-height+1,bottom:y+2};
-          if(!labelBoxes.some(q=>box.left<q.right+1&&box.right+1>q.left&&box.top<q.bottom+1&&box.bottom+1>q.top)){
-            chosen={y,box};break;
-          }
-        }
-      }
-      // Always show the value: datasets of 30 days normally fit comfortably
-      // in the SVG, and the fallback retains the label even in a dense cluster.
-      const ly=chosen?chosen.y:Math.max(11,Math.min(sBase-8,py-13));
-      if(chosen)labelBoxes.push(chosen.box);
-      labels[i]='<text class="rhythm-value'+(i===29||i===peakIndex?' rhythm-value-key':'')+'" x="'+x.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle">'+value+'</text>';
-    }
-    const nodes=days.map((d,i)=>{const x=sx(i).toFixed(1),y=sy(d.total).toFixed(1),focus=i===peakIndex||i===days.length-1;return '<circle class="rhythm-node '+(d.weekend?'weekend ':'')+(focus?'focus':'')+'" cx="'+x+'" cy="'+y+'" r="'+(focus?4.6:3.2)+'"><title>'+d.label+' · '+d.total+' 个职位</title></circle>'+labels[i];}).join('');
-    const axis=[0,14,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="'+(SH-8)+'" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
+    const pts=days.map((d,i)=>({x:sx(i),y:sy(d.total),total:d.total}));
+    const points=pts.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
+    const scale=[0,.5,1].map(k=>{const y=sy(smax*k);return '<line class="rhythm-grid" x1="'+sLeft+'" y1="'+y.toFixed(1)+'" x2="'+(SW-sRight)+'" y2="'+y.toFixed(1)+'"/>';}).join('');
+    const sticks=pts.map((p,i)=>'<line class="rhythm-stick'+(days[i].weekend?' weekend':'')+'" x1="'+p.x.toFixed(1)+'" y1="'+sBase+'" x2="'+p.x.toFixed(1)+'" y2="'+p.y.toFixed(1)+'"/>').join('');
+    const nodes=pts.map((p,i)=>{const isPeak=i===peakIndex,isCurrent=i===days.length-1,focus=isPeak||isCurrent;return '<circle class="rhythm-node'+(days[i].weekend?' weekend':'')+(focus?' focus':'')+'" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="'+(focus?3.5:2.15)+'"><title>'+days[i].label+' · '+p.total+' 个职位</title></circle>';}).join('');
+    // Two ordered numeric baselines: the column for each day stays directly below
+    // its graph point. Adjacent 3-digit counts have twice the horizontal room.
+    const values=pts.map((p,i)=>'<text class="rhythm-value'+(i===29?' rhythm-value-key':i===peakIndex?' rhythm-value-peak':'')+'" x="'+p.x.toFixed(1)+'" y="'+(i%2===0?144:160)+'" text-anchor="middle">'+p.total+'</text>').join('');
+    const ticks=pts.map((p,i)=>'<line class="rhythm-tick'+(i%2?' is-odd':'')+'" x1="'+p.x.toFixed(1)+'" y1="122" x2="'+p.x.toFixed(1)+'" y2="'+(i%2===0?133:149)+'"/>').join('');
+    const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="183" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位招聘节奏折线图"><line class="rhythm-baseline" x1="'+sLeft+'" y1="'+sBase+'" x2="'+(SW-sRight)+'" y2="'+sBase+'"/>'+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+axis+'</svg>';
+    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="近 30 日每日新增职位；上方为趋势折线，下方为与日期对齐的完整 30 天数值。"><title>30-day new postings</title><desc>All 30 daily values are listed in two staggered rows below the trend. Date labels mark the start, weekly intervals and latest day.</desc>'+scale+sticks+'<polyline class="rhythm-line" points="'+points+'"/>'+nodes+'<line class="rhythm-data-divider" x1="'+sLeft+'" y1="121" x2="'+(SW-sRight)+'" y2="121"/>'+ticks+values+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);
