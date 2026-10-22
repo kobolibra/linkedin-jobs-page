@@ -1,35 +1,7 @@
 /* Authenticate and prepare account-scoped preferences before loading the app. */
 (()=>{
  const sourceFetch=window.fetch.bind(window);let account=null,lastCheck=0;
- const ACCOUNT_MARK=`
-  <svg class="account-mark" aria-hidden="true" viewBox="0 0 40 40" fill="none">
-    <defs>
-      <radialGradient id="msn-blue-ground" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(12 7) rotate(54) scale(42)"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#d9e9f1"/></radialGradient>
-      <linearGradient id="msn-blue-buddy" x1="10" y1="4" x2="29" y2="37" gradientUnits="userSpaceOnUse"><stop stop-color="#e4fcff"/><stop offset=".12" stop-color="#a7f0ff"/><stop offset=".31" stop-color="#5dc9f4"/><stop offset=".57" stop-color="#268fdd"/><stop offset=".82" stop-color="#1768bd"/><stop offset="1" stop-color="#123e88"/></linearGradient>
-      <linearGradient id="msn-blue-lower-shade" x1="20" y1="20" x2="20" y2="37" gradientUnits="userSpaceOnUse"><stop stop-color="#082f70" stop-opacity="0"/><stop offset="1" stop-color="#082f70" stop-opacity=".32"/></linearGradient>
-      <linearGradient id="msn-blue-highlight" x1="12" y1="7" x2="28" y2="29" gradientUnits="userSpaceOnUse"><stop stop-color="#ffffff" stop-opacity=".8"/><stop offset="1" stop-color="#d8f8ff" stop-opacity="0"/></linearGradient>
-      <linearGradient id="msn-blue-rim" x1="8" y1="7" x2="32" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#ffffff" stop-opacity=".95"/><stop offset=".48" stop-color="#d6f7ff" stop-opacity=".55"/><stop offset="1" stop-color="#8dbfe9" stop-opacity=".9"/></linearGradient>
-      <clipPath id="msn-blue-crop"><circle cx="20" cy="20" r="19"/></clipPath>
-      <clipPath id="msn-blue-shape"><path d="M20 4.7c-4.8 0-8 3.3-8 7.9 0 3.1 1.4 5.6 3.8 6.8-5.7 1.1-9.4 5.8-10.2 12.2l-.3 2.1c-.2 1.5 1 2.7 2.5 2.7h24.4c1.5 0 2.7-1.2 2.5-2.7l-.3-2.1c-.8-6.4-4.5-11.1-10.2-12.2 2.4-1.2 3.8-3.7 3.8-6.8 0-4.6-3.2-7.9-8-7.9Z"/></clipPath>
-    </defs>
-    <circle cx="20" cy="20" r="19.2" fill="url(#msn-blue-ground)" stroke="#cbdde6" stroke-width=".8"/>
-    <circle cx="20" cy="20" r="17.8" stroke="#ffffff" stroke-opacity=".62" stroke-width=".55"/>
-    <g clip-path="url(#msn-blue-crop)">
-      <ellipse cx="20" cy="36.7" rx="12.5" ry="1.2" fill="#164980" fill-opacity=".18"/>
-      <path d="M20 4.7c-4.8 0-8 3.3-8 7.9 0 3.1 1.4 5.6 3.8 6.8-5.7 1.1-9.4 5.8-10.2 12.2l-.3 2.1c-.2 1.5 1 2.7 2.5 2.7h24.4c1.5 0 2.7-1.2 2.5-2.7l-.3-2.1c-.8-6.4-4.5-11.1-10.2-12.2 2.4-1.2 3.8-3.7 3.8-6.8 0-4.6-3.2-7.9-8-7.9Z" transform="translate(.15 .75)" fill="#0f478c" fill-opacity=".28"/>
-      <path d="M20 4.7c-4.8 0-8 3.3-8 7.9 0 3.1 1.4 5.6 3.8 6.8-5.7 1.1-9.4 5.8-10.2 12.2l-.3 2.1c-.2 1.5 1 2.7 2.5 2.7h24.4c1.5 0 2.7-1.2 2.5-2.7l-.3-2.1c-.8-6.4-4.5-11.1-10.2-12.2 2.4-1.2 3.8-3.7 3.8-6.8 0-4.6-3.2-7.9-8-7.9Z" fill="url(#msn-blue-buddy)" stroke="url(#msn-blue-rim)" stroke-width=".9" stroke-linejoin="round"/>
-      <g clip-path="url(#msn-blue-shape)">
-        <path d="M8 4h24v18c-3.4 2.2-7.4 3-12 3-4.4 0-8.4-1.1-12-3V4Z" fill="url(#msn-blue-highlight)"/>
-        <path d="M7 21h26v17H7z" fill="url(#msn-blue-lower-shade)"/>
-        <ellipse cx="16.2" cy="8.9" rx="3.6" ry="1.15" transform="rotate(-17 16.2 8.9)" fill="#ffffff" fill-opacity=".54"/>
-        <path d="M13.7 10c1-1.8 2.9-2.8 5.4-2.8 2.2 0 4 .9 5.1 2.5" stroke="#ffffff" stroke-opacity=".9" stroke-width="1.05" stroke-linecap="round"/>
-        <path d="M8.2 31.4c.9-5.1 3.1-8.3 7-9.9m9.6-.1c3.8 1.5 6.1 4.8 7 9.7" stroke="url(#msn-blue-highlight)" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M12.3 24.1c2.2-1.6 4.7-2.4 7.7-2.4" stroke="#ffffff" stroke-opacity=".42" stroke-width=".65" stroke-linecap="round"/>
-        <path d="M11.3 34.3c3.4 1.5 14 1.6 17.4 0" stroke="#c8f5ff" stroke-opacity=".72" stroke-width=".65" stroke-linecap="round"/>
-      </g>
-    </g>
-    <circle cx="20" cy="20" r="19.2" stroke="#cbdde6" stroke-width=".8"/>
-  </svg>`;
+ const ACCOUNT_MARK='<img class="account-mark" src="/assets/avatars/msn-buddy-1min.png" alt="" aria-hidden="true">';
  async function api(path,options={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{return await sourceFetch(path,{credentials:'same-origin',cache:'no-store',...options,signal:controller.signal});}finally{clearTimeout(timer);}}
  function expired(){document.getElementById('jobs')?.replaceChildren();document.querySelector('.account-control')?.remove();location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));}
  async function check(){if(!account||Date.now()-lastCheck<60000)return;lastCheck=Date.now();try{const r=await api('/auth/session');if(r.status===401){expired();return;}if(!r.ok)return;const latest=await r.json();if(latest.user?.id!==account.user.id){location.reload();return;}account.csrf=latest.csrf;if(window.AccountPreferences)window.AccountPreferences.user.csrf=latest.csrf;}catch{}}

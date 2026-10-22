@@ -23,16 +23,9 @@ test('shared sign-in copy has no trailing period', () => {
   assert.doesNotMatch(login, /New accounts are created automatically\./);
 });
 
-test('account avatar is the classic single blue MSN buddy with a continuous head-to-body silhouette', () => {
-  assert.match(account, /class="account-mark" aria-hidden="true" viewBox="0 0 40 40"/);
-  assert.match(account, /linearGradient id="msn-blue-buddy"/);
-  assert.match(account, /<path d="M20 4\.7c-4\.8[\s\S]*?h24\.4[\s\S]*?Z" fill="url\(#msn-blue-buddy\)"/);
-  assert.match(account, /linearGradient id="msn-blue-highlight"/);
-  assert.match(account, /linearGradient id="msn-blue-lower-shade"/);
-  assert.match(account, /linearGradient id="msn-blue-rim"/);
-  assert.match(account, /clipPath id="msn-blue-shape"/);
-  assert.doesNotMatch(account, /msn-classic-wing|butterfly|buddy-green|buddy-blue-head/);
-  assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:24px;height:24px/);
+test('account avatar uses the sourced classic single blue MSN buddy asset', () => {
+  assert.match(account, /<img class="account-mark" src="\/assets\/avatars\/msn-buddy-1min\.png" alt="" aria-hidden="true">/);
+  assert.match(authCss, /account-trigger>\.account-mark\{display:block;width:24px;height:24px;flex:none;object-fit:contain\}/);
 });
 
 test('desktop corner controls share the same edge inset and button height', () => {
@@ -58,6 +51,6 @@ test('changed browser assets use fresh cache keys', () => {
   assert.match(index, /styles-list\.css\?v=corner-controls-1/);
   assert.match(index, /app\.js\?v=corner-icons-1/);
   assert.match(index, /auth\.css\?v=professional-avatar-1/);
-  assert.match(index, /account\.js\?v=msn-blue-buddy-2/);
+  assert.match(index, /account\.js\?v=msn-buddy-asset-1/);
   assert.match(index, /guestbook\.js\?v=reply-like-157/);
 });
