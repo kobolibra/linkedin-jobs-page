@@ -94,3 +94,10 @@
 /* Approved relationship: transparent folio above an independent soft metric card. */
 .masthead:has(> .nj-masthead-top) > .stats {margin-top:12px}
 @media(max-width:720px){.masthead:has(> .nj-masthead-top) > .stats{margin-top:10px}}
+
+/* Brand hierarchy: measured emphasis, without changing the hero layout. */
+.nj-brand{font-weight:750;letter-spacing:.165em;font-size:clamp(12px,1.08vw,14px);line-height:1.35}
+.nj-market-statement{gap:4px;letter-spacing:-.018em}
+.nj-market-statement span:first-child{color:var(--nj-secondary);font-weight:400}
+.nj-market-statement span:last-child{color:var(--nj-ink);font-weight:600;letter-spacing:-.027em}
+@media(max-width:420px){.nj-brand{font-size:12px;letter-spacing:.12em}.nj-market-statement{gap:3px}}
