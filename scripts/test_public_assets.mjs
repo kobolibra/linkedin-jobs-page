@@ -53,6 +53,7 @@ test('missing frontend files, partitions or logo dependencies stop publication',
   const root=withFixture(t),out=join(root,'public-assets');buildPublicAssets(root);
   rmSync(join(out,'jd-parts','00.json'));assert.throws(()=>verifyPublicAssets(out),/Missing JD partition/);
   buildPublicAssets(root);rmSync(join(out,logo));assert.throws(()=>verifyPublicAssets(out),/Missing or unsafe company logo/);
+  buildPublicAssets(root);rmSync(join(out,'account-identity.css'));assert.throws(()=>verifyPublicAssets(out),/Missing browser asset/);
   buildPublicAssets(root);write(out,'index.html','<script src="missing.js"></script>');assert.throws(()=>verifyPublicAssets(out),/Missing local homepage dependency/);
 });
 test('public builds cannot erase the checkout or follow links to private inputs',t=>{
