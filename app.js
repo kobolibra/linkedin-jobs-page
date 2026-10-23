@@ -707,7 +707,7 @@ jobsDataPromise
     // Prioritize high and low; the latest value remains available in its point tooltip.
     // For nearby extrema, move the low callout below its point instead of hiding it.
     const lowLabel=(i)=>{const p=pts[i],anchor=i>25?'end':i<4?'start':'middle',dx=anchor==='end'?-4:anchor==='start'?4:0;return '<text class="rhythm-key-label rhythm-key-low" x="'+(p.x+dx).toFixed(2)+'" y="'+Math.min(130,p.y+14).toFixed(2)+'" text-anchor="'+anchor+'">LOW '+p.total+'</text>';};
-    const callouts=(peakIndex>=0?keyLabel(peakIndex,'peak'):'')+(lowIndex!==peakIndex?lowLabel(lowIndex):'')+(latestIndex!==peakIndex&&latestIndex!==lowIndex&&Math.abs(latestIndex-peakIndex)>4&&Math.abs(latestIndex-lowIndex)>4?keyLabel(latestIndex,'latest'):'');
+    const callouts=(peakIndex>=0?keyLabel(peakIndex,'high'):'')+(lowIndex!==peakIndex?lowLabel(lowIndex):'')+(latestIndex!==peakIndex&&latestIndex!==lowIndex&&Math.abs(latestIndex-peakIndex)>4&&Math.abs(latestIndex-lowIndex)>4?keyLabel(latestIndex,'latest'):'');
     const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="144" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="30-day new postings trend. Point tooltips contain each date and its value."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg>';
