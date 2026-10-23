@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-23T04:03:31.052497+00:00",
+    "checkedAt": "2026-10-23T10:03:16.929693+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-23T04:03:37.162640+00:00",
+    "checkedAt": "2026-10-23T10:03:22.838322+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-23T04:03:42.981867+00:00",
+    "checkedAt": "2026-10-23T10:03:28.882571+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-23T04:03:45.992060+00:00",
+    "checkedAt": "2026-10-23T10:03:31.849241+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-23T04:03:28.442678+00:00",
+    "checkedAt": "2026-10-23T10:03:14.083109+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8196,5 +8196,30 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHW-Beeic7w6g/company-logo_100_100/company-logo_100_100/0/1630648708165?e=2147483647&v=beta&t=myh2G2EcKBhHA2jRHQJBo-mMu7l3hMwgokiT_nzO_Pk",
     "companyUrl": "https://www.linkedin.com/company/%E9%9D%92%E5%B2%9B%E6%99%BA%E8%83%BD%E4%BA%A7%E4%B8%9A%E6%8A%80%E6%9C%AF%E7%A0%94%E7%A9%B6%E9%99%A2",
     "sourceJobId": "4480614263"
+  },
+  "cycle & carriage singapore": {
+    "name": "Cycle & Carriage Singapore",
+    "checkedAt": "2026-10-23T10:03:09.738656+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f6b917296599694f5daccaa2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQFEo2nRsU0YZg/company-logo_100_100/company-logo_100_100/0/1630618808892/cycle__carriage_ind_pte_ltd_logo?e=2147483647&v=beta&t=riIH4q3rW5N2wIwzI6lkGN5mZpRXxbLFC9ZfieoFKKY",
+    "companyUrl": "https://sg.linkedin.com/company/cyclecarriagesg",
+    "sourceJobId": "4482821443"
+  },
+  "symrise ag": {
+    "name": "Symrise AG",
+    "checkedAt": "2026-10-23T10:03:11.176821+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "jobId": "4482822442",
+        "reason": "ValueError",
+        "stage": "image"
+      }
+    ]
   }
 }
