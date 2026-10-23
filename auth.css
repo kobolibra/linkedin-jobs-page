@@ -48,34 +48,3 @@
 @media(max-width:720px){.header-utility{top:6px;padding:0;gap:4px}.header-utility .theme-toggle,.header-utility .account-trigger{width:32px;height:32px;min-height:32px;padding:7px}.header-utility .account-trigger{padding:4px}[data-auth-state=guest] .header-utility .auth-guest-sign{height:32px;min-height:32px;padding-inline:8px}}
 @media(prefers-reduced-motion:reduce){.header-utility .theme-toggle,.header-utility .account-trigger,.header-utility .auth-guest-sign{transition:none}}
 
-/* Signed-in identity: quiet, personal and consistent with Next Journey. */
-.header-utility .account-trigger{width:36px;height:36px;min-width:36px;min-height:36px;padding:3px;border-radius:50%;border:1px solid transparent;background:transparent;transition:border-color .18s ease,background .18s ease,box-shadow .18s ease}
-.header-utility .account-trigger:hover,.header-utility .account-trigger[aria-expanded=true]{background:transparent;border-color:var(--nj-rule,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--nj-accent,#527b91) 8%,transparent)}
-.account-avatar{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:#18374a;color:#f7f6f3;border:1px solid #6e8b9a;box-shadow:inset 0 0 0 2px #18374a;font:600 13px/1 var(--serif,Georgia,serif);letter-spacing:-.04em;overflow:hidden}
-.account-avatar-initial{display:block;transform:translateY(-.3px);max-width:100%;overflow:hidden}
-[data-theme="dark"] .account-avatar{background:#d9e4e8;color:#19364b;border-color:#93adba;box-shadow:inset 0 0 0 2px #d9e4e8}
-.header-utility .account-panel{width:min(304px,calc(100vw - 32px));padding:23px 22px 16px;border:1px solid var(--nj-rule,var(--line));border-radius:13px;box-shadow:0 18px 55px #071d2b22,0 3px 10px #071d2b0b}
-.header-utility .account-panel .account-caption{font-size:9px;letter-spacing:.14em;font-weight:650;color:var(--nj-secondary,var(--ink-faint))}
-.header-utility .account-user{font:500 19px/1.35 var(--serif,Georgia,serif);letter-spacing:-.025em;margin-bottom:16px}
-.header-utility .account-panel .account-summary{line-height:1.7}
-.header-utility .account-panel button{min-height:42px;padding:10px 8px;border-radius:6px;font-size:12px;font-weight:550}
-.header-utility .account-panel button:hover{background:var(--surface-2);color:var(--ink)}
-.header-utility .account-panel .account-logout{margin-top:10px;padding-top:15px;border-radius:0}
-.header-utility .account-trigger:focus-visible,.header-utility .account-panel button:focus-visible{outline:2px solid var(--nj-accent,#527b91);outline-offset:3px}
-@media(max-width:720px){.header-utility .account-trigger{width:36px;height:36px;min-height:36px;padding:3px}.header-utility .account-panel{right:0;max-width:calc(100vw - 24px)}}
-@media(prefers-reduced-motion:reduce){.header-utility .account-trigger{transition:none}}
-
-/* Account identity v2: intentionally distinct from the circular theme switch.
-   A quiet rectangular identity chip, not a second round icon. */
-.header-utility{align-items:center;gap:10px}
-.header-utility .theme-toggle{flex:0 0 26px;width:26px;height:26px;min-height:26px;border-radius:50%}
-.header-utility .account-trigger{box-sizing:border-box;width:auto;min-width:0;height:30px;min-height:30px;padding:3px 9px 3px 4px;gap:7px;border:1px solid var(--nj-rule,var(--line));border-radius:6px;background:transparent;box-shadow:none;color:var(--nj-ink,var(--ink));transition:border-color .16s ease,background .16s ease}
-.header-utility .account-trigger:hover,.header-utility .account-trigger[aria-expanded=true]{background:var(--surface-2);border-color:var(--nj-accent,#527b91);box-shadow:none}
-.header-utility .account-avatar{box-sizing:border-box;display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;border:0;border-radius:3px;background:var(--nj-ink,#18374a);color:var(--surface,#f7f6f3);box-shadow:none;font:600 12px/1 var(--sans,system-ui);letter-spacing:0}
-[data-theme="dark"] .header-utility .account-avatar{background:var(--nj-ink,#d9e4e8);color:#10273b;border:0;box-shadow:none}
-.header-utility .account-trigger-label{display:block;font:650 9px/1 var(--sans,system-ui);letter-spacing:.105em;color:var(--nj-secondary,var(--ink-soft));white-space:nowrap}
-.header-utility .account-trigger[aria-expanded=true] .account-trigger-label{color:var(--nj-ink,var(--ink))}
-.header-utility .account-panel{top:39px}
-@media(max-width:720px){.header-utility{gap:8px}.header-utility .account-trigger{height:30px;min-height:30px;padding:3px 6px 3px 4px;gap:5px}.header-utility .account-avatar{flex-basis:22px;width:22px;height:22px}.header-utility .account-trigger-label{font-size:8px;letter-spacing:.065em}.header-utility .account-panel{top:39px}}
-@media(max-width:360px){.header-utility .account-trigger-label{display:none}.header-utility .account-trigger{padding:3px 4px}}
-@media(prefers-reduced-motion:reduce){.header-utility .account-trigger{transition:none}}

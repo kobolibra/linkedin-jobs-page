@@ -1,0 +1,23 @@
+/* Next Journey / account utility v3.
+   Single outline glyph in masthead; identity lives inside the popover. */
+.account-host .header-utility{gap:4px;align-items:center}
+.account-host .header-utility .account-control{position:relative;display:flex;align-items:center}
+.account-host .header-utility .account-control::before{content:"";height:17px;width:1px;background:var(--nj-rule,var(--line));margin:0 5px 0 3px;flex:none}
+.account-host .header-utility .account-trigger{appearance:none;box-sizing:border-box;display:grid;place-items:center;flex:0 0 40px;width:40px;min-width:40px;height:40px;min-height:40px;padding:0;border:0;border-radius:7px;background:transparent;color:var(--nj-ink,var(--ink));box-shadow:none;cursor:pointer;transition:background-color .16s ease,color .16s ease}
+.account-host .header-utility .account-trigger:hover,.account-host .header-utility .account-trigger[aria-expanded="true"]{background:var(--surface-2);box-shadow:none}
+.account-host .header-utility .account-person-icon{display:block;width:20px;height:20px;flex:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.account-host .header-utility .account-trigger:focus-visible,.account-host .header-utility .account-panel button:focus-visible{outline:2px solid var(--nj-accent,#527b91);outline-offset:2px}
+.account-host .header-utility .account-panel{box-sizing:border-box;top:49px;right:0;width:304px;max-width:calc(100vw - 24px);padding:21px 20px 13px;border:1px solid var(--nj-rule,var(--line));border-radius:10px;background:var(--surface);box-shadow:0 16px 48px #0d26331e,0 2px 8px #0d263309;z-index:100}
+.account-identity{display:flex;align-items:center;gap:12px;padding:0 0 17px;margin-bottom:14px;border-bottom:1px solid var(--nj-rule,var(--line));min-width:0}
+.account-panel-monogram{box-sizing:border-box;display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:6px;background:var(--nj-ink,#19364b);color:var(--surface,#fff);font:600 16px/1 var(--sans,system-ui)}
+[data-theme="dark"] .account-panel-monogram{background:var(--nj-ink,#e5e9ec);color:#10273b}
+.account-identity-copy{min-width:0;flex:1}
+.account-host .header-utility .account-panel .account-caption{margin:0 0 3px;font:650 9px/1.5 var(--sans,system-ui);letter-spacing:.12em;color:var(--nj-secondary,var(--ink-soft))}
+.account-host .header-utility .account-panel .account-user{display:block;margin:0;font:600 14px/1.45 var(--sans,system-ui);letter-spacing:-.015em;color:var(--nj-ink,var(--ink));overflow-wrap:anywhere}
+.account-host .header-utility .account-panel .account-status{margin-bottom:7px;font-size:11px;line-height:1.55}
+.account-host .header-utility .account-panel .account-summary{margin-bottom:14px;font-size:11px;line-height:1.65}
+.account-host .header-utility .account-panel button{box-sizing:border-box;width:100%;min-height:40px;padding:10px 11px;text-align:left;font:550 12px/1.5 var(--sans,system-ui);border-radius:6px;transition:background-color .15s ease}
+.account-host .header-utility .account-panel button:hover{background:var(--surface-2);color:var(--nj-ink,var(--ink))}
+.account-host .header-utility .account-panel .account-logout{border-top:1px solid var(--nj-rule,var(--line));border-radius:0;margin-top:8px;padding-top:14px}
+@media(max-width:720px){.account-host .header-utility .account-trigger{flex-basis:40px;width:40px;height:40px;min-height:40px}.account-host .header-utility .account-panel{top:48px;right:0}.account-host .header-utility .account-control::before{margin-left:1px;margin-right:3px}}
+@media(prefers-reduced-motion:reduce){.account-host .header-utility .account-trigger,.account-host .header-utility .account-panel button{transition:none}}
