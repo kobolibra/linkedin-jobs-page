@@ -696,15 +696,18 @@ jobsDataPromise
     const sy=v=>sBase-(v/smax)*sPlotH;
     const peakIndex=peak>0?days.findIndex(d=>d.total===peak):-1;
     const latestIndex=days.length-1;
+    const lowValue=Math.min(...days.map(d=>d.total));
+    const lowIndex=days.findIndex(d=>d.total===lowValue);
     const pts=days.map((d,i)=>({x:sx(i),y:sy(d.total),total:d.total}));
     const series=pts.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
     const lines=[0,.5,1].map(t=>'<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(smax*t).toFixed(2)+'" x2="'+(SW-sRight)+'" y2="'+sy(smax*t).toFixed(2)+'"/>').join('');
     const stems=pts.map((p,i)=>'<line class="rhythm-stick'+(days[i].weekend?' weekend':'')+'" x1="'+p.x.toFixed(2)+'" y1="'+sBase+'" x2="'+p.x.toFixed(2)+'" y2="'+p.y.toFixed(2)+'"/>').join('');
     const nodes=pts.map((p,i)=>{const highlight=i===peakIndex||i===latestIndex;return '<g class="rhythm-point" tabindex="0" role="button" data-day="'+i+'" aria-label="'+days[i].label+': '+p.total+' new postings"><circle class="rhythm-point-hit" cx="'+p.x.toFixed(2)+'" cy="'+p.y.toFixed(2)+'" r="8"/><circle class="rhythm-node'+(days[i].weekend?' weekend':'')+(highlight?' focus':'')+'" cx="'+p.x.toFixed(2)+'" cy="'+p.y.toFixed(2)+'" r="'+(highlight?3.7:2.35)+'"/><title>'+days[i].label+' · '+p.total+' new postings</title></g>';}).join('');
     const keyLabel=(i,key)=>{const p=pts[i],anchor=i>25?'end':i<4?'start':'middle',dx=anchor==='end'?-4:anchor==='start'?4:0;return '<text class="rhythm-key-label rhythm-key-'+key+'" x="'+(p.x+dx).toFixed(2)+'" y="'+Math.max(11,p.y-12).toFixed(2)+'" text-anchor="'+anchor+'">'+key.toUpperCase()+' '+p.total+'</text>';};
-    // Peaks close to the last point would generate overlapping annotations:
-    // show just the latest callout and preserve peak in the summary beneath.
-    const callouts=(peakIndex>=0 && Math.abs(peakIndex-latestIndex)>3?keyLabel(peakIndex,'peak'):'')+keyLabel(latestIndex,'latest');
+    // Prioritize high and low; the latest value remains available in its point tooltip.
+    // For nearby extrema, move the low callout below its point instead of hiding it.
+    const lowLabel=(i)=>{const p=pts[i],anchor=i>25?'end':i<4?'start':'middle',dx=anchor==='end'?-4:anchor==='start'?4:0;return '<text class="rhythm-key-label rhythm-key-low" x="'+(p.x+dx).toFixed(2)+'" y="'+Math.min(130,p.y+14).toFixed(2)+'" text-anchor="'+anchor+'">LOW '+p.total+'</text>';};
+    const callouts=(peakIndex>=0?keyLabel(peakIndex,'peak'):'')+(lowIndex!==peakIndex?lowLabel(lowIndex):'')+(latestIndex!==peakIndex&&latestIndex!==lowIndex&&Math.abs(latestIndex-peakIndex)>4&&Math.abs(latestIndex-lowIndex)>4?keyLabel(latestIndex,'latest'):'');
     const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="144" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="30-day new postings trend. Point tooltips contain each date and its value."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg>';
