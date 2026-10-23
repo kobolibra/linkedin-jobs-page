@@ -1,7 +1,7 @@
 /* Authenticate and prepare account-scoped preferences before loading the app. */
 (()=>{
  const sourceFetch=window.fetch.bind(window);let account=null,lastCheck=0;
- const ACCOUNT_MARK='<span class="account-avatar" aria-hidden="true"><span class="account-avatar-initial"></span></span>';
+ const ACCOUNT_MARK='<span class="account-avatar" aria-hidden="true"><span class="account-avatar-initial"></span></span><span class="account-trigger-label" aria-hidden="true">ACCOUNT</span>';
  async function api(path,options={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);try{return await sourceFetch(path,{credentials:'same-origin',cache:'no-store',...options,signal:controller.signal});}finally{clearTimeout(timer);}}
  function expired(){document.getElementById('jobs')?.replaceChildren();document.querySelector('.account-control')?.remove();location.replace('/login?next='+encodeURIComponent(location.pathname+location.search));}
  async function check(){if(!account||Date.now()-lastCheck<60000)return;lastCheck=Date.now();try{const r=await api('/auth/session');if(r.status===401){expired();return;}if(!r.ok)return;const latest=await r.json();if(latest.user?.id!==account.user.id){location.reload();return;}account.csrf=latest.csrf;if(window.AccountPreferences)window.AccountPreferences.user.csrf=latest.csrf;}catch{}}
