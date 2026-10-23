@@ -64,3 +64,18 @@
 .header-utility .account-trigger:focus-visible,.header-utility .account-panel button:focus-visible{outline:2px solid var(--nj-accent,#527b91);outline-offset:3px}
 @media(max-width:720px){.header-utility .account-trigger{width:36px;height:36px;min-height:36px;padding:3px}.header-utility .account-panel{right:0;max-width:calc(100vw - 24px)}}
 @media(prefers-reduced-motion:reduce){.header-utility .account-trigger{transition:none}}
+
+/* Account identity v2: intentionally distinct from the circular theme switch.
+   A quiet rectangular identity chip, not a second round icon. */
+.header-utility{align-items:center;gap:10px}
+.header-utility .theme-toggle{flex:0 0 26px;width:26px;height:26px;min-height:26px;border-radius:50%}
+.header-utility .account-trigger{box-sizing:border-box;width:auto;min-width:0;height:30px;min-height:30px;padding:3px 9px 3px 4px;gap:7px;border:1px solid var(--nj-rule,var(--line));border-radius:6px;background:transparent;box-shadow:none;color:var(--nj-ink,var(--ink));transition:border-color .16s ease,background .16s ease}
+.header-utility .account-trigger:hover,.header-utility .account-trigger[aria-expanded=true]{background:var(--surface-2);border-color:var(--nj-accent,#527b91);box-shadow:none}
+.header-utility .account-avatar{box-sizing:border-box;display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;border:0;border-radius:3px;background:var(--nj-ink,#18374a);color:var(--surface,#f7f6f3);box-shadow:none;font:600 12px/1 var(--sans,system-ui);letter-spacing:0}
+[data-theme="dark"] .header-utility .account-avatar{background:var(--nj-ink,#d9e4e8);color:#10273b;border:0;box-shadow:none}
+.header-utility .account-trigger-label{display:block;font:650 9px/1 var(--sans,system-ui);letter-spacing:.105em;color:var(--nj-secondary,var(--ink-soft));white-space:nowrap}
+.header-utility .account-trigger[aria-expanded=true] .account-trigger-label{color:var(--nj-ink,var(--ink))}
+.header-utility .account-panel{top:39px}
+@media(max-width:720px){.header-utility{gap:8px}.header-utility .account-trigger{height:30px;min-height:30px;padding:3px 6px 3px 4px;gap:5px}.header-utility .account-avatar{flex-basis:22px;width:22px;height:22px}.header-utility .account-trigger-label{font-size:8px;letter-spacing:.065em}.header-utility .account-panel{top:39px}}
+@media(max-width:360px){.header-utility .account-trigger-label{display:none}.header-utility .account-trigger{padding:3px 4px}}
+@media(prefers-reduced-motion:reduce){.header-utility .account-trigger{transition:none}}
