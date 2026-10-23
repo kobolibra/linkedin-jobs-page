@@ -616,3 +616,13 @@ body.compact .job > .mono { margin-top:2px; }
 .rhythm-key-latest,[data-theme="dark"] .rhythm-key-latest{fill:var(--viz-blue)}
 @media(prefers-reduced-motion:reduce){.rhythm-svg{transition:none;transform:none}}
 
+
+/* Masthead copy: disciplined editorial typography, no structural change. */
+.nj-market-statement{letter-spacing:-.025em;text-wrap:balance}
+.nj-market-statement span{display:block;line-height:1.16}
+.nj-market-statement span+span{margin-top:.18em}
+.nj-market-heading{letter-spacing:.13em}
+.nj-market-row{font-variant-numeric:tabular-nums}
+.nj-title{letter-spacing:-.045em;text-wrap:balance}
+.nj-masthead-folio{letter-spacing:.08em}
+.rhythm-key-low,[data-theme="dark"] .rhythm-key-low{fill:var(--viz-secondary)}
