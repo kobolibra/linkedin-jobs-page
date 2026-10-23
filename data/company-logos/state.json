@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-23T10:03:16.929693+00:00",
+    "checkedAt": "2026-10-23T22:02:54.009449+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-23T10:03:22.838322+00:00",
+    "checkedAt": "2026-10-23T22:02:59.765370+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-23T10:03:28.882571+00:00",
+    "checkedAt": "2026-10-23T22:03:05.952288+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-23T10:03:31.849241+00:00",
+    "checkedAt": "2026-10-23T22:03:08.780802+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,30 +5408,21 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-23T16:03:27.266639+00:00",
+    "checkedAt": "2026-10-23T22:03:15.136528+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4467705418",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.513074720774874,
-        "deferred": true
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
       }
     ]
   },
@@ -8220,7 +8211,7 @@
   },
   "symrise ag": {
     "name": "Symrise AG",
-    "checkedAt": "2026-10-23T16:03:24.220731+00:00",
+    "checkedAt": "2026-10-23T22:03:11.723741+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8302,5 +8293,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEzlliFo_3i5g/company-logo_100_100/company-logo_100_100/0/1630649465812?e=2147483647&v=beta&t=TSZiMexjvNvUO_KX8A8Fmd9arjY5GeKTC_q8VMaukXs",
     "companyUrl": "https://www.linkedin.com/company/lwconsultingrecruitment",
     "sourceJobId": "4482857407"
+  },
+  "carrier": {
+    "name": "Carrier",
+    "checkedAt": "2026-10-23T22:02:46.593431+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3a8dbdf1e182b789a8d26855.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHn21AU0U42Rw/company-logo_100_100/company-logo_100_100/0/1630572464986/carrier_logo?e=2147483647&v=beta&t=mR2t19moZ3Quli0FKuDhqrHdxaRWd84ZcJr2pOKT8xA",
+    "companyUrl": "https://www.linkedin.com/company/carrier",
+    "sourceJobId": "4481900944"
+  },
+  "cosco-hit terminals (hk) limited": {
+    "name": "COSCO-HIT Terminals (HK) Limited",
+    "checkedAt": "2026-10-23T22:02:48.048061+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/cosco-hit-terminals-hk-limited",
+    "sourceJobId": "4481918211"
+  },
+  "国泰财产保险有限责任公司": {
+    "name": "国泰财产保险有限责任公司",
+    "checkedAt": "2026-10-23T22:02:51.018829+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "bcb36aa529a3818cc4ef7dce.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEuM3x_HXgMmA/company-logo_100_100/company-logo_100_100/0/1631305034898?e=2147483647&v=beta&t=eOU3O-mlGdQoCtDyjX01euRzi1yhib1zSVIjwwHM87Q",
+    "companyUrl": "https://cn.linkedin.com/company/%E5%9B%BD%E6%B3%B0%E4%BA%A7%E9%99%A9",
+    "sourceJobId": "4480611369"
   }
 }
