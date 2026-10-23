@@ -5408,21 +5408,30 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-23T10:03:14.083109+00:00",
+    "checkedAt": "2026-10-23T16:03:27.266639+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 200,
-        "contentType": "text/html; charset=utf-8",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4467705418",
-        "reason": "no_employer",
-        "stage": "job",
-        "observedName": "",
-        "companyUrl": ""
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.513074720774874,
+        "deferred": true
       }
     ]
   },
@@ -8211,7 +8220,7 @@
   },
   "symrise ag": {
     "name": "Symrise AG",
-    "checkedAt": "2026-10-23T10:03:11.176821+00:00",
+    "checkedAt": "2026-10-23T16:03:24.220731+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8221,5 +8230,77 @@
         "stage": "image"
       }
     ]
+  },
+  "aecom": {
+    "name": "AECOM",
+    "checkedAt": "2026-10-23T16:03:07.834286+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c604b86c3fed720cf25f4f56.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHkmXNBvtMbig/company-logo_100_100/company-logo_100_100/0/1630580122305/aecom_logo?e=2147483647&v=beta&t=EvK5pnqpvg7bCTilNvY18UtTtl5z22ROPE30xopWrEY",
+    "companyUrl": "https://www.linkedin.com/company/aecom",
+    "sourceJobId": "4478854533"
+  },
+  "alphapai": {
+    "name": "AlphaPai",
+    "checkedAt": "2026-10-23T16:03:09.274750+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b18da219290bd5862b5160ca.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHzyChdMbNujg/company-logo_100_100/B56aA4cNnfHAAI-/0/1787653315243/alphapaipai_logo?e=2147483647&v=beta&t=45LtJheQjPYss16Y2p_kZbKh4ln3kVqwrz3lPZcwWrU",
+    "companyUrl": "https://hk.linkedin.com/company/alphapaipai",
+    "sourceJobId": "4478839783"
+  },
+  "dragos, inc.": {
+    "name": "Dragos, Inc.",
+    "checkedAt": "2026-10-23T16:03:12.480677+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "830b1ad2cf19cc461bfc8d97.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFWF1OjyyBRxQ/company-logo_100_100/B4EZny29j0KYAU-/0/1760716118681/dragos_inc_logo?e=2147483647&v=beta&t=VhNfl2vWitGRjO9n49b-zJw4J43W5DmtqTSiRq9qhZw",
+    "companyUrl": "https://www.linkedin.com/company/dragos-inc.",
+    "sourceJobId": "4456025654"
+  },
+  "hitachi vantara": {
+    "name": "Hitachi Vantara",
+    "checkedAt": "2026-10-23T16:03:15.167700+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c892882f642463699de5c0bc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFigwPi_6m_8g/company-logo_100_100/B4EZYBScsiHYAQ-/0/1743778336351/hitachi_vantara_logo?e=2147483647&v=beta&t=EucTqwpw2Ehl3RAUKkCTpm-d2hBx2uI790WdTZMt1bc",
+    "companyUrl": "https://www.linkedin.com/company/hitachi-vantara",
+    "sourceJobId": "4482856404"
+  },
+  "iceye": {
+    "name": "ICEYE",
+    "checkedAt": "2026-10-23T16:03:18.556823+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fdd0e2fe97ce1e4efdd39401.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH1YvXImCD4iQ/company-logo_100_100/B56ZVGc5O2HQAQ-/0/1740643734906/iceye_logo?e=2147483647&v=beta&t=63K6CPi7nhuH3dvgwbmib4DS8CD6G3Hceqv_grvbZik",
+    "companyUrl": "https://fi.linkedin.com/company/iceye",
+    "sourceJobId": "4482850615"
+  },
+  "lw consulting": {
+    "name": "LW Consulting",
+    "checkedAt": "2026-10-23T16:03:21.184086+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1c27988b731cf24917df93a5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEzlliFo_3i5g/company-logo_100_100/company-logo_100_100/0/1630649465812?e=2147483647&v=beta&t=TSZiMexjvNvUO_KX8A8Fmd9arjY5GeKTC_q8VMaukXs",
+    "companyUrl": "https://www.linkedin.com/company/lwconsultingrecruitment",
+    "sourceJobId": "4482857407"
   }
 }
