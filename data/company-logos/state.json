@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-22T22:03:35.529833+00:00",
+    "checkedAt": "2026-10-23T04:03:31.052497+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-22T22:03:41.121822+00:00",
+    "checkedAt": "2026-10-23T04:03:37.162640+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-22T22:03:47.155914+00:00",
+    "checkedAt": "2026-10-23T04:03:42.981867+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-22T22:03:50.181042+00:00",
+    "checkedAt": "2026-10-23T04:03:45.992060+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-22T22:03:32.319729+00:00",
+    "checkedAt": "2026-10-23T04:03:28.442678+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8124,5 +8124,77 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQH2c-oFunC8_Q/company-logo_100_100/company-logo_100_100/0/1635753235546/___logo?e=2147483647&v=beta&t=JLA84Lr_JbK6DBm76c_7ha3GCXUWzR6lqRPlv0KdUXE",
     "companyUrl": "https://www.linkedin.com/company/%E5%BA%B7%E8%AF%BA%E4%BA%9A%E7%94%9F%E7%89%A9%E5%8C%BB%E8%8D%AF%E7%A7%91%E6%8A%80-%E6%88%90%E9%83%BD-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4479491012"
+  },
+  "antech diagnostics": {
+    "name": "Antech Diagnostics",
+    "checkedAt": "2026-10-23T04:03:11.830527+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d9609cc1f2fd890f57076a93.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEiZzIBW55gEg/company-logo_100_100/B4EaBJ0wviH8AI-/0/1787944963300/antech_diagnostics_logo?e=2147483647&v=beta&t=CYHFgSlJgWhPLg64QSOCDnPjjlbafq1Cz27EPXp7r7M",
+    "companyUrl": "https://www.linkedin.com/company/antech-diagnostics",
+    "sourceJobId": "4481605117"
+  },
+  "invarra capital": {
+    "name": "Invarra Capital",
+    "checkedAt": "2026-10-23T04:03:13.204819+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "89b570296dd9e1a200757e26.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQErQWpY_kOGGQ/company-logo_100_100/B56aFTtrOLJYAI-/0/1792405845145?e=2147483647&v=beta&t=b3eYjyug5sPUPbfjNk86nhVNYr1THvjs7--VwgiP7u8",
+    "companyUrl": "https://www.linkedin.com/company/invarra-capital",
+    "sourceJobId": "4481323193"
+  },
+  "ksobaa2222 - inlges": {
+    "name": "ksobaa2222 - inlges",
+    "checkedAt": "2026-10-23T04:03:16.392550+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "bc779f4d38fa049decb772b7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQG9h7L3tWF-ew/company-logo_100_100/company-logo_100_100/0/1638930260564/gsoba222_logo?e=2147483647&v=beta&t=IIA0jh_5q6YLtM1vP4BQxD1ar3HidRumCYX5MR00evk",
+    "companyUrl": "https://hk.linkedin.com/school/gsoba222/",
+    "sourceJobId": "4478976088"
+  },
+  "smartt precision mfg pte ltd": {
+    "name": "SMARTT PRECISION MFG PTE LTD",
+    "checkedAt": "2026-10-23T04:03:19.372803+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "33a2a58c135df426ec50ba37.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE0wb0x8nY7dA/company-logo_100_100/company-logo_100_100/0/1705298557097?e=2147483647&v=beta&t=LeRSkE6V6TSf3wgviO7RfYqF8ZNIYLXw4wYE9aNd6R0",
+    "companyUrl": "https://sg.linkedin.com/company/smarttprecisionmfg",
+    "sourceJobId": "4480097536"
+  },
+  "平安国际融资租赁有限公司": {
+    "name": "平安国际融资租赁有限公司",
+    "checkedAt": "2026-10-23T04:03:22.371076+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c22ee7bf681acfc35209eb66.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHuDkS_ZGN2-A/company-logo_100_100/company-logo_100_100/0/1630653998434?e=2147483647&v=beta&t=sb9RXixec3i3k81cqIpNUlvOj9_i_69VFwQQmE2rRzQ",
+    "companyUrl": "https://www.linkedin.com/company/%E5%B9%B3%E5%AE%89%E5%9B%BD%E9%99%85%E8%9E%8D%E8%B5%84%E7%A7%9F%E8%B5%81%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4480606456"
+  },
+  "青岛智能产业技术研究院": {
+    "name": "青岛智能产业技术研究院",
+    "checkedAt": "2026-10-23T04:03:25.434310+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "148d9f6044dd2180361e5e2c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHW-Beeic7w6g/company-logo_100_100/company-logo_100_100/0/1630648708165?e=2147483647&v=beta&t=myh2G2EcKBhHA2jRHQJBo-mMu7l3hMwgokiT_nzO_Pk",
+    "companyUrl": "https://www.linkedin.com/company/%E9%9D%92%E5%B2%9B%E6%99%BA%E8%83%BD%E4%BA%A7%E4%B8%9A%E6%8A%80%E6%9C%AF%E7%A0%94%E7%A9%B6%E9%99%A2",
+    "sourceJobId": "4480614263"
   }
 }
