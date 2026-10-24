@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-23T22:02:54.009449+00:00",
+    "checkedAt": "2026-10-24T04:02:51.328077+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-23T22:02:59.765370+00:00",
+    "checkedAt": "2026-10-24T04:02:57.105780+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-23T22:03:05.952288+00:00",
+    "checkedAt": "2026-10-24T04:03:03.180279+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,7 +3873,7 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-23T22:03:08.780802+00:00",
+    "checkedAt": "2026-10-24T04:03:06.246438+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5408,7 +5408,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-23T22:03:15.136528+00:00",
+    "checkedAt": "2026-10-24T04:03:10.128410+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8211,7 +8211,7 @@
   },
   "symrise ag": {
     "name": "Symrise AG",
-    "checkedAt": "2026-10-23T22:03:11.723741+00:00",
+    "checkedAt": "2026-10-24T04:03:09.080085+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8329,5 +8329,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEuM3x_HXgMmA/company-logo_100_100/company-logo_100_100/0/1631305034898?e=2147483647&v=beta&t=eOU3O-mlGdQoCtDyjX01euRzi1yhib1zSVIjwwHM87Q",
     "companyUrl": "https://cn.linkedin.com/company/%E5%9B%BD%E6%B3%B0%E4%BA%A7%E9%99%A9",
     "sourceJobId": "4480611369"
+  },
+  "ebanx": {
+    "name": "EBANX",
+    "checkedAt": "2026-10-24T04:02:46.995794+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fec6c7b8947a573ce72a7255.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGeN3tRIIskUg/company-logo_100_100/company-logo_100_100/0/1646913266040/ebanx_logo?e=2147483647&v=beta&t=aSJYFbgpPrwvXWB744gy120STqXHrAGavPA3gjLM4nY",
+    "companyUrl": "https://br.linkedin.com/company/ebanx",
+    "sourceJobId": "4474113376"
+  },
+  "fenzo digital": {
+    "name": "Fenzo Digital",
+    "checkedAt": "2026-10-24T04:02:48.451809+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "db615af84c59c51d18113e44.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGXfJrC_X2D9g/company-logo_100_100/company-logo_100_100/0/1630648213672?e=2147483647&v=beta&t=OB7golZ1hmBIf_3PR5jn-AwPEKyF1yGWaUhv40reRK4",
+    "companyUrl": "https://sg.linkedin.com/company/fenzo-digital",
+    "sourceJobId": "4481960554"
   }
 }
