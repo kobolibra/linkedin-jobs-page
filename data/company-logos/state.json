@@ -8353,5 +8353,46 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGXfJrC_X2D9g/company-logo_100_100/company-logo_100_100/0/1630648213672?e=2147483647&v=beta&t=OB7golZ1hmBIf_3PR5jn-AwPEKyF1yGWaUhv40reRK4",
     "companyUrl": "https://sg.linkedin.com/company/fenzo-digital",
     "sourceJobId": "4481960554"
+  },
+  "eaton": {
+    "name": "Eaton",
+    "checkedAt": "2026-10-24T10:02:32.946802+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "519ab6d673086bc03fbf84fc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFlHTyFXVYarg/company-logo_100_100/company-logo_100_100/0/1630597759539/eaton_logo?e=2147483647&v=beta&t=mf1Y9QMDbkpihH-1MCZClCRWIornoz2jPRUrNJfjMyk",
+    "companyUrl": "https://ie.linkedin.com/company/eaton",
+    "sourceJobId": "4480047611"
+  },
+  "hco strategy": {
+    "name": "HCO Strategy",
+    "checkedAt": "2026-10-24T10:02:34.381550+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4482611250",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.32903915034574,
+        "deferred": true
+      }
+    ]
   }
 }
