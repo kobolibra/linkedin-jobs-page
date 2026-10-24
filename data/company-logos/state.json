@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-24T04:02:51.328077+00:00",
+    "checkedAt": "2026-10-24T16:03:26.446670+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-24T04:02:57.105780+00:00",
+    "checkedAt": "2026-10-24T16:03:30.571098+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-24T04:03:03.180279+00:00",
+    "checkedAt": "2026-10-24T16:03:36.552902+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3873,21 +3873,15 @@
   },
   "mission media": {
     "name": "Mission Media",
-    "checkedAt": "2026-10-24T04:03:06.246438+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-24T16:03:39.536828+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458711512",
-        "status": 404,
-        "contentType": "",
-        "attempt": 1,
-        "jobId": "4458711512",
-        "reason": "http_error",
-        "stage": "job"
-      }
-    ]
+    "attempts": [],
+    "asset": "071348f26a8600cdcd7a8a43.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEtFcNkuDC0dQ/company-logo_100_100/company-logo_100_100/0/1736690665551/mission_media_asia_logo?e=2147483647&v=beta&t=PWLXvvIDOIwcTlj9CI9RbW0A_oqP1Yt-xrJqjgwnPBU",
+    "companyUrl": "https://id.linkedin.com/company/mission-media-asia",
+    "sourceJobId": "4458711512"
   },
   "mizuho": {
     "name": "Mizuho",
@@ -5408,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-24T04:03:10.128410+00:00",
+    "checkedAt": "2026-10-24T16:03:42.568743+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8368,31 +8362,110 @@
   },
   "hco strategy": {
     "name": "HCO Strategy",
-    "checkedAt": "2026-10-24T10:02:34.381550+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-24T16:03:45.603304+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4482611250",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482611250",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.32903915034574,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "9d65aabff7802928ce1d3be0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFKc10lr_9ojQ/company-logo_100_100/B56aDyrfM4IQAI-/0/1790777881636?e=2147483647&v=beta&t=betfYKLD-UJoNn6wpLxP-BvQt5MlIHfbS8gG4P-o3Uo",
+    "companyUrl": "https://sg.linkedin.com/company/hco-strategy",
+    "sourceJobId": "4482611250"
+  },
+  "group-ib": {
+    "name": "Group-IB",
+    "checkedAt": "2026-10-24T16:03:04.154815+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b635a2e0ca4580d969f612a6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGc3U-nGTAAjg/company-logo_100_100/company-logo_100_100/0/1638435579075/group_ib_logo?e=2147483647&v=beta&t=ZUoWh7Eak0tnW0HP7MXUyB74Lz4tCSQm66y67Yh5yko",
+    "companyUrl": "https://sg.linkedin.com/company/group-ib",
+    "sourceJobId": "4474704477"
+  },
+  "harold express": {
+    "name": "Harold Express",
+    "checkedAt": "2026-10-24T16:03:05.490081+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ffee31f7299c2a6092eaf416.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGYtUM1HcZlCw/company-logo_100_100/B56Z7tQzMKGsAI-/0/1782097064970?e=2147483647&v=beta&t=7fdyZbAFtkkNpxVbdnVR0h8voY83d1Amolq5-fThyNE",
+    "companyUrl": "https://www.linkedin.com/company/harold-express",
+    "sourceJobId": "4482649205"
+  },
+  "mouser": {
+    "name": "Mouser",
+    "checkedAt": "2026-10-24T16:03:08.410824+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "74855f8089a58c065a6f38ae.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF1Pd-hFPzhZQ/company-logo_100_100/B4EZ_H9uu1KcAM-/0/1785766276234/mouser_electronics_logo?e=2147483647&v=beta&t=-2VkiXxOSl2kk0Dyaja9ZlJdNLnaxN5jphGyfPQyMlQ",
+    "companyUrl": "https://www.linkedin.com/company/mouser-electronics",
+    "sourceJobId": "4473116571"
+  },
+  "siemens digital industries software": {
+    "name": "Siemens Digital Industries Software",
+    "checkedAt": "2026-10-24T16:03:11.416478+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e6e0c58fa5a65858f9b526ab.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFTiUh1DUJ3fA/company-logo_100_100/company-logo_100_100/0/1719793387652/siemenssoftware_logo?e=2147483647&v=beta&t=o3SrSdxMeP1br7rpKknaX62uVBkomXcqvR0mjnb0kBc",
+    "companyUrl": "https://www.linkedin.com/company/siemenssoftware",
+    "sourceJobId": "4481910684"
+  },
+  "tlc technology": {
+    "name": "TLC Technology",
+    "checkedAt": "2026-10-24T16:03:14.424904+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ac2f263c5568645b6c892874.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEwLlVCNvZ8WA/company-logo_100_100/B56ZsbNLk_JwAQ-/0/1765687999245/tlc_technology1_logo?e=2147483647&v=beta&t=DSHu8whjgAUn8ZSx-9vGKkerCNVx7L0mo5ELeAp2k7c",
+    "companyUrl": "https://sg.linkedin.com/company/tlctech",
+    "sourceJobId": "4482626013"
+  },
+  "trendai": {
+    "name": "TrendAI",
+    "checkedAt": "2026-10-24T16:03:17.413364+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "efabc38c59d7f8045edfd731.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGBEkE1GB-wAw/company-logo_100_100/B56Z21xgrNGsAQ-/0/1776871148628/trendai_security_logo?e=2147483647&v=beta&t=2l0kaKD_PsqlTDi88L6ng5wCKQEKfbdbsL9f46bbq5Q",
+    "companyUrl": "https://jp.linkedin.com/company/trendai-security",
+    "sourceJobId": "4466024057"
+  },
+  "xinxi asset management (hong kong) limited": {
+    "name": "XinXi Asset Management (Hong Kong) Limited",
+    "checkedAt": "2026-10-24T16:03:20.411608+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "cb387574177ec915cd0776e0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHN06Jf-iRmRg/company-logo_100_100/B56Z4B.OAkHwAM-/0/1778149548266/xxgroups_logo?e=2147483647&v=beta&t=luN3cLC23FLx1oJQ_edrwggrvfNIR-DUkcOXwu_oGdk",
+    "companyUrl": "https://hk.linkedin.com/company/xxgroups",
+    "sourceJobId": "4481657158"
+  },
+  "江西金融发展集团股份有限公司": {
+    "name": "江西金融发展集团股份有限公司",
+    "checkedAt": "2026-10-24T16:03:23.413966+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E6%B1%9F%E8%A5%BF%E9%87%91%E8%9E%8D%E5%8F%91%E5%B1%95%E9%9B%86%E5%9B%A2%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4479490064"
   }
 }
