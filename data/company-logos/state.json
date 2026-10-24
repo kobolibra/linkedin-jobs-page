@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-24T16:03:26.446670+00:00",
+    "checkedAt": "2026-10-24T22:03:52.108640+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-24T16:03:30.571098+00:00",
+    "checkedAt": "2026-10-24T22:03:57.855041+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-24T16:03:36.552902+00:00",
+    "checkedAt": "2026-10-24T22:04:03.851415+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-24T16:03:42.568743+00:00",
+    "checkedAt": "2026-10-24T22:04:06.857494+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8467,5 +8467,29 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E6%B1%9F%E8%A5%BF%E9%87%91%E8%9E%8D%E5%8F%91%E5%B1%95%E9%9B%86%E5%9B%A2%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4479490064"
+  },
+  "asis | wis - women in security latam & caribe": {
+    "name": "ASIS | WIS - Women In Security LatAm & Caribe",
+    "checkedAt": "2026-10-24T22:03:47.721059+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d66b040c13f81f481f08dd3a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQEm7yXqxHO-cg/company-logo_100_100/company-logo_100_100/0/1688430717246/wis_womeninsecurity_logo?e=2147483647&v=beta&t=ezdBzpRGxkVvYF5ENPBZsUDtKK49g21jyK-ehN0VNK8",
+    "companyUrl": "https://br.linkedin.com/company/wis-womeninsecurity",
+    "sourceJobId": "4482336341"
+  },
+  "evergreen cleaning services": {
+    "name": "Evergreen Cleaning Services",
+    "checkedAt": "2026-10-24T22:03:49.129805+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3842907135e86e0d83735257.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHkF2YqLx4CnA/company-logo_100_100/B56Z.0.1ujGgAI-/0/1785447800068?e=2147483647&v=beta&t=eTqwJ9z1ihBW8FJ3hP6yz2c0Tgs0hilnykZJsRUlYQU",
+    "companyUrl": "https://www.linkedin.com/company/evergreen-cleaning-services",
+    "sourceJobId": "4483342694"
   }
 }
