@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-24T22:03:52.108640+00:00",
+    "checkedAt": "2026-10-25T04:04:02.345327+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-24T22:03:57.855041+00:00",
+    "checkedAt": "2026-10-25T04:04:08.292267+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-24T22:04:03.851415+00:00",
+    "checkedAt": "2026-10-25T04:04:14.293899+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-24T22:04:06.857494+00:00",
+    "checkedAt": "2026-10-25T04:04:17.285320+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8491,5 +8491,89 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHkF2YqLx4CnA/company-logo_100_100/B56Z.0.1ujGgAI-/0/1785447800068?e=2147483647&v=beta&t=eTqwJ9z1ihBW8FJ3hP6yz2c0Tgs0hilnykZJsRUlYQU",
     "companyUrl": "https://www.linkedin.com/company/evergreen-cleaning-services",
     "sourceJobId": "4483342694"
+  },
+  "kai fu property services company limited": {
+    "name": "Kai Fu Property Services Company Limited",
+    "checkedAt": "2026-10-25T04:03:43.114345+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e271d90c1b344bbe72e76cfd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQFdspuEwa0XGw/company-logo_100_100/company-logo_100_100/0/1630629765813/kai_fu_property_services_company_limited_logo?e=2147483647&v=beta&t=t2SUCBGPLc6ipMIV-mXIqm6huzW9pZ96Pc9sqfbpBZo",
+    "companyUrl": "https://hk.linkedin.com/company/kai-fu-property-services-company-limited",
+    "sourceJobId": "4482608935"
+  },
+  "kok tong construction pte ltd": {
+    "name": "KOK TONG CONSTRUCTION PTE LTD",
+    "checkedAt": "2026-10-25T04:03:44.551689+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/kok-tong-construction-pte-ltd",
+    "sourceJobId": "4481081082"
+  },
+  "singapore civil defence force": {
+    "name": "Singapore Civil Defence Force",
+    "checkedAt": "2026-10-25T04:03:47.475895+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b20e5de3eada14ce8d17f581.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHSQBFIHykmUg/img-crop_100/img-crop_100/0/1716600154843?e=2147483647&v=beta&t=_uHOVjcTdd2JCdWq-nxK3HOtJcd_IxxJDtooSf3lu-g",
+    "companyUrl": "https://sg.linkedin.com/company/myscdf",
+    "sourceJobId": "4418379572"
+  },
+  "true harmony": {
+    "name": "True Harmony",
+    "checkedAt": "2026-10-25T04:03:50.457834+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/true-harmony",
+    "sourceJobId": "4481072415"
+  },
+  "中自环保科技股份有限公司": {
+    "name": "中自环保科技股份有限公司",
+    "checkedAt": "2026-10-25T04:03:53.304087+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dd1b1923bcb93098690e912f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGxs2P3VI43Cw/company-logo_100_100/company-logo_100_100/0/1636708699779/_logo?e=2147483647&v=beta&t=gR7sELwIKcIFqQJsx6JUoPi4f5SlyJJ49H-tXrpSXk0",
+    "companyUrl": "https://cn.linkedin.com/company/%E4%B8%AD%E8%87%AA%E7%8E%AF%E4%BF%9D%E7%A7%91%E6%8A%80%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4477790975"
+  },
+  "中韩人寿保险有限公司": {
+    "name": "中韩人寿保险有限公司",
+    "checkedAt": "2026-10-25T04:03:56.330379+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E4%B8%AD%E9%9F%A9%E4%BA%BA%E5%AF%BF%E4%BF%9D%E9%99%A9%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4481012544"
+  },
+  "维信现贷": {
+    "name": "维信现贷",
+    "checkedAt": "2026-10-25T04:03:59.295406+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "49341053f19dacd4faaf33ce.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHm6ssqUXMFUA/company-logo_100_100/company-logo_100_100/0/1617257888253?e=2147483647&v=beta&t=HCJE0S71lXx9feN6d9hSxxQK_ZzpraDR8V2Vu-B9y5A",
+    "companyUrl": "https://cn.linkedin.com/company/%E7%BB%B4%E4%BF%A1%E7%8E%B0%E8%B4%B7",
+    "sourceJobId": "4481070724"
   }
 }

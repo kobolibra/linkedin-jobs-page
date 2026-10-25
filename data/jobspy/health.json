@@ -2,50 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:39367454407:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-20T04:02:57.801664+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 1,
-      "retries": 0,
-      "httpStatuses": {
-        "429": 1
-      },
-      "outcomes": {
-        "rate_limited": 1
-      },
-      "stages": {
-        "logos": 1
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1792469040.5495822,
-          "stopUntil": 1792469040.5495822,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 7,
-        "downloaded": 0,
-        "missing": 1,
-        "placeholders": 0,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 0,
-        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 62.8s",
-        "deferred": 6
-      }
-    },
-    {
       "runId": "jobs:39399901437:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7323,6 +7279,43 @@
         },
         "circuitOpen": false,
         "selectorGuardTripped": false
+      }
+    },
+    {
+      "runId": "logos:40160470121:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-25T04:04:20.442890+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 18,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 16,
+        "404": 2
+      },
+      "outcomes": {
+        "response": 18
+      },
+      "stages": {
+        "logos": 18
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 11,
+        "downloaded": 7,
+        "missing": 4,
+        "placeholders": 3,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
       }
     }
   ],
