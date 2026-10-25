@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-25T10:03:29.837301+00:00",
+    "checkedAt": "2026-10-25T16:03:07.437944+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-25T10:03:35.619691+00:00",
+    "checkedAt": "2026-10-25T16:03:13.171993+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-25T10:03:41.613889+00:00",
+    "checkedAt": "2026-10-25T16:03:19.260763+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-25T10:03:44.604841+00:00",
+    "checkedAt": "2026-10-25T16:03:22.163700+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8611,5 +8611,53 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E6%81%92%E5%AE%89%E6%A0%87%E5%87%86%E4%BA%BA%E5%AF%BF%E4%BF%9D%E9%99%A9%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4481075502"
+  },
+  "beone medicines": {
+    "name": "BeOne Medicines",
+    "checkedAt": "2026-10-25T16:02:57.049968+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a8b6571d1f8f3a19dc3eaffe.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGuJ9sbEySMZw/company-logo_100_100/B4EZZeyBjsGYAQ-/0/1745346900125/beonemedicines_logo?e=2147483647&v=beta&t=97xpBWTdf8Z_RQWZhxY8yAflbfOkFRyyKJ0yQufIa1I",
+    "companyUrl": "https://www.linkedin.com/company/beonemedicines",
+    "sourceJobId": "4456230018"
+  },
+  "clyde & co": {
+    "name": "Clyde & Co",
+    "checkedAt": "2026-10-25T16:02:58.467211+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d2abf97560942f55ba84f27b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEyVakMzrgOVw/company-logo_100_100/company-logo_100_100/0/1720538156920/clydeco_logo?e=2147483647&v=beta&t=1H6Kn8C8uT6iIMg5XRpbvIfUmNaDaRoCs-q7Eesrnm8",
+    "companyUrl": "https://uk.linkedin.com/company/clydeco",
+    "sourceJobId": "4466487320"
+  },
+  "cnn": {
+    "name": "CNN",
+    "checkedAt": "2026-10-25T16:03:01.413903+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "759beeb443d9ed810aa5e163.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEHgYOkitwp1w/company-logo_100_100/company-logo_100_100/0/1631315246531?e=2147483647&v=beta&t=Xq4Q5pHePeL4uU0TW2irrtj_YRR8_KYz-yEr9xFe8OU",
+    "companyUrl": "https://www.linkedin.com/company/cnn",
+    "sourceJobId": "4466411368"
+  },
+  "上海楷登电子科技有限公司": {
+    "name": "上海楷登电子科技有限公司",
+    "checkedAt": "2026-10-25T16:03:04.414565+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E6%A5%B7%E7%99%BB%E7%94%B5%E5%AD%90%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4481022255"
   }
 }
