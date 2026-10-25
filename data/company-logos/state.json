@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-25T16:03:07.437944+00:00",
+    "checkedAt": "2026-10-25T22:05:47.576880+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-25T16:03:13.171993+00:00",
+    "checkedAt": "2026-10-25T22:05:53.460953+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-25T16:03:19.260763+00:00",
+    "checkedAt": "2026-10-25T22:05:59.476584+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-25T16:03:22.163700+00:00",
+    "checkedAt": "2026-10-25T22:06:02.556294+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8659,5 +8659,53 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E6%A5%B7%E7%99%BB%E7%94%B5%E5%AD%90%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4481022255"
+  },
+  "hong kong council for accreditation of academic and vocational qualifications": {
+    "name": "Hong Kong Council for Accreditation of Academic and Vocational Qualifications",
+    "checkedAt": "2026-10-25T22:05:37.344892+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "254e314bd4870dbb6a277588.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGl7HfZl8dZXg/company-logo_100_100/B56ZhQDgiIG0BM-/0/1753689754686/hkcaavq_logo?e=2147483647&v=beta&t=L_32howCvgQrIa81l_uEYQq4pCGAjSKaYZrY8GpSnAE",
+    "companyUrl": "https://hk.linkedin.com/company/hkcaavq",
+    "sourceJobId": "4482909104"
+  },
+  "lantau yacht club": {
+    "name": "Lantau Yacht Club",
+    "checkedAt": "2026-10-25T22:05:38.644752+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d067fb7acdc74c2110ed1201.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGAzNbf0RqFGw/company-logo_100_100/B56ZsA8LLRJwAQ-/0/1765247334035?e=2147483647&v=beta&t=mm-XgBkIv2hQUfEYwLE6Lr3HLXTHWErBsiuXQN7JIvE",
+    "companyUrl": "https://hk.linkedin.com/company/lantauyachtclub",
+    "sourceJobId": "4482900329"
+  },
+  "m+c saatchi performance": {
+    "name": "M+C Saatchi Performance",
+    "checkedAt": "2026-10-25T22:05:41.605934+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "68a99b1e928dd25a7e8e5634.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHy_I2CzkglnA/company-logo_100_100/B56ZWoLqGgGUAQ-/0/1742283383856/m_c_saatchi_performance_logo?e=2147483647&v=beta&t=H9Ttw8KbTndGubOhY8512D88nz6A5_UzuVvN16l-Rvg",
+    "companyUrl": "https://uk.linkedin.com/company/m-c-saatchi-performance",
+    "sourceJobId": "4483386550"
+  },
+  "talisman": {
+    "name": "talisman",
+    "checkedAt": "2026-10-25T22:05:44.575584+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "51054fcd685c4682d00fc3ea.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFLtMjmWNPyQQ/company-logo_100_100/company-logo_100_100/0/1722024389781/talisman_advisory_partners_logo?e=2147483647&v=beta&t=bhl7aRrv8ePkv8avCnN8SnrNT1CNdk03R1PALV0-xTI",
+    "companyUrl": "https://www.linkedin.com/company/talisman-advisory-partners",
+    "sourceJobId": "4483386910"
   }
 }
