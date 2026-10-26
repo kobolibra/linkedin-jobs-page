@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-26T04:05:17.823862+00:00",
+    "checkedAt": "2026-10-26T10:03:31.469019+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-26T04:05:23.614269+00:00",
+    "checkedAt": "2026-10-26T10:03:37.171651+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-26T04:05:29.620547+00:00",
+    "checkedAt": "2026-10-26T10:03:43.294136+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-26T04:05:32.620402+00:00",
+    "checkedAt": "2026-10-26T10:03:46.151582+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8767,5 +8767,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGp6_wxSxOvAQ/company-logo_100_100/company-logo_100_100/0/1617259932873?e=2147483647&v=beta&t=iXGAHkxpjPse-60q7wIcp1YZxpokKAodaKd2sdVRdn4",
     "companyUrl": "https://www.linkedin.com/company/%E5%89%8D%E6%B2%BF%E7%94%9F%E7%89%A9%E8%8D%AF%E4%B8%9A-%E5%8D%97%E4%BA%AC-%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4478967050"
+  },
+  "gnowbe": {
+    "name": "Gnowbe",
+    "checkedAt": "2026-10-26T10:03:20.990678+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "89f4a707a57831081c97f94f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGRhz6-zdGZ1Q/company-logo_100_100/company-logo_100_100/0/1630662701772/gnowbe_logo?e=2147483647&v=beta&t=F29UCfPtLw1uMJV053RyvnW5z1lO9RLluzKp8S5Vezc",
+    "companyUrl": "https://www.linkedin.com/company/gnowbe",
+    "sourceJobId": "4482939175"
+  },
+  "hony capital": {
+    "name": "Hony Capital",
+    "checkedAt": "2026-10-26T10:03:22.524823+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4ace86cc3e84a728a578f30c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQFkJ-vhQQ_3Qw/company-logo_100_100/company-logo_100_100/0/1631362117299?e=2147483647&v=beta&t=JBGQtNh8Sj50t7zoBKAvR1MqEkcCaSWlcI7qoMaEqG0",
+    "companyUrl": "https://cn.linkedin.com/company/hony-capital",
+    "sourceJobId": "4482924535"
+  },
+  "international academy of phronesis medicine": {
+    "name": "International Academy of Phronesis Medicine",
+    "checkedAt": "2026-10-26T10:03:25.464873+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7cc85339ae015695819a7a03.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGHq8EV0Sysjg/company-logo_100_100/B56aCualB1G0AI-/0/1789632598446/international_academy_of_phronesis_medicine_gd_logo?e=2147483647&v=beta&t=m2VEhoGfLhpGMaMnA9tVSn64gK8pmGCHI2GkrCu_Z9c",
+    "companyUrl": "https://cn.linkedin.com/company/international-academy-of-phronesis-medicine-gd",
+    "sourceJobId": "4483535087"
+  },
+  "protege fund services": {
+    "name": "Protege Fund Services",
+    "checkedAt": "2026-10-26T10:03:28.464870+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a2708f041bea5792d7077a51.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFHfKx-R4O9jQ/company-logo_100_100/company-logo_100_100/0/1663648142306/protegefs_logo?e=2147483647&v=beta&t=6QkBl9oeSZ2t2ohLsDWjxiokFU11yg3js740s3O4rWA",
+    "companyUrl": "https://sg.linkedin.com/company/protegefs",
+    "sourceJobId": "4482931736"
   }
 }
