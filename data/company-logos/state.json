@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-26T10:03:31.469019+00:00",
+    "checkedAt": "2026-10-26T16:03:21.587903+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-26T10:03:37.171651+00:00",
+    "checkedAt": "2026-10-26T16:03:27.437893+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-26T10:03:43.294136+00:00",
+    "checkedAt": "2026-10-26T16:03:33.393726+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-26T10:03:46.151582+00:00",
+    "checkedAt": "2026-10-26T16:03:36.385867+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8815,5 +8815,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFHfKx-R4O9jQ/company-logo_100_100/company-logo_100_100/0/1663648142306/protegefs_logo?e=2147483647&v=beta&t=6QkBl9oeSZ2t2ohLsDWjxiokFU11yg3js740s3O4rWA",
     "companyUrl": "https://sg.linkedin.com/company/protegefs",
     "sourceJobId": "4482931736"
+  },
+  "a b i e l": {
+    "name": "A B I E L",
+    "checkedAt": "2026-10-26T16:03:11.232604+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3480a113fbb2f643fa7c023a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHKkrzdVFRtcg/company-logo_100_100/B56ZvokY87H4AQ-/0/1769133412810/abielgroup_logo?e=2147483647&v=beta&t=QKV0Jq705H2iy959dWvKDJdZB7ntf2L413PZF9tuCkc",
+    "companyUrl": "https://sg.linkedin.com/company/abielgroup",
+    "sourceJobId": "4482926970"
+  },
+  "advanced sterilization products": {
+    "name": "Advanced Sterilization Products",
+    "checkedAt": "2026-10-26T16:03:12.647160+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e68979fd4aa48ab0bbf95e38.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHo9kYDvyZX-Q/company-logo_100_100/B4EaFUCJ3yIwAI-/0/1792411213512/advancedsterilizationproducts_logo?e=2147483647&v=beta&t=0AenTXRaf-1mMm7JuyZKDYx0oUKjv3nO1DuzFM4fRJ8",
+    "companyUrl": "https://www.linkedin.com/company/advancedsterilizationproducts",
+    "sourceJobId": "4468790557"
+  },
+  "south china group": {
+    "name": "South China Group",
+    "checkedAt": "2026-10-26T16:03:15.585176+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "be833a43a684604623882399.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQFctief-uQRAw/company-logo_100_100/company-logo_100_100/0/1631353950722?e=2147483647&v=beta&t=vSFcCLEubVIHQO4fUXxZ0AC0GDeZYNH0eiQZSjgWlh0",
+    "companyUrl": "https://hk.linkedin.com/company/south-china-group",
+    "sourceJobId": "4482936938"
+  },
+  "talentmatics": {
+    "name": "Talentmatics",
+    "checkedAt": "2026-10-26T16:03:18.587901+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "847302a873aacabb7dbd8515.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGpqRGo6Yr84A/company-logo_100_100/company-logo_100_100/0/1683734291169/talent_matics_logo?e=2147483647&v=beta&t=OCAw9DNgSSeI9l5LjcYZRTniSNEG2W3-KaCvY0weACI",
+    "companyUrl": "https://www.linkedin.com/company/talent-matics",
+    "sourceJobId": "4482995314"
   }
 }
