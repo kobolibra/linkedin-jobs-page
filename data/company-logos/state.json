@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-25T22:05:47.576880+00:00",
+    "checkedAt": "2026-10-26T04:05:17.823862+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-25T22:05:53.460953+00:00",
+    "checkedAt": "2026-10-26T04:05:23.614269+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-25T22:05:59.476584+00:00",
+    "checkedAt": "2026-10-26T04:05:29.620547+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-25T22:06:02.556294+00:00",
+    "checkedAt": "2026-10-26T04:05:32.620402+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8707,5 +8707,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFLtMjmWNPyQQ/company-logo_100_100/company-logo_100_100/0/1722024389781/talisman_advisory_partners_logo?e=2147483647&v=beta&t=bhl7aRrv8ePkv8avCnN8SnrNT1CNdk03R1PALV0-xTI",
     "companyUrl": "https://www.linkedin.com/company/talisman-advisory-partners",
     "sourceJobId": "4483386910"
+  },
+  "abbvie": {
+    "name": "AbbVie",
+    "checkedAt": "2026-10-26T04:05:04.457245+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5479c858d8adb14ab077e4c2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF_LxAbBWRTog/company-logo_100_100/company-logo_100_100/0/1719845134181?e=2147483647&v=beta&t=tKGbpCnxYe2dLIrXE3D-GkmeLQgztATlN-hmjS2j5zI",
+    "companyUrl": "https://www.linkedin.com/company/abbvie",
+    "sourceJobId": "4454975540"
+  },
+  "fusion worldwide": {
+    "name": "Fusion Worldwide",
+    "checkedAt": "2026-10-26T04:05:05.891584+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f011f80f10934b06932f3394.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFw6_1YoKu_wA/company-logo_100_100/company-logo_100_100/0/1706036015297/fusion_worldwide_logo?e=2147483647&v=beta&t=0A2I_7uCcDUgWthhQxtjUbKzAuNfxmjB2Y-Q5A4nqXA",
+    "companyUrl": "https://www.linkedin.com/company/fusion-worldwide",
+    "sourceJobId": "4342091089"
+  },
+  "img": {
+    "name": "IMG",
+    "checkedAt": "2026-10-26T04:05:08.820858+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "57f08f019e6899dd2d7cdeaf.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFEAKvQAZ8Zmg/company-logo_100_100/B4EZsOHFSBJ0AY-/0/1765468296836/img_logo?e=2147483647&v=beta&t=lHjh1HG3KN_Ax1Slankrs5cwMGYR5iErMq9a6ziPkYM",
+    "companyUrl": "https://uk.linkedin.com/company/img",
+    "sourceJobId": "4482045706"
+  },
+  "oxford instruments emeai": {
+    "name": "Oxford Instruments EMEAI",
+    "checkedAt": "2026-10-26T04:05:11.822485+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "75561d3403e762b73c7bb069.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQH-yNWZ_SvvOg/company-logo_100_100/B4EZaAtmg7HEAQ-/0/1745916160620/oxfordinstrumentsgmbh_logo?e=2147483647&v=beta&t=cvGyDmSwaozESdWi1qJNeqni4QcFQ6t1qpKRuzf-PQM",
+    "companyUrl": "https://de.linkedin.com/company/oxfordinstrumentsemeai",
+    "sourceJobId": "4482084772"
+  },
+  "前沿生物药业(南京)股份有限公司": {
+    "name": "前沿生物药业(南京)股份有限公司",
+    "checkedAt": "2026-10-26T04:05:14.820674+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a84850377e9776d38af7fafc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGp6_wxSxOvAQ/company-logo_100_100/company-logo_100_100/0/1617259932873?e=2147483647&v=beta&t=iXGAHkxpjPse-60q7wIcp1YZxpokKAodaKd2sdVRdn4",
+    "companyUrl": "https://www.linkedin.com/company/%E5%89%8D%E6%B2%BF%E7%94%9F%E7%89%A9%E8%8D%AF%E4%B8%9A-%E5%8D%97%E4%BA%AC-%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4478967050"
   }
 }
