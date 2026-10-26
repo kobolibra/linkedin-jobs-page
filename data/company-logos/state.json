@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-26T16:03:21.587903+00:00",
+    "checkedAt": "2026-10-26T22:05:15.759660+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-26T16:03:27.437893+00:00",
+    "checkedAt": "2026-10-26T22:05:21.512473+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-26T16:03:33.393726+00:00",
+    "checkedAt": "2026-10-26T22:05:27.556644+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-26T16:03:36.385867+00:00",
+    "checkedAt": "2026-10-26T22:05:30.612345+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8863,5 +8863,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGpqRGo6Yr84A/company-logo_100_100/company-logo_100_100/0/1683734291169/talent_matics_logo?e=2147483647&v=beta&t=OCAw9DNgSSeI9l5LjcYZRTniSNEG2W3-KaCvY0weACI",
     "companyUrl": "https://www.linkedin.com/company/talent-matics",
     "sourceJobId": "4482995314"
+  },
+  "arclin": {
+    "name": "Arclin",
+    "checkedAt": "2026-10-26T22:05:08.392397+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6740dc361a6f4cf7434fa8f3.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFqcO8wZxQ8mQ/company-logo_100_100/company-logo_100_100/0/1732215427669/arclin_logo?e=2147483647&v=beta&t=vj_lpqVQQbAs_fTFmt2qo0hUaFYIYr6v2sVxqyGjy84",
+    "companyUrl": "https://www.linkedin.com/company/arclin",
+    "sourceJobId": "4481475174"
+  },
+  "oliver | the brandtech group": {
+    "name": "OLIVER | The Brandtech Group",
+    "checkedAt": "2026-10-26T22:05:09.853995+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c83962c58765535d77dfd9a9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGyrxTGRyFxJA/company-logo_100_100/company-logo_100_100/0/1630557294733/oliver_agency_logo?e=2147483647&v=beta&t=i_WqFiAzFrAZYYO-WIfK2RgXH3CIOlAsgqS846VyXOE",
+    "companyUrl": "https://uk.linkedin.com/company/oliver-agency",
+    "sourceJobId": "4474244445"
+  },
+  "people's association": {
+    "name": "People's Association",
+    "checkedAt": "2026-10-26T22:05:12.757934+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1181142da41f100b8d95e5d0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQG8zduAK0yuIA/company-logo_100_100/company-logo_100_100/0/1660311342330/peoplesassociation_logo?e=2147483647&v=beta&t=2kyJzXHRS5x2JrbGmL24QCbruqrDlEqHY8t4JLOxSx4",
+    "companyUrl": "https://www.linkedin.com/company/peoplesassociation",
+    "sourceJobId": "4483715500"
   }
 }
