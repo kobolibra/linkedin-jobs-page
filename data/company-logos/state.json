@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-27T16:03:27.975730+00:00",
+    "checkedAt": "2026-10-27T22:02:50.524397+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-27T16:03:32.357189+00:00",
+    "checkedAt": "2026-10-27T22:02:56.295939+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-27T16:03:38.326123+00:00",
+    "checkedAt": "2026-10-27T22:03:02.390553+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-27T16:03:41.328594+00:00",
+    "checkedAt": "2026-10-27T22:03:05.299440+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9000,5 +9000,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHgl_8PBDoYYg/company-logo_100_100/company-logo_100_100/0/1684568123384/venture_search_logo?e=2147483647&v=beta&t=IuiUttXkiS73fn43FWY0VL3eQ2YAlGjk5lNqmwUeb8k",
     "companyUrl": "https://uk.linkedin.com/company/venture-search",
     "sourceJobId": "4482204226"
+  },
+  "panda hotel": {
+    "name": "Panda Hotel",
+    "checkedAt": "2026-10-27T22:02:46.166103+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f4104726864f0fcf530f3d06.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFeKHwrS2StKQ/company-logo_100_100/company-logo_100_100/0/1631303675917?e=2147483647&v=beta&t=xLQOoF1WLgUXnWI17jC13YKMpxAmRNZbOfgUPZ5B8dU",
+    "companyUrl": "https://hk.linkedin.com/company/pandahotel",
+    "sourceJobId": "4483657836"
+  },
+  "point one - hedge fund talent": {
+    "name": "Point One - Hedge Fund Talent",
+    "checkedAt": "2026-10-27T22:02:47.622219+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5ced1f507eed1809a0b7f3f8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGg8MzKHK-q8A/company-logo_100_100/company-logo_100_100/0/1735992388904/pointonetalent_logo?e=2147483647&v=beta&t=uu3DArb9_109TiZrEpKQIEWSCdPfzFXRhRsaNjYCXz8",
+    "companyUrl": "https://ae.linkedin.com/company/pointonetalent",
+    "sourceJobId": "4484213041"
   }
 }
