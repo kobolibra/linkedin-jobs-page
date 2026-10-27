@@ -93,3 +93,62 @@
   }
   window.JobListView=JobListView;
 })();
+
+/* Exact-title role histories use the full retained index, never filtered rows. */
+(()=>{
+ const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const stamp=job=>Date.parse(job.pushTime||job.firstSeen||'')||0;
+ const first=job=>Date.parse(job.firstSeen||'')||0;
+ const panelId=id=>'job-role-history-'+encodeURIComponent(id);
+ function build(rows,{company,region,city,id}){
+  const groups=new Map();
+  for(const job of rows){
+   const identity=id(job),name=company(job),area=region(job),title=job?.title;
+   if(!identity||!name||typeof title!=='string'||!title.trim())continue;
+   let place='';
+   if(area==='CN'){
+    place=String(city(job)||'').trim();
+    // Missing cities and broad country/province/metro labels cannot prove the same city.
+    if(!place||/^(?:n\/?a|unknown|china|mainland china|中国|中国大陆|全国|remote)$/i.test(place)||/metropolitan|\bprovince\b|省|都市圈/i.test(place))continue;
+    place=place.toLocaleLowerCase('en-US');
+   }else if(!['HK','SG'].includes(area))continue;
+   const key=JSON.stringify([name,area,place,title]);let group=groups.get(key);
+   if(!group){group={company:name,region:area,city:area==='CN'?String(city(job)).trim():'',entries:new Map()};groups.set(key,group);}
+   const old=group.entries.get(identity);if(!old||stamp(job)>stamp(old))group.entries.set(identity,job);
+  }
+  const latest=new Map();
+  for(const group of groups.values()){
+   if(group.entries.size<2)continue;
+   group.entries=[...group.entries.values()].sort((a,b)=>stamp(b)-stamp(a)||first(b)-first(a)||id(b).localeCompare(id(a),'en',{numeric:true}));
+   group.owner=id(group.entries[0]);latest.set(group.owner,group);
+  }
+  return latest;
+ }
+ function button(group){if(!group)return '';return '<button type="button" class="job-history-toggle" aria-expanded="false" aria-controls="'+escape(panelId(group.owner))+'" aria-label="Show '+group.entries.length+' listings with this exact title" title="View all '+group.entries.length+' listings"><svg aria-hidden="true" viewBox="0 0 24 16"><circle cx="6" cy="8" r="1.5"/><circle cx="12" cy="8" r="1.5"/><circle cx="18" cy="8" r="1.5"/></svg></button>';}
+ function bind(host,{get,id,link,onVisit}){
+  const desktop=()=>matchMedia('(min-width:721px)').matches,opened=new Set();
+  const date=value=>{if(typeof value!=='string'||!value)return '—';const d=new Date(value);return Number.isFinite(d.getTime())?d.toLocaleDateString('en-CA',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';};
+  function populate(card,group){
+   let panel=card.querySelector('.job-history-panel');if(panel)return panel;
+   panel=document.createElement('section');panel.className='job-history-panel';panel.id=panelId(group.owner);panel.hidden=true;panel.setAttribute('role','region');panel.setAttribute('aria-label','Listings with the same title');
+   const context=group.company+' · '+group.region+(group.city?' · '+group.city:'');
+   panel.innerHTML='<header class="job-history-heading"><div><h3>Role history</h3><p>'+escape(context)+'</p></div><span>'+group.entries.length+' listings</span></header><ol class="job-history-list">'+group.entries.map((job,index)=>{const closed=job.jobStatus==='expired',identity=id(job),href=link(job.link);return '<li class="job-history-item'+(closed?' is-closed':'')+'" data-history-id="'+escape(identity)+'"><div class="job-history-item-heading"><a class="job-history-link" href="'+escape(href)+'" target="_blank" rel="noopener">'+escape(job.title)+'</a><span class="job-history-state'+(closed?' is-closed':'')+'">'+(closed?'Closed':'Active')+'</span></div><div class="job-history-item-meta">'+(!index?'<span class="job-history-latest">Latest</span>':'')+'<span>First seen '+escape(date(job.firstSeen||job.pushTime))+'</span>'+(closed?'<span>Closed '+escape(date(job.expiredAt))+'</span>':'')+'<span class="job-history-id">'+escape(identity.replace(/^ln:/,'#'))+'</span></div></li>';}).join('')+'</ol>';
+   card.querySelector('.job-meta-line').appendChild(panel);return panel;
+  }
+  function set(card,expanded,{focus=false}={}){
+   const trigger=card?.querySelector('.job-history-toggle'),group=trigger&&get(card.dataset.id);if(!group)return;
+   if(expanded&&!desktop())return;
+   const panel=expanded?populate(card,group):card.querySelector('.job-history-panel');if(panel)panel.hidden=!expanded;
+   trigger.setAttribute('aria-expanded',String(expanded));trigger.setAttribute('aria-label',(expanded?'Hide':'Show')+' '+group.entries.length+' listings with this exact title');
+   expanded?opened.add(card.dataset.id):opened.delete(card.dataset.id);if(focus)trigger.focus({preventScroll:true});host._jobView?.schedule(true);
+  }
+  host.addEventListener('click',event=>{
+   const trigger=event.target.closest?.('.job-history-toggle');
+   if(trigger){event.preventDefault();event.stopImmediatePropagation();if(desktop())set(trigger.closest('.job'),trigger.getAttribute('aria-expanded')!=='true');return;}
+   const target=event.target.closest?.('.job-history-link');if(target){const item=target.closest('.job-history-item');if(item)onVisit?.(item.dataset.historyId);}
+  },true);
+  host.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const target=event.target.closest?.('.job-history-panel,.job-history-toggle');if(!target)return;const card=target.closest('.job');if(card?.querySelector('.job-history-toggle')?.getAttribute('aria-expanded')!=='true')return;event.preventDefault();event.stopImmediatePropagation();set(card,false,{focus:true});},true);
+  return {restore(){if(!opened.size||!desktop())return;for(const trigger of host.querySelectorAll('.job-history-toggle')){const card=trigger.closest('.job');if(opened.has(card.dataset.id)&&trigger.getAttribute('aria-expanded')!=='true')set(card,true);}}};
+ }
+ window.JobRoleHistory={build,button,bind};
+})();
