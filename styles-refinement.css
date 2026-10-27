@@ -630,10 +630,10 @@ body.compact .job > .mono { margin-top:2px; }
 /* Exact-title history lives under the logo; company and JD controls keep their positions. */
 .job-history-toggle,.job-history-panel{display:none}
 @media(min-width:721px){
- .job .job-history-toggle{position:absolute;left:-46px;top:0;display:grid;place-items:center;box-sizing:border-box;width:32px;height:20px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--ink-faint);cursor:pointer;transition:color .15s ease,background .15s ease}
+ .job .job-history-toggle{position:absolute;left:-46px;top:0;display:flex;align-items:center;justify-content:center;gap:3px;box-sizing:border-box;width:32px;height:20px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--ink-faint);cursor:pointer;transition:color .15s ease,background .15s ease}
  body.compact .job .job-history-toggle{left:-40px;width:28px}
- .job .job-history-toggle svg{display:block;width:20px;height:14px;fill:currentColor;pointer-events:none}
- .job .job-history-toggle:hover,.job .job-history-toggle[aria-expanded=true]{color:var(--region,var(--ink));background:color-mix(in srgb,var(--region,var(--ink)) 9%,transparent)}
+ .job .job-history-toggle .co-separator{flex:0 0 3px;display:block;margin:0;top:0;vertical-align:baseline;pointer-events:none}
+ .job .job-history-toggle:hover,.job .job-history-toggle[aria-expanded=true]{color:var(--ink-faint);background:color-mix(in srgb,var(--region,var(--ink)) 9%,transparent)}
  .job .job-history-toggle:focus-visible{outline:2px solid var(--region,var(--gold));outline-offset:2px}
  .job-history-panel:not([hidden]){display:block;flex:1 0 100%;width:100%;min-width:0;box-sizing:border-box;margin:8px 0 3px;padding:15px 17px 2px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--surface) 72%,transparent);font-family:var(--sans);font-size:12px;cursor:auto}
  .job-history-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:11px;border-bottom:1px solid var(--line)}
@@ -653,8 +653,6 @@ body.compact .job > .mono { margin-top:2px; }
  .job-history-state{flex:none;color:var(--ink-soft);font:400 10px/1.5 var(--sans)}
  .job-history-state.is-closed{color:var(--ink-faint)}
  .job-history-item-meta{display:flex;align-items:baseline;gap:5px 12px;flex-wrap:wrap;margin-top:4px;color:var(--ink-faint);font:400 10px/1.6 var(--sans)}
- .job-history-latest{color:var(--region,var(--ink-soft));font-weight:500}
- .job-history-id{font-family:var(--mono);font-size:9px;opacity:.8}
 }
 @media(prefers-reduced-motion:reduce){.job .job-history-toggle{transition:none}}
 @media print{.job .job-history-toggle,.job-history-panel{display:none!important}}
