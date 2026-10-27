@@ -630,9 +630,9 @@ body.compact .job > .mono { margin-top:2px; }
 /* Exact-title history lives under the logo; company and JD controls keep their positions. */
 .job-history-toggle,.job-history-panel{display:none}
 @media(min-width:721px){
- .job .job-history-toggle{position:absolute;left:-46px;top:.5px;display:flex;align-items:center;justify-content:center;gap:3px;box-sizing:border-box;width:32px;height:20px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--ink-faint);cursor:pointer;transition:color .15s ease,background .15s ease}
+ .job .job-history-toggle{position:absolute;left:-46px;top:.5px;display:grid;grid-template-columns:repeat(3,3px);grid-template-rows:3px;grid-auto-flow:column;align-content:center;align-items:center;justify-content:center;gap:0 3px;box-sizing:border-box;width:32px;height:20px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--ink-faint);cursor:pointer;transition:color .15s ease,background .15s ease}
  body.compact .job .job-history-toggle{left:-40px;width:28px}
- .job .job-history-toggle .co-separator{flex:0 0 3px;display:block;margin:0;top:0;vertical-align:baseline;pointer-events:none}
+ .job .job-history-toggle .co-separator{display:block;position:static;width:3px;height:3px;margin:0;top:auto;grid-row:1;vertical-align:baseline;pointer-events:none}
  .job .job-history-toggle:hover,.job .job-history-toggle[aria-expanded=true]{color:var(--ink-faint);background:color-mix(in srgb,var(--region,var(--ink)) 9%,transparent)}
  .job .job-history-toggle:focus-visible{outline:2px solid var(--region,var(--gold));outline-offset:2px}
  .job-history-panel:not([hidden]){display:block;flex:1 0 100%;width:100%;min-width:0;box-sizing:border-box;margin:8px 0 3px;padding:15px 17px 2px;border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--surface) 72%,transparent);font-family:var(--sans);font-size:12px;cursor:auto}
