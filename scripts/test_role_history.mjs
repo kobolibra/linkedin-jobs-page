@@ -7,7 +7,17 @@ const keys=map=>[...map.keys()];
 test('one latest owner exposes every distinct ID, including closed listings, without modifying the list',()=>{const rows=[job(1,{jobStatus:'expired',expiredAt:'2026-10-10'}),job(2),job(3)],before=JSON.stringify(rows),map=build(rows,helpers);assert.equal(map.size,1);const g=map.get(helpers.id(rows[2]));assert.ok(g);assert.equal(g.entries.length,3);assert.equal(g.entries[2].jobStatus,'expired');assert.equal(JSON.stringify(rows),before);assert.match(button(g),/Show 3 listings/);assert.equal(button(map.get(helpers.id(rows[0]))),'');});
 test('title equality is exact, including case, whitespace and punctuation',()=>{const rows=[job(1),job(2,{title:'senior analyst'}),job(3,{title:'Senior Analyst '}),job(4,{title:'Senior Analyst.'})];assert.equal(build(rows,helpers).size,0);});
 test('different companies, HK/SG regions and CN cities never share a history',()=>{for(const fields of [{company:'Other Bank'},{location:'SG'}])assert.equal(build([job(1),job(2,fields)],helpers).size,0);const rows=[job(1,{location:'CN',city:'Shanghai'}),job(2,{location:'CN',city:'Beijing'}),job(3,{location:'CN',city:'Shanghai'})],g=build(rows,helpers);assert.deepEqual(keys(g),[helpers.id(rows[2])]);assert.equal([...g.values()][0].entries.length,2);});
-test('CN matching uses a known city and does not combine broad or missing locations',()=>{for(const city of [undefined,'','N/A','China','Mainland China','Guangzhou-Foshan Metropolitan Area','Guangdong Province'])assert.equal(build([job(1,{location:'CN',city}),job(2,{location:'CN',city})],helpers).size,0,city);assert.equal(build([job(1,{location:'CN',city:' Shanghai '}),job(2,{location:'CN',city:'shanghai'})],helpers).size,1);});
+test('unclear CN city labels share a fallback but never absorb known-city histories',()=>{
+ const unclear=[undefined,'','N/A','Unknown','China','Mainland China','Guangzhou-Foshan Metropolitan Area','Guangdong Province'];
+ const rows=unclear.map((city,i)=>job(i+1,{location:'CN',city}));
+ rows.push(job(20,{location:'CN',city:'Shanghai'}),job(21,{location:'CN',city:'Shanghai'}),job(22,{location:'CN',city:'Beijing'}));
+ const groups=build(rows,helpers);assert.equal(groups.size,2);
+ const fallback=[...groups.values()].find(g=>g.city==='City unspecified');assert.equal(fallback.entries.length,unclear.length);
+ assert.ok(fallback.entries.every(j=>!['Shanghai','Beijing'].includes(j.city)));
+ const shanghai=[...groups.values()].find(g=>g.city==='Shanghai');assert.equal(shanghai.entries.length,2);
+ assert.ok(!groups.has(helpers.id(rows.at(-1))));
+ assert.equal(build([job(1,{location:'CN',city:' Shanghai '}),job(2,{location:'CN',city:'shanghai'})],helpers).size,1);
+});
 test('push time follows current homepage order; close/check timestamps cannot promote an older listing',()=>{const rows=[job(1,{pushTime:'2026-10-27T08:00:00Z'}),job(2,{jobStatus:'expired',expiredAt:'2026-10-28',checkedAt:'2026-10-28'})];const g=build(rows,helpers);assert.deepEqual(keys(g),[helpers.id(rows[0])]);});
 test('same-ID duplicates cannot create a history or inflate one',()=>{const row=job(1);assert.equal(build([row,{...row}],helpers).size,0);assert.equal([...build([row,{...row},job(2)],helpers).values()][0].entries.length,2);});
 test('same timestamp has one stable owner regardless of input order',()=>{const rows=[job(1),job(2),job(3)].map(j=>({...j,firstSeen:'2026-10-27'}));assert.deepEqual(keys(build(rows,helpers)),keys(build([...rows].reverse(),helpers)));assert.deepEqual(keys(build(rows,helpers)),[helpers.id(rows[2])]);});

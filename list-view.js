@@ -108,12 +108,12 @@
    let place='';
    if(area==='CN'){
     place=String(city(job)||'').trim();
-    // Missing cities and broad country/province/metro labels cannot prove the same city.
-    if(!place||/^(?:n\/?a|unknown|china|mainland china|中国|中国大陆|全国|remote)$/i.test(place)||/metropolitan|\bprovince\b|省|都市圈/i.test(place))continue;
-    place=place.toLocaleLowerCase('en-US');
+    // Unspecified CN cities share a company/title fallback, separate from known cities.
+    const unclear=!place||/^(?:n\/?a|unknown|unspecified|not specified|china|mainland china|中国|中国大陆|全国|不限|未注明|remote)$/i.test(place)||/metropolitan|\bprovince\b|省|都市圈/i.test(place);
+    place=unclear?null:place.toLocaleLowerCase('en-US');
    }else if(!['HK','SG'].includes(area))continue;
    const key=JSON.stringify([name,area,place,title]);let group=groups.get(key);
-   if(!group){group={company:name,region:area,city:area==='CN'?String(city(job)).trim():'',entries:new Map()};groups.set(key,group);}
+   if(!group){group={company:name,region:area,city:area==='CN'?(place===null?'City unspecified':String(city(job)).trim()):'',entries:new Map()};groups.set(key,group);}
    const old=group.entries.get(identity);if(!old||stamp(job)>stamp(old))group.entries.set(identity,job);
   }
   const latest=new Map();
