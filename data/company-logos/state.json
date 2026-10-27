@@ -2688,20 +2688,10 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-26T22:05:15.759660+00:00",
+    "checkedAt": "2026-10-27T16:03:27.975730+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
-        "status": 404,
-        "contentType": "",
-        "attempt": 1,
-        "jobId": "4461013126",
-        "reason": "http_error",
-        "stage": "job"
-      },
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
@@ -2709,6 +2699,16 @@
         "contentType": "",
         "attempt": 1,
         "jobId": "4461002131",
+        "reason": "http_error",
+        "stage": "job"
+      },
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "status": 404,
+        "contentType": "",
+        "attempt": 1,
+        "jobId": "4461013126",
         "reason": "http_error",
         "stage": "job"
       }
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-26T22:05:21.512473+00:00",
+    "checkedAt": "2026-10-27T16:03:32.357189+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-26T22:05:27.556644+00:00",
+    "checkedAt": "2026-10-27T16:03:38.326123+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-26T22:05:30.612345+00:00",
+    "checkedAt": "2026-10-27T16:03:41.328594+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -8943,31 +8943,62 @@
   },
   "piotec technology": {
     "name": "Piotec Technology",
-    "checkedAt": "2026-10-27T10:03:06.448546+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-27T16:03:44.417095+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4432935644",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.891574930661584,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "50567d970587074082844146.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGTVvpzAQAVog/company-logo_100_100/company-logo_100_100/0/1712020015006/piotecglobal_logo?e=2147483647&v=beta&t=12Sb4Wr_RM2XyUZF95n-r5ITtFmMY9Tzqbqlaz6hKNQ",
+    "companyUrl": "https://cn.linkedin.com/company/piotectechnology",
+    "sourceJobId": "4432935644"
+  },
+  "new world development company limited": {
+    "name": "New World Development Company Limited",
+    "checkedAt": "2026-10-27T16:03:17.684608+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ab458b2e27b89b9fe6387bec.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFWCYNPTgoj3g/company-logo_100_100/B56Zr77Z4pLoAQ-/0/1765163245488/new_world_development_company_limited_logo?e=2147483647&v=beta&t=KQOOK8r4hwW36m9OJhjKewH99G7kKF1i81nnunqS_WA",
+    "companyUrl": "https://hk.linkedin.com/company/new_world_development_company_limited",
+    "sourceJobId": "4483618948"
+  },
+  "rectrix group limited": {
+    "name": "Rectrix Group Limited",
+    "checkedAt": "2026-10-27T16:03:19.060426+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d2216df0729412319ea07781.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG3Yofil5Obdw/company-logo_100_100/B56ZuNBkWSHAAQ-/0/1767597557710/rectrixgroup_limited_logo?e=2147483647&v=beta&t=CkvbvutMmOVJKM9--w0bjm1iW1Cd90qz-77zeKy4UMU",
+    "companyUrl": "https://hk.linkedin.com/company/rectrixgroup-limited",
+    "sourceJobId": "4484012906"
+  },
+  "santander consumer (uk) plc": {
+    "name": "Santander Consumer (UK) plc",
+    "checkedAt": "2026-10-27T16:03:22.185978+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "79ad7be6935da66e66bdc27b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQG2nFwaCQRDWQ/company-logo_100_100/B4EZ8ig62kHMAM-/0/1782990483136?e=2147483647&v=beta&t=4SvN9gS_TNnkpnbRlUxo6M6yGS51DcSQugoPg3ivI9Y",
+    "companyUrl": "https://uk.linkedin.com/company/santander-consumer-finance-uk",
+    "sourceJobId": "4483615651"
+  },
+  "venture search": {
+    "name": "Venture Search",
+    "checkedAt": "2026-10-27T16:03:24.991478+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "bf4baae216e149f3b18af430.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHgl_8PBDoYYg/company-logo_100_100/company-logo_100_100/0/1684568123384/venture_search_logo?e=2147483647&v=beta&t=IuiUttXkiS73fn43FWY0VL3eQ2YAlGjk5lNqmwUeb8k",
+    "companyUrl": "https://uk.linkedin.com/company/venture-search",
+    "sourceJobId": "4482204226"
   }
 }
