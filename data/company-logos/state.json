@@ -8899,5 +8899,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQG8zduAK0yuIA/company-logo_100_100/company-logo_100_100/0/1660311342330/peoplesassociation_logo?e=2147483647&v=beta&t=2kyJzXHRS5x2JrbGmL24QCbruqrDlEqHY8t4JLOxSx4",
     "companyUrl": "https://www.linkedin.com/company/peoplesassociation",
     "sourceJobId": "4483715500"
+  },
+  "台达电子企业管理(上海)有限公司": {
+    "name": "台达电子企业管理(上海)有限公司",
+    "checkedAt": "2026-10-27T04:05:09.740285+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481831698",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481831698",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4481831698",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481831698",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481831698",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.27305475073242,
+        "deferred": true
+      }
+    ]
   }
 }
