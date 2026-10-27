@@ -113,7 +113,7 @@
     place=unclear?null:place.toLocaleLowerCase('en-US');
    }else if(!['HK','SG'].includes(area))continue;
    const key=JSON.stringify([name,area,place,title]);let group=groups.get(key);
-   if(!group){group={company:name,region:area,city:area==='CN'?(place===null?'City unspecified':String(city(job)).trim()):'',entries:new Map()};groups.set(key,group);}
+   if(!group){group={company:name,region:area,city:area==='CN'?(place===null?'':String(city(job)).trim()):'',entries:new Map()};groups.set(key,group);}
    const old=group.entries.get(identity);if(!old||stamp(job)>stamp(old))group.entries.set(identity,job);
   }
   const latest=new Map();

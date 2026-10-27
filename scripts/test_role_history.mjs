@@ -12,7 +12,7 @@ test('unclear CN city labels share a fallback but never absorb known-city histor
  const rows=unclear.map((city,i)=>job(i+1,{location:'CN',city}));
  rows.push(job(20,{location:'CN',city:'Shanghai'}),job(21,{location:'CN',city:'Shanghai'}),job(22,{location:'CN',city:'Beijing'}));
  const groups=build(rows,helpers);assert.equal(groups.size,2);
- const fallback=[...groups.values()].find(g=>g.city==='City unspecified');assert.equal(fallback.entries.length,unclear.length);
+ const fallback=[...groups.values()].find(g=>g.city==='');assert.equal(fallback.entries.length,unclear.length);
  assert.ok(fallback.entries.every(j=>!['Shanghai','Beijing'].includes(j.city)));
  const shanghai=[...groups.values()].find(g=>g.city==='Shanghai');assert.equal(shanghai.entries.length,2);
  assert.ok(!groups.has(helpers.id(rows.at(-1))));
