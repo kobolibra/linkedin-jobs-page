@@ -8928,5 +8928,46 @@
         "deferred": true
       }
     ]
+  },
+  "kaspersky": {
+    "name": "Kaspersky",
+    "checkedAt": "2026-10-27T10:03:04.707151+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dd4e82717857f8d551a44a92.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFYUuosLJk-Ig/company-logo_100_100/B4EZfAI1OFG4AQ-/0/1751275230515/kaspersky_logo?e=2147483647&v=beta&t=85WMQdVic2MnjMMwnI_ZlhQTgG42Yk3FBiA05AMvKYI",
+    "companyUrl": "https://ch.linkedin.com/company/kaspersky",
+    "sourceJobId": "4483618276"
+  },
+  "piotec technology": {
+    "name": "Piotec Technology",
+    "checkedAt": "2026-10-27T10:03:06.448546+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4432935644",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432935644",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.891574930661584,
+        "deferred": true
+      }
+    ]
   }
 }
