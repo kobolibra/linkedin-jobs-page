@@ -41,8 +41,8 @@ test('coverage claims reflect the 16 configured tracked institutions without imp
   const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
   const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
   const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert.match(about,/16 家金融机构/);
-  assert.match(about,/所有统计均基于本站已收录的信息/);
+  assert.match(about,/16 /);
+  assert.match(about,/所有职位信息均来自 LinkedIn/);
   assert.match(about,/id="coverage"/);
   assert.equal((about.match(/<div class="about-company-list">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
   assert.match(home,/Watch the market\./);
@@ -75,4 +75,19 @@ test('About uses one editorial hero, accurate desktop/mobile instructions, and n
  assert.match(about,/最新 12 条有效职位预览/);
  assert.doesNotMatch(about,/about-orbit|about-art-core|NEXT CHAPTER|JEV/);
  assert.doesNotMatch(styles,/about-orbit/);
+});
+
+test('About describes LinkedIn-only company and keyword discovery and actual bubble chart drilldown',()=>{
+ const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
+ const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+ const fetcher=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
+ assert.match(about,/重点机构按机构范围检索/);
+ assert.match(about,/通过职位关键词检索补充/);
+ assert.match(about,/所有职位信息均来自 LinkedIn/);
+ assert.doesNotMatch(about,/部分其他来源|其他数据来源/);
+ assert.match(about,/点击气泡或显示的机构名称/);
+ assert.match(app,/closest\("\.bubble-row\[data-company\]"\)/);
+ assert.match(app,/drillTop50Company\(row\.dataset\.company\)/);
+ assert.match(fetcher,/params\["f_C"\] = strict_company_id/);
+ assert.match(about,/好的旅程，不一定要一个人走/);
 });
