@@ -7,7 +7,7 @@ import {buildGuestPreview} from './guest_preview.mjs';
 // Worker entry points, provider rules, build inputs and repository metadata stay private.
 export const PUBLIC_FILES = [
   'preview-index.json', 'auth-guest.js', 'auth-guest.css', 'guest-resume.js', 'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'account-identity.css', 'login.html', 'privacy.html',
-  'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
+  'site.webmanifest', 'favicon.ico', 'apple-touch-icon.png', 'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'job-store.js', 'list-query.js', 'list-view.js',
   'app.js', 'company-insight.js', 'company-logos.js', 'editorial-mapping.js',
