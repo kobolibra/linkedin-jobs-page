@@ -251,3 +251,33 @@
 .about-header .about-brand{font-family:var(--sans);font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.035em;color:var(--nj-ink,var(--navy))!important}
 @media(max-width:760px){.about-header .about-brand{font-size:20px}}
 @media(max-width:420px){.about-header .about-brand{font-size:19px}}
+
+/* Editorial refinement: typography, spacing, hierarchy and real brand asset. */
+.about-header .about-brand{display:inline-flex;align-items:center;gap:11px;white-space:nowrap;text-decoration:none}
+.about-header .about-brand .nj-brand-mark{width:28px;height:28px;flex:none;display:block;border-radius:6px}
+.about-page .about-hero h1{font-size:clamp(47px,5.45vw,76px);line-height:1.16;letter-spacing:-.065em;text-wrap:balance}
+.about-hero-description{font-size:15px;line-height:1.96;max-width:520px}
+.about-chapter-intro{font-size:14px;line-height:1.95}
+.about-feature p,.about-organize-grid p,.about-explain-list p,.about-action-lines p{line-height:1.9}
+.about-feature-grid,.about-organize-grid{background:transparent;border:0;gap:12px}
+.about-feature,.about-organize-grid article{border:1px solid var(--line);border-radius:5px}
+.about-step{border:0}
+.about-steps{gap:12px;background:transparent;border:0}
+.about-step{border:1px solid var(--line);border-radius:5px}
+.about-account-panel{gap:12px;background:transparent;border:0}
+.about-account-number{border:1px solid var(--line);border-radius:5px}
+.about-chapter{padding-bottom:88px}
+.about-chapter h2{letter-spacing:-.055em;text-wrap:balance}
+.about-community-panel{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1fr);gap:24px;align-items:stretch;padding:27px;border:1px solid var(--line-strong);border-radius:5px;background:var(--ab-paper)}
+.about-community-lead{display:flex;flex-direction:column;justify-content:space-between;padding:12px 15px 12px 8px;border-right:1px solid var(--line)}
+.about-community-symbol{font:400 82px/.8 "Source Serif 4",var(--serif);color:var(--ab-gold)}
+.about-community-lead p{max-width:210px;font:400 27px/1.43 "Source Serif 4",var(--serif);letter-spacing:-.04em;color:var(--navy);margin:20px 0 0}
+.about-community-details{padding:9px 0}
+.about-community-details h3{font-size:16px;letter-spacing:-.03em;font-weight:700;margin:0 0 12px}
+.about-community-details p{font-size:12px;line-height:1.95;color:var(--ink-soft);margin-bottom:19px}
+.about-community-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:32px;min-height:42px;padding:10px 15px;background:#193e5a;color:#fff!important;border-radius:4px;font-size:12px;font-weight:650;text-decoration:none;transition:background .18s ease}
+.about-community-cta:hover{background:#315c77}
+.about-community-cta span{font-size:18px;line-height:1}
+.about-community-details small{display:block;max-width:370px;margin-top:18px;color:var(--ink-faint);font-size:10.5px;line-height:1.85}
+@media(max-width:760px){.about-header .about-brand .nj-brand-mark{width:25px;height:25px}.about-page .about-hero h1{font-size:clamp(41px,8.5vw,59px)}.about-community-panel{padding:22px}.about-community-lead p{font-size:24px}}
+@media(max-width:530px){.about-header .about-brand{gap:7px}.about-header .about-brand .nj-brand-mark{width:23px;height:23px}.about-page .about-hero h1{font-size:clamp(37px,9.5vw,46px)}.about-community-panel{grid-template-columns:1fr;gap:17px}.about-community-lead{border-right:0;border-bottom:1px solid var(--line);padding:0 0 18px}.about-community-symbol{font-size:62px}.about-community-lead p{margin:0;font-size:24px}.about-community-details{padding:0}.about-step{min-height:0}}
