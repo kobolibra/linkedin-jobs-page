@@ -133,3 +133,12 @@
 .nj-top-nav .nj-about-link:focus-visible{outline:2px solid var(--nj-accent);outline-offset:2px}
 @media(max-width:720px){.nj-top-nav{right:var(--header-tools-width,120px);padding-right:6px}.nj-top-nav .nj-about-link{padding:0 6px;font-size:11px}}
 @media(max-width:400px){.nj-top-nav{top:60px;bottom:auto;right:auto;left:0;padding-right:0}.nj-brand-row{margin-bottom:45px}.nj-top-nav .nj-about-link{padding:0 4px}}
+
+/* Brand polish: official mark, balanced wordmark, no decorative substitute. */
+.nj-brand-row>.nj-brand{display:inline-flex;align-items:center;gap:11px;min-height:44px;color:var(--nj-ink);text-decoration:none;white-space:nowrap}
+.nj-brand-row>.nj-brand:hover{color:var(--nj-accent)}
+.nj-brand-mark{width:28px;height:28px;display:block;flex:none;border-radius:6px}
+.nj-brand-name{font-size:20px;font-weight:700;letter-spacing:-.038em;line-height:1.15}
+.nj-top-nav .nj-about-link{font-weight:550;letter-spacing:.008em}
+@media(max-width:720px){.nj-brand-row>.nj-brand{gap:9px}.nj-brand-mark{width:25px;height:25px}.nj-brand-name{font-size:19px}}
+@media(max-width:420px){.nj-brand-row>.nj-brand{gap:7px}.nj-brand-mark{width:23px;height:23px}.nj-brand-name{font-size:17px}}
