@@ -45,11 +45,11 @@ test('coverage claims reflect the 16 configured tracked institutions without imp
   assert.match(about,/页面数据仅代表已收录的职位/);
   assert.match(about,/id="coverage"/);
   assert.equal((about.match(/<div class="about-scope-names">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
-  assert.match(home,/16 institutions actively monitored/);
-  assert.match(home,/LATEST ROLE DATE/);
-  assert.match(home,/COVERAGE NOTE/);
-  assert.match(home,/Most Active Institutions in Our Sample/);
-  assert.match(app,/Most Active Institutions in Our Sample/);
+  assert.match(home,/Watch the market\./);
+  assert.match(home,/LAST UPDATED/);
+  assert.match(home,/SOURCE <span aria-hidden="true">\/<\/span> LINKEDIN/);
+  assert.match(home,/Top 30 Institutions by Active Roles/);
+  assert.match(app,/Top 30 Institutions by Active Roles/);
   assert.match(about,/希望我们都能拿到自己的dream offer💪/);
   assert.doesNotMatch(about,/\bJEV\b/);
 });
@@ -58,6 +58,8 @@ test('copy is concise and avoids duplicate disclaimer headings or a numerical ma
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.doesNotMatch(about,/03<br>MARKETS|知道边界在哪里|坦诚说明|样本趋势，不代表整体市场/);
- assert.match(home,/Selected coverage, not the full market/);
+ assert.doesNotMatch(home,/Selected coverage, not the full market|16 institutions actively monitored|COVERAGE NOTE/);
  assert.equal((about.match(/id="coverage"/g)||[]).length,1);
 });
+
+test('homepage keeps approved pre-coverage language and top About entry',()=>{const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(home,/MARKET COVERAGE/);assert.match(home,/Glean signal from the noise/);assert.match(home,/href="\/about"/);assert.doesNotMatch(home,/REGIONS TRACKED|16 selected institutions|SOURCES <span/);});
