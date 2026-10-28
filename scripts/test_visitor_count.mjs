@@ -8,7 +8,7 @@ function page({present=true,readyState='loading'}={}){
   const el=element(),scripts=[],timers=[],events=[],window={};
   vm.runInNewContext(source,{
     document:{readyState,getElementById:()=>present?el:null,createElement:element,head:{appendChild:s=>scripts.push(s)}},
-    window,addEventListener:(...args)=>events.push(args),
+    window,localStorage:{getItem:()=>null,setItem:()=>{}},addEventListener:(...args)=>events.push(args),
     fetch:()=>assert.fail('No snapshot or replacement counter may be requested'),
     setTimeout:(fn,ms)=>{timers.push({fn,ms});return timers.length;},clearTimeout:()=>{},
   });
@@ -24,7 +24,7 @@ test('requests the original live cumulative metric immediately with its original
   }
 });
 test('slow requests are never classified as unavailable or retried by a timer',()=>{
-  const p=page();assert.equal(p.timers.length,0);assert.equal(p.el.textContent,'…');assert.equal(p.el.attributes['aria-busy'],'true');
+  const p=page();assert.equal(p.timers.length,1);assert.equal(p.timers[0].ms,10000);assert.equal(p.el.textContent,'…');assert.equal(p.el.attributes['aria-busy'],'true');
   assert.equal(p.el.children.length,0);assert.equal(p.scripts.length,1);
   p.respond({site_pv:4907});assert.equal(p.el.textContent,'4,907');assert.equal(p.el.attributes['aria-busy'],'false');
 });
@@ -37,25 +37,28 @@ test('zero and integer strings are valid live counts',()=>{
     const p=page();p.respond({site_pv});assert.equal(p.el.textContent,value);
   }
 });
-test('invalid values offer an accessible explicit retry instead of fake counts',()=>{
+test('invalid values fall back without displaying a fabricated count',()=>{
   for(const site_pv of [undefined,null,true,'',' ','-1','1.5','NaN',-1,1.5,Infinity,Number.MAX_SAFE_INTEGER+1]){
-    const p=page();p.respond({site_pv});assert.equal(p.el.textContent,'重试');assert.equal(p.el.children[0].type,'button');
-    assert.equal(p.el.children[0].attributes['aria-label'],'重新加载访问数');assert.equal(p.scripts.length,1);
+    const p=page();p.respond({site_pv});assert.equal(p.el.textContent,'—');
+    assert.match(p.el.title,/统计服务暂不可用/);assert.equal(p.el.attributes['aria-busy'],'false');
+    assert.equal(p.scripts.length,1);
   }
 });
-test('network failure offers retry without making automatic duplicate counting requests',()=>{
-  const p=page();p.scripts[0].onerror();assert.equal(p.el.textContent,'重试');assert.equal(p.scripts.length,1);
-  assert.equal(p.el.attributes['aria-busy'],'false');assert.equal(p.scripts[0].removed,true);
+test('network failure leaves an honest unavailable state, without duplicate visits',()=>{
+  const p=page();p.scripts[0].onerror();assert.equal(p.el.textContent,'—');
+  assert.equal(p.scripts.length,1);assert.equal(p.el.attributes['aria-busy'],'false');
+  assert.equal(p.scripts[0].removed,true);
 });
-test('a loaded script with no callback offers recovery',()=>{
-  const p=page();p.scripts[0].onload();assert.equal(p.el.textContent,'重试');
+test('a loaded script with no JSONP callback enters unavailable state',()=>{
+  const p=page();p.scripts[0].onload();assert.equal(p.el.textContent,'—');
+  assert.match(p.el.title,/统计服务暂不可用/);
 });
-test('explicit retry uses the same provider and old callbacks cannot clobber a new attempt',()=>{
-  const p=page(),old=p.window[new URL(p.scripts[0].src).searchParams.get('jsonpCallback')];
-  p.scripts[0].onerror();const retry=p.el.children[0].events.click;retry();retry();
-  assert.equal(p.scripts.length,2);assert.notEqual(p.scripts[0].src,p.scripts[1].src);
-  old({site_pv:9000});p.scripts[0].onerror();assert.equal(p.el.textContent,'…');
-  p.respond({site_pv:4908});assert.equal(p.el.textContent,'4,908');retry();assert.equal(p.scripts.length,2);
+test('a pending timeout displays a fallback without making another counted request',()=>{
+  const p=page();assert.equal(p.timers.length,1);
+  p.timers[0].fn();assert.equal(p.scripts.length,1);
+  assert.equal(p.el.textContent,'—');assert.match(p.el.title,/统计服务暂不可用/);
+  // The late JSONP callback remains available after timeout and can still succeed.
+  p.respond({site_pv:4908});assert.equal(p.el.textContent,'4,908');
 });
 test('errors or callbacks after success cannot erase or replace a confirmed count',()=>{
   const p=page(),cb=p.window[new URL(p.scripts[0].src).searchParams.get('jsonpCallback')];

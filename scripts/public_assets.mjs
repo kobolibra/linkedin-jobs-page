@@ -32,6 +32,14 @@ export function isPublicAsset(path) {
     || /^(?:assets|avatars)\/[^\s]+\.(?:webp|svg|png|jpe?g|gif|avif|ico|woff2?|ttf|otf)$/i.test(path);
 }
 
+// Public application routes resolve to their packaged HTML files. Keep this
+// explicit: unknown routes must never bypass the missing-dependency check.
+export function publicDependencyTarget(path) {
+  if (path === 'auth/start/google') return null; // Server-side sign-in endpoint.
+  const routes = {'about':'about.html','about/':'about.html','login':'login.html','privacy':'privacy.html'};
+  return Object.hasOwn(routes, path) ? routes[path] : path;
+}
+
 function files(directory, prefix = '') {
   const found = [];
   for (const entry of readdirSync(directory, {withFileTypes: true})) {
@@ -75,8 +83,8 @@ export function verifyPublicAssets(directory = 'public-assets') {
     const value = match[1];
     if (/^(?:[a-z]+:|\/\/|#)/i.test(value)) continue;
     const path = value.split(/[?#]/)[0].replace(/^\//, '') || 'index.html';
-    if (['login','privacy','auth/start/google'].includes(path)) continue;
-    if (!published.includes(path)) throw Error('Missing local homepage dependency: ' + path);
+    const asset = publicDependencyTarget(path);
+    if (asset && !published.includes(asset)) throw Error('Missing local homepage dependency: ' + path + ' -> ' + asset);
   }
   }
   return {files: published.length};
