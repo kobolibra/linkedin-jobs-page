@@ -142,10 +142,3 @@
 .nj-top-nav .nj-about-link{font-weight:550;letter-spacing:.008em}
 @media(max-width:720px){.nj-brand-row>.nj-brand{gap:9px}.nj-brand-mark{width:25px;height:25px}.nj-brand-name{font-size:19px}}
 @media(max-width:420px){.nj-brand-row>.nj-brand{gap:7px}.nj-brand-mark{width:23px;height:23px}.nj-brand-name{font-size:17px}}
-
-/* Sample scope is a factual label, never a whole-market claim. */
-.nj-coverage-link{display:inline-block;margin-left:12px;color:var(--nj-accent);font-size:10px;font-weight:650;letter-spacing:.06em;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--nj-accent) 50%,transparent);text-underline-offset:3px}
-.nj-coverage-link:hover{color:var(--nj-ink)}
-.nj-coverage-link:focus-visible{outline:2px solid var(--nj-accent);outline-offset:3px}
-.nj-stat-qualifier{font-size:9px;font-weight:500;color:var(--ink-faint);letter-spacing:.02em}
-@media(max-width:620px){.nj-source{white-space:normal}.nj-coverage-link{margin-left:8px;font-size:9px}.nj-market-statement span:first-child,.nj-market-statement span:nth-child(2){font-size:11px}}
