@@ -20,6 +20,7 @@ on:
       - 'index.html'
       - 'login.html'
       - 'privacy.html'
+      - 'about.html'
       - '*.js'
       - 'account-auth.mjs'
       - 'scripts/browser_assets.mjs'
