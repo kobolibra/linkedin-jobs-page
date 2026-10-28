@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-28T04:03:22.700202+00:00",
+    "checkedAt": "2026-10-28T16:03:34.848779+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-28T04:03:28.525624+00:00",
+    "checkedAt": "2026-10-28T16:03:38.989056+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-28T04:03:34.489717+00:00",
+    "checkedAt": "2026-10-28T16:03:44.997664+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-28T04:03:37.484303+00:00",
+    "checkedAt": "2026-10-28T16:03:47.966950+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9075,31 +9075,62 @@
   },
   "blkj havas": {
     "name": "BLKJ HAVAS",
-    "checkedAt": "2026-10-28T10:03:09.923707+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-28T16:03:51.132869+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4483843716",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.91467666605585,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "6b5a002794dc01f9b15c1cb0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGrSWNdYa9CpQ/company-logo_100_100/company-logo_100_100/0/1691031080472/weareblkjhavas_logo?e=2147483647&v=beta&t=g1SefpTqU-ZKVVv3SCVgVcJJjxSjvnLsC21LYyRjrdg",
+    "companyUrl": "https://sg.linkedin.com/company/weareblkjhavas",
+    "sourceJobId": "4483843716"
+  },
+  "cohesity": {
+    "name": "Cohesity",
+    "checkedAt": "2026-10-28T16:03:24.506573+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "eb5830b0f1176041144e53ee.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGxcG0DxNIjDg/company-logo_100_100/B56aEef5aJGgAI-/0/1791513040733/cohesity_logo?e=2147483647&v=beta&t=LJ5PdhngxFn0tJUGRUZ_AFDMELkiXOCb-cWz1RW3MGU",
+    "companyUrl": "https://www.linkedin.com/company/cohesity",
+    "sourceJobId": "4467095088"
+  },
+  "nec contracts®": {
+    "name": "NEC Contracts®",
+    "checkedAt": "2026-10-28T16:03:25.955553+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "90402e3e3bec31bce3b0cb67.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHDhKfZr91qBw/company-logo_100_100/company-logo_100_100/0/1631329676767?e=2147483647&v=beta&t=oEnVdYGNCL57LNYDldDO-uBgLMjyhczbFgLP4t3CWIg",
+    "companyUrl": "https://uk.linkedin.com/company/nec-contracts",
+    "sourceJobId": "4484491131"
+  },
+  "ordinary folk": {
+    "name": "Ordinary Folk",
+    "checkedAt": "2026-10-28T16:03:28.839544+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "259a3ff22f427f32f6af9243.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEFaaNl8a4U9g/company-logo_100_100/company-logo_100_100/0/1645112864126/ordinaryfolkhealth_logo?e=2147483647&v=beta&t=kCRLWFtHjkFyfe0x5ar8xcFiLrzDo3iz-7i190SeQpM",
+    "companyUrl": "https://sg.linkedin.com/company/ordinaryfolkhealth",
+    "sourceJobId": "4484404963"
+  },
+  "roquette": {
+    "name": "Roquette",
+    "checkedAt": "2026-10-28T16:03:31.840461+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "50af2c8fc9934379d2d15b0b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQE-StOCuF6Glw/company-logo_100_100/B4EZwD1XnuGoAQ-/0/1769590848346/roquette_logo?e=2147483647&v=beta&t=DGY5qyjxXHWWn6AXZZt9TcU7FWq5MxKd0thC5fylT20",
+    "companyUrl": "https://fr.linkedin.com/company/roquette",
+    "sourceJobId": "4484425146"
   }
 }
