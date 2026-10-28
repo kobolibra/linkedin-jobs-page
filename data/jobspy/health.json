@@ -2,43 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:39936267649:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-10-23T10:03:34.901555+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 11,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 8,
-        "404": 3
-      },
-      "outcomes": {
-        "response": 11
-      },
-      "stages": {
-        "logos": 11
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 7,
-        "downloaded": 1,
-        "missing": 6,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 0,
-        "httpRetries": 0
-      }
-    },
-    {
       "runId": "jobs:39977359597:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7745,6 +7708,50 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:40668977859:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-10-28T10:03:10.099445+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 1,
+      "retries": 0,
+      "httpStatuses": {
+        "429": 1
+      },
+      "outcomes": {
+        "rate_limited": 1
+      },
+      "stages": {
+        "logos": 1
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1793181850.9389381,
+          "stopUntil": 1793181850.9389381,
+          "reason": "HTTP 429"
+        }
+      },
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 7,
+        "downloaded": 0,
+        "missing": 1,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 60.9s",
+        "deferred": 6
+      }
     }
   ],
   "queryFailureStreaks": {

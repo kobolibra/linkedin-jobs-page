@@ -9072,5 +9072,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHh7kWW4Pqq8A/company-logo_100_100/company-logo_100_100/0/1631322154455?e=2147483647&v=beta&t=uXNJy1kATo9jnLAwagdpClz2aeheCLGWSw1K7ED6Si0",
     "companyUrl": "https://sg.linkedin.com/company/sac-capital-private-limited",
     "sourceJobId": "4483823539"
+  },
+  "blkj havas": {
+    "name": "BLKJ HAVAS",
+    "checkedAt": "2026-10-28T10:03:09.923707+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4483843716",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483843716",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.91467666605585,
+        "deferred": true
+      }
+    ]
   }
 }
