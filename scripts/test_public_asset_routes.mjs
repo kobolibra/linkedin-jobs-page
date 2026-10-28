@@ -20,7 +20,7 @@ test('homepage /about link points to a registered public page and no invented NJ
   const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
   const published=readFileSync(new URL('./browser_assets.mjs',import.meta.url),'utf8');
   assert.match(home,/class="nj-top-nav"[^>]*>\s*<a class="nj-about-link" href="\/about">About<\/a>/);
-  assert.match(about,/href="\/" class="about-brand"[^>]*><img class="nj-brand-mark" src="\/assets\/next-journey-mark\.svg"/);
+  assert.match(about,/href="\/" class="about-brand"[^>]*><img src="\/assets\/next-journey-mark\.svg"/);
   assert.doesNotMatch(about,/about-brand-mark/);
   assert.match(home,/class="nj-brand-mark" src="\/assets\/next-journey-mark\.svg"/);
   assert.match(about,/id="guestbook"/);
@@ -42,9 +42,9 @@ test('coverage claims reflect the 16 configured tracked institutions without imp
   const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
   const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
   assert.match(about,/16 家金融机构/);
-  assert.match(about,/页面数据仅代表已收录的职位/);
+  assert.match(about,/所有统计均基于本站已收录的信息/);
   assert.match(about,/id="coverage"/);
-  assert.equal((about.match(/<div class="about-scope-names">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
+  assert.equal((about.match(/<div class="about-company-list">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
   assert.match(home,/Watch the market\./);
   assert.match(home,/LAST UPDATED/);
   assert.match(home,/SOURCE <span aria-hidden="true">\/<\/span> LINKEDIN/);
@@ -57,9 +57,22 @@ test('coverage claims reflect the 16 configured tracked institutions without imp
 test('copy is concise and avoids duplicate disclaimer headings or a numerical market slogan',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
- assert.doesNotMatch(about,/03<br>MARKETS|知道边界在哪里|坦诚说明|样本趋势，不代表整体市场/);
+ assert.doesNotMatch(about,/03<br>MARKETS|知道边界在哪里|坦诚说明|样本趋势，不代表整体市场|FIND YOUR FIT|CN · HK · SG|MAINLAND CHINA · HONG KONG · SINGAPORE/);
  assert.doesNotMatch(home,/Selected coverage, not the full market|16 institutions actively monitored|COVERAGE NOTE/);
  assert.equal((about.match(/id="coverage"/g)||[]).length,1);
 });
 
 test('homepage keeps approved pre-coverage language and top About entry',()=>{const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(home,/MARKET COVERAGE/);assert.match(home,/Glean signal from the noise/);assert.match(home,/href="\/about"/);assert.doesNotMatch(home,/REGIONS TRACKED|16 selected institutions|SOURCES <span/);});
+
+test('About uses one editorial hero, accurate desktop/mobile instructions, and no decorative slogans',()=>{
+ const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
+ const styles=readFileSync(new URL('../about.css',import.meta.url),'utf8');
+ assert.match(about,/希望我们都能拿到自己的dream offer💪/);
+ assert.equal((about.match(/class="about-section" id="/g)||[]).length,8);
+ assert.match(about,/向左轻扫/);
+ assert.match(about,/Guestbook/);
+ assert.match(about,/href="\/\?guestbook=1"/);
+ assert.match(about,/最新 12 条有效职位预览/);
+ assert.doesNotMatch(about,/about-orbit|about-art-core|NEXT CHAPTER|JEV/);
+ assert.doesNotMatch(styles,/about-orbit/);
+});
