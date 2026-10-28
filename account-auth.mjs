@@ -60,6 +60,7 @@ export async function accountGate(request,env){const url=new URL(request.url),pa
  const methods=['GET','HEAD','POST'];if(!methods.includes(request.method))return {response:json(405,{error:'method_not_allowed'})};
  if(path==='/auth/providers')return {response:json(200,{enabled:true,providers:Object.keys(providers).filter(p=>configured(env,p))})};
  if(anonymousBrowserAsset(path)&&request.method!=='POST')return {response:await env.ASSETS.fetch(request)};
+ if((path==='/about'||path==='/about/')&&(request.method==='GET'||request.method==='HEAD')){const response=await env.ASSETS.fetch(new Request(new URL('/about.html',request.url),{method:'GET'}));return {response:new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers:{'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=300','x-content-type-options':'nosniff'}})};}
  if(path==='/privacy'&&request.method==='GET'){const response=await env.ASSETS.fetch(new Request(new URL('/privacy.html',request.url)));return {response:privateResponse(response)};}
  if(['/login','/login.html'].includes(path)&&request.method==='GET')return {response:await loginPage(request,env)};
  if(path==='/api/public-preview'&&(request.method==='GET'||request.method==='HEAD')){const response=await env.ASSETS.fetch(new Request(new URL('/preview-index.json',request.url),{method:'GET'}));return {response:privateResponse(new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers:response.headers}))};}
