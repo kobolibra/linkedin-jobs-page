@@ -95,9 +95,32 @@
 .masthead:has(> .nj-masthead-top) > .stats {margin-top:12px}
 @media(max-width:720px){.masthead:has(> .nj-masthead-top) > .stats{margin-top:10px}}
 
-/* Brand hierarchy: measured emphasis, without changing the hero layout. */
-.nj-brand{font-weight:750;letter-spacing:.165em;font-size:clamp(12px,1.08vw,14px);line-height:1.35}
-.nj-market-statement{gap:4px;letter-spacing:-.018em}
-.nj-market-statement span:first-child{color:var(--nj-secondary);font-weight:400}
-.nj-market-statement span:last-child{color:var(--nj-ink);font-weight:600;letter-spacing:-.027em}
-@media(max-width:420px){.nj-brand{font-size:12px;letter-spacing:.12em}.nj-market-statement{gap:3px}}
+/* Editorial identity: a compact wordmark and a clear two-level statement. */
+.nj-brand{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-size:24px;font-weight:600;line-height:1.15;
+  letter-spacing:-.045em;font-optical-sizing:auto;
+  color:var(--nj-ink);
+}
+.nj-market-statement{
+  display:flex;flex-direction:column;gap:0;
+  margin-top:22px;letter-spacing:0;text-wrap:pretty;
+}
+.nj-market-statement span,
+.nj-market-statement span:first-child{
+  margin:0;font:400 12px/1.65 var(--sans);
+  letter-spacing:.005em;color:var(--nj-secondary);
+}
+.nj-market-statement span:last-child{
+  margin-top:9px;
+  font:400 clamp(21px,2vw,25px)/1.25 "Source Serif 4",Georgia,serif;
+  letter-spacing:-.025em;color:var(--nj-ink);
+}
+@media(max-width:760px){
+  .nj-brand{font-size:22px}
+  .nj-market-statement{margin-top:20px}
+  .nj-market-statement span:last-child{font-size:23px}
+}
+@media(max-width:420px){
+  .nj-brand{font-size:21px;letter-spacing:-.04em}
+}
