@@ -31,3 +31,26 @@ test('homepage /about link points to a registered public page and no invented NJ
   assert.match(published,/\'\/about.css\'/);
   assert.match(published,/\'\/about.js\'/);
 });
+
+test('coverage claims reflect the 16 configured tracked institutions without implying full market data',()=>{
+  const companySource=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
+  const block=companySource.match(/^COMPANIES = \{([\s\S]*?)^\}/m);
+  assert.ok(block,'configured companies must be discoverable');
+  const monitored=[...block[1].matchAll(/^    "[^"]+": \{/gm)];
+  assert.equal(monitored.length,16,'revisit public copy whenever the monitored list changes');
+  const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
+  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+  assert.match(about,/16 家金融机构/);
+  assert.match(about,/并非金融行业全市场职位数据库/);
+  assert.match(about,/id="coverage"/);
+  assert.equal((about.match(/<div class="about-scope-names">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
+  assert.match(home,/16 institutions actively monitored/);
+  assert.match(home,/IN SAMPLE/);
+  assert.match(home,/LATEST ROLE DATE/);
+  assert.match(home,/COVERAGE NOTE/);
+  assert.match(home,/Most Active Institutions in Our Sample/);
+  assert.match(app,/Most Active Institutions in Our Sample/);
+  assert.match(about,/希望我们都能拿到自己的dream offer💪/);
+  assert.doesNotMatch(about,/\bJEV\b/);
+});
