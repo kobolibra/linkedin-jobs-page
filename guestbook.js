@@ -311,6 +311,17 @@
   }
   function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; fab.focus({ preventScroll:true }); }
   fab.addEventListener("click", openModal);
+  // Explicit About-page deep link: open the existing guestbook after navigation.
+  // Remove the query flag so refresh does not reopen the dialog unexpectedly.
+  try {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("guestbook") === "1") {
+      url.searchParams.delete("guestbook");
+      window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
+      openModal();
+    }
+  } catch {}
+
   closeEl.addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
   function refreshUnread() {
