@@ -246,3 +246,8 @@
 @media(prefers-reduced-motion:reduce){
  .about-page *{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+/* Brand identity: the same typographic wordmark as the homepage, no new emblem. */
+.about-header .about-brand{font-family:var(--sans);font-size:21px;font-weight:700;line-height:1.2;letter-spacing:-.035em;color:var(--nj-ink,var(--navy))!important}
+@media(max-width:760px){.about-header .about-brand{font-size:20px}}
+@media(max-width:420px){.about-header .about-brand{font-size:19px}}
