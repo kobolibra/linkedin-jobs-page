@@ -1,30 +1,37 @@
 (()=>{
   const el=document.getElementById('busuanzi_value_site_pv');
   if(!el)return;
-  let state='idle',attempt=0;
+  let state='idle',attempt=0,last=null;
+  const cacheKey='next-journey:busuanzi:last-success';
+  try{
+    const saved=JSON.parse(localStorage.getItem(cacheKey)||'null');
+    if(saved&&Number.isSafeInteger(saved.value)&&saved.value>=0&&Number.isFinite(saved.at)&&saved.at>0&&saved.at<=Date.now())last=saved;
+  }catch{}
+  function fallback(){
+    el.textContent=last?last.value.toLocaleString('en-US'):'—';
+    const note=last?'上次成功更新：'+new Date(last.at).toLocaleString('zh-CN')+'；统计服务暂不可用':'统计服务暂不可用，尚未取得访问总数';
+    el.title=note;
+    el.setAttribute('aria-label',last?'访问数 '+last.value.toLocaleString('zh-CN')+'；'+note:note);
+    el.setAttribute('aria-busy','false');
+  }
   function load(){
     if(state==='loading'||state==='ready')return;
     state='loading';
     const current=++attempt,callback='BusuanziCallback_Live_'+current;
-    el.textContent='…';
+    el.textContent=last?last.value.toLocaleString('en-US'):'…';
     el.setAttribute('aria-label','访问数加载中');
     el.setAttribute('aria-busy','true');
     el.title='';
     const script=document.createElement('script');
     const pending=()=>current===attempt&&state==='loading';
-    const cleanup=()=>{window[callback]=()=>{};script.remove();};
+    // Stop the loading indicator without retrying or duplicating a counted visit.
+    // Keep the callback alive so a late successful response can still update the total.
+    const timer=setTimeout(()=>{if(pending())fallback();},10000);
+    const cleanup=()=>{clearTimeout(timer);window[callback]=()=>{};script.remove();};
     const failed=()=>{
       if(!pending())return;
       state='error';cleanup();
-      el.setAttribute('aria-busy','false');
-      el.setAttribute('aria-label','访问数未加载，点击重试');
-      const retry=document.createElement('button');
-      retry.type='button';retry.textContent='重试';
-      retry.setAttribute('aria-label','重新加载访问数');
-      retry.title='访问数请求未完成，点击重新加载';
-      retry.style.cssText='font:inherit;font-size:14px;line-height:1.4;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px';
-      retry.addEventListener('click',load);
-      el.replaceChildren(retry);
+      fallback();
     };
     window[callback]=data=>{
       if(!pending())return;
@@ -33,6 +40,8 @@
       const n=Number(value);
       if(!Number.isSafeInteger(n)||n<0){failed();return;}
       state='ready';cleanup();
+      last={value:n,at:Date.now()};
+      try{localStorage.setItem(cacheKey,JSON.stringify(last));}catch{}
       el.textContent=n.toLocaleString('en-US');
       el.setAttribute('aria-label','访问数 '+n.toLocaleString('zh-CN'));
       el.setAttribute('aria-busy','false');

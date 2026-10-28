@@ -15,7 +15,7 @@ def verify(fetch=urlopen, report=print):
             preview = 'data-auth-state="guest"' in html
             protected = preview or 'data-auth-page="login"' in html
             if not protected:
-                assert 'visitor-count.js?v=counter-live-3' in html, 'unexpected homepage version'
+                assert 'visitor-count.js?v=counter-live-4' in html, 'unexpected homepage version'
             assert 'no-store' in response.headers.get('cache-control', ''), 'homepage may be stale'
         if preview:
             for path, marker in (('/auth-guest.css?v=1', '.auth-guest-dialog'), ('/auth-guest.js?v=1', 'AuthGuest'), ('/auth-login-design.css?v=guest-1', '.auth-page'), ('/auth-login.js?v=guest-1', '/auth/providers')):
@@ -36,7 +36,7 @@ def verify(fetch=urlopen, report=print):
                     assert blocked.code == 401, 'unexpected protected endpoint status: ' + path
             report('Production public preview/login and protected job assets verified without synthetic page views.')
             return True
-        with fetch(BASE + '/visitor-count.js?v=counter-live-3', timeout=15) as response:
+        with fetch(BASE + '/visitor-count.js?v=counter-live-4', timeout=15) as response:
             script = response.read().decode()
             assert response.status == 200
             assert 'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=' in script, 'live counter missing'
