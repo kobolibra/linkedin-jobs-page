@@ -118,3 +118,114 @@
 @media(max-width:520px){.about-shell{padding:0 19px}.about-header{gap:12px}.about-header-nav{gap:11px}.about-brand{font-size:15px;gap:7px}.about-current{font-size:11px}.about-theme-toggle{width:34px;height:34px}.about-home-link{font-size:11px}.about-home-link span{margin-left:2px}.about-hero{padding:59px 0 54px}.about-hero h1{font-size:clamp(36px,9.2vw,47px)}.about-wish{font-size:13px}.about-coverage-copy{font-size:13px}.about-company-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}.about-feature-list,.about-definition-list,.about-device-grid,.about-account-list{grid-template-columns:1fr}.about-feature-list article,.about-definition-list>div{padding:15px 0 18px}.about-device{padding:21px}.about-search-example{padding:14px}.about-closing{padding:65px 0}.about-footer{align-items:flex-start;flex-direction:column;justify-content:center;gap:12px;padding:25px 0}.about-footer nav{gap:17px}}
 @media(max-width:350px){.about-home-link{font-size:0}.about-home-link span{font-size:19px}}
 @media(prefers-reduced-motion:reduce){.about-page *, .about-page *::before,.about-page *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+
+/* Editorial refinement: comfortable reading, clear hierarchy, visible navigation. */
+.about-page { --ink-soft:#515e64; --ink-faint:#59676e; }
+[data-theme="dark"] .about-page { --ink-soft:#bbc6ca; --ink-faint:#a3b3bb; }
+.about-shell { max-width:1240px; }
+.about-eyebrow { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:30px!important; color:var(--gold-deep); font:600 11px/1.7 var(--mono); letter-spacing:.12em; }
+.about-eyebrow span { color:var(--ink-soft); font-family:var(--sans); letter-spacing:.04em; }
+.about-hero { grid-template-columns:minmax(0,1.5fr) minmax(260px,.7fr); gap:clamp(32px,6vw,88px); padding:90px 0 78px; }
+.about-hero h1 { font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(42px,4.9vw,64px); line-height:1.35; letter-spacing:-.04em; }
+.about-hero h1 em { font-style:normal; }
+.about-introduction { font-size:16px; max-width:540px; }
+.about-primary-link,.about-closing>a { min-height:48px; padding:12px 20px; font-size:14px; border-radius:4px; }
+.about-start-nav { padding:23px 0 8px; }
+.about-start-nav a { grid-template-columns:24px minmax(0,1fr) 16px; padding:19px 0; font-size:16px; }
+.about-start-nav a strong { line-height:1.5; }
+.about-start-nav small { display:block; margin-top:6px; font-size:12px; line-height:1.7; font-weight:400; color:var(--ink-soft); }
+.about-start-label,.about-small-label { font-size:11px; letter-spacing:.06em; }
+.about-coverage { padding:35px 0 39px; }
+.about-coverage-label strong { font-size:48px; }
+.about-coverage-label strong span { font-size:13px; }
+.about-coverage-copy { font-size:15px; }
+.about-coverage-details summary { font-size:14px; min-height:48px; }
+.about-company-list span { font-size:13px; padding:11px 0; }
+.about-source-note { margin-top:15px!important; font-size:12px; color:var(--ink-soft); }
+.about-guide { gap:clamp(32px,5vw,70px); }
+.about-sidebar { padding-top:44px; }
+.about-toc a { min-height:46px; font-size:13px; border-bottom:0; padding:0 10px; border-left:2px solid var(--line); }
+.about-toc a:hover { background:var(--surface); }
+.about-toc a[aria-current="location"] { border-left-color:var(--gold-deep); color:var(--navy); background:var(--surface); font-weight:650; }
+.about-toc a[aria-current="location"] span { color:var(--gold-deep); }
+.about-section { padding:48px 0 54px; scroll-margin-top:28px; }
+.about-section-number { font-size:12px; margin-bottom:16px!important; }
+.about-section h2 { font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(28px,3vw,38px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
+.about-lead { font-size:15px; }
+.about-feature-list h3,.about-definition-list h3,.about-action-list h3 { font-size:15px; }
+.about-feature-list p,.about-definition-list p,.about-action-list p,.about-device>p,.about-device li,.about-account-list p,.about-guestbook-panel p,.about-faq details p { font-size:14px; line-height:1.9; }
+.about-feature-list,.about-definition-list { gap:0 32px; }
+.about-search-example { padding:24px; border-radius:6px; }
+.about-search-field { font-size:14px; min-height:48px; }
+.about-search-chips span { font-size:12px; padding:6px 12px; }
+.about-search-example>p { font-size:12px; }
+.about-action-list>div { padding:22px 0; }
+.about-action-index { padding-top:4px; }
+.about-device { border-radius:6px; }
+.about-device-title h3 { font-size:18px; }
+.about-device-title { margin-bottom:18px; }
+.about-device-title div span { font-size:11px; }
+.about-account-list>div>span { font-size:16px; }
+.about-account-list a { display:inline-flex; align-items:center; min-height:44px; font-size:14px; }
+.about-guestbook-panel { padding:28px; border-radius:6px; }
+.about-guestbook-panel a { min-height:46px; font-size:13px; }
+.about-faq summary { font-size:15px; min-height:68px; }
+.about-faq summary span { flex-shrink:0; }
+.about-faq details p { max-width:65ch; }
+.about-closing { padding:76px 0; }
+.about-closing h2 { font-family:"Songti SC","Noto Serif CJK SC",serif; font-size:clamp(30px,3.8vw,46px); line-height:1.45; letter-spacing:-.03em; margin-bottom:18px; }
+.about-closing .about-wish { font-weight:400; color:var(--ink-soft); margin-bottom:28px!important; }
+.about-footer { font-size:12px; }
+.about-footer nav a,.about-home-link { display:inline-flex; align-items:center; min-height:44px; }
+.about-theme-toggle { min-width:44px; min-height:44px; }
+.about-page :is(a,button,summary):focus-visible { outline:2px solid var(--navy-2); outline-offset:4px; }
+@media(max-width:940px) {
+  .about-hero { grid-template-columns:minmax(0,1.2fr) minmax(230px,.8fr); gap:32px; }
+  .about-device-grid { grid-template-columns:1fr; }
+}
+@media(max-width:720px) {
+  .about-shell { padding-inline:max(22px,env(safe-area-inset-left)) max(22px,env(safe-area-inset-right)); }
+  .about-hero { grid-template-columns:1fr; gap:36px; padding:54px 0 40px; }
+  .about-hero h1 { font-size:clamp(35px,7.5vw,52px); }
+  .about-eyebrow { margin-bottom:22px!important; }
+  .about-introduction { font-size:15px; }
+  .about-start-nav { padding:18px 0 0; }
+  .about-start-nav a { padding:15px 0; }
+  .about-coverage { gap:20px; }
+  .about-coverage-label strong { font-size:38px; }
+  .about-sidebar { position:static; padding:28px 0; background:none; backdrop-filter:none; }
+  .about-sidebar>.about-small-label { display:block; }
+  .about-toc { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 12px; margin-top:16px; overflow:visible; }
+  .about-toc a { white-space:normal; border:0; border-left:2px solid var(--line); border-radius:0; background:none; min-height:44px; padding:7px 10px; font-size:13px; gap:8px; }
+  .about-toc a[aria-current="location"] { border-left:2px solid var(--gold-deep); }
+  .about-section { padding:38px 0 42px; scroll-margin-top:20px; }
+  .about-section h2 { font-size:30px; }
+  .about-feature-list,.about-definition-list { gap:0 24px; }
+  .about-footer { padding-bottom:max(25px,env(safe-area-inset-bottom)); }
+}
+@media(max-width:520px) {
+  .about-header { flex-wrap:wrap; gap:6px 12px; padding:10px 0; }
+  .about-header-nav { gap:9px; }
+  .about-brand { font-size:15px; }
+  .about-current { display:none; }
+  .about-home-link { font-size:12px; }
+  .about-hero h1 { font-size:clamp(32px,8.6vw,43px); }
+  .about-feature-list,.about-definition-list,.about-account-list { grid-template-columns:1fr; }
+  .about-company-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .about-company-list span { overflow-wrap:anywhere; }
+  .about-search-example { padding:16px; }
+  .about-guestbook-panel { padding:22px; }
+  .about-closing { padding:52px 0; }
+  .about-footer { gap:6px; }
+}
+@media print {
+  .about-page { --bg:#fff; --surface:#fff; --ink:#111; --ink-soft:#333; --ink-faint:#444; --navy:#111; --navy-2:#222; --gold-deep:#333; }
+  .about-shell { max-width:none; padding:0; }
+  .about-header-nav,.about-sidebar,.about-start-nav,.about-primary-link,.about-closing>a,.about-footer nav { display:none; }
+  .about-hero,.about-coverage,.about-guide { display:block; }
+  .about-hero { padding:28px 0; }
+  .about-section { padding:24px 0; }
+  .about-section h2,.about-section-number { break-after:avoid; }
+  .about-feature-list article,.about-device { break-inside:avoid; }
+}
