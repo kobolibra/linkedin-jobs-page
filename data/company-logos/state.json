@@ -2688,20 +2688,10 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-27T22:02:50.524397+00:00",
+    "checkedAt": "2026-10-28T04:03:22.700202+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 404,
-        "contentType": "",
-        "attempt": 1,
-        "jobId": "4461002131",
-        "reason": "http_error",
-        "stage": "job"
-      },
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
@@ -2709,6 +2699,16 @@
         "contentType": "",
         "attempt": 1,
         "jobId": "4461013126",
+        "reason": "http_error",
+        "stage": "job"
+      },
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 404,
+        "contentType": "",
+        "attempt": 1,
+        "jobId": "4461002131",
         "reason": "http_error",
         "stage": "job"
       }
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-27T22:02:56.295939+00:00",
+    "checkedAt": "2026-10-28T04:03:28.525624+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-27T22:03:02.390553+00:00",
+    "checkedAt": "2026-10-28T04:03:34.489717+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-27T22:03:05.299440+00:00",
+    "checkedAt": "2026-10-28T04:03:37.484303+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9024,5 +9024,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGg8MzKHK-q8A/company-logo_100_100/company-logo_100_100/0/1735992388904/pointonetalent_logo?e=2147483647&v=beta&t=uu3DArb9_109TiZrEpKQIEWSCdPfzFXRhRsaNjYCXz8",
     "companyUrl": "https://ae.linkedin.com/company/pointonetalent",
     "sourceJobId": "4484213041"
+  },
+  "beyond expo": {
+    "name": "BEYOND Expo",
+    "checkedAt": "2026-10-28T04:03:12.332090+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1ccc0f78a101e99b4c26616c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH6CAcAKTrQHA/company-logo_100_100/B56Z4f.zCfGoAI-/0/1778653016474/beyond_expo_logo?e=2147483647&v=beta&t=S-UG6gz0mKn509WLyMK-ogQLimMG6sZVGi7a1dFum1g",
+    "companyUrl": "https://mo.linkedin.com/company/beyond-expo",
+    "sourceJobId": "4483830189"
+  },
+  "campaign complete solutions pte ltd": {
+    "name": "Campaign Complete Solutions Pte Ltd",
+    "checkedAt": "2026-10-28T04:03:13.858985+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8a35d9a70e5ad8f2217427dc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQGjPqVqI4I6SA/company-logo_100_100/company-logo_100_100/0/1631355384961?e=2147483647&v=beta&t=g7WAqRkOS6vndztbVbRHDh-Io2M5-jhLevV3wylz05k",
+    "companyUrl": "https://www.linkedin.com/company/campaign-complete-solutions-pte-ltd",
+    "sourceJobId": "4482263273"
+  },
+  "nts": {
+    "name": "NTS",
+    "checkedAt": "2026-10-28T04:03:16.697461+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "427f15ba9648341123bf39c5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFm4mrJrfAqDA/company-logo_100_100/company-logo_100_100/0/1705922231596/nts_high_tech_partner_logo?e=2147483647&v=beta&t=uCJep6xunJy1e-eu8Su0Tl0VFjXWM7wrw4iHlhPlDXE",
+    "companyUrl": "https://nl.linkedin.com/company/nts-eindhoven",
+    "sourceJobId": "4482267753"
+  },
+  "sac capital private limited": {
+    "name": "SAC Capital Private Limited",
+    "checkedAt": "2026-10-28T04:03:19.696410+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8caece42e719205e867c40cb.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHh7kWW4Pqq8A/company-logo_100_100/company-logo_100_100/0/1631322154455?e=2147483647&v=beta&t=uXNJy1kATo9jnLAwagdpClz2aeheCLGWSw1K7ED6Si0",
+    "companyUrl": "https://sg.linkedin.com/company/sac-capital-private-limited",
+    "sourceJobId": "4483823539"
   }
 }
