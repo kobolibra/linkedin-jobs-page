@@ -281,3 +281,26 @@
 .about-community-details small{display:block;max-width:370px;margin-top:18px;color:var(--ink-faint);font-size:10.5px;line-height:1.85}
 @media(max-width:760px){.about-header .about-brand .nj-brand-mark{width:25px;height:25px}.about-page .about-hero h1{font-size:clamp(41px,8.5vw,59px)}.about-community-panel{padding:22px}.about-community-lead p{font-size:24px}}
 @media(max-width:530px){.about-header .about-brand{gap:7px}.about-header .about-brand .nj-brand-mark{width:23px;height:23px}.about-page .about-hero h1{font-size:clamp(37px,9.5vw,46px)}.about-community-panel{grid-template-columns:1fr;gap:17px}.about-community-lead{border-right:0;border-bottom:1px solid var(--line);padding:0 0 18px}.about-community-symbol{font-size:62px}.about-community-lead p{margin:0;font-size:24px}.about-community-details{padding:0}.about-step{min-height:0}}
+
+/* Clear, compact disclosure: sample scope before the how-to guide. */
+.about-scope{scroll-margin-top:28px;margin:40px 0 12px;padding:36px clamp(22px,4vw,48px);border:1px solid var(--line-strong);border-radius:5px;background:var(--ab-paper)}
+.about-scope-heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:23px}
+.about-scope-heading h2{font:400 clamp(26px,3vw,40px)/1.27 "Source Serif 4",var(--serif);letter-spacing:-.05em;color:var(--navy);margin:9px 0 0;text-wrap:balance}
+.about-scope-count{display:flex;flex-direction:column;align-items:end;flex-shrink:0}
+.about-scope-count strong{font:400 clamp(43px,5vw,67px)/.95 "Source Serif 4",var(--serif);letter-spacing:-.07em;color:var(--ab-blue)}
+.about-scope-count span{margin-top:8px;color:var(--ink-soft);font-size:11px}
+.about-scope-lead{max-width:850px;font-size:14px;line-height:1.95;color:var(--ink-soft)}
+.about-scope-lead strong,.about-scope-explainer strong{color:var(--ink);font-weight:700}
+.about-scope-explainer{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:23px 0 0;padding:20px 0 0;border-top:1px solid var(--line)}
+.about-scope-explainer>div{display:flex;align-items:start;gap:13px}
+.about-scope-explainer-index{color:var(--ab-gold);font:600 11px var(--mono);padding-top:4px}
+.about-scope-explainer p{margin:0;font-size:12px;line-height:1.9;color:var(--ink-soft)}
+.about-scope-list{margin-top:22px;border-top:1px solid var(--line)}
+.about-scope-list summary{display:flex;justify-content:space-between;gap:15px;padding:17px 0;cursor:pointer;list-style:none;font-size:12px;font-weight:700;color:var(--ab-blue)}
+.about-scope-list summary::-webkit-details-marker{display:none}
+.about-scope-list summary span{font-size:17px;font-weight:400;color:var(--ab-gold)}
+.about-scope-list[open] summary span{transform:rotate(45deg)}
+.about-scope-names{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;padding-bottom:10px}
+.about-scope-names span{min-width:0;padding:10px 8px 10px 0;color:var(--ink-soft);font-size:11px;line-height:1.6;border-top:1px solid var(--line)}
+@media(max-width:760px){.about-scope{margin-top:24px;padding:26px 23px}.about-scope-heading{align-items:start}.about-scope-names{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:530px){.about-scope-heading{gap:10px}.about-scope-heading h2{font-size:27px}.about-scope-count strong{font-size:48px}.about-scope-count span{font-size:10px}.about-scope-explainer{grid-template-columns:1fr;gap:16px}.about-scope-lead{font-size:13px}.about-scope-names{gap:0 12px}}

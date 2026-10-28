@@ -408,7 +408,7 @@ function setTop50Mode(mode){
   top50Mode=mode;
   if(top50Tabs){top50Tabs.dataset.active=mode;updateTop50Slider(mode);}
   top50Tabs?.querySelectorAll(".top50-tab").forEach(b=>{const active=b.dataset.topRegion===mode;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
-  if(top50Title)top50Title.textContent="Top 30 Institutions by Active Roles: Who Is Hiring and Where?";
+  if(top50Title)top50Title.textContent="Most Active Institutions in Our Sample (Up to 30)";
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
 }
 top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
