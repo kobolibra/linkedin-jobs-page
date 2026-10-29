@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-29T04:03:22.424783+00:00",
+    "checkedAt": "2026-10-29T16:03:16.092248+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-29T04:03:28.185252+00:00",
+    "checkedAt": "2026-10-29T16:03:21.702426+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-29T04:03:34.249893+00:00",
+    "checkedAt": "2026-10-29T16:03:27.695420+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-29T04:03:37.312898+00:00",
+    "checkedAt": "2026-10-29T16:03:30.692048+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9147,32 +9147,15 @@
   },
   "formfactor inc.": {
     "name": "FormFactor Inc.",
-    "checkedAt": "2026-10-29T08:05:39.725536+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-29T16:03:33.751723+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4475134191",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.4475175880012,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "4f6d9aa54d38c3c4f86d9067.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHNhTl6Wqugkw/company-logo_100_100/B56Z9dq46nJoAM-/0/1783982952347/formfactor_logo?e=2147483647&v=beta&t=AF2ZeVZr0nN_q6ggvnOR2ZckL_hB0MjQX3XRqlOaKxE",
+    "companyUrl": "https://www.linkedin.com/company/formfactor",
+    "sourceJobId": "4475134191"
   },
   "hrbs global": {
     "name": "HRBS Global",
@@ -9188,31 +9171,26 @@
   },
   "reinsurance group of america, incorporated": {
     "name": "Reinsurance Group of America, Incorporated",
-    "checkedAt": "2026-10-29T10:03:50.371123+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-29T16:03:37.808108+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4483113218",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.17609752843545,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "8573932cc818a7bb8a4b0512.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGpDWUIQgtFnA/company-logo_100_100/company-logo_100_100/0/1699544819458/rga_reinsurance_group_of_america_incorporated_logo?e=2147483647&v=beta&t=wXuDtQ482ax2SAJHnn9SqopgWdbgweJtnb6ZmiFRKJw",
+    "companyUrl": "https://www.linkedin.com/company/rga-reinsurance-group-of-america-incorporated",
+    "sourceJobId": "4483113218"
+  },
+  "jr automation": {
+    "name": "JR Automation",
+    "checkedAt": "2026-10-29T16:03:14.521328+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b4f3663cdc61bad51dc9a9f1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFpcgfx-6vfgg/company-logo_100_100/company-logo_100_100/0/1714568105996/jr_automation_logo?e=2147483647&v=beta&t=avujdqkGK1b0IEbmKUf4vu4FDWFgiMJsCMwIzflc6MM",
+    "companyUrl": "https://www.linkedin.com/company/jr-automation",
+    "sourceJobId": "4484966723"
   }
 }
