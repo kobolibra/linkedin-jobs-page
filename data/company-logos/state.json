@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-29T16:03:16.092248+00:00",
+    "checkedAt": "2026-10-29T22:03:13.092488+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-29T16:03:21.702426+00:00",
+    "checkedAt": "2026-10-29T22:03:18.918068+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-29T16:03:27.695420+00:00",
+    "checkedAt": "2026-10-29T22:03:24.918134+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-29T16:03:30.692048+00:00",
+    "checkedAt": "2026-10-29T22:03:27.928741+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9192,5 +9192,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFpcgfx-6vfgg/company-logo_100_100/company-logo_100_100/0/1714568105996/jr_automation_logo?e=2147483647&v=beta&t=avujdqkGK1b0IEbmKUf4vu4FDWFgiMJsCMwIzflc6MM",
     "companyUrl": "https://www.linkedin.com/company/jr-automation",
     "sourceJobId": "4484966723"
+  },
+  "circor international, inc.": {
+    "name": "CIRCOR International, Inc.",
+    "checkedAt": "2026-10-29T22:03:08.815000+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dbf8a465808613e520848e5a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGMHdqPzTME8A/company-logo_100_100/B4DZfJnwuoGkAQ-/0/1751434333576/circor_international_inc__logo?e=2147483647&v=beta&t=VerPQXSVtC5FGFENzdHkX4a_Ly6XUOyh-1xGCb1ALV8",
+    "companyUrl": "https://www.linkedin.com/company/circor-international-inc-",
+    "sourceJobId": "4484925041"
+  },
+  "sdg impact partners": {
+    "name": "SDG Impact Partners",
+    "checkedAt": "2026-10-29T22:03:10.153421+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fc4cfcefe44505d3c74f00d9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHOTnw83iNKYA/company-logo_100_100/B4EZzr5pquHAAQ-/0/1773484287290/sdg_impact_partners_logo?e=2147483647&v=beta&t=aDjQAp-r5bQJn-wYJDN--fejDbQZZdy5tXoBL_3Qn4M",
+    "companyUrl": "https://dk.linkedin.com/company/sdg-impact-partners",
+    "sourceJobId": "4484725882"
   }
 }
