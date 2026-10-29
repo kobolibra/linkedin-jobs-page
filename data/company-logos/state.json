@@ -9173,5 +9173,46 @@
         "deferred": true
       }
     ]
+  },
+  "hrbs global": {
+    "name": "HRBS Global",
+    "checkedAt": "2026-10-29T10:03:48.924137+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "29ac36c81d44b8dfda9c3002.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGfo5rUDz5NfQ/company-logo_100_100/company-logo_100_100/0/1737023530814/hrbsglobal_logo?e=2147483647&v=beta&t=fVbLtY-4L0PWgDYowdvJ9Pi1etM5SjWdlShFBoUj2W8",
+    "companyUrl": "https://www.linkedin.com/company/hrbs.global",
+    "sourceJobId": "4483885162"
+  },
+  "reinsurance group of america, incorporated": {
+    "name": "Reinsurance Group of America, Incorporated",
+    "checkedAt": "2026-10-29T10:03:50.371123+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4483113218",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483113218",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.17609752843545,
+        "deferred": true
+      }
+    ]
   }
 }
