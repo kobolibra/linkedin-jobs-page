@@ -9144,5 +9144,34 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E5%9B%BD%E9%87%91%E8%AF%81%E5%88%B8%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4482573751"
+  },
+  "formfactor inc.": {
+    "name": "FormFactor Inc.",
+    "checkedAt": "2026-10-29T08:05:39.725536+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4475134191",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475134191",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.4475175880012,
+        "deferred": true
+      }
+    ]
   }
 }
