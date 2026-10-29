@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-28T22:03:18.837143+00:00",
+    "checkedAt": "2026-10-29T04:03:22.424783+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-28T22:03:23.075066+00:00",
+    "checkedAt": "2026-10-29T04:03:28.185252+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-28T22:03:28.995397+00:00",
+    "checkedAt": "2026-10-29T04:03:34.249893+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-28T22:03:31.970864+00:00",
+    "checkedAt": "2026-10-29T04:03:37.312898+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9132,5 +9132,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQE-StOCuF6Glw/company-logo_100_100/B4EZwD1XnuGoAQ-/0/1769590848346/roquette_logo?e=2147483647&v=beta&t=DGY5qyjxXHWWn6AXZZt9TcU7FWq5MxKd0thC5fylT20",
     "companyUrl": "https://fr.linkedin.com/company/roquette",
     "sourceJobId": "4484425146"
+  },
+  "国金证券股份有限公司": {
+    "name": "国金证券股份有限公司",
+    "checkedAt": "2026-10-29T04:03:21.001585+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E5%9B%BD%E9%87%91%E8%AF%81%E5%88%B8%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4482573751"
   }
 }
