@@ -126,6 +126,8 @@ def apply_salary_snapshot(rows, batch_doc, previous_rows=None):
     matches = 0
     preserved = 0
     for job in rows:
+        if job.get("jobStatus") == "expired":
+            continue
         company = normalize_company(job.get("company"))
         if str(job.get("location") or "").upper() != "CN" or not company:
             continue
@@ -134,8 +136,14 @@ def apply_salary_snapshot(rows, batch_doc, previous_rows=None):
         salary = salary_by_full_key.get(full_key) or salary_by_english_key.get(english_key)
         if salary:
             old_salary = str(previous_rows.get(job_key(job), job).get("salary") or "").strip()
-            if job.get("jobStatus") != "expired" and old_salary and old_salary != salary:
-                job["salaryPrevious"] = old_salary
+            if old_salary and old_salary != salary:
+                history = list(job.get("salaryHistory") or [])
+                legacy = str(job.get("salaryPrevious") or "").strip()
+                if not history and legacy and legacy != old_salary:
+                    history.append(legacy)
+                history.append(old_salary)
+                job["salaryHistory"] = history
+                job.pop("salaryPrevious", None)
             job["salary"] = salary
             matches += 1
         elif nonempty(job.get("salary")):
@@ -174,12 +182,14 @@ def merge_documents(baseline, batch_doc):
                 # cannot by itself prove a LinkedIn repost.  Existing rows
                 # therefore keep their canonical pushTime; JobSpy is the
                 # only source allowed to advance it after confirming repost.
+                if field == "salary" and current.get("jobStatus") == "expired":
+                    continue
                 if field in {
                     "firstSeen", "pushTime", "datePosted", "source",
                     "postingLastDate", "postingDateSource", "postingDateObservedAt", "lastRepostedAt",
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
-                    "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText", "salaryPrevious",
+                    "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText", "salaryPrevious", "salaryHistory",
                     "rssObservedAt", "jobStatus", "expiredAt", "expiredReason",
                     "lastSeenAt", "liveCheckedAt", "liveVerifiedAt", "liveStatus",
                     "liveMissCount", "liveFirstMissAt",
@@ -193,7 +203,6 @@ def merge_documents(baseline, batch_doc):
                 merged["firstSeen"] = incoming["firstSeen"]
             merged["dataSources"] = merge_sources(current, incoming)
             if current.get("jobStatus") == "expired" and not keep_liveness_expired:
-                merged.pop("salaryPrevious", None)
                 reactivated += 1
             if keep_liveness_expired:
                 liveness_kept_expired += 1
