@@ -32,7 +32,7 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
         boilerplate_out.write_text(json.dumps({"schemaVersion": "1.0", "source": "jobs.json", "jevSchema": "jev-input-v4", "employers": boilerplate}, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     index_fields = (
         "title", "company", "link", "location", "locationRaw", "city",
-        "jobStatus", "pushTime", "firstSeen", "expiredAt", "expiredReason", "salary", "salaryPrevious",
+        "jobStatus", "pushTime", "firstSeen", "expiredAt", "expiredReason", "salary", "salaryPrevious", "salaryHistory",
     )
     for job in rows:
         if not isinstance(job, dict):
