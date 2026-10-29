@@ -105,7 +105,7 @@ def blocklist_companies(doc):
     return result
 
 
-def apply_salary_snapshot(rows, batch_doc):
+def apply_salary_snapshot(rows, batch_doc, previous_rows=None):
     salary_rows = batch_doc.get("salaryRows") if isinstance(batch_doc, dict) else None
     if not isinstance(salary_rows, list) or not salary_rows:
         return 0, 0
@@ -122,6 +122,7 @@ def apply_salary_snapshot(rows, batch_doc):
                 salary_by_full_key[f"{company}|{title}"] = salary
             if english_title:
                 salary_by_english_key[f"{company}|{english_title}"] = salary
+    previous_rows = previous_rows or {}
     matches = 0
     preserved = 0
     for job in rows:
@@ -132,6 +133,9 @@ def apply_salary_snapshot(rows, batch_doc):
         english_key = f"{company}|{normalize_title(job.get('title'), company, strip_chinese=True)}"
         salary = salary_by_full_key.get(full_key) or salary_by_english_key.get(english_key)
         if salary:
+            old_salary = str(previous_rows.get(job_key(job), job).get("salary") or "").strip()
+            if job.get("jobStatus") != "expired" and old_salary and old_salary != salary:
+                job["salaryPrevious"] = old_salary
             job["salary"] = salary
             matches += 1
         elif nonempty(job.get("salary")):
@@ -175,7 +179,7 @@ def merge_documents(baseline, batch_doc):
                     "postingLastDate", "postingDateSource", "postingDateObservedAt", "lastRepostedAt",
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
                     "jobspyFetchedAt", "jdChangeStatus", "jdCheckedAt", "jdChangedAt",
-                    "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText",
+                    "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText", "salaryPrevious",
                     "rssObservedAt", "jobStatus", "expiredAt", "expiredReason",
                     "lastSeenAt", "liveCheckedAt", "liveVerifiedAt", "liveStatus",
                     "liveMissCount", "liveFirstMissAt",
@@ -189,6 +193,7 @@ def merge_documents(baseline, batch_doc):
                 merged["firstSeen"] = incoming["firstSeen"]
             merged["dataSources"] = merge_sources(current, incoming)
             if current.get("jobStatus") == "expired" and not keep_liveness_expired:
+                merged.pop("salaryPrevious", None)
                 reactivated += 1
             if keep_liveness_expired:
                 liveness_kept_expired += 1
@@ -217,7 +222,7 @@ def merge_documents(baseline, batch_doc):
         previous_seen = timestamp(merged.get("rssObservedAt"))
         if seen_time and (previous_seen is None or seen_time > previous_seen):
             merged["rssObservedAt"] = seen
-    salary_matches, salary_preserved = apply_salary_snapshot(rows, batch_doc)
+    salary_matches, salary_preserved = apply_salary_snapshot(rows, batch_doc, {job_key(row): row for row in baseline["jobs"] if job_key(row)})
     result = dict(baseline)
     result["jobs"] = rows
     result["count"] = len(rows)
@@ -251,3 +256,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
