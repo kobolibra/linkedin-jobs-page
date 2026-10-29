@@ -116,7 +116,7 @@
 @media(max-width:940px){.about-hero{grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:35px}.about-coverage,.about-guide{grid-template-columns:172px minmax(0,1fr);gap:30px}.about-device{padding:19px}.about-guestbook-panel{align-items:flex-start;flex-direction:column;gap:17px}}
 @media(max-width:720px){.about-header{min-height:65px}.about-brand{font-size:17px}.about-brand img{width:24px;height:24px}.about-hero{grid-template-columns:1fr;gap:41px;padding:69px 0 65px}.about-hero h1{font-size:clamp(40px,8vw,62px)}.about-wish{margin-bottom:25px!important}.about-introduction{font-size:14px}.about-start-nav{padding:19px 0}.about-coverage{grid-template-columns:1fr;gap:15px;padding:34px 0 39px}.about-coverage-label{display:flex;align-items:center;gap:22px}.about-coverage-label strong{margin-top:0;font-size:32px}.about-guide{display:block}.about-sidebar{top:0;z-index:10;padding:12px 0;background:color-mix(in srgb,var(--bg) 95%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.about-sidebar>.about-small-label{display:none}.about-toc{flex-direction:row;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0}.about-toc::-webkit-scrollbar{display:none}.about-toc a{white-space:nowrap;flex:none;min-height:34px;border:1px solid var(--line);border-radius:50px;padding:0 12px;font-size:11px;background:var(--surface)}.about-section{scroll-margin-top:79px;padding:53px 0 64px}.about-section h2{font-size:clamp(31px,5.5vw,43px)}}
 @media(max-width:520px){.about-shell{padding:0 19px}.about-header{gap:12px}.about-header-nav{gap:11px}.about-brand{font-size:15px;gap:7px}.about-current{font-size:11px}.about-theme-toggle{width:34px;height:34px}.about-home-link{font-size:11px}.about-home-link span{margin-left:2px}.about-hero{padding:59px 0 54px}.about-hero h1{font-size:clamp(36px,9.2vw,47px)}.about-wish{font-size:13px}.about-coverage-copy{font-size:13px}.about-company-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}.about-feature-list,.about-definition-list,.about-device-grid,.about-account-list{grid-template-columns:1fr}.about-feature-list article,.about-definition-list>div{padding:15px 0 18px}.about-device{padding:21px}.about-search-example{padding:14px}.about-closing{padding:65px 0}.about-footer{align-items:flex-start;flex-direction:column;justify-content:center;gap:12px;padding:25px 0}.about-footer nav{gap:17px}}
-@media(max-width:350px){.about-home-link{font-size:0}.about-home-link span{font-size:19px}}
+
 @media(prefers-reduced-motion:reduce){.about-page *, .about-page *::before,.about-page *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
 
@@ -134,7 +134,7 @@
 .about-start-nav { padding:23px 0 8px; }
 .about-start-nav a { grid-template-columns:24px minmax(0,1fr) 16px; padding:19px 0; font-size:16px; }
 .about-start-nav a strong { line-height:1.5; }
-.about-start-nav small { display:block; margin-top:6px; font-size:12px; line-height:1.7; font-weight:400; color:var(--ink-soft); }
+.about-start-nav small { display:block; margin-top:6px; font-size:13px; line-height:1.7; font-weight:400; color:var(--ink-soft); }
 .about-start-label,.about-small-label { font-size:11px; letter-spacing:.06em; }
 .about-coverage { padding:35px 0 39px; }
 .about-coverage-label strong { font-size:48px; }
@@ -149,9 +149,9 @@
 .about-toc a:hover { background:var(--surface); }
 .about-toc a[aria-current="location"] { border-left-color:var(--gold-deep); color:var(--navy); background:var(--surface); font-weight:650; }
 .about-toc a[aria-current="location"] span { color:var(--gold-deep); }
-.about-section { padding:48px 0 54px; scroll-margin-top:28px; }
+.about-section { padding:56px 0 60px; scroll-margin-top:28px; }
 .about-section-number { font-size:12px; margin-bottom:16px!important; }
-.about-section h2 { font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(28px,3vw,38px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
+.about-section h2 { max-width:22ch; font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(27px,2.7vw,34px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
 .about-lead { font-size:15px; }
 .about-feature-list h3,.about-definition-list h3,.about-action-list h3 { font-size:15px; }
 .about-feature-list p,.about-definition-list p,.about-action-list p,.about-device>p,.about-device li,.about-account-list p,.about-guestbook-panel p,.about-faq details p { font-size:14px; line-height:1.9; }
@@ -172,7 +172,12 @@
 .about-guestbook-panel a { min-height:46px; font-size:13px; }
 .about-faq summary { font-size:15px; min-height:68px; }
 .about-faq summary span { flex-shrink:0; }
-.about-faq details p { max-width:65ch; }
+.about-faq details p { max-width:60ch; }
+.about-page main:focus { outline:none; }
+.about-hero-main,.about-coverage-body { min-width:0; }
+.about-header-nav a:hover,.about-footer a:hover { text-decoration:underline; text-underline-offset:5px; }
+.about-device-icon { font-family:var(--sans); }
+.about-section:target .about-section-number { color:var(--navy-2); }
 .about-closing { padding:76px 0; }
 .about-closing h2 { font-family:"Songti SC","Noto Serif CJK SC",serif; font-size:clamp(30px,3.8vw,46px); line-height:1.45; letter-spacing:-.03em; margin-bottom:18px; }
 .about-closing .about-wish { font-weight:400; color:var(--ink-soft); margin-bottom:28px!important; }
