@@ -37,7 +37,7 @@ class VerificationTests(unittest.TestCase):
         requests = []
         def fetch(url, **kwargs):
             requests.append(url)
-            text = ('visitor-count.js?v=counter-live-3' if url.endswith('/') else
+            text = ('visitor-count.js?v=counter-live-4' if url.endswith('/') else
                     'https://busuanzi.ibruce.info/busuanzi?jsonpCallback=')
             return Response(text.encode())
         self.assertTrue(verify(fetch, lambda _: None))
@@ -63,7 +63,7 @@ class VerificationTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             verify(lambda *args, **kwargs: Response(b'old homepage'), lambda _: None)
         def fetch(url, **kwargs):
-            return Response(b'visitor-count.js?v=counter-live-3' if url.endswith('/') else b'old counter code')
+            return Response(b'visitor-count.js?v=counter-live-4' if url.endswith('/') else b'old counter code')
         with self.assertRaises(AssertionError):
             verify(fetch, lambda _: None)
 
