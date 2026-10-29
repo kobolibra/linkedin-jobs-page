@@ -34,6 +34,9 @@
       color:var(--gold-hi);
       background:color-mix(in srgb,var(--gold) 10%,transparent);
     }
+    .salary-ref del{opacity:.72}
+    .salary-ref ins{text-decoration:none}
+    .salary-ref .salary-change-arrow{padding:0 4px}
     .salary-ref-mobile{display:none}
     body.compact .salary-ref{
       min-height:15px;
@@ -190,7 +193,9 @@
 
     const link=article.querySelector('.job-title')?.href||'';
     const id=article.dataset.id||jobId(link);
-    const salary=salaryById.get(id)||salaryById.get(jobId(link));
+    const entry=salaryById.get(id)||salaryById.get(jobId(link));
+    const salary=entry?.salary;
+    const previous=article.dataset.status !== 'expired' ? entry?.previous : '';
     let desktopBadge=article.querySelector('.salary-ref-desktop');
     let mobileBadge=article.querySelector('.salary-ref-mobile');
 
@@ -219,10 +224,16 @@
       const anchor=detail.querySelector('.job-jd-toggle')||detail.querySelector('.job-jd summary')||detail.querySelector('.job-right-mobile');
       if(anchor && mobileBadge!==anchor) anchor.parentNode.insertBefore(mobileBadge,anchor);
     }
-    desktopBadge.textContent=salary;
-    mobileBadge.textContent=salary;
-    desktopBadge.setAttribute('aria-label',`薪资 ${salary}`);
-    mobileBadge.setAttribute('aria-label',`薪资 ${salary}`);
+    for(const badge of [desktopBadge,mobileBadge]){
+      badge.replaceChildren();
+      if(previous && previous !== salary){
+        const old=document.createElement('del');old.textContent=previous;
+        const arrow=document.createElement('span');arrow.className='salary-change-arrow';arrow.setAttribute('aria-hidden','true');arrow.textContent='→';
+        const current=document.createElement('ins');current.textContent=salary;
+        badge.append(old,arrow,current);
+        badge.setAttribute('aria-label',`薪资由 ${previous} 变为 ${salary}`);
+      }else{badge.textContent=salary;badge.setAttribute('aria-label',`薪资 ${salary}`);}
+    }
   };
 
   const decorateAll=()=>host.querySelectorAll('.job').forEach(decorate);
@@ -244,10 +255,11 @@
         for(const row of rows){
           const salary=String(row?.salary??'').trim();
           const id=jobId(row?.link);
-          if(id&&salary)salaryById.set(id,salary);
+          if(id&&salary)salaryById.set(id,{salary,previous:row?.jobStatus==='expired'?'':String(row?.salaryPrevious??'').trim()});
         }
       }
       decorateAll();
     })
     .catch(()=>{decorateAll();});
 })();
+

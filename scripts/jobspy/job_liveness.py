@@ -167,6 +167,7 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
         row["liveMissCount"] = 0
         row.pop("liveFirstMissAt", None)
         if was_liveness_expired:
+            row.pop("salaryPrevious", None)
             row["jobStatus"] = "active"
             row.pop("expiredAt", None)
             row.pop("expiredReason", None)
@@ -209,3 +210,4 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
     return row
 
 __all__ = ["COVERED", "LIVENESS_EXPIRED_REASONS", "apply_observation", "classify", "in_scope", "select_candidates", "jid"]
+

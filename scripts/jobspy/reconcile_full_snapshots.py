@@ -152,6 +152,8 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         if old.get("jobStatus") == "expired":
             reactivated += 1
         merged = dict(old)
+        if old.get("jobStatus") == "expired":
+            merged.pop("salaryPrevious", None)
         # Listing fields are refreshed every run; detail fields are only present
         # for the incremental detail candidates and otherwise remain untouched.
         for field in ("title", "link", "company", "companyCanonical", "requestedCompany",
@@ -276,4 +278,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
