@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-29T22:03:13.092488+00:00",
+    "checkedAt": "2026-10-30T04:03:10.977499+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-29T22:03:18.918068+00:00",
+    "checkedAt": "2026-10-30T04:03:16.691496+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-29T22:03:24.918134+00:00",
+    "checkedAt": "2026-10-30T04:03:22.658416+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-29T22:03:27.928741+00:00",
+    "checkedAt": "2026-10-30T04:03:25.650317+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9216,5 +9216,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHOTnw83iNKYA/company-logo_100_100/B4EZzr5pquHAAQ-/0/1773484287290/sdg_impact_partners_logo?e=2147483647&v=beta&t=aDjQAp-r5bQJn-wYJDN--fejDbQZZdy5tXoBL_3Qn4M",
     "companyUrl": "https://dk.linkedin.com/company/sdg-impact-partners",
     "sourceJobId": "4484725882"
+  },
+  "bowtie life insurance company": {
+    "name": "Bowtie Life Insurance Company",
+    "checkedAt": "2026-10-30T04:03:06.549480+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "38474b4603bde627b157130c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFk8Wgn9Cr-dA/company-logo_100_100/B56ZtE8q0dLEAQ-/0/1766388317098/bowtiehongkong_logo?e=2147483647&v=beta&t=BOpjN8L3tuLxN_O6a9lyr537yKsHaehWLb5tTQbE4nE",
+    "companyUrl": "https://hk.linkedin.com/company/bowtiehongkong",
+    "sourceJobId": "4484584159"
+  },
+  "finserve.io": {
+    "name": "Finserve.io",
+    "checkedAt": "2026-10-30T04:03:08.135184+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5810376a79e2107abfc38f2f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHV3ZvVv8gJYw/company-logo_100_100/B4EZYhv8ucHcAU-/0/1744322940560/finserve_io_global_fintech_talent_logo?e=2147483647&v=beta&t=3b-WRKJ9Zki0RhuIjehaPboUm6FMO7GvMsxjU--LuTc",
+    "companyUrl": "https://uk.linkedin.com/company/finserve-io-global-fintech-talent",
+    "sourceJobId": "4485248170"
   }
 }
