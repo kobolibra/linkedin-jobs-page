@@ -152,7 +152,7 @@
 .about-section { padding:56px 0 60px; scroll-margin-top:28px; }
 .about-section-number { font-size:12px; margin-bottom:16px!important; }
 .about-section h2 { max-width:none; text-wrap:wrap; font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(27px,2.7vw,34px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
-.about-lead { font-size:15px; }
+.about-lead { max-width:none; font-size:15px; text-wrap:wrap; }
 .about-feature-list h3,.about-definition-list h3,.about-action-list h3 { font-size:15px; }
 .about-feature-list p,.about-definition-list p,.about-action-list p,.about-device>p,.about-device li,.about-account-list p,.about-guestbook-panel p,.about-faq details p { font-size:14px; line-height:1.9; }
 .about-feature-list,.about-definition-list { gap:0 32px; }
