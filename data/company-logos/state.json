@@ -9264,5 +9264,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHB1-IHMItmGw/company-logo_100_100/company-logo_100_100/0/1649397094564/pinnacle_infotech_logo?e=2147483647&v=beta&t=VW9wrNYWcmL_nj8e0br05hwa7eLwC5OagV3AenjWS6U",
     "companyUrl": "https://www.linkedin.com/company/pinnacle-futurebuild",
     "sourceJobId": "4483419143"
+  },
+  "asm": {
+    "name": "ASM",
+    "checkedAt": "2026-10-30T16:03:03.842612+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4468203507",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.7537258423847,
+        "deferred": true
+      }
+    ]
   }
 }
