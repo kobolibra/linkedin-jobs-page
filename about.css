@@ -151,7 +151,7 @@
 .about-toc a[aria-current="location"] span { color:var(--gold-deep); }
 .about-section { padding:56px 0 60px; scroll-margin-top:28px; }
 .about-section-number { font-size:12px; margin-bottom:16px!important; }
-.about-section h2 { max-width:22ch; font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(27px,2.7vw,34px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
+.about-section h2 { max-width:none; text-wrap:wrap; font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(27px,2.7vw,34px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
 .about-lead { font-size:15px; }
 .about-feature-list h3,.about-definition-list h3,.about-action-list h3 { font-size:15px; }
 .about-feature-list p,.about-definition-list p,.about-action-list p,.about-device>p,.about-device li,.about-account-list p,.about-guestbook-panel p,.about-faq details p { font-size:14px; line-height:1.9; }
@@ -205,7 +205,7 @@
   .about-toc a { white-space:normal; border:0; border-left:2px solid var(--line); border-radius:0; background:none; min-height:44px; padding:7px 10px; font-size:13px; gap:8px; }
   .about-toc a[aria-current="location"] { border-left:2px solid var(--gold-deep); }
   .about-section { padding:38px 0 42px; scroll-margin-top:20px; }
-  .about-section h2 { font-size:30px; }
+  .about-section h2 { font-size:clamp(24px,4.2vw,30px); }
   .about-feature-list,.about-definition-list { gap:0 24px; }
   .about-footer { padding-bottom:max(25px,env(safe-area-inset-bottom)); }
 }
