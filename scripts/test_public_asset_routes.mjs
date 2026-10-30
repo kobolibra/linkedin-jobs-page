@@ -89,5 +89,5 @@ test('About describes LinkedIn-only company and keyword discovery and actual bub
  assert.match(app,/closest\("\.bubble-row\[data-company\]"\)/);
  assert.match(app,/drillTop50Company\(row\.dataset\.company\)/);
  assert.match(fetcher,/params\["f_C"\] = strict_company_id/);
- assert.match(about,/好的旅程，不一定要一个人走/);
+ assert.match(about,/让下一站，多一些交流/);
 });
