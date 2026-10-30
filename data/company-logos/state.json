@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-30T10:03:12.900612+00:00",
+    "checkedAt": "2026-10-30T22:03:37.080681+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-30T10:03:18.556362+00:00",
+    "checkedAt": "2026-10-30T22:03:42.847071+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-30T10:03:24.681271+00:00",
+    "checkedAt": "2026-10-30T22:03:48.743551+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-30T10:03:27.660256+00:00",
+    "checkedAt": "2026-10-30T22:03:51.736998+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9267,31 +9267,86 @@
   },
   "asm": {
     "name": "ASM",
-    "checkedAt": "2026-10-30T16:03:03.842612+00:00",
-    "status": "missing",
+    "checkedAt": "2026-10-30T22:03:54.803527+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4468203507",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468203507",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.7537258423847,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "eecf7c530a6113eef1f38ade.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGQnvsPqoxWRg/company-logo_100_100/company-logo_100_100/0/1680764261631/asm_logo?e=2147483647&v=beta&t=9KiskplBSSI4h8nt_s1RNbkzUjH78UgKNlnpjchpT6I",
+    "companyUrl": "https://nl.linkedin.com/company/asm",
+    "sourceJobId": "4468203507"
+  },
+  "creditsights": {
+    "name": "CreditSights",
+    "checkedAt": "2026-10-30T22:03:20.608476+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c730231303f97087204b7d40.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHfFweda1ndJQ/company-logo_100_100/B56ZkPvUB6HMAY-/0/1756905685494/creditsights_logo?e=2147483647&v=beta&t=mCECy5TrUOxImcCGOa4J6_E0WiTQknGtjrD-YkYmS2I",
+    "companyUrl": "https://www.linkedin.com/company/creditsights",
+    "sourceJobId": "4484826912"
+  },
+  "element biosciences": {
+    "name": "Element Biosciences",
+    "checkedAt": "2026-10-30T22:03:22.120982+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6cb4117892bedb1a5ea3f0c6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGMqn0DbZgPsw/company-logo_100_100/company-logo_100_100/0/1719850127620/elembio_logo?e=2147483647&v=beta&t=PqTZOMYMrim0zPwDhI-aoNU6BXED6vHWRzYmCXfoqoU",
+    "companyUrl": "https://www.linkedin.com/company/elembio",
+    "sourceJobId": "4484872702"
+  },
+  "king deux group": {
+    "name": "King Deux Group",
+    "checkedAt": "2026-10-30T22:03:24.976230+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b590599e013459b42668f8b6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHzsKsHHCDfAw/company-logo_100_100/B56aGOAO3GGoAI-/0/1793383788230/kingdeuxsearch_logo?e=2147483647&v=beta&t=9wPm4-fgIhCjNantWQIk56iw3H0wDg9N01Ra91BzDE4",
+    "companyUrl": "https://hk.linkedin.com/company/kingdeuxsearch",
+    "sourceJobId": "4485290992"
+  },
+  "renaissance hotels": {
+    "name": "Renaissance Hotels",
+    "checkedAt": "2026-10-30T22:03:27.977258+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "254a298ec9e0ffa7e684efe5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHQmA45PBnZWg/company-logo_100_100/company-logo_100_100/0/1630609100534/renaissance_hotels_logo?e=2147483647&v=beta&t=lNUuV0MwHhAHREtis_WU-Jd2JNHuJxTsipabOz6S_-M",
+    "companyUrl": "https://www.linkedin.com/company/renaissance_hotels",
+    "sourceJobId": "4485383234"
+  },
+  "the carlyle group": {
+    "name": "The Carlyle Group",
+    "checkedAt": "2026-10-30T22:03:30.977978+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "257215bbfabd2adf2b3baa02.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFHIVZkfCEmcA/company-logo_100_100/B56ZyuWcKdHUAQ-/0/1772451644698/the_carlyle_group_logo?e=2147483647&v=beta&t=Lfee3X5gbuqW9WFA1mXvjQ4SvE0QQMJGvMXL8RPs_zY",
+    "companyUrl": "https://www.linkedin.com/company/the-carlyle-group",
+    "sourceJobId": "4485624174"
+  },
+  "江苏瑞庆物流有限公司": {
+    "name": "江苏瑞庆物流有限公司",
+    "checkedAt": "2026-10-30T22:03:33.978392+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E6%B1%9F%E8%8B%8F%E7%91%9E%E5%BA%86%E7%89%A9%E6%B5%81%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4482255956"
   }
 }
