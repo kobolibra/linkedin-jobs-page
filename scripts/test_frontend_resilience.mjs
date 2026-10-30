@@ -102,3 +102,26 @@ test('an empty HTTP-200 analysis cannot enter the browser cache',async()=>{
   const h=analysisHarness();h.context.fetch=async()=>({ok:true,json:async()=>({})});
   await h.context.run(h.card);assert.equal(h.counts().writes,0);assert.equal(h.counts().renders,0);
 });
+
+test('unresponsive connections retry before the overall download deadline',async()=>{
+ let calls=0;const load=indexHarness(()=>{calls++;return new Promise(()=>{});});
+ await assert.rejects(load({attemptTimeouts:[1000,1000],connectTimeout:5,retryDelay:1}),/timeout/);
+ assert.equal(calls,2);
+});
+test('a live stream can finish after the connection deadline',async()=>{
+ const bytes=new TextEncoder().encode('{"jobs":[]}');let step=0;
+ const load=indexHarness(async()=>({ok:true,body:{getReader:()=>({async read(){await new Promise(r=>setTimeout(r,8));return step++?{done:true}:{done:false,value:bytes};},releaseLock(){}})}}));
+ assert.equal((await load({attemptTimeouts:[100],connectTimeout:5,idleTimeout:30})).jobs.length,0);
+});
+test('permission failures do not download the protected index repeatedly',async()=>{
+ let calls=0;const load=indexHarness(async()=>{calls++;return {ok:false,status:403};});
+ await assert.rejects(load(),/HTTP 403/);assert.equal(calls,1);
+});
+test('guestbook prefetch waits for jobs and stays deferred while loading',async()=>{
+ const start=guestbook.indexOf('  let jobsSettled = '),end=guestbook.indexOf('  document.addEventListener("visibilitychange"',start);
+ let finish,requests=0;const queued=[];
+ const context={window:{__jobsDataPromise:new Promise(r=>finish=r)},document:{hidden:false},overlay:{classList:{contains:()=>false}},load(){requests++},setTimeout(fn){queued.push(fn)}};
+ vm.createContext(context);vm.runInContext(guestbook.slice(start,end)+';this.refresh=refreshUnread;',context);
+ context.refresh();assert.equal(requests,0);assert.equal(queued.length,0);
+ finish();await Promise.resolve();assert.equal(requests,0);assert.equal(queued.length,1);queued[0]();assert.equal(requests,1);
+});
