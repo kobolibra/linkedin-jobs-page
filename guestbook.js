@@ -296,7 +296,7 @@
       const timer = setTimeout(() => controller.abort(), 8000);
       let retryable = true;
       try {
-        const response = await fetch(API, { method: "GET", cache: "no-store", signal: controller.signal });
+        const response = await fetch(API, { method: "GET", cache: "no-store", priority: "low", signal: controller.signal });
         retryable = response.status === 408 || response.status === 429 || response.status >= 500;
         if (!response.ok) throw new Error("guestbook_http_" + response.status);
         retryable = true;
@@ -364,10 +364,14 @@
 
   closeEl.addEventListener("click", closeModal);
   overlay.addEventListener("click", e => { if (e.target === overlay) closeModal(); });
+  let jobsSettled = !window.__jobsDataPromise;
   function refreshUnread() {
-    if (!overlay.classList.contains("open")) load({ render: false });
+    if (jobsSettled && !document.hidden && !overlay.classList.contains("open")) load({ render: false });
   }
-  setTimeout(refreshUnread, 1800);
+  if (window.__jobsDataPromise) {
+    const ready = () => { jobsSettled = true; setTimeout(refreshUnread, 1800); };
+    window.__jobsDataPromise.then(ready, ready);
+  } else setTimeout(refreshUnread, 1800);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshUnread(); });
   overlay.addEventListener("keydown", e => {
     if (e.key !== "Tab" || !overlay.classList.contains("open")) return;
