@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-30T04:03:10.977499+00:00",
+    "checkedAt": "2026-10-30T10:03:12.900612+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-30T04:03:16.691496+00:00",
+    "checkedAt": "2026-10-30T10:03:18.556362+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-30T04:03:22.658416+00:00",
+    "checkedAt": "2026-10-30T10:03:24.681271+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-30T04:03:25.650317+00:00",
+    "checkedAt": "2026-10-30T10:03:27.660256+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9240,5 +9240,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHV3ZvVv8gJYw/company-logo_100_100/B4EZYhv8ucHcAU-/0/1744322940560/finserve_io_global_fintech_talent_logo?e=2147483647&v=beta&t=3b-WRKJ9Zki0RhuIjehaPboUm6FMO7GvMsxjU--LuTc",
     "companyUrl": "https://uk.linkedin.com/company/finserve-io-global-fintech-talent",
     "sourceJobId": "4485248170"
+  },
+  "new energy nexus": {
+    "name": "New Energy Nexus",
+    "checkedAt": "2026-10-30T10:03:08.414948+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3842ef2683164bd81f16499d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGjJovtt8tAUQ/company-logo_100_100/company-logo_100_100/0/1649904469559/newenergynexus_logo?e=2147483647&v=beta&t=LXJ4KJ0u5-ln0i8HvZhdRzf-15ZsDC0h_YcP6DokBd0",
+    "companyUrl": "https://www.linkedin.com/company/newenergynexus",
+    "sourceJobId": "4485320311"
+  },
+  "pinnacle": {
+    "name": "Pinnacle",
+    "checkedAt": "2026-10-30T10:03:10.058033+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "335df53f7cdfe2367214eaaa.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHB1-IHMItmGw/company-logo_100_100/company-logo_100_100/0/1649397094564/pinnacle_infotech_logo?e=2147483647&v=beta&t=VW9wrNYWcmL_nj8e0br05hwa7eLwC5OagV3AenjWS6U",
+    "companyUrl": "https://www.linkedin.com/company/pinnacle-futurebuild",
+    "sourceJobId": "4483419143"
   }
 }
