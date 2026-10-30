@@ -900,7 +900,8 @@ document.addEventListener("keydown",e=>{
 });
 const totop=document.getElementById("totop");
 addEventListener("scroll",()=>{totop.classList.toggle("show",window.scrollY>600);},{passive:true});
-totop.addEventListener("click",()=>scrollTo({top:0,behavior:"smooth"}));
+// Virtualized list anchor corrections can interrupt smooth scrolling mid-flight.
+totop.addEventListener("click",()=>{if(jobsEl._jobView)jobsEl._jobView.jump++;scrollTo({top:0,left:0,behavior:"instant"});});
 
 // A single delegated gesture handler keeps large lists inexpensive.
 (() => {
