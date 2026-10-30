@@ -37,14 +37,14 @@
   }
   .gb-overlay { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:20px; background:rgba(8,16,28,.46); backdrop-filter:blur(4px); opacity:0; pointer-events:none; transition:opacity .25s; }
   .gb-overlay.open { opacity:1; pointer-events:auto; }
-  .gb-modal { position:relative; width:100%; max-width:480px; max-height:84vh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line-strong); border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.4); transform:translateY(14px) scale(.98); transition:transform .28s cubic-bezier(.34,1.4,.5,1); overflow:hidden; }
+  .gb-modal { position:relative; width:100%; max-width:480px; height:min(680px,84vh); max-height:84vh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line-strong); border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.4); transform:translateY(14px) scale(.98); transition:transform .28s cubic-bezier(.34,1.4,.5,1); overflow:hidden; }
   .gb-overlay.open .gb-modal { transform:none; }
   .gb-head { display:flex; align-items:flex-start; gap:12px; padding:20px 22px 16px; border-bottom:1px solid var(--line); }
   .gb-head h2 { font-family:var(--serif); font-size:21px; font-weight:650; letter-spacing:-.02em; color:var(--navy); margin:0; user-select:none; }
   .gb-sub { display:block; font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-faint); margin-top:5px; }
   .gb-close { margin-left:auto; flex:none; width:30px; height:30px; display:grid; place-items:center; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); color:var(--ink-soft); font-size:17px; line-height:1; cursor:pointer; transition:background .15s,color .15s; }
   .gb-close:hover { background:var(--line); color:var(--ink); }
-  .gb-body { padding:18px 22px 22px; overflow-y:auto; }
+  .gb-body { flex:1; min-height:0; padding:18px 22px 22px; overflow-y:auto; scrollbar-gutter:stable; overscroll-behavior:contain; overflow-anchor:none; }
   .gb-form { margin-bottom:20px; }
   .gb-name { width:100%; max-width:260px; display:block; padding:9px 12px; border:1px solid var(--line-strong); border-radius:9px; background:var(--surface-2); font-size:14px; color:var(--ink); font-family:var(--sans); margin-bottom:10px; }
   .gb-text { width:100%; min-height:80px; resize:vertical; display:block; padding:10px 12px; border:1px solid var(--line-strong); border-radius:9px; background:var(--surface-2); font-size:14px; color:var(--ink); font-family:var(--sans); line-height:1.55; }
@@ -57,7 +57,7 @@
   .gb-submit:disabled { opacity:.5; cursor:default; transform:none; }
   [data-theme="dark"] .gb-submit { color:var(--navy); background:linear-gradient(180deg,var(--gold-hi),var(--gold)); }
   .gb-list { display:flex; flex-direction:column; }
-  .gb-msg { position:relative; padding:14px 2px; border-bottom:1px solid var(--line); animation:gbFadeUp .4s both; }
+  .gb-msg { position:relative; padding:14px 2px; border-bottom:1px solid var(--line); }
   .gb-msg:last-child { border-bottom:0; }
   .gb-pin { display:inline-block; font-family:var(--mono); font-size:10px; letter-spacing:.08em; color:var(--gold-deep,#806238); background:var(--accent-soft); border-radius:5px; padding:2px 7px; margin-bottom:6px; }
   .gb-meta { display:flex; align-items:baseline; gap:10px; }
@@ -276,11 +276,16 @@
       (inner ? '<div class="gb-replies">' + inner + '</div>' : '') +
       '</div>';
   }
-  function render() {
+  let renderedMessages = "";
+  function render({ preserveFocus = false } = {}) {
+    renderedMessages = JSON.stringify(messages);
+    const body = overlay.querySelector(".gb-body");
+    const scrollTop = body.scrollTop;
     const list = sortMsgs(messages);
     if (!list.length) { listEl.innerHTML = '<div class="gb-state"><div class="gb-big">还没有留言</div>来抢个沙发吧 🛋️</div>'; return; }
     listEl.innerHTML = list.map(msgHTML).join("");
-    if (replyOpen) { const t = listEl.querySelector('.gb-rform[data-id="' + replyOpen + '"] .gb-rtext'); if (t) t.focus(); }
+    body.scrollTop = scrollTop;
+    if (replyOpen && !preserveFocus) { const t = listEl.querySelector('.gb-rform[data-id="' + replyOpen + '"] .gb-rtext'); if (t) t.focus({ preventScroll:true }); }
   }
 
   // ===== 加载 =====
@@ -314,9 +319,10 @@
         seenAt = newest; hasSeenBaseline = true;
         if (newest > 0) storeSet(LS_SEEN_AT, String(newest));
       }
+      const changed = renderedMessages !== JSON.stringify(next);
       messages = next;
       loaded = true;
-      if (options.render !== false) render();
+      if (options.render !== false && changed && !replyOpen) render({ preserveFocus:true });
       if (options.markSeen) markSeen(); else updateUnread();
       return true;
     }).catch(() => {
@@ -330,15 +336,20 @@
   }
 
   // ===== 开关 =====
+  let previousOverflow = "", previousGutter = "";
   function openModal() {
+    if (overlay.classList.contains("open")) return;
+    previousOverflow = document.body.style.overflow;
+    previousGutter = document.documentElement.style.scrollbarGutter;
+    document.documentElement.style.scrollbarGutter = "stable";
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
-    if (loaded) { render(); markSeen(); }
+    if (loaded) { if (renderedMessages !== JSON.stringify(messages) && !replyOpen) render({ preserveFocus:true }); markSeen(); }
     else listEl.innerHTML = '<div class="gb-state">留言加载中…</div>';
     load({ markSeen: true });
-    setTimeout(() => textEl.focus(), 280);
+    closeEl.focus({ preventScroll:true });
   }
-  function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; fab.focus({ preventScroll:true }); }
+  function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = previousOverflow; document.documentElement.style.scrollbarGutter = previousGutter; fab.focus({ preventScroll:true }); }
   fab.addEventListener("click", openModal);
   // Explicit About-page deep link: open the existing guestbook after navigation.
   // Remove the query flag so refresh does not reopen the dialog unexpectedly.
