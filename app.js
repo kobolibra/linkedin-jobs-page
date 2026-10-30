@@ -586,7 +586,7 @@ function renderTop50(rows,mode="all"){
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // Allow a slow but progressing transfer; abort idle connections and cap total time.
-async function fetchJobsIndex({attemptTimeouts=[60000,30000],idleTimeout=12000,retryDelay=350}={}){
+async function fetchJobsIndex({attemptTimeouts=[90000,60000],idleTimeout=30000,retryDelay=350}={}){
   let lastError;
   for(let attempt=0;attempt<attemptTimeouts.length;attempt++){
     const controller=new AbortController();
@@ -594,8 +594,9 @@ async function fetchJobsIndex({attemptTimeouts=[60000,30000],idleTimeout=12000,r
     const timeout=new Promise((_,reject)=>{
       const fail=()=>{controller.abort();reject(new Error("jobs-index.json timeout"));};
       timer=setTimeout(fail,attemptTimeouts[attempt]);
+      // The total deadline covers connection setup. Only measure stream stalls
+      // after headers arrive; a slow edge response must not be cut off at 12s.
       armIdle=()=>{clearTimeout(idleTimer);idleTimer=setTimeout(fail,idleTimeout);};
-      armIdle();
     });
     try{
       return await Promise.race([
