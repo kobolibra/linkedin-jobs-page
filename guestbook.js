@@ -284,29 +284,58 @@
   }
 
   // ===== 加载 =====
+  let loadRequest = null;
+  async function fetchMessages() {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      let retryable = true;
+      try {
+        const response = await fetch(API, { method: "GET", cache: "no-store", signal: controller.signal });
+        retryable = response.status === 408 || response.status === 429 || response.status >= 500;
+        if (!response.ok) throw new Error("guestbook_http_" + response.status);
+        retryable = true;
+        const data = await response.json();
+        if (!Array.isArray(data)) throw new Error("guestbook_invalid_response");
+        return data;
+      } catch (error) {
+        if (!retryable || attempt === 1) throw error;
+      } finally { clearTimeout(timer); }
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  }
   function load(options = {}) {
-    fetch(API, { method: "GET" })
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(data => {
-        const next = Array.isArray(data) ? data : [];
-        const newest = latestMessageTime(next);
-        if (!hasSeenBaseline) {
-          seenAt = newest; hasSeenBaseline = true;
-          if (newest > 0) storeSet(LS_SEEN_AT, String(newest));
-        }
-        messages = next;
-        if (options.render !== false) render();
-        if (options.markSeen) markSeen(); else updateUnread();
-      })
-      .catch(() => { listEl.innerHTML = '<div class="gb-state">留言板暂时连接不上，请稍后再试～</div>'; });
+    if (!loadRequest) {
+      loadRequest = fetchMessages().finally(() => { loadRequest = null; });
+    }
+    return loadRequest.then(next => {
+      const newest = latestMessageTime(next);
+      if (!hasSeenBaseline) {
+        seenAt = newest; hasSeenBaseline = true;
+        if (newest > 0) storeSet(LS_SEEN_AT, String(newest));
+      }
+      messages = next;
+      loaded = true;
+      if (options.render !== false) render();
+      if (options.markSeen) markSeen(); else updateUnread();
+      return true;
+    }).catch(() => {
+      // A failed background check must not replace a working conversation.
+      if (options.render !== false) {
+        if (loaded) toast("暂时无法更新，已保留当前留言");
+        else listEl.innerHTML = '<div class="gb-state">留言加载失败，请重试。<br><button type="button" class="gb-act" data-act="retry">重新加载</button></div>';
+      }
+      return false;
+    });
   }
 
   // ===== 开关 =====
   function openModal() {
     overlay.classList.add("open");
     document.body.style.overflow = "hidden";
-    if (!loaded) { loaded = true; load({ markSeen: true }); }
-    else { markSeen(); }
+    if (loaded) { render(); markSeen(); }
+    else listEl.innerHTML = '<div class="gb-state">留言加载中…</div>';
+    load({ markSeen: true });
     setTimeout(() => textEl.focus(), 280);
   }
   function closeModal() { overlay.classList.remove("open"); document.body.style.overflow = ""; fab.focus({ preventScroll:true }); }
@@ -362,6 +391,8 @@
       .finally(() => { submitEl.disabled = false; submitEl.textContent = "发布留言"; });
   });
 
+  window.addEventListener("online", () => { if (overlay.classList.contains("open")) load({ markSeen: true }); });
+
   // ===== 列表交互（事件委托）=====
   listEl.addEventListener("click", e => {
     const cancel = e.target.closest(".gb-rcancel");
@@ -369,7 +400,8 @@
     const btn = e.target.closest("[data-act]");
     if (!btn) return;
     const act = btn.dataset.act, id = btn.dataset.id;
-    if (act === "like") doLike(id, btn);
+    if (act === "retry") { listEl.innerHTML = '<div class="gb-state">留言加载中…</div>'; load({ markSeen: true }); }
+    else if (act === "like") doLike(id, btn);
     else if (act === "reply") { replyOpen = (replyOpen === id ? null : id); render(); }
     else if (act === "pin") doPin(id);
     else if (act === "del") doDelete(id);
