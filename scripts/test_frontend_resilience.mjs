@@ -125,3 +125,24 @@ test('guestbook prefetch waits for jobs and stays deferred while loading',async(
  context.refresh();assert.equal(requests,0);assert.equal(queued.length,0);
  finish();await Promise.resolve();assert.equal(requests,0);assert.equal(queued.length,1);queued[0]();assert.equal(requests,1);
 });
+
+test('company options track blocked institutions without changing other filter scopes',()=>{
+ const blocked=new Set(),select={value:'all',options:[],updates:0,replaceChildren(fragment){this.options=fragment.children;this.updates++;}};
+ const context={blocked,companyEl:select,document:{createDocumentFragment:()=>({children:[],appendChild(option){this.children.push(option);}}),createElement:()=>({value:'',textContent:''})}};
+ vm.createContext(context);
+ vm.runInContext(source.slice(source.indexOf('let companyNames=[]'),source.indexOf('function renderBlocked(){')),context);
+ const run=code=>vm.runInContext(code,context);
+ const names=()=>select.options.map(option=>option.value);
+ run('companyNames=["Active Bank","Historical Bank","Hidden Bank"];syncCompanyOptions()');
+ assert.deepEqual(names(),['all','Active Bank','Historical Bank','Hidden Bank']);
+ select.value='Active Bank';blocked.add('Hidden Bank');run('syncCompanyOptions()');
+ assert.deepEqual(names(),['all','Active Bank','Historical Bank']);assert.equal(select.value,'Active Bank');
+ const updates=select.updates;run('syncCompanyOptions()');assert.equal(select.updates,updates);
+ blocked.add('Active Bank');run('syncCompanyOptions()');assert.equal(select.value,'all');
+ assert.deepEqual(names(),['all','Historical Bank']);
+ blocked.clear();run('syncCompanyOptions()');assert.deepEqual(names(),['all','Active Bank','Historical Bank','Hidden Bank']);
+ select.value='Hidden Bank';
+ run('companyNames=["Active Bank"];companyOptionsBlockedKey=null;syncCompanyOptions()');
+ assert.deepEqual(names(),['all','Active Bank']);assert.equal(select.value,'all');
+ blocked.add('Active Bank');run('syncCompanyOptions()');assert.deepEqual(names(),['all']);
+});
