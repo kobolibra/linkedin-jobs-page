@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-31T04:03:22.923713+00:00",
+    "checkedAt": "2026-10-31T10:03:16.153032+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-31T04:03:28.669433+00:00",
+    "checkedAt": "2026-10-31T10:03:21.834182+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-31T04:03:34.662304+00:00",
+    "checkedAt": "2026-10-31T10:03:27.863945+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-31T04:03:37.655755+00:00",
+    "checkedAt": "2026-10-31T10:03:30.862657+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9384,5 +9384,29 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E5%AE%9D%E6%9F%8F%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4483932126"
+  },
+  "moxy hotels": {
+    "name": "Moxy Hotels",
+    "checkedAt": "2026-10-31T10:03:11.691416+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2d65c6a050c478c9988b9686.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGh3khfPSwP2A/company-logo_100_100/company-logo_100_100/0/1631319590318?e=2147483647&v=beta&t=i4BZzPkjcqhsfxsJzPSfdzlt0SlHVz1M6LT8I9adJUU",
+    "companyUrl": "https://nl.linkedin.com/company/moxy-hotels",
+    "sourceJobId": "4485676156"
+  },
+  "sino hotels": {
+    "name": "Sino Hotels",
+    "checkedAt": "2026-10-31T10:03:13.166046+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "681ab7308574cd2969cbdc67.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEugQb1gLp4vw/company-logo_100_100/B4EZrx.hyAIIAQ-/0/1764996292373/sino_hotels_logo?e=2147483647&v=beta&t=z6gJW10-j6DT8I2cH2DDxwToh4Ks7AnOGySnNP9KQTo",
+    "companyUrl": "https://hk.linkedin.com/company/sino-hotels",
+    "sourceJobId": "4484864634"
   }
 }
