@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-31T16:03:35.757616+00:00",
+    "checkedAt": "2026-10-31T22:03:31.613104+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-31T16:03:41.572938+00:00",
+    "checkedAt": "2026-10-31T22:03:37.424331+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-31T16:03:47.637061+00:00",
+    "checkedAt": "2026-10-31T22:03:43.424791+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-31T16:03:50.587745+00:00",
+    "checkedAt": "2026-10-31T22:03:46.434822+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9468,5 +9468,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF0Dce8Ea_OKg/company-logo_100_100/B56ZVBrzjYGoAQ-/0/1740563758323/quaich_bar_logo?e=2147483647&v=beta&t=Ixup_4xEP7_Qym4PZLc9i6Kd5HFnvyrMLf08pF9VYIs",
     "companyUrl": "https://sg.linkedin.com/company/quaich-bar",
     "sourceJobId": "4483911537"
+  },
+  "boston scientific": {
+    "name": "Boston Scientific",
+    "checkedAt": "2026-10-31T22:03:18.300624+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "291957a0f81c0590c4fa35b9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF3enIGxQaa7Q/company-logo_100_100/company-logo_100_100/0/1688306370403?e=2147483647&v=beta&t=dAzpxzE-s2FWleZH-fOTK9m3i77k87T7MqMnrPV5T18",
+    "companyUrl": "https://www.linkedin.com/company/boston-scientific",
+    "sourceJobId": "4485908660"
+  },
+  "exfo": {
+    "name": "EXFO",
+    "checkedAt": "2026-10-31T22:03:19.705066+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "59e28b6c4f7ac758c2ed8503.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGZV2oNSjyuyw/company-logo_100_100/company-logo_100_100/0/1732218327751/exfo_logo?e=2147483647&v=beta&t=B-etoE7tUfRwAZksXpDCgFrJFS5HRCi4O_3P4ZhngaU",
+    "companyUrl": "https://ca.linkedin.com/company/exfo",
+    "sourceJobId": "4485390476"
+  },
+  "spectrum financial (omaha, ne)": {
+    "name": "Spectrum Financial (Omaha, NE)",
+    "checkedAt": "2026-10-31T22:03:23.143761+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8ee3ee7b5f2269480f589d55.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEm4yHTJ9Cf8Q/company-logo_100_100/company-logo_100_100/0/1630571415722?e=2147483647&v=beta&t=EoWfAxVn-xEGUIupIeXjbSsgM7AIoKF_7cHb58TpGEs",
+    "companyUrl": "https://www.linkedin.com/company/spectrum-financial-omaha",
+    "sourceJobId": "4483930197"
+  },
+  "synechron": {
+    "name": "Synechron",
+    "checkedAt": "2026-10-31T22:03:25.615739+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ebb9edad1eacf2433463eaff.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGU3XDmI-XtZg/company-logo_100_100/B4EZbozLqWHcAU-/0/1747662453848/synechron_logo?e=2147483647&v=beta&t=967JcOKqVUEfAxo-JLDXVLacACGsfj3Itpkbmqz1HrA",
+    "companyUrl": "https://www.linkedin.com/company/synechron",
+    "sourceJobId": "4458618766"
+  },
+  "tech spectrum ai solutions": {
+    "name": "Tech Spectrum AI Solutions",
+    "checkedAt": "2026-10-31T22:03:28.611485+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0cde1f92c42513a6977d8144.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHRrRkw7z_pfg/company-logo_100_100/B4DZsCyPWRGsAc-/0/1765278283975/techspectrumaisolutions_logo?e=2147483647&v=beta&t=n6juOI7GaPn1WbOpgurQxbaCtCVOVQNwUbljq8rYzHE",
+    "companyUrl": "https://www.linkedin.com/company/techspectrumaisolutions",
+    "sourceJobId": "4485153681"
   }
 }
