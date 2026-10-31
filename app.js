@@ -451,6 +451,18 @@ function setDensity(d){
 }
 setDensity(storageGet("density")||"comfortable");
 dbtn.addEventListener("click",()=>setDensity(document.body.classList.contains("compact")?"comfortable":"compact"));
+let companyNames=[],companyOptionsBlockedKey=null;
+function syncCompanyOptions(){
+  const blockedKey=JSON.stringify([...blocked].sort());
+  if(companyOptionsBlockedKey===blockedKey)return;
+  const selected=companyEl.value,available=companyNames.filter(name=>!blocked.has(name));
+  const fragment=document.createDocumentFragment(),all=document.createElement("option");
+  all.value="all";all.textContent="全部机构";fragment.appendChild(all);
+  available.forEach(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;fragment.appendChild(option);});
+  companyEl.replaceChildren(fragment);
+  companyEl.value=available.includes(selected)?selected:"all";
+  companyOptionsBlockedKey=blockedKey;
+}
 function renderBlocked(){
   if(blocked.size===0){blockedBar.classList.remove("show","open");blockedBar.innerHTML="";blockedOpen=false;return;}
   blockedBar.classList.add("show");blockedBar.classList.toggle("open",blockedOpen);
@@ -648,14 +660,15 @@ jobsDataPromise
     chartData.forEach(j=>{const k=canonicalCompany(j.company)+"\x00"+norm(j.location);companyRegionCount.set(k,(companyRegionCount.get(k)||0)+1);});
     jobsEl.innerHTML="";
     animNum(document.getElementById("stat-total"),window.AuthGuest?.overview?.total??activeData.length);
-    const companies=[...new Set(data.map(j=>canonicalCompany(j.company)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
+    companyNames=[...new Set(data.map(j=>canonicalCompany(j.company)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"zh-Hans-CN"));
+    companyOptionsBlockedKey=null;
     const activeCompanies=new Set(activeData.map(j=>canonicalCompany(j.company)).filter(Boolean));
     animNum(document.getElementById("stat-comp"),window.AuthGuest?.overview?.companies??activeCompanies.size);
     const lastUpd=activeData.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
     const lastUpdDate=new Date(window.AuthGuest?.overview?.updated||lastUpd);
     const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
     document.getElementById("stat-updated").textContent=lastUpdText;
-    companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
+    syncCompanyOptions();
     activeData.forEach(j=>{const region=norm(j.location);if(regionActiveTotals[region]!=null)regionActiveTotals[region]++;});
     const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>{if(a==="N/A")return 1;if(b==="N/A")return -1;return a.localeCompare(b,"zh-Hans-CN");});
     cities.forEach(city=>{const o=document.createElement("option");o.value=city;o.textContent=city;cityEl.appendChild(o);});
@@ -798,6 +811,7 @@ function updateJobCount(count){
   activeOnlyEl.title=activeOnly?"取消仅显示有效职位":"仅显示有效职位";
 }
 function apply(){
+  syncCompanyOptions();
   jobsEl.classList.toggle("fav-only",favOnly);
   if(!renderReady){if(loadedJobs)updateJobCount(countLoadedActiveJobs());return;}
   const q=searchEl.value.trim().toLowerCase(),comp=companyEl.value,ageSel=ageEl.value,kwArr=[...blockedKw];
