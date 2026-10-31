@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-31T10:03:16.153032+00:00",
+    "checkedAt": "2026-10-31T16:03:35.757616+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-31T10:03:21.834182+00:00",
+    "checkedAt": "2026-10-31T16:03:41.572938+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-31T10:03:27.863945+00:00",
+    "checkedAt": "2026-10-31T16:03:47.637061+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-31T10:03:30.862657+00:00",
+    "checkedAt": "2026-10-31T16:03:50.587745+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9408,5 +9408,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEugQb1gLp4vw/company-logo_100_100/B4EZrx.hyAIIAQ-/0/1764996292373/sino_hotels_logo?e=2147483647&v=beta&t=z6gJW10-j6DT8I2cH2DDxwToh4Ks7AnOGySnNP9KQTo",
     "companyUrl": "https://hk.linkedin.com/company/sino-hotels",
     "sourceJobId": "4484864634"
+  },
+  "array engineering & facilities management pte ltd": {
+    "name": "Array Engineering & Facilities Management Pte Ltd",
+    "checkedAt": "2026-10-31T16:03:22.397597+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f1044a0abdb82e53f946b475.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFJfuOeNbl8XQ/company-logo_100_100/B56ZlMe.XCI8AQ-/0/1757924812925?e=2147483647&v=beta&t=_fZqpiZw6W3nA1KvYzmmIHVF6m_Zl6l8oXGTgv3RytA",
+    "companyUrl": "https://sg.linkedin.com/company/array-engineering-facilities-management-pte-ltd",
+    "sourceJobId": "4483916271"
+  },
+  "cohen & steers": {
+    "name": "Cohen & Steers",
+    "checkedAt": "2026-10-31T16:03:23.799763+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "376a8831a864e6df0f994651.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEKmHiLZVaJIw/company-logo_100_100/company-logo_100_100/0/1630461868817/cohen__steers_logo?e=2147483647&v=beta&t=3LP317nEJPXT3EjWcfXMjrLYKnc_xcrigeeISnZELXc",
+    "companyUrl": "https://www.linkedin.com/company/cohen-&-steers",
+    "sourceJobId": "4392951516"
+  },
+  "kitchenbase hong kong": {
+    "name": "KitchenBASE Hong Kong",
+    "checkedAt": "2026-10-31T16:03:26.738399+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "45e3abedb420e68c7dcc94be.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG8F-WKrcJXlg/company-logo_100_100/B56aFYNamGIQAI-/0/1792481274480/freshlane_logo?e=2147483647&v=beta&t=s_kiaBhFqdlR8aYso-sxTTfHg6IxsFEvgRpdnU3bzVY",
+    "companyUrl": "https://hk.linkedin.com/company/kitchenbasehk",
+    "sourceJobId": "4468022316"
+  },
+  "myrias": {
+    "name": "Myrias",
+    "checkedAt": "2026-10-31T16:03:29.739220+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c99c55f23240f894266618a0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFYDLgwAzTOKw/company-logo_100_100/B56Z2j9XllKgAQ-/0/1776572267129/myrias_studio_logo?e=2147483647&v=beta&t=beyFBmDwkebMkdEwsl9VMt_2JCaSMff6jcRnk3AXAcw",
+    "companyUrl": "https://www.linkedin.com/company/myrias-studio",
+    "sourceJobId": "4484830034"
+  },
+  "quaich bar": {
+    "name": "Quaich Bar",
+    "checkedAt": "2026-10-31T16:03:32.739452+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c0c72318274708126edb3a3c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF0Dce8Ea_OKg/company-logo_100_100/B56ZVBrzjYGoAQ-/0/1740563758323/quaich_bar_logo?e=2147483647&v=beta&t=Ixup_4xEP7_Qym4PZLc9i6Kd5HFnvyrMLf08pF9VYIs",
+    "companyUrl": "https://sg.linkedin.com/company/quaich-bar",
+    "sourceJobId": "4483911537"
   }
 }
