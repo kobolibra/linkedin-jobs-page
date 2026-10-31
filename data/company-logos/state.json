@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-10-30T22:03:37.080681+00:00",
+    "checkedAt": "2026-10-31T04:03:22.923713+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-10-30T22:03:42.847071+00:00",
+    "checkedAt": "2026-10-31T04:03:28.669433+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-10-30T22:03:48.743551+00:00",
+    "checkedAt": "2026-10-31T04:03:34.662304+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-10-30T22:03:51.736998+00:00",
+    "checkedAt": "2026-10-31T04:03:37.655755+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9348,5 +9348,41 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E6%B1%9F%E8%8B%8F%E7%91%9E%E5%BA%86%E7%89%A9%E6%B5%81%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4482255956"
+  },
+  "atkinsréalis": {
+    "name": "AtkinsRéalis",
+    "checkedAt": "2026-10-31T04:03:15.526084+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "af8bad3b48928b3cf12cd2e2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFc1GHoytorcg/company-logo_100_100/company-logo_100_100/0/1730389101281/atkinsrealis_logo?e=2147483647&v=beta&t=0pFFPbE95fUF100NHA7-IsQFSlZ_EJ1-6IctfFv8Kn8",
+    "companyUrl": "https://ca.linkedin.com/company/atkinsrealis",
+    "sourceJobId": "4485318309"
+  },
+  "servicenow africa user group": {
+    "name": "ServiceNow Africa User Group",
+    "checkedAt": "2026-10-31T04:03:16.964483+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "13aab66dc02e91976763636c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFFeM1KgirfAw/company-logo_100_100/B4DZgc9.lIG8AU-/0/1752832666548/servicenow_africa_user_group_logo?e=2147483647&v=beta&t=PXQhJqcXLcyb7rt8rOLKpwu8-A9CwQ2TYQFyAIZrQyo",
+    "companyUrl": "https://www.linkedin.com/company/servicenow-africa-user-group",
+    "sourceJobId": "4483904966"
+  },
+  "宝柏科技有限公司": {
+    "name": "宝柏科技有限公司",
+    "checkedAt": "2026-10-31T04:03:19.856485+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E5%AE%9D%E6%9F%8F%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4483932126"
   }
 }
