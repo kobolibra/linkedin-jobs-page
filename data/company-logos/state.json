@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-01T04:02:57.464387+00:00",
+    "checkedAt": "2026-11-01T22:02:56.269178+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-01T04:03:01.600836+00:00",
+    "checkedAt": "2026-11-01T22:03:02.336743+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-01T04:03:07.617598+00:00",
+    "checkedAt": "2026-11-01T22:03:08.273388+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-01T04:03:10.646231+00:00",
+    "checkedAt": "2026-11-01T22:03:11.262059+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9560,31 +9560,98 @@
   },
   "alstom grid": {
     "name": "Alstom Grid",
-    "checkedAt": "2026-11-01T16:03:12.788794+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-01T22:03:14.332626+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4485961991",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.86019410445063,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "41a91379c82f1b7cc75beab9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHDmhJFuIfFmA/company-logo_100_100/company-logo_100_100/0/1675270981142/alstom_grid_logo?e=2147483647&v=beta&t=JuES3izQT0eY7OcOWhjfDRQe_LzaYGR_TpHgulQzm7c",
+    "companyUrl": "https://fr.linkedin.com/company/alstom-grid",
+    "sourceJobId": "4485961991"
+  },
+  "china universal asset management (hk) ltd": {
+    "name": "China Universal Asset Management (HK) Ltd",
+    "checkedAt": "2026-11-01T22:02:37.105190+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/china-universal-asset-management-hk-ltd",
+    "sourceJobId": "4485929997"
+  },
+  "cursor": {
+    "name": "Cursor",
+    "checkedAt": "2026-11-01T22:02:38.466895+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d602e417b2b55e0c62f531b3.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHKh6nk4UdeBA/company-logo_100_100/B56ZnbGvJ6KUAQ-/0/1760317600747/cursorai_logo?e=2147483647&v=beta&t=1yAAWeBonUXQjXYfVd2zhoGg4vRI99tIr8Pl8zZn58I",
+    "companyUrl": "https://www.linkedin.com/company/cursorai",
+    "sourceJobId": "4441927360"
+  },
+  "exail": {
+    "name": "Exail",
+    "checkedAt": "2026-11-01T22:02:41.488746+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "65b03e651aaee9171d2676de.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFa9RSWy-TJsw/company-logo_100_100/company-logo_100_100/0/1666046902195/exail_logo?e=2147483647&v=beta&t=dTjgB5DxHGVSlGwBb9INE1B-Jeid9KLkvogu7ur4smo",
+    "companyUrl": "https://www.linkedin.com/company/exail",
+    "sourceJobId": "4483966084"
+  },
+  "international federation of red cross and red crescent societies - ifrc": {
+    "name": "International Federation of Red Cross and Red Crescent Societies - IFRC",
+    "checkedAt": "2026-11-01T22:02:44.389820+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fd477c01558109b01a8f880c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGCt609_BFv_Q/company-logo_100_100/company-logo_100_100/0/1630630991538/ifrc_logo?e=2147483647&v=beta&t=mLv3SDzo70pyqZIm9605mSn6kPxDLDoVJC3n_QgiS2w",
+    "companyUrl": "https://ch.linkedin.com/company/ifrc",
+    "sourceJobId": "4485984981"
+  },
+  "john swire & sons (h.k.) ltd.": {
+    "name": "John Swire & Sons (H.K.) Ltd.",
+    "checkedAt": "2026-11-01T22:02:47.392000+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8469b9c10bde44951b0970b5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG2neGtavmuaQ/company-logo_100_100/B56ZsF5ZCQL4AQ-/0/1765330490241/jsshk_logo?e=2147483647&v=beta&t=ZCmUpCWK6G5tm5VuLL0F8lvHkGB1pj4lr3WHbSTnqmw",
+    "companyUrl": "https://hk.linkedin.com/company/jsshk",
+    "sourceJobId": "4422335307"
+  },
+  "kennedys": {
+    "name": "Kennedys",
+    "checkedAt": "2026-11-01T22:02:50.389459+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7d09dfc985856b235d4297f1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHJmw7W-x_zNw/company-logo_100_100/company-logo_100_100/0/1720017611150/kennedys_logo?e=2147483647&v=beta&t=fdyt79GGyIsMU9zPFHC-RQU1yHFGEsCVLwMEfx9S1QY",
+    "companyUrl": "https://uk.linkedin.com/company/kennedys",
+    "sourceJobId": "4485925818"
+  },
+  "上海信托": {
+    "name": "上海信托",
+    "checkedAt": "2026-11-01T22:02:53.391333+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E4%BF%A1%E6%89%98",
+    "sourceJobId": "4485944575"
   }
 }
