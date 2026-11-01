@@ -9557,5 +9557,34 @@
         "deferred": true
       }
     ]
+  },
+  "alstom grid": {
+    "name": "Alstom Grid",
+    "checkedAt": "2026-11-01T16:03:12.788794+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4485961991",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485961991",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.86019410445063,
+        "deferred": true
+      }
+    ]
   }
 }
