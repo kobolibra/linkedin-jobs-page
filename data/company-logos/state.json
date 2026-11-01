@@ -9528,5 +9528,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHRrRkw7z_pfg/company-logo_100_100/B4DZsCyPWRGsAc-/0/1765278283975/techspectrumaisolutions_logo?e=2147483647&v=beta&t=n6juOI7GaPn1WbOpgurQxbaCtCVOVQNwUbljq8rYzHE",
     "companyUrl": "https://www.linkedin.com/company/techspectrumaisolutions",
     "sourceJobId": "4485153681"
+  },
+  "insurance mitra": {
+    "name": "Insurance Mitra",
+    "checkedAt": "2026-11-01T10:02:32.793502+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485180384",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485180384",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4485180384",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485180384",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485180384",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.572371395646364,
+        "deferred": true
+      }
+    ]
   }
 }
