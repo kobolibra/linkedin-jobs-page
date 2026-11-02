@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-02T04:02:58.420250+00:00",
+    "checkedAt": "2026-11-02T10:03:29.691605+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-02T04:03:04.205277+00:00",
+    "checkedAt": "2026-11-02T10:03:35.470667+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-02T04:03:10.202199+00:00",
+    "checkedAt": "2026-11-02T10:03:41.506397+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-02T04:03:13.204194+00:00",
+    "checkedAt": "2026-11-02T10:03:44.490270+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9701,5 +9701,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQH-tCGBm5QPkA/company-logo_100_100/company-logo_100_100/0/1700007687833/t_rowe_price_hong_kong_logo?e=2147483647&v=beta&t=0xK9TGD41JfRrXUIZ_DRzvZNVx-4zEiuvB3ijV1ebtI",
     "companyUrl": "https://hk.linkedin.com/company/t-rowe-price-hong-kong",
     "sourceJobId": "4486107670"
+  },
+  "ec1 partners": {
+    "name": "EC1 Partners",
+    "checkedAt": "2026-11-02T10:03:16.329606+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "60df5f3cc5fcb1b5e2a9ad3a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEZnFYGFFzWiw/company-logo_100_100/company-logo_100_100/0/1726823075209/ec1_partners_ltd_logo?e=2147483647&v=beta&t=OIT0FQLvOppJ-QiBl1wj4-PssGKaVHgX6C_iw8GTXXA",
+    "companyUrl": "https://uk.linkedin.com/company/ec1-partners-ltd",
+    "sourceJobId": "4483998849"
+  },
+  "global classic engineering consultant company limited": {
+    "name": "Global Classic Engineering Consultant Company Limited",
+    "checkedAt": "2026-11-02T10:03:17.749686+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d525c3549781d53183316a7a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHRBnQ7EVf26A/company-logo_100_100/B56Z_C0JArGUAI-/0/1785679876567/gcechk_logo?e=2147483647&v=beta&t=fM4s4uZ9T1gSERXrZa6BDvTYKRfmJHte68Bf84VUAVc",
+    "companyUrl": "https://hk.linkedin.com/company/gcechk",
+    "sourceJobId": "4485452522"
+  },
+  "hrnetone": {
+    "name": "HRnetOne",
+    "checkedAt": "2026-11-02T10:03:20.690788+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "be3cd7b2b90b9573a309efa1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFyPGoZ2pEHCQ/company-logo_100_100/company-logo_100_100/0/1631319736152?e=2147483647&v=beta&t=s31qUQ1rs6P7re2OARWed0QreeVSejaUJxwFP-WzSG0",
+    "companyUrl": "https://sg.linkedin.com/company/hrnetone",
+    "sourceJobId": "4486113380"
+  },
+  "shenwan hongyuan (international) holdings limited": {
+    "name": "Shenwan Hongyuan (International) Holdings Limited",
+    "checkedAt": "2026-11-02T10:03:23.690641+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a260b9a7b6c45c6e9f5a0851.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHp2fYOZiU_8Q/company-logo_100_100/company-logo_100_100/0/1690337082243?e=2147483647&v=beta&t=jXW7gZB3JhErMnYlTVYNH2qMtuon34uvvFi-jNkXO7E",
+    "companyUrl": "https://www.linkedin.com/company/shenwan-hongyuan-international-holdings-limited",
+    "sourceJobId": "4485461393"
+  },
+  "wyoming outdoor council": {
+    "name": "Wyoming Outdoor Council",
+    "checkedAt": "2026-11-02T10:03:26.692800+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "06a13d9cf3cd06591d859169.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHSq05L3HA1kg/company-logo_100_100/B56Z2I2L.QGgAQ-/0/1776117399770/wyoming_outdoor_council_logo?e=2147483647&v=beta&t=dfJReOT0j31PyfkOEx2NgWojUJG933Ge9GIk-f5WB08",
+    "companyUrl": "https://www.linkedin.com/company/wyoming-outdoor-council",
+    "sourceJobId": "4485472384"
   }
 }
