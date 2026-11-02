@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-02T16:03:24.956493+00:00",
+    "checkedAt": "2026-11-02T22:02:57.944275+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-02T16:03:30.777039+00:00",
+    "checkedAt": "2026-11-02T22:03:03.459387+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-02T16:03:36.793753+00:00",
+    "checkedAt": "2026-11-02T22:03:09.459388+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-02T16:03:39.782003+00:00",
+    "checkedAt": "2026-11-02T22:03:12.458580+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9809,5 +9809,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFrGvvMs1aFxA/company-logo_100_100/B4EZyvRRkjGYAQ-/0/1772467067621/roysocchem_logo?e=2147483647&v=beta&t=Ka5Dl-Wo9AGPh4abvoHtbumfBFywDIf1CYY8sEMcN38",
     "companyUrl": "https://uk.linkedin.com/company/roysocchem",
     "sourceJobId": "4486159477"
+  },
+  "dld asset management, l.p.": {
+    "name": "DLD Asset Management, L.P.",
+    "checkedAt": "2026-11-02T22:02:53.283310+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d9afa7be4f062d1cfa0786d7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF4pQvu6Z_u1A/company-logo_100_100/company-logo_100_100/0/1701728148744/dld_asset_management_logo?e=2147483647&v=beta&t=mhr4j1xBC40l41QCL1Wk5tUv10gManicP6jH_a-OfEs",
+    "companyUrl": "https://www.linkedin.com/company/dld-asset-management",
+    "sourceJobId": "4486182851"
+  },
+  "dynatrace": {
+    "name": "Dynatrace",
+    "checkedAt": "2026-11-02T22:02:54.740332+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "15f9b65a607ee6491235472c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEXe5JlggGfqQ/company-logo_100_100/company-logo_100_100/0/1688565737458/dynatrace_logo?e=2147483647&v=beta&t=8T3BsE-nkOSgKQ8dsGgZhd5xOlEptiGsWkhF8C8CcMI",
+    "companyUrl": "https://www.linkedin.com/company/dynatrace",
+    "sourceJobId": "4486421178"
   }
 }
