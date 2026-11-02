@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-02T10:03:29.691605+00:00",
+    "checkedAt": "2026-11-02T16:03:24.956493+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-02T10:03:35.470667+00:00",
+    "checkedAt": "2026-11-02T16:03:30.777039+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-02T10:03:41.506397+00:00",
+    "checkedAt": "2026-11-02T16:03:36.793753+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-02T10:03:44.490270+00:00",
+    "checkedAt": "2026-11-02T16:03:39.782003+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9761,5 +9761,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHSq05L3HA1kg/company-logo_100_100/B56Z2I2L.QGgAQ-/0/1776117399770/wyoming_outdoor_council_logo?e=2147483647&v=beta&t=dfJReOT0j31PyfkOEx2NgWojUJG933Ge9GIk-f5WB08",
     "companyUrl": "https://www.linkedin.com/company/wyoming-outdoor-council",
     "sourceJobId": "4485472384"
+  },
+  "drew marine": {
+    "name": "Drew Marine",
+    "checkedAt": "2026-11-02T16:03:14.595111+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5e1a0630df2ea0f82c1eca96.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQEFWChZN_aVlA/company-logo_100_100/company-logo_100_100/0/1630627618023/drew_marine_logo?e=2147483647&v=beta&t=i1vZIlK0v2ppJwM7FxeVYuBymHAgN-fog9r3zz9GUWU",
+    "companyUrl": "https://www.linkedin.com/company/drew-marine",
+    "sourceJobId": "4478777446"
+  },
+  "eastman": {
+    "name": "Eastman",
+    "checkedAt": "2026-11-02T16:03:16.015071+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "acba0e0f238b441bc64edd23.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHzwNDibvFrTA/company-logo_100_100/B4EZosgvQSGcAQ-/0/1761683371372/eastman_logo?e=2147483647&v=beta&t=q9161KbFi54Akn9E_ZhV1S2sL_QUM9gwyGLP6mJcnzQ",
+    "companyUrl": "https://www.linkedin.com/company/eastman",
+    "sourceJobId": "4476881994"
+  },
+  "precious communications": {
+    "name": "PRecious Communications",
+    "checkedAt": "2026-11-02T16:03:18.957566+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5ce54b7df68377ba30793d4f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQESbCDGRHnEFg/company-logo_100_100/company-logo_100_100/0/1688374329414/precious_communications_logo?e=2147483647&v=beta&t=JCUg0VzI4le-jz-zcjdhnp6-kEL8YdkT-wPtQmH6erA",
+    "companyUrl": "https://sg.linkedin.com/company/precious-communications",
+    "sourceJobId": "4486150469"
+  },
+  "royal society of chemistry": {
+    "name": "Royal Society of Chemistry",
+    "checkedAt": "2026-11-02T16:03:21.957963+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "cb624bb88ab2ba4c26e3ddd1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFrGvvMs1aFxA/company-logo_100_100/B4EZyvRRkjGYAQ-/0/1772467067621/roysocchem_logo?e=2147483647&v=beta&t=Ka5Dl-Wo9AGPh4abvoHtbumfBFywDIf1CYY8sEMcN38",
+    "companyUrl": "https://uk.linkedin.com/company/roysocchem",
+    "sourceJobId": "4486159477"
   }
 }
