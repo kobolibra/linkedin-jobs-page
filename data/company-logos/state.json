@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-01T22:02:56.269178+00:00",
+    "checkedAt": "2026-11-02T04:02:58.420250+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-01T22:03:02.336743+00:00",
+    "checkedAt": "2026-11-02T04:03:04.205277+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-01T22:03:08.273388+00:00",
+    "checkedAt": "2026-11-02T04:03:10.202199+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-01T22:03:11.262059+00:00",
+    "checkedAt": "2026-11-02T04:03:13.204194+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9653,5 +9653,53 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://cn.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E4%BF%A1%E6%89%98",
     "sourceJobId": "4485944575"
+  },
+  "aerowave technologies pte ltd": {
+    "name": "Aerowave Technologies Pte Ltd",
+    "checkedAt": "2026-11-02T04:02:47.991145+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4a923d2d1a6b3007acc24aa4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE2mXeCpwBaQA/company-logo_100_100/company-logo_100_100/0/1735007111187/aerowave_technologies_pte_ltd_logo?e=2147483647&v=beta&t=Jg-Yn1t6qQQa0HbpvYI85RcuHFhyXAeFLt9akslr9pE",
+    "companyUrl": "https://sg.linkedin.com/company/aerowave-technologies-pte-ltd",
+    "sourceJobId": "4485443323"
+  },
+  "kinn hospitality concepts": {
+    "name": "KINN Hospitality Concepts",
+    "checkedAt": "2026-11-02T04:02:49.499986+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b1a30fdcb835197063f2d18e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQFq48uCcOZUJg/company-logo_100_100/company-logo_100_100/0/1630543493276/kinncapsulehotel_logo?e=2147483647&v=beta&t=thqVUAWmq46knAx2zkSsA1koqLQL4NCzmMmCh3kLRrs",
+    "companyUrl": "https://sg.linkedin.com/company/kinnhospitalityconcepts",
+    "sourceJobId": "4452558297"
+  },
+  "omoda & jaecoo philippines": {
+    "name": "Omoda & Jaecoo Philippines",
+    "checkedAt": "2026-11-02T04:02:52.418136+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3fa38965958cce5961ced54c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH1C5sY1cDsmQ/company-logo_100_100/company-logo_100_100/0/1719194215501/omoda_and_jaecoo_motor_philippines_inc_logo?e=2147483647&v=beta&t=ys1WmKRFaL8J6imxOCLf7fszANd81A0FOZ_5l5CzDOQ",
+    "companyUrl": "https://ph.linkedin.com/company/omoda-and-jaecoo-motor-philippines-inc",
+    "sourceJobId": "4484302640"
+  },
+  "t. rowe price hong kong": {
+    "name": "T. Rowe Price Hong Kong",
+    "checkedAt": "2026-11-02T04:02:55.417884+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c1ddcb920ec8da291932e512.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQH-tCGBm5QPkA/company-logo_100_100/company-logo_100_100/0/1700007687833/t_rowe_price_hong_kong_logo?e=2147483647&v=beta&t=0xK9TGD41JfRrXUIZ_DRzvZNVx-4zEiuvB3ijV1ebtI",
+    "companyUrl": "https://hk.linkedin.com/company/t-rowe-price-hong-kong",
+    "sourceJobId": "4486107670"
   }
 }
