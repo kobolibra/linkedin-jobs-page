@@ -9833,5 +9833,46 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEXe5JlggGfqQ/company-logo_100_100/company-logo_100_100/0/1688565737458/dynatrace_logo?e=2147483647&v=beta&t=8T3BsE-nkOSgKQ8dsGgZhd5xOlEptiGsWkhF8C8CcMI",
     "companyUrl": "https://www.linkedin.com/company/dynatrace",
     "sourceJobId": "4486421178"
+  },
+  "aws ug ml latam": {
+    "name": "AWS UG ML Latam",
+    "checkedAt": "2026-11-03T04:04:28.956429+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "00debc6ca77a607142f6e485.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGSXechXy8KMQ/company-logo_100_100/company-logo_100_100/0/1720244000980/awsmllatam_logo?e=2147483647&v=beta&t=8bttiDfDZXhpOXZCLjUzU1sAEk6ZhjUOt38VaJrU_S8",
+    "companyUrl": "https://pe.linkedin.com/company/awsmllatam",
+    "sourceJobId": "4484636109"
+  },
+  "epsilon energia solar s.a": {
+    "name": "Epsilon Energia Solar S.A",
+    "checkedAt": "2026-11-03T04:04:30.610385+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486023020",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486023020",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4486023020",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486023020",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486023020",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.47008319780476,
+        "deferred": true
+      }
+    ]
   }
 }
