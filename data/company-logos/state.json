@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-02T22:02:57.944275+00:00",
+    "checkedAt": "2026-11-03T10:03:52.304755+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-02T22:03:03.459387+00:00",
+    "checkedAt": "2026-11-03T10:03:58.156545+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-02T22:03:09.459388+00:00",
+    "checkedAt": "2026-11-03T10:04:04.390500+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-02T22:03:12.458580+00:00",
+    "checkedAt": "2026-11-03T10:04:07.172995+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9874,5 +9874,65 @@
         "deferred": true
       }
     ]
+  },
+  "cymulate": {
+    "name": "Cymulate",
+    "checkedAt": "2026-11-03T10:03:38.958153+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "552560b45fd49a5551ba7af7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHtwlYtYzM8jg/company-logo_100_100/B4DZjwZ9emG8AQ-/0/1756379994395/cymulate_logo?e=2147483647&v=beta&t=OqrOYBSaL9Bawuz174vssG5LB8y7294jOLaJeJR5NKE",
+    "companyUrl": "https://www.linkedin.com/company/cymulate",
+    "sourceJobId": "4486827057"
+  },
+  "first advantage": {
+    "name": "First Advantage",
+    "checkedAt": "2026-11-03T10:03:40.446223+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "aad69f4fbc226193946cad96.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG0P3KJNk6tYQ/company-logo_100_100/company-logo_100_100/0/1730374357410/first_advantage_logo?e=2147483647&v=beta&t=WT9S0F2BNMJgagLkMuCP4BNImqbj63TRBTywP4ggrUs",
+    "companyUrl": "https://www.linkedin.com/company/first-advantage",
+    "sourceJobId": "4486812233"
+  },
+  "justco": {
+    "name": "JustCo",
+    "checkedAt": "2026-11-03T10:03:43.304674+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5bf56f902b1290ac81756ea7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEyTWrFMJj6_w/company-logo_100_100/company-logo_100_100/0/1721267520807/justco_logo?e=2147483647&v=beta&t=L7qAWMbVR5lKj_zONbFYa1WvktLaEpnaIRGtq3XtXlk",
+    "companyUrl": "https://sg.linkedin.com/company/justco",
+    "sourceJobId": "4472883071"
+  },
+  "value partners group": {
+    "name": "Value Partners Group",
+    "checkedAt": "2026-11-03T10:03:46.304804+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d2948cfe5c07f98bd0fbc924.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHYnuUNBt60Ew/company-logo_100_100/B56ZsBsl_VLMAQ-/0/1765260026296/valuepartnersgroup_logo?e=2147483647&v=beta&t=yiDVQbNlLS43soUKreyICb2xv_Bsm8XFp2nF6_kluAs",
+    "companyUrl": "https://hk.linkedin.com/company/valuepartnersgroup",
+    "sourceJobId": "4486840343"
+  },
+  "正定私募 definite capital": {
+    "name": "正定私募 Definite Capital",
+    "checkedAt": "2026-11-03T10:03:49.304981+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "481101c77b49a0da96fbe204.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG5ykOg-UAP6Q/company-logo_100_100/B56Zh5hnrnHkAU-/0/1754385514544/_logo?e=2147483647&v=beta&t=LWo7nQQf2i9Nt3E0mu7YV7s9h1oODPTEmlcbJN0zRCI",
+    "companyUrl": "https://www.linkedin.com/company/%E6%AD%A3%E5%AE%9A%E7%A7%81%E5%8B%9F",
+    "sourceJobId": "4486027365"
   }
 }
