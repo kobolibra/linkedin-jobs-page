@@ -54,48 +54,54 @@
   }
   return {nodes:[...nodes.values()],links:[...links.values()],counts,total:selected.length,allTotal:unique.length,interviewing,applied,regionCounts};
  }
- // The spine shares a visual centre; outcomes branch below it, with conserved widths.
+ // A poster composition: regional sources, a central saved-role hub, rising stages.
  function layout(data){
-  const mass=Math.min(190,80+data.total*5),unit=mass/data.total,nodeWidth=12,columnWidth=172;
+  const mass=Math.min(320,150+data.total*7),unit=mass/data.total,nodeWidth=20,columnWidth=240;
   const sources=data.nodes.filter(n=>n.type==='region');
-  const centre=132+(mass+Math.max(0,sources.length-1)*58)/2;
+  const centre=190+(mass+Math.max(0,sources.length-1)*96)/2;
   const order={stage:0,offer:1,waiting:2,no_response:3,rejected:4};
-  const nodes=data.nodes.map(n=>({...n,x:24+n.column*columnWidth,h:n.value*unit,in:0,out:0}));
+  const nodes=data.nodes.map(n=>({...n,x:180+n.column*columnWidth,h:n.value*unit}));
   const maxColumn=Math.max(...nodes.map(n=>n.column));
   for(let column=0;column<=maxColumn;column++){
    const group=nodes.filter(n=>n.column===column);
-   if(column===0&&sources.length){let y=92;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+58;}continue;}
+   if(column===0&&sources.length){let y=150;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+96;}continue;}
    const main=group.filter(n=>n.type==='stage'||n.type==='offer');
-   for(const n of main)n.y=Math.max(78,centre-Math.max(0,column-1)*22-n.h/2);
-   let y=Math.max(centre+42,...main.map(n=>n.y+n.h+72));
-   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+66;}
+   for(const n of main)n.y=Math.max(112,centre-Math.max(0,column-1)*49-n.h/2);
+   let y=Math.max(centre+80,...main.map(n=>n.y+n.h+110));
+   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+100;}
   }
-  const byId=new Map(nodes.map(n=>[n.id,n]));
-  const links=data.links.map(l=>({...l}));
+  const byId=new Map(nodes.map(n=>[n.id,n])),links=data.links.map(l=>({...l}));
   for(const node of nodes){
    let offset=0;
    for(const link of links.filter(l=>l.source===node.id).sort((a,b)=>byId.get(a.target).y-byId.get(b.target).y||byId.get(a.target).column-byId.get(b.target).column)){link.sy=node.y+offset;offset+=link.value*unit;}
    offset=0;
    for(const link of links.filter(l=>l.target===node.id).sort((a,b)=>byId.get(a.source).y-byId.get(b.source).y||byId.get(a.source).column-byId.get(b.source).column)){link.ty=node.y+offset;offset+=link.value*unit;}
   }
-  return {nodes,links,byId,unit,nodeWidth,width:Math.max(720,24+maxColumn*columnWidth+154),height:Math.max(...nodes.map(n=>n.y+n.h))+42};
+  return {nodes,links,byId,unit,nodeWidth,width:Math.max(1080,180+maxColumn*columnWidth+210),height:Math.max(...nodes.map(n=>n.y+n.h))+56};
  }
+
  function svg(data){
   if(!data.total)return '';
-  const chart=layout(data),{nodes,links,byId,unit,nodeWidth,width,height}=chart;
+  const {nodes,links,byId,unit,nodeWidth,width,height}=layout(data);
   const color=n=>n.type==='rejected'?'var(--ap-rejected)':n.type==='no_response'?'var(--ap-no-response)':n.type==='waiting'?'var(--ap-waiting)':n.type==='region'||n.id==='saved'?'var(--ap-source)':n.id==='offer'||n.type==='offer'?'var(--ap-offer)':'var(--ap-stage)';
   let paths='';
   for(const link of links){
-   const a=byId.get(link.source),b=byId.get(link.target),h=link.value*unit,x=a.x+nodeWidth,x2=b.x,dx=(x2-x)*.46,y=link.sy,y2=link.ty;
+   const a=byId.get(link.source),b=byId.get(link.target),h=link.value*unit,x=a.x+nodeWidth,x2=b.x,dx=(x2-x)*.5,y=link.sy,y2=link.ty;
    const context=b.context&&b.type!=='region'?' after '+b.context:'';
    const label=a.label+' → '+b.label+context+': '+link.value+' '+(link.value===1?'role':'roles');
-   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.type)+'" tabindex="0" role="img" aria-label="'+escape(label)+'" fill="'+color(a.type==='region'?a:b)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
+   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
   }
   const bars=nodes.map(n=>{
-   const percent=Math.round(n.value/data.total*100);
-   return '<g class="ap-node ap-node-'+n.type+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/><text x="'+n.x+'" y="'+(n.y-39)+'" class="ap-node-label">'+escape(n.label)+'</text><text x="'+n.x+'" y="'+(n.y-13)+'" class="ap-node-value"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="7">'+percent+'%</tspan></text></g>';
+   const percent=Math.round(n.value/data.total*100),outcome=n.type!=='stage'&&n.type!=='region'&&n.type!=='offer';
+   let title='<text x="'+n.x+'" y="'+(n.y-62)+'" class="ap-node-label">'+escape(n.label)+'</text>';
+   if(n.type==='region'){
+    const code=n.context==='UNKNOWN'?'—':n.context==='OTHER'?'INTL':n.context;
+    title='<text x="144" y="'+(n.y+n.h/2-5)+'" text-anchor="end" class="ap-region-code">'+code+'</text><text x="144" y="'+(n.y+n.h/2+25)+'" text-anchor="end" class="ap-region-name">'+escape(n.label)+'</text>';
+   }
+
+   return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/>'+title+'<text x="'+n.x+'" y="'+(n.y-26)+'" class="ap-node-value"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
   }).join('');
-  return '<svg style="min-width:'+Math.min(width,1260)+'px;max-width:'+width+'px" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Each role counts once. Regions feed into saved roles. Flow widths and percentages show counts of saved roles in this view. No Response is manually recorded. Skipped rounds are not inferred.</desc>'+paths+bars+'</svg>';
+  return '<svg style="min-width:'+Math.min(width,1260)+'px;max-width:'+width+'px" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc>'+paths+bars+'</svg>';
  }
  const api={stages,valid,index,transition,graph,layout,svg,jobKey,regionOf,regionIndex,button:()=>'',sheet:()=>{},open:()=>{}};globalThis.JobApplications=api;
  if(typeof document==='undefined'||!globalThis.AccountPreferences)return;
@@ -145,8 +151,9 @@
   journey.querySelector('.ap-legend').hidden=!data.total;
   journey.querySelector('.ap-stage-summary').innerHTML=stages.map(([s,label])=>'<div><dt>'+label+'</dt><dd>'+data.counts[s]+'</dd></div>').join('');
  }
- function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><dl class="ap-kpis"></dl><div class="ap-chart" tabindex="0" aria-label="Application flow chart. Scroll horizontally on smaller screens."></div><div class="ap-legend"><span class="ap-key-progress">Progressed</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
- const JOURNEY_ICON='<svg class="ap-journey-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="4.5" cy="17.5" r="1.8" fill="currentColor"/><path d="M7 17.5h1c5.25 0 3.75-11 9-11H20M16.75 3.25 20 6.5l-3.25 3.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div><dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><div class="ap-chart" tabindex="0" aria-label="Application flow chart. Scroll horizontally on smaller screens."></div><div class="ap-legend"><span class="ap-key-progress">Progressed</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
+ // Route icon: Lucide contributors, ISC; see licenses/lucide-route.txt.
+ const JOURNEY_ICON='<svg class="ap-journey-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>';
  const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
  // Reuse the already-requested index; never fetch data just to draw a personal chart.
  window.__jobsDataPromise?.then(rows=>{regions=regionIndex(rows);if(journey?.open)renderJourney();}).catch(()=>{});

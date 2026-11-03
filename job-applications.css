@@ -33,3 +33,28 @@
 @media(max-width:720px){.application-journey{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);padding:22px 16px;border-radius:14px}.ap-kpis{margin-top:18px;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.ap-kpis dt{font-size:9px}.ap-kpis dd{font-size:24px}.ap-chart{margin-top:10px}.application-editor.is-modal{inset:0;width:calc(100vw - 24px);margin:auto;max-width:420px}.ap-steps button{min-height:44px}.ap-steps button:not(:last-child)::after{top:32px;height:22px}.ap-outcomes button{min-height:40px}.ap-outcomes .ap-reset{min-height:28px}.application-journey-toggle{font-size:11px;min-height:42px;padding:8px 12px;gap:8px}.application-journey-toggle .ap-journey-mark{width:21px;height:21px}.ap-legend{font-size:10px;gap:10px 16px}}
 @media(prefers-reduced-motion:reduce){.ap-flow,.application-journey-toggle{transition:none}}
 @media print{.application-editor,.application-journey-toggle{display:none!important}}
+
+/* Figure-led report: one compact header, an open canvas, direct annotations. */
+.application-journey{padding:30px 32px 24px;background:#fff;color:#222a33;--ap-canvas:#fff;--ap-blue:#263f59;--ap-stage:#2c66a6;--ap-source:#747c84;--ap-waiting:#8da1b4;--ap-offer:#15805c;--ap-rejected:#c95359;--ap-no-response:#858b93;--ap-ribbon-source:#c0c5cb;--ap-ribbon-stage:#86add0;--ap-ribbon-waiting:#d5e0e8;--ap-ribbon-offer:#8cc3a7;--ap-ribbon-rejected:#e5a1a3;--ap-ribbon-no-response:#c5c9cf}
+.ap-journey-head{display:grid;grid-template-columns:minmax(250px,1fr) auto 32px;align-items:center;gap:28px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.ap-journey-head h2{color:var(--ink);font:600 clamp(25px,2.6vw,32px)/1.2 var(--sans,system-ui);letter-spacing:-.035em;max-width:330px}
+.ap-kpis{gap:26px;margin:0;padding:0;border:0}.ap-kpis dt{font-size:10px;white-space:nowrap}.ap-kpis dd{font-size:24px;margin-top:7px}
+.ap-chart{margin-top:0;padding-top:0}.ap-node-label{font-size:14px;font-weight:600}.ap-node-value{font-size:22px;font-weight:500}.ap-node-share{font-size:12px}
+.ap-legend{margin-top:8px;margin-bottom:18px;gap:10px 22px}.application-journey footer{font-size:10px;line-height:1.6}
+.application-journey-toggle{border-color:var(--line-strong);border-radius:8px;box-shadow:none;background:var(--surface);color:var(--ink);font-weight:600;gap:9px;padding:9px 15px}.application-journey-toggle .ap-journey-mark{width:24px;height:24px;color:var(--ink)}
+[data-theme=dark] .application-journey{background:#192a37;--ap-canvas:#192a37;--ap-stage:#9bbbd8;--ap-source:#b0bac4;--ap-waiting:#8498a7;--ap-offer:#7ac4a0;--ap-rejected:#e88f91;--ap-no-response:#a0aab4;--ap-ribbon-source:#64717d;--ap-ribbon-stage:#527999;--ap-ribbon-waiting:#344c5e;--ap-ribbon-offer:#427b60;--ap-ribbon-rejected:#8f555d;--ap-ribbon-no-response:#56636d}
+@media(max-width:1000px){.ap-journey-head{grid-template-columns:1fr 32px;gap:20px}.ap-journey-head .ap-kpis{grid-column:1/-1;grid-row:2;justify-content:start;gap:36px}.ap-journey-head .ap-close{grid-column:2;grid-row:1}.ap-journey-head h2{max-width:none}.ap-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:720px){.application-journey{padding:22px 16px}.ap-journey-head{gap:20px;padding-bottom:18px}.ap-journey-head .ap-kpis{gap:12px}.ap-kpis dd{font-size:24px}.ap-kpis dt{font-size:9px}.ap-journey-head h2{font-size:26px}.ap-chart{margin-top:0}}
+
+/* App Economy poster proportions: regional identities and an open data canvas. */
+.application-journey{background:#f6f6f4;--ap-canvas:#f6f6f4;--ap-blue:#155573;--ap-stage:#4285f4;--ap-source:#4285f4;--ap-waiting:#94a6b8;--ap-offer:#209b32;--ap-rejected:#ce141a;--ap-no-response:#7f878d;--ap-ribbon-source:#a7c4f1;--ap-ribbon-stage:#a7c4f1;--ap-ribbon-waiting:#d6dfe6;--ap-ribbon-offer:#9dcc9d;--ap-ribbon-rejected:#df9593;--ap-ribbon-no-response:#c1c6ca}
+.ap-journey-head{padding-bottom:24px;border-bottom:0;grid-template-columns:minmax(400px,1fr) auto 32px}.ap-journey-head h2{font:700 clamp(28px,3.2vw,43px)/1.12 var(--sans,system-ui);letter-spacing:-.035em;color:var(--ap-blue);max-width:none}.ap-kpis dt{font-size:10px}.ap-kpis dd{font-size:24px}.ap-chart{margin-top:0}
+.ap-node-label{font-size:20px;font-weight:700}.ap-node-value{font-size:30px;font-weight:500}.ap-node-share{font-size:17px;font-weight:400}.ap-region-code{fill:var(--ap-source);font:700 46px var(--sans,system-ui);letter-spacing:-.04em}.ap-region-name{fill:var(--ink-soft);font:400 18px var(--sans,system-ui)}.ap-hub-mark{color:var(--ap-source)}.ap-node-hub .ap-node-label,.ap-node-hub .ap-node-value{fill:var(--ap-source)}.ap-node-region .ap-node-value{fill:var(--ap-source)}
+.ap-node-label,.ap-node-value,.ap-region-code,.ap-region-name{paint-order:stroke;stroke:var(--ap-canvas);stroke-width:5px;stroke-linejoin:round}
+.application-journey-toggle .ap-journey-mark{width:23px;height:23px;color:var(--ap-blue)}.account-journey .ap-journey-mark{width:20px;height:20px}
+[data-theme=dark] .application-journey{background:#192a37;--ap-canvas:#192a37;--ap-blue:#b0cde1;--ap-stage:#84aef6;--ap-source:#84aef6;--ap-offer:#69cc83;--ap-rejected:#ee8185;--ap-ribbon-source:#527aaf;--ap-ribbon-stage:#527aaf;--ap-ribbon-offer:#3e8151;--ap-ribbon-rejected:#9e555a}
+@media(max-width:1100px){.ap-journey-head{grid-template-columns:1fr 32px;gap:22px}.ap-journey-head .ap-kpis{grid-column:1/-1;grid-row:2}.ap-journey-head .ap-close{grid-column:2;grid-row:1}}
+@media(max-width:720px){.ap-journey-head h2{font-size:28px}.ap-journey-head{padding-bottom:0}.application-journey{padding-top:22px}.ap-legend{font-size:10px}}
+
+/* Route is a quiet UI control, not a brand logo. */
+.application-journey-toggle .ap-journey-mark{width:20px;height:20px;color:var(--ink-soft)}.account-journey .ap-journey-mark{width:18px;height:18px;color:var(--ink-soft)}
