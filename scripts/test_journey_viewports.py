@@ -62,14 +62,19 @@ async def main():
   if not await page.locator('.application-journey-toggle').is_visible():await page.locator('#favToggle').click()
   await page.evaluate("""()=>{for(let i=1;i<61;i++){const j='ln:sample'+i,k=i%12;let ev;const region=['CN','HK','SG'][i%3];let route=k<2?['saved']:k===2?['applied','contact']:k===3?['applied','contact','no_response']:k===4?['applied']:k===5?['applied','no_response']:k===6?['applied','rejected']:k===7?['applied','contact','first']:k===8?['applied','contact','first','second']:k===9?['applied','contact','first','second','final']:k===10?['applied','contact','first','second','final','offer']:['applied','contact','first','second','rejected'];for(const stage of route)ev=JobApplications.transition(ev,stage,{job:j,id:crypto.randomUUID().replaceAll('-',''),time:Date.now(),region});const data=AccountPreferences.snapshot();AccountPreferences.set('applications',JSON.stringify([...data.applications,JSON.stringify(ev)]));AccountPreferences.set('favs',JSON.stringify([...AccountPreferences.snapshot().favs,j]));}}""")
   await page.locator('.application-journey-toggle').screenshot(path=str(ARTIFACTS/'my-journey-button.png'))
+  await page.locator('.application-journey-entry').screenshot(path=str(ARTIFACTS/'journey-entry-restored.png'))
   assert await page.locator('.account-journey .ap-journey-mark').count()==1
   await page.locator('.application-journey-toggle').click()
   assert await page.locator('.ap-chart > svg').count()==1
+  assert await page.locator('.ap-node[data-tone=applied] rect').evaluate('(e)=>getComputedStyle(e).fill') != await page.locator('.ap-node[data-tone=contact] rect').evaluate('(e)=>getComputedStyle(e).fill')
+  assert await page.locator('.ap-node[data-tone=first] rect').evaluate('(e)=>getComputedStyle(e).fill') != await page.locator('.ap-node[data-tone=final] rect').evaluate('(e)=>getComputedStyle(e).fill')
   assert await page.locator('#ap-journey-title').inner_text()=='Your application journey'
   assert 'YOUR NEXT JOURNEY' not in await page.locator('.application-journey').inner_text()
   assert 'All saved roles, across every filter.' not in await page.locator('.application-journey').inner_text()
-  assert (await page.locator('.application-journey-entry').text_content()).strip()=='My Journey'
+  entry_text=await page.locator('.application-journey-entry').text_content()
+  assert 'YOUR APPLICATIONS' in entry_text and 'Track your saved roles, from application to outcome.' in entry_text and 'My Journey' in entry_text
   assert await page.locator('.application-journey-entry').evaluate('(e)=>getComputedStyle(e).borderTopWidth')=='0px'
+  assert await page.evaluate("""()=>{const a=getComputedStyle(document.querySelector('.application-journey-entry')),b=getComputedStyle(document.querySelector('.analytics-card'));return a.backgroundColor===b.backgroundColor&&a.borderRadius===b.borderRadius&&a.boxShadow===b.boxShadow;}""")
   async def fit_report(target,label):
    await target.wait_for_timeout(140)
    report=await target.evaluate("""()=>{const d=document.querySelector('.application-journey'),p=d.querySelector('.ap-chart'),s=p.querySelector('svg'),b=d.getBoundingClientRect(),v={w:innerWidth,h:innerHeight},c=p.getBoundingClientRect();const cut=[...s.querySelectorAll('text')].map(t=>({text:t.textContent,b:t.getBoundingClientRect()})).filter(o=>o.b.left<c.left-1||o.b.right>c.right+1||o.b.top<c.top-1||o.b.bottom>c.bottom+1).map(o=>o.text);return{viewport:v,dialog:{x:b.x,y:b.y,w:b.width,h:b.height},overflowY:d.scrollHeight-d.clientHeight,overflowX:d.scrollWidth-d.clientWidth,chartOverflowX:p.scrollWidth-p.clientWidth,chartOverflowY:p.scrollHeight-p.clientHeight,cut,transform:getComputedStyle(d).transform,compact:d.classList.contains('is-compact')};}""")
