@@ -108,3 +108,16 @@ test('region ownership uses the same active/newest duplicate resolution as the a
  assert.equal(scope.JobApplications.regionIndex(rows).get('ln:4000000000'),'HK');
  assert.equal(scope.JobApplications.regionIndex([...rows].reverse()).get('ln:4000000000'),'HK');
 });
+
+test('compact landscape layout preserves counts and routes while reducing drawing dimensions',()=>{
+ const favorites=[],states=new Map();
+ for(let i=0;i<60;i++){const j='fit:'+i;favorites.push(j);let state=transition(null,'applied',{job:j,id:'compact_event_'+String(i).padStart(16,'0'),region:['CN','HK','SG'][i%3],time:100});
+  for(const stage of ['contact','first','second','final','offer'].slice(0,i%6))state=change(state,stage,j);
+  if(i%4===0)state=change(state,'no_response',j);if(i%7===0)state=change(state,'rejected',j);states.set(j,state);
+ }
+ const data=graph(favorites,states),before=JSON.stringify(data),full=scope.JobApplications.layout(data),compact=scope.JobApplications.layout(data,{compact:true});
+ assert.ok(compact.width<full.width);assert.ok(compact.height<full.height);
+ assert.equal(JSON.stringify(data),before);assert.deepEqual(plain(compact.links.map(l=>[l.source,l.target,l.value])),plain(full.links.map(l=>[l.source,l.target,l.value])));
+ for(const node of compact.nodes){assert.ok(node.x>=0&&node.x+compact.nodeWidth<=compact.width);assert.ok(node.y>=0);assert.ok(node.y+node.h<compact.height);}
+ const figure=svg(data,{compact:true});assert.match(figure,/ap-compact-svg/);assert.doesNotMatch(figure,/min-width:/);assert.match(figure,/preserveAspectRatio="xMidYMid meet"/);
+});

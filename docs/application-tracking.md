@@ -12,11 +12,11 @@
 
 Desktop: save a role, hover over the role's action capsule, then hover or click its progress label. The panel also opens with the keyboard. Mobile: swipe left on the saved role and select Application progress. Stage controls retain their focus after selection. Escape dismisses the panel.
 
-My Journey is available in the account menu and in a dedicated summary strip when filtering to saved roles. It includes all favorites in the account, regardless of the other list filters. The strip leaves the existing filter toolbar intact.
+My Journey is available in the account menu and as a compact unframed action when filtering to saved roles. It includes all favorites in the account, regardless of the other list filters. The action has no additional heading, promotional copy or bordered panel; it leaves the existing filter toolbar intact.
 
 The diagram opens with a regional breakdown on the left: Mainland China, Hong Kong, Singapore and any Other / Unspecified records converge into the full Saved total. This is a composition of the total, like a product revenue breakdown; it is not a region filter. Counts and percentages use all saved roles. Region metadata reuses the existing job index, with a validated optional region snapshot on new stage events for records no longer in the index. No additional job-data request is made.
 
-The diagram is generated on demand, without a remote chart service. Mobile users can scroll the chart horizontally; a text breakdown is also available. Light, dark and reduced-motion preferences are supported.
+The diagram is generated on demand, without a remote chart service. The entire chart fits its viewport without horizontal or vertical panning. On touch devices held in portrait, the dialog itself opens as a landscape canvas by default; physically rotating the device switches to its native landscape dimensions automatically. This uses responsive CSS, without an orientation-lock permission or an extra rotate button. Compact geometry places outcome labels beside their endpoints to keep them clear of the main flow. A text breakdown is also available. Light, dark and reduced-motion preferences are supported.
 
 ## Data and interpretation
 
@@ -34,4 +34,4 @@ Each favorite contributes one unit to the diagram. The chart uses continuously c
 
 `node --test scripts/test_job_applications.mjs scripts/test_account_sync.mjs` covers exact paths, skipped rounds, rejection origins, corrections, history retention, deterministic merging, duplicate delivery, clock rollback, flow conservation, invalid events, offline reload, cross-account isolation and unchanged favorite deletion semantics.
 
-The existing account boundary, public-asset, job action, hover and loading resilience suites remain applicable. The deployment gate includes the application and account-sync suites. Browser verification additionally checks desktop selection, hover, history, reload, mobile nested dialogs, chart layout, unchanged JD button coordinates and successful JD expansion.
+The existing account boundary, public-asset, job action, hover and loading resilience suites remain applicable. The deployment gate includes the application and account-sync suites. Browser verification additionally checks desktop selection, hover, history, reload, mobile nested dialogs, chart layout, unchanged JD button coordinates and successful JD expansion. The viewport regression covers 1920×1080, 1440×900, 1366×768 and 1280×720, plus touch contexts at 390×844, 844×390 and 360×800. It asserts complete dialog bounds, no dialog/chart overflow, no clipped SVG text, default landscape rotation, native landscape after device rotation and a 44px close target. Run `python scripts/test_journey_viewports.py` with Playwright installed; set `JOURNEY_TEST_BROWSER=webkit` for the WebKit run. The fixture intercepts all network requests and writes no production data.

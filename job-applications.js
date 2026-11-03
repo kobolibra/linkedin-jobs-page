@@ -55,20 +55,21 @@
   return {nodes:[...nodes.values()],links:[...links.values()],counts,total:selected.length,allTotal:unique.length,interviewing,applied,regionCounts};
  }
  // A poster composition: regional sources, a central saved-role hub, rising stages.
- function layout(data){
-  const mass=Math.min(320,150+data.total*7),unit=mass/data.total,nodeWidth=20,columnWidth=240;
+ function layout(data,{compact=false}={}){
+  const mass=compact?110:Math.min(320,150+data.total*7),unit=mass/data.total,nodeWidth=compact?12:20,columnWidth=compact?156:240,sourceX=compact?140:180,sourceGap=compact?72:96;
   const sources=data.nodes.filter(n=>n.type==='region');
-  const centre=190+(mass+Math.max(0,sources.length-1)*96)/2;
+  const centre=(compact?70:190)+(mass+Math.max(0,sources.length-1)*sourceGap)/2;
   const order={stage:0,offer:1,waiting:2,no_response:3,rejected:4};
-  const nodes=data.nodes.map(n=>({...n,x:180+n.column*columnWidth,h:n.value*unit}));
+  const nodes=data.nodes.map(n=>({...n,x:sourceX+n.column*columnWidth,h:n.value*unit}));
   const maxColumn=Math.max(...nodes.map(n=>n.column));
   for(let column=0;column<=maxColumn;column++){
    const group=nodes.filter(n=>n.column===column);
-   if(column===0&&sources.length){let y=150;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+96;}continue;}
+   if(column===0&&sources.length){let y=compact?80:150;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+sourceGap;}continue;}
    const main=group.filter(n=>n.type==='stage'||n.type==='offer');
-   for(const n of main)n.y=Math.max(112,centre-Math.max(0,column-1)*49-n.h/2);
-   let y=Math.max(centre+80,...main.map(n=>n.y+n.h+110));
-   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+100;}
+   for(const n of main)n.y=Math.max(112,centre-Math.max(0,column-1)*(compact?12:49)-n.h/2);
+   const previous=nodes.filter(n=>n.column===column-1&&(n.type==='stage'||n.type==='offer'));
+   let y=Math.max(centre+(compact?60:80),...main.map(n=>n.y+n.h+(compact?50:110)),...previous.map(n=>compact?n.y+n.h+50:0));
+   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+(compact?46:100);}
   }
   const byId=new Map(nodes.map(n=>[n.id,n])),links=data.links.map(l=>({...l}));
   for(const node of nodes){
@@ -77,12 +78,12 @@
    offset=0;
    for(const link of links.filter(l=>l.target===node.id).sort((a,b)=>byId.get(a.source).y-byId.get(b.source).y||byId.get(a.source).column-byId.get(b.source).column)){link.ty=node.y+offset;offset+=link.value*unit;}
   }
-  return {nodes,links,byId,unit,nodeWidth,width:Math.max(1080,180+maxColumn*columnWidth+210),height:Math.max(...nodes.map(n=>n.y+n.h))+56};
+  return {nodes,links,byId,unit,nodeWidth,width:Math.max(compact?800:1080,sourceX+maxColumn*columnWidth+(compact?166:210)),height:Math.max(...nodes.map(n=>n.y+n.h))+(compact?55:56)};
  }
 
- function svg(data){
+ function svg(data,{compact=false}={}){
   if(!data.total)return '';
-  const {nodes,links,byId,unit,nodeWidth,width,height}=layout(data);
+  const {nodes,links,byId,unit,nodeWidth,width,height}=layout(data,{compact});
   const color=n=>n.type==='rejected'?'var(--ap-rejected)':n.type==='no_response'?'var(--ap-no-response)':n.type==='waiting'?'var(--ap-waiting)':n.type==='region'||n.id==='saved'?'var(--ap-source)':n.id==='offer'||n.type==='offer'?'var(--ap-offer)':'var(--ap-stage)';
   let paths='';
   for(const link of links){
@@ -92,16 +93,20 @@
    paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
   }
   const bars=nodes.map(n=>{
-   const percent=Math.round(n.value/data.total*100),outcome=n.type!=='stage'&&n.type!=='region'&&n.type!=='offer';
+   const percent=Math.round(n.value/data.total*100);
    let title='<text x="'+n.x+'" y="'+(n.y-62)+'" class="ap-node-label">'+escape(n.label)+'</text>';
+   if(compact&&n.label.length>15&&n.type!=='region'){const words=n.label.split(' '),first=words.shift();title='<text x="'+n.x+'" y="'+(n.y-84)+'" class="ap-node-label"><tspan>'+escape(first)+'</tspan><tspan x="'+n.x+'" dy="20">'+escape(words.join(' '))+'</tspan></text>';}
    if(n.type==='region'){
     const code=n.context==='UNKNOWN'?'—':n.context==='OTHER'?'INTL':n.context;
-    title='<text x="144" y="'+(n.y+n.h/2-5)+'" text-anchor="end" class="ap-region-code">'+code+'</text><text x="144" y="'+(n.y+n.h/2+25)+'" text-anchor="end" class="ap-region-name">'+escape(n.label)+'</text>';
+    title='<text x="'+(compact?116:144)+'" y="'+(n.y+n.h/2-5)+'" text-anchor="end" class="ap-region-code">'+code+'</text><text x="'+(compact?116:144)+'" y="'+(n.y+n.h/2+25)+'" text-anchor="end" class="ap-region-name">'+escape(n.label)+'</text>';
    }
 
-   return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/>'+title+'<text x="'+n.x+'" y="'+(n.y-26)+'" class="ap-node-value"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
+   const side=compact&&['waiting','no_response','rejected'].includes(n.type);
+   if(side)title='<text x="'+(n.x+20)+'" y="'+(n.y+7)+'" class="ap-node-label ap-terminal-label">'+escape(n.label==='Awaiting response'?'Awaiting reply':n.label)+'</text>';
+   const valueX=side?n.x+20:n.x,valueY=side?n.y+34:n.y-26;
+   return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/>'+title+'<text x="'+valueX+'" y="'+valueY+'" class="ap-node-value'+(side?' ap-terminal-value':'')+'"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
   }).join('');
-  return '<svg style="min-width:'+Math.min(width,1260)+'px;max-width:'+width+'px" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc>'+paths+bars+'</svg>';
+  return '<svg class="'+(compact?'ap-compact-svg':'ap-full-svg')+'" preserveAspectRatio="xMidYMid meet" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc>'+paths+bars+'</svg>';
  }
  const api={stages,valid,index,transition,graph,layout,svg,jobKey,regionOf,regionIndex,button:()=>'',sheet:()=>{},open:()=>{}};globalThis.JobApplications=api;
  if(typeof document==='undefined'||!globalThis.AccountPreferences)return;
@@ -146,15 +151,16 @@
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&editor?.open){e.preventDefault();editor.close();}});
  addEventListener('scroll',()=>{if(editor?.open&&!editor.classList.contains('is-modal')){if(!anchor?.isConnected)editor.close();else position();}},{passive:true});addEventListener('resize',()=>{if(editor?.open&&!editor.classList.contains('is-modal'))position();},{passive:true});
  document.addEventListener('jobsfilterchange',()=>{if(editor?.open&&!editor.classList.contains('is-modal')){if(!selected?.isConnected||selected.classList.contains('hidden')||!selected.getClientRects().length)editor.close();else position();}});
- function renderJourney(){const data=graph(favorites,states,{regions});journey.querySelector('.ap-kpis').innerHTML=[['Saved',data.total],['Applications',data.applied],['Interviewing',data.interviewing],['Offers',data.counts.offer]].map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+value+'</dd></div>').join('');
-  const chart=journey.querySelector('.ap-chart');chart.innerHTML=data.total?svg(data):'<div class="ap-empty"><h3>'+ (data.allTotal?'No saved roles in this region':'No saved roles yet') +'</h3><p>'+(data.allTotal?'Choose another region to see your application progress.':'Save a role and record your progress to see it here.')+'</p></div>';
+ function renderJourney(){const phonePortrait=matchMedia('(pointer:coarse) and (orientation:portrait)').matches,compact=(phonePortrait?innerWidth:innerHeight)<850;journey.classList.toggle('is-compact',compact);const data=graph(favorites,states,{regions});journey.querySelector('.ap-kpis').innerHTML=[['Saved',data.total],['Applications',data.applied],['Interviewing',data.interviewing],['Offers',data.counts.offer]].map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+value+'</dd></div>').join('');
+  const chart=journey.querySelector('.ap-chart');chart.innerHTML=data.total?svg(data,{compact}):'<div class="ap-empty"><h3>'+ (data.allTotal?'No saved roles in this region':'No saved roles yet') +'</h3><p>'+(data.allTotal?'Choose another region to see your application progress.':'Save a role and record your progress to see it here.')+'</p></div>';
   journey.querySelector('.ap-legend').hidden=!data.total;
   journey.querySelector('.ap-stage-summary').innerHTML=stages.map(([s,label])=>'<div><dt>'+label+'</dt><dd>'+data.counts[s]+'</dd></div>').join('');
  }
- function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div><dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><div class="ap-chart" tabindex="0" aria-label="Application flow chart. Scroll horizontally on smaller screens."></div><div class="ap-legend"><span class="ap-key-progress">Progressed</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
+ function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div><dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><div class="ap-chart" tabindex="0" aria-label="Application flow chart, fitted to the screen."></div><div class="ap-legend"><span class="ap-key-progress">Progressed</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
  // Route icon: Lucide contributors, ISC; see licenses/lucide-route.txt.
  const JOURNEY_ICON='<svg class="ap-journey-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>';
- const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
+ const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
+ let journeyResize=0;addEventListener('resize',()=>{cancelAnimationFrame(journeyResize);journeyResize=requestAnimationFrame(()=>{if(journey?.open)renderJourney();});},{passive:true});
  // Reuse the already-requested index; never fetch data just to draw a personal chart.
  window.__jobsDataPromise?.then(rows=>{regions=regionIndex(rows);if(journey?.open)renderJourney();}).catch(()=>{});
  addEventListener('account-preferences',refresh);refresh();
