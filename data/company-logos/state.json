@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-03T16:03:34.829371+00:00",
+    "checkedAt": "2026-11-03T22:02:51.730574+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-03T16:03:40.419759+00:00",
+    "checkedAt": "2026-11-03T22:02:57.438020+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-03T16:03:46.489582+00:00",
+    "checkedAt": "2026-11-03T22:03:03.471023+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-03T16:03:49.407625+00:00",
+    "checkedAt": "2026-11-03T22:03:06.599342+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9970,5 +9970,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFkZe7zjl-VaQ/company-logo_100_100/B56Zuhan_YJcAQ-/0/1767939670477/ntt_com_asia_logo?e=2147483647&v=beta&t=USQFnrbS7FQe76JOpIrg4dvyka-bx2F1HW_u-2lemvs",
     "companyUrl": "https://www.linkedin.com/company/ntt-com-asia",
     "sourceJobId": "4484666033"
+  },
+  "aej consulting ltd": {
+    "name": "AEJ Consulting Ltd",
+    "checkedAt": "2026-11-03T22:02:41.251999+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c6e9efa284bd5b225d957ef9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHkwcP4S-YyBA/company-logo_100_100/B4EZbtoEkUGUAQ-/0/1747743427234/alexander_edward_james_consulting_limited_logo?e=2147483647&v=beta&t=epjge9J02NwVJgpuhzZDxyBabXOVMK_JoMESaxVfuO4",
+    "companyUrl": "https://uk.linkedin.com/company/alexander-edward-james-consulting-limited",
+    "sourceJobId": "4487027078"
+  },
+  "bita": {
+    "name": "BITA",
+    "checkedAt": "2026-11-03T22:02:42.714471+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b9150bb55a0a6568edfd3f52.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHUzj91a4V2RA/company-logo_100_100/B4EaE6F0IXJ0AI-/0/1791975965461/bita_gmbh_logo?e=2147483647&v=beta&t=k5r5xas-KvQDoB16x_1_cuv_6l29wR1aXCFl2qwcKFI",
+    "companyUrl": "https://de.linkedin.com/company/bita-gmbh",
+    "sourceJobId": "4486071417"
+  },
+  "shun yuen construction company limited": {
+    "name": "Shun Yuen Construction Company Limited",
+    "checkedAt": "2026-11-03T22:02:45.662888+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2cb39f01cb4aaa766a559a15.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQErRY0vD7BpYw/company-logo_100_100/company-logo_100_100/0/1630620375333/shun_yuen_construction_company_limited_logo?e=2147483647&v=beta&t=t6JiL3sqWh_-ycfhxTHBfdztF_UqMn8h8QWeIKnGDDg",
+    "companyUrl": "https://hk.linkedin.com/company/shunyuenconstruction",
+    "sourceJobId": "4486062587"
+  },
+  "xn global health insurance": {
+    "name": "XN Global Health Insurance",
+    "checkedAt": "2026-11-03T22:02:48.694654+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f4eb6d2e109bfb2517ba01fc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHc78u3Ars0kg/company-logo_100_100/company-logo_100_100/0/1703004682529/xn_global_health_insurance_logo?e=2147483647&v=beta&t=gtvkucP1tkYoOm8ZvqzB7_rWCRtvSUTKWA7JgtYkIXQ",
+    "companyUrl": "https://www.linkedin.com/company/xn-global-health-insurance",
+    "sourceJobId": "4486056534"
   }
 }
