@@ -56,19 +56,19 @@
  }
  // The spine shares a visual centre; outcomes branch below it, with conserved widths.
  function layout(data){
-  const mass=Math.min(190,80+data.total*5),unit=mass/data.total,nodeWidth=7,columnWidth=164;
+  const mass=Math.min(190,80+data.total*5),unit=mass/data.total,nodeWidth=12,columnWidth=172;
   const sources=data.nodes.filter(n=>n.type==='region');
-  const centre=92+(mass+Math.max(0,sources.length-1)*44)/2;
+  const centre=132+(mass+Math.max(0,sources.length-1)*58)/2;
   const order={stage:0,offer:1,waiting:2,no_response:3,rejected:4};
   const nodes=data.nodes.map(n=>({...n,x:24+n.column*columnWidth,h:n.value*unit,in:0,out:0}));
   const maxColumn=Math.max(...nodes.map(n=>n.column));
   for(let column=0;column<=maxColumn;column++){
    const group=nodes.filter(n=>n.column===column);
-   if(column===0&&sources.length){let y=92;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+44;}continue;}
+   if(column===0&&sources.length){let y=92;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+58;}continue;}
    const main=group.filter(n=>n.type==='stage'||n.type==='offer');
-   for(const n of main)n.y=centre-Math.max(0,column-1)*7-n.h/2;
-   let y=Math.max(centre+42,...main.map(n=>n.y+n.h+64));
-   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+58;}
+   for(const n of main)n.y=Math.max(78,centre-Math.max(0,column-1)*22-n.h/2);
+   let y=Math.max(centre+42,...main.map(n=>n.y+n.h+72));
+   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+66;}
   }
   const byId=new Map(nodes.map(n=>[n.id,n]));
   const links=data.links.map(l=>({...l}));
@@ -83,7 +83,7 @@
  function svg(data){
   if(!data.total)return '';
   const chart=layout(data),{nodes,links,byId,unit,nodeWidth,width,height}=chart;
-  const color=n=>n.type==='rejected'?'var(--ap-rejected)':n.type==='no_response'?'var(--ap-no-response)':n.type==='waiting'?'var(--ap-waiting)':n.type==='region'||n.id==='saved'?'var(--ap-source)':n.id==='offer'||n.type==='offer'?'var(--ap-offer)':'var(--ap-blue)';
+  const color=n=>n.type==='rejected'?'var(--ap-rejected)':n.type==='no_response'?'var(--ap-no-response)':n.type==='waiting'?'var(--ap-waiting)':n.type==='region'||n.id==='saved'?'var(--ap-source)':n.id==='offer'||n.type==='offer'?'var(--ap-offer)':'var(--ap-stage)';
   let paths='';
   for(const link of links){
    const a=byId.get(link.source),b=byId.get(link.target),h=link.value*unit,x=a.x+nodeWidth,x2=b.x,dx=(x2-x)*.46,y=link.sy,y2=link.ty;
@@ -93,8 +93,7 @@
   }
   const bars=nodes.map(n=>{
    const percent=Math.round(n.value/data.total*100);
-   const count=n.value+' · '+percent+'%';
-   return '<g class="ap-node ap-node-'+n.type+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/><text x="'+n.x+'" y="'+(n.y-27)+'" class="ap-node-label">'+escape(n.label)+'</text><text x="'+n.x+'" y="'+(n.y-9)+'" class="ap-node-value" fill="'+color(n)+'">'+escape(count)+'</text></g>';
+   return '<g class="ap-node ap-node-'+n.type+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/><text x="'+n.x+'" y="'+(n.y-39)+'" class="ap-node-label">'+escape(n.label)+'</text><text x="'+n.x+'" y="'+(n.y-13)+'" class="ap-node-value"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="7">'+percent+'%</tspan></text></g>';
   }).join('');
   return '<svg style="min-width:'+Math.min(width,1260)+'px;max-width:'+width+'px" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Each role counts once. Regions feed into saved roles. Flow widths and percentages show counts of saved roles in this view. No Response is manually recorded. Skipped rounds are not inferred.</desc>'+paths+bars+'</svg>';
  }
@@ -147,8 +146,8 @@
   journey.querySelector('.ap-stage-summary').innerHTML=stages.map(([s,label])=>'<div><dt>'+label+'</dt><dd>'+data.counts[s]+'</dd></div>').join('');
  }
  function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><dl class="ap-kpis"></dl><div class="ap-chart" tabindex="0" aria-label="Application flow chart. Scroll horizontally on smaller screens."></div><div class="ap-legend"><span class="ap-key-progress">Progressed</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
- const JOURNEY_ICON='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5h2v14H4zM18 3h2v5h-2zM18 10h2v4h-2zM18 17h2v4h-2z" fill="currentColor"/><path d="M6 6C12 6 12 4 18 4V7C12 7 12 10 6 10ZM6 11H18V13H6ZM6 15C12 15 12 18 18 18V20C12 20 12 19 6 19Z" fill="currentColor" opacity=".65"/></svg>';
- const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.textContent='My Journey';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
+ const JOURNEY_ICON='<svg class="ap-journey-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="4.5" cy="17.5" r="1.8" fill="currentColor"/><path d="M7 17.5h1c5.25 0 3.75-11 9-11H20M16.75 3.25 20 6.5l-3.25 3.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
  // Reuse the already-requested index; never fetch data just to draw a personal chart.
  window.__jobsDataPromise?.then(rows=>{regions=regionIndex(rows);if(journey?.open)renderJourney();}).catch(()=>{});
  addEventListener('account-preferences',refresh);refresh();
