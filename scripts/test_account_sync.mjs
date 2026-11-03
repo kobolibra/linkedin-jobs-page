@@ -65,3 +65,15 @@ test('invalid or destructive application events fail before database writes',asy
  assert.equal(f.sql.prepare('SELECT count(*) n FROM account_sync_changes').get().n,0);
 });
 
+test('contact and no-response history with region snapshots synchronizes between devices without a migration',async()=>{
+ const f=fixture(),a=f.client(),b=f.client();await a.sync.flush();
+ const entries=[
+  {v:1,id:'applied_contact_1234',j:'ln:123',s:'applied',p:['applied'],t:100,r:'HK'},
+  {v:1,id:'recruiter_contact_123',j:'ln:123',s:'contact',p:['applied','contact'],t:200,r:'HK'},
+  {v:1,id:'no_response_contact_1',j:'ln:123',s:'no_response',p:['applied','contact'],t:300,r:'HK'}
+ ].map(JSON.stringify);
+ a.sync.set('applications',JSON.stringify(entries));assert.equal(await a.sync.flush(),true);assert.equal(await b.sync.flush(),true);
+ assert.deepEqual(new Set(JSON.parse(b.sync.get('applications'))),new Set(entries));
+ assert.equal(f.sql.prepare("SELECT count(*) n FROM account_sync_items WHERE kind='applications'").get().n,3);
+});
+

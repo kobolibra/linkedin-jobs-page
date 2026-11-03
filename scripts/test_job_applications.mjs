@@ -48,3 +48,50 @@ test('the server and client reject malformed stages, paths and timestamps',()=>{
 test('empty accounts have a real empty state, without sample applications',()=>{
  const g=graph([],new Map());assert.equal(g.total,0);assert.equal(g.nodes.length,0);assert.equal(svg(g),'');
 });
+
+test('recruiter contact follows Applied and No Response preserves its last recorded stage',()=>{
+ let state=change(change(null,'applied'),'contact');state=change(state,'no_response');
+ assert.deepEqual(plain(state.p),['applied','contact']);assert.equal(state.s,'no_response');
+ const g=graph(['ln:123'],new Map([['ln:123',state]]));assert.equal(g.applied,1);assert.equal(g.counts.no_response,1);
+ assert.equal(g.links.find(l=>l.target==='no_response:contact').source,'contact');
+ state=change(state,'first');assert.deepEqual(plain(state.p),['applied','contact','first']);assert.equal(state.s,'first');
+ assert.ok(validApplicationItem(JSON.stringify(state)));
+});
+
+test('regions form a breakdown of the full saved-role total, with unknown data kept explicit',()=>{
+ const states=new Map([
+  ['cn',change(null,'applied','cn')],
+  ['hk',transition(null,'contact',{job:'hk',id:'regional_event_hk123',region:'HK',time:100})],
+  ['sg',transition(null,'offer',{job:'sg',id:'regional_event_sg123',region:'SG',time:100})],
+  ['missing',change(null,'no_response','missing')]
+ ]);
+ const regions=new Map([['cn','CN'],['hk','SG']]);
+ const g=graph(['cn','hk','sg','missing'],states,{regions});
+ assert.deepEqual(plain(g.regionCounts),{CN:1,HK:0,SG:2,OTHER:0,UNKNOWN:1});
+ assert.equal(g.nodes.find(n=>n.id==='region:SG').value,2);
+ const sourceTotal=g.nodes.filter(n=>n.type==='region').reduce((sum,n)=>sum+n.value,0);
+ assert.equal(sourceTotal,g.total);assert.equal(g.total,4);assert.equal(g.applied,3);
+ assert.equal(g.nodes.find(n=>n.id==='region:UNKNOWN').value,1);
+});
+
+test('new paths round-trip through server validation and old event payloads remain valid',()=>{
+ let state=transition(null,'applied',{job:'ln:123',id:'full_path_event_123',region:'CN',time:1});
+ for(const stage of ['contact','first','second','final','offer','no_response','rejected']){state=change(state,stage);assert.ok(valid(state));assert.ok(validApplicationItem(JSON.stringify(state)));}
+ assert.deepEqual(plain(state.p),['applied','contact','first','second','final','offer']);
+ assert.equal(state.r,'CN');
+ const old={v:1,id:'legacy_event_123456',j:'ln:old',s:'rejected',p:['applied','first'],t:100};
+ assert.ok(valid(old));assert.ok(validApplicationItem(JSON.stringify(old)));
+ assert.equal(valid({...old,r:'invented'}),false);assert.equal(validApplicationItem(JSON.stringify({...old,r:'invented'})),false);
+});
+
+test('regional layout conserves widths and keeps all labels inside the SVG in dense mixed states',()=>{
+ const states=new Map(),favorites=[];const stages=['saved','applied','contact','first','second','final','offer','no_response','rejected'];
+ for(let i=0;i<90;i++){const j='job:'+i;favorites.push(j);let state=transition(null,'applied',{job:j,id:'dense_event_'+String(i).padStart(16,'0'),region:['CN','HK','SG','OTHER','UNKNOWN'][i%5],time:100});
+  for(const step of ['contact','first','second','final','offer'].slice(0,i%6))state=change(state,step,j);
+  if(['saved','no_response','rejected'].includes(stages[i%9]))state=change(state,stages[i%9],j);states.set(j,state);
+ }
+ const g=graph(favorites,states),drawing=scope.JobApplications.layout(g);
+ for(const node of drawing.nodes){assert.ok(node.y>=43,node.id);assert.ok(node.x+150<=drawing.width,node.id);assert.ok(node.y+node.h<drawing.height);}
+ for(const node of g.nodes){const incoming=g.links.filter(l=>l.target===node.id).reduce((s,l)=>s+l.value,0),outgoing=g.links.filter(l=>l.source===node.id).reduce((s,l)=>s+l.value,0);if(incoming&&outgoing)assert.equal(incoming,outgoing,node.id);}
+ assert.ok(!/NaN|Infinity/.test(svg(g)));
+});

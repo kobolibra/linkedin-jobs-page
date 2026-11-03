@@ -2,8 +2,8 @@
 const KINDS=new Set(['favs','blocked','blockedKw','reads','applications']);
 // Immutable, account-private stage events fit the existing per-item sync protocol.
 export function validApplicationItem(item){
- try{const e=JSON.parse(item),stages=['applied','first','second','final','offer'];
-  return e?.v===1&&typeof e.id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(e.id)&&typeof e.j==='string'&&e.j.trim()===e.j&&e.j.length>0&&e.j.length<=300&&!/[\u0000-\u001f\u007f]/.test(e.j)&&Number.isSafeInteger(e.t)&&e.t>=0&&e.t<=8640000000000000&&Array.isArray(e.p)&&e.p.length<=5&&e.p.every((s,i)=>stages.includes(s)&&(i===0||stages.indexOf(s)>stages.indexOf(e.p[i-1])))&&(e.s==='saved'?e.p.length===0:e.s==='rejected'||(stages.includes(e.s)&&e.p.at(-1)===e.s));
+ try{const e=JSON.parse(item),stages=['applied','contact','first','second','final','offer'];
+  return e?.v===1&&typeof e.id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(e.id)&&typeof e.j==='string'&&e.j.trim()===e.j&&e.j.length>0&&e.j.length<=300&&!/[\u0000-\u001f\u007f]/.test(e.j)&&Number.isSafeInteger(e.t)&&e.t>=0&&e.t<=8640000000000000&&(e.r===undefined||['CN','HK','SG','OTHER','UNKNOWN'].includes(e.r))&&Array.isArray(e.p)&&e.p.length<=stages.length&&e.p.every((s,i)=>stages.includes(s)&&(i===0||stages.indexOf(s)>stages.indexOf(e.p[i-1])))&&(e.s==='saved'?e.p.length===0:['rejected','no_response'].includes(e.s)||(stages.includes(e.s)&&e.p.at(-1)===e.s));
  }catch{return false;}
 }
 const reply=(status,body)=>Response.json(body,{status,headers:{'cache-control':'private, no-store','vary':'Cookie','x-content-type-options':'nosniff'}});
