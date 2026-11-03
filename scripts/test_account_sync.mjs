@@ -43,3 +43,25 @@ test('simultaneous browser tabs preserve both durable outboxes and recover share
 test('large imports use bounded batches and paginated deltas without losing rows',async()=>{
  const f=fixture(),a=f.client('alpha',f.storage({reads:JSON.stringify(Array.from({length:1105},(_,i)=>'ln:'+i))}));assert.equal(await a.sync.flush(),true);const b=f.client();assert.equal(await b.sync.flush(),true);assert.equal(JSON.parse(b.sync.get('reads')).length,1105);assert.equal(f.sql.prepare('SELECT count(*) n FROM account_sync_changes').get().n,1105);
 });
+
+test('application history survives offline reload, two-device merging and favorite removal; accounts stay isolated',async()=>{
+ const f=fixture(),a=f.client(),b=f.client();await a.sync.flush();await b.sync.flush();
+ const event=(id,stage,path,time)=>JSON.stringify({v:1,id,j:'ln:123',s:stage,p:path,t:time});
+ const applied=event('applied_event_123456','applied',['applied'],100),first=event('first_event_12345678','first',['applied','first'],200);
+ a.offline(true);a.sync.set('applications',JSON.stringify([applied]));a.sync.stop();
+ b.sync.set('applications',JSON.stringify([first]));await b.sync.flush();
+ const reload=f.client('alpha',a.store);assert.equal(await reload.sync.flush(),true);await b.sync.flush();
+ for(const c of [reload,b])assert.deepEqual(new Set(JSON.parse(c.sync.get('applications'))),new Set([applied,first]));
+ reload.sync.set('favs','["ln:123"]');await reload.sync.flush();reload.sync.set('favs','[]');await reload.sync.flush();
+ assert.equal(JSON.parse(reload.sync.get('applications')).length,2);
+ const beta=f.client('beta',a.store);await beta.sync.flush();assert.deepEqual(JSON.parse(beta.sync.get('applications')),[]);
+});
+
+test('invalid or destructive application events fail before database writes',async()=>{
+ const f=fixture();const send=operations=>preferences(new Request('https://site.test/auth/preferences',{method:'POST',headers:{origin:'https://site.test','x-csrf-token':'csrf-alpha','content-type':'application/json'},body:JSON.stringify({operations})}),{AUTH_ORIGIN:'https://site.test',AUTH_DB:f.db},{user_id:'alpha',csrf:'csrf-alpha'});
+ for(const item of ['{}',JSON.stringify({v:1,id:'valid_event_123456',j:'ln:123',s:'offer',p:['first'],t:100})])assert.equal((await send([{id:'operation_12345678',kind:'applications',item,present:true}])).status,400);
+ const item=JSON.stringify({v:1,id:'valid_event_123456',j:'ln:123',s:'applied',p:['applied'],t:100});
+ assert.equal((await send([{id:'operation_12345678',kind:'applications',item,present:false}])).status,400);
+ assert.equal(f.sql.prepare('SELECT count(*) n FROM account_sync_changes').get().n,0);
+});
+

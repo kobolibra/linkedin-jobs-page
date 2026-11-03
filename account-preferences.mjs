@@ -1,5 +1,11 @@
 /* Server-only per-item synchronization. Tombstones prevent deleted items returning. */
-const KINDS=new Set(['favs','blocked','blockedKw','reads']);
+const KINDS=new Set(['favs','blocked','blockedKw','reads','applications']);
+// Immutable, account-private stage events fit the existing per-item sync protocol.
+export function validApplicationItem(item){
+ try{const e=JSON.parse(item),stages=['applied','first','second','final','offer'];
+  return e?.v===1&&typeof e.id==='string'&&/^[a-zA-Z0-9_-]{16,80}$/.test(e.id)&&typeof e.j==='string'&&e.j.trim()===e.j&&e.j.length>0&&e.j.length<=300&&!/[\u0000-\u001f\u007f]/.test(e.j)&&Number.isSafeInteger(e.t)&&e.t>=0&&e.t<=8640000000000000&&Array.isArray(e.p)&&e.p.length<=5&&e.p.every((s,i)=>stages.includes(s)&&(i===0||stages.indexOf(s)>stages.indexOf(e.p[i-1])))&&(e.s==='saved'?e.p.length===0:e.s==='rejected'||(stages.includes(e.s)&&e.p.at(-1)===e.s));
+ }catch{return false;}
+}
 const reply=(status,body)=>Response.json(body,{status,headers:{'cache-control':'private, no-store','vary':'Cookie','x-content-type-options':'nosniff'}});
 async function body(request){
  const reader=request.body?.getReader();if(!reader)throw Error('body');let size=0,text='';const decoder=new TextDecoder();
@@ -16,6 +22,7 @@ export async function preferences(request,env,user){
  if(request.headers.get('origin')!==env.AUTH_ORIGIN||request.headers.get('x-csrf-token')!==user.csrf)return reply(403,{error:'csrf_failed'});
  let data;try{data=await body(request);}catch(e){return reply(e.message==='size'?413:400,{error:'invalid_body'});}
  const ops=data?.operations;if(!Array.isArray(ops)||!ops.length||ops.length>100||ops.some(o=>!o||typeof o.id!=='string'||!/^[a-zA-Z0-9_-]{16,80}$/.test(o.id)||!KINDS.has(o.kind)||typeof o.item!=='string'||!o.item.trim()||o.item.length>500||/[\u0000-\u001f\u007f]/.test(o.item)||typeof o.present!=='boolean')||new Set(ops.map(o=>o.id)).size!==ops.length)return reply(400,{error:'invalid_operations'});
+ if(ops.some(o=>o.kind==='applications'&&(!o.present||!validApplicationItem(o.item))))return reply(400,{error:'invalid_application_event'});
  const stamp=Math.floor(Date.now()/1000),bucket='sync:'+user.user_id+':'+Math.floor(stamp/600);
  const rate=await db.prepare('INSERT INTO account_rate_limits(bucket,count,expires_at) VALUES(?,1,?) ON CONFLICT(bucket) DO UPDATE SET count=count+1 RETURNING count').bind(bucket,stamp+1200).first();
  if(rate.count>180)return reply(429,{error:'sync_rate_limited'});
@@ -26,3 +33,4 @@ export async function preferences(request,env,user){
  ]);
  return reply(200,{userId:user.user_id,acknowledged:ops.map(o=>o.id)});
 }
+

@@ -74,7 +74,7 @@ jobs:
       - name: Verify the exact protected asset directory before deployment
         run: node scripts/public_assets.mjs --check
       - name: Verify anonymous preview and account boundaries
-        run: node --test scripts/test_guest_preview.mjs scripts/test_guest_resume.mjs scripts/test_accounts.mjs scripts/test_role_history.mjs
+        run: node --test scripts/test_guest_preview.mjs scripts/test_guest_resume.mjs scripts/test_accounts.mjs scripts/test_role_history.mjs scripts/test_account_sync.mjs scripts/test_job_applications.mjs
       - name: Install pinned Cloudflare deploy CLI
         run: npm install --no-save --package-lock=false wrangler@4.149.0
       - name: Deploy to Cloudflare Worker with bounded transient retries
@@ -86,6 +86,7 @@ jobs:
         run: python scripts/deploy_cloudflare.py --attempts 3 --timeout 240
       - name: Verify production visitor counter assets
         run: python scripts/verify_visitor_counter.py
+
 
 
 

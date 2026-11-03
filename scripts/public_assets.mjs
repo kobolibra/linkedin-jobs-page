@@ -9,7 +9,7 @@ export const PUBLIC_FILES = [
   'preview-index.json', 'auth-guest.js', 'auth-guest.css', 'guest-resume.js', 'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'account-identity.css', 'login.html', 'privacy.html', 'about.html', 'about.css', 'about.js',
   'site.webmanifest', 'favicon.ico', 'apple-touch-icon.png', 'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
   'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
-  'job-store.js', 'list-query.js', 'list-view.js',
+  'job-store.js', 'list-query.js', 'list-view.js', 'job-applications.js', 'job-applications.css',
   'app.js', 'company-insight.js', 'company-logos.js', 'editorial-mapping.js',
   'guestbook.js', 'row-fixes.js', 'row-hover.js', 'salary-display.js', 'top30-layout.js',
   'ui-refinement.js', 'visitor-count.js', 'layout-fixes.css', 'styles-company.css',
@@ -121,5 +121,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   const result = process.argv[2] === '--check' ? verifyPublicAssets() : buildPublicAssets();
   console.log('public_assets_verified ' + JSON.stringify(result));
 }
+
 
 
