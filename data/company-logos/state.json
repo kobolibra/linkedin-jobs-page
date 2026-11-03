@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-03T10:03:52.304755+00:00",
+    "checkedAt": "2026-11-03T16:03:34.829371+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-03T10:03:58.156545+00:00",
+    "checkedAt": "2026-11-03T16:03:40.419759+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3182,7 +3182,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-03T10:04:04.390500+00:00",
+    "checkedAt": "2026-11-03T16:03:46.489582+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5402,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-03T10:04:07.172995+00:00",
+    "checkedAt": "2026-11-03T16:03:49.407625+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -9934,5 +9934,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG5ykOg-UAP6Q/company-logo_100_100/B56Zh5hnrnHkAU-/0/1754385514544/_logo?e=2147483647&v=beta&t=LWo7nQQf2i9Nt3E0mu7YV7s9h1oODPTEmlcbJN0zRCI",
     "companyUrl": "https://www.linkedin.com/company/%E6%AD%A3%E5%AE%9A%E7%A7%81%E5%8B%9F",
     "sourceJobId": "4486027365"
+  },
+  "enterprise singapore": {
+    "name": "Enterprise Singapore",
+    "checkedAt": "2026-11-03T16:03:27.249538+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1f226f2e3e781ea8abb2c303.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHs-FeqmL_bJg/company-logo_100_100/company-logo_100_100/0/1631372945469?e=2147483647&v=beta&t=rnpUG7Ab_CFtpoOGTik8uE0Rx-ROzliRYC2wCScu4ws",
+    "companyUrl": "https://sg.linkedin.com/company/enterprisesingapore",
+    "sourceJobId": "4486039314"
+  },
+  "janeclare": {
+    "name": "JaneClare",
+    "checkedAt": "2026-11-03T16:03:28.673610+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fe996d5c10d35e5c27f320b8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQF8Uvj9VI5ktg/company-logo_100_100/company-logo_100_100/0/1630610936972?e=2147483647&v=beta&t=U-FqE6_yXvTOcxN72zcGo3BmV2UZlDBcGBHxcIcSaSo",
+    "companyUrl": "https://hk.linkedin.com/company/janeclare",
+    "sourceJobId": "4486488503"
+  },
+  "ntt com asia": {
+    "name": "NTT Com Asia",
+    "checkedAt": "2026-11-03T16:03:31.575966+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "451db2845ffc69f298b2b8f5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFkZe7zjl-VaQ/company-logo_100_100/B56Zuhan_YJcAQ-/0/1767939670477/ntt_com_asia_logo?e=2147483647&v=beta&t=USQFnrbS7FQe76JOpIrg4dvyka-bx2F1HW_u-2lemvs",
+    "companyUrl": "https://www.linkedin.com/company/ntt-com-asia",
+    "sourceJobId": "4484666033"
   }
 }
