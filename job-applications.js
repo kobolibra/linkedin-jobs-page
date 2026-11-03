@@ -20,6 +20,11 @@
   return event;
  }
  function jobKey(link){const raw=String(link||''),path=raw.split(/[?#]/)[0],view=path.match(/\/jobs\/view\/([^/]+)\/?$/i),id=view?.[1].match(/\d{7,}/g)?.at(-1)||raw.match(/[?&]currentJobId=(\d+)/)?.[1];return id?'ln:'+id:path.replace(/\/+$/,'');}
+ function regionIndex(rows){
+  const result=new Map(),canonical=typeof keepLatestSameCityTitle==='function'?keepLatestSameCityTitle(rows||[]):rows||[];
+  for(const row of canonical){const id=jobKey(row.link);if(!id)continue;const region=String(row.location||'').toUpperCase();result.set(id,regionOrder.includes(region)&&region!=='UNKNOWN'?region:'UNKNOWN');}
+  return result;
+ }
  function regionOf(job,states,regions){const region=regions.get(job)||states.get(job)?.r;return regionOrder.includes(region)?region:'UNKNOWN';}
  // A saved role contributes exactly one unit. Missing rounds are never inferred.
  function graph(favorites,states,{regions=new Map()}={}){
@@ -93,10 +98,10 @@
   }).join('');
   return '<svg style="min-width:'+Math.min(width,1260)+'px;max-width:'+width+'px" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Each role counts once. Regions feed into saved roles. Flow widths and percentages show counts of saved roles in this view. No Response is manually recorded. Skipped rounds are not inferred.</desc>'+paths+bars+'</svg>';
  }
- const api={stages,valid,index,transition,graph,layout,svg,jobKey,regionOf,button:()=>'',sheet:()=>{},open:()=>{}};globalThis.JobApplications=api;
+ const api={stages,valid,index,transition,graph,layout,svg,jobKey,regionOf,regionIndex,button:()=>'',sheet:()=>{},open:()=>{}};globalThis.JobApplications=api;
  if(typeof document==='undefined'||!globalThis.AccountPreferences)return;
  const preferences=globalThis.AccountPreferences,host=document.getElementById('jobs');if(!host)return;
- const regions=new Map();
+ let regions=new Map();
  let states=new Map(),favorites=new Set(),editor=null,selected=null,anchor=null,hoverTimer=0,closeTimer=0,hoverOpened=false,journey=null,returnFocus=null;
  function refresh(){const lists=preferences.snapshot();states=index(lists.applications);favorites=new Set(lists.favs);for(const card of host.querySelectorAll('.job')){
    let button=card.querySelector('.application-trigger');const favorite=favorites.has(card.dataset.id);
@@ -145,6 +150,6 @@
  const JOURNEY_ICON='<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5h2v14H4zM18 3h2v5h-2zM18 10h2v4h-2zM18 17h2v4h-2z" fill="currentColor"/><path d="M6 6C12 6 12 4 18 4V7C12 7 12 10 6 10ZM6 11H18V13H6ZM6 15C12 15 12 18 18 18V20C12 20 12 19 6 19Z" fill="currentColor" opacity=".65"/></svg>';
  const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.textContent='My Journey';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
  // Reuse the already-requested index; never fetch data just to draw a personal chart.
- window.__jobsDataPromise?.then(rows=>{for(const row of rows||[]){const id=jobKey(row.link);if(id){const r=String(row.location||'').toUpperCase();regions.set(id,regionOrder.includes(r)&&r!=='UNKNOWN'?r:'UNKNOWN');}}if(journey?.open)renderJourney();}).catch(()=>{});
+ window.__jobsDataPromise?.then(rows=>{regions=regionIndex(rows);if(journey?.open)renderJourney();}).catch(()=>{});
  addEventListener('account-preferences',refresh);refresh();
 })();

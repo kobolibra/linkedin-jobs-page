@@ -95,3 +95,16 @@ test('regional layout conserves widths and keeps all labels inside the SVG in de
  for(const node of g.nodes){const incoming=g.links.filter(l=>l.target===node.id).reduce((s,l)=>s+l.value,0),outgoing=g.links.filter(l=>l.source===node.id).reduce((s,l)=>s+l.value,0);if(incoming&&outgoing)assert.equal(incoming,outgoing,node.id);}
  assert.ok(!/NaN|Infinity/.test(svg(g)));
 });
+
+test('region ownership uses the same active/newest duplicate resolution as the actual job list',()=>{
+ const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+ const dedup=app.slice(app.indexOf('const keepLatestSameCityTitle=data=>{'),app.indexOf('function renderTop50('));
+ scope.jobId=scope.JobApplications.jobKey;scope.isActiveJob=job=>job.jobStatus!=='expired';
+ vm.runInNewContext(dedup+'globalThis.keepLatestSameCityTitle=keepLatestSameCityTitle;',scope);
+ const link='https://www.linkedin.com/jobs/view/4000000000';
+ const rows=[{link,location:'CN',pushTime:'2026-11-01',jobStatus:'active'},{link,location:'SG',pushTime:'2026-11-03',jobStatus:'expired'}];
+ assert.equal(scope.JobApplications.regionIndex(rows).get('ln:4000000000'),'CN');
+ rows.push({link,location:'HK',pushTime:'2026-11-02',jobStatus:'active'});
+ assert.equal(scope.JobApplications.regionIndex(rows).get('ln:4000000000'),'HK');
+ assert.equal(scope.JobApplications.regionIndex([...rows].reverse()).get('ln:4000000000'),'HK');
+});
