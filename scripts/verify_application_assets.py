@@ -6,7 +6,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 
-def verify():
+def _verify():
     origin = 'https://linkedin.claudecowork.workers.dev'
     root = Path(__file__).resolve().parents[1]
     for name in ('job-applications.js', 'job-applications.css'):
@@ -19,7 +19,7 @@ def verify():
                 raise RuntimeError(f'Production asset mismatch: {name}')
     with urlopen(Request(origin + '/', headers={'Cache-Control': 'no-cache'}), timeout=20) as response:
         page = response.read().decode('utf-8')
-        if 'job-applications.js?v=2' not in page or 'job-applications.css?v=1' not in page:
+        if 'job-applications.js?v=3' not in page or 'job-applications.css?v=1' not in page:
             raise RuntimeError('Production homepage is missing application tracking assets')
     try:
         with urlopen(origin + '/auth/preferences?since=0', timeout=20):
@@ -29,11 +29,23 @@ def verify():
             raise
 
 
+def verify(report=print):
+    try:
+        _verify()
+        return True
+    except HTTPError as error:
+        body = error.read(4096).decode('utf-8', 'replace')
+        if error.code == 403 and 'error code: 1010' in body.lower():
+            report('::warning::Cloudflare 1010 blocked this automated client. Live application assets were NOT verified; Wrangler reports publication separately. No security settings were changed.')
+            return False
+        raise
+
+
 if __name__ == '__main__':
     for attempt in range(3):
         try:
-            verify()
-            print('Production application assets match this deployment; personal data requires sign-in.')
+            if verify():
+                print('Production application assets match this deployment; personal data requires sign-in.')
             break
         except Exception:
             if attempt == 2:

@@ -75,6 +75,8 @@ jobs:
         run: node scripts/public_assets.mjs --check
       - name: Verify anonymous preview and account boundaries
         run: node --test scripts/test_guest_preview.mjs scripts/test_guest_resume.mjs scripts/test_accounts.mjs scripts/test_role_history.mjs scripts/test_account_sync.mjs scripts/test_job_applications.mjs
+      - name: Test read-only deployment verification
+        run: python -m unittest discover -s scripts -p test_verify_application_assets.py
       - name: Install pinned Cloudflare deploy CLI
         run: npm install --no-save --package-lock=false wrangler@4.149.0
       - name: Deploy to Cloudflare Worker with bounded transient retries
