@@ -84,6 +84,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WRANGLER_SEND_METRICS: 'false'
         run: python scripts/deploy_cloudflare.py --attempts 3 --timeout 240
+      - name: Verify deployed application assets and private data boundary
+        run: python scripts/verify_application_assets.py
       - name: Verify production visitor counter assets
         run: python scripts/verify_visitor_counter.py
 
