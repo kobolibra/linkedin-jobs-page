@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-04T10:02:53.978253+00:00",
+    "checkedAt": "2026-11-04T16:03:00.522739+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-04T10:02:59.827690+00:00",
+    "checkedAt": "2026-11-04T16:03:06.194741+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-04T10:03:05.818739+00:00",
+    "checkedAt": "2026-11-04T16:03:12.187803+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-04T10:03:08.918547+00:00",
+    "checkedAt": "2026-11-04T16:03:15.221418+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10050,5 +10050,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFAVMQDJ32cnw/company-logo_100_100/company-logo_100_100/0/1630602641756?e=2147483647&v=beta&t=QGgaZTwg7M6YcmYC6dM0A5XsvVGT-QdAziPhn3hwhBA",
     "companyUrl": "https://kr.linkedin.com/company/nhis",
     "sourceJobId": "4486329782"
+  },
+  "coba it consultants": {
+    "name": "Coba IT Consultants",
+    "checkedAt": "2026-11-04T16:02:59.022176+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d82f9e90250be42ff1991da9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGgAAZU3zBR1g/company-logo_100_100/company-logo_100_100/0/1688987125598/coba_it_consultants_logo?e=2147483647&v=beta&t=bt3pRWEVUj3uD3eNJeK31904FHuQov7g3tNTiRBkrs8",
+    "companyUrl": "https://uk.linkedin.com/company/coba-it-consultants",
+    "sourceJobId": "4487272814"
   }
 }
