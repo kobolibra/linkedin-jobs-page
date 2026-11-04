@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-04T04:02:47.884748+00:00",
+    "checkedAt": "2026-11-04T10:02:53.978253+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-04T04:02:53.676803+00:00",
+    "checkedAt": "2026-11-04T10:02:59.827690+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-04T04:02:59.679764+00:00",
+    "checkedAt": "2026-11-04T10:03:05.818739+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-04T04:03:02.779324+00:00",
+    "checkedAt": "2026-11-04T10:03:08.918547+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10026,5 +10026,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQGiScZkkHhN1w/company-logo_100_100/company-logo_100_100/0/1631336921960?e=2147483647&v=beta&t=rRqaXHTXksawzkP2Ylo1DghdtdvMdxQBjgAH092Mmuo",
     "companyUrl": "https://cn.linkedin.com/company/mayora-food-shandong-co-ltd",
     "sourceJobId": "4485035977"
+  },
+  "carma": {
+    "name": "CARMA",
+    "checkedAt": "2026-11-04T10:02:49.738717+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a3c02a89aeeb4fb13195fb20.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGWKMlO8PQZow/company-logo_100_100/company-logo_100_100/0/1631300628604?e=2147483647&v=beta&t=4ncaImcERUIH2vxD9MLAaJh5RxHF6S11cVY1jG55zoc",
+    "companyUrl": "https://ae.linkedin.com/company/carma",
+    "sourceJobId": "4486348598"
+  },
+  "nh investment & securities": {
+    "name": "NH Investment & Securities",
+    "checkedAt": "2026-11-04T10:02:51.045293+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "81d33da2096914dfb60e415e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFAVMQDJ32cnw/company-logo_100_100/company-logo_100_100/0/1630602641756?e=2147483647&v=beta&t=QGgaZTwg7M6YcmYC6dM0A5XsvVGT-QdAziPhn3hwhBA",
+    "companyUrl": "https://kr.linkedin.com/company/nhis",
+    "sourceJobId": "4486329782"
   }
 }
