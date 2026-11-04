@@ -22,9 +22,12 @@
 .nj-market-count{font:500 12px/1.5 var(--mono);font-variant-numeric:tabular-nums;color:var(--nj-accent)}
 .nj-market-row{display:flex;align-items:baseline;gap:14px;padding:11px 0;border-bottom:1px solid var(--nj-rule);color:var(--nj-body);font-size:13.5px;font-weight:500;line-height:1.5}
 .nj-market-index{flex:0 0 24px;color:var(--nj-secondary);font:500 11px/1.5 var(--mono);font-variant-numeric:tabular-nums}
-.nj-market-statement{display:flex;flex-direction:column;gap:2px;margin:24px 0 0;font:400 clamp(17px,1.65vw,21px)/1.43 "Source Serif 4",Georgia,serif;letter-spacing:-.015em}
-.nj-market-statement span:first-child{color:var(--nj-ink)}
-.nj-market-statement span:last-child{color:var(--nj-secondary)}
+/* One quiet editorial voice; the final line closes the thought, without a size jump. */
+.nj-market-statement{display:flex;flex-direction:column;gap:0;margin:22px 0 0;color:var(--nj-body);font:400 clamp(17px,1.4vw,19px)/1.45 "Source Serif 4",Georgia,serif;font-optical-sizing:auto;letter-spacing:-.012em;text-wrap:pretty}
+.nj-market-statement span,.nj-market-statement span:first-child{display:block;margin:0;color:inherit;font:inherit;letter-spacing:inherit}
+.nj-market-statement span+span{margin-top:0}
+.nj-market-statement span:last-child{margin-top:3px;color:var(--nj-ink);font-style:italic;font-weight:500;letter-spacing:-.015em}
+@media(min-width:761px) and (max-width:900px){.nj-market-statement{font-size:14.5px}}
 .nj-masthead-folio{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px 22px;border-top:1px solid var(--nj-rule);padding:14px 0 9px;color:var(--nj-secondary);font:600 10px/1.6 var(--sans);letter-spacing:.07em}
 .nj-source{white-space:nowrap}
 .nj-source span{margin:0 6px;color:var(--nj-accent)}
@@ -47,7 +50,7 @@
   .masthead .nj-title{font-size:clamp(41px,8vw,60px);line-height:1.06}
   .nj-market-panel{padding-left:0;border-left:0}
   .nj-market-heading{padding-bottom:10px;margin-bottom:0;border-bottom:1px solid var(--nj-rule)}
-  .nj-market-statement{margin-top:21px;font-size:19px}
+  .nj-market-statement{margin-top:20px;font-size:18px}
   .account-host .header-utility{top:10px}
 }
 @media(max-width:420px){
@@ -57,7 +60,6 @@
   .masthead .nj-title{font-size:clamp(33px,8.8vw,43px);letter-spacing:-.042em}
   .nj-hero-grid{gap:26px;padding:32px 0 28px}
   .nj-market-row{font-size:13px}
-  .nj-market-statement{font-size:18px}
   .nj-masthead-folio{font-size:9px;letter-spacing:.035em;gap:7px}
   .nj-data-intro{gap:4px}
 }
@@ -95,31 +97,15 @@
 .masthead:has(> .nj-masthead-top) > .stats {margin-top:12px}
 @media(max-width:720px){.masthead:has(> .nj-masthead-top) > .stats{margin-top:10px}}
 
-/* Editorial identity: a compact wordmark and a clear two-level statement. */
+/* Editorial identity: a compact wordmark. */
 .nj-brand{
   font-family:var(--sans);
   font-size:21px;font-weight:700;line-height:1.2;
   letter-spacing:-.035em;
   color:var(--nj-ink);
 }
-.nj-market-statement{
-  display:flex;flex-direction:column;gap:0;
-  margin-top:22px;letter-spacing:0;text-wrap:pretty;
-}
-.nj-market-statement span,
-.nj-market-statement span:first-child{
-  margin:0;font:400 12px/1.65 var(--sans);
-  letter-spacing:.005em;color:var(--nj-secondary);
-}
-.nj-market-statement span:last-child{
-  margin-top:9px;
-  font:400 clamp(21px,2vw,25px)/1.25 "Source Serif 4",Georgia,serif;
-  letter-spacing:-.025em;color:var(--nj-ink);
-}
 @media(max-width:760px){
   .nj-brand{font-size:20px}
-  .nj-market-statement{margin-top:20px}
-  .nj-market-statement span:last-child{font-size:23px}
 }
 @media(max-width:420px){
   .nj-brand{font-size:19px;letter-spacing:-.03em}
@@ -142,3 +128,4 @@
 .nj-top-nav .nj-about-link{font-weight:550;letter-spacing:.008em}
 @media(max-width:720px){.nj-brand-row>.nj-brand{gap:9px}.nj-brand-mark{width:25px;height:25px}.nj-brand-name{font-size:19px}}
 @media(max-width:420px){.nj-brand-row>.nj-brand{gap:7px}.nj-brand-mark{width:23px;height:23px}.nj-brand-name{font-size:17px}}
+
