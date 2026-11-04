@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-03T22:02:51.730574+00:00",
+    "checkedAt": "2026-11-04T04:02:47.884748+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,33 +3019,29 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-03T22:02:57.438020+00:00",
+    "checkedAt": "2026-11-04T04:02:53.676803+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 200,
-        "contentType": "text/html; charset=utf-8",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "no_employer",
-        "stage": "job",
-        "observedName": "",
-        "companyUrl": ""
+        "reason": "http_error",
+        "stage": "job"
       },
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 200,
-        "contentType": "text/html; charset=utf-8",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4445423723",
-        "reason": "no_employer",
-        "stage": "job",
-        "observedName": "",
-        "companyUrl": ""
+        "reason": "http_error",
+        "stage": "job"
       }
     ]
   },
@@ -3182,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-03T22:03:03.471023+00:00",
+    "checkedAt": "2026-11-04T04:02:59.679764+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5402,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-03T22:03:06.599342+00:00",
+    "checkedAt": "2026-11-04T04:03:02.779324+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10018,5 +10014,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHc78u3Ars0kg/company-logo_100_100/company-logo_100_100/0/1703004682529/xn_global_health_insurance_logo?e=2147483647&v=beta&t=gtvkucP1tkYoOm8ZvqzB7_rWCRtvSUTKWA7JgtYkIXQ",
     "companyUrl": "https://www.linkedin.com/company/xn-global-health-insurance",
     "sourceJobId": "4486056534"
+  },
+  "mayora food (shandong) co., ltd.": {
+    "name": "Mayora Food (Shandong) Co., Ltd.",
+    "checkedAt": "2026-11-04T04:02:46.488313+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "118592703aad8c6fba589dbe.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQGiScZkkHhN1w/company-logo_100_100/company-logo_100_100/0/1631336921960?e=2147483647&v=beta&t=rRqaXHTXksawzkP2Ylo1DghdtdvMdxQBjgAH092Mmuo",
+    "companyUrl": "https://cn.linkedin.com/company/mayora-food-shandong-co-ltd",
+    "sourceJobId": "4485035977"
   }
 }
