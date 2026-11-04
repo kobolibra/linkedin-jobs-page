@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 
+const indexSource=readFileSync(new URL('../job-store.js',import.meta.url),'utf8');
 const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const guestbook=readFileSync(new URL('../guestbook.js',import.meta.url),'utf8');
 function indexHarness(fetch){
   const context={AbortController,TextDecoder,setTimeout,clearTimeout,fetch,document:{documentElement:{dataset:{authState:'authenticated'}}}};
   vm.createContext(context);
-  vm.runInContext(source.slice(source.indexOf('async function fetchJobsIndex('),source.indexOf('// Keep conditional cache validation')),context);
+  vm.runInContext(indexSource.slice(indexSource.indexOf('async function fetchJobsIndex('),indexSource.indexOf('const valid=')),context);
   return context.fetchJobsIndex;
 }
 test('stalled index requests abort and reject after bounded retries',async()=>{
@@ -125,3 +126,4 @@ test('guestbook prefetch waits for jobs and stays deferred while loading',async(
  context.refresh();assert.equal(requests,0);assert.equal(queued.length,0);
  finish();await Promise.resolve();assert.equal(requests,0);assert.equal(queued.length,1);queued[0]();assert.equal(requests,1);
 });
+

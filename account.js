@@ -17,8 +17,35 @@
   control.querySelector('.account-logout').onclick=async e=>{e.target.disabled=true;try{if(!await window.AccountPreferences.flush()&&window.AccountPreferences.pending().length){status.textContent='尚有更改未同步，请恢复网络后再退出';e.target.disabled=false;return;}const r=await api('/auth/logout',{method:'POST',headers:{'x-csrf-token':account.csrf}});if(!r.ok)throw Error();window.AccountPreferences.stop();try{indexedDB.deleteDatabase('linkedin-job-index');}catch{}broadcast?.postMessage({type:'logout'});expired();}catch{status.textContent='退出失败，请检查网络后重试';e.target.disabled=false;}};
   const host=document.querySelector('.shell')||document.body;host.classList.add('account-host');let utility=host.querySelector('.header-utility');if(!utility){utility=document.createElement('div');utility.className='header-utility';const theme=host.querySelector('#themeToggle');host.append(utility);if(theme)utility.append(theme);}utility.append(control);const measureTools=()=>host.style.setProperty('--header-tools-width',utility.getBoundingClientRect().width+'px');measureTools();if(typeof ResizeObserver==='function')new ResizeObserver(measureTools).observe(utility);window.AccountPreferences=window.createAccountPreferences({user:{id:data.user.id,csrf:data.csrf},api,status:text=>{status.textContent=text;control.dataset.sync=text==='已同步至账号'?'ready':text.includes('暂未')?'pending':'syncing';},expired});control.querySelector('.account-sync-now').onclick=()=>window.AccountPreferences.flush();document.addEventListener('click',e=>{if(!control.contains(e.target))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape'){const wasOpen=!panel.hidden;close();if(wasOpen)trigger.focus();}});
  }
- async function boot(){const r=await api('/auth/session');if(r.status===401&&document.documentElement.dataset.authState==='guest'){await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='/auth-guest.js?v=2';script.onload=resolve;script.onerror=reject;document.body.append(script);});window.AuthGuest.install();}else if(r.status===401){expired();return;}if(!r.ok&&r.status!==401)throw Error();const data=r.ok?await r.json():{enabled:false};if(data.enabled){await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='/account-sync.js?v=applications-1';script.onload=resolve;script.onerror=reject;document.body.append(script);});install(data);}const sources=JSON.parse(document.getElementById('appScripts').textContent);await Promise.all(sources.map(src=>new Promise((resolve,reject)=>{const script=document.createElement('script');script.async=false;script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script);})));window.AccountPreferences?.schedule(0);}
+ function loadScript(src){return new Promise((resolve,reject)=>{const script=document.createElement('script');script.async=false;script.src=src;script.onload=resolve;script.onerror=reject;document.body.appendChild(script);});}
+ async function boot(){
+  const sources=JSON.parse(document.getElementById('appScripts').textContent);
+  const storeSource=sources.find(src=>src.split('?')[0]==='job-store.js');
+  // The server marks anonymous HTML. Prepare the protected sync module only
+  // for a signed-in page; its request retains the existing server auth gate.
+  const syncScript=document.documentElement.dataset.authState==='guest'?null:loadScript('/account-sync.js?v=applications-1');
+  syncScript?.catch(()=>{});
+  // This module defines the loader only; no protected data is read before auth.
+  const [r]=await Promise.all([api('/auth/session'),storeSource?loadScript(storeSource):Promise.resolve()]);
+  if(r.status===401&&document.documentElement.dataset.authState==='guest'){
+   await loadScript('/auth-guest.js?v=2');window.AuthGuest.install();
+  }else if(r.status===401){expired();return;}
+  if(!r.ok&&r.status!==401)throw Error();
+  const data=r.ok?await r.json():{enabled:false};
+  if(data.enabled){await (syncScript||loadScript('/account-sync.js?v=applications-1'));install(data);}
+  // Download the index while the UI scripts execute, after identity is installed.
+  if(storeSource){window.__jobsIndexDocument=window.JobIndexStore.load();window.__jobsIndexDocument.catch(()=>{});}
+  const loads=sources.filter(src=>src!==storeSource).map(src=>({src,ready:loadScript(src)}));
+  const core=new Set(['company-logos.js','list-query.js','list-view.js','app.js','job-applications.js','row-fixes.js','row-hover.js','top30-layout.js']);
+  window.__appCoreReady=Promise.all(loads.filter(({src})=>core.has(src.split('?')[0])).map(({ready})=>ready));
+  window.__appCoreReady.catch(()=>{});
+  window.__appScriptsReady=Promise.all(loads.map(({ready})=>ready));
+  await window.__appScriptsReady;
+  window.AccountPreferences?.schedule(0);
+ }
+
  boot().catch(()=>{const jobs=document.getElementById('jobs');if(jobs){jobs.replaceChildren();const p=document.createElement('p');p.textContent='账号或页面加载失败，请检查网络后重试。';const retry=document.createElement('button');retry.textContent='重新加载';retry.onclick=()=>location.reload();jobs.append(p,retry);}});
 })();
+
 
 

@@ -585,55 +585,15 @@ function renderTop50(rows,mode="all"){
 }
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
-// Allow a slow but progressing transfer; abort idle connections and cap total time.
-async function fetchJobsIndex({attemptTimeouts=[45000,15000],idleTimeout=20000,connectTimeout=10000,retryDelay=350}={}){
-  let lastError;
-  for(let attempt=0;attempt<attemptTimeouts.length;attempt++){
-    const controller=new AbortController();
-    let timer,idleTimer,connectTimer,armIdle;
-    const timeout=new Promise((_,reject)=>{
-      const fail=()=>{controller.abort();reject(new Error("jobs-index.json timeout"));};
-      timer=setTimeout(fail,attemptTimeouts[attempt]);
-      // Fail an unresponsive connection promptly, while allowing a progressing
-      // download to finish within the separate overall attempt budget.
-      connectTimer=setTimeout(fail,connectTimeout);
-      armIdle=()=>{clearTimeout(idleTimer);idleTimer=setTimeout(fail,idleTimeout);};
-    });
-    try{
-      return await Promise.race([
-        (async()=>{
-          const response=await fetch(document.documentElement.dataset.authState==='guest'?"/api/public-preview":"jobs-index.json",{cache:"no-cache",signal:controller.signal});
-          clearTimeout(connectTimer);
-          if(!response.ok)throw Object.assign(new Error("jobs-index.json HTTP "+response.status),{status:response.status});
-          armIdle();
-          if(!response.body?.getReader)return response.json();
-          const reader=response.body.getReader(),decoder=new TextDecoder();
-          let text="";
-          try{
-            while(true){
-              const {done,value}=await reader.read();
-              if(done)break;
-              if(value?.byteLength){armIdle();text+=decoder.decode(value,{stream:true});}
-            }
-            return JSON.parse(text+decoder.decode());
-          }finally{reader.releaseLock();}
-        })(),
-        timeout,
-      ]);
-    }catch(error){
-      lastError=error;
-      if(error.status===401||error.status===403||error.status===404)throw error;
-    }finally{clearTimeout(timer);clearTimeout(idleTimer);clearTimeout(connectTimer);}
-    if(attempt+1<attemptTimeouts.length)await new Promise(resolve=>setTimeout(resolve,retryDelay));
-  }
-  throw lastError;
-}
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
-const jobsDataPromise=(window.JobIndexStore&&document.documentElement.dataset.authState!=='guest'?window.JobIndexStore.load(fetchJobsIndex):fetchJobsIndex())
+const jobsDataPromise=(window.__jobsIndexDocument||window.JobIndexStore.load())
   .then(data=>{window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
 jobsDataPromise
   .then(async data=>{
+    // Wait only for row/chart enhancements, not optional modules such as the
+    // guestbook, avoiding a second chart layout or missing initial row actions.
+    await window.__appCoreReady;
     if(!Array.isArray(data))data=[];
     // Use the deduplicated dataset as the single source for rendering and every statistic.
     data=keepLatestSameCityTitle(data);
@@ -984,5 +944,6 @@ totop.addEventListener("click",()=>{if(jobsEl._jobView)jobsEl._jobView.jump++;sc
   jobsEl.addEventListener('keydown',event=>{if(mobile()&&event.shiftKey&&event.key==='F10'){const card=event.target.closest('.job');if(card){event.preventDefault();open(card);}}});
   window.addEventListener('resize',()=>{if(!mobile()&&sheet?.open)sheet.close();},{passive:true});
 })();
+
 
 
