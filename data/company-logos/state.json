@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-04T22:02:50.321670+00:00",
+    "checkedAt": "2026-11-05T04:03:26.066151+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-04T22:02:56.198228+00:00",
+    "checkedAt": "2026-11-05T04:03:31.896097+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-04T22:03:02.162578+00:00",
+    "checkedAt": "2026-11-05T04:03:37.872231+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-04T22:03:05.277272+00:00",
+    "checkedAt": "2026-11-05T04:03:41.011229+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10110,5 +10110,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFzuJOcX35DXw/company-logo_100_100/company-logo_100_100/0/1738581348085/vantivehealth_logo?e=2147483647&v=beta&t=vaHjgrdHNUpL7JkGtUUTj9EcX8W53qxWEPGyHtx5to4",
     "companyUrl": "https://www.linkedin.com/company/vantivehealth",
     "sourceJobId": "4486517515"
+  },
+  "collectors": {
+    "name": "Collectors",
+    "checkedAt": "2026-11-05T04:03:18.719687+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d43079c7c5c88d281cc91769.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGGLE5yXbBbtw/company-logo_100_100/B56ZpwJhoGJkAQ-/0/1762818137001/collectors_holdings_logo?e=2147483647&v=beta&t=TPSv5V-D-gZFymGdi7erBCfsvyql8WLpRjgxsa_eGHM",
+    "companyUrl": "https://www.linkedin.com/company/collectors-holdings",
+    "sourceJobId": "4486364839"
+  },
+  "future harvest": {
+    "name": "FUTURE HARVEST",
+    "checkedAt": "2026-11-05T04:03:20.169899+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "75211872675eeb606efb6812.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE8uIpLYAmzjg/company-logo_100_100/B56aE_DP.vJYAM-/0/1792059179177/futureharvestholdings_logo?e=2147483647&v=beta&t=uRDHLbo8bQ7jglMpAufUUtDPdeQBMrjjsKK0y6GZ9MI",
+    "companyUrl": "https://www.linkedin.com/company/futureharvestholdings",
+    "sourceJobId": "4487579929"
+  },
+  "zf group": {
+    "name": "ZF Group",
+    "checkedAt": "2026-11-05T04:03:23.065918+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1608f35dd0c2fd4729f011db.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHXMNdmkd7RUQ/company-logo_100_100/company-logo_100_100/0/1737616365186/zf_group_logo?e=2147483647&v=beta&t=HZQW_BK7oeP-ks1kek7fIqcsLzafxxf2HsUpc1XtOAg",
+    "companyUrl": "https://de.linkedin.com/company/zf-group",
+    "sourceJobId": "4485055422"
   }
 }
