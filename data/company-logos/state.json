@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-05T10:02:42.222424+00:00",
+    "checkedAt": "2026-11-05T16:03:29.106530+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-05T10:02:46.375256+00:00",
+    "checkedAt": "2026-11-05T16:03:34.851365+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-05T10:02:52.381145+00:00",
+    "checkedAt": "2026-11-05T16:03:40.849850+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-05T10:02:55.423192+00:00",
+    "checkedAt": "2026-11-05T16:03:43.915308+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10218,5 +10218,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGz9aJmT0WdmQ/company-logo_100_100/B56ZhUKn3xHMAU-/0/1753758728953/shenzhen_medical_academy_of_research_and_translation_logo?e=2147483647&v=beta&t=Acmq7iILXagBN-Pwyn7QxVK2eKEVwXAfDse_wN8vgAg",
     "companyUrl": "https://www.linkedin.com/company/shenzhen-medical-academy-of-research-and-translation",
     "sourceJobId": "4487721573"
+  },
+  "marsh agency": {
+    "name": "Marsh Agency",
+    "checkedAt": "2026-11-05T16:03:18.655362+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "861a264cf61f339ee13bcf18.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFgQ6wV1LpN3Q/company-logo_100_100/B4EaGNLB5rKIAI-/0/1793369841516/marsh_agency_logo?e=2147483647&v=beta&t=_90_zO2TmMzib0bNetpcGiCM-45JNZbaUOxy1u6OS4s",
+    "companyUrl": "https://www.linkedin.com/company/marsh-agency",
+    "sourceJobId": "4486748591"
+  },
+  "ox human resources consultancies": {
+    "name": "OX Human Resources Consultancies",
+    "checkedAt": "2026-11-05T16:03:20.211145+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e24cc56fc164a0be0f982323.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQE75zhFq9VBwA/company-logo_100_100-alternative/company-logo_100_100-alternative/0/1630618127505?e=2147483647&v=beta&t=TJBv7ff6jqMsUDHGl6pUfUBq-ZUYHtU9IdXP_ZwQswo",
+    "companyUrl": "https://ae.linkedin.com/company/ox-human-resource-consulting",
+    "sourceJobId": "4485810547"
+  },
+  "pacific focus": {
+    "name": "Pacific Focus",
+    "checkedAt": "2026-11-05T16:03:23.105675+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "17803e288dd2d6f34bb736fe.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQFlaCrGIoq3QA/company-logo_100_100/company-logo_100_100/0/1631367835233?e=2147483647&v=beta&t=1TA8qmIHYpHKvFv_jd7GHxafOnrhMwmoaIYOrshVB5g",
+    "companyUrl": "https://hk.linkedin.com/company/pacificfocus",
+    "sourceJobId": "4487596219"
+  },
+  "tatler asia": {
+    "name": "Tatler Asia",
+    "checkedAt": "2026-11-05T16:03:26.139488+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b7be81f5f242188c3e2ae255.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGT8wi_P4_m4A/company-logo_100_100/company-logo_100_100/0/1685686467355/tatlerasia_logo?e=2147483647&v=beta&t=ne3EzN_p8EfnKQY_mJXzaQ_DbIBBwbFxMnGz1lLa2kc",
+    "companyUrl": "https://hk.linkedin.com/company/tatlerasia",
+    "sourceJobId": "4486586796"
   }
 }
