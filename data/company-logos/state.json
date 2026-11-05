@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-05T04:03:26.066151+00:00",
+    "checkedAt": "2026-11-05T10:02:42.222424+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-05T04:03:31.896097+00:00",
+    "checkedAt": "2026-11-05T10:02:46.375256+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-05T04:03:37.872231+00:00",
+    "checkedAt": "2026-11-05T10:02:52.381145+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-05T04:03:41.011229+00:00",
+    "checkedAt": "2026-11-05T10:02:55.423192+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10146,5 +10146,77 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHXMNdmkd7RUQ/company-logo_100_100/company-logo_100_100/0/1737616365186/zf_group_logo?e=2147483647&v=beta&t=HZQW_BK7oeP-ks1kek7fIqcsLzafxxf2HsUpc1XtOAg",
     "companyUrl": "https://de.linkedin.com/company/zf-group",
     "sourceJobId": "4485055422"
+  },
+  "carisbrook partners": {
+    "name": "Carisbrook Partners",
+    "checkedAt": "2026-11-05T10:02:22.423733+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ba5172dac11e26929ed22c57.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHINWJVs-YhyA/company-logo_100_100/company-logo_100_100/0/1631342217718?e=2147483647&v=beta&t=7xZ3EWU8UwbjnRt8KMwIsMgDPXi2BQKqDhXo2x6iLNk",
+    "companyUrl": "https://uk.linkedin.com/company/carisbrook-partners",
+    "sourceJobId": "4485809192"
+  },
+  "expressvpn": {
+    "name": "ExpressVPN",
+    "checkedAt": "2026-11-05T10:02:23.836264+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "491aad9077be1e64c73169e2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGm3ee6befmHA/company-logo_100_100/company-logo_100_100/0/1630655782841/expressvpn_logo?e=2147483647&v=beta&t=lSU9TdwKygoqlw9gzmUlIpFSXtmpuN1IdPAoRFH7lCM",
+    "companyUrl": "https://vg.linkedin.com/company/expressvpn",
+    "sourceJobId": "4486575989"
+  },
+  "hcltech": {
+    "name": "HCLTech",
+    "checkedAt": "2026-11-05T10:02:26.738617+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6bb9e829e0f1d2905a11c261.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFQ04a2301XUA/company-logo_100_100/B56Z_8GT9HHIAU-/0/1786640941074/hcltech_logo?e=2147483647&v=beta&t=SF34jSE_wL1EUyThGLcd1eFfSpb3YKGlWYkZeaOSdQI",
+    "companyUrl": "https://in.linkedin.com/company/hcltech",
+    "sourceJobId": "4483334592"
+  },
+  "hey rocket": {
+    "name": "Hey Rocket",
+    "checkedAt": "2026-11-05T10:02:33.219839+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "14bb4d43d47d12826bf4d31c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQF4WeA73Giqbg/company-logo_100_100/company-logo_100_100/0/1649180918881/hey_rocket_singapore_logo?e=2147483647&v=beta&t=oyVuEv-8j4Gss1KHJRor7i3gw0VaeWYhCZ8JIy4Zk1g",
+    "companyUrl": "https://sg.linkedin.com/company/heyrocket",
+    "sourceJobId": "4487595224"
+  },
+  "panduit": {
+    "name": "Panduit",
+    "checkedAt": "2026-11-05T10:02:36.220999+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4426975e2502a0ee4f1dd9f3.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGt-trX5dwXVQ/company-logo_100_100/company-logo_100_100/0/1735676080499/panduit_logo?e=2147483647&v=beta&t=8fF7eWcbmz0keT2iBp4yOLbkIuQOr9LQRbZYbYs1utE",
+    "companyUrl": "https://www.linkedin.com/company/panduit",
+    "sourceJobId": "4487700897"
+  },
+  "shenzhen medical academy of research and translation": {
+    "name": "Shenzhen Medical Academy of Research and Translation",
+    "checkedAt": "2026-11-05T10:02:39.221545+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f0eeeb989059bc0965ec6d8c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGz9aJmT0WdmQ/company-logo_100_100/B56ZhUKn3xHMAU-/0/1753758728953/shenzhen_medical_academy_of_research_and_translation_logo?e=2147483647&v=beta&t=Acmq7iILXagBN-Pwyn7QxVK2eKEVwXAfDse_wN8vgAg",
+    "companyUrl": "https://www.linkedin.com/company/shenzhen-medical-academy-of-research-and-translation",
+    "sourceJobId": "4487721573"
   }
 }
