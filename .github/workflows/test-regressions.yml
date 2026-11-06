@@ -45,6 +45,11 @@ on:
       - 'row-fixes.js'
       - 'salary-display.js'
       - 'styles-refinement.css'
+      - 'job-applications.js'
+      - 'job-applications.css'
+      - 'scripts/test_job_applications.mjs'
+      - 'scripts/verify_application_assets.py'
+      - 'scripts/test_verify_application_assets.py'
       - 'scripts/test_job_actions.mjs'
       - 'scripts/test_list_interaction.mjs'
       - 'scripts/build_jd_shards.mjs'
@@ -116,7 +121,7 @@ jobs:
           node --test scripts/test_company_logos.mjs
       - name: Test JEV Worker and visitor counter
         run: |
-          node --test scripts/test_guest_preview.mjs scripts/test_guest_resume.mjs scripts/test_accounts.mjs scripts/test_account_sync.mjs scripts/test_list_view.mjs scripts/test_list_query.mjs scripts/test_job_store.mjs scripts/test_row_hover.mjs scripts/test_cn_city_map.mjs scripts/test_frontend_resilience.mjs test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs scripts/test_job_actions.mjs scripts/test_jd_loading.mjs scripts/test_jev_framework.mjs
+          node --test scripts/test_guest_preview.mjs scripts/test_guest_resume.mjs scripts/test_accounts.mjs scripts/test_account_sync.mjs scripts/test_job_applications.mjs scripts/test_list_view.mjs scripts/test_list_query.mjs scripts/test_job_store.mjs scripts/test_row_hover.mjs scripts/test_cn_city_map.mjs scripts/test_frontend_resilience.mjs test-jev-worker.mjs scripts/test_visitor_count.mjs scripts/test_company_insight.mjs scripts/test_list_interaction.mjs scripts/test_job_actions.mjs scripts/test_jd_loading.mjs scripts/test_jev_framework.mjs
           python -m unittest discover -s scripts -p test_verify_visitor_counter.py
       - name: Verify publication excludes server code, private data and credentials
         run: |
