@@ -91,48 +91,49 @@
 @media(max-width:720px){.application-journey-entry{border-radius:14px}}
 
 
-/* STUDIO / Verdigris
-   One continuous mineral green route. Outcome colors are accents, never a rainbow.
-   This entire system belongs to My Journey only; editor and job list are untouched. */
+/* ELECTRIC EDITORIAL
+   My Journey modal only. A precise electric-blue progression with luminous
+   violet interviews; jade, amber and coral are reserved for outcomes.
+   Text, data and graph labels are not changed by this visual system. */
 .application-journey {
- --ap-canvas:#F7F5F0;
- --ap-heading:#1A2926;
- --ap-figure-secondary:#596862;
- --ap-paper-border:#D5DAD2;
- --ap-paper-quiet:#ECEEE8;
- --ap-wash:rgba(55,123,97,.035);
- --ap-flow-outline:#25594D;
- --ap-tone-source:#58645C;       --ap-flow-source:#BCC6BD;
- --ap-tone-applied:#265C58;      --ap-flow-applied:#91B5A9;
- --ap-tone-contact:#176B67;      --ap-flow-contact:#86C2B3;
- --ap-tone-first:#12766B;        --ap-flow-first:#7CC5B3;
- --ap-tone-second:#247A68;       --ap-flow-second:#7BC5A9;
- --ap-tone-final:#2F765B;        --ap-flow-final:#81BE9E;
- --ap-tone-offer:#1D704C;        --ap-flow-offer:#7FC69D;
- --ap-tone-no_response:#8A633A;  --ap-flow-no_response:#D3B58D;
- --ap-tone-rejected:#A45048;     --ap-flow-rejected:#D9A097;
- --ap-tone-waiting:#616D67;      --ap-flow-waiting:#C3CCC4;
+ --ap-canvas:#FCFCFD;
+ --ap-heading:#111A31;
+ --ap-figure-secondary:#536176;
+ --ap-paper-border:#DAE0EC;
+ --ap-paper-quiet:#F1F4FA;
+ --ap-wash:rgba(55,90,244,.025);
+ --ap-flow-outline:#223C87;
+ --ap-tone-source:#536176;       --ap-flow-source:#C3CBD9;
+ --ap-tone-applied:#164ACC;      --ap-flow-applied:#3466FC;
+ --ap-tone-contact:#075FBA;      --ap-flow-contact:#2588FA;
+ --ap-tone-first:#304DCC;        --ap-flow-first:#496DFD;
+ --ap-tone-second:#5140C5;       --ap-flow-second:#7966FF;
+ --ap-tone-final:#682BB8;        --ap-flow-final:#9A58F9;
+ --ap-tone-offer:#0C714F;        --ap-flow-offer:#17BC82;
+ --ap-tone-no_response:#865700;  --ap-flow-no_response:#FFB52D;
+ --ap-tone-rejected:#B72A48;     --ap-flow-rejected:#FF5776;
+ --ap-tone-waiting:#5C6878;      --ap-flow-waiting:#BBC6D2;
  color:var(--ap-heading);
- background-color:var(--ap-canvas);
+ background:var(--ap-canvas);
 }
 [data-theme=dark] .application-journey {
- --ap-canvas:#14211F;
- --ap-heading:#F1F5EF;
- --ap-figure-secondary:#BBCBC2;
- --ap-paper-border:#355048;
- --ap-paper-quiet:#23372F;
- --ap-wash:rgba(112,205,170,.035);
- --ap-flow-outline:#BEDBD0;
- --ap-tone-source:#B7C8C0;      --ap-flow-source:#42574E;
- --ap-tone-applied:#A7D1CB;     --ap-flow-applied:#34675D;
- --ap-tone-contact:#91DAD0;     --ap-flow-contact:#337568;
- --ap-tone-first:#89E0D2;       --ap-flow-first:#377E6D;
- --ap-tone-second:#9BE0C5;      --ap-flow-second:#3D826A;
- --ap-tone-final:#AFE0B9;       --ap-flow-final:#3C795F;
- --ap-tone-offer:#96E4A8;       --ap-flow-offer:#3D865F;
- --ap-tone-no_response:#E8C48B; --ap-flow-no_response:#7A6042;
- --ap-tone-rejected:#FFADA0;    --ap-flow-rejected:#805048;
- --ap-tone-waiting:#BACAC3;     --ap-flow-waiting:#41574D;
+ --ap-canvas:#111827;
+ --ap-heading:#F5F7FF;
+ --ap-figure-secondary:#C4CCDD;
+ --ap-paper-border:#313E5A;
+ --ap-paper-quiet:#212D47;
+ --ap-wash:rgba(85,113,255,.035);
+ --ap-flow-outline:#E6EDFF;
+ --ap-tone-source:#B8C3D8;      --ap-flow-source:#4E5A73;
+ --ap-tone-applied:#B4C5FF;     --ap-flow-applied:#335DE5;
+ --ap-tone-contact:#9BD8FF;     --ap-flow-contact:#1778E5;
+ --ap-tone-first:#B6BEFF;       --ap-flow-first:#5664ED;
+ --ap-tone-second:#CDC2FF;      --ap-flow-second:#7058F0;
+ --ap-tone-final:#DBB5FF;       --ap-flow-final:#9556E8;
+ --ap-tone-offer:#8AF0C6;       --ap-flow-offer:#16875F;
+ --ap-tone-no_response:#FFD98C; --ap-flow-no_response:#AE7113;
+ --ap-tone-rejected:#FFA5B5;    --ap-flow-rejected:#C43F61;
+ --ap-tone-waiting:#BEC8D6;     --ap-flow-waiting:#536173;
 }
 .application-journey[open] {
  display:flex;
@@ -144,37 +145,27 @@
  max-height:none;max-width:none;
  padding:27px clamp(20px,2.9vw,42px) 22px;
  overflow:hidden;
+ color:var(--ap-heading);
  background-color:var(--ap-canvas);
- background-image:radial-gradient(ellipse 60% 50% at 53% 58%,var(--ap-wash),transparent 78%);
+ background-image:radial-gradient(ellipse 65% 54% at 58% 55%,var(--ap-wash),transparent 82%);
  border:1px solid var(--ap-paper-border);
- border-radius:12px;
- box-shadow:0 26px 70px #16292028;
+ border-radius:14px;
+ box-shadow:0 24px 76px #0B153E25;
 }
 .application-journey .ap-journey-head {
  display:grid;
  grid-template-columns:minmax(0,1fr) auto 40px;
  align-items:center;
  gap:clamp(20px,3vw,46px);
- padding:0 0 18px;
+ padding:0 0 19px;
  border-bottom:1px solid var(--ap-paper-border);
 }
 .application-journey .ap-journey-head h2 {
  margin:0;
  max-width:none;
  color:var(--ap-heading);
- font:600 clamp(26px,2.65vw,41px)/1.09 var(--sans,system-ui);
- letter-spacing:-.048em;
-}
-.application-journey .ap-journey-kicker {
- margin:0 0 8px;
- color:var(--ap-tone-contact);
- font:700 10px/1.35 var(--sans,system-ui);
- letter-spacing:.19em;
-}
-.application-journey .ap-journey-dek {
- margin:8px 0 0;
- color:var(--ap-figure-secondary);
- font:400 12px/1.4 var(--sans,system-ui);
+ font:650 clamp(27px,2.7vw,42px)/1.08 var(--sans,system-ui);
+ letter-spacing:-.05em;
 }
 .application-journey .ap-journey-head .ap-kpis {
  display:grid;
@@ -186,20 +177,20 @@
 .application-journey .ap-kpis dt {
  color:var(--ap-figure-secondary);
  font:550 10px/1.4 var(--sans,system-ui);
- letter-spacing:.025em;
+ letter-spacing:.035em;
 }
 .application-journey .ap-kpis dd {
  margin:7px 0 0;
  color:var(--ap-heading);
- font:520 27px/1 var(--sans,system-ui);
- letter-spacing:-.04em;
+ font:550 27px/1 var(--sans,system-ui);
+ letter-spacing:-.045em;
 }
 .application-journey .ap-kpis>div:last-child dd { color:var(--ap-tone-offer) }
 .application-journey .ap-chart {
  flex:1 1 0;
  min-width:0;min-height:0;
  overflow:hidden;
- margin:15px 0 0;
+ margin:13px 0 0;
  padding:0;
  border:0;
 }
@@ -211,23 +202,21 @@
  overflow:hidden;
 }
 .application-journey .ap-node[data-tone] .ap-node-label,
-.application-journey .ap-node[data-tone] .ap-node-value {
- fill:currentColor;
-}
+.application-journey .ap-node[data-tone] .ap-node-value { fill:currentColor }
 .application-journey .ap-node-label {
  font-size:18px;
- font-weight:650;
- letter-spacing:-.025em;
+ font-weight:670;
+ letter-spacing:-.027em;
 }
 .application-journey .ap-node-value {
  font-size:25px;
- font-weight:580;
- letter-spacing:-.035em;
+ font-weight:590;
+ letter-spacing:-.038em;
 }
 .application-journey .ap-node-share {
  fill:var(--ap-figure-secondary);
  font-size:13px;
- font-weight:460;
+ font-weight:475;
  letter-spacing:0;
 }
 .application-journey .ap-node-label,
@@ -241,7 +230,8 @@
 }
 .application-journey .ap-region-code {
  fill:var(--ap-tone-source);
- font:700 23px/1 var(--sans,system-ui);
+ font-size:23px;
+ font-weight:700;
  letter-spacing:-.04em;
 }
 .application-journey .ap-region-name {
@@ -256,14 +246,15 @@
 .application-journey .ap-compact-svg .ap-region-code { font-size:21px }
 .application-journey .ap-compact-svg .ap-region-name { font-size:12px }
 .application-journey .ap-flow {
- fill-opacity:.93;
+ fill-opacity:.88;
  stroke:none;
- transition:fill-opacity .15s ease,filter .15s ease;
+ transition:fill-opacity .16s ease,filter .16s ease;
 }
+[data-theme=dark] .application-journey .ap-flow { fill-opacity:.86 }
 .application-journey .ap-flow:hover,
 .application-journey .ap-flow:focus-visible {
  fill-opacity:1;
- filter:saturate(1.11);
+ filter:saturate(1.12);
  stroke:var(--ap-flow-outline);
  stroke-width:1;
  stroke-linejoin:round;
@@ -281,13 +272,13 @@
  font:500 10px/1.5 var(--sans,system-ui);
 }
 .application-journey .ap-legend span::before {
- width:9px;height:9px;
+ width:10px;height:10px;
  margin-right:8px;
- border-radius:50%;
+ border-radius:3px;
  vertical-align:-1px;
 }
 .application-journey .ap-legend .ap-key-interviews::before {
- background:linear-gradient(90deg,var(--ap-tone-first),var(--ap-tone-final));
+ background:linear-gradient(90deg,var(--ap-tone-first) 0 34%,var(--ap-tone-second) 34% 67%,var(--ap-tone-final) 67% 100%);
 }
 .application-journey .ap-accessible-data {
  flex:none;
@@ -311,37 +302,21 @@
  background:transparent;
  color:var(--ap-heading);
 }
-.application-journey .ap-journey-head .ap-close:hover {
- background:var(--ap-paper-quiet);
-}
+.application-journey .ap-journey-head .ap-close:hover { background:var(--ap-paper-quiet) }
 .application-journey .ap-empty {
  min-height:100%;
  align-content:center;
  color:var(--ap-heading);
 }
 @media(max-width:1100px) and (pointer:fine) {
- .application-journey .ap-journey-head {
-  grid-template-columns:minmax(0,1fr) 40px;
-  gap:14px;
- }
- .application-journey .ap-journey-head .ap-kpis {
-  grid-column:1/-1;
-  grid-row:2;
- }
- .application-journey .ap-journey-head .ap-close {
-  grid-column:2;
-  grid-row:1;
- }
+ .application-journey .ap-journey-head { grid-template-columns:minmax(0,1fr) 40px;gap:14px }
+ .application-journey .ap-journey-head .ap-kpis { grid-column:1/-1;grid-row:2 }
+ .application-journey .ap-journey-head .ap-close { grid-column:2;grid-row:1 }
  .application-journey .ap-chart { margin-top:8px }
 }
 @media(pointer:coarse) {
- .application-journey .ap-journey-head {
-  grid-template-columns:minmax(160px,1fr) auto 44px;
-  gap:12px;padding-bottom:4px;
- }
+ .application-journey .ap-journey-head { grid-template-columns:minmax(160px,1fr) auto 44px;gap:12px;padding-bottom:4px }
  .application-journey .ap-journey-head h2 { font-size:20px }
- .application-journey .ap-journey-kicker { font-size:8px;margin-bottom:4px }
- .application-journey .ap-journey-dek { font-size:9px;margin-top:3px }
  .application-journey .ap-kpis dt { font-size:9px }
  .application-journey .ap-kpis dd { font-size:19px;margin-top:3px }
  .application-journey .ap-journey-head .ap-kpis { gap:12px }
@@ -349,16 +324,11 @@
  .application-journey .ap-legend { padding:6px 0 4px;font-size:9px;gap:5px 13px }
 }
 @media(pointer:coarse) and (orientation:landscape) {
- .application-journey[open] {
-  width:calc(100dvw - 12px);
-  height:calc(100dvh - 12px);
-  padding:11px 15px;gap:4px;
- }
+ .application-journey[open] { width:calc(100dvw - 12px);height:calc(100dvh - 12px);padding:11px 15px;gap:4px }
 }
 @media(pointer:coarse) and (orientation:portrait) {
  .application-journey[open] {
-  width:calc(100dvh - 12px);
-  height:calc(100dvw - 12px);
+  width:calc(100dvh - 12px);height:calc(100dvw - 12px);
   padding:11px 15px;gap:4px;
   transform:translate(-50%,-50%) rotate(90deg);
  }
