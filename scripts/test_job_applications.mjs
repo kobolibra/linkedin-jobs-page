@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {palettes,roles} from './journey_palette_trials.mjs';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
@@ -141,7 +142,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* ELECTRIC EDITORIAL');
+ const start=css.indexOf('/* SIGNAL LAGOON');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
@@ -168,4 +169,26 @@ test('My Journey text and UI markup match the original pre-design version',()=>{
  const actual=src.split('journey.innerHTML=')[1]?.split(';document.body.append(journey)')[0];
  assert.equal(actual,"'<header class=\"ap-journey-head\"><div><h2 id=\"ap-journey-title\">Your application journey</h2></div><dl class=\"ap-kpis\"></dl><button type=\"button\" class=\"ap-close\" aria-label=\"Close application journey\">×</button></header><div class=\"ap-chart\" tabindex=\"0\" aria-label=\"Application flow chart, fitted to the screen.\"></div><div class=\"ap-legend\"><span class=\"ap-key-progress\">Applied</span><span class=\"ap-key-contact\">Recruiter Contact</span><span class=\"ap-key-interviews\">Interviews</span><span class=\"ap-key-waiting\">In progress / Not applied</span><span class=\"ap-key-offer\">Offer</span><span class=\"ap-key-no-response\">No Response</span><span class=\"ap-key-rejected\">Rejected</span></div><details class=\"ap-accessible-data\"><summary>Current stage breakdown</summary><dl class=\"ap-stage-summary\"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>'");
  assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
+});
+
+test('selected Signal Lagoon CSS agrees with chromium-review design tokens',()=>{
+ const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
+ const start=css.indexOf('/* SIGNAL LAGOON');
+ assert.ok(start>=0);
+ const blocks=[...css.slice(start).matchAll(/(?:\\[data-theme=dark\\]\\s*)?\\.application-journey\\s*\\{([^}]+)\\}/g)].slice(0,2);
+ assert.equal(blocks.length,2,'full light/dark palette required');
+ for(const [i,mode] of ['light','dark'].entries()){
+  const expected=palettes.signal[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  for(const role of roles)for(const prefix of ['--ap-tone-','--ap-flow-']){
+   const token=prefix+role;
+   assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
+  }
+  for(const token of ['--ap-canvas','--ap-heading','--ap-figure-secondary','--ap-paper-border']){
+   assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
+  }
+  for(const stage of ['contact','first','second','final']){
+   assert.equal(actual.get('--ap-flow-'+stage),actual.get('--ap-flow-applied'),'mainline must not change hue');
+   assert.equal(actual.get('--ap-tone-'+stage),actual.get('--ap-tone-applied'),'stage node must share one semantic color');
+  }
+ }
 });
