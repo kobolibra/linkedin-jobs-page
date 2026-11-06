@@ -153,8 +153,8 @@ try {
         assert.ok(!check.hasNaN, sample.name + ': SVG contains non-finite values');
         assert.equal(check.invisibleFlowCount, 0, sample.name + ': invisible ribbons');
         assert.ok(check.chartScreenVisible, sample.name + ': SVG is clipped by viewport');
-        assert.ok(check.graphUsage.width > 0.55, sample.name + ': diagram should own the content width');
-        assert.ok(check.graphUsage.height > 0.35, sample.name + ': diagram should own the vertical rhythm');
+        assert.ok((check.phonePortrait ? check.graphUsage.height : check.graphUsage.width) > 0.55, sample.name + ': diagram should own the available long axis');
+        assert.ok((check.phonePortrait ? check.graphUsage.width : check.graphUsage.height) > 0.35, sample.name + ': diagram should own the available short axis');
       } else {
         assert.equal(check.nodes, 0);
         assert.equal(check.flows, 0);
