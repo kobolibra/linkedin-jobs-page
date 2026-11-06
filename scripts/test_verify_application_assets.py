@@ -18,7 +18,7 @@ class VerificationTests(unittest.TestCase):
         for name in ('job-applications.js', 'job-applications.css'):
             if '/' + name in url:
                 return Response((Path(subject.__file__).parents[1] / name).read_bytes())
-        return Response(b'job-applications.js?v=17 job-applications.css?v=18')
+        return Response(b'job-applications.js?v=17 job-applications.css?v=19')
 
     def test_exact_assets_and_private_boundary(self):
         with patch.object(subject, 'urlopen', side_effect=self.fetch):

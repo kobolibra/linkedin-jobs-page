@@ -188,16 +188,19 @@ test('Restored figure has no unrelated decorative overlays',()=>{
 });
 
 
-test('App Economy Salesforce-style palette: five distinct colored sources and all stage transitions',()=>{
+test('My Journey matches the existing site regional, Porcelain and Top 30 colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.lastIndexOf('/* APP ECONOMY INSIGHTS / SALESFORCE-STYLE');
- assert.ok(start>=0);
+ const site=readFileSync(new URL('../styles.css',import.meta.url),'utf8');
+ const refinement=readFileSync(new URL('../styles-refinement.css',import.meta.url),'utf8');
+ const top30=readFileSync(new URL('../top30-layout.js',import.meta.url),'utf8');
+ const start=css.lastIndexOf('/* SITE-NATIVE / Porcelain + Regional Density + Top 30');
+ assert.ok(start>=0,'site-native palette must be last and win cascade');
  const sheet=css.slice(start);
- const blocks=[...sheet.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
+ const blocks=[...sheet.matchAll(/(?:\[data-theme="dark"\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(blocks.length,2);
  const expected=[
-  {canvas:'#F3F4F3',source_cn:'#14756E',source_hk:'#925079',source_sg:'#704F99',source_other:'#93602E',source_unknown:'#326B9A',applied:'#246EA9',contact:'#19788E',first:'#426CA5',second:'#5C5FAA',final:'#77519A',offer:'#197D43',no_response:'#8D6427',rejected:'#B83D50',waiting:'#576A72'},
-  {canvas:'#1B2630',source_cn:'#90DDD0',source_hk:'#F0B3D0',source_sg:'#D2BDF4',source_other:'#F3C797',source_unknown:'#A8CFED',applied:'#A4D0F3',contact:'#95D5DE',first:'#B8CDF1',second:'#C6C5FF',final:'#E0C2F4',offer:'#A6E7B7',no_response:'#F0D29A',rejected:'#FFADB9',waiting:'#B8CCD6'}
+  {canvas:'#FBFCFB',source_cn:'#9C2A33',source_hk:'#8A6520',source_sg:'#536F32',source_other:'#357585',source_unknown:'#526F93',source:'#16395A',applied:'#081F5C',contact:'#334EAC',first:'#405D9C',second:'#52679D',final:'#5E6094',offer:'#536F32',no_response:'#8A6520',rejected:'#9C2A33',waiting:'#526F78'},
+  {canvas:'#1A2B3A',source_cn:'#DF8B79',source_hk:'#E5BD68',source_sg:'#A9C195',source_other:'#93B4C4',source_unknown:'#AFC5E9',source:'#F5F0E8',applied:'#AFC5E9',contact:'#B5C8F2',first:'#AEC5EC',second:'#BBBEE0',final:'#D2BDD8',offer:'#A9C195',no_response:'#E5BD68',rejected:'#DF8B79',waiting:'#AFBABD'}
  ];
  const luma=h=>h.slice(1).match(/../g).map(x=>parseInt(x,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0);
  const contrast=(a,b)=>{const [x,y]=[luma(a),luma(b)];return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
@@ -208,13 +211,20 @@ test('App Economy Salesforce-style palette: five distinct colored sources and al
   for(const [tone,value] of Object.entries(e)){
    if(tone==='canvas')continue;
    assert.equal(actual.get('--ap-tone-'+tone),value,tone+' node');
-   assert.ok(actual.has('--ap-flow-'+tone),tone+' flow');
-   assert.ok(contrast(value,e.canvas)>=4.5,tone+' foreground contrast');
+   assert.ok(actual.has('--ap-flow-'+tone),tone+' ribbon');
+   assert.ok(contrast(value,e.canvas)>=4.5,tone+' node foreground contrast');
   }
-  const regions=['cn','hk','sg','other','unknown'].map(x=>actual.get('--ap-flow-source_'+x));
-  assert.equal(new Set(regions).size,5,'all five sources must have separate flow colors');
-  assert.equal(new Set(['applied','contact','first','second','final'].map(x=>actual.get('--ap-flow-'+x))).size,5,'interview stages should have distinct but cohesive colors');
+  const distinct=['cn','hk','sg','other','unknown'].map(code=>actual.get('--ap-flow-source_'+code));
+  assert.equal(new Set(distinct).size,5,'five regions remain distinguishable');
+  assert.equal(new Set(['applied','contact','first','second','final'].map(stage=>actual.get('--ap-flow-'+stage))).size,5,'process retains coordinated color depth');
  }
+ assert.match(site,/--cn:#9c2a33/);
+ assert.match(site,/--hk:#b07c22/);
+ assert.match(site,/--sg:#6e8a46/);
+ assert.match(site,/--other:#357585/);
+ assert.match(site,/--navy:#16395a/);
+ assert.match(refinement,/#spark \{ --viz-blue:#334EAC; \}/);
+ assert.match(top30,/palette = \['#F5572F', '#D4A017', '#ACAD79', '#7096D1', '#334EAC', '#081F5C'\]/);
  assert.match(sheet,/\.ap-node-region \.ap-region-code\s*\{\s*fill:currentColor/);
  assert.match(sheet,/\.ap-key-interviews::before\s*\{\s*background:linear-gradient/);
 });
