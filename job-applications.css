@@ -348,3 +348,67 @@
 /* Original small-print colors take precedence over later layout rules. */
 .application-journey footer{color:#65757e}
 [data-theme=dark] .application-journey footer{color:#aebcc5}
+
+/* APP ECONOMY INSIGHTS / APPLE FINANCIAL SANKEY — PALETTE REPRODUCTION
+ * Reference: published Apple income-statement diagram, not a new art direction.
+ * Its visual language: cool light-gray canvas, near-black revenue nodes,
+ * gray revenue ribbons, pale green profit ribbons, muted salmon cost ribbons,
+ * dark-blue title. These values approximate the visible reference colors;
+ * the dark counterpart is an accessibility adaptation, not a source duplicate.
+ * Only My Journey gets these tokens. Original copy, graph and layout stay intact.
+ */
+.application-journey{
+ --ap-canvas:#F1F1F1;
+ --ap-blue:#175678;
+ --ap-heading:#175678;
+ --ap-figure-secondary:#555555;
+ --ap-paper-border:#D3D3D3;
+ --ap-paper-quiet:#E7E7E7;
+ --ap-flow-outline:#262626;
+ --ap-tone-source:#131313;       --ap-flow-source:#8A8A8A;
+ --ap-tone-applied:#131313;      --ap-flow-applied:#909090;
+ --ap-tone-contact:#131313;      --ap-flow-contact:#909090;
+ --ap-tone-first:#131313;        --ap-flow-first:#909090;
+ --ap-tone-second:#131313;       --ap-flow-second:#909090;
+ --ap-tone-final:#131313;        --ap-flow-final:#909090;
+ --ap-tone-offer:#197B36;        --ap-flow-offer:#A8CBA3;
+ --ap-tone-no_response:#606060;  --ap-flow-no_response:#B7B7B7;
+ --ap-tone-rejected:#BD242A;     --ap-flow-rejected:#DEA09A;
+ --ap-tone-waiting:#606060;      --ap-flow-waiting:#C5C5C5;
+ color:#191919;
+ background:var(--ap-canvas);
+}
+[data-theme=dark] .application-journey{
+ --ap-canvas:#1B2025;
+ --ap-blue:#C1D7E5;
+ --ap-heading:#C1D7E5;
+ --ap-figure-secondary:#C5CBCF;
+ --ap-paper-border:#3D454B;
+ --ap-paper-quiet:#30373D;
+ --ap-flow-outline:#F4F4F4;
+ --ap-tone-source:#EEEEEE;       --ap-flow-source:#656B70;
+ --ap-tone-applied:#EEEEEE;      --ap-flow-applied:#747A80;
+ --ap-tone-contact:#EEEEEE;      --ap-flow-contact:#747A80;
+ --ap-tone-first:#EEEEEE;        --ap-flow-first:#747A80;
+ --ap-tone-second:#EEEEEE;       --ap-flow-second:#747A80;
+ --ap-tone-final:#EEEEEE;        --ap-flow-final:#747A80;
+ --ap-tone-offer:#A3E9A1;        --ap-flow-offer:#547B56;
+ --ap-tone-no_response:#C4C4C4;  --ap-flow-no_response:#60666B;
+ --ap-tone-rejected:#F2AAA5;     --ap-flow-rejected:#93605D;
+ --ap-tone-waiting:#C4C4C4;      --ap-flow-waiting:#636A70;
+ color:#F2F2F2;
+ background:var(--ap-canvas);
+}
+/* Original chart legend structure; neutral process, green success, red rejection. */
+.application-journey .ap-legend .ap-key-interviews::before{
+ background:var(--ap-tone-first);
+}
+.application-journey .ap-flow{
+ fill-opacity:1;
+}
+.application-journey .ap-flow:hover,
+.application-journey .ap-flow:focus-visible{
+ filter:brightness(.88);
+}
+.application-journey footer{color:var(--ap-figure-secondary)}
+[data-theme=dark] .application-journey footer{color:var(--ap-figure-secondary)}
