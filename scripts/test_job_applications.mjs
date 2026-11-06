@@ -127,9 +127,10 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
  const apply=change(null,'applied','p');
  states.set('p',change(apply,'contact','p'));
  states.set('offer',change(null,'offer','offer'));
+ states.set('post-offer-reject',change(change(null,'offer','post-offer-reject'),'rejected','post-offer-reject'));
  states.set('reject',change(change(null,'first','reject'),'rejected','reject'));
  states.set('silent',change(change(null,'contact','silent'),'no_response','silent'));
- const view=svg(graph(['p','offer','reject','silent','saved'],states));
+ const view=svg(graph(['p','offer','reject','silent','saved','post-offer-reject'],states));
  for(const tone of ['source','applied','offer','rejected','no_response','waiting']){
   assert.ok(view.includes('fill:var(--ap-flow-'+tone+')'),tone+' ribbon missing');
  }
