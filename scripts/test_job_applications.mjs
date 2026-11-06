@@ -186,3 +186,29 @@ test('Restored figure has no unrelated decorative overlays',()=>{
  assert.match(css,/--ap-flow-applied:#a4bfd5/);
  assert.match(css,/--ap-tone-applied:#326da8/);
 });
+
+
+test('App Economy Apple figure palette wins over historical variables, in both themes',()=>{
+ const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
+ const marker='/* APP ECONOMY INSIGHTS / APPLE FINANCIAL SANKEY';
+ const start=css.lastIndexOf(marker);
+ assert.ok(start>=0);
+ const sheet=css.slice(start);
+ const blocks=[...sheet.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
+ assert.equal(blocks.length,2);
+ const expected=[
+  {canvas:'#F1F1F1',source:'#131313',applied:'#131313',offer:'#197B36',rejected:'#BD242A',no_response:'#606060',sourceFlow:'#8A8A8A',stageFlow:'#909090',offerFlow:'#A8CBA3',rejectedFlow:'#DEA09A',noResponseFlow:'#B7B7B7'},
+  {canvas:'#1B2025',source:'#EEEEEE',applied:'#EEEEEE',offer:'#A3E9A1',rejected:'#F2AAA5',no_response:'#C4C4C4',sourceFlow:'#656B70',stageFlow:'#747A80',offerFlow:'#547B56',rejectedFlow:'#93605D',noResponseFlow:'#60666B'},
+ ];
+ for(const [i,block] of blocks.entries()){
+  const colors=new Map([...block[1].matchAll(/(--ap-[a-z_-]+):\s*(#[a-f0-9]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  const e=expected[i],get=(key)=>colors.get('--ap-'+key)?.toUpperCase();
+  assert.equal(get('canvas'),e.canvas);
+  for(const stage of ['applied','contact','first','second','final']){
+   assert.equal(get('tone-'+stage),e.applied,stage+' node');
+   assert.equal(get('flow-'+stage),e.stageFlow,stage+' ribbon');
+  }
+  for(const [name,value] of [['tone-source',e.source],['tone-offer',e.offer],['tone-rejected',e.rejected],['tone-no_response',e.no_response],['flow-source',e.sourceFlow],['flow-offer',e.offerFlow],['flow-rejected',e.rejectedFlow],['flow-no_response',e.noResponseFlow]])assert.equal(get(name),value,name);
+ }
+ assert.match(sheet,/\.ap-legend \.ap-key-interviews::before\s*\{\s*background:var\(--ap-tone-first\)/);
+});
