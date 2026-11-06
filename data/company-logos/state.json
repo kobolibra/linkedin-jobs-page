@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-06T10:02:40.599879+00:00",
+    "checkedAt": "2026-11-06T16:03:00.821953+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-06T10:02:46.431158+00:00",
+    "checkedAt": "2026-11-06T16:03:06.614986+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-06T10:02:52.427202+00:00",
+    "checkedAt": "2026-11-06T16:03:12.601180+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-06T10:02:55.489013+00:00",
+    "checkedAt": "2026-11-06T16:03:15.685330+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10302,5 +10302,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFagje7sqh-sA/company-logo_100_100/company-logo_100_100/0/1719257883577/nexperia_logo?e=2147483647&v=beta&t=e9ZpdSAbMqZ-ERT61vA54eTDV5Ki-WMScNe_UvVhqwc",
     "companyUrl": "https://nl.linkedin.com/company/nexperia",
     "sourceJobId": "4486200514"
+  },
+  "mockingjay": {
+    "name": "MockingJay",
+    "checkedAt": "2026-11-06T16:02:56.442779+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "593fad7e9e47ef0bbdfe2082.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF6URLXEUYpKQ/company-logo_100_100/company-logo_100_100/0/1720885584907?e=2147483647&v=beta&t=1SXqgTaRVcjSxe68xozQT8QDYgqrfmzBsRjPk07ld5E",
+    "companyUrl": "https://cn.linkedin.com/company/mockingjayconsulting",
+    "sourceJobId": "4486979647"
+  },
+  "recruitpedia": {
+    "name": "RecruitPedia",
+    "checkedAt": "2026-11-06T16:02:57.878986+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "acf41b283ad764c3de7e4365.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQF_YX31mVnB-A/company-logo_100_100/company-logo_100_100/0/1630583783262/recruitpedia_logo?e=2147483647&v=beta&t=ef2IuX1nfYeBfAvStCOuMJEfQojSlQhwa-YuoXTVa5M",
+    "companyUrl": "https://www.linkedin.com/company/recruitpedia",
+    "sourceJobId": "4488121939"
   }
 }
