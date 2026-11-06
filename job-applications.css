@@ -91,50 +91,59 @@
 @media(max-width:720px){.application-journey-entry{border-radius:14px}}
 
 
-/* APP ECONOMY / Graphic-led income statement
-   Sources + active stages are ink, not decorative color bands. Financial-style
-   green/amber/red endpoints carry the meaning. Rich chroma is reserved for
-   actual outcomes, with a carefully controlled neutral input channel.
-   Figure-scoped: editor, site, stage data, graph and wording untouched. */
-.application-journey {
- --ap-canvas:#FCFBF8;
- --ap-blue:#252D35;
- --ap-heading:#181E24;
- --ap-figure-secondary:#5A6268;
- --ap-paper-border:#DEDCD7;
- --ap-paper-quiet:#F0EFEA;
- --ap-flow-outline:#1C242B;
- --ap-tone-source:#252D35;      --ap-flow-source:#C2C8CA;
- --ap-tone-applied:#252D35;     --ap-flow-applied:#A9B9C0;
- --ap-tone-contact:#252D35;     --ap-flow-contact:#A9B9C0;
- --ap-tone-first:#252D35;       --ap-flow-first:#A9B9C0;
- --ap-tone-second:#252D35;      --ap-flow-second:#A9B9C0;
- --ap-tone-final:#252D35;       --ap-flow-final:#A9B9C0;
- --ap-tone-offer:#047C45;       --ap-flow-offer:#44C97F;
- --ap-tone-no_response:#99601A; --ap-flow-no_response:#E9B54B;
- --ap-tone-rejected:#C3293E;    --ap-flow-rejected:#EE7480;
- --ap-tone-waiting:#59656B;     --ap-flow-waiting:#D1D4D2;
- color:var(--ap-heading);
+/* Journey figure only: mineral hues distinguish stages without changing list/editor colors. */
+.application-journey{
+ --ap-tone-source:#65737d;--ap-flow-source:#c6cfd2;
+ --ap-tone-applied:#326da8;--ap-flow-applied:#a4bfd5;
+ --ap-tone-contact:#227b79;--ap-flow-contact:#9dc7bf;
+ --ap-tone-first:#6669a5;--ap-flow-first:#b9b6d7;
+ --ap-tone-second:#90682d;--ap-flow-second:#d1be98;
+ --ap-tone-final:#895174;--ap-flow-final:#c2a4bc;
+ --ap-tone-offer:#307957;--ap-flow-offer:#9bc7ac;
+ --ap-tone-no_response:#766957;--ap-flow-no_response:#ccc3b3;
+ --ap-tone-rejected:#b05249;--ap-flow-rejected:#dba49b;
+ --ap-tone-waiting:#5d707b;--ap-flow-waiting:#d5dde0;
+}
+[data-theme=dark] .application-journey{
+ --ap-tone-source:#afbdc7;--ap-flow-source:#526570;
+ --ap-tone-applied:#9fc7ed;--ap-flow-applied:#466f96;
+ --ap-tone-contact:#8fd1c4;--ap-flow-contact:#3e7d76;
+ --ap-tone-first:#bcbdec;--ap-flow-first:#686b9b;
+ --ap-tone-second:#e0c18a;--ap-flow-second:#877750;
+ --ap-tone-final:#dda9ca;--ap-flow-final:#925f81;
+ --ap-tone-offer:#9bd6b1;--ap-flow-offer:#4e8565;
+ --ap-tone-no_response:#cfc3af;--ap-flow-no_response:#786f60;
+ --ap-tone-rejected:#f0afa2;--ap-flow-rejected:#a36860;
+ --ap-tone-waiting:#b3c0c8;--ap-flow-waiting:#425864;
+}
+.application-journey .ap-legend .ap-key-interviews::before{background:linear-gradient(90deg,var(--ap-tone-first) 0% 33.33%,var(--ap-tone-second) 33.33% 66.67%,var(--ap-tone-final) 66.67% 100%)}
+
+.application-journey footer{color:#65757e}
+[data-theme=dark] .application-journey footer{color:#aebcc5}
+
+/* Match the original November 6 pre-redesign figure skin.
+   These aliases serve only the newer layout CSS; original tone/flow values above
+   remain byte-identical to the historical source. */
+.application-journey{
+ --ap-canvas:#f6f6f4;
+ --ap-blue:#155573;
+ --ap-heading:#155573;
+ --ap-figure-secondary:var(--ink-soft);
+ --ap-paper-border:var(--line);
+ --ap-paper-quiet:var(--surface);
+ --ap-flow-outline:var(--ap-blue);
+ color:var(--ink);
  background:var(--ap-canvas);
 }
-[data-theme=dark] .application-journey {
- --ap-canvas:#11191F;
- --ap-blue:#EAEDEB;
- --ap-heading:#F7F4EF;
- --ap-figure-secondary:#C2C8CC;
- --ap-paper-border:#353D43;
- --ap-paper-quiet:#222C32;
- --ap-flow-outline:#F5F5F0;
- --ap-tone-source:#E0E8E9;      --ap-flow-source:#57636A;
- --ap-tone-applied:#E0E8E9;     --ap-flow-applied:#586A72;
- --ap-tone-contact:#E0E8E9;     --ap-flow-contact:#586A72;
- --ap-tone-first:#E0E8E9;       --ap-flow-first:#586A72;
- --ap-tone-second:#E0E8E9;      --ap-flow-second:#586A72;
- --ap-tone-final:#E0E8E9;       --ap-flow-final:#586A72;
- --ap-tone-offer:#86EDAC;       --ap-flow-offer:#2CA464;
- --ap-tone-no_response:#FFD58C; --ap-flow-no_response:#AA792D;
- --ap-tone-rejected:#FF9BA5;    --ap-flow-rejected:#B63C53;
- --ap-tone-waiting:#BBC6CB;     --ap-flow-waiting:#536067;
+[data-theme=dark] .application-journey{
+ --ap-canvas:#192a37;
+ --ap-blue:#b0cde1;
+ --ap-heading:#b0cde1;
+ --ap-figure-secondary:var(--ink-soft);
+ --ap-paper-border:var(--line);
+ --ap-paper-quiet:var(--surface);
+ --ap-flow-outline:var(--ap-blue);
+ background:var(--ap-canvas);
 }
 .application-journey[open] {
  display:flex;
@@ -182,7 +191,7 @@
 }
 .application-journey .ap-kpis dd {
  margin:7px 0 0;
- color:var(--ap-heading);
+ color:var(--ink);
  font:550 27px/1 var(--sans,system-ui);
  letter-spacing:-.045em;
 }
@@ -247,21 +256,15 @@
 .application-journey .ap-compact-svg .ap-region-code { font-size:21px }
 .application-journey .ap-compact-svg .ap-region-name { font-size:12px }
 .application-journey .ap-flow {
- fill-opacity:.90;
+ fill-opacity:1;
  stroke:none;
  transition:fill-opacity .16s ease,filter .16s ease;
 }
-[data-theme=dark] .application-journey .ap-flow { fill-opacity:.94 }
-.application-journey .ap-flow[data-tone="source"],
-.application-journey .ap-flow[data-tone="applied"] { fill-opacity:.84 }
-.application-journey .ap-flow[data-tone="offer"],
-.application-journey .ap-flow[data-tone="rejected"] { fill-opacity:.97 }
-[data-theme=dark] .application-journey .ap-flow[data-tone="source"],
-[data-theme=dark] .application-journey .ap-flow[data-tone="applied"] { fill-opacity:.94 }
+
 .application-journey .ap-flow:hover,
 .application-journey .ap-flow:focus-visible {
  fill-opacity:1;
- filter:saturate(1.12);
+ filter:brightness(.9);
  stroke:var(--ap-flow-outline);
  stroke-width:1;
  stroke-linejoin:round;
@@ -284,7 +287,7 @@
  border-radius:3px;
  vertical-align:-1px;
 }
-.application-journey .ap-legend .ap-key-interviews::before { background:var(--ap-tone-first) }
+
 .application-journey .ap-accessible-data {
  flex:none;
  border:0;
@@ -341,3 +344,7 @@
 @media(prefers-reduced-motion:reduce) {
  .application-journey .ap-flow { transition:none }
 }
+
+/* Original small-print colors take precedence over later layout rules. */
+.application-journey footer{color:#65757e}
+[data-theme=dark] .application-journey footer{color:#aebcc5}

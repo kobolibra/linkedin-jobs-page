@@ -91,12 +91,8 @@
    const a=byId.get(link.source),b=byId.get(link.target),h=link.value*unit,x=a.x+nodeWidth,x2=b.x,dx=(x2-x)*.5,y=link.sy,y2=link.ty;
    const context=b.context&&b.type!=='region'?' after '+b.context:'';
    const label=a.label+' → '+b.label+context+': '+link.value+' '+(link.value===1?'role':'roles');
-   // App Economy-inspired hierarchy: solid, high-contrast nodes; lighter ribbons.
-   // The center is one coherent process, with semantic colors reserved for exits.
-   // No gradients or decorative marks: band width is the only magnitude encoding.
-   const flowTone=a.type==='region'?'source':b.id==='offer'?'offer':
-    ['waiting','no_response','rejected'].includes(b.type)?b.type:
-    positive.includes(b.id)?'applied':tone(a);
+   // Original pre-redesign flow semantics: region-source colors, destination-stage colors.
+   const flowTone=tone(a.type==='region'?a:b);
    const shape='M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z';
    paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" data-tone="'+flowTone+'" style="fill:var(--ap-flow-'+flowTone+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="'+shape+'"><title>'+escape(label)+'</title></path>';
   }
