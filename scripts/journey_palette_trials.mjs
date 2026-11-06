@@ -1,5 +1,5 @@
 /**
- * DESIGN STUDY ONLY: three distinctly art-directed palettes for the exact same
+ * DESIGN STUDY ONLY: four distinctly art-directed palettes for the exact same
  * My Journey Sankey. This module is not linked from production HTML and is
  * used only by the Chromium visual review harness.
  *
@@ -23,6 +23,22 @@ const make = ({ canvas, heading, muted, border, source, process, offer, noRespon
   '--ap-tone-waiting':waiting, '--ap-flow-waiting':waitingFlow,
 });
 export const palettes = {
+  vermilion: {
+    label: '04 / Editorial Vermilion',
+    principle: 'A single saturated vermilion river, print-ink black typography and three carefully rationed outcome accents; no rainbows or plastics.',
+    light: make({
+      canvas:'#FBF9F5',heading:'#20242A',muted:'#5A6268',border:'#DCD9D3',
+      source:'#4D5359',process:'#A53D22',offer:'#067154',noResponse:'#805900',
+      rejected:'#A5325E',waiting:'#626D74',sourceFlow:'#BABCB9',processFlow:'#E66340',
+      offerFlow:'#1BA985',noResponseFlow:'#DDA943',rejectedFlow:'#D85983',waitingFlow:'#B5C0C4',
+    }),
+    dark: make({
+      canvas:'#191E22',heading:'#F5F0E8',muted:'#B9C5C5',border:'#363F42',
+      source:'#BEC2C6',process:'#FFB199',offer:'#9AF0D3',noResponse:'#FFD890',
+      rejected:'#FFA9C9',waiting:'#B6C2C5',sourceFlow:'#4C555A',processFlow:'#D65C3B',
+      offerFlow:'#288F76',noResponseFlow:'#AE8436',rejectedFlow:'#B74775',waitingFlow:'#536266',
+    }),
+  },
   editorial: {
     label: '01 / Editorial Cobalt',
     principle: 'One confident cobalt journey; restrained context and precisely separated outcomes.',

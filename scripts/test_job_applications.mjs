@@ -136,13 +136,16 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
   assert.ok(view.includes('stop-color:var(--ap-flow-'+tone+')'),tone+' gradient stop missing');
  }
  assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
- assert.match(view,/<defs><linearGradient id="ap-ribbon-0"/);
+ assert.match(view,/<defs><pattern id="ap-flow-paper-grain"/);
+ assert.match(view,/<linearGradient id="ap-ribbon-0"/);
+ assert.match(view,/class="ap-ribbon-engraving"/);
+ assert.match(view,/class="ap-ribbon-engraving"[^>]+aria-hidden="true"/);
  assert.match(view,/style="fill:url\(#ap-ribbon-0\)"/);
  assert.equal((view.match(/<linearGradient /g)||[]).length,(view.match(/<path class="ap-flow/g)||[]).length);
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* SIGNAL LAGOON');
+ const start=css.indexOf('/* EDITORIAL VERMILION');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
@@ -171,14 +174,14 @@ test('My Journey text and UI markup match the original pre-design version',()=>{
  assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
 });
 
-test('selected Signal Lagoon CSS agrees with chromium-review design tokens',()=>{
+test('selected Editorial Vermilion CSS agrees with original-copy-locked design tokens',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* SIGNAL LAGOON');
+ const start=css.indexOf('/* EDITORIAL VERMILION');
  assert.ok(start>=0);
  const blocks=[...css.slice(start).matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(blocks.length,2,'full light/dark palette required');
  for(const [i,mode] of ['light','dark'].entries()){
-  const expected=palettes.signal[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  const expected=palettes.vermilion[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
   for(const role of roles)for(const prefix of ['--ap-tone-','--ap-flow-']){
    const token=prefix+role;
    assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
@@ -191,4 +194,10 @@ test('selected Signal Lagoon CSS agrees with chromium-review design tokens',()=>
    assert.equal(actual.get('--ap-tone-'+stage),actual.get('--ap-tone-applied'),'stage node must share one semantic color');
   }
  }
+});
+
+test('Decorative engraving is pointer transparent and suppressed in compact layout',()=>{
+ const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
+ assert.match(css,/\.application-journey \.ap-ribbon-engraving\s*\{[^}]*pointer-events:\s*none/s);
+ assert.match(css,/\.ap-compact-svg \.ap-ribbon-engraving\s*\{\s*display:\s*none\s*\}/);
 });
