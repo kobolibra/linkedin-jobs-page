@@ -86,12 +86,15 @@
   const {nodes,links,byId,unit,nodeWidth,width,height}=layout(data,{compact});
   const tone=n=>n.type==='region'||n.id==='saved'?'source':positive.includes(n.id)?n.id:n.type;
   const color=n=>'var(--ap-tone-'+tone(n)+')';
-  let paths='';
-  for(const link of links){
+  let paths='',ribbonDefs='';
+  for(const [ribbonIndex,link] of links.entries()){
    const a=byId.get(link.source),b=byId.get(link.target),h=link.value*unit,x=a.x+nodeWidth,x2=b.x,dx=(x2-x)*.5,y=link.sy,y2=link.ty;
    const context=b.context&&b.type!=='region'?' after '+b.context:'';
    const label=a.label+' → '+b.label+context+': '+link.value+' '+(link.value===1?'role':'roles');
-   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" style="fill:var(--ap-flow-'+tone(b.id==='offer'||['offer','waiting','no_response','rejected'].includes(b.type)?b:a)+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
+   // Source-to-destination color handoff; graph, width and geometry are unchanged.
+   const fromTone=tone(a),toTone=tone(b),ribbonId='ap-ribbon-'+ribbonIndex;
+   ribbonDefs+='<linearGradient id="'+ribbonId+'" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:var(--ap-flow-'+fromTone+')"/><stop offset="100%" style="stop-color:var(--ap-flow-'+toTone+')"/></linearGradient>';
+   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" data-tone="'+toTone+'" style="fill:url(#'+ribbonId+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
   }
   const bars=nodes.map(n=>{
    const percent=Math.round(n.value/data.total*100);
@@ -107,7 +110,7 @@
    const valueX=side?n.x+nodeWidth+12:n.x,valueY=side?n.y+32:n.y-19;
    return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'" data-tone="'+tone(n)+'" style="color:'+color(n)+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" rx="2" fill="'+color(n)+'"/>'+title+'<text x="'+valueX+'" y="'+valueY+'" class="ap-node-value'+(side?' ap-terminal-value':'')+'"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
   }).join('');
-  return '<svg class="'+(compact?'ap-compact-svg':'ap-full-svg')+'" preserveAspectRatio="xMidYMid meet" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc>'+paths+bars+'</svg>';
+  return '<svg class="'+(compact?'ap-compact-svg':'ap-full-svg')+'" preserveAspectRatio="xMidYMid meet" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc><defs>'+ribbonDefs+'</defs>'+paths+bars+'</svg>';
  }
  const api={stages,valid,index,transition,graph,layout,svg,jobKey,regionOf,regionIndex,button:()=>'',sheet:()=>{},open:()=>{}};globalThis.JobApplications=api;
  if(typeof document==='undefined'||!globalThis.AccountPreferences)return;
