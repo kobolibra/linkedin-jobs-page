@@ -141,7 +141,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* STUDIO / Verdigris');
+ const start=css.indexOf('/* ELECTRIC EDITORIAL');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
@@ -159,4 +159,13 @@ test('Journey-scoped light and dark palettes provide readable, complete state co
  }
  assert.match(area,/\.ap-flow:focus-visible/);
  assert.match(area,/prefers-reduced-motion:reduce/);
+});
+
+// This is an exact source-level copy lock against the original pre-redesign UI.
+// Any added headline, renamed label, legend copy, or altered explanatory text fails.
+test('My Journey text and UI markup match the original pre-design version',()=>{
+ const src=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
+ const actual=src.split('journey.innerHTML=')[1]?.split(';document.body.append(journey)')[0];
+ assert.equal(actual,"'<header class=\"ap-journey-head\"><div><h2 id=\"ap-journey-title\">Your application journey</h2></div><dl class=\"ap-kpis\"></dl><button type=\"button\" class=\"ap-close\" aria-label=\"Close application journey\">×</button></header><div class=\"ap-chart\" tabindex=\"0\" aria-label=\"Application flow chart, fitted to the screen.\"></div><div class=\"ap-legend\"><span class=\"ap-key-progress\">Applied</span><span class=\"ap-key-contact\">Recruiter Contact</span><span class=\"ap-key-interviews\">Interviews</span><span class=\"ap-key-waiting\">In progress / Not applied</span><span class=\"ap-key-offer\">Offer</span><span class=\"ap-key-no-response\">No Response</span><span class=\"ap-key-rejected\">Rejected</span></div><details class=\"ap-accessible-data\"><summary>Current stage breakdown</summary><dl class=\"ap-stage-summary\"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>'");
+ assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
 });
