@@ -91,49 +91,49 @@
 @media(max-width:720px){.application-journey-entry{border-radius:14px}}
 
 
-/* ELECTRIC EDITORIAL
-   My Journey modal only. A precise electric-blue progression with luminous
-   violet interviews; jade, amber and coral are reserved for outcomes.
-   Text, data and graph labels are not changed by this visual system. */
+/* SIGNAL LAGOON — selected from six Chromium-compared visual studies.
+   One emphatic sea-blue process (Applied → Final Interview), neutral sources,
+   lime Offer, amber No Response and coral Rejected. No rainbow stage switches.
+   Figure-scoped tokens only; every original page string remains unchanged. */
 .application-journey {
- --ap-canvas:#FCFCFD;
- --ap-heading:#111A31;
- --ap-figure-secondary:#536176;
- --ap-paper-border:#DAE0EC;
- --ap-paper-quiet:#F1F4FA;
- --ap-wash:rgba(55,90,244,.025);
- --ap-flow-outline:#223C87;
- --ap-tone-source:#536176;       --ap-flow-source:#C3CBD9;
- --ap-tone-applied:#164ACC;      --ap-flow-applied:#3466FC;
- --ap-tone-contact:#075FBA;      --ap-flow-contact:#2588FA;
- --ap-tone-first:#304DCC;        --ap-flow-first:#496DFD;
- --ap-tone-second:#5140C5;       --ap-flow-second:#7966FF;
- --ap-tone-final:#682BB8;        --ap-flow-final:#9A58F9;
- --ap-tone-offer:#0C714F;        --ap-flow-offer:#17BC82;
- --ap-tone-no_response:#865700;  --ap-flow-no_response:#FFB52D;
- --ap-tone-rejected:#B72A48;     --ap-flow-rejected:#FF5776;
- --ap-tone-waiting:#5C6878;      --ap-flow-waiting:#BBC6D2;
+ --ap-canvas:#FCFCFA;
+ --ap-heading:#142930;
+ --ap-figure-secondary:#596B6B;
+ --ap-paper-border:#DCE7E5;
+ --ap-paper-quiet:#EAF5F3;
+ --ap-wash:rgba(0,149,173,.025);
+ --ap-flow-outline:#142930;
+ --ap-tone-source:#596B6B;       --ap-flow-source:#C1D2D2;
+ --ap-tone-applied:#00748A;      --ap-flow-applied:#04A7C4;
+ --ap-tone-contact:#00748A;      --ap-flow-contact:#04A7C4;
+ --ap-tone-first:#00748A;        --ap-flow-first:#04A7C4;
+ --ap-tone-second:#00748A;       --ap-flow-second:#04A7C4;
+ --ap-tone-final:#00748A;        --ap-flow-final:#04A7C4;
+ --ap-tone-offer:#437300;        --ap-flow-offer:#8FC736;
+ --ap-tone-no_response:#8D5C08;  --ap-flow-no_response:#E6A842;
+ --ap-tone-rejected:#AD3151;     --ap-flow-rejected:#DE5475;
+ --ap-tone-waiting:#5F6B6E;      --ap-flow-waiting:#B6CBCE;
  color:var(--ap-heading);
  background:var(--ap-canvas);
 }
 [data-theme=dark] .application-journey {
- --ap-canvas:#111827;
- --ap-heading:#F5F7FF;
- --ap-figure-secondary:#C4CCDD;
- --ap-paper-border:#313E5A;
- --ap-paper-quiet:#212D47;
- --ap-wash:rgba(85,113,255,.035);
- --ap-flow-outline:#E6EDFF;
- --ap-tone-source:#B8C3D8;      --ap-flow-source:#4E5A73;
- --ap-tone-applied:#B4C5FF;     --ap-flow-applied:#335DE5;
- --ap-tone-contact:#9BD8FF;     --ap-flow-contact:#1778E5;
- --ap-tone-first:#B6BEFF;       --ap-flow-first:#5664ED;
- --ap-tone-second:#CDC2FF;      --ap-flow-second:#7058F0;
- --ap-tone-final:#DBB5FF;       --ap-flow-final:#9556E8;
- --ap-tone-offer:#8AF0C6;       --ap-flow-offer:#16875F;
- --ap-tone-no_response:#FFD98C; --ap-flow-no_response:#AE7113;
- --ap-tone-rejected:#FFA5B5;    --ap-flow-rejected:#C43F61;
- --ap-tone-waiting:#BEC8D6;     --ap-flow-waiting:#536173;
+ --ap-canvas:#101D20;
+ --ap-heading:#F0FAF8;
+ --ap-figure-secondary:#BCD3D1;
+ --ap-paper-border:#345154;
+ --ap-paper-quiet:#183034;
+ --ap-wash:rgba(26,181,206,.035);
+ --ap-flow-outline:#F0FAF8;
+ --ap-tone-source:#BCD3D1;      --ap-flow-source:#425C60;
+ --ap-tone-applied:#81E5F3;     --ap-flow-applied:#138DA8;
+ --ap-tone-contact:#81E5F3;     --ap-flow-contact:#138DA8;
+ --ap-tone-first:#81E5F3;       --ap-flow-first:#138DA8;
+ --ap-tone-second:#81E5F3;      --ap-flow-second:#138DA8;
+ --ap-tone-final:#81E5F3;       --ap-flow-final:#138DA8;
+ --ap-tone-offer:#B8EA69;       --ap-flow-offer:#729F30;
+ --ap-tone-no_response:#FFD27B; --ap-flow-no_response:#AD7830;
+ --ap-tone-rejected:#FF98B0;    --ap-flow-rejected:#BC4768;
+ --ap-tone-waiting:#BBCFCD;     --ap-flow-waiting:#426268;
 }
 .application-journey[open] {
  display:flex;

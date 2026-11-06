@@ -49,6 +49,7 @@ on:
       - 'job-applications.css'
       - 'scripts/test_job_applications.mjs'
       - 'scripts/test_application_journey_visual.mjs'
+      - 'scripts/journey_palette_trials.mjs'
       - 'scripts/verify_application_assets.py'
       - 'scripts/test_verify_application_assets.py'
       - 'scripts/test_job_actions.mjs'

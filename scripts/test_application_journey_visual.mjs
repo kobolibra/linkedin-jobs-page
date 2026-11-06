@@ -10,6 +10,7 @@ import { strict as assert } from 'node:assert';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
+import { palettes } from './journey_palette_trials.mjs';
 
 const root = new URL('../', import.meta.url);
 const source = readFileSync(new URL('job-applications.js', root), 'utf8');
@@ -34,6 +35,9 @@ const cases = [
   { name: 'mobile-landscape-dark', width: 844, height: 390, mode: 'dark', jobs: 40, touch: true },
   { name: 'dense-desktop', width: 1920, height: 1080, mode: 'light', jobs: 90 },
   { name: 'empty-account', width: 1280, height: 800, mode: 'light', jobs: 0 },
+  ...Object.keys(palettes).flatMap(palette => ['light','dark'].map(mode => ({
+    name:'study-'+palette+'-'+mode, palette, mode, width:1440, height:900, jobs:40,
+  }))),
 ];
 const results = [];
 const cssRoot = '<style>' + css.replaceAll('</style', '<\\/style') + '</style>';
@@ -60,7 +64,7 @@ try {
       page.on('pageerror', error => pageErrors.push(error.message));
       await page.setContent(html, { waitUntil: 'load' });
       await page.addScriptTag({ content: source });
-      const check = await page.evaluate(({ mode, count }) => {
+      const check = await page.evaluate(({ mode, count, tokens }) => {
         document.documentElement.dataset.theme = mode;
         const api = window.JobApplications;
         if (!api) throw Error('Application graph not exported');
@@ -103,6 +107,8 @@ try {
         dialog.querySelector('.ap-stage-summary').innerHTML = api.stages.map(([key, text]) =>
           '<div><dt>' + text + '</dt><dd>' + data.counts[key] + '</dd></div>').join('');
         dialog.showModal();
+        // Render the SAME graph, DOM and wording as production; change tokens only.
+        if (tokens) for (const [name,value] of Object.entries(tokens)) dialog.style.setProperty(name,value);
         const styles = getComputedStyle(dialog);
         const svg = dialog.querySelector('svg');
         const flows = [...dialog.querySelectorAll('.ap-flow')];
@@ -152,7 +158,7 @@ try {
             rect.x >= -2 && rect.y >= -2 && rect.right <= innerWidth+2 && rect.bottom <= innerHeight+2;
         }
         return result;
-      }, { mode: sample.mode, count: sample.jobs });
+      }, { mode: sample.mode, count: sample.jobs, tokens: sample.palette ? palettes[sample.palette][sample.mode] : null });
       assert.ok(check.isOpen, sample.name + ': dialog should be open');
       assert.equal(check.count, sample.jobs);
       assert.ok(check.graphBalanced, sample.name + ': flow conservation failed');
@@ -189,7 +195,7 @@ try {
       const screenshot = await page.screenshot({ type: 'jpeg', quality: 72, fullPage: false });
       writeFileSync(resolve(output, sample.name + '.jpg'), screenshot);
       // Compact transport proof: these exact screenshots can be inspected in CI logs.
-      if (['desktop-light', 'desktop-dark', 'mobile-portrait'].includes(sample.name)) {
+      if (sample.palette || ['desktop-light', 'desktop-dark', 'mobile-portrait'].includes(sample.name)) {
         const tiny = await page.screenshot({ type: 'jpeg', quality: 38, fullPage: false });
         console.log('JOURNEY_VISUAL_JPEG_' + sample.name.toUpperCase().replaceAll('-', '_') + '=' + tiny.toString('base64'));
       }
