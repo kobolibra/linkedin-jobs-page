@@ -142,7 +142,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* APP ECONOMY / Editorial Financial Flow');
+ const start=css.indexOf('/* APP ECONOMY / Graphic-led income statement');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
@@ -171,14 +171,14 @@ test('My Journey text and UI markup match the original pre-design version',()=>{
  assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
 });
 
-test('selected App Economy editorial palette matches exact reviewed semantic tokens',()=>{
+test('financial-ink outcome palette matches reviewed semantic tokens',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* APP ECONOMY / Editorial Financial Flow');
+ const start=css.indexOf('/* APP ECONOMY / Graphic-led income statement');
  assert.ok(start>=0);
  const blocks=[...css.slice(start).matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(blocks.length,2,'full light/dark palette required');
  for(const [i,mode] of ['light','dark'].entries()){
-  const expected=palettes.appEconomy[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  const expected=palettes.financialInk[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
   for(const role of roles)for(const prefix of ['--ap-tone-','--ap-flow-']){
    const token=prefix+role;
    assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
@@ -197,6 +197,6 @@ test('Figure uses lighter flat flow fills without decorative overlays',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
  const js=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  assert.doesNotMatch(js,/ap-ribbon-engraving|ap-flow-paper-grain|<linearGradient/);
- assert.match(css,/--ap-flow-applied:#94BCCE/);
- assert.match(css,/--ap-tone-applied:#195C7A/);
+ assert.match(css,/--ap-flow-applied:#A9B9C0/);
+ assert.match(css,/--ap-tone-applied:#252D35/);
 });
