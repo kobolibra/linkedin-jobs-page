@@ -140,3 +140,21 @@ test('30-day trend uses scoped Porcelain blue without recoloring other charts',(
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
+
+test('masthead and summary labels use natural case, while geography acronyms remain intact',()=>{
+ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../next-journey-masthead.css',import.meta.url),'utf8');
+ for(const label of ['The Hiring Landscape','Market Coverage','The Landscape in Numbers','Active Roles','Institutions','Last Updated','Visits']){
+  assert.ok(html.includes(label),'missing case-correct label: '+label);
+ }
+ assert.match(html,/class="nj-source">Source <span aria-hidden="true">\/<\/span> LinkedIn<\/span>/);
+ for(const legacy of ['THE HIRING LANDSCAPE','MARKET COVERAGE','THE LANDSCAPE IN NUMBERS','ACTIVE ROLES','INSTITUTIONS','LAST UPDATED','>VISITS<','> LINKEDIN<\/span>']){
+  assert.ok(!html.includes(legacy),'unexpected all-caps label: '+legacy);
+ }
+ assert.match(html,/>CN<\/button>/);
+ assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
+ assert.match(html,/next-journey-masthead\.css\?v=8/);
+ assert.match(css,/\.nj-eyebrow\{[^}]*letter-spacing:\.045em/);
+ assert.match(css,/\.nj-market-heading\{[^}]*letter-spacing:\.035em/);
+ assert.match(css,/\.nj-masthead-folio\{[^}]*letter-spacing:\.035em/);
+});
