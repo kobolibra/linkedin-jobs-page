@@ -23,6 +23,24 @@ const make = ({ canvas, heading, muted, border, source, process, offer, noRespon
   '--ap-tone-waiting':waiting, '--ap-flow-waiting':waitingFlow,
 });
 export const palettes = {
+  financialInk: {
+    label: '06 / Financial Ink — vivid outcomes',
+    principle: 'Near-black source and process nodes, quiet silver currents, decisive saturated emerald, vermilion and amber exit paths.',
+    light: make({
+      canvas:'#FCFBF8',heading:'#181E24',muted:'#5A6268',border:'#DEDCD7',
+      source:'#252D35',process:'#252D35',offer:'#047C45',
+      noResponse:'#99601A',rejected:'#C3293E',waiting:'#59656B',
+      sourceFlow:'#C2C8CA',processFlow:'#A9B9C0',offerFlow:'#44C97F',
+      noResponseFlow:'#E9B54B',rejectedFlow:'#EE7480',waitingFlow:'#D1D4D2',
+    }),
+    dark: make({
+      canvas:'#11191F',heading:'#F7F4EF',muted:'#C2C8CC',border:'#353D43',
+      source:'#E0E8E9',process:'#E0E8E9',offer:'#86EDAC',
+      noResponse:'#FFD58C',rejected:'#FF9BA5',waiting:'#BBC6CB',
+      sourceFlow:'#57636A',processFlow:'#586A72',offerFlow:'#2CA464',
+      noResponseFlow:'#AA792D',rejectedFlow:'#B63C53',waitingFlow:'#536067',
+    }),
+  },
   appEconomy: {
     label: '05 / App Economy Editorial',
     principle: 'Confident blue node ink; much lighter ribbons. Green/red/gold outcomes only when semantically meaningful.',
