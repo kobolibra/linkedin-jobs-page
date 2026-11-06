@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-06T04:02:48.782132+00:00",
+    "checkedAt": "2026-11-06T10:02:40.599879+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-06T04:02:54.433474+00:00",
+    "checkedAt": "2026-11-06T10:02:46.431158+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-06T04:03:00.417738+00:00",
+    "checkedAt": "2026-11-06T10:02:52.427202+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-06T04:03:03.503902+00:00",
+    "checkedAt": "2026-11-06T10:02:55.489013+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10278,5 +10278,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHezHkWm5vTkw/company-logo_100_100/B56Z2bDgTWGwAU-/0/1776422883263/absolute_kinetics_consultancy_pte_ltd_logo?e=2147483647&v=beta&t=D0YzGKmnR-NLdEcDiqymvQ0KgaFkrEzWAyAcegtA9Hk",
     "companyUrl": "https://sg.linkedin.com/company/absolute-kinetics-consultancy-pte-ltd",
     "sourceJobId": "4486944433"
+  },
+  "me fitness ltd": {
+    "name": "ME FITNESS LTD",
+    "checkedAt": "2026-11-06T10:02:36.291101+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3019228894d67220486230e0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGcyn_bL2VoeQ/company-logo_100_100/B56ZxLol7QIYAQ-/0/1770795458886/me_fitness_ltd_logo?e=2147483647&v=beta&t=qraGJdRZ9CixQ1K0T1cVWtUcv1G8YLIF6Wv4zPJCV2g",
+    "companyUrl": "https://hk.linkedin.com/company/me-fitness-ltd",
+    "sourceJobId": "4424328667"
+  },
+  "nexperia": {
+    "name": "Nexperia",
+    "checkedAt": "2026-11-06T10:02:37.717053+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fa0668dff3efb659ebdfc17b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFagje7sqh-sA/company-logo_100_100/company-logo_100_100/0/1719257883577/nexperia_logo?e=2147483647&v=beta&t=e9ZpdSAbMqZ-ERT61vA54eTDV5Ki-WMScNe_UvVhqwc",
+    "companyUrl": "https://nl.linkedin.com/company/nexperia",
+    "sourceJobId": "4486200514"
   }
 }
