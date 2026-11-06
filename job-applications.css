@@ -250,6 +250,11 @@
  transition:fill-opacity .16s ease,filter .16s ease;
 }
 [data-theme=dark] .application-journey .ap-flow { fill-opacity:.88 }
+.application-journey .ap-ribbon-engraving {
+ pointer-events:none;
+ opacity:.42;
+}
+.application-journey .ap-compact-svg .ap-ribbon-engraving { display:none }
 .application-journey .ap-flow:hover,
 .application-journey .ap-flow:focus-visible {
  fill-opacity:1;
