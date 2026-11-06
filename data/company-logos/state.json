@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-05T22:03:20.197651+00:00",
+    "checkedAt": "2026-11-06T04:02:48.782132+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-05T22:03:24.348792+00:00",
+    "checkedAt": "2026-11-06T04:02:54.433474+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-05T22:03:30.342010+00:00",
+    "checkedAt": "2026-11-06T04:03:00.417738+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-05T22:03:33.701706+00:00",
+    "checkedAt": "2026-11-06T04:03:03.503902+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10266,5 +10266,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGT8wi_P4_m4A/company-logo_100_100/company-logo_100_100/0/1685686467355/tatlerasia_logo?e=2147483647&v=beta&t=ne3EzN_p8EfnKQY_mJXzaQ_DbIBBwbFxMnGz1lLa2kc",
     "companyUrl": "https://hk.linkedin.com/company/tatlerasia",
     "sourceJobId": "4486586796"
+  },
+  "absolute kinetics consultancy pte ltd": {
+    "name": "Absolute Kinetics Consultancy Pte Ltd",
+    "checkedAt": "2026-11-06T04:02:47.252935+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "89d55daabba22ebd643c5592.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHezHkWm5vTkw/company-logo_100_100/B56Z2bDgTWGwAU-/0/1776422883263/absolute_kinetics_consultancy_pte_ltd_logo?e=2147483647&v=beta&t=D0YzGKmnR-NLdEcDiqymvQ0KgaFkrEzWAyAcegtA9Hk",
+    "companyUrl": "https://sg.linkedin.com/company/absolute-kinetics-consultancy-pte-ltd",
+    "sourceJobId": "4486944433"
   }
 }
