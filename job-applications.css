@@ -349,66 +349,78 @@
 .application-journey footer{color:#65757e}
 [data-theme=dark] .application-journey footer{color:#aebcc5}
 
-/* APP ECONOMY INSIGHTS / APPLE FINANCIAL SANKEY — PALETTE REPRODUCTION
- * Reference: published Apple income-statement diagram, not a new art direction.
- * Its visual language: cool light-gray canvas, near-black revenue nodes,
- * gray revenue ribbons, pale green profit ribbons, muted salmon cost ribbons,
- * dark-blue title. These values approximate the visible reference colors;
- * the dark counterpart is an accessibility adaptation, not a source duplicate.
- * Only My Journey gets these tokens. Original copy, graph and layout stay intact.
+/* APP ECONOMY INSIGHTS / SALESFORCE-STYLE MULTI-SOURCE COLOR SYSTEM
+ * Five independent category-colored source streams; a restrained, coherent
+ * blue-to-teal-to-violet application journey; green/amber/coral outcomes.
+ * Original adaptation of the Salesforce financial Sankey visual language.
+ * Colors are reference-informed approximations, not official brand HEX tokens.
+ * Scoped to this figure; no other UI, graph, content or account state changes.
  */
 .application-journey{
- --ap-canvas:#F1F1F1;
- --ap-blue:#175678;
- --ap-heading:#175678;
- --ap-figure-secondary:#555555;
- --ap-paper-border:#D3D3D3;
- --ap-paper-quiet:#E7E7E7;
- --ap-flow-outline:#262626;
- --ap-tone-source:#131313;       --ap-flow-source:#8A8A8A;
- --ap-tone-applied:#131313;      --ap-flow-applied:#909090;
- --ap-tone-contact:#131313;      --ap-flow-contact:#909090;
- --ap-tone-first:#131313;        --ap-flow-first:#909090;
- --ap-tone-second:#131313;       --ap-flow-second:#909090;
- --ap-tone-final:#131313;        --ap-flow-final:#909090;
- --ap-tone-offer:#197B36;        --ap-flow-offer:#A8CBA3;
- --ap-tone-no_response:#606060;  --ap-flow-no_response:#B7B7B7;
- --ap-tone-rejected:#BD242A;     --ap-flow-rejected:#DEA09A;
- --ap-tone-waiting:#606060;      --ap-flow-waiting:#C5C5C5;
- color:#191919;
+ --ap-canvas:#F3F4F3;
+ --ap-blue:#246A98;
+ --ap-heading:#1D405A;
+ --ap-figure-secondary:#58646D;
+ --ap-paper-border:#D9DFE0;
+ --ap-paper-quiet:#EAF0F1;
+ --ap-flow-outline:#263D50;
+ --ap-tone-source:#286A9B;          --ap-flow-source:#B4CEDD;
+ --ap-tone-source_cn:#14756E;       --ap-flow-source_cn:#7BC9BF;
+ --ap-tone-source_hk:#925079;       --ap-flow-source_hk:#DC9FBE;
+ --ap-tone-source_sg:#704F99;       --ap-flow-source_sg:#B9A5DC;
+ --ap-tone-source_other:#93602E;    --ap-flow-source_other:#E3B77F;
+ --ap-tone-source_unknown:#326B9A;  --ap-flow-source_unknown:#A8C7DF;
+ --ap-tone-applied:#246EA9;         --ap-flow-applied:#86B4D8;
+ --ap-tone-contact:#19788E;         --ap-flow-contact:#83C3CB;
+ --ap-tone-first:#426CA5;           --ap-flow-first:#9EBAE1;
+ --ap-tone-second:#5C5FAA;          --ap-flow-second:#ADADE0;
+ --ap-tone-final:#77519A;           --ap-flow-final:#C5A1D5;
+ --ap-tone-offer:#197D43;           --ap-flow-offer:#92CDA3;
+ --ap-tone-no_response:#8D6427;     --ap-flow-no_response:#E1C58F;
+ --ap-tone-rejected:#B83D50;        --ap-flow-rejected:#E2A0A8;
+ --ap-tone-waiting:#576A72;         --ap-flow-waiting:#CCD5D8;
+ color:#23313B;
  background:var(--ap-canvas);
 }
 [data-theme=dark] .application-journey{
- --ap-canvas:#1B2025;
- --ap-blue:#C1D7E5;
- --ap-heading:#C1D7E5;
- --ap-figure-secondary:#C5CBCF;
- --ap-paper-border:#3D454B;
- --ap-paper-quiet:#30373D;
- --ap-flow-outline:#F4F4F4;
- --ap-tone-source:#EEEEEE;       --ap-flow-source:#656B70;
- --ap-tone-applied:#EEEEEE;      --ap-flow-applied:#747A80;
- --ap-tone-contact:#EEEEEE;      --ap-flow-contact:#747A80;
- --ap-tone-first:#EEEEEE;        --ap-flow-first:#747A80;
- --ap-tone-second:#EEEEEE;       --ap-flow-second:#747A80;
- --ap-tone-final:#EEEEEE;        --ap-flow-final:#747A80;
- --ap-tone-offer:#A3E9A1;        --ap-flow-offer:#547B56;
- --ap-tone-no_response:#C4C4C4;  --ap-flow-no_response:#60666B;
- --ap-tone-rejected:#F2AAA5;     --ap-flow-rejected:#93605D;
- --ap-tone-waiting:#C4C4C4;      --ap-flow-waiting:#636A70;
- color:#F2F2F2;
+ --ap-canvas:#1B2630;
+ --ap-blue:#A4D0F3;
+ --ap-heading:#E6F1F6;
+ --ap-figure-secondary:#B9C9D2;
+ --ap-paper-border:#3B4C59;
+ --ap-paper-quiet:#263744;
+ --ap-flow-outline:#DCECF4;
+ --ap-tone-source:#A8D0EF;          --ap-flow-source:#4E718B;
+ --ap-tone-source_cn:#90DDD0;       --ap-flow-source_cn:#3D877C;
+ --ap-tone-source_hk:#F0B3D0;       --ap-flow-source_hk:#93637D;
+ --ap-tone-source_sg:#D2BDF4;       --ap-flow-source_sg:#75609C;
+ --ap-tone-source_other:#F3C797;    --ap-flow-source_other:#927044;
+ --ap-tone-source_unknown:#A8CFED;  --ap-flow-source_unknown:#547A98;
+ --ap-tone-applied:#A4D0F3;         --ap-flow-applied:#487A9F;
+ --ap-tone-contact:#95D5DE;         --ap-flow-contact:#42858D;
+ --ap-tone-first:#B8CDF1;           --ap-flow-first:#607CBA;
+ --ap-tone-second:#C6C5FF;          --ap-flow-second:#6D6BB5;
+ --ap-tone-final:#E0C2F4;           --ap-flow-final:#8867A0;
+ --ap-tone-offer:#A6E7B7;           --ap-flow-offer:#42855F;
+ --ap-tone-no_response:#F0D29A;     --ap-flow-no_response:#91754D;
+ --ap-tone-rejected:#FFADB9;        --ap-flow-rejected:#945365;
+ --ap-tone-waiting:#B8CCD6;         --ap-flow-waiting:#536B79;
+ color:#EBF3F7;
  background:var(--ap-canvas);
 }
-/* Original chart legend structure; neutral process, green success, red rejection. */
 .application-journey .ap-legend .ap-key-interviews::before{
- background:var(--ap-tone-first);
+ background:linear-gradient(90deg,var(--ap-tone-first) 0 34%,var(--ap-tone-second) 34% 67%,var(--ap-tone-final) 67% 100%);
 }
 .application-journey .ap-flow{
- fill-opacity:1;
+ fill-opacity:.94;
+}
+.application-journey .ap-flow[data-tone^="source_"]{
+ fill-opacity:.85;
 }
 .application-journey .ap-flow:hover,
 .application-journey .ap-flow:focus-visible{
- filter:brightness(.88);
+ fill-opacity:1;
+ filter:brightness(.92) saturate(1.06);
 }
 .application-journey footer{color:var(--ap-figure-secondary)}
 [data-theme=dark] .application-journey footer{color:var(--ap-figure-secondary)}
