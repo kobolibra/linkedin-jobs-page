@@ -112,9 +112,9 @@ try {
           nodes: groups.length, flows: flows.length,
           canvas: styles.backgroundColor, toneSource: styles.getPropertyValue('--ap-tone-source').trim(),
           expectedCanvas: styles.getPropertyValue('--ap-canvas').trim(),
-          hasOffer: flows.some(x => x.style.fill.includes('--ap-flow-offer')),
-          hasRejected: flows.some(x => x.style.fill.includes('--ap-flow-rejected')),
-          hasSilence: flows.some(x => x.style.fill.includes('--ap-flow-no_response')),
+          hasOffer: flows.some(x => x.dataset.tone === 'offer'),
+          hasRejected: flows.some(x => x.dataset.tone === 'rejected'),
+          hasSilence: flows.some(x => x.dataset.tone === 'no_response'),
           transform: styles.transform,
           allFlowLabels: flows.every(x => x.getAttribute('aria-label')?.includes(':') && x.getAttribute('tabindex') === '0'),
           graphBalanced: data.nodes.every(node => {
@@ -129,6 +129,18 @@ try {
           const viewBox = svg.viewBox.baseVal;
           result.viewBox = { width:viewBox.width,height:viewBox.height };
           result.hasNaN = /NaN|Infinity/.test(svg.outerHTML);
+          const gradients = [...svg.querySelectorAll('defs linearGradient')];
+          result.gradientCount = gradients.length;
+          result.gradientStopsValid = gradients.every(g => {
+            const stops = [...g.querySelectorAll('stop')];
+            return stops.length === 2 && stops.every(s => {
+              const paint = getComputedStyle(s).stopColor;
+              return paint && paint !== 'none' && paint !== 'rgba(0, 0, 0, 0)';
+            });
+          });
+          result.flowGradientReferencesValid = flows.every(f =>
+            /^url\("#?ap-ribbon-\d+"\)$/.test(getComputedStyle(f).fill)
+            || /^url\(#ap-ribbon-\d+\)$/.test(f.style.fill));
           const computed = getComputedStyle(flows[0]);
           result.ribbonColor = computed.fill;
           const regions = [...svg.querySelectorAll('.ap-region-code')];
@@ -152,6 +164,8 @@ try {
         assert.ok(check.viewBox.width > 0 && check.viewBox.height > 0, sample.name + ': invalid SVG dimensions');
         assert.ok(!check.hasNaN, sample.name + ': SVG contains non-finite values');
         assert.equal(check.invisibleFlowCount, 0, sample.name + ': invisible ribbons');
+        assert.equal(check.gradientCount, check.flows, sample.name + ': one gradient per ribbon');
+        assert.ok(check.gradientStopsValid && check.flowGradientReferencesValid, sample.name + ': rendered gradient stops must resolve');
         assert.ok(check.chartScreenVisible, sample.name + ': SVG is clipped by viewport');
         assert.ok((check.phonePortrait ? check.graphUsage.height : check.graphUsage.width) > 0.55, sample.name + ': diagram should own the available long axis');
         assert.ok((check.phonePortrait ? check.graphUsage.width : check.graphUsage.height) > 0.35, sample.name + ': diagram should own the available short axis');
