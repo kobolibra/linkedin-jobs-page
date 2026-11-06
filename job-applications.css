@@ -424,3 +424,6 @@
 }
 .application-journey footer{color:var(--ap-figure-secondary)}
 [data-theme=dark] .application-journey footer{color:var(--ap-figure-secondary)}
+
+/* Region codes take their own categorical color; text remains untouched. */
+.application-journey .ap-node-region .ap-region-code{fill:currentColor}
