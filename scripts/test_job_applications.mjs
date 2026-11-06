@@ -136,7 +136,10 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
   assert.ok(view.includes('stop-color:var(--ap-flow-'+tone+')'),tone+' gradient stop missing');
  }
  assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
- assert.match(view,/<defs><linearGradient id="ap-ribbon-0"/);
+ assert.match(view,/<defs><pattern id="ap-flow-paper-grain"/);
+ assert.match(view,/<linearGradient id="ap-ribbon-0"/);
+ assert.match(view,/class="ap-ribbon-engraving"/);
+ assert.match(view,/class="ap-ribbon-engraving"[^>]+aria-hidden="true"/);
  assert.match(view,/style="fill:url\(#ap-ribbon-0\)"/);
  assert.equal((view.match(/<linearGradient /g)||[]).length,(view.match(/<path class="ap-flow/g)||[]).length);
 });
@@ -191,4 +194,10 @@ test('selected Editorial Vermilion CSS agrees with original-copy-locked design t
    assert.equal(actual.get('--ap-tone-'+stage),actual.get('--ap-tone-applied'),'stage node must share one semantic color');
   }
  }
+});
+
+test('Decorative engraving is pointer transparent and suppressed in compact layout',()=>{
+ const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
+ assert.match(css,/\.application-journey \.ap-ribbon-engraving\s*\{[^}]*pointer-events:\s*none/s);
+ assert.match(css,/\.ap-compact-svg \.ap-ribbon-engraving\s*\{\s*display:\s*none\s*\}/);
 });
