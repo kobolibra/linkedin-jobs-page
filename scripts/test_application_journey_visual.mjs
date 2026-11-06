@@ -26,6 +26,7 @@ const browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 const cases = [
+  { name: 'desktop-wide', width: 1920, height: 1080, mode: 'dark', jobs: 40 },
   { name: 'desktop-light', width: 1440, height: 900, mode: 'light', jobs: 40 },
   { name: 'desktop-dark', width: 1440, height: 900, mode: 'dark', jobs: 40 },
   { name: 'laptop-compact', width: 1280, height: 720, mode: 'light', jobs: 40 },
@@ -38,7 +39,7 @@ const results = [];
 const cssRoot = '<style>' + css.replaceAll('</style', '<\\/style') + '</style>';
 const html = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">' + cssRoot +
   '</head><body><dialog class="application-journey" aria-labelledby="ap-journey-title">' +
-  '<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div>' +
+  '<header class="ap-journey-head"><div><p class="ap-journey-kicker">THE APPLICATION ATLAS</p><h2 id="ap-journey-title">Your application journey</h2><p class="ap-journey-dek">Every saved role. Every recorded step.</p></div>' +
   '<dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header>' +
   '<div class="ap-chart" tabindex="0" aria-label="Application flow chart, fitted to the screen."></div>' +
   '<div class="ap-legend"><span class="ap-key-progress">Applied</span><span class="ap-key-contact">Recruiter Contact</span><span class="ap-key-interviews">Interviews</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div>' +
@@ -134,6 +135,7 @@ try {
           result.labelBounding = regions.map(r);
           result.invisibleFlowCount = flows.filter(f => getComputedStyle(f).fill === 'none').length;
           const rect = svg.getBoundingClientRect();
+          result.graphUsage = { width: rect.width / innerWidth, height: rect.height / innerHeight };
           result.chartScreenVisible = rect.width > 0 && rect.height > 0 &&
             rect.x >= -2 && rect.y >= -2 && rect.right <= innerWidth+2 && rect.bottom <= innerHeight+2;
         }
@@ -151,6 +153,8 @@ try {
         assert.ok(!check.hasNaN, sample.name + ': SVG contains non-finite values');
         assert.equal(check.invisibleFlowCount, 0, sample.name + ': invisible ribbons');
         assert.ok(check.chartScreenVisible, sample.name + ': SVG is clipped by viewport');
+        assert.ok(check.graphUsage.width > 0.55, sample.name + ': diagram should own the content width');
+        assert.ok(check.graphUsage.height > 0.35, sample.name + ': diagram should own the vertical rhythm');
       } else {
         assert.equal(check.nodes, 0);
         assert.equal(check.flows, 0);
