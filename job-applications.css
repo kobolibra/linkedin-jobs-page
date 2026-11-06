@@ -91,230 +91,278 @@
 @media(max-width:720px){.application-journey-entry{border-radius:14px}}
 
 
-/* ATELIER / Journey only. Ink, parchment, a measured spectral route.
-   All tokens are scoped to the modal: the editor and job list are untouched. */
-.application-journey{
- --ap-canvas:#faf8f4;
- --ap-tone-source:#596675;--ap-flow-source:#b7c0cb;
- --ap-tone-applied:#304b7f;--ap-flow-applied:#7998ca;
- --ap-tone-contact:#315e9a;--ap-flow-contact:#84a8d7;
- --ap-tone-first:#4b61a9;--ap-flow-first:#a0a3d8;
- --ap-tone-second:#635aa4;--ap-flow-second:#b4a0d2;
- --ap-tone-final:#754b91;--ap-flow-final:#bb96c5;
- --ap-tone-offer:#236c54;--ap-flow-offer:#78b79d;
- --ap-tone-no_response:#8a633d;--ap-flow-no_response:#cdb795;
- --ap-tone-rejected:#a34f50;--ap-flow-rejected:#d8a29f;
- --ap-tone-waiting:#667078;--ap-flow-waiting:#bbc3c8;
- --ap-figure-secondary:#626d78;--ap-flow-outline:#384d63;
- --ap-paper-border:#dedbd5;--ap-paper-quiet:#eeeae2;
- --ap-heading:#182735;
- background:var(--ap-canvas);
+/* STUDIO / Verdigris
+   One continuous mineral green route. Outcome colors are accents, never a rainbow.
+   This entire system belongs to My Journey only; editor and job list are untouched. */
+.application-journey {
+ --ap-canvas:#F7F5F0;
+ --ap-heading:#1A2926;
+ --ap-figure-secondary:#596862;
+ --ap-paper-border:#D5DAD2;
+ --ap-paper-quiet:#ECEEE8;
+ --ap-wash:rgba(55,123,97,.035);
+ --ap-flow-outline:#25594D;
+ --ap-tone-source:#58645C;       --ap-flow-source:#BCC6BD;
+ --ap-tone-applied:#265C58;      --ap-flow-applied:#91B5A9;
+ --ap-tone-contact:#176B67;      --ap-flow-contact:#86C2B3;
+ --ap-tone-first:#12766B;        --ap-flow-first:#7CC5B3;
+ --ap-tone-second:#247A68;       --ap-flow-second:#7BC5A9;
+ --ap-tone-final:#2F765B;        --ap-flow-final:#81BE9E;
+ --ap-tone-offer:#1D704C;        --ap-flow-offer:#7FC69D;
+ --ap-tone-no_response:#8A633A;  --ap-flow-no_response:#D3B58D;
+ --ap-tone-rejected:#A45048;     --ap-flow-rejected:#D9A097;
+ --ap-tone-waiting:#616D67;      --ap-flow-waiting:#C3CCC4;
+ color:var(--ap-heading);
+ background-color:var(--ap-canvas);
 }
-[data-theme=dark] .application-journey{
- --ap-canvas:#17212a;
- --ap-tone-source:#b9c4ce;--ap-flow-source:#455565;
- --ap-tone-applied:#b3c7f0;--ap-flow-applied:#485d8a;
- --ap-tone-contact:#98c3f3;--ap-flow-contact:#3e648b;
- --ap-tone-first:#b6b6fa;--ap-flow-first:#62618c;
- --ap-tone-second:#d0b0ed;--ap-flow-second:#735c88;
- --ap-tone-final:#ddb2e9;--ap-flow-final:#805a84;
- --ap-tone-offer:#8ad9b4;--ap-flow-offer:#356e5b;
- --ap-tone-no_response:#e7ca9c;--ap-flow-no_response:#715d48;
- --ap-tone-rejected:#f0b0ae;--ap-flow-rejected:#875555;
- --ap-tone-waiting:#bac4c8;--ap-flow-waiting:#495b66;
- --ap-figure-secondary:#b9c4ce;--ap-flow-outline:#c0cce4;
- --ap-paper-border:#3b4b58;--ap-paper-quiet:#293742;
- --ap-heading:#f1eee9;
+[data-theme=dark] .application-journey {
+ --ap-canvas:#14211F;
+ --ap-heading:#F1F5EF;
+ --ap-figure-secondary:#BBCBC2;
+ --ap-paper-border:#355048;
+ --ap-paper-quiet:#23372F;
+ --ap-wash:rgba(112,205,170,.035);
+ --ap-flow-outline:#BEDBD0;
+ --ap-tone-source:#B7C8C0;      --ap-flow-source:#42574E;
+ --ap-tone-applied:#A7D1CB;     --ap-flow-applied:#34675D;
+ --ap-tone-contact:#91DAD0;     --ap-flow-contact:#337568;
+ --ap-tone-first:#89E0D2;       --ap-flow-first:#377E6D;
+ --ap-tone-second:#9BE0C5;      --ap-flow-second:#3D826A;
+ --ap-tone-final:#AFE0B9;       --ap-flow-final:#3C795F;
+ --ap-tone-offer:#96E4A8;       --ap-flow-offer:#3D865F;
+ --ap-tone-no_response:#E8C48B; --ap-flow-no_response:#7A6042;
+ --ap-tone-rejected:#FFADA0;    --ap-flow-rejected:#805048;
+ --ap-tone-waiting:#BACAC3;     --ap-flow-waiting:#41574D;
 }
-.application-journey[open]{
- width:min(1620px,calc(100dvw - 28px));
- height:min(980px,calc(100dvh - 28px));
- padding:25px clamp(20px,3vw,44px) 22px;
+.application-journey[open] {
+ display:flex;
+ flex-direction:column;
  gap:0;
- background:var(--ap-canvas);
+ box-sizing:border-box;
+ width:min(1610px,calc(100dvw - 28px));
+ height:min(970px,calc(100dvh - 28px));
+ max-height:none;max-width:none;
+ padding:27px clamp(20px,2.9vw,42px) 22px;
+ overflow:hidden;
+ background-color:var(--ap-canvas);
+ background-image:radial-gradient(ellipse 60% 50% at 53% 58%,var(--ap-wash),transparent 78%);
  border:1px solid var(--ap-paper-border);
- box-shadow:0 28px 84px #121d2833;
- border-radius:14px;
+ border-radius:12px;
+ box-shadow:0 26px 70px #16292028;
 }
-.application-journey .ap-journey-head{
+.application-journey .ap-journey-head {
  display:grid;
  grid-template-columns:minmax(0,1fr) auto 40px;
  align-items:center;
- gap:clamp(22px,3vw,48px);
- padding:0 0 20px;
+ gap:clamp(20px,3vw,46px);
+ padding:0 0 18px;
  border-bottom:1px solid var(--ap-paper-border);
 }
-.application-journey .ap-journey-head h2{
- font:600 clamp(26px,2.6vw,42px)/1.09 var(--sans,system-ui);
- letter-spacing:-.048em;
+.application-journey .ap-journey-head h2 {
+ margin:0;
+ max-width:none;
  color:var(--ap-heading);
+ font:600 clamp(26px,2.65vw,41px)/1.09 var(--sans,system-ui);
+ letter-spacing:-.048em;
 }
-.application-journey .ap-journey-kicker{
+.application-journey .ap-journey-kicker {
  margin:0 0 8px;
- color:var(--ap-tone-applied);
- font:700 10px/1.3 var(--sans,system-ui);
- letter-spacing:.21em;
+ color:var(--ap-tone-contact);
+ font:700 10px/1.35 var(--sans,system-ui);
+ letter-spacing:.19em;
 }
-.application-journey .ap-journey-dek{
- margin:9px 0 0;
+.application-journey .ap-journey-dek {
+ margin:8px 0 0;
  color:var(--ap-figure-secondary);
  font:400 12px/1.4 var(--sans,system-ui);
- letter-spacing:.01em;
 }
-.application-journey .ap-journey-head .ap-kpis{
+.application-journey .ap-journey-head .ap-kpis {
  display:grid;
  grid-template-columns:repeat(4,minmax(72px,1fr));
- gap:clamp(16px,2vw,32px);
- margin:0;
+ gap:clamp(15px,2.1vw,32px);
+ grid-column:auto;grid-row:auto;
+ margin:0;padding:0;border:0;
+}
+.application-journey .ap-kpis dt {
+ color:var(--ap-figure-secondary);
+ font:550 10px/1.4 var(--sans,system-ui);
+ letter-spacing:.025em;
+}
+.application-journey .ap-kpis dd {
+ margin:7px 0 0;
+ color:var(--ap-heading);
+ font:520 27px/1 var(--sans,system-ui);
+ letter-spacing:-.04em;
+}
+.application-journey .ap-kpis>div:last-child dd { color:var(--ap-tone-offer) }
+.application-journey .ap-chart {
+ flex:1 1 0;
+ min-width:0;min-height:0;
+ overflow:hidden;
+ margin:15px 0 0;
  padding:0;
  border:0;
 }
-.application-journey .ap-kpis dt{
- color:var(--ap-figure-secondary);
- font:500 10px/1.4 var(--sans,system-ui);
- letter-spacing:.03em;
-}
-.application-journey .ap-kpis dd{
- margin:6px 0 0;
- color:var(--ap-heading);
- font:500 28px/1 var(--sans,system-ui);
- letter-spacing:-.045em;
-}
-.application-journey .ap-kpis>div:last-child dd{color:var(--ap-tone-offer)}
-.application-journey .ap-chart{
- flex:1 1 0;
- min-height:0;
- min-width:0;
- overflow:hidden;
- margin:16px 0 0;
- padding:0;
-}
-.application-journey .ap-chart>svg{
+.application-journey .ap-chart>svg {
  display:block;
- width:100%;
- height:100%;
+ width:100%;height:100%;
+ max-width:none;
  margin:0;
  overflow:hidden;
 }
-.application-journey .ap-node-label{
+.application-journey .ap-node[data-tone] .ap-node-label,
+.application-journey .ap-node[data-tone] .ap-node-value {
+ fill:currentColor;
+}
+.application-journey .ap-node-label {
  font-size:18px;
  font-weight:650;
- letter-spacing:-.032em;
+ letter-spacing:-.025em;
 }
-.application-journey .ap-node-value{
+.application-journey .ap-node-value {
  font-size:25px;
- font-weight:570;
+ font-weight:580;
+ letter-spacing:-.035em;
+}
+.application-journey .ap-node-share {
+ fill:var(--ap-figure-secondary);
+ font-size:13px;
+ font-weight:460;
+ letter-spacing:0;
+}
+.application-journey .ap-node-label,
+.application-journey .ap-node-value,
+.application-journey .ap-region-code,
+.application-journey .ap-region-name {
+ stroke:var(--ap-canvas);
+ stroke-width:4px;
+ stroke-linejoin:round;
+ paint-order:stroke;
+}
+.application-journey .ap-region-code {
+ fill:var(--ap-tone-source);
+ font:700 23px/1 var(--sans,system-ui);
  letter-spacing:-.04em;
 }
-.application-journey .ap-node-share{
- font-size:13px;
+.application-journey .ap-region-name {
+ fill:var(--ap-figure-secondary);
+ font-size:14px;
  font-weight:450;
 }
-.application-journey .ap-node-label,.application-journey .ap-node-value,
-.application-journey .ap-region-code,.application-journey .ap-region-name{
- stroke:var(--ap-canvas);stroke-width:5px;paint-order:stroke;
- stroke-linejoin:round;
-}
-.application-journey .ap-region-code{font-size:24px;font-weight:700;letter-spacing:-.035em}
-.application-journey .ap-region-name{font-size:14px;fill:var(--ap-figure-secondary)}
-.application-journey .ap-compact-svg .ap-region-code{font-size:22px}
-.application-journey .ap-compact-svg .ap-region-name{font-size:12px}
-.application-journey .ap-compact-svg .ap-node-label{font-size:16px}
-.application-journey .ap-compact-svg .ap-node-value{font-size:21px}
-.application-journey .ap-compact-svg .ap-terminal-label{font-size:15px;font-weight:620}
-.application-journey .ap-compact-svg .ap-terminal-value{font-size:20px}
-.application-journey .ap-flow{
- fill-opacity:.87;
+.application-journey .ap-compact-svg .ap-node-label { font-size:16px }
+.application-journey .ap-compact-svg .ap-node-value { font-size:21px }
+.application-journey .ap-compact-svg .ap-terminal-label { font-size:15px;font-weight:650 }
+.application-journey .ap-compact-svg .ap-terminal-value { font-size:20px }
+.application-journey .ap-compact-svg .ap-region-code { font-size:21px }
+.application-journey .ap-compact-svg .ap-region-name { font-size:12px }
+.application-journey .ap-flow {
+ fill-opacity:.93;
  stroke:none;
- transition:fill-opacity .18s ease,filter .18s ease;
+ transition:fill-opacity .15s ease,filter .15s ease;
 }
-.application-journey .ap-flow:hover,.application-journey .ap-flow:focus-visible{
+.application-journey .ap-flow:hover,
+.application-journey .ap-flow:focus-visible {
  fill-opacity:1;
- filter:saturate(1.1);
+ filter:saturate(1.11);
  stroke:var(--ap-flow-outline);
- stroke-width:.9;
+ stroke-width:1;
+ stroke-linejoin:round;
  outline:none;
 }
-.application-journey .ap-node[data-tone] .ap-node-share{fill:var(--ap-figure-secondary)}
-.application-journey .ap-node-region .ap-region-code{fill:var(--ap-tone-source)}
-.application-journey .ap-legend{
- padding:13px 0 10px;
+.application-journey .ap-node[data-tone] .ap-node-share { fill:var(--ap-figure-secondary) }
+.application-journey .ap-node-region .ap-region-code { fill:var(--ap-tone-source) }
+.application-journey .ap-legend {
+ flex:none;
  margin:0;
- color:var(--ap-figure-secondary);
- font-size:10px;
- gap:9px 24px;
+ padding:13px 0 10px;
+ gap:10px 24px;
  border-top:1px solid var(--ap-paper-border);
+ color:var(--ap-figure-secondary);
+ font:500 10px/1.5 var(--sans,system-ui);
 }
-.application-journey .ap-legend span::before{
- width:10px;height:10px;
- margin-right:7px;
- border-radius:2px;
+.application-journey .ap-legend span::before {
+ width:9px;height:9px;
+ margin-right:8px;
+ border-radius:50%;
  vertical-align:-1px;
 }
-.application-journey .ap-accessible-data{
- border-top:0;
- padding:4px 0;
+.application-journey .ap-legend .ap-key-interviews::before {
+ background:linear-gradient(90deg,var(--ap-tone-first),var(--ap-tone-final));
+}
+.application-journey .ap-accessible-data {
+ flex:none;
+ border:0;
+ padding:3px 0;
  color:var(--ap-figure-secondary);
 }
-.application-journey footer{
- color:var(--ap-figure-secondary);
- border-top:0;
+.application-journey footer {
+ flex:none;
+ margin:0;
  padding:1px 0 0;
- font-size:10px;
+ color:var(--ap-figure-secondary);
+ border:0;
+ font:450 10px/1.5 var(--sans,system-ui);
 }
-.application-journey .ap-journey-head .ap-close{
- width:38px;height:38px;color:var(--ap-heading);
+.application-journey .ap-journey-head .ap-close {
+ grid-row:auto;grid-column:auto;
+ width:38px;height:38px;
  border:1px solid var(--ap-paper-border);
+ border-radius:50%;
  background:transparent;
-}
-.application-journey .ap-empty{
- min-height:100%;align-content:center;
  color:var(--ap-heading);
 }
-@media(max-width:1100px) and (pointer:fine){
- .application-journey .ap-journey-head{
+.application-journey .ap-journey-head .ap-close:hover {
+ background:var(--ap-paper-quiet);
+}
+.application-journey .ap-empty {
+ min-height:100%;
+ align-content:center;
+ color:var(--ap-heading);
+}
+@media(max-width:1100px) and (pointer:fine) {
+ .application-journey .ap-journey-head {
   grid-template-columns:minmax(0,1fr) 40px;
-  gap:15px;
+  gap:14px;
  }
- .application-journey .ap-journey-head .ap-kpis{
-  grid-column:1/-1;grid-row:2;
+ .application-journey .ap-journey-head .ap-kpis {
+  grid-column:1/-1;
+  grid-row:2;
  }
- .application-journey .ap-journey-head .ap-close{
-  grid-column:2;grid-row:1;
+ .application-journey .ap-journey-head .ap-close {
+  grid-column:2;
+  grid-row:1;
  }
- .application-journey .ap-chart{margin-top:8px}
+ .application-journey .ap-chart { margin-top:8px }
 }
-@media(pointer:coarse){
- .application-journey .ap-journey-head{
+@media(pointer:coarse) {
+ .application-journey .ap-journey-head {
   grid-template-columns:minmax(160px,1fr) auto 44px;
-  gap:12px;
-  padding-bottom:4px;
+  gap:12px;padding-bottom:4px;
  }
- .application-journey .ap-journey-head h2{font-size:20px}
- .application-journey .ap-journey-kicker{font-size:8px;margin-bottom:4px}
- .application-journey .ap-journey-dek{font-size:9px;margin-top:3px}
- .application-journey .ap-kpis dt{font-size:9px}
- .application-journey .ap-kpis dd{font-size:19px;margin-top:3px}
- .application-journey .ap-journey-head .ap-kpis{gap:12px}
- .application-journey .ap-chart{margin-top:5px}
- .application-journey .ap-legend{padding:6px 0 4px;font-size:9px;gap:5px 13px}
+ .application-journey .ap-journey-head h2 { font-size:20px }
+ .application-journey .ap-journey-kicker { font-size:8px;margin-bottom:4px }
+ .application-journey .ap-journey-dek { font-size:9px;margin-top:3px }
+ .application-journey .ap-kpis dt { font-size:9px }
+ .application-journey .ap-kpis dd { font-size:19px;margin-top:3px }
+ .application-journey .ap-journey-head .ap-kpis { gap:12px }
+ .application-journey .ap-chart { margin-top:5px }
+ .application-journey .ap-legend { padding:6px 0 4px;font-size:9px;gap:5px 13px }
 }
-@media(pointer:coarse) and (orientation:landscape){
- .application-journey[open]{
-  width:calc(100dvw - 12px);height:calc(100dvh - 12px);
+@media(pointer:coarse) and (orientation:landscape) {
+ .application-journey[open] {
+  width:calc(100dvw - 12px);
+  height:calc(100dvh - 12px);
   padding:11px 15px;gap:4px;
  }
 }
-@media(pointer:coarse) and (orientation:portrait){
- .application-journey[open]{
-  width:calc(100dvh - 12px);height:calc(100dvw - 12px);
+@media(pointer:coarse) and (orientation:portrait) {
+ .application-journey[open] {
+  width:calc(100dvh - 12px);
+  height:calc(100dvw - 12px);
   padding:11px 15px;gap:4px;
   transform:translate(-50%,-50%) rotate(90deg);
  }
 }
-@media(prefers-reduced-motion:reduce){
- .application-journey .ap-flow{transition:none}
+@media(prefers-reduced-motion:reduce) {
+ .application-journey .ap-flow { transition:none }
 }
-.application-journey .ap-legend .ap-key-interviews::before{background:linear-gradient(90deg,var(--ap-tone-first) 0% 33.33%,var(--ap-tone-second) 33.33% 66.67%,var(--ap-tone-final) 66.67% 100%)}
-
-
