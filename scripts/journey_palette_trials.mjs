@@ -23,6 +23,24 @@ const make = ({ canvas, heading, muted, border, source, process, offer, noRespon
   '--ap-tone-waiting':waiting, '--ap-flow-waiting':waitingFlow,
 });
 export const palettes = {
+  appEconomy: {
+    label: '05 / App Economy Editorial',
+    principle: 'Confident blue node ink; much lighter ribbons. Green/red/gold outcomes only when semantically meaningful.',
+    light: make({
+      canvas:'#F6F6F4',heading:'#173F56',muted:'#526168',border:'#D8DCDD',
+      source:'#2A3339',process:'#195C7A',offer:'#287A3D',
+      noResponse:'#90621D',rejected:'#B1343C',waiting:'#526168',
+      sourceFlow:'#B7BABC',processFlow:'#94BCCE',offerFlow:'#A5CEA7',
+      noResponseFlow:'#E1C288',rejectedFlow:'#E6A4A1',waitingFlow:'#CBD0D1',
+    }),
+    dark: make({
+      canvas:'#171E24',heading:'#EDF4F6',muted:'#BDCACF',border:'#3A454C',
+      source:'#D4DEE2',process:'#A9D5E8',offer:'#9DDF9D',
+      noResponse:'#EBD4A0',rejected:'#F1B1AC',waiting:'#BDCACF',
+      sourceFlow:'#586267',processFlow:'#476A7D',offerFlow:'#3D7851',
+      noResponseFlow:'#856C43',rejectedFlow:'#874B53',waitingFlow:'#59666D',
+    }),
+  },
   vermilion: {
     label: '04 / Editorial Vermilion',
     principle: 'A single saturated vermilion river, print-ink black typography and three carefully rationed outcome accents; no rainbows or plastics.',
