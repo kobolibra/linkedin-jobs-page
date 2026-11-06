@@ -19,7 +19,7 @@ def _verify():
                 raise RuntimeError(f'Production asset mismatch: {name}')
     with urlopen(Request(origin + '/', headers={'Cache-Control': 'no-cache'}), timeout=20) as response:
         page = response.read().decode('utf-8')
-        if 'job-applications.js?v=9' not in page or 'job-applications.css?v=6' not in page:
+        if 'job-applications.js?v=9' not in page or 'job-applications.css?v=7' not in page:
             raise RuntimeError('Production homepage is missing application tracking assets')
     try:
         with urlopen(origin + '/auth/preferences?since=0', timeout=20):
@@ -51,3 +51,4 @@ if __name__ == '__main__':
             if attempt == 2:
                 raise
             time.sleep(2)
+
