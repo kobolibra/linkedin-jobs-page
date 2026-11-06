@@ -138,7 +138,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* Editorial Flow: figure-only colors');
+ const start=css.indexOf('/* ATELIER / Journey only.');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\] )?\.application-journey\{([^}]+)\}/g)].slice(0,2);
