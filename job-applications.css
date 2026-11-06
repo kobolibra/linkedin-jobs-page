@@ -91,31 +91,46 @@
 @media(max-width:720px){.application-journey-entry{border-radius:14px}}
 
 
-/* Journey figure only: mineral hues distinguish stages without changing list/editor colors. */
+/* Editorial Flow: figure-only colors; preserve the editor's global tokens. */
 .application-journey{
- --ap-tone-source:#65737d;--ap-flow-source:#c6cfd2;
- --ap-tone-applied:#326da8;--ap-flow-applied:#a4bfd5;
- --ap-tone-contact:#227b79;--ap-flow-contact:#9dc7bf;
- --ap-tone-first:#6669a5;--ap-flow-first:#b9b6d7;
- --ap-tone-second:#90682d;--ap-flow-second:#d1be98;
- --ap-tone-final:#895174;--ap-flow-final:#c2a4bc;
- --ap-tone-offer:#307957;--ap-flow-offer:#9bc7ac;
- --ap-tone-no_response:#766957;--ap-flow-no_response:#ccc3b3;
- --ap-tone-rejected:#b05249;--ap-flow-rejected:#dba49b;
- --ap-tone-waiting:#5d707b;--ap-flow-waiting:#d5dde0;
+ --ap-canvas:#f7f8f7;
+ --ap-tone-source:#586a76;--ap-flow-source:#becbd2;
+ --ap-tone-applied:#285b85;--ap-flow-applied:#91b5d1;
+ --ap-tone-contact:#286f94;--ap-flow-contact:#8cbfd4;
+ --ap-tone-first:#347494;--ap-flow-first:#8cbad1;
+ --ap-tone-second:#306a92;--ap-flow-second:#7faaca;
+ --ap-tone-final:#234f7a;--ap-flow-final:#719bbe;
+ --ap-tone-offer:#237350;--ap-flow-offer:#91c3a6;
+ --ap-tone-no_response:#856943;--ap-flow-no_response:#cdbd9f;
+ --ap-tone-rejected:#a64d4f;--ap-flow-rejected:#d6a4a1;
+ --ap-tone-waiting:#62717c;--ap-flow-waiting:#c8d4d9;
+ --ap-figure-secondary:#62717b;
+ --ap-flow-outline:#29495f;
+ background:var(--ap-canvas);
 }
 [data-theme=dark] .application-journey{
- --ap-tone-source:#afbdc7;--ap-flow-source:#526570;
- --ap-tone-applied:#9fc7ed;--ap-flow-applied:#466f96;
- --ap-tone-contact:#8fd1c4;--ap-flow-contact:#3e7d76;
- --ap-tone-first:#bcbdec;--ap-flow-first:#686b9b;
- --ap-tone-second:#e0c18a;--ap-flow-second:#877750;
- --ap-tone-final:#dda9ca;--ap-flow-final:#925f81;
- --ap-tone-offer:#9bd6b1;--ap-flow-offer:#4e8565;
- --ap-tone-no_response:#cfc3af;--ap-flow-no_response:#786f60;
- --ap-tone-rejected:#f0afa2;--ap-flow-rejected:#a36860;
- --ap-tone-waiting:#b3c0c8;--ap-flow-waiting:#425864;
+ --ap-canvas:#192a37;
+ --ap-tone-source:#b7c6ce;--ap-flow-source:#455a68;
+ --ap-tone-applied:#a7c8e8;--ap-flow-applied:#41617c;
+ --ap-tone-contact:#9bcfdf;--ap-flow-contact:#3a6e84;
+ --ap-tone-first:#99cfde;--ap-flow-first:#386c83;
+ --ap-tone-second:#a3c5e1;--ap-flow-second:#3c6482;
+ --ap-tone-final:#bbd3ec;--ap-flow-final:#3b5c79;
+ --ap-tone-offer:#8bd5b0;--ap-flow-offer:#356f56;
+ --ap-tone-no_response:#e0c591;--ap-flow-no_response:#756146;
+ --ap-tone-rejected:#f1aba2;--ap-flow-rejected:#824e50;
+ --ap-tone-waiting:#b4c5ce;--ap-flow-waiting:#415663;
+ --ap-figure-secondary:#b9c6cd;
+ --ap-flow-outline:#d7e3eb;
 }
+.application-journey .ap-flow{fill-opacity:.92;stroke:none;transition:fill-opacity .16s,filter .16s}
+.application-journey .ap-flow:hover,.application-journey .ap-flow:focus-visible{fill-opacity:1;filter:saturate(1.07) brightness(.97);stroke:var(--ap-flow-outline);stroke-width:1;stroke-linejoin:round;outline:none}
+[data-theme=dark] .application-journey .ap-flow:hover,[data-theme=dark] .application-journey .ap-flow:focus-visible{filter:saturate(1.08) brightness(1.16)}
+.application-journey .ap-node[data-tone] .ap-node-share{fill:var(--ap-figure-secondary)}
+.application-journey .ap-node-region .ap-region-code{fill:var(--ap-tone-source)}
+.application-journey .ap-legend{color:var(--ap-figure-secondary)}
+.application-journey .ap-legend span::before{width:9px;height:9px;border-radius:2px;vertical-align:-1px}
+@media(prefers-reduced-motion:reduce){.application-journey .ap-flow{transition:none}}
 .application-journey .ap-legend .ap-key-interviews::before{background:linear-gradient(90deg,var(--ap-tone-first) 0% 33.33%,var(--ap-tone-second) 33.33% 66.67%,var(--ap-tone-final) 66.67% 100%)}
 
 .application-journey footer{color:#65757e}
