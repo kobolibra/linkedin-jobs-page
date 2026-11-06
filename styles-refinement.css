@@ -598,6 +598,11 @@ body.compact .job > .mono { margin-top:2px; }
 }
 
 /* 30-DAY POSTINGS / clean editorial trend, with accessible full detail */
+/* Porcelain (青瓷蓝): scope the canonical data blue to this chart only.
+   The line, linked data markers and latest annotation share one series color.
+   All other charts retain their existing --viz-blue. */
+#spark { --viz-blue:#334EAC; }
+[data-theme="dark"] #spark { --viz-blue:#7096D1; }
 .analytics-card .spark{height:auto;min-height:0;overflow:visible}
 .analytics-card .spark .rhythm-svg{width:100%;height:auto;min-width:0;max-height:none;margin:0;display:block;overflow:visible}
 .spark-shell{min-width:0}
