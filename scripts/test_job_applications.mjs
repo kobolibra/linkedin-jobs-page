@@ -133,19 +133,16 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
  states.set('silent',change(change(null,'contact','silent'),'no_response','silent'));
  const view=svg(graph(['p','offer','reject','silent','saved','post-offer-reject'],states));
  for(const tone of ['source','applied','offer','rejected','no_response','waiting']){
-  assert.ok(view.includes('stop-color:var(--ap-flow-'+tone+')'),tone+' gradient stop missing');
+  assert.ok(view.includes('style="fill:var(--ap-flow-'+tone+')"'),tone+' solid-flow tone missing');
  }
  assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
- assert.match(view,/<defs><pattern id="ap-flow-paper-grain"/);
- assert.match(view,/<linearGradient id="ap-ribbon-0"/);
- assert.match(view,/class="ap-ribbon-engraving"/);
- assert.match(view,/class="ap-ribbon-engraving"[^>]+aria-hidden="true"/);
- assert.match(view,/style="fill:url\(#ap-ribbon-0\)"/);
- assert.equal((view.match(/<linearGradient /g)||[]).length,(view.match(/<path class="ap-flow/g)||[]).length);
+ assert.doesNotMatch(view,/<linearGradient|ap-flow-paper-grain|ap-ribbon-engraving/);
+ assert.match(view,/style="fill:var\(--ap-flow-applied\)"/);
+ assert.ok((view.match(/<path class="ap-flow/g)||[]).length>0);
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* EDITORIAL VERMILION');
+ const start=css.indexOf('/* APP ECONOMY / Editorial Financial Flow');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
@@ -174,14 +171,14 @@ test('My Journey text and UI markup match the original pre-design version',()=>{
  assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
 });
 
-test('selected Editorial Vermilion CSS agrees with original-copy-locked design tokens',()=>{
+test('selected App Economy editorial palette matches exact reviewed semantic tokens',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* EDITORIAL VERMILION');
+ const start=css.indexOf('/* APP ECONOMY / Editorial Financial Flow');
  assert.ok(start>=0);
  const blocks=[...css.slice(start).matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(blocks.length,2,'full light/dark palette required');
  for(const [i,mode] of ['light','dark'].entries()){
-  const expected=palettes.vermilion[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  const expected=palettes.appEconomy[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
   for(const role of roles)for(const prefix of ['--ap-tone-','--ap-flow-']){
    const token=prefix+role;
    assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
@@ -196,8 +193,10 @@ test('selected Editorial Vermilion CSS agrees with original-copy-locked design t
  }
 });
 
-test('Decorative engraving is pointer transparent and suppressed in compact layout',()=>{
+test('Figure uses lighter flat flow fills without decorative overlays',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- assert.match(css,/\.application-journey \.ap-ribbon-engraving\s*\{[^}]*pointer-events:\s*none/s);
- assert.match(css,/\.ap-compact-svg \.ap-ribbon-engraving\s*\{\s*display:\s*none\s*\}/);
+ const js=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
+ assert.doesNotMatch(js,/ap-ribbon-engraving|ap-flow-paper-grain|<linearGradient/);
+ assert.match(css,/--ap-flow-applied:#94BCCE/);
+ assert.match(css,/--ap-tone-applied:#195C7A/);
 });

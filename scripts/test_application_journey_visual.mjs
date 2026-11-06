@@ -135,18 +135,12 @@ try {
           const viewBox = svg.viewBox.baseVal;
           result.viewBox = { width:viewBox.width,height:viewBox.height };
           result.hasNaN = /NaN|Infinity/.test(svg.outerHTML);
-          const gradients = [...svg.querySelectorAll('defs linearGradient')];
-          result.gradientCount = gradients.length;
-          result.gradientStopsValid = gradients.every(g => {
-            const stops = [...g.querySelectorAll('stop')];
-            return stops.length === 2 && stops.every(s => {
-              const paint = getComputedStyle(s).stopColor;
-              return paint && paint !== 'none' && paint !== 'rgba(0, 0, 0, 0)';
-            });
+          result.solidRibbonPaintValid = flows.every(f => {
+            const computedFill=getComputedStyle(f).fill;
+            return /^rgb\(/.test(computedFill)
+              && /^var\(--ap-flow-[a-z_]+\)$/.test(f.style.fill.replaceAll(' ',''));
           });
-          result.flowGradientReferencesValid = flows.every(f =>
-            /^url\("#?ap-ribbon-\d+"\)$/.test(getComputedStyle(f).fill)
-            || /^url\(#ap-ribbon-\d+\)$/.test(f.style.fill));
+          result.decorativeLayersAbsent = svg.querySelectorAll('linearGradient,pattern,.ap-ribbon-engraving').length === 0;
           const computed = getComputedStyle(flows[0]);
           result.ribbonColor = computed.fill;
           const regions = [...svg.querySelectorAll('.ap-region-code')];
@@ -170,8 +164,8 @@ try {
         assert.ok(check.viewBox.width > 0 && check.viewBox.height > 0, sample.name + ': invalid SVG dimensions');
         assert.ok(!check.hasNaN, sample.name + ': SVG contains non-finite values');
         assert.equal(check.invisibleFlowCount, 0, sample.name + ': invisible ribbons');
-        assert.equal(check.gradientCount, check.flows, sample.name + ': one gradient per ribbon');
-        assert.ok(check.gradientStopsValid && check.flowGradientReferencesValid, sample.name + ': rendered gradient stops must resolve');
+        assert.ok(check.solidRibbonPaintValid, sample.name + ': every ribbon must resolve to a solid semantic color');
+        assert.ok(check.decorativeLayersAbsent, sample.name + ': ribbons must have no gradient or decorative hatch');
         assert.ok(check.chartScreenVisible, sample.name + ': SVG is clipped by viewport');
         assert.ok((check.phonePortrait ? check.graphUsage.height : check.graphUsage.width) > 0.55, sample.name + ': diagram should own the available long axis');
         assert.ok((check.phonePortrait ? check.graphUsage.width : check.graphUsage.height) > 0.35, sample.name + ': diagram should own the available short axis');
