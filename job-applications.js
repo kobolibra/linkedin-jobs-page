@@ -99,7 +99,9 @@
     positive.includes(b.id)?'applied':tone(a);
    const ribbonId='ap-ribbon-'+ribbonIndex;
    ribbonDefs+='<linearGradient id="'+ribbonId+'" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:var(--ap-flow-'+flowTone+');stop-opacity:.93"/><stop offset="100%" style="stop-color:var(--ap-flow-'+flowTone+');stop-opacity:1"/></linearGradient>';
-   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" data-tone="'+flowTone+'" style="fill:url(#'+ribbonId+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
+   const shape='M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z';
+   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" data-tone="'+flowTone+'" style="fill:url(#'+ribbonId+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="'+shape+'"><title>'+escape(label)+'</title></path>';
+   if(flowTone==='applied'&&h>9)paths+='<path class="ap-ribbon-engraving" fill="url(#ap-flow-paper-grain)" d="'+shape+'" aria-hidden="true"/>';
   }
   const bars=nodes.map(n=>{
    const percent=Math.round(n.value/data.total*100);
@@ -115,7 +117,7 @@
    const valueX=side?n.x+nodeWidth+12:n.x,valueY=side?n.y+32:n.y-19;
    return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'" data-tone="'+tone(n)+'" style="color:'+color(n)+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" rx="2" fill="'+color(n)+'"/>'+title+'<text x="'+valueX+'" y="'+valueY+'" class="ap-node-value'+(side?' ap-terminal-value':'')+'"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
   }).join('');
-  return '<svg class="'+(compact?'ap-compact-svg':'ap-full-svg')+'" preserveAspectRatio="xMidYMid meet" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc><defs>'+ribbonDefs+'</defs>'+paths+bars+'</svg>';
+  return '<svg class="'+(compact?'ap-compact-svg':'ap-full-svg')+'" preserveAspectRatio="xMidYMid meet" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc><defs><pattern id="ap-flow-paper-grain" patternUnits="userSpaceOnUse" width="12" height="7"><path d="M0 6.5H12" stroke="var(--ap-canvas)" stroke-opacity=".28" stroke-width=".6"/></pattern>'+ribbonDefs+'</defs>'+paths+bars+'</svg>';
  }
  const api={stages,valid,index,transition,graph,layout,svg,jobKey,regionOf,regionIndex,button:()=>'',sheet:()=>{},open:()=>{}};globalThis.JobApplications=api;
  if(typeof document==='undefined'||!globalThis.AccountPreferences)return;
