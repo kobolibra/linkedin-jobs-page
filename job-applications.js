@@ -56,20 +56,20 @@
  }
  // A poster composition: regional sources, a central saved-role hub, rising stages.
  function layout(data,{compact=false}={}){
-  const mass=compact?110:Math.min(320,150+data.total*7),unit=mass/data.total,nodeWidth=compact?12:20,columnWidth=compact?156:240,sourceX=compact?140:180,sourceGap=compact?72:96;
+  const mass=compact?118:Math.min(316,152+data.total*6),unit=mass/data.total,nodeWidth=compact?12:16,columnWidth=compact?144:172,sourceX=compact?124:155,sourceGap=compact?48:74;
   const sources=data.nodes.filter(n=>n.type==='region');
-  const centre=(compact?70:190)+(mass+Math.max(0,sources.length-1)*sourceGap)/2;
+  const centre=(compact?72:98)+(mass+Math.max(0,sources.length-1)*sourceGap)/2;
   const order={stage:0,offer:1,waiting:2,no_response:3,rejected:4};
   const nodes=data.nodes.map(n=>({...n,x:sourceX+n.column*columnWidth,h:n.value*unit}));
   const maxColumn=Math.max(...nodes.map(n=>n.column));
   for(let column=0;column<=maxColumn;column++){
    const group=nodes.filter(n=>n.column===column);
-   if(column===0&&sources.length){let y=compact?80:150;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+sourceGap;}continue;}
+   if(column===0&&sources.length){let y=compact?72:98;for(const n of group.sort((a,b)=>regionOrder.indexOf(a.context)-regionOrder.indexOf(b.context))){n.y=y;y+=n.h+sourceGap;}continue;}
    const main=group.filter(n=>n.type==='stage'||n.type==='offer');
-   for(const n of main)n.y=Math.max(112,centre-Math.max(0,column-1)*(compact?12:49)-n.h/2);
+   for(const n of main)n.y=Math.max(compact?108:150,centre-Math.max(0,column-1)*(compact?11:33)-n.h/2);
    const previous=nodes.filter(n=>n.column===column-1&&(n.type==='stage'||n.type==='offer'));
-   let y=Math.max(centre+(compact?60:80),...main.map(n=>n.y+n.h+(compact?50:110)),...previous.map(n=>compact?n.y+n.h+50:0));
-   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+(compact?46:100);}
+   let y=Math.max(centre+(compact?53:68),...main.map(n=>n.y+n.h+(compact?42:66)),...previous.map(n=>n.y+n.h+(compact?45:64)));
+   for(const n of group.filter(n=>n.type!=='stage'&&n.type!=='offer').sort((a,b)=>order[a.type]-order[b.type])){n.y=y;y+=n.h+(compact?48:76);}
   }
   const byId=new Map(nodes.map(n=>[n.id,n])),links=data.links.map(l=>({...l}));
   for(const node of nodes){
@@ -78,7 +78,7 @@
    offset=0;
    for(const link of links.filter(l=>l.target===node.id).sort((a,b)=>byId.get(a.source).y-byId.get(b.source).y||byId.get(a.source).column-byId.get(b.source).column)){link.ty=node.y+offset;offset+=link.value*unit;}
   }
-  return {nodes,links,byId,unit,nodeWidth,width:Math.max(compact?800:1080,sourceX+maxColumn*columnWidth+(compact?166:210)),height:Math.max(...nodes.map(n=>n.y+n.h))+(compact?55:56)};
+  return {nodes,links,byId,unit,nodeWidth,width:Math.max(compact?800:1080,sourceX+maxColumn*columnWidth+(compact?180:250)),height:Math.max(...nodes.map(n=>n.y+n.h))+(compact?64:76)};
  }
 
  function svg(data,{compact=false}={}){
@@ -95,17 +95,17 @@
   }
   const bars=nodes.map(n=>{
    const percent=Math.round(n.value/data.total*100);
-   let title='<text x="'+n.x+'" y="'+(n.y-62)+'" class="ap-node-label">'+escape(n.label)+'</text>';
-   if(compact&&n.label.length>15&&n.type!=='region'){const words=n.label.split(' '),first=words.shift();title='<text x="'+n.x+'" y="'+(n.y-84)+'" class="ap-node-label"><tspan>'+escape(first)+'</tspan><tspan x="'+n.x+'" dy="20">'+escape(words.join(' '))+'</tspan></text>';}
+   let title='<text x="'+n.x+'" y="'+(n.y-50)+'" class="ap-node-label">'+escape(n.label)+'</text>';
+   if(compact&&n.label.length>15&&n.type!=='region'){const words=n.label.split(' '),first=words.shift();title='<text x="'+n.x+'" y="'+(n.y-72)+'" class="ap-node-label"><tspan>'+escape(first)+'</tspan><tspan x="'+n.x+'" dy="20">'+escape(words.join(' '))+'</tspan></text>';}
    if(n.type==='region'){
     const code=n.context==='UNKNOWN'?'—':n.context==='OTHER'?'INTL':n.context;
     title='<text x="'+(compact?116:144)+'" y="'+(n.y+n.h/2-5)+'" text-anchor="end" class="ap-region-code">'+code+'</text><text x="'+(compact?116:144)+'" y="'+(n.y+n.h/2+25)+'" text-anchor="end" class="ap-region-name">'+escape(n.label)+'</text>';
    }
 
-   const side=compact&&['waiting','no_response','rejected'].includes(n.type);
-   if(side)title='<text x="'+(n.x+20)+'" y="'+(n.y+7)+'" class="ap-node-label ap-terminal-label">'+escape(n.label==='Awaiting response'?'Awaiting reply':n.label)+'</text>';
-   const valueX=side?n.x+20:n.x,valueY=side?n.y+34:n.y-26;
-   return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'" data-tone="'+tone(n)+'" style="color:'+color(n)+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" fill="'+color(n)+'"/>'+title+'<text x="'+valueX+'" y="'+valueY+'" class="ap-node-value'+(side?' ap-terminal-value':'')+'"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
+   const side=['waiting','no_response','rejected'].includes(n.type);
+   if(side)title='<text x="'+(n.x+nodeWidth+12)+'" y="'+(n.y+5)+'" class="ap-node-label ap-terminal-label">'+escape(n.label==='Awaiting response'?'Awaiting reply':n.label)+'</text>';
+   const valueX=side?n.x+nodeWidth+12:n.x,valueY=side?n.y+32:n.y-19;
+   return '<g class="ap-node ap-node-'+n.type+(n.id==='offer'?' ap-node-offer':'')+(n.id==='saved'?' ap-node-hub':'')+'" data-tone="'+tone(n)+'" style="color:'+color(n)+'"><rect x="'+n.x+'" y="'+n.y+'" width="'+nodeWidth+'" height="'+n.h+'" rx="2" fill="'+color(n)+'"/>'+title+'<text x="'+valueX+'" y="'+valueY+'" class="ap-node-value'+(side?' ap-terminal-value':'')+'"><tspan>'+n.value+'</tspan><tspan class="ap-node-share" dx="11">'+percent+'%</tspan></text></g>';
   }).join('');
   return '<svg class="'+(compact?'ap-compact-svg':'ap-full-svg')+'" preserveAspectRatio="xMidYMid meet" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Application journey for '+data.total+' saved jobs"><title>Your application journey</title><desc>Regions feed the saved-role total. Widths represent job counts; percentages use saved roles. Only recorded stages are included.</desc>'+paths+bars+'</svg>';
  }
@@ -157,7 +157,7 @@
   journey.querySelector('.ap-legend').hidden=!data.total;
   journey.querySelector('.ap-stage-summary').innerHTML=stages.map(([s,label])=>'<div><dt>'+label+'</dt><dd>'+data.counts[s]+'</dd></div>').join('');
  }
- function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div><dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><div class="ap-chart" tabindex="0" aria-label="Application flow chart, fitted to the screen."></div><div class="ap-legend"><span class="ap-key-progress">Applied</span><span class="ap-key-contact">Recruiter Contact</span><span class="ap-key-interviews">Interviews</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
+ function openJourney(){if(!journey){journey=document.createElement('dialog');journey.className='application-journey';journey.setAttribute('aria-labelledby','ap-journey-title');journey.innerHTML='<header class="ap-journey-head"><div><p class="ap-journey-kicker">THE APPLICATION ATLAS</p><h2 id="ap-journey-title">Your application journey</h2><p class="ap-journey-dek">Every saved role. Every recorded step.</p></div><dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header><div class="ap-chart" tabindex="0" aria-label="Application flow chart, fitted to the screen."></div><div class="ap-legend"><span class="ap-key-progress">Applied</span><span class="ap-key-contact">Recruiter Contact</span><span class="ap-key-interviews">Interviews</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div><details class="ap-accessible-data"><summary>Current stage breakdown</summary><dl class="ap-stage-summary"></dl></details><footer>Private to your account · Widths show role counts; percentages use saved roles in this view.</footer>';document.body.append(journey);journey.querySelector('.ap-close').onclick=()=>journey.close();journey.addEventListener('click',e=>{if(e.target===journey){const b=journey.getBoundingClientRect();if(e.clientX<b.left||e.clientX>b.right||e.clientY<b.top||e.clientY>b.bottom)journey.close();}});journey.addEventListener('close',()=>{document.documentElement.classList.remove('ap-journey-open');returnFocus?.focus({preventScroll:true});});}returnFocus=document.activeElement;renderJourney();document.documentElement.classList.add('ap-journey-open');journey.showModal();}
  // Route icon: Lucide contributors, ISC; see licenses/lucide-route.txt.
  const JOURNEY_ICON='<svg class="ap-journey-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>';
  const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
