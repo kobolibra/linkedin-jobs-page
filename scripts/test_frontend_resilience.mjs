@@ -153,7 +153,7 @@ test('masthead and summary labels use natural case, while geography acronyms rem
  }
  assert.match(html,/>CN<\/button>/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
- assert.match(html,/next-journey-masthead\.css\?v=8/);
+ assert.match(html,/next-journey-masthead\.css\?v=9/);
  assert.match(css,/\.nj-eyebrow\{[^}]*letter-spacing:\.045em/);
  assert.match(css,/\.nj-market-heading\{[^}]*letter-spacing:\.035em/);
  assert.match(css,/\.nj-masthead-folio\{[^}]*letter-spacing:\.035em/);
