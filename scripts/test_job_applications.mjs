@@ -142,7 +142,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* SIGNAL LAGOON');
+ const start=css.indexOf('/* EDITORIAL VERMILION');
  assert.ok(start>0);
  const area=css.slice(start);
  const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
@@ -171,14 +171,14 @@ test('My Journey text and UI markup match the original pre-design version',()=>{
  assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
 });
 
-test('selected Signal Lagoon CSS agrees with chromium-review design tokens',()=>{
+test('selected Editorial Vermilion CSS agrees with original-copy-locked design tokens',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* SIGNAL LAGOON');
+ const start=css.indexOf('/* EDITORIAL VERMILION');
  assert.ok(start>=0);
  const blocks=[...css.slice(start).matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(blocks.length,2,'full light/dark palette required');
  for(const [i,mode] of ['light','dark'].entries()){
-  const expected=palettes.signal[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  const expected=palettes.vermilion[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
   for(const role of roles)for(const prefix of ['--ap-tone-','--ap-flow-']){
    const token=prefix+role;
    assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
