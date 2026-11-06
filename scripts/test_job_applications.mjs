@@ -132,7 +132,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
  states.set('reject',change(change(null,'first','reject'),'rejected','reject'));
  states.set('silent',change(change(null,'contact','silent'),'no_response','silent'));
  const view=svg(graph(['p','offer','reject','silent','saved','post-offer-reject'],states));
- for(const tone of ['source','applied','offer','rejected','no_response','waiting']){
+ for(const tone of ['source_unknown','applied','contact','first','offer','rejected','no_response','waiting']){
   assert.ok(view.includes('style="fill:var(--ap-flow-'+tone+')"'),tone+' solid-flow tone missing');
  }
  assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
