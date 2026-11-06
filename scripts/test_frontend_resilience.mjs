@@ -127,3 +127,16 @@ test('guestbook prefetch waits for jobs and stays deferred while loading',async(
  finish();await Promise.resolve();assert.equal(requests,0);assert.equal(queued.length,1);queued[0]();assert.equal(requests,1);
 });
 
+
+
+test('30-day trend uses scoped Porcelain blue without recoloring other charts',()=>{
+ const css=readFileSync(new URL('../styles-refinement.css',import.meta.url),'utf8');
+ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert.match(css,/#spark\s*\{\s*--viz-blue:\s*#334EAC\s*;\s*\}/);
+ assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
+ assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
+ assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
+ assert.match(html,/styles-refinement\.css\?v=rolling-porcelain-blue-1/);
+ assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
+ assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
+});
