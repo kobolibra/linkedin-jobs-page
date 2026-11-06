@@ -91,48 +91,50 @@
 @media(max-width:720px){.application-journey-entry{border-radius:14px}}
 
 
-/* EDITORIAL VERMILION — study-only refinement pending screenshot review.
-   One vermilion process; graphite sources; jade Offer, brass unresolved and
-   raspberry rejection. Design figure only; user-facing words stay identical. */
+/* APP ECONOMY / Editorial Financial Flow
+   High-contrast ink nodes, airy connected ribbons, semantic outcome accents.
+   Inspired by information hierarchy in App Economy Insights financial Sankeys,
+   not an extraction or replica of proprietary brand palette. Figure scoped.
+   All original user-facing strings remain byte-for-byte unchanged. */
 .application-journey {
- --ap-canvas:#FBF9F5;
- --ap-heading:#20242A;
- --ap-figure-secondary:#5A6268;
- --ap-paper-border:#DCD9D3;
- --ap-paper-quiet:#F3EDE6;
- --ap-wash:rgba(231,91,52,.025);
- --ap-flow-outline:#30302E;
- --ap-tone-source:#4D5359;       --ap-flow-source:#BABCB9;
- --ap-tone-applied:#A53D22;      --ap-flow-applied:#E66340;
- --ap-tone-contact:#A53D22;      --ap-flow-contact:#E66340;
- --ap-tone-first:#A53D22;        --ap-flow-first:#E66340;
- --ap-tone-second:#A53D22;       --ap-flow-second:#E66340;
- --ap-tone-final:#A53D22;        --ap-flow-final:#E66340;
- --ap-tone-offer:#067154;        --ap-flow-offer:#1BA985;
- --ap-tone-no_response:#805900;  --ap-flow-no_response:#DDA943;
- --ap-tone-rejected:#A5325E;     --ap-flow-rejected:#D85983;
- --ap-tone-waiting:#626D74;      --ap-flow-waiting:#B5C0C4;
+ --ap-canvas:#F6F6F4;
+ --ap-heading:#173F56;
+ --ap-figure-secondary:#526168;
+ --ap-paper-border:#D8DCDD;
+ --ap-paper-quiet:#ECEFED;
+ --ap-wash:rgba(33,92,120,.015);
+ --ap-flow-outline:#173F56;
+ --ap-tone-source:#2A3339;       --ap-flow-source:#B7BABC;
+ --ap-tone-applied:#195C7A;      --ap-flow-applied:#94BCCE;
+ --ap-tone-contact:#195C7A;      --ap-flow-contact:#94BCCE;
+ --ap-tone-first:#195C7A;        --ap-flow-first:#94BCCE;
+ --ap-tone-second:#195C7A;       --ap-flow-second:#94BCCE;
+ --ap-tone-final:#195C7A;        --ap-flow-final:#94BCCE;
+ --ap-tone-offer:#287A3D;        --ap-flow-offer:#A5CEA7;
+ --ap-tone-no_response:#90621D;  --ap-flow-no_response:#E1C288;
+ --ap-tone-rejected:#B1343C;     --ap-flow-rejected:#E6A4A1;
+ --ap-tone-waiting:#526168;      --ap-flow-waiting:#CBD0D1;
  color:var(--ap-heading);
  background:var(--ap-canvas);
 }
 [data-theme=dark] .application-journey {
- --ap-canvas:#191E22;
- --ap-heading:#F5F0E8;
- --ap-figure-secondary:#B9C5C5;
- --ap-paper-border:#363F42;
- --ap-paper-quiet:#292F32;
- --ap-wash:rgba(245,114,82,.028);
- --ap-flow-outline:#EEE1D7;
- --ap-tone-source:#BEC2C6;      --ap-flow-source:#4C555A;
- --ap-tone-applied:#FFB199;     --ap-flow-applied:#D65C3B;
- --ap-tone-contact:#FFB199;     --ap-flow-contact:#D65C3B;
- --ap-tone-first:#FFB199;       --ap-flow-first:#D65C3B;
- --ap-tone-second:#FFB199;      --ap-flow-second:#D65C3B;
- --ap-tone-final:#FFB199;       --ap-flow-final:#D65C3B;
- --ap-tone-offer:#9AF0D3;       --ap-flow-offer:#288F76;
- --ap-tone-no_response:#FFD890; --ap-flow-no_response:#AE8436;
- --ap-tone-rejected:#FFA9C9;    --ap-flow-rejected:#B74775;
- --ap-tone-waiting:#B6C2C5;     --ap-flow-waiting:#536266;
+ --ap-canvas:#171E24;
+ --ap-heading:#EDF4F6;
+ --ap-figure-secondary:#BDCACF;
+ --ap-paper-border:#3A454C;
+ --ap-paper-quiet:#253139;
+ --ap-wash:rgba(85,140,168,.015);
+ --ap-flow-outline:#EDF4F6;
+ --ap-tone-source:#D4DEE2;      --ap-flow-source:#586267;
+ --ap-tone-applied:#A9D5E8;     --ap-flow-applied:#476A7D;
+ --ap-tone-contact:#A9D5E8;     --ap-flow-contact:#476A7D;
+ --ap-tone-first:#A9D5E8;       --ap-flow-first:#476A7D;
+ --ap-tone-second:#A9D5E8;      --ap-flow-second:#476A7D;
+ --ap-tone-final:#A9D5E8;       --ap-flow-final:#476A7D;
+ --ap-tone-offer:#9DDF9D;       --ap-flow-offer:#3D7851;
+ --ap-tone-no_response:#EBD4A0; --ap-flow-no_response:#856C43;
+ --ap-tone-rejected:#F1B1AC;    --ap-flow-rejected:#874B53;
+ --ap-tone-waiting:#BDCACF;     --ap-flow-waiting:#59666D;
 }
 .application-journey[open] {
  display:flex;
@@ -146,10 +148,10 @@
  overflow:hidden;
  color:var(--ap-heading);
  background-color:var(--ap-canvas);
- background-image:linear-gradient(125deg,var(--ap-wash),transparent 40%);
+ background-image:none;
  border:1px solid var(--ap-paper-border);
- border-radius:10px;
- box-shadow:0 24px 70px #171B1B26;
+ border-radius:8px;
+ box-shadow:0 22px 64px #131B2224;
 }
 .application-journey .ap-journey-head {
  display:grid;
@@ -245,16 +247,11 @@
 .application-journey .ap-compact-svg .ap-region-code { font-size:21px }
 .application-journey .ap-compact-svg .ap-region-name { font-size:12px }
 .application-journey .ap-flow {
- fill-opacity:.91;
+ fill-opacity:.90;
  stroke:none;
  transition:fill-opacity .16s ease,filter .16s ease;
 }
-[data-theme=dark] .application-journey .ap-flow { fill-opacity:.88 }
-.application-journey .ap-ribbon-engraving {
- pointer-events:none;
- opacity:.42;
-}
-.application-journey .ap-compact-svg .ap-ribbon-engraving { display:none }
+[data-theme=dark] .application-journey .ap-flow { fill-opacity:.94 }
 .application-journey .ap-flow:hover,
 .application-journey .ap-flow:focus-visible {
  fill-opacity:1;
