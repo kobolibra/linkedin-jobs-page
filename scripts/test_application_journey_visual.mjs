@@ -39,7 +39,7 @@ const results = [];
 const cssRoot = '<style>' + css.replaceAll('</style', '<\\/style') + '</style>';
 const html = '<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">' + cssRoot +
   '</head><body><dialog class="application-journey" aria-labelledby="ap-journey-title">' +
-  '<header class="ap-journey-head"><div><p class="ap-journey-kicker">THE APPLICATION ATLAS</p><h2 id="ap-journey-title">Your application journey</h2><p class="ap-journey-dek">Every saved role. Every recorded step.</p></div>' +
+  '<header class="ap-journey-head"><div><h2 id="ap-journey-title">Your application journey</h2></div>' +
   '<dl class="ap-kpis"></dl><button type="button" class="ap-close" aria-label="Close application journey">×</button></header>' +
   '<div class="ap-chart" tabindex="0" aria-label="Application flow chart, fitted to the screen."></div>' +
   '<div class="ap-legend"><span class="ap-key-progress">Applied</span><span class="ap-key-contact">Recruiter Contact</span><span class="ap-key-interviews">Interviews</span><span class="ap-key-waiting">In progress / Not applied</span><span class="ap-key-offer">Offer</span><span class="ap-key-no-response">No Response</span><span class="ap-key-rejected">Rejected</span></div>' +
