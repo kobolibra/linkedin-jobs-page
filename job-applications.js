@@ -91,7 +91,7 @@
    const a=byId.get(link.source),b=byId.get(link.target),h=link.value*unit,x=a.x+nodeWidth,x2=b.x,dx=(x2-x)*.5,y=link.sy,y2=link.ty;
    const context=b.context&&b.type!=='region'?' after '+b.context:'';
    const label=a.label+' → '+b.label+context+': '+link.value+' '+(link.value===1?'role':'roles');
-   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" style="fill:var(--ap-flow-'+tone(a.type==='region'?a:b)+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
+   paths+='<path class="ap-flow ap-flow-'+(a.type==='region'?'region':b.id==='offer'?'offer':b.type)+'" style="fill:var(--ap-flow-'+tone(b.id==='offer'||['offer','waiting','no_response','rejected'].includes(b.type)?b:a)+')" tabindex="0" role="img" aria-label="'+escape(label)+'" d="M'+x+','+y+' C'+(x+dx)+','+y+' '+(x2-dx)+','+y2+' '+x2+','+y2+' L'+x2+','+(y2+h)+' C'+(x2-dx)+','+(y2+h)+' '+(x+dx)+','+(y+h)+' '+x+','+(y+h)+' Z"><title>'+escape(label)+'</title></path>';
   }
   const bars=nodes.map(n=>{
    const percent=Math.round(n.value/data.total*100);
