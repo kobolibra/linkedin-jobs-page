@@ -121,3 +121,38 @@ test('compact landscape layout preserves counts and routes while reducing drawin
  for(const node of compact.nodes){assert.ok(node.x>=0&&node.x+compact.nodeWidth<=compact.width);assert.ok(node.y>=0);assert.ok(node.y+node.h<compact.height);}
  const figure=svg(data,{compact:true});assert.match(figure,/ap-compact-svg/);assert.doesNotMatch(figure,/min-width:/);assert.match(figure,/preserveAspectRatio="xMidYMid meet"/);
 });
+
+test('Sankey ribbons carry process tones and distinguish terminal branches',()=>{
+ const states=new Map();
+ const apply=change(null,'applied','p');
+ states.set('p',change(apply,'contact','p'));
+ states.set('offer',change(null,'offer','offer'));
+ states.set('reject',change(change(null,'first','reject'),'rejected','reject'));
+ states.set('silent',change(change(null,'contact','silent'),'no_response','silent'));
+ const view=svg(graph(['p','offer','reject','silent','saved'],states));
+ for(const tone of ['source','applied','offer','rejected','no_response','waiting']){
+  assert.ok(view.includes('fill:var(--ap-flow-'+tone+')'),tone+' ribbon missing');
+ }
+ assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
+});
+test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
+ const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
+ const start=css.indexOf('/* Editorial Flow: figure-only colors');
+ assert.ok(start>0);
+ const area=css.slice(start);
+ const groups=[...area.matchAll(/(?:\[data-theme=dark\] )?\.application-journey\{([^}]+)\}/g)].slice(0,2);
+ assert.equal(groups.length,2);
+ const value=hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
+ const contrast=(a,b)=>{const w=[.2126,.7152,.0722],x=value(a).reduce((s,v,i)=>s+v*w[i],0),y=value(b).reduce((s,v,i)=>s+v*w[i],0);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+ for(const group of groups){
+  const tokens=new Map([...group[1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2]]));
+  const canvas=tokens.get('--ap-canvas');assert.ok(canvas);
+  for(const tone of ['source','applied','contact','first','second','final','offer','no_response','rejected','waiting']){
+   const node=tokens.get('--ap-tone-'+tone),flow=tokens.get('--ap-flow-'+tone);
+   assert.ok(node&&flow,tone+' theme tokens are incomplete');
+   assert.ok(contrast(node,canvas)>=4.5,tone+' text contrast');
+  }
+ }
+ assert.match(area,/\.ap-flow:focus-visible/);
+ assert.match(area,/prefers-reduced-motion:reduce/);
+});
