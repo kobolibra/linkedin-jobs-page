@@ -84,7 +84,8 @@
  function svg(data,{compact=false}={}){
   if(!data.total)return '';
   const {nodes,links,byId,unit,nodeWidth,width,height}=layout(data,{compact});
-  const tone=n=>n.type==='region'||n.id==='saved'?'source':positive.includes(n.id)?n.id:n.type;
+  // App Economy Salesforce: categorical region colors converge into a cohesive stage flow.
+  const tone=n=>n.type==='region'?'source_'+n.context.toLowerCase():n.id==='saved'?'source':positive.includes(n.id)?n.id:n.type;
   const color=n=>'var(--ap-tone-'+tone(n)+')';
   let paths='';
   for(const link of links){
