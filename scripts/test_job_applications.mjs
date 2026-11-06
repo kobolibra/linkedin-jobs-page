@@ -140,26 +140,24 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
  assert.match(view,/style="fill:var\(--ap-flow-applied\)"/);
  assert.ok((view.match(/<path class="ap-flow/g)||[]).length>0);
 });
-test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
+test('My Journey original 2026-11-06 morning palette is restored byte-for-byte',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* APP ECONOMY / Graphic-led income statement');
- assert.ok(start>0);
- const area=css.slice(start);
- const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
- assert.equal(groups.length,2);
+ const original="/* Journey figure only: mineral hues distinguish stages without changing list/editor colors. */\n.application-journey{\n --ap-tone-source:#65737d;--ap-flow-source:#c6cfd2;\n --ap-tone-applied:#326da8;--ap-flow-applied:#a4bfd5;\n --ap-tone-contact:#227b79;--ap-flow-contact:#9dc7bf;\n --ap-tone-first:#6669a5;--ap-flow-first:#b9b6d7;\n --ap-tone-second:#90682d;--ap-flow-second:#d1be98;\n --ap-tone-final:#895174;--ap-flow-final:#c2a4bc;\n --ap-tone-offer:#307957;--ap-flow-offer:#9bc7ac;\n --ap-tone-no_response:#766957;--ap-flow-no_response:#ccc3b3;\n --ap-tone-rejected:#b05249;--ap-flow-rejected:#dba49b;\n --ap-tone-waiting:#5d707b;--ap-flow-waiting:#d5dde0;\n}\n[data-theme=dark] .application-journey{\n --ap-tone-source:#afbdc7;--ap-flow-source:#526570;\n --ap-tone-applied:#9fc7ed;--ap-flow-applied:#466f96;\n --ap-tone-contact:#8fd1c4;--ap-flow-contact:#3e7d76;\n --ap-tone-first:#bcbdec;--ap-flow-first:#686b9b;\n --ap-tone-second:#e0c18a;--ap-flow-second:#877750;\n --ap-tone-final:#dda9ca;--ap-flow-final:#925f81;\n --ap-tone-offer:#9bd6b1;--ap-flow-offer:#4e8565;\n --ap-tone-no_response:#cfc3af;--ap-flow-no_response:#786f60;\n --ap-tone-rejected:#f0afa2;--ap-flow-rejected:#a36860;\n --ap-tone-waiting:#b3c0c8;--ap-flow-waiting:#425864;\n}\n.application-journey .ap-legend .ap-key-interviews::before{background:linear-gradient(90deg,var(--ap-tone-first) 0% 33.33%,var(--ap-tone-second) 33.33% 66.67%,var(--ap-tone-final) 66.67% 100%)}\n\n.application-journey footer{color:#65757e}\n[data-theme=dark] .application-journey footer{color:#aebcc5}";
+ assert.ok(css.includes(original),'original node, ribbon, legend and light/dark declarations changed');
+ const blocks=[...original.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
+ assert.equal(blocks.length,2);
  const value=hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
  const contrast=(a,b)=>{const w=[.2126,.7152,.0722],x=value(a).reduce((s,v,i)=>s+v*w[i],0),y=value(b).reduce((s,v,i)=>s+v*w[i],0);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
- for(const group of groups){
-  const tokens=new Map([...group[1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2]]));
-  const canvas=tokens.get('--ap-canvas');assert.ok(canvas);
+ for(const [i,block] of blocks.entries()){
+  const tokens=new Map([...block[1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2]]));
+  const canvas=i?'#192a37':'#f6f6f4';
   for(const tone of ['source','applied','contact','first','second','final','offer','no_response','rejected','waiting']){
-   const node=tokens.get('--ap-tone-'+tone),flow=tokens.get('--ap-flow-'+tone);
-   assert.ok(node&&flow,tone+' theme tokens are incomplete');
-   assert.ok(contrast(node,canvas)>=4.5,tone+' text contrast');
+   assert.ok(tokens.get('--ap-flow-'+tone),tone+' flow missing');
+   assert.ok(contrast(tokens.get('--ap-tone-'+tone),canvas)>=4.5,tone+' node contrast');
   }
  }
- assert.match(area,/\.ap-flow:focus-visible/);
- assert.match(area,/prefers-reduced-motion:reduce/);
+ assert.match(css,/\.ap-flow:focus-visible/);
+ assert.match(css,/prefers-reduced-motion:reduce/);
 });
 
 // This is an exact source-level copy lock against the original pre-redesign UI.
@@ -171,32 +169,20 @@ test('My Journey text and UI markup match the original pre-design version',()=>{
  assert.doesNotMatch(actual,/THE APPLICATION ATLAS|Every saved role\. Every recorded step\./);
 });
 
-test('financial-ink outcome palette matches reviewed semantic tokens',()=>{
- const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* APP ECONOMY / Graphic-led income statement');
- assert.ok(start>=0);
- const blocks=[...css.slice(start).matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
- assert.equal(blocks.length,2,'full light/dark palette required');
- for(const [i,mode] of ['light','dark'].entries()){
-  const expected=palettes.financialInk[mode],actual=new Map([...blocks[i][1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
-  for(const role of roles)for(const prefix of ['--ap-tone-','--ap-flow-']){
-   const token=prefix+role;
-   assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
-  }
-  for(const token of ['--ap-canvas','--ap-heading','--ap-figure-secondary','--ap-paper-border']){
-   assert.equal(actual.get(token),expected[token].toUpperCase(),mode+' '+token);
-  }
-  for(const stage of ['contact','first','second','final']){
-   assert.equal(actual.get('--ap-flow-'+stage),actual.get('--ap-flow-applied'),'mainline must not change hue');
-   assert.equal(actual.get('--ap-tone-'+stage),actual.get('--ap-tone-applied'),'stage node must share one semantic color');
-  }
- }
+test('Original destination-stage ribbon colors restored',()=>{
+ const src=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
+ assert.match(src,/const flowTone=tone\(a\.type==='region'\?a:b\)/);
+ const states=new Map();
+ states.set('contact',change(change(null,'applied','contact'),'contact','contact'));
+ states.set('first',change(change(null,'applied','first'),'first','first'));
+ const drawn=svg(graph(['contact','first'],states));
+ assert.match(drawn,/style="fill:var\(--ap-flow-contact\)"/);
+ assert.match(drawn,/style="fill:var\(--ap-flow-first\)"/);
 });
-
-test('Figure uses lighter flat flow fills without decorative overlays',()=>{
+test('Restored figure has no unrelated decorative overlays',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
  const js=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  assert.doesNotMatch(js,/ap-ribbon-engraving|ap-flow-paper-grain|<linearGradient/);
- assert.match(css,/--ap-flow-applied:#A9B9C0/);
- assert.match(css,/--ap-tone-applied:#252D35/);
+ assert.match(css,/--ap-flow-applied:#a4bfd5/);
+ assert.match(css,/--ap-tone-applied:#326da8/);
 });
