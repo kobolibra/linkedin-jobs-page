@@ -132,7 +132,7 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
  states.set('reject',change(change(null,'first','reject'),'rejected','reject'));
  states.set('silent',change(change(null,'contact','silent'),'no_response','silent'));
  const view=svg(graph(['p','offer','reject','silent','saved','post-offer-reject'],states));
- for(const tone of ['source','applied','offer','rejected','no_response','waiting']){
+ for(const tone of ['source_unknown','applied','contact','first','offer','rejected','no_response','waiting']){
   assert.ok(view.includes('style="fill:var(--ap-flow-'+tone+')"'),tone+' solid-flow tone missing');
  }
  assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
@@ -188,27 +188,44 @@ test('Restored figure has no unrelated decorative overlays',()=>{
 });
 
 
-test('App Economy Apple figure palette wins over historical variables, in both themes',()=>{
+test('App Economy Salesforce-style palette: five distinct colored sources and all stage transitions',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const marker='/* APP ECONOMY INSIGHTS / APPLE FINANCIAL SANKEY';
- const start=css.lastIndexOf(marker);
+ const start=css.lastIndexOf('/* APP ECONOMY INSIGHTS / SALESFORCE-STYLE');
  assert.ok(start>=0);
  const sheet=css.slice(start);
  const blocks=[...sheet.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(blocks.length,2);
  const expected=[
-  {canvas:'#F1F1F1',source:'#131313',applied:'#131313',offer:'#197B36',rejected:'#BD242A',no_response:'#606060',sourceFlow:'#8A8A8A',stageFlow:'#909090',offerFlow:'#A8CBA3',rejectedFlow:'#DEA09A',noResponseFlow:'#B7B7B7'},
-  {canvas:'#1B2025',source:'#EEEEEE',applied:'#EEEEEE',offer:'#A3E9A1',rejected:'#F2AAA5',no_response:'#C4C4C4',sourceFlow:'#656B70',stageFlow:'#747A80',offerFlow:'#547B56',rejectedFlow:'#93605D',noResponseFlow:'#60666B'},
+  {canvas:'#F3F4F3',source_cn:'#14756E',source_hk:'#925079',source_sg:'#704F99',source_other:'#93602E',source_unknown:'#326B9A',applied:'#246EA9',contact:'#19788E',first:'#426CA5',second:'#5C5FAA',final:'#77519A',offer:'#197D43',no_response:'#8D6427',rejected:'#B83D50',waiting:'#576A72'},
+  {canvas:'#1B2630',source_cn:'#90DDD0',source_hk:'#F0B3D0',source_sg:'#D2BDF4',source_other:'#F3C797',source_unknown:'#A8CFED',applied:'#A4D0F3',contact:'#95D5DE',first:'#B8CDF1',second:'#C6C5FF',final:'#E0C2F4',offer:'#A6E7B7',no_response:'#F0D29A',rejected:'#FFADB9',waiting:'#B8CCD6'}
  ];
+ const luma=h=>h.slice(1).match(/../g).map(x=>parseInt(x,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0);
+ const contrast=(a,b)=>{const [x,y]=[luma(a),luma(b)];return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
  for(const [i,block] of blocks.entries()){
-  const colors=new Map([...block[1].matchAll(/(--ap-[a-z_-]+):\s*(#[a-f0-9]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
-  const e=expected[i],get=(key)=>colors.get('--ap-'+key)?.toUpperCase();
-  assert.equal(get('canvas'),e.canvas);
-  for(const stage of ['applied','contact','first','second','final']){
-   assert.equal(get('tone-'+stage),e.applied,stage+' node');
-   assert.equal(get('flow-'+stage),e.stageFlow,stage+' ribbon');
+  const actual=new Map([...block[1].matchAll(/(--ap-[a-z_-]+):\s*(#[0-9a-f]{6})/gi)].map(m=>[m[1],m[2].toUpperCase()]));
+  const e=expected[i];
+  assert.equal(actual.get('--ap-canvas'),e.canvas);
+  for(const [tone,value] of Object.entries(e)){
+   if(tone==='canvas')continue;
+   assert.equal(actual.get('--ap-tone-'+tone),value,tone+' node');
+   assert.ok(actual.has('--ap-flow-'+tone),tone+' flow');
+   assert.ok(contrast(value,e.canvas)>=4.5,tone+' foreground contrast');
   }
-  for(const [name,value] of [['tone-source',e.source],['tone-offer',e.offer],['tone-rejected',e.rejected],['tone-no_response',e.no_response],['flow-source',e.sourceFlow],['flow-offer',e.offerFlow],['flow-rejected',e.rejectedFlow],['flow-no_response',e.noResponseFlow]])assert.equal(get(name),value,name);
+  const regions=['cn','hk','sg','other','unknown'].map(x=>actual.get('--ap-flow-source_'+x));
+  assert.equal(new Set(regions).size,5,'all five sources must have separate flow colors');
+  assert.equal(new Set(['applied','contact','first','second','final'].map(x=>actual.get('--ap-flow-'+x))).size,5,'interview stages should have distinct but cohesive colors');
  }
- assert.match(sheet,/\.ap-legend \.ap-key-interviews::before\s*\{\s*background:var\(--ap-tone-first\)/);
+ assert.match(sheet,/\.ap-node-region \.ap-region-code\s*\{\s*fill:currentColor/);
+ assert.match(sheet,/\.ap-key-interviews::before\s*\{\s*background:linear-gradient/);
+});
+test('Region ribbons inherit original five source codes without changing graph math or copy',()=>{
+ const js=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
+ assert.match(js,/n\.type==='region'\?'source_'\+n\.context\.toLowerCase\(\)/);
+ const states=new Map();
+ const regions=new Map([['a','CN'],['b','HK'],['c','SG'],['d','OTHER'],['e','UNKNOWN']]);
+ const output=svg(graph(['a','b','c','d','e'],states,{regions}));
+ for(const code of ['cn','hk','sg','other','unknown']){
+  assert.match(output,new RegExp('style="fill:var\\(--ap-flow-source_'+code+'\\)"'));
+  assert.match(output,new RegExp('data-tone="source_'+code+'"'));
+ }
 });
