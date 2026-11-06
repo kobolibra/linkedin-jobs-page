@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-06T16:03:00.821953+00:00",
+    "checkedAt": "2026-11-06T22:02:46.800716+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-06T16:03:06.614986+00:00",
+    "checkedAt": "2026-11-06T22:02:52.539901+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-06T16:03:12.601180+00:00",
+    "checkedAt": "2026-11-06T22:02:58.532806+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-06T16:03:15.685330+00:00",
+    "checkedAt": "2026-11-06T22:03:01.610501+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10326,5 +10326,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQF_YX31mVnB-A/company-logo_100_100/company-logo_100_100/0/1630583783262/recruitpedia_logo?e=2147483647&v=beta&t=ef2IuX1nfYeBfAvStCOuMJEfQojSlQhwa-YuoXTVa5M",
     "companyUrl": "https://www.linkedin.com/company/recruitpedia",
     "sourceJobId": "4488121939"
+  },
+  "carrier transicold pte ltd": {
+    "name": "Carrier Transicold Pte Ltd",
+    "checkedAt": "2026-11-06T22:02:45.377289+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "427aa56b77c7bfe940c6dc42.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHO8XqyHyJFIw/company-logo_100_100/company-logo_100_100/0/1631436694464/carrier_transicold_pte_ltd_logo?e=2147483647&v=beta&t=EjZlaOZ65bjK6bvpdgBszTO4mci0W65R2p629J8avgc",
+    "companyUrl": "https://sg.linkedin.com/company/carrier-transicold-pte-ltd",
+    "sourceJobId": "4488401138"
   }
 }
