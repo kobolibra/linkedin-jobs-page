@@ -46,8 +46,8 @@ test('coverage claims reflect the 16 configured tracked institutions without imp
   assert.match(about,/id="coverage"/);
   assert.equal((about.match(/<div class="about-company-list">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
   assert.match(home,/Watch the market\./);
-  assert.match(home,/LAST UPDATED/);
-  assert.match(home,/SOURCE <span aria-hidden="true">\/<\/span> LINKEDIN/);
+  assert.match(home,/Last Updated/);
+  assert.match(home,/Source <span aria-hidden="true">\/<\/span> LinkedIn/);
   assert.match(home,/Top 30 Institutions by Active Roles/);
   assert.match(app,/Top 30 Institutions by Active Roles/);
   assert.match(about,/希望我们都能拿到自己的dream offer💪/);
@@ -62,7 +62,7 @@ test('copy is concise and avoids duplicate disclaimer headings or a numerical ma
  assert.equal((about.match(/id="coverage"/g)||[]).length,1);
 });
 
-test('homepage keeps approved pre-coverage language and top About entry',()=>{const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(home,/MARKET COVERAGE/);assert.match(home,/Glean signal from the noise/);assert.match(home,/href="\/about"/);assert.doesNotMatch(home,/REGIONS TRACKED|16 selected institutions|SOURCES <span/);});
+test('homepage keeps approved pre-coverage language and top About entry',()=>{const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(home,/Market Coverage/);assert.match(home,/Glean signal from the noise/);assert.match(home,/href="\/about"/);assert.doesNotMatch(home,/REGIONS TRACKED|16 selected institutions|SOURCES <span/);});
 
 test('About uses one editorial hero, accurate desktop/mobile instructions, and no decorative slogans',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
