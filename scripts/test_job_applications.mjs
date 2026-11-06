@@ -132,16 +132,19 @@ test('Sankey ribbons carry process tones and distinguish terminal branches',()=>
  states.set('silent',change(change(null,'contact','silent'),'no_response','silent'));
  const view=svg(graph(['p','offer','reject','silent','saved','post-offer-reject'],states));
  for(const tone of ['source','applied','offer','rejected','no_response','waiting']){
-  assert.ok(view.includes('fill:var(--ap-flow-'+tone+')'),tone+' ribbon missing');
+  assert.ok(view.includes('stop-color:var(--ap-flow-'+tone+')'),tone+' gradient stop missing');
  }
  assert.match(view,/aria-label="Applied → Recruiter Contact: 1 role"/);
+ assert.match(view,/<defs><linearGradient id="ap-ribbon-0"/);
+ assert.match(view,/style="fill:url\(#ap-ribbon-0\)"/);
+ assert.equal((view.match(/<linearGradient /g)||[]).length,(view.match(/<path class="ap-flow/g)||[]).length);
 });
 test('Journey-scoped light and dark palettes provide readable, complete state colors',()=>{
  const css=readFileSync(new URL('../job-applications.css',import.meta.url),'utf8');
- const start=css.indexOf('/* ATELIER / Journey only.');
+ const start=css.indexOf('/* STUDIO / Verdigris');
  assert.ok(start>0);
  const area=css.slice(start);
- const groups=[...area.matchAll(/(?:\[data-theme=dark\] )?\.application-journey\{([^}]+)\}/g)].slice(0,2);
+ const groups=[...area.matchAll(/(?:\[data-theme=dark\]\s*)?\.application-journey\s*\{([^}]+)\}/g)].slice(0,2);
  assert.equal(groups.length,2);
  const value=hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);
  const contrast=(a,b)=>{const w=[.2126,.7152,.0722],x=value(a).reduce((s,v,i)=>s+v*w[i],0),y=value(b).reduce((s,v,i)=>s+v*w[i],0);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
