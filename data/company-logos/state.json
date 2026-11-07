@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-07T04:02:41.163453+00:00",
+    "checkedAt": "2026-11-07T10:02:35.290894+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-07T04:02:45.318882+00:00",
+    "checkedAt": "2026-11-07T10:02:40.918006+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-07T04:02:51.369060+00:00",
+    "checkedAt": "2026-11-07T10:02:46.923183+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-07T04:02:54.486992+00:00",
+    "checkedAt": "2026-11-07T10:02:50.019526+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10338,5 +10338,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHO8XqyHyJFIw/company-logo_100_100/company-logo_100_100/0/1631436694464/carrier_transicold_pte_ltd_logo?e=2147483647&v=beta&t=EjZlaOZ65bjK6bvpdgBszTO4mci0W65R2p629J8avgc",
     "companyUrl": "https://sg.linkedin.com/company/carrier-transicold-pte-ltd",
     "sourceJobId": "4488401138"
+  },
+  "ust": {
+    "name": "UST",
+    "checkedAt": "2026-11-07T10:02:30.774283+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "89a6de0250b39f0070094f44.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEr-ib3Nn15Aw/company-logo_100_100/company-logo_100_100/0/1648787427825/ustglobal_logo?e=2147483647&v=beta&t=Mat5nuskL90W74qGXwwpHLg2mXn8Mfwf1z8oLxbk--c",
+    "companyUrl": "https://www.linkedin.com/company/ustglobal",
+    "sourceJobId": "4477092577"
+  },
+  "北银消费金融有限公司": {
+    "name": "北银消费金融有限公司",
+    "checkedAt": "2026-11-07T10:02:32.260142+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E9%93%B6%E6%B6%88%E8%B4%B9%E9%87%91%E8%9E%8D%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4485557916"
   }
 }
