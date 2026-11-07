@@ -10398,5 +10398,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGnnecFtnGd2w/company-logo_100_100/B4DZpnZt1YIkAQ-/0/1762671386375/sealink_co_logo?e=2147483647&v=beta&t=9mEVDcjZaLjhaWvF_DNuRmpIKLOG74U8MV1yZHklfxI",
     "companyUrl": "https://nl.linkedin.com/company/sealink-co",
     "sourceJobId": "4488714085"
+  },
+  "bridge data centres": {
+    "name": "Bridge Data Centres",
+    "checkedAt": "2026-11-07T22:02:09.749852+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487380212",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487380212",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4487380212",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487380212",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487380212",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.14800649846442,
+        "deferred": true
+      }
+    ]
   }
 }
