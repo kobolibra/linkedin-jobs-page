@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-07T10:02:35.290894+00:00",
+    "checkedAt": "2026-11-07T16:02:34.969096+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-07T10:02:40.918006+00:00",
+    "checkedAt": "2026-11-07T16:02:40.800654+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-07T10:02:46.923183+00:00",
+    "checkedAt": "2026-11-07T16:02:46.812476+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-07T10:02:50.019526+00:00",
+    "checkedAt": "2026-11-07T16:02:49.869563+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10362,5 +10362,41 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E9%93%B6%E6%B6%88%E8%B4%B9%E9%87%91%E8%9E%8D%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4485557916"
+  },
+  "check point software": {
+    "name": "Check Point Software",
+    "checkedAt": "2026-11-07T16:02:27.698646+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "832cccfd15c77203fde9720c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGtqN8lHnC7WA/company-logo_100_100/company-logo_100_100/0/1698642229581/check_point_software_technologies_logo?e=2147483647&v=beta&t=TuHPCnsLtLq5JtiRtl5s4q1l1S2hGLQeU8bTfJmwYrQ",
+    "companyUrl": "https://www.linkedin.com/company/check-point-software-technologies",
+    "sourceJobId": "4479316416"
+  },
+  "mondrian seoul itaewon": {
+    "name": "Mondrian Seoul Itaewon",
+    "checkedAt": "2026-11-07T16:02:29.015819+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f3458873c9e25bcd5a7cb74e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQFCnRI9Kkxwnw/company-logo_100_100/company-logo_100_100/0/1630628888125?e=2147483647&v=beta&t=Fl66f9W41XCzTN4UuyiDiw4UjHZepkChcVP55k4G7fc",
+    "companyUrl": "https://kr.linkedin.com/company/mondrian-seoul-itaewon",
+    "sourceJobId": "4486621192"
+  },
+  "sealink technology b.v": {
+    "name": "Sealink Technology B.V",
+    "checkedAt": "2026-11-07T16:02:31.967206+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "31d6d97655dac4cf781a3a74.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGnnecFtnGd2w/company-logo_100_100/B4DZpnZt1YIkAQ-/0/1762671386375/sealink_co_logo?e=2147483647&v=beta&t=9mEVDcjZaLjhaWvF_DNuRmpIKLOG74U8MV1yZHklfxI",
+    "companyUrl": "https://nl.linkedin.com/company/sealink-co",
+    "sourceJobId": "4488714085"
   }
 }
