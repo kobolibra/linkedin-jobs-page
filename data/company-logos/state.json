@@ -10456,5 +10456,34 @@
         "deferred": true
       }
     ]
+  },
+  "blue ocean capital": {
+    "name": "Blue Ocean Capital",
+    "checkedAt": "2026-11-08T10:02:18.780104+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4487648115",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.00406607927054,
+        "deferred": true
+      }
+    ]
   }
 }
