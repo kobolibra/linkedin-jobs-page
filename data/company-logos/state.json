@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-08T16:02:47.784486+00:00",
+    "checkedAt": "2026-11-08T22:04:07.631206+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-08T16:02:51.895292+00:00",
+    "checkedAt": "2026-11-08T22:04:12.534166+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,30 +3178,21 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-08T16:02:57.893500+00:00",
+    "checkedAt": "2026-11-08T22:04:18.519728+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4441170948",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.226908267818075,
-        "deferred": true
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
       }
     ]
   },
@@ -5407,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-07T16:02:49.869563+00:00",
+    "checkedAt": "2026-11-08T22:04:03.664089+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10468,32 +10459,15 @@
   },
   "blue ocean capital": {
     "name": "Blue Ocean Capital",
-    "checkedAt": "2026-11-08T10:02:18.780104+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-08T22:04:06.616569+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4487648115",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487648115",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.00406607927054,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "f3ca8c9498d56882674080bf.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGfGyrc_ygdrg/company-logo_100_100/company-logo_100_100/0/1706617834330/bocg_logo?e=2147483647&v=beta&t=60lWNUpEpuMhv86XoBP42lUi-gDlko8kMcVzjbgllAM",
+    "companyUrl": "https://cn.linkedin.com/company/bocg",
+    "sourceJobId": "4487648115"
   },
   "central narcotics bureau": {
     "name": "Central Narcotics Bureau",
@@ -10554,5 +10528,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFf6zLYVupRGQ/company-logo_100_100/company-logo_100_100/0/1652860744258/temenos_logo?e=2147483647&v=beta&t=H3kb2sykiPU5AWOQAqOhyKSan_27yYcMmpYoosRdPn8",
     "companyUrl": "https://ch.linkedin.com/company/temenos",
     "sourceJobId": "4472060643"
+  },
+  "icm global funds pte ltd": {
+    "name": "ICM Global Funds Pte Ltd",
+    "checkedAt": "2026-11-08T22:03:56.387729+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a9d8cbe6f752630fd7ecd465.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGF8KxAQoY0zw/company-logo_100_100/company-logo_100_100/0/1663738409262?e=2147483647&v=beta&t=Xmv47cIfWsZQP0rBVRk91WLuteXQ00m00qB8UkgBEMc",
+    "companyUrl": "https://sg.linkedin.com/company/icm-global-funds-pte-ltd",
+    "sourceJobId": "4405922531"
+  },
+  "ssr marguerite boucicaut": {
+    "name": "SSR Marguerite BOUCICAUT",
+    "checkedAt": "2026-11-08T22:03:57.742138+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5f7a57232519962a02e8e59a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGFoXdXbreK0g/company-logo_100_100/company-logo_100_100/0/1630659165008?e=2147483647&v=beta&t=9MwcziSK4FgVN6kB-rmBXDtlUB6Vvrglut2m91WRSG0",
+    "companyUrl": "https://fr.linkedin.com/company/ssr-marguerite-boucicaut",
+    "sourceJobId": "4488802131"
+  },
+  "webzine solutions": {
+    "name": "Webzine Solutions",
+    "checkedAt": "2026-11-08T22:04:00.665667+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4ea9cc92b0d5738f957811ab.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQG_3acT1nMp5Q/company-logo_100_100/company-logo_100_100/0/1706936518225?e=2147483647&v=beta&t=xmZGWML9Cv0Om4I4V0ISL9ko09KYVZo_lNs6pQZBe7o",
+    "companyUrl": "https://pk.linkedin.com/company/webzine-solutions",
+    "sourceJobId": "4487651813"
   }
 }
