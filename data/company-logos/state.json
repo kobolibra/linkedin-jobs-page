@@ -10427,5 +10427,34 @@
         "deferred": true
       }
     ]
+  },
+  "edelman smithfield": {
+    "name": "Edelman Smithfield",
+    "checkedAt": "2026-11-08T04:02:58.865477+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471605145",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471605145",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4471605145",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471605145",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471605145",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.202162879184726,
+        "deferred": true
+      }
+    ]
   }
 }
