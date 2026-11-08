@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-07T16:02:34.969096+00:00",
+    "checkedAt": "2026-11-08T16:02:47.784486+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-07T16:02:40.800654+00:00",
+    "checkedAt": "2026-11-08T16:02:51.895292+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,21 +3178,30 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-07T16:02:46.812476+00:00",
+    "checkedAt": "2026-11-08T16:02:57.893500+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 200,
-        "contentType": "text/html; charset=utf-8",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4441170948",
-        "reason": "no_employer",
-        "stage": "job",
-        "observedName": "",
-        "companyUrl": ""
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.226908267818075,
+        "deferred": true
       }
     ]
   },
@@ -10485,5 +10494,65 @@
         "deferred": true
       }
     ]
+  },
+  "central narcotics bureau": {
+    "name": "Central Narcotics Bureau",
+    "checkedAt": "2026-11-08T16:02:34.556962+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4174296b4592cbfc61e5ecab.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQFE-d2_uKmG4Q/company-logo_100_100/company-logo_100_100/0/1630617551207/central_narcotics_bureau_logo?e=2147483647&v=beta&t=-MSUvAh17L-y7a1E5jDmsTo8Ij9kHDqmdiBTLZMH1CM",
+    "companyUrl": "https://sg.linkedin.com/company/central-narcotics-bureau",
+    "sourceJobId": "4431947899"
+  },
+  "centre for immunology & infection - c2i": {
+    "name": "Centre for Immunology & Infection - C2i",
+    "checkedAt": "2026-11-08T16:02:35.844895+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dc5a1b910b442a031439ef8f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEJ16RIYHzQQA/company-logo_100_100/company-logo_100_100/0/1630649967721/centre_for_immunology_and_infection_c2i_logo?e=2147483647&v=beta&t=yX3o_kUNswze050caQyjN9Vr5g2c3botR30CtRi1fsQ",
+    "companyUrl": "https://hk.linkedin.com/company/centre-for-immunology-and-infection-c2i",
+    "sourceJobId": "4453571015"
+  },
+  "sephora": {
+    "name": "SEPHORA",
+    "checkedAt": "2026-11-08T16:02:39.130034+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "62f88f59648a00b98af37eed.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHpyqp2h6TAig/company-logo_100_100/company-logo_100_100/0/1630608077601/sephora_logo?e=2147483647&v=beta&t=FPkHqJm5iCboOfAYEQknzgrZA4q_j185MW4u4px8XGQ",
+    "companyUrl": "https://fr.linkedin.com/company/sephora",
+    "sourceJobId": "4488758878"
+  },
+  "tectura": {
+    "name": "Tectura",
+    "checkedAt": "2026-11-08T16:02:41.778858+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "770e7f041c0b3624ddc2f32e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFBOthgG8InTw/company-logo_100_100/company-logo_100_100/0/1679044935234/tectura_logo?e=2147483647&v=beta&t=VFd_kif8le8KQyZqbnf0JF65TRSmQ-QSmBhtamCQg2s",
+    "companyUrl": "https://sg.linkedin.com/company/tectura",
+    "sourceJobId": "4488715936"
+  },
+  "temenos": {
+    "name": "Temenos",
+    "checkedAt": "2026-11-08T16:02:44.784728+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "de38db14b291610b49fd8fe7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFf6zLYVupRGQ/company-logo_100_100/company-logo_100_100/0/1652860744258/temenos_logo?e=2147483647&v=beta&t=H3kb2sykiPU5AWOQAqOhyKSan_27yYcMmpYoosRdPn8",
+    "companyUrl": "https://ch.linkedin.com/company/temenos",
+    "sourceJobId": "4472060643"
   }
 }
