@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-09T10:02:50.361346+00:00",
+    "checkedAt": "2026-11-09T16:02:32.548788+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-09T10:02:56.380291+00:00",
+    "checkedAt": "2026-11-09T16:02:38.460810+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-09T10:03:02.376333+00:00",
+    "checkedAt": "2026-11-09T16:02:44.430482+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-09T10:02:47.392977+00:00",
+    "checkedAt": "2026-11-09T16:02:29.692400+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10792,5 +10792,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHvqI_Y4MrVkw/company-logo_100_100/company-logo_100_100/0/1631338802917?e=2147483647&v=beta&t=d5_BoySPly7tA7jjesFhUiVr4f5FvKhP7z0Qp2TqPG0",
     "companyUrl": "https://au.linkedin.com/company/tollgroup",
     "sourceJobId": "4484651602"
+  },
+  "bacardi": {
+    "name": "Bacardi",
+    "checkedAt": "2026-11-09T16:02:22.244864+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e2e9b99c9899b32d1eac82c9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQHVBWEnvxe-kA/company-logo_100_100-alternative/company-logo_100_100-alternative/0/1630625981028/bacardi_logo?e=2147483647&v=beta&t=GORTb2kcdEDZHqaj9hVRywx54lPGSrnoYPL1jlFxAPQ",
+    "companyUrl": "https://bm.linkedin.com/company/bacardi",
+    "sourceJobId": "4480949704"
+  },
+  "r systems": {
+    "name": "R Systems",
+    "checkedAt": "2026-11-09T16:02:23.889774+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3a20cbeadafa5e8721a9bee4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQGQY0LaKu4ujw/company-logo_100_100/B4DZ3zCSRlHoAU-/0/1777898956310/r_systems_logo?e=2147483647&v=beta&t=xmTtidKis46ts_Ie_h3VO_gdaQjNdGXiQTVkh7zOre0",
+    "companyUrl": "https://www.linkedin.com/company/r-systems",
+    "sourceJobId": "4487143175"
+  },
+  "vast data": {
+    "name": "VAST Data",
+    "checkedAt": "2026-11-09T16:02:26.691331+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b78d448bfaa6fe14e4a6c982.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGcSDxUoaDyTw/company-logo_100_100/company-logo_100_100/0/1682270564881/vast_data_logo?e=2147483647&v=beta&t=5MUd1-H5OC20vzMkex70kJ50ZZhNUch6kwrYwO-dBbY",
+    "companyUrl": "https://www.linkedin.com/company/vast-data",
+    "sourceJobId": "4487903538"
   }
 }
