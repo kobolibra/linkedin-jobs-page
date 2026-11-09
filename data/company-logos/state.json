@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-09T04:05:14.670248+00:00",
+    "checkedAt": "2026-11-09T10:02:50.361346+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-09T04:05:20.591080+00:00",
+    "checkedAt": "2026-11-09T10:02:56.380291+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-09T04:05:26.587821+00:00",
+    "checkedAt": "2026-11-09T10:03:02.376333+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-09T04:05:11.706959+00:00",
+    "checkedAt": "2026-11-09T10:02:47.392977+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10684,5 +10684,113 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E4%B8%AD%E5%9B%BD%E5%A4%AA%E5%B9%B3%E6%B4%8B%E4%BA%BA%E5%AF%BF%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%A4%A9%E6%B2%B3%E6%94%AF%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4487126333"
+  },
+  "allianz trade in asia pacific": {
+    "name": "Allianz Trade in Asia Pacific",
+    "checkedAt": "2026-11-09T10:02:22.106776+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "05ec830473a8871423b4f20a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGKVd4_98IOkA/company-logo_100_100/company-logo_100_100/0/1648445001234/euler_hermes_apac_logo?e=2147483647&v=beta&t=vOE0Kv7pVynVKiLbZLd6PSH-hqWjm8IR6fdY6rTUVSg",
+    "companyUrl": "https://hk.linkedin.com/company/allianz-trade-apac",
+    "sourceJobId": "4488823677"
+  },
+  "apm terminals": {
+    "name": "APM Terminals",
+    "checkedAt": "2026-11-09T10:02:23.560832+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3eb7c4ba8647284389894500.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQERJjESea-H7w/company-logo_100_100/company-logo_100_100/0/1631306585703?e=2147483647&v=beta&t=Eu9EhRjG_hZGBO-WrFb7FF2tqG8ND2LkasFSp8peHts",
+    "companyUrl": "https://nl.linkedin.com/company/apm-terminals",
+    "sourceJobId": "4487149238"
+  },
+  "arrowpoint investment partners": {
+    "name": "Arrowpoint Investment Partners",
+    "checkedAt": "2026-11-09T10:02:26.389748+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "9d3c3d87e1c765a62b598ee0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEAPhCCEwfvKg/company-logo_100_100/B56ZVfw8owGUAQ-/0/1741068422108/arrowpointfund_logo?e=2147483647&v=beta&t=LIUFajjWE1va4bpskikrPYEUv34IZuUI4qOhMzvqiQ4",
+    "companyUrl": "https://sg.linkedin.com/company/arrowpointfund",
+    "sourceJobId": "4487686187"
+  },
+  "bank of ningbo co., ltd": {
+    "name": "Bank Of Ningbo Co., Ltd",
+    "checkedAt": "2026-11-09T10:02:29.390220+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "243ecd49a15aabf4d48aac71.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQGSBVCxqI0AyA/company-logo_100_100/company-logo_100_100/0/1631304418724?e=2147483647&v=beta&t=pMKmN-AKTUpgROjVrTWw1zXBy41IsTcue55bB5M-dZ0",
+    "companyUrl": "https://cn.linkedin.com/company/bank-of-ningbo-co-ltd",
+    "sourceJobId": "4487107923"
+  },
+  "dl public relations consulting inc.": {
+    "name": "DL Public Relations Consulting Inc.",
+    "checkedAt": "2026-11-09T10:02:32.390808+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6fc7f27d2c4f3333d80d72e2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE0Z4416K00Ig/company-logo_100_100/B56ZY.JKnxGsAQ-/0/1744799312828?e=2147483647&v=beta&t=l7nzRJYCF9EvT3bfgszref5h-EwtJANCsA2x6EaWlwI",
+    "companyUrl": "https://ph.linkedin.com/company/dlprc",
+    "sourceJobId": "4487686136"
+  },
+  "elantas": {
+    "name": "ELANTAS",
+    "checkedAt": "2026-11-09T10:02:35.403601+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e505bdda8edb0e0f763f81e8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEXtNuSDej6sA/company-logo_100_100/company-logo_100_100/0/1630548737778/elantas_europe_gmbh_logo?e=2147483647&v=beta&t=wFN18V9vElU7MctWGdxxDcdyqyoWPAv_I0_efu7A76k",
+    "companyUrl": "https://de.linkedin.com/company/elantas",
+    "sourceJobId": "4488838172"
+  },
+  "ferragamo": {
+    "name": "FERRAGAMO",
+    "checkedAt": "2026-11-09T10:02:38.448750+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f856cdeb5166cbfa71739d8a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHyrOV6rRP9Jg/company-logo_100_100/company-logo_100_100/0/1663700415048/salvatore_ferragamo_logo?e=2147483647&v=beta&t=6A4w9pDgOYeDR6xw7bS7sVbfQZmh-le2udJVMsDJuEU",
+    "companyUrl": "https://it.linkedin.com/company/salvatore-ferragamo",
+    "sourceJobId": "4487125567"
+  },
+  "groupe seb": {
+    "name": "Groupe SEB",
+    "checkedAt": "2026-11-09T10:02:41.392221+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "54c2ab947204d6580f976b77.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHME1zT32kRBw/company-logo_100_100/company-logo_100_100/0/1643726602705/groupe_seb_logo?e=2147483647&v=beta&t=oDzGoKrhhPTttilKyQDyNMq75CV6U8GSz8jYo4RX2YI",
+    "companyUrl": "https://fr.linkedin.com/company/groupe-seb",
+    "sourceJobId": "4487134335"
+  },
+  "toll group": {
+    "name": "Toll Group",
+    "checkedAt": "2026-11-09T10:02:44.392524+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6c40b677255d3eff7b5b1bbd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHvqI_Y4MrVkw/company-logo_100_100/company-logo_100_100/0/1631338802917?e=2147483647&v=beta&t=d5_BoySPly7tA7jjesFhUiVr4f5FvKhP7z0Qp2TqPG0",
+    "companyUrl": "https://au.linkedin.com/company/tollgroup",
+    "sourceJobId": "4484651602"
   }
 }
