@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-08T22:04:07.631206+00:00",
+    "checkedAt": "2026-11-09T04:05:14.670248+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-08T22:04:12.534166+00:00",
+    "checkedAt": "2026-11-09T04:05:20.591080+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-08T22:04:18.519728+00:00",
+    "checkedAt": "2026-11-09T04:05:26.587821+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-08T22:04:03.664089+00:00",
+    "checkedAt": "2026-11-09T04:05:11.706959+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10564,5 +10564,125 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQG_3acT1nMp5Q/company-logo_100_100/company-logo_100_100/0/1706936518225?e=2147483647&v=beta&t=xmZGWML9Cv0Om4I4V0ISL9ko09KYVZo_lNs6pQZBe7o",
     "companyUrl": "https://pk.linkedin.com/company/webzine-solutions",
     "sourceJobId": "4487651813"
+  },
+  "banyule city council": {
+    "name": "Banyule City Council",
+    "checkedAt": "2026-11-09T04:04:43.278674+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ed447f331e6ec01a7fa096b0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEfwpOc_HBM5g/company-logo_100_100/company-logo_100_100/0/1630638332227/banyule_city_council_logo?e=2147483647&v=beta&t=KpLv9Tg5WBTPGs9aQww75ANNFpoJDwmPK91seEoQ0ng",
+    "companyUrl": "https://au.linkedin.com/company/banyule-city-council",
+    "sourceJobId": "4488803605"
+  },
+  "nina hospitality": {
+    "name": "Nina Hospitality",
+    "checkedAt": "2026-11-09T04:04:44.593678+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fe49aa610dfee045da7227c5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG13SsZ8SPI1w/company-logo_100_100/B56ZsCOM8bHQAQ-/0/1765268837605/ninahospitality_logo?e=2147483647&v=beta&t=4olDIewY3cPq68RU-0Q4DUm3tirDApYnf0jzgwX-GSs",
+    "companyUrl": "https://hk.linkedin.com/company/ninahospitality",
+    "sourceJobId": "4486686485"
+  },
+  "paragon construction zambia": {
+    "name": "Paragon Construction Zambia",
+    "checkedAt": "2026-11-09T04:04:47.912536+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a97ea924a88d00eec2a066ab.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEw1eASMTSNOw/company-logo_100_100/company-logo_100_100/0/1630544244671?e=2147483647&v=beta&t=KgMpK4ueSZFHqRcNrE46buPdu7gnEIkI-kN8ScQHlXk",
+    "companyUrl": "https://www.linkedin.com/company/paragon-construction-zambia",
+    "sourceJobId": "4487124417"
+  },
+  "rotary engineering": {
+    "name": "Rotary Engineering",
+    "checkedAt": "2026-11-09T04:04:50.598925+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e058bfdafc390e1f986d614d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGmBiU6fG7-yQ/company-logo_100_100/company-logo_100_100/0/1630653133363/rotary_engineering_pte_ltd_logo?e=2147483647&v=beta&t=vGkh0dSNppDU2lg3c96rTP4BvAYJhh0wGHc5nBRkKvo",
+    "companyUrl": "https://sg.linkedin.com/company/rotary-engineering-pte-ltd",
+    "sourceJobId": "4487113717"
+  },
+  "sigma ingeniería en vanguardia": {
+    "name": "Sigma Ingeniería en Vanguardia",
+    "checkedAt": "2026-11-09T04:04:53.536551+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3730c8da28aac3791fa95f98.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEtgzLGPxLXTw/company-logo_100_100/company-logo_100_100/0/1630565373500?e=2147483647&v=beta&t=tIhSyBe-hpMnR-nSYYcu7102czidUJF9hJy_XBhwHCU",
+    "companyUrl": "https://mx.linkedin.com/company/sigma-ingenieria-en-vanguardia",
+    "sourceJobId": "4488820202"
+  },
+  "stellar computer systems (scs)": {
+    "name": "Stellar Computer Systems (SCS)",
+    "checkedAt": "2026-11-09T04:04:56.551574+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d10523d509e28a16ff20d62b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHbLOIFRGpzPw/company-logo_100_100/company-logo_100_100/0/1678812464722/stellar_computer_systems_scs_logo?e=2147483647&v=beta&t=ZtI2X4mwWhfudxGnpEfAY2LjHXdcwhLovdaJu8lCi6o",
+    "companyUrl": "https://np.linkedin.com/company/stellar-computer-systems-scs",
+    "sourceJobId": "4487126338"
+  },
+  "stellar manufacturers private limited": {
+    "name": "Stellar Manufacturers Private Limited",
+    "checkedAt": "2026-11-09T04:04:59.536565+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "329f57eb4696122757eb9086.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQENaQB2GnxydA/company-logo_100_100/B56ZsH0eu8MIAQ-/0/1765362757108?e=2147483647&v=beta&t=5N7CZi9YmUH-IfBlM19L_YlXeSLeTiG1O_rZHIHUU8E",
+    "companyUrl": "https://in.linkedin.com/company/stellar-manufacturers-private-limited",
+    "sourceJobId": "4488818446"
+  },
+  "xiangcai sec.": {
+    "name": "Xiangcai Sec.",
+    "checkedAt": "2026-11-09T04:05:02.536061+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "9179c5a843f76cc21e0a009d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQE-0F-sls0Ysg/company-logo_100_100/company-logo_100_100/0/1631334758477?e=2147483647&v=beta&t=pREl6YxclzAmu89lDXvBEipNGP4RcmEaB-GjMb5ODXY",
+    "companyUrl": "https://cn.linkedin.com/company/xiangcai-sec.",
+    "sourceJobId": "4487110873"
+  },
+  "yin hospitality international": {
+    "name": "Yin Hospitality International",
+    "checkedAt": "2026-11-09T04:05:05.546582+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e01ec16d1ef6df910baeb688.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFc-yWpaf4nxw/company-logo_100_100/company-logo_100_100/0/1630671017592/yin_hospitality_international_logo?e=2147483647&v=beta&t=q-SchtXKZJ43m8XqdyT5oxfiPdStLOVdIXv_dAe7t1Q",
+    "companyUrl": "https://www.linkedin.com/company/yin-hospitality-international",
+    "sourceJobId": "4487110943"
+  },
+  "中国太平洋人寿保险股份有限公司广州市天河支公司": {
+    "name": "中国太平洋人寿保险股份有限公司广州市天河支公司",
+    "checkedAt": "2026-11-09T04:05:08.591605+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E4%B8%AD%E5%9B%BD%E5%A4%AA%E5%B9%B3%E6%B4%8B%E4%BA%BA%E5%AF%BF%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%A4%A9%E6%B2%B3%E6%94%AF%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487126333"
   }
 }
