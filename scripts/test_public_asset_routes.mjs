@@ -95,7 +95,7 @@ test('About accurately describes analytics, first-seen times and manually tracke
  assert.match(about,/Horizontal and vertical positions represent the mean and median days since first recorded/);
  assert.match(about,/full text of job descriptions is not searchable/);
  assert.match(about,/Record each stage yourself/);
- assert.match(about,/Stage history is preserved/);
+ assert.match(about,/Your history is preserved/);
  assert.match(about,/width of each flow represents the number of roles, not the likelihood of an offer/);
  assert.match(about,/regardless of the job-list filters/);
  assert.match(about,/does not assess your suitability for the role/);
