@@ -40,9 +40,9 @@ test('About sourcing and firm list match collector configuration',()=>{
  assert.ok(companyConfig,'tracked company configuration exists');
  assert.equal([...companyConfig[1].matchAll(/^    "[^"]+": \{/gm)].length,16);
  assert.equal((roster.match(/<span>/g)||[]).length,16);
- assert.match(about,/Sixteen institutions have dedicated LinkedIn searches/);
- assert.match(about,/additional roles are found through job-title keywords/);
- assert.match(about,/coverage is selective/i);
+ assert.match(about,/follow 16 selected institutions/);
+ assert.match(about,/roles found through keyword searches/);
+ assert.match(about,/Coverage is selective/);
 });
 test('About uses homepage vocabulary with one product thesis and six coherent sections',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
@@ -52,14 +52,14 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.doesNotMatch(about,/[\u4e00-\u9fff]/);
  assert.match(home,/Where finance<br>is hiring/);
  assert.match(about,/From opportunity<br><em>to outcome/);
- assert.match(about,/A data-driven view of finance hiring\. One place to manage your journey/);
- assert.match(about,/make more informed choices/);
- assert.match(about,/Shortlist opportunities, record each application stage yourself/);
- assert.match(about,/visualize the journey through My Journey's Sankey visualization/);
+ assert.match(about,/brings finance hiring data and personal application tracking together/);
+ assert.match(about,/Compare recorded openings by region, institution and time/);
+ assert.match(about,/Save roles you want to pursue, track each application stage yourself/);
+ assert.match(about,/see your progress in the My Journey Sankey visualization/);
  assert.equal((about.match(/class="about-purpose"/g)||[]).length,1,'product positioning belongs in one place');
  assert.equal((about.match(/It does not /g)||[]).length,3,'three distinct limits, no scattered disclaimers');
- assert.match(about,/visualize the journey through My Journey's Sankey visualization/);
- assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate/);
+ assert.match(about,/see your progress in the My Journey Sankey visualization/);
+ assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate|One place to manage your journey|visualize the journey through My Journey/);
  assert.match(home,/The Landscape in Numbers/);
  assert.match(about,/The Landscape in Numbers/);
  assert.match(about,/Company Insight/);
@@ -81,11 +81,11 @@ test('About states source, update limitations and unsupported work explicitly',(
  const hero=about.match(/<section class="about-hero"[\s\S]*?<\/section>/)?.[0]||'';
  assert.match(hero,/LinkedIn/);
  assert.match(hero,/Every 6 hours/);
- assert.match(hero,/Employer career sites are not monitored/);
- assert.match(hero,/Some roles may be missed, appear late or close between updates/);
- assert.match(hero,/does not alert you the moment a role is posted/);
- assert.match(hero,/does not match jobs to your résumé/);
- assert.match(hero,/does not rewrite your CV or cover letter for a JD/);
+ assert.match(hero,/Listings come from LinkedIn, not employers’ career sites/);
+ assert.match(hero,/some roles may be missed, appear late or close between checks/);
+ assert.match(hero,/does not monitor new openings in real time/);
+ assert.match(hero,/does not match roles to your résumé/);
+ assert.match(hero,/does not tailor your CV or cover letter to a job description/);
  assert.equal((about.match(/Every 6 hours/g)||[]).length,1,'only one refresh-frequency disclosure');
 });
 test('About accurately describes analytics, first-seen times and manually tracked Sankey',()=>{
@@ -101,7 +101,7 @@ test('About accurately describes analytics, first-seen times and manually tracke
  assert.match(about,/does not assess your suitability for the role/);
  assert.match(about,/12 latest active listings/);
  assert.match(about,/Swipe left/);
- assert.match(about,/500-character limit/);
+ assert.match(about,/limited to 500 characters/);
  assert.match(jobs,/const stages=\[\['saved','Saved'\]/);
  assert.match(jobs,/const data=graph\(favorites,states,\{regions\}\)/);
  assert.match(app,/const JEV_API_ENDPOINT="\/api\/jev\/analyze"/);
