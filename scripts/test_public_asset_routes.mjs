@@ -38,9 +38,13 @@ test('About sourcing and firm list match collector configuration',()=>{
  const roster=about.match(/<div class="about-company-list">([\s\S]*?)<\/div>/)?.[1]||'';
  const companyConfig=source.match(/^COMPANIES = \{([\s\S]*?)^\}/m);
  assert.ok(companyConfig,'tracked company configuration exists');
- assert.equal([...companyConfig[1].matchAll(/^    "[^"]+": \{/gm)].length,16);
- assert.equal((roster.match(/<span>/g)||[]).length,16);
- assert.match(about,/follow 16 selected institutions/);
+ assert.equal([...companyConfig[1].matchAll(/^    "[^"]+": \{/gm)].length,18);
+ assert.equal((roster.match(/<span>/g)||[]).length,18);
+ assert.match(about,/follow 18 selected institutions/);
+ assert.match(roster,/<span>Schroders<\/span>/);
+ assert.match(roster,/<span>Invesco<\/span>/);
+ assert.match(source,/"Schroders": \{"canonical": "schroders", "company_id": "5494"/);
+ assert.match(source,/"Invesco": \{"canonical": "invesco", "company_id": "3582438"/);
  assert.match(about,/roles found through keyword searches/);
  assert.match(about,/Coverage is selective/);
 });
