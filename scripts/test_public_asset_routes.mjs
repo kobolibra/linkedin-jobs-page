@@ -43,9 +43,9 @@ test('tracked-company list and scope match the configured LinkedIn collector',()
  assert.equal((list.match(/<span>/g)||[]).length,16,'public tracked list must match configuration');
  assert.match(about,/mainland China, Hong Kong and Singapore/);
  assert.match(about,/company-filtered LinkedIn searches/);
- assert.match(about,/role-keyword searches/);
- assert.match(about,/not a measure of the entire hiring market/);
- assert.match(about,/Listings come from LinkedIn, not employers' career sites/);
+ assert.match(about,/keyword searches/);
+ assert.match(about,/Coverage is selective/);
+ assert.match(about,/Listings come from LinkedIn, not employer career sites/);
 });
 
 test('About presents one consistent English narrative and preserves navigable sections',()=>{
@@ -65,6 +65,13 @@ test('About presents one consistent English narrative and preserves navigable se
  }
  assert.match(about,/href="\/\?guestbook=1"/);
  assert.match(home,/Watch the market\./);
+ assert.match(home,/Where finance<br>is hiring/);
+ assert.match(about,/THE HIRING LANDSCAPE/);
+ assert.match(about,/The Landscape in Numbers/);
+ assert.match(about,/Top 30 Institutions by Active Roles/);
+ assert.match(about,/My Journey · Sankey diagram/);
+ assert.match(about,/Find your next move\./);
+ assert.doesNotMatch(about,/See the market\.|Understand the market|Start with the wider view|see the bigger picture|Narrow the field|More than a saved list|Your search, wherever you are/);
  assert.match(home,/Last Updated/);
  assert.match(home,/Source <span aria-hidden="true">\/<\/span> LinkedIn/);
  assert.match(home,/Top 30 Institutions by Active Roles/);
@@ -76,16 +83,16 @@ test('About presents one consistent English narrative and preserves navigable se
 test('About distinguishes real job data and its limitations from personal job matching',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const hero=about.match(/<section class="about-hero"[\s\S]*?<\/section>/)?.[0]||'';
- assert.match(hero,/Not a real-time alert/);
- assert.match(hero,/Not a service that matches roles to your résumé/);
- assert.match(hero,/Not a tool that rewrites your CV or cover letter/);
+ assert.match(hero,/Not real-time job alerts/);
+ assert.match(hero,/Not résumé-based job matching/);
+ assert.match(hero,/Not CV or cover-letter rewriting/);
  assert.match(hero,/refreshed every six hours/);
- assert.match(hero,/new openings may appear late or not at all/);
- assert.match(hero,/See the market/);
+ assert.match(hero,/openings may be delayed, missed or no longer available/);
+ assert.match(hero,/About<br><em>Next Journey/);
  assert.match(hero,/Sankey diagram/);
  assert.equal((about.match(/refreshed every six hours/g)||[]).length,1,'refresh disclosure belongs in the hero');
  assert.doesNotMatch(about,/automatically match you|instant alerts|all open jobs/);
- assert.match(about,/does not assess your personal fit/);
+ assert.match(about,/No personal résumé assessment/);
  assert.match(about,/Applications are not submitted or automated here/);
 });
 
@@ -94,15 +101,15 @@ test('About documents actual chart, search, Sankey and account behavior',()=>{
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
  const applications=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  const fetcher=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
- assert.match(about,/mean and median days since each role was first seen/);
- assert.match(about,/select a bubble or employer label/);
+ assert.match(about,/mean and median days since first seen/);
+ assert.match(about,/Select a bubble or employer label/);
  assert.match(app,/closest\("\.bubble-row\[data-company\]"\)/);
  assert.match(app,/drillTop50Company\(row\.dataset\.company\)/);
  assert.match(fetcher,/params\["f_C"\] = strict_company_id/);
  assert.match(about,/not the full text of job descriptions/);
- assert.match(about,/manually record Applied/);
- assert.match(about,/Flow width represents the number of roles/);
- assert.match(about,/Filters on the main job list do not change this view/);
+ assert.match(about,/Manually record Applied/);
+ assert.match(about,/Flow width reflects role counts/);
+ assert.match(about,/Main-list filters do not change the chart/);
  assert.match(about,/12 latest active listings/);
  assert.match(about,/Swipe left/);
  assert.match(about,/500 characters/);
