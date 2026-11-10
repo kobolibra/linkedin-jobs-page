@@ -54,6 +54,7 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.match(about,/From opportunity<br><em>to outcome/);
  assert.match(about,/We offer a data-driven view of finance hiring/);
  assert.match(about,/a clear way to manage your applications/);
+ assert.match(about,/We offer a data-driven view of finance hiring and a clear way to manage your applications/);
  assert.match(about,/make informed choices/);
  assert.match(about,/Compare recorded roles across regions, institutions and time/);
  assert.match(about,/Save opportunities worth pursuing, record each stage yourself/);
