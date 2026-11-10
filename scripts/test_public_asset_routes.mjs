@@ -61,7 +61,7 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.equal((about.match(/class="about-purpose"/g)||[]).length,1,'product positioning belongs in one place');
  assert.equal((about.match(/<span>We don't /g)||[]).length,3,'three clear first-person product limitations');
  assert.doesNotMatch(about,/It does not /);
- assert.match(about,/No\. We don’t submit applications/);
+ assert.match(about,/No\. We don't submit applications/);
  assert.match(about,/follow your progress in My Journey's Sankey visualization/);
  assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate|One place to manage your journey|visualize the journey through My Journey/);
  assert.match(home,/The Landscape in Numbers/);
