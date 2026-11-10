@@ -1,8 +1,15 @@
 import unittest
-from merge_n8n_incremental import merge_documents
+from merge_n8n_incremental import merge_documents, normalize_company
 
 
 class N8nMergeTests(unittest.TestCase):
+    def test_new_company_legal_names_normalize_to_tracked_brand(self):
+        self.assertEqual(normalize_company("Schroders"), "schroders")
+        self.assertEqual(normalize_company("Schroder Investment Management"), "schroders")
+        self.assertEqual(normalize_company("Schroders Investment Management"), "schroders")
+        self.assertEqual(normalize_company("Invesco"), "invesco")
+        self.assertEqual(normalize_company("Invesco Ltd."), "invesco")
+
     def test_rss_cannot_supply_or_overwrite_final_deletion_check_evidence(self):
         proof={'liveDeletionExpiryAt':'2026-09-01','liveDeletionCheckedAt':'2026-09-16'}
         forged={'sourceJobId':'li-100000001','company':'Acme',**proof}
