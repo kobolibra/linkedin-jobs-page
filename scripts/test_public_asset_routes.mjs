@@ -87,9 +87,9 @@ test('About states source, update limitations and unsupported work explicitly',(
  assert.match(hero,/Every 6 hours/);
  assert.match(hero,/Listings come from LinkedIn, not employers’ career sites/);
  assert.match(hero,/some roles may be missed, appear late or close between checks/);
- assert.match(hero,/We don't deliver real-time alerts for new openings/);
+ assert.match(hero,/We don't monitor new openings in real time/);
  assert.match(hero,/We don't match roles to your résumé/);
- assert.match(hero,/We don't rewrite your CV or cover letter for a specific job/);
+ assert.match(hero,/We don't tailor your CV or cover letter to individual job descriptions/);
  assert.equal((about.match(/Every 6 hours/g)||[]).length,1,'only one refresh-frequency disclosure');
 });
 test('About accurately describes analytics, first-seen times and manually tracked Sankey',()=>{
