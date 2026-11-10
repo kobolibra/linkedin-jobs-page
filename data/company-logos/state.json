@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-09T22:02:52.143656+00:00",
+    "checkedAt": "2026-11-10T04:03:03.920951+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,12 +2705,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.278416305215664,
+        "deferred": true
       }
     ]
   },
@@ -5398,7 +5409,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-09T22:02:49.120427+00:00",
+    "checkedAt": "2026-11-10T04:03:01.012401+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10876,5 +10887,77 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQH30JPyqKXyFg/company-logo_100_100/B4EZwkEu.CKcAQ-/0/1770131747226/ink_fndn_logo?e=2147483647&v=beta&t=RXVP36RwXAZ_UNS1yLlJQmKEjj4ysVQ15eMGLnps6EY",
     "companyUrl": "https://www.linkedin.com/company/ink-fnd",
     "sourceJobId": "4489139482"
+  },
+  "cogent holdings pte ltd": {
+    "name": "Cogent Holdings Pte Ltd",
+    "checkedAt": "2026-11-10T04:02:44.616681+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "120bf193ac9167f1ce084f1a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEq6YEp0UWFEA/company-logo_100_100/B4EaBrLdvvIcAU-/0/1788504562952/cogent_holdings_pte_ltd_logo?e=2147483647&v=beta&t=62-IRu6vOuncnCOb0k4CvJnBCiZYvlkBSLrpj7E5Vp8",
+    "companyUrl": "https://sg.linkedin.com/company/cogent-holdings-pte-ltd",
+    "sourceJobId": "4452761526"
+  },
+  "coupang": {
+    "name": "Coupang",
+    "checkedAt": "2026-11-10T04:02:46.092782+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0853e687b0c4731510c9cb78.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHlqY2ryf_2RA/company-logo_100_100-alternative/company-logo_100_100-alternative/0/1630654618004/coupang_logo?e=2147483647&v=beta&t=ue996OdI4qWenv7rb92GDY49yJpPIQUSg81-gR3vN14",
+    "companyUrl": "https://www.linkedin.com/company/coupang",
+    "sourceJobId": "4487994329"
+  },
+  "dxc technology": {
+    "name": "DXC Technology",
+    "checkedAt": "2026-11-10T04:02:48.978344+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b2dcc0176c4732e94efed039.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQG64dSXK4S4aw/company-logo_100_100/B4EZsIpKlaGoAQ-/0/1765376568001/dxctechnology_logo?e=2147483647&v=beta&t=ddglmUPX4BPMssTfJ2ipVt2KYxeh3zd7v4TA6r17rYw",
+    "companyUrl": "https://www.linkedin.com/company/dxctechnology",
+    "sourceJobId": "4489407167"
+  },
+  "elevana growth": {
+    "name": "Elevana Growth",
+    "checkedAt": "2026-11-10T04:02:51.979635+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "eaa47e5ee498494c198f240f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQH5DusqZvSDjA/company-logo_100_100/B4DZlHTFxzGkAQ-/0/1757837811136/renting_tecnologia_logo?e=2147483647&v=beta&t=TBXKV-oi-R6c74V6M5wWD7W-M9VmaOTw8Z_Nsaw04q8",
+    "companyUrl": "https://es.linkedin.com/company/growth-elevana",
+    "sourceJobId": "4488301006"
+  },
+  "厦门国际银行股份有限公司北京分行": {
+    "name": "厦门国际银行股份有限公司北京分行",
+    "checkedAt": "2026-11-10T04:02:55.019909+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a10d2dc8ac2b7eebeae2d2f4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEYv4dcG9LHvQ/company-logo_100_100/company-logo_100_100/0/1631359768949?e=2147483647&v=beta&t=FYx73GuRk0gEwV2dqV04K2n3JoQ3kTZVi_pIL99tOmc",
+    "companyUrl": "https://cn.linkedin.com/company/%E5%8E%A6%E9%97%A8%E5%9B%BD%E9%99%85%E9%93%B6%E8%A1%8C%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487437373"
+  },
+  "复星联合健康保险股份有限公司": {
+    "name": "复星联合健康保险股份有限公司",
+    "checkedAt": "2026-11-10T04:02:58.008129+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c472c5cb2f95fece4df2d67e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEXt7UUtv_53A/company-logo_100_100/company-logo_100_100/0/1630648553746?e=2147483647&v=beta&t=bDkVMT69_dV2Icr7zp2HfNoow0VNee97uR-d13eE0eY",
+    "companyUrl": "https://www.linkedin.com/company/%E5%A4%8D%E6%98%9F%E8%81%94%E5%90%88%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487439129"
   }
 }
