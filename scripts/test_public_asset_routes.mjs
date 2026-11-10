@@ -40,8 +40,8 @@ test('About sourcing and firm list match collector configuration',()=>{
  assert.ok(companyConfig,'tracked company configuration exists');
  assert.equal([...companyConfig[1].matchAll(/^    "[^"]+": \{/gm)].length,16);
  assert.equal((roster.match(/<span>/g)||[]).length,16);
- assert.match(about,/follow 16 institutions individually/);
- assert.match(about,/keyword searches across other employers/);
+ assert.match(about,/Sixteen institutions have dedicated LinkedIn searches/);
+ assert.match(about,/additional roles are found through job-title keywords/);
  assert.match(about,/coverage is selective/i);
 });
 test('About uses homepage vocabulary with one product thesis and six coherent sections',()=>{
@@ -52,8 +52,8 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.doesNotMatch(about,/[\u4e00-\u9fff]/);
  assert.match(home,/Where finance<br>is hiring/);
  assert.match(about,/From opportunity<br><em>to outcome/);
- assert.match(about,/An informed search\. A journey you can trace/);
- assert.match(about,/My Journey Sankey visualization/);
+ assert.match(about,/Explore finance hiring\. See your application journey take shape/);
+ assert.match(about,/My Journey presents those stages as a Sankey visualization/);
  assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate/);
  assert.match(home,/The Landscape in Numbers/);
  assert.match(about,/The Landscape in Numbers/);
@@ -76,24 +76,24 @@ test('About states source, update limitations and unsupported work explicitly',(
  const hero=about.match(/<section class="about-hero"[\s\S]*?<\/section>/)?.[0]||'';
  assert.match(hero,/LinkedIn/);
  assert.match(hero,/Every 6 hours/);
- assert.match(hero,/Listings come from LinkedIn, not employer career sites/);
- assert.match(hero,/Some vacancies may appear late, be missed or have closed/);
- assert.match(hero,/Not real-time job alerts/);
- assert.match(hero,/Not résumé-based role matching/);
- assert.match(hero,/Not tailored CV or cover-letter editing/);
+ assert.match(hero,/Employer career sites are not monitored/);
+ assert.match(hero,/Some roles may be missed, appear late or close between updates/);
+ assert.match(hero,/does not monitor new postings in real time/);
+ assert.match(hero,/match roles to your résumé/);
+ assert.match(hero,/tailor CVs and cover letters to a job description/);
  assert.equal((about.match(/Every 6 hours/g)||[]).length,1,'only one refresh-frequency disclosure');
 });
 test('About accurately describes analytics, first-seen times and manually tracked Sankey',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const jobs=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
- assert.match(about,/position reflects the mean and median days since first recorded/);
- assert.match(about,/Full JD text is not searchable/);
- assert.match(about,/Manually log Applied/);
- assert.match(about,/retained in your stage history/);
- assert.match(about,/Flow width represents the number of roles, not the probability of an offer/);
- assert.match(about,/regardless of current list filters/);
- assert.match(about,/does not assess personal fit/);
+ assert.match(about,/Horizontal and vertical positions represent the mean and median days since first recorded/);
+ assert.match(about,/full text of job descriptions is not searchable/);
+ assert.match(about,/Record each stage yourself/);
+ assert.match(about,/Stage history is preserved/);
+ assert.match(about,/width of each flow represents the number of roles, not the likelihood of an offer/);
+ assert.match(about,/regardless of the job-list filters/);
+ assert.match(about,/does not assess your suitability for the role/);
  assert.match(about,/12 latest active listings/);
  assert.match(about,/Swipe left/);
  assert.match(about,/500-character limit/);
