@@ -9,7 +9,7 @@
     root.setAttribute('data-theme', theme);
     root.style.colorScheme = theme;
     const toggle = document.getElementById('aboutThemeToggle');
-    const label = theme === 'dark' ? '切换到浅色模式' : '切换到深色模式';
+    const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     toggle?.setAttribute('aria-label', label);
     toggle?.setAttribute('title', label);
     toggle?.setAttribute('aria-pressed', String(theme === 'dark'));
