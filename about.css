@@ -24,9 +24,9 @@
 .about-hero h1{font:400 clamp(45px,5.1vw,72px)/1.2 "Source Serif 4",var(--serif);letter-spacing:-.064em;color:var(--navy);text-wrap:balance;margin-bottom:31px}
 .about-hero h1 em{font-weight:400;color:var(--navy-2)}
 .about-boundaries{max-width:620px;margin:0 0 14px!important;color:var(--ink-soft);font-size:14px;line-height:1.8!important}
-.about-boundaries span{display:block;padding:2px 0 2px 13px;border-left:2px solid var(--line)}
-.about-data-note{max-width:620px;margin:0 0 24px!important;color:var(--ink-faint);font-size:12px;line-height:1.85!important}
-.about-purpose{max-width:620px;padding-top:19px;margin:0 0 30px!important;border-top:1px solid var(--line-strong);color:var(--ink);font-size:16px;line-height:1.9!important}
+.about-boundaries span{display:block;padding:1px 0}
+.about-data-note{max-width:620px;margin:16px 0 28px!important;color:var(--ink-faint);font-size:12px;line-height:1.85!important}
+.about-purpose{max-width:620px;padding-top:21px;margin:0!important;border-top:1px solid var(--line-strong);color:var(--ink);font-size:16px;line-height:1.9!important}
 .about-purpose strong{display:block;margin-bottom:5px;color:var(--navy);font-weight:700;line-height:1.75}
 .about-purpose span{display:block}
 .about-primary-link,.about-closing>a{display:inline-flex;align-items:center;justify-content:space-between;gap:45px;min-height:47px;background:#193d59;color:#fff!important;padding:12px 17px;border-radius:3px;font-size:12px;font-weight:650;transition:background .18s}
