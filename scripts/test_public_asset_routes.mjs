@@ -52,8 +52,10 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.doesNotMatch(about,/[\u4e00-\u9fff]/);
  assert.match(home,/Where finance<br>is hiring/);
  assert.match(about,/From opportunity<br><em>to outcome/);
- assert.match(about,/Explore finance hiring\. See your application journey take shape/);
- assert.match(about,/My Journey presents those stages as a Sankey visualization/);
+ assert.match(about,/A structured view of finance hiring\. A personal record of your applications/);
+ assert.equal((about.match(/class="about-purpose"/g)||[]).length,1,'product positioning belongs in one place');
+ assert.equal((about.match(/It does not /g)||[]).length,3,'three distinct limits, no scattered disclaimers');
+ assert.match(about,/My Journey brings those records together in a Sankey visualization/);
  assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate/);
  assert.match(home,/The Landscape in Numbers/);
  assert.match(about,/The Landscape in Numbers/);
@@ -78,9 +80,9 @@ test('About states source, update limitations and unsupported work explicitly',(
  assert.match(hero,/Every 6 hours/);
  assert.match(hero,/Employer career sites are not monitored/);
  assert.match(hero,/Some roles may be missed, appear late or close between updates/);
- assert.match(hero,/does not monitor new postings in real time/);
- assert.match(hero,/match roles to your résumé/);
- assert.match(hero,/tailor CVs and cover letters to a job description/);
+ assert.match(hero,/does not alert you the moment a role is posted/);
+ assert.match(hero,/does not match jobs to your résumé/);
+ assert.match(hero,/does not rewrite your CV or cover letter for a JD/);
  assert.equal((about.match(/Every 6 hours/g)||[]).length,1,'only one refresh-frequency disclosure');
 });
 test('About accurately describes analytics, first-seen times and manually tracked Sankey',()=>{
