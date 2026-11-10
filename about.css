@@ -242,3 +242,21 @@
   .about-section h2,.about-section-number { break-after:avoid; }
   .about-feature-list article,.about-device { break-inside:avoid; }
 }
+
+/* About editorial layout: distinct positioning and provenance, no duplicate hero navigation. */
+.about-facts{align-self:start;padding:24px 0 18px;border-top:2px solid var(--navy);border-bottom:1px solid var(--line-strong)}
+.about-facts .about-small-label{margin-bottom:20px!important;color:var(--gold-deep)}
+.about-facts dl{margin:0}
+.about-facts dl>div{display:grid;grid-template-columns:minmax(80px,.65fr) minmax(0,1.35fr);gap:12px;padding:15px 0;border-top:1px solid var(--line)}
+.about-facts dt{color:var(--ink-faint);font:600 11px/1.65 var(--mono);text-transform:uppercase;letter-spacing:.05em}
+.about-facts dd{margin:0;color:var(--navy);font-size:15px;font-weight:600;line-height:1.7}
+.about-facts>p:last-child{margin-top:19px!important;font-size:12px;color:var(--ink-soft);line-height:1.85}
+.about-hero{align-items:center}
+.about-hero h1{letter-spacing:-.045em}
+.about-purpose{margin-bottom:19px!important}
+.about-boundaries{margin:10px 0 29px!important;max-width:560px;line-height:1.85!important}
+.about-usage-notes{margin-top:22px;padding:15px 0;border-top:1px solid var(--line)}
+.about-usage-notes p{font-size:14px;color:var(--ink-soft);line-height:1.85!important;margin:8px 0!important}
+.about-usage-notes strong{color:var(--navy);font-weight:650}
+.about-usage-notes kbd{font:600 11px var(--mono);border:1px solid var(--line);border-radius:3px;padding:2px 5px}
+@media(max-width:720px){.about-hero{gap:30px}.about-facts{padding-top:20px}.about-facts dl>div{padding:11px 0}.about-usage-notes p{font-size:13px}}
