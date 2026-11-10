@@ -138,5 +138,77 @@ class FetchMultiRegionTests(unittest.TestCase):
         self.assertIn("failed@start=10", unsafe["statusSummary"]["Bank of America::CN"])
 
 
+    def test_schroders_and_invesco_company_ids_across_cn_hk_sg(self):
+        """Each newly tracked company uses its strict f_C ID in all three regions."""
+        from fetch_linkedin_requests import COMPANIES
+
+        ids = {"Schroders": "5494", "Invesco": "3582438"}
+        region_by_location = {"China": "CN", "Hong Kong": "HK", "Singapore": "SG"}
+        location_text = {"China": "Shenzhen, China", "Hong Kong": "Hong Kong, Hong Kong SAR", "Singapore": "Singapore"}
+        calls = []
+
+        class FakeSession:
+            def __init__(self):
+                self.headers = {}
+                self.context = {}
+
+            def get(self, _url, **kwargs):
+                params = kwargs["params"]
+                calls.append(dict(params))
+                self_ref.assertEqual(params["f_C"], ids[params["keywords"]])
+                self_ref.assertIn(params["location"], region_by_location)
+                self_ref.assertEqual(params["sortBy"], "DD")
+                self_ref.assertEqual(params["pageNum"], 0)
+                company = params["keywords"]
+                if params["start"]:
+                    html = "<!DOCTYPE html>\n\n<!---->"
+                else:
+                    index = (1 if company == "Schroders" else 2) * 10 + list(region_by_location).index(params["location"]) + 1
+                    job_id = 4480000000 + index
+                    html = (
+                        '<div class="base-search-card">'
+                        f'<a class="base-card__full-link" href="https://www.linkedin.com/jobs/view/{job_id}">Job</a>'
+                        f'<h4 class="base-search-card__subtitle"><a>{company}</a></h4>'
+                        '<h3 class="base-search-card__title">Investment Analyst</h3>'
+                        f'<span class="job-search-card__location">{location_text[params["location"]]}</span>'
+                        '<time class="job-search-card__listdate" datetime="2026-11-10"></time>'
+                        '</div>'
+                    )
+                return SimpleNamespace(status_code=200, text=html, content=html.encode(), raise_for_status=lambda: None)
+
+        self_ref = self
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "matrix.json"
+            argv = [
+                "search", "--company", "Schroders", "--company", "Invesco",
+                "--location", "China", "--location", "Hong Kong", "--location", "Singapore",
+                "--delay-min", "0", "--delay-max", "0", "--output", str(output),
+            ]
+            with patch("fetch_linkedin_requests.LinkedInSession", return_value=FakeSession()), patch("fetch_linkedin_requests.time.sleep"), patch.object(sys, "argv", argv):
+                self.assertEqual(main(), 0)
+            result = json.loads(output.read_text(encoding="utf-8"))
+
+        self.assertEqual({name: COMPANIES[name]["company_id"] for name in ids}, ids)
+        self.assertEqual(result["count"], 6)
+        self.assertEqual(result["scopeLocations"], ["CN", "HK", "SG"])
+        self.assertEqual(
+            {(job["requestedCompany"], job["location"]) for job in result["jobs"]},
+            {(name, region) for name in ids for region in region_by_location.values()},
+        )
+        self.assertEqual({job["companyCanonical"] for job in result["jobs"]}, {"schroders", "invesco"})
+        self.assertEqual(
+            result["statusSummary"],
+            {f"{name}::{region}": "ok: 1 jobs" for name in ids for region in region_by_location.values()},
+        )
+        self.assertEqual(len(calls), 18)
+        for name, company_id in ids.items():
+            for location in region_by_location:
+                self.assertEqual(
+                    [call["start"] for call in calls if call["f_C"] == company_id and call["location"] == location],
+                    [0, 10, 20],
+                )
+
+
+
 if __name__ == "__main__":
     unittest.main()
