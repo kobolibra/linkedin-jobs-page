@@ -82,7 +82,7 @@ test('About describes LinkedIn-only company and keyword discovery and actual bub
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
  const fetcher=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
  assert.match(about,/重点机构按机构范围检索/);
- assert.match(about,/通过职位关键词检索补充/);
+ assert.match(about,/其他公司[^。]*通过职位关键词(?:检索)?补充/);
  assert.match(about,/职位来自 LinkedIn，而非企业招聘官网/);
  assert.doesNotMatch(about,/部分其他来源|其他数据来源/);
  assert.match(about,/点击气泡或显示的机构名称/);
