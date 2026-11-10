@@ -52,6 +52,8 @@ def normalize_company(value):
         "blackrock": "blackrock", "blackrockinc": "blackrock",
         "morganstanley": "morgan stanley", "bbva": "bbva", "natixis": "natixis",
         "natixiscorporateinvestmentbanking": "natixis", "bankofamerica": "bank of america",
+        "schroderinvestmentmanagement": "schroders", "schrodersinvestmentmanagement": "schroders",
+        "invescoltd": "invesco",
     }
     return aliases.get(compact, company)
 
