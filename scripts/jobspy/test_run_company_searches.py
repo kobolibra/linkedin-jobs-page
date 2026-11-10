@@ -56,13 +56,13 @@ class RunCompanySearchesTest(unittest.TestCase):
 
     def test_company_keys_and_count(self):
         keys = [spec["canonical"].replace(" ", "_") for spec in runner.COMPANIES.values()]
-        self.assertEqual(len(keys), 16)
+        self.assertEqual(len(keys), 18)
         self.assertEqual(
             keys,
             [
                 "hsbc", "standard_chartered", "citi", "jpmorgan_chase",
                 "bnp_paribas", "societe_generale", "dbs_bank", "deutsche_bank",
-                "goldman_sachs", "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs",
+                "goldman_sachs", "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco",
             ],
         )
 
@@ -89,13 +89,13 @@ class RunCompanySearchesTest(unittest.TestCase):
             with patch("sys.argv", args):
                 self.assertEqual(runner.main(), 0)
             files = sorted(Path(tmp).glob("*.json"))
-            self.assertEqual(len(files), 16)
+            self.assertEqual(len(files), 18)
             self.assertEqual({p.stem for p in files}, {
                 "hsbc", "standard_chartered", "citi", "jpmorgan_chase", "bnp_paribas",
                 "societe_generale", "dbs_bank", "deutsche_bank", "goldman_sachs",
-                "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs",
+                "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco",
             })
-            self.assertEqual(run.call_count, 16)
+            self.assertEqual(run.call_count, 18)
 
     def test_rate_limited_page_recovery_follows_other_companies_and_is_bounded(self):
         calls = []
