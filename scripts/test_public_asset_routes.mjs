@@ -52,8 +52,7 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.doesNotMatch(about,/[\u4e00-\u9fff]/);
  assert.match(home,/Where finance<br>is hiring/);
  assert.match(about,/From opportunity<br><em>to outcome/);
- assert.match(about,/We offer a data-driven view of finance hiring/);
- assert.match(about,/a clear way to manage your applications/);
+ assert.match(about,/We combine a data-driven view of finance hiring with structured application tracking/);
  assert.match(about,/make informed choices/);
  assert.match(about,/Compare recorded roles across regions, institutions and time/);
  assert.match(about,/Save opportunities worth pursuing, record each stage yourself/);
