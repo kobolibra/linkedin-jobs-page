@@ -52,13 +52,13 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.doesNotMatch(about,/[\u4e00-\u9fff]/);
  assert.match(home,/Where finance<br>is hiring/);
  assert.match(about,/From opportunity<br><em>to outcome/);
- assert.match(about,/brings finance hiring data and personal application tracking together/);
- assert.match(about,/Compare recorded openings by region, institution and time/);
- assert.match(about,/Save roles you want to pursue, track each application stage yourself/);
- assert.match(about,/see your progress in the My Journey Sankey visualization/);
+ assert.match(about,/brings finance hiring and your application journey into one clear view/);
+ assert.match(about,/Compare recorded roles across regions, institutions and time/);
+ assert.match(about,/Save opportunities worth pursuing, record your application stages/);
+ assert.match(about,/see your progress through a Sankey visualization in My Journey/);
  assert.equal((about.match(/class="about-purpose"/g)||[]).length,1,'product positioning belongs in one place');
  assert.equal((about.match(/It does not /g)||[]).length,3,'three distinct limits, no scattered disclaimers');
- assert.match(about,/see your progress in the My Journey Sankey visualization/);
+ assert.match(about,/see your progress through a Sankey visualization in My Journey/);
  assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate|One place to manage your journey|visualize the journey through My Journey/);
  assert.match(home,/The Landscape in Numbers/);
  assert.match(about,/The Landscape in Numbers/);
