@@ -224,6 +224,8 @@ try {
       const before=await button.evaluate(el=>({
         pressed:el.getAttribute('aria-pressed'),
         ring:getComputedStyle(el.querySelector('.active-only-ring')).opacity,
+        color:getComputedStyle(el).color,
+        weight:getComputedStyle(el).fontWeight,
       }));
       assert.equal(before.pressed,'false');
       assert.equal(before.ring,'0',sample.name+': unselected circle must be hidden');
@@ -235,6 +237,7 @@ try {
         return{
           pressed:el.getAttribute('aria-pressed'),
           color:getComputedStyle(el).color,
+          weight:getComputedStyle(el).fontWeight,
           stroke:getComputedStyle(ring.querySelector('path')).stroke,
           ringOpacity:getComputedStyle(ring).opacity,
           background:getComputedStyle(el).backgroundColor,
@@ -242,10 +245,14 @@ try {
           withinViewport:rr.left>=0 && rr.right<=innerWidth,
         };
       });
-      const expected=sample.mode==='light'?'rgb(130, 40, 63)':'rgb(215, 141, 158)';
+      const expected=sample.mode==='light'?'rgb(156, 42, 51)':'rgb(223, 139, 121)';
       assert.equal(after.pressed,'true');
-      assert.equal(after.color,expected,sample.name+': burgundy label');
-      assert.equal(after.stroke,expected,sample.name+': burgundy ring');
+      assert.equal(after.color,before.color,sample.name+': label retains its original color');
+      assert.equal(after.weight,before.weight,sample.name+': label retains its original weight');
+      assert.equal(after.stroke,expected,sample.name+': circle matches Mainland region');
+      assert.notEqual(after.stroke,after.color,sample.name+': circle does not recolor text');
+      await button.hover();
+      assert.equal(await button.evaluate(el=>getComputedStyle(el).color),before.color,sample.name+': hover retains original label color');
       assert.equal(after.background,'rgba(0, 0, 0, 0)',sample.name+': transparent selected state');
       assert.equal(after.ringOpacity,'1',sample.name+': ring must be visible');
       assert.ok(after.extends&&after.withinViewport,sample.name+': circle must wrap label without clipping');

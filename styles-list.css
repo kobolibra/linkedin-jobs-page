@@ -503,31 +503,24 @@ body.compact .day[data-day-continuation="1"][data-filter-head="true"] { margin-t
 }
 [data-theme="dark"] .job.expired { opacity:.72; }
 
-/* A hand-drawn burgundy circle identifies the active-only filter, without a filled pill. */
+/* Keep the label unchanged; only the hand-drawn ring uses the Mainland token. */
 .count .active-only-toggle {
-  --active-ring-color:#82283f;
   position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;
   appearance:none;border:0;background:transparent;box-shadow:none;
   padding:2px 6px;margin-inline-start:-6px;border-radius:0;
   color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer;
-  transition:color .18s ease;
 }
 .count .active-only-toggle .active-only-ring {
   position:absolute;inset:-5px -6px;width:calc(100% + 12px);height:calc(100% + 10px);
-  overflow:visible;pointer-events:none;opacity:0;transform:rotate(-5deg);
+  color:var(--cn);overflow:visible;pointer-events:none;opacity:0;transform:rotate(-5deg);
   transition:opacity .18s ease;
 }
-.count .active-only-toggle:hover { color:var(--active-ring-color); }
 .count .active-only-toggle[aria-pressed="true"] {
-  color:var(--active-ring-color);background:transparent;box-shadow:none;font-weight:700;
+  color:inherit;background:transparent;box-shadow:none;
 }
 .count .active-only-toggle[aria-pressed="true"] .active-only-ring { opacity:1; }
-[data-theme="dark"] .count .active-only-toggle { --active-ring-color:#d78d9e; }
-[data-theme="dark"] .count .active-only-toggle[aria-pressed="true"] {
-  background:transparent;color:var(--active-ring-color);
-}
 .count .active-only-toggle:focus-visible {
-  outline:2px solid var(--active-ring-color);outline-offset:6px;border-radius:6px;
+  outline:2px solid var(--cn);outline-offset:6px;border-radius:6px;
 }
 @media(prefers-reduced-motion:reduce) {
   .count .active-only-toggle,.count .active-only-toggle .active-only-ring { transition:none; }
