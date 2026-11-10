@@ -23,7 +23,7 @@
 .about-wish{color:var(--gold-deep);font-size:14px;font-weight:650;letter-spacing:.015em;margin-bottom:32px!important}
 .about-hero h1{font:400 clamp(45px,5.1vw,72px)/1.2 "Source Serif 4",var(--serif);letter-spacing:-.064em;color:var(--navy);text-wrap:balance;margin-bottom:31px}
 .about-hero h1 em{font-weight:400;color:var(--navy-2)}
-.about-boundaries{max-width:620px;margin:0 0 14px!important;color:var(--ink-soft);font-size:14px;line-height:1.8!important}
+.about-boundaries{max-width:620px;margin:0 0 14px!important;color:var(--ink-soft);font-size:14px;line-height:1.65!important}
 .about-boundaries span{display:block;padding:1px 0}
 .about-data-note{max-width:620px;margin:16px 0 28px!important;color:var(--ink-faint);font-size:12px;line-height:1.85!important}
 .about-purpose{max-width:620px;padding-top:21px;margin:0!important;border-top:1px solid var(--line-strong);color:var(--ink);font-size:16px;line-height:1.9!important}
@@ -132,7 +132,7 @@
 .about-eyebrow { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:30px!important; color:var(--gold-deep); font:600 11px/1.7 var(--mono); letter-spacing:.12em; }
 .about-eyebrow span { color:var(--ink-soft); font-family:var(--sans); letter-spacing:.04em; }
 .about-hero { grid-template-columns:minmax(0,1.5fr) minmax(260px,.7fr); gap:clamp(32px,6vw,88px); padding:90px 0 78px; }
-.about-hero h1 { font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(42px,4.9vw,64px); line-height:1.35; letter-spacing:-.04em; }
+.about-hero h1 { font-family:"Source Serif 4",Georgia,serif; font-size:clamp(42px,4.9vw,64px); line-height:1.18; letter-spacing:-.052em; }
 .about-hero h1 em { font-style:normal; }
 .about-boundaries { font-size:15px; }
 .about-data-note { font-size:13px; }
@@ -158,7 +158,7 @@
 .about-toc a[aria-current="location"] span { color:var(--gold-deep); }
 .about-section { padding:56px 0 60px; scroll-margin-top:28px; }
 .about-section-number { font-size:12px; margin-bottom:16px!important; }
-.about-section h2 { max-width:none; text-wrap:wrap; font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(27px,2.7vw,34px); letter-spacing:-.025em; line-height:1.45; margin-bottom:16px; }
+.about-section h2 { max-width:none; text-wrap:wrap; font-family:"Source Serif 4",Georgia,serif; font-size:clamp(28px,2.9vw,38px); letter-spacing:-.035em; line-height:1.28; margin-bottom:16px; }
 .about-lead { max-width:none; font-size:15px; text-wrap:wrap; }
 .about-feature-list h3,.about-definition-list h3,.about-action-list h3 { font-size:15px; }
 .about-feature-list p,.about-definition-list p,.about-action-list p,.about-device>p,.about-device li,.about-account-list p,.about-guestbook-panel p,.about-faq details p { font-size:14px; line-height:1.9; }
@@ -186,7 +186,7 @@
 .about-device-icon { font-family:var(--sans); }
 .about-section:target .about-section-number { color:var(--navy-2); }
 .about-closing { padding:76px 0; }
-.about-closing h2 { font-family:"Songti SC","Noto Serif CJK SC",serif; font-size:clamp(30px,3.8vw,46px); line-height:1.45; letter-spacing:-.03em; margin-bottom:18px; }
+.about-closing h2 { font-family:"Source Serif 4",Georgia,serif; font-size:clamp(30px,3.8vw,46px); line-height:1.25; letter-spacing:-.04em; margin-bottom:18px; }
 .about-closing .about-wish { font-weight:400; color:var(--ink-soft); margin-bottom:28px!important; }
 .about-footer { font-size:12px; }
 .about-footer nav a,.about-home-link { display:inline-flex; align-items:center; min-height:44px; }

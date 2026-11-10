@@ -32,90 +32,97 @@ test('homepage /about link points to a registered public page and no invented NJ
   assert.match(published,/\'\/about.js\'/);
 });
 
-test('coverage claims reflect the 16 configured tracked institutions without implying full market data',()=>{
-  const companySource=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
-  const block=companySource.match(/^COMPANIES = \{([\s\S]*?)^\}/m);
-  assert.ok(block,'configured companies must be discoverable');
-  const monitored=[...block[1].matchAll(/^    "[^"]+": \{/gm)];
-  assert.equal(monitored.length,16,'revisit public copy whenever the monitored list changes');
-  const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
-  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
-  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert.match(about,/16 /);
-  assert.match(about,/职位均来自 LinkedIn，而非企业招聘官网/);
-  assert.match(about,/id="coverage"/);
-  assert.equal((about.match(/<div class="about-company-list">[\s\S]*?<\/div>/)?.[0]?.match(/<span>/g)||[]).length,16);
-  assert.match(home,/Watch the market\./);
-  assert.match(home,/Last Updated/);
-  assert.match(home,/Source <span aria-hidden="true">\/<\/span> LinkedIn/);
-  assert.match(home,/Top 30 Institutions by Active Roles/);
-  assert.match(app,/Top 30 Institutions by Active Roles/);
-  assert.match(about,/希望我们都能拿到自己的dream offer💪/);
-  assert.doesNotMatch(about,/\bJEV\b/);
-});
-
-test('copy is concise and avoids duplicate disclaimer headings or a numerical market slogan',()=>{
+test('tracked-company list and scope match the configured LinkedIn collector',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
- const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
- assert.doesNotMatch(about,/03<br>MARKETS|知道边界在哪里|坦诚说明|样本趋势，不代表整体市场|FIND YOUR FIT|CN · HK · SG|MAINLAND CHINA · HONG KONG · SINGAPORE/);
- assert.doesNotMatch(home,/Selected coverage, not the full market|16 institutions actively monitored|COVERAGE NOTE/);
- assert.equal((about.match(/id="coverage"/g)||[]).length,1);
+ const source=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
+ const list=about.match(/<div class="about-company-list">([\s\S]*?)<\/div>/)?.[1]||'';
+ const companyBlock=source.match(/^COMPANIES = \{([\s\S]*?)^\}/m);
+ assert.ok(companyBlock,'company configuration must exist');
+ const monitored=[...companyBlock[1].matchAll(/^    "[^"]+": \{/gm)];
+ assert.equal(monitored.length,16,'revisit About when tracked-firm configuration changes');
+ assert.equal((list.match(/<span>/g)||[]).length,16,'public tracked list must match configuration');
+ assert.match(about,/mainland China, Hong Kong and Singapore/);
+ assert.match(about,/company-filtered LinkedIn searches/);
+ assert.match(about,/role-keyword searches/);
+ assert.match(about,/not a measure of the entire hiring market/);
+ assert.match(about,/Listings come from LinkedIn, not employers' career sites/);
 });
 
-test('homepage keeps approved pre-coverage language and top About entry',()=>{const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(home,/Market Coverage/);assert.match(home,/Glean signal from the noise/);assert.match(home,/href="\/about"/);assert.doesNotMatch(home,/REGIONS TRACKED|16 selected institutions|SOURCES <span/);});
-
-test('About uses one editorial hero, accurate desktop/mobile instructions, and no decorative slogans',()=>{
+test('About presents one consistent English narrative and preserves navigable sections',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const styles=readFileSync(new URL('../about.css',import.meta.url),'utf8');
- assert.match(about,/希望我们都能拿到自己的dream offer💪/);
+ const script=readFileSync(new URL('../about.js',import.meta.url),'utf8');
+ const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert.match(about,/<html lang="en">/);
+ assert.doesNotMatch(about,/[\u4e00-\u9fff]/);
+ assert.equal((about.match(/class="about-hero"/g)||[]).length,1);
+ assert.equal((about.match(/class="about-purpose"/g)||[]).length,1);
  assert.equal((about.match(/class="about-section" id="/g)||[]).length,8);
- assert.match(about,/向左轻扫/);
- assert.match(about,/Guestbook/);
+ assert.equal((about.match(/<details><summary>/g)||[]).length,4);
+ for(const id of ['market','search','details','save','devices','account','guestbook','faq']){
+  assert.match(about,new RegExp('id="'+id+'"'));
+  assert.match(about,new RegExp('href="#'+id+'"'));
+ }
  assert.match(about,/href="\/\?guestbook=1"/);
- assert.match(about,/最新 12 条有效职位预览/);
+ assert.match(home,/Watch the market\./);
+ assert.match(home,/Last Updated/);
+ assert.match(home,/Source <span aria-hidden="true">\/<\/span> LinkedIn/);
+ assert.match(home,/Top 30 Institutions by Active Roles/);
+ assert.match(styles,/font-family:"Source Serif 4",Georgia,serif/);
+ assert.match(script,/Switch to light mode/);
  assert.doesNotMatch(about,/about-orbit|about-art-core|NEXT CHAPTER|JEV/);
- assert.doesNotMatch(styles,/about-orbit/);
 });
 
-test('About describes LinkedIn-only company and keyword discovery and actual bubble chart drilldown',()=>{
+test('About distinguishes real job data and its limitations from personal job matching',()=>{
+ const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
+ const hero=about.match(/<section class="about-hero"[\s\S]*?<\/section>/)?.[0]||'';
+ assert.match(hero,/Not a real-time alert/);
+ assert.match(hero,/Not a service that matches roles to your résumé/);
+ assert.match(hero,/Not a tool that rewrites your CV or cover letter/);
+ assert.match(hero,/refreshed every six hours/);
+ assert.match(hero,/new openings may appear late or not at all/);
+ assert.match(hero,/See the market/);
+ assert.match(hero,/Sankey diagram/);
+ assert.equal((about.match(/refreshed every six hours/g)||[]).length,1,'refresh disclosure belongs in the hero');
+ assert.doesNotMatch(about,/automatically match you|instant alerts|all open jobs/);
+ assert.match(about,/does not assess your personal fit/);
+ assert.match(about,/Applications are not submitted or automated here/);
+});
+
+test('About documents actual chart, search, Sankey and account behavior',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+ const applications=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  const fetcher=readFileSync(new URL('./jobspy/fetch_linkedin_requests.py',import.meta.url),'utf8');
- assert.match(about,/重点机构按机构范围检索/);
- assert.match(about,/其他公司[^。]*通过关键词检索补充/);
- assert.match(about,/职位均来自 LinkedIn，而非企业招聘官网/);
- assert.doesNotMatch(about,/部分其他来源|其他数据来源/);
- assert.match(about,/点击气泡或显示的机构名称/);
+ assert.match(about,/mean and median days since each role was first seen/);
+ assert.match(about,/select a bubble or employer label/);
  assert.match(app,/closest\("\.bubble-row\[data-company\]"\)/);
  assert.match(app,/drillTop50Company\(row\.dataset\.company\)/);
  assert.match(fetcher,/params\["f_C"\] = strict_company_id/);
- assert.match(about,/让下一站，多一些交流/);
+ assert.match(about,/not the full text of job descriptions/);
+ assert.match(about,/manually record Applied/);
+ assert.match(about,/Flow width represents the number of roles/);
+ assert.match(about,/Filters on the main job list do not change this view/);
+ assert.match(about,/12 latest active listings/);
+ assert.match(about,/Swipe left/);
+ assert.match(about,/500 characters/);
+ assert.match(applications,/const stages=\[\['saved','Saved'\]/);
+ assert.match(applications,/const data=graph\(favorites,states,\{regions\}\)/);
+ assert.match(app,/const JEV_API_ENDPOINT="\/api\/jev\/analyze"/);
 });
 
-
-test('About accurately distinguishes regular LinkedIn discovery, personal workflow and the optional JD analytics',()=>{
-  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
-  const applications=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
-  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert.match(about,/每 6 小时自动同步/);
-  assert.match(about,/而非企业招聘官网/);
-  assert.match(about,/不承诺第一时间发现新职位/);
-  assert.match(about,/不根据你的简历判断哪份工作最合适/);
-  assert.match(about,/不依照 JD 修改你的简历或求职信/);
-  assert.match(about,/用数据观察招聘/);
-  assert.match(about,/不同地区、不同机构的招聘变化/);
-  assert.match(about,/My Journey · 桑基图/);
-  assert.match(about,/为已收藏职位手动记录 Applied/);
-  assert.match(about,/不能在本站直接提交或自动投递简历/);
-  assert.match(about,/Analytics · 辅助理解 JD/);
-  assert.match(about,/不提供与个人简历的匹配判断/);
-  assert.equal((about.match(/class="about-purpose"/g)||[]).length,1,'one product thesis');
-  assert.equal((about.match(/每 6 小时自动同步/g)||[]).length,1,'source cadence only in hero');
-  assert.equal((about.match(/不承诺第一时间发现新职位/g)||[]).length,1,'one clear product contrast');
-  assert.doesNotMatch(about,/<details><summary>这里的职位是实时抓取的吗/);
-  assert.doesNotMatch(about,/<details><summary>能分析我适合哪些职位/);
-  assert.doesNotMatch(about,/<details><summary>My Journey 会自动更新/);
-  assert.match(applications,/const stages=\[\['saved','Saved'\]/);
-  assert.match(applications,/const data=graph\(favorites,states,\{regions\}\)/);
-  assert.match(app,/const JEV_API_ENDPOINT="\/api\/jev\/analyze"/);
+test('About entry remains registered and public asset paths remain protected',()=>{
+ const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
+ const home=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ const published=readFileSync(new URL('./browser_assets.mjs',import.meta.url),'utf8');
+ assert.match(home,/class="nj-top-nav"[^>]*>\s*<a class="nj-about-link" href="\/about">About<\/a>/);
+ assert.match(about,/href="\/" class="about-brand"[^>]*><img src="\/assets\/next-journey-mark\.svg"/);
+ assert.match(about,/href="\/privacy"/);
+ assert.match(about,/href="\/login"/);
+ assert.match(about,/href="\/\?guestbook=1"/);
+ assert.match(readFileSync(new URL("../guestbook.js",import.meta.url),"utf8"),/url\.searchParams\.get\("guestbook"\) === "1"/);
+ assert.doesNotMatch(about,/about-brand-mark/);
+ assert.match(published,/'\/about.html'/);
+ assert.match(published,/'\/about.css'/);
+ assert.match(published,/'\/about.js'/);
 });
