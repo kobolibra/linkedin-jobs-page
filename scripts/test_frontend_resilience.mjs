@@ -158,3 +158,21 @@ test('masthead and summary labels use natural case, while geography acronyms rem
  assert.match(css,/\.nj-market-heading\{[^}]*letter-spacing:\.035em/);
  assert.match(css,/\.nj-masthead-folio\{[^}]*letter-spacing:\.035em/);
 });
+
+test('active-only status has a scoped burgundy hand-drawn ring, no filled navy state',()=>{
+ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../styles-list.css',import.meta.url),'utf8');
+ const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+ assert.match(html,/styles-list\.css\?v=burgundy-active-ring-1/);
+ assert.match(html,/<button type="button" class="active-only-toggle" id="activeOnlyToggle" aria-pressed="false"[^>]*>有效<svg class="active-only-ring"/);
+ assert.match(html,/class="active-only-ring"[^>]*aria-hidden="true" focusable="false"/);
+ assert.match(html,/M8 24 C6 14 20 6 42 5/);
+ assert.match(css,/\.count \.active-only-toggle\s*\{\s*--active-ring-color:#82283f/);
+ assert.match(css,/\[data-theme="dark"\] \.count \.active-only-toggle\s*\{\s*--active-ring-color:#d78d9e/);
+ assert.match(css,/\.count \.active-only-toggle\[aria-pressed="true"\] \.active-only-ring\s*\{\s*opacity:1/);
+ assert.match(css,/\.count \.active-only-toggle\[aria-pressed="true"\]\s*\{[^}]*background:transparent/s);
+ assert.doesNotMatch(css,/\.count \.active-only-toggle\[aria-pressed="true"\]\s*\{[^}]*background:var\(--navy\)/s);
+ assert.match(app,/activeOnlyEl\.setAttribute\("aria-pressed",String\(activeOnly\)\)/);
+ assert.match(css,/\.count \.active-only-toggle:focus-visible\s*\{[^}]*outline:2px solid var\(--active-ring-color\)/s);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});

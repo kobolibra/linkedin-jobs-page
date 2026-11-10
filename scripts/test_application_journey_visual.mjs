@@ -201,6 +201,59 @@ try {
       await context.close();
     }
   }
+  // Exercise the production active-only control and full CSS cascade in Chromium.
+  const homeHtml=readFileSync(new URL('index.html',root),'utf8');
+  const activeMarkup=homeHtml.match(/<button type="button" class="active-only-toggle"[^>]*>[\s\S]*?<\/button>/)?.[0];
+  assert.ok(activeMarkup,'real active-only button is present');
+  const filterCss=[
+    readFileSync(new URL('styles.css',root),'utf8'),
+    readFileSync(new URL('styles-list.css',root),'utf8'),
+    readFileSync(new URL('styles-refinement.css',root),'utf8'),
+  ].join('\n');
+  for(const sample of [
+    {name:'desktop-light',width:480,height:180,mode:'light'},
+    {name:'desktop-dark',width:480,height:180,mode:'dark'},
+    {name:'mobile-light',width:360,height:180,mode:'light',touch:true},
+    {name:'mobile-dark',width:360,height:180,mode:'dark',touch:true},
+  ]){
+    const context=await browser.newContext({viewport:{width:sample.width,height:sample.height},hasTouch:!!sample.touch});
+    try{
+      const page=await context.newPage();
+      await page.setContent('<!doctype html><html data-theme="'+sample.mode+'"><head><style>'+filterCss+'</style></head><body style="padding:45px"><span class="count tnum">'+activeMarkup+' <b>24</b> 个职位</span></body></html>');
+      const button=page.locator('#activeOnlyToggle');
+      const before=await button.evaluate(el=>({
+        pressed:el.getAttribute('aria-pressed'),
+        ring:getComputedStyle(el.querySelector('.active-only-ring')).opacity,
+      }));
+      assert.equal(before.pressed,'false');
+      assert.equal(before.ring,'0',sample.name+': unselected circle must be hidden');
+      await button.evaluate(el=>el.setAttribute('aria-pressed','true'));
+      await page.waitForTimeout(230);
+      const after=await button.evaluate(el=>{
+        const ring=el.querySelector('.active-only-ring');
+        const bb=el.getBoundingClientRect(),rr=ring.getBoundingClientRect();
+        return{
+          pressed:el.getAttribute('aria-pressed'),
+          color:getComputedStyle(el).color,
+          stroke:getComputedStyle(ring.querySelector('path')).stroke,
+          ringOpacity:getComputedStyle(ring).opacity,
+          background:getComputedStyle(el).backgroundColor,
+          extends:rr.left<bb.left && rr.right>bb.right && rr.top<bb.top && rr.bottom>bb.bottom,
+          withinViewport:rr.left>=0 && rr.right<=innerWidth,
+        };
+      });
+      const expected=sample.mode==='light'?'rgb(130, 40, 63)':'rgb(215, 141, 158)';
+      assert.equal(after.pressed,'true');
+      assert.equal(after.color,expected,sample.name+': burgundy label');
+      assert.equal(after.stroke,expected,sample.name+': burgundy ring');
+      assert.equal(after.background,'rgba(0, 0, 0, 0)',sample.name+': transparent selected state');
+      assert.equal(after.ringOpacity,'1',sample.name+': ring must be visible');
+      assert.ok(after.extends&&after.withinViewport,sample.name+': circle must wrap label without clipping');
+      await page.screenshot({path:resolve(output,'active-only-'+sample.name+'.png')});
+      console.log('PASS active-only-'+sample.name+' '+JSON.stringify(after));
+    }finally{await context.close();}
+  }
+
   writeFileSync(resolve(output, 'results.json'), JSON.stringify(results, null, 2));
   console.log('PASS complete browser visual suite: ' + cases.length + ' responsive/theme states');
 } finally {
