@@ -91,3 +91,23 @@ test('About describes LinkedIn-only company and keyword discovery and actual bub
  assert.match(fetcher,/params\["f_C"\] = strict_company_id/);
  assert.match(about,/让下一站，多一些交流/);
 });
+
+
+test('About accurately distinguishes regular LinkedIn discovery, personal workflow and the optional JD analytics',()=>{
+  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
+  const applications=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
+  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+  assert.match(about,/每 6 小时自动同步/);
+  assert.match(about,/而非企业招聘官网/);
+  assert.match(about,/并非实时监控/);
+  assert.match(about,/无法保证第一时间发现/);
+  assert.match(about,/My Journey · 桑基图/);
+  assert.match(about,/手动记录的申请进度/);
+  assert.match(about,/不提供简历匹配/);
+  assert.match(about,/不会根据 JD 生成或改写简历、求职信/);
+  assert.match(about,/不能在本站直接提交或自动投递简历/);
+  assert.match(about,/Analytics 仅针对已有 JD 提供结构化辅助解读/);
+  assert.match(applications,/const stages=\[\['saved','Saved'\]/);
+  assert.match(applications,/const data=graph\(favorites,states,\{regions\}\)/);
+  assert.match(app,/const JEV_API_ENDPOINT="\/api\/jev\/analyze"/);
+});
