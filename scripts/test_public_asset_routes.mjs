@@ -55,10 +55,10 @@ test('About uses homepage vocabulary with one product thesis and six coherent se
  assert.match(about,/A data-driven view of finance hiring\. One place to manage your journey/);
  assert.match(about,/make more informed choices/);
  assert.match(about,/Shortlist opportunities, record each application stage yourself/);
- assert.match(about,/visualize your progress with My Journey/);
+ assert.match(about,/visualize the journey through My Journey's Sankey visualization/);
  assert.equal((about.match(/class="about-purpose"/g)||[]).length,1,'product positioning belongs in one place');
  assert.equal((about.match(/It does not /g)||[]).length,3,'three distinct limits, no scattered disclaimers');
- assert.match(about,/visualize your progress with My Journey/);
+ assert.match(about,/visualize the journey through My Journey's Sankey visualization/);
  assert.doesNotMatch(about,/Keep a record of the work|What you do next|Search, filter, investigate/);
  assert.match(home,/The Landscape in Numbers/);
  assert.match(about,/The Landscape in Numbers/);
