@@ -23,7 +23,12 @@
 .about-wish{color:var(--gold-deep);font-size:14px;font-weight:650;letter-spacing:.015em;margin-bottom:32px!important}
 .about-hero h1{font:400 clamp(45px,5.1vw,72px)/1.2 "Source Serif 4",var(--serif);letter-spacing:-.064em;color:var(--navy);text-wrap:balance;margin-bottom:31px}
 .about-hero h1 em{font-weight:400;color:var(--navy-2)}
-.about-introduction{font-size:15px;line-height:1.98!important;color:var(--ink-soft);max-width:525px;margin-bottom:32px!important}
+.about-boundaries{max-width:620px;margin:0 0 14px!important;color:var(--ink-soft);font-size:14px;line-height:1.8!important}
+.about-boundaries span{display:block;padding:2px 0 2px 13px;border-left:2px solid var(--line)}
+.about-data-note{max-width:620px;margin:0 0 24px!important;color:var(--ink-faint);font-size:12px;line-height:1.85!important}
+.about-purpose{max-width:620px;padding-top:19px;margin:0 0 30px!important;border-top:1px solid var(--line-strong);color:var(--ink);font-size:16px;line-height:1.9!important}
+.about-purpose strong{display:block;margin-bottom:5px;color:var(--navy);font-weight:700;line-height:1.75}
+.about-purpose span{display:block}
 .about-primary-link,.about-closing>a{display:inline-flex;align-items:center;justify-content:space-between;gap:45px;min-height:47px;background:#193d59;color:#fff!important;padding:12px 17px;border-radius:3px;font-size:12px;font-weight:650;transition:background .18s}
 .about-primary-link:hover,.about-closing>a:hover{background:#315a75}
 .about-primary-link span,.about-closing>a span{font-size:20px;font-weight:400;line-height:1}
@@ -114,7 +119,7 @@
 .about-footer nav{display:flex;gap:24px;flex-wrap:wrap}
 .about-footer a:hover{color:var(--navy)}
 @media(max-width:940px){.about-hero{grid-template-columns:minmax(0,1.2fr) minmax(220px,.8fr);gap:35px}.about-coverage,.about-guide{grid-template-columns:172px minmax(0,1fr);gap:30px}.about-device{padding:19px}.about-guestbook-panel{align-items:flex-start;flex-direction:column;gap:17px}}
-@media(max-width:720px){.about-header{min-height:65px}.about-brand{font-size:17px}.about-brand img{width:24px;height:24px}.about-hero{grid-template-columns:1fr;gap:41px;padding:69px 0 65px}.about-hero h1{font-size:clamp(40px,8vw,62px)}.about-wish{margin-bottom:25px!important}.about-introduction{font-size:14px}.about-start-nav{padding:19px 0}.about-coverage{grid-template-columns:1fr;gap:15px;padding:34px 0 39px}.about-coverage-label{display:flex;align-items:center;gap:22px}.about-coverage-label strong{margin-top:0;font-size:32px}.about-guide{display:block}.about-sidebar{top:0;z-index:10;padding:12px 0;background:color-mix(in srgb,var(--bg) 95%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.about-sidebar>.about-small-label{display:none}.about-toc{flex-direction:row;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0}.about-toc::-webkit-scrollbar{display:none}.about-toc a{white-space:nowrap;flex:none;min-height:34px;border:1px solid var(--line);border-radius:50px;padding:0 12px;font-size:11px;background:var(--surface)}.about-section{scroll-margin-top:79px;padding:53px 0 64px}.about-section h2{font-size:clamp(31px,5.5vw,43px)}}
+@media(max-width:720px){.about-header{min-height:65px}.about-brand{font-size:17px}.about-brand img{width:24px;height:24px}.about-hero{grid-template-columns:1fr;gap:41px;padding:69px 0 65px}.about-hero h1{font-size:clamp(40px,8vw,62px)}.about-wish{margin-bottom:25px!important}.about-boundaries{font-size:14px}.about-start-nav{padding:19px 0}.about-coverage{grid-template-columns:1fr;gap:15px;padding:34px 0 39px}.about-coverage-label{display:flex;align-items:center;gap:22px}.about-coverage-label strong{margin-top:0;font-size:32px}.about-guide{display:block}.about-sidebar{top:0;z-index:10;padding:12px 0;background:color-mix(in srgb,var(--bg) 95%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.about-sidebar>.about-small-label{display:none}.about-toc{flex-direction:row;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0}.about-toc::-webkit-scrollbar{display:none}.about-toc a{white-space:nowrap;flex:none;min-height:34px;border:1px solid var(--line);border-radius:50px;padding:0 12px;font-size:11px;background:var(--surface)}.about-section{scroll-margin-top:79px;padding:53px 0 64px}.about-section h2{font-size:clamp(31px,5.5vw,43px)}}
 @media(max-width:520px){.about-shell{padding:0 19px}.about-header{gap:12px}.about-header-nav{gap:11px}.about-brand{font-size:15px;gap:7px}.about-current{font-size:11px}.about-theme-toggle{width:34px;height:34px}.about-home-link{font-size:11px}.about-home-link span{margin-left:2px}.about-hero{padding:59px 0 54px}.about-hero h1{font-size:clamp(36px,9.2vw,47px)}.about-wish{font-size:13px}.about-coverage-copy{font-size:13px}.about-company-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px}.about-feature-list,.about-definition-list,.about-device-grid,.about-account-list{grid-template-columns:1fr}.about-feature-list article,.about-definition-list>div{padding:15px 0 18px}.about-device{padding:21px}.about-search-example{padding:14px}.about-closing{padding:65px 0}.about-footer{align-items:flex-start;flex-direction:column;justify-content:center;gap:12px;padding:25px 0}.about-footer nav{gap:17px}}
 
 @media(prefers-reduced-motion:reduce){.about-page *, .about-page *::before,.about-page *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
@@ -129,7 +134,9 @@
 .about-hero { grid-template-columns:minmax(0,1.5fr) minmax(260px,.7fr); gap:clamp(32px,6vw,88px); padding:90px 0 78px; }
 .about-hero h1 { font-family:"Songti SC","Noto Serif CJK SC","Source Serif 4",serif; font-size:clamp(42px,4.9vw,64px); line-height:1.35; letter-spacing:-.04em; }
 .about-hero h1 em { font-style:normal; }
-.about-introduction { font-size:16px; max-width:540px; }
+.about-boundaries { font-size:15px; }
+.about-data-note { font-size:13px; }
+.about-purpose { font-size:16px; }
 .about-primary-link,.about-closing>a { min-height:48px; padding:12px 20px; font-size:14px; border-radius:4px; }
 .about-start-nav { padding:23px 0 8px; }
 .about-start-nav a { grid-template-columns:24px minmax(0,1fr) 16px; padding:19px 0; font-size:16px; }
@@ -194,7 +201,8 @@
   .about-hero { grid-template-columns:1fr; gap:36px; padding:54px 0 40px; }
   .about-hero h1 { font-size:clamp(35px,7.5vw,52px); }
   .about-eyebrow { margin-bottom:22px!important; }
-  .about-introduction { font-size:15px; }
+  .about-boundaries { font-size:14px; }
+  .about-purpose { font-size:15px; }
   .about-start-nav { padding:18px 0 0; }
   .about-start-nav a { padding:15px 0; }
   .about-coverage { gap:20px; }
