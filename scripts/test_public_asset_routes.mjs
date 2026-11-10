@@ -86,7 +86,7 @@ test('About accurately describes analytics, first-seen times and manually tracke
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
  assert.match(about,/horizontal and vertical axes show mean and median days since first seen/);
  assert.match(about,/not full JD text/);
- assert.match(about,/Manually record/);
+ assert.match(about,/manually record Applied/);
  assert.match(about,/Stage history is retained/);
  assert.match(about,/Flow widths represent role counts, not offer probabilities/);
  assert.match(about,/Main-list filters do not change the chart/);
