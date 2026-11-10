@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-10T04:03:03.920951+00:00",
+    "checkedAt": "2026-11-10T10:02:57.646113+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,23 +2705,12 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.278416305215664,
-        "deferred": true
       }
     ]
   },
@@ -3030,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-09T22:02:58.051162+00:00",
+    "checkedAt": "2026-11-10T10:02:45.580245+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3189,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-09T22:03:04.052063+00:00",
+    "checkedAt": "2026-11-10T10:02:51.570564+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5409,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-10T04:03:01.012401+00:00",
+    "checkedAt": "2026-11-10T10:02:54.618199+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -10959,5 +10948,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEXt7UUtv_53A/company-logo_100_100/company-logo_100_100/0/1630648553746?e=2147483647&v=beta&t=bDkVMT69_dV2Icr7zp2HfNoow0VNee97uR-d13eE0eY",
     "companyUrl": "https://www.linkedin.com/company/%E5%A4%8D%E6%98%9F%E8%81%94%E5%90%88%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4487439129"
+  },
+  "algorix": {
+    "name": "AlgoriX",
+    "checkedAt": "2026-11-10T10:02:32.289331+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e87f59eec82b1c0855e60aae.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHm6-YQs4FZ2g/company-logo_100_100/B56ZdotMMJHQAY-/0/1749808366947/algorix_logo?e=2147483647&v=beta&t=3kqUvP1Nbleg5TJyDLGTM8UUwVbpayXqzn8YWFSZyJ4",
+    "companyUrl": "https://sg.linkedin.com/company/algorix",
+    "sourceJobId": "4481834640"
+  },
+  "kgisl": {
+    "name": "KGiSL",
+    "checkedAt": "2026-11-10T10:02:33.654215+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3455d395e39949ff25cd0edd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF83oPNYrmHXQ/company-logo_100_100/company-logo_100_100/0/1720605603820/kgisl_logo?e=2147483647&v=beta&t=iZ9pxBQJlrIvzfhTIrzfgkfqw_gM-4h3eV1mfsWfSNw",
+    "companyUrl": "https://in.linkedin.com/company/kgisl",
+    "sourceJobId": "4487430711"
+  },
+  "mediago ad platform": {
+    "name": "MediaGo Ad Platform",
+    "checkedAt": "2026-11-10T10:02:36.578063+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "cb62c043c247254fa4063eed.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFWsEaiTmUW5g/company-logo_100_100/company-logo_100_100/0/1721749431002/mediago_adplatform_logo?e=2147483647&v=beta&t=HhfGidVUuBpac5CJkGM2ZdiBzPuUQde1B3ZYgfb4CwA",
+    "companyUrl": "https://www.linkedin.com/company/mediago-adplatform",
+    "sourceJobId": "4487449556"
+  },
+  "泰康养老保险股份有限公司广东分公司": {
+    "name": "泰康养老保险股份有限公司广东分公司",
+    "checkedAt": "2026-11-10T10:02:39.578339+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E6%B3%B0%E5%BA%B7%E5%85%BB%E8%80%81%E4%BF%9D%E9%99%A9%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%E5%B9%BF%E4%B8%9C%E5%88%86%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487420957"
+  },
+  "浙江核新同花顺网络信息股份有限公司": {
+    "name": "浙江核新同花顺网络信息股份有限公司",
+    "checkedAt": "2026-11-10T10:02:42.624405+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4f7dd7e411de0ac7299ddd6d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGO7fXvNBlQ6w/company-logo_100_100/company-logo_100_100/0/1630570802191/_logo?e=2147483647&v=beta&t=zuAWLfUx1h0w7rNE0Rs9P97sP9iGtfzgjKxHhi_ma6M",
+    "companyUrl": "https://www.linkedin.com/company/%E6%B5%99%E6%B1%9F%E6%A0%B8%E6%96%B0%E5%90%8C%E8%8A%B1%E9%A1%BA%E7%BD%91%E7%BB%9C%E4%BF%A1%E6%81%AF%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4485456583"
   }
 }
