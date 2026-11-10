@@ -96,7 +96,7 @@ test('About accurately describes analytics, first-seen times and manually tracke
  assert.match(about,/does not assess personal fit/);
  assert.match(about,/12 latest active listings/);
  assert.match(about,/Swipe left/);
- assert.match(about,/500 characters/);
+ assert.match(about,/500-character limit/);
  assert.match(jobs,/const stages=\[\['saved','Saved'\]/);
  assert.match(jobs,/const data=graph\(favorites,states,\{regions\}\)/);
  assert.match(app,/const JEV_API_ENDPOINT="\/api\/jev\/analyze"/);
