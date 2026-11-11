@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-11T10:03:05.388191+00:00",
+    "checkedAt": "2026-11-11T16:03:01.798369+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-11T10:02:53.373113+00:00",
+    "checkedAt": "2026-11-11T16:02:49.804082+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-11T10:02:59.320654+00:00",
+    "checkedAt": "2026-11-11T16:02:55.634421+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-11T10:03:02.435800+00:00",
+    "checkedAt": "2026-11-11T16:02:58.993690+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11200,5 +11200,29 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://cn.linkedin.com/company/%E7%91%9E%E8%BE%BE%E6%9C%9F%E8%B4%A7%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4487881377"
+  },
+  "fintech community": {
+    "name": "FinTech Community",
+    "checkedAt": "2026-11-11T16:02:45.474938+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b6d2e2e335395cba3d343e0a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEFC18WthPr4w/company-logo_100_100/company-logo_100_100/0/1630584739183/fintech_community_logo?e=2147483647&v=beta&t=nclLzIMSs6WjPDV7j1sRVCJXjwcS0SZNrbzJ6MXmA2Q",
+    "companyUrl": "https://cn.linkedin.com/company/fintech-community",
+    "sourceJobId": "4488698098"
+  },
+  "hager power station": {
+    "name": "Hager Power Station",
+    "checkedAt": "2026-11-11T16:02:46.877863+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "05bf9738718492915452dee8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHzHltYmMG5fw/company-logo_100_100/company-logo_100_100/0/1630576816061?e=2147483647&v=beta&t=XcjxUrPOEx4P3zT5vgTBR-2aCwUoeIOmq0btzzaH9QI",
+    "companyUrl": "https://nl.linkedin.com/company/hager-power-station",
+    "sourceJobId": "4489940541"
   }
 }
