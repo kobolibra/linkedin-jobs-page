@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-10T22:03:13.053137+00:00",
+    "checkedAt": "2026-11-11T04:07:28.727704+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-10T22:03:01.204340+00:00",
+    "checkedAt": "2026-11-11T04:07:16.843475+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-10T22:03:06.905083+00:00",
+    "checkedAt": "2026-11-11T04:07:22.650778+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-10T22:03:10.202591+00:00",
+    "checkedAt": "2026-11-11T04:07:25.726101+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11011,32 +11011,15 @@
   },
   "ferring pharmaceuticals": {
     "name": "Ferring Pharmaceuticals",
-    "checkedAt": "2026-11-10T22:03:18.903741+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-11T04:07:34.669781+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487471758",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487471758",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4487471758",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487471758",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487471758",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.214053317299026,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "7809d9355bca39e2fc12b43e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHRZDdoTmS1GQ/company-logo_100_100/company-logo_100_100/0/1630576793939/ferring_pharmaceuticals_logo?e=2147483647&v=beta&t=3DwMWFw4hrgbPm82K3zbxiNQ6hhgmgDqMPtjCoMo_cQ",
+    "companyUrl": "https://ch.linkedin.com/company/ferring-pharmaceuticals",
+    "sourceJobId": "4487471758"
   },
   "chooose": {
     "name": "Chooose",
@@ -11073,5 +11056,65 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E9%83%BD%E7%A6%8F-%E8%8B%8F%E5%B7%9E-%E5%B7%A5%E4%B8%9A%E8%AE%BE%E5%A4%87%E5%88%B6%E9%80%A0%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4486668654"
+  },
+  "axis global tech limited": {
+    "name": "Axis Global Tech Limited",
+    "checkedAt": "2026-11-11T04:07:03.483766+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a013d9c49b5f2e9b32d0f34c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGtHuPdk2FnVw/company-logo_100_100/B4EZ_KvwvrJIAI-/0/1785812946154?e=2147483647&v=beta&t=sgyAEIJ1QziLLEorgf2GDYAxFv1kL3XTaFpQ2Nhdhew",
+    "companyUrl": "https://www.linkedin.com/company/axisaiapp",
+    "sourceJobId": "4487986674"
+  },
+  "cic": {
+    "name": "CIC",
+    "checkedAt": "2026-11-11T04:07:04.937667+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ba9be0b1dbc9d490132dd935.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEs_QV-EYyHeA/company-logo_100_100/B56Z2.DDhdKUAQ-/0/1777009965862/cninsights_logo?e=2147483647&v=beta&t=dvkagKILZ3vlRPsmzPbi1DrjmtLH1pkZK1OXVoVjbLU",
+    "companyUrl": "https://cn.linkedin.com/company/cninsights",
+    "sourceJobId": "4487883242"
+  },
+  "finance club singapore": {
+    "name": "Finance Club Singapore",
+    "checkedAt": "2026-11-11T04:07:07.838215+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "638f944b4c2dde178b471e6a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHszKDNMKvF-g/company-logo_100_100/B56aE5TRowKgAI-/0/1791962716963?e=2147483647&v=beta&t=AwbTg1jj4yXtDUElGUw2aCaSFPk7wm-80OF7_ee94ow",
+    "companyUrl": "https://sg.linkedin.com/company/finance-club-singapore",
+    "sourceJobId": "4487868507"
+  },
+  "icann": {
+    "name": "ICANN",
+    "checkedAt": "2026-11-11T04:07:10.892116+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dd72efcedf1038b310fc513c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEisy5__pVEHA/company-logo_100_100/company-logo_100_100/0/1631306585985?e=2147483647&v=beta&t=8_xr1s4vfHEnmm0lkvP6B55UJCi-R8Emn0A39uPq-7g",
+    "companyUrl": "https://www.linkedin.com/company/icann",
+    "sourceJobId": "4488398671"
+  },
+  "innomotics": {
+    "name": "Innomotics",
+    "checkedAt": "2026-11-11T04:07:13.839081+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "365f3501430570a6283f790e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGkFAVzSWkPxg/company-logo_100_100/company-logo_100_100/0/1688383284850/innomotics_logo?e=2147483647&v=beta&t=X8xm1HfOycW4Q3A2Ka80lckTbT146A7wOY4bQnUUzqE",
+    "companyUrl": "https://de.linkedin.com/company/innomotics",
+    "sourceJobId": "4487873479"
   }
 }
