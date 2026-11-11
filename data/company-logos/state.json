@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-11T04:07:28.727704+00:00",
+    "checkedAt": "2026-11-11T10:03:05.388191+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-11T04:07:16.843475+00:00",
+    "checkedAt": "2026-11-11T10:02:53.373113+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-11T04:07:22.650778+00:00",
+    "checkedAt": "2026-11-11T10:02:59.320654+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-11T04:07:25.726101+00:00",
+    "checkedAt": "2026-11-11T10:03:02.435800+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11116,5 +11116,89 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGkFAVzSWkPxg/company-logo_100_100/company-logo_100_100/0/1688383284850/innomotics_logo?e=2147483647&v=beta&t=X8xm1HfOycW4Q3A2Ka80lckTbT146A7wOY4bQnUUzqE",
     "companyUrl": "https://de.linkedin.com/company/innomotics",
     "sourceJobId": "4487873479"
+  },
+  "hager": {
+    "name": "Hager",
+    "checkedAt": "2026-11-11T10:02:34.193456+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e02c85db9536cb57c47b86cf.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFGC0OtIMBESA/company-logo_100_100/B4DZyuIhfXKYAQ-/0/1772447996259/hager_logo?e=2147483647&v=beta&t=PIw0EH_NFYQlClI-42rUzvO1r2acLeIPeFsD_f611fg",
+    "companyUrl": "https://de.linkedin.com/company/hager",
+    "sourceJobId": "4489904701"
+  },
+  "madison hunt": {
+    "name": "Madison Hunt",
+    "checkedAt": "2026-11-11T10:02:35.537756+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ee38eb367662be8225577437.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEpRG33bLYniQ/company-logo_100_100/B4EZ7XiXMfHoAI-/0/1781732570211/madison_hunt_logo?e=2147483647&v=beta&t=yg73PMdA0ABQre4ZuY0CfKeBGKI8VdKbLUyI7UI1ZX8",
+    "companyUrl": "https://www.linkedin.com/company/madison-hunt",
+    "sourceJobId": "4489904579"
+  },
+  "namaste folks": {
+    "name": "Namaste Folks",
+    "checkedAt": "2026-11-11T10:02:38.468905+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "bddabe7c311955c542d3be77.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG2ixpyDLu_yg/company-logo_100_100/company-logo_100_100/0/1723891774767?e=2147483647&v=beta&t=TJcLHS0klLmEI4xMNVcAd5KKCJSn3T3IufTEoB4rEqI",
+    "companyUrl": "https://www.linkedin.com/company/namaste-folks",
+    "sourceJobId": "4488654205"
+  },
+  "rbt de langstraat": {
+    "name": "RBT De Langstraat",
+    "checkedAt": "2026-11-11T10:02:41.513718+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a0e89d8db88bbdaa9a02ecff.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQECx7JOiT3rpQ/company-logo_100_100/company-logo_100_100/0/1654159743681/rbtdelangstraat_logo?e=2147483647&v=beta&t=9rk6bLk3I-bbdB0cQfgaW0YUeHeZYX8yG9n3nYe-r18",
+    "companyUrl": "https://nl.linkedin.com/company/rbtdelangstraat",
+    "sourceJobId": "4488319612"
+  },
+  "北科建资产管理(北京)有限公司": {
+    "name": "北科建资产管理(北京)有限公司",
+    "checkedAt": "2026-11-11T10:02:44.548523+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E7%A7%91%E5%BB%BA%E8%B5%84%E4%BA%A7%E7%AE%A1%E7%90%86-%E5%8C%97%E4%BA%AC-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487871676"
+  },
+  "吉信金融": {
+    "name": "吉信金融",
+    "checkedAt": "2026-11-11T10:02:47.585277+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E5%90%89%E4%BF%A1%E9%87%91%E8%9E%8D",
+    "sourceJobId": "4487882410"
+  },
+  "瑞达期货公司": {
+    "name": "瑞达期货公司",
+    "checkedAt": "2026-11-11T10:02:50.318494+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E7%91%9E%E8%BE%BE%E6%9C%9F%E8%B4%A7%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487881377"
   }
 }
