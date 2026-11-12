@@ -325,7 +325,7 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
  const endpoints=[
   ['light','#d8e0f4','#9badd7','#102b44'],
-  ['dark','#627499','#465779','#f5f0e8']
+  ['dark','#58688b','#465779','#f5f0e8']
  ];
  for(const [theme,start,end,ink] of endpoints){
   assert.ok(css.includes(start)&&css.includes(end),'missing fixed '+theme+' ramp endpoints');
