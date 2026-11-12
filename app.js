@@ -623,7 +623,9 @@ jobsDataPromise
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    const regionOrder=["SG","HK","CN"];
+    // Largest and most persistent series anchors the baseline; keep the
+    // smallest intermittent series on top, not sandwiched between two lines.
+    const regionOrder=["HK","SG","CN"];
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const dayMs=86400000;
@@ -637,21 +639,20 @@ jobsDataPromise
     const latestDay=utcDay(latestStamp),earliestDay=utcDay(earliestStamp);
     const tMin=earliestDay,tMax=latestDay+dayMs; // exclusive UTC day boundary
     const totalDays=Math.max(1,Math.round((tMax-tMin)/dayMs));
-    // Dynamic granularity spans the full available history without squeezing
-    // hundreds of subpixel daily bars into a 468px plot.
-    const bucketDays=totalDays>120?7:totalDays>55?3:1;
-    const bins=Math.ceil(totalDays/bucketDays);
+    // One observation interval equals one UTC calendar day, irrespective of
+    // the calendar span. No 3/7-day consolidation or hidden smoothing.
+    const bins=totalDays;
     const plottedRows=regionOrder.reduce((sum,k)=>sum+
       regionRecords[k].filter(x=>x.t.getTime()>=tMin&&x.t.getTime()<tMax).length,0);
-    /* SG/HK/CN cumulative bands contain exact counts for each date interval;
-       aggregation never fabricates a missing observation or false continuity. */
-    const TW=520,TH=190,left=38,right=14,top=27,base=159,plotW=TW-left-right;
+    /* HK/SG/CN cumulative bands contain exact daily first-seen counts.
+       No missing days or job counts are fabricated by the geometry. */
+    const TW=520,TH=225,left=38,right=14,top=24,base=190,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
       const timestamp=x.t.getTime();
       if(timestamp<tMin||timestamp>=tMax)return;
-      const bi=Math.min(bins-1,Math.floor((timestamp-tMin)/(bucketDays*dayMs)));
+      const bi=Math.min(bins-1,Math.floor((timestamp-tMin)/dayMs));
       bucketCounts[ri][bi]++;
     }));
     // Both left charts use the same honest 1/2/5 integer axis. Rounding
@@ -668,8 +669,8 @@ jobsDataPromise
     const totalBuckets=Array.from({length:bins},(_,i)=>
       bucketCounts.reduce((sum,series)=>sum+series[i],0));
     const regionAxis=niceCountAxis(Math.max(1,...totalBuckets));
-    // Exact day-weighted edges, including a partial final interval.
-    const binEdge=i=>left+(Math.min(totalDays,i*bucketDays)/totalDays)*plotW;
+    // Uniform UTC calendar-day edges: fill, boundary and hover all use them.
+    const binEdge=i=>left+(i/bins)*plotW;
     const trendX=i=>(binEdge(i)+binEdge(i+1))/2;
     const trendY=value=>base-(value/regionAxis.max)*(base-top);
     const gridTicks=regionAxis.ticks.map(v=>
@@ -678,7 +679,7 @@ jobsDataPromise
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
-    const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'});
+    const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
     const datePositions=[...new Set([0,.25,.5,.75,1]
       .map(f=>Math.round((totalDays-1)*f)))];
     const dateTicks=datePositions.map((day,i)=>{
@@ -689,7 +690,7 @@ jobsDataPromise
         ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
         :regionTickFormat.format(date);
       return '<text class="region-spark-date" x="'+x.toFixed(2)+
-        '" y="184" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        '" y="218" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
         escSvg(label)+'</text>';
     }).join('');
     const legendStep=59,legendLeft=TW-right-regionOrder.length*legendStep;
@@ -754,8 +755,8 @@ jobsDataPromise
       }).join('');
       const hits=heights.map((n,i)=>{
         if(n<=0)return '';
-        const from=new Date(tMin+i*bucketDays*dayMs);
-        const to=new Date(Math.min(tMax,tMin+(i+1)*bucketDays*dayMs));
+        const from=new Date(tMin+i*dayMs);
+        const to=new Date(tMin+(i+1)*dayMs);
         const countText=REGIONS[k].label+' · '+n+' roles · '+
           regionTickFormat.format(from)+' – '+regionTickFormat.format(to);
         return '<circle class="region-spark-hit" cx="'+trendX(i).toFixed(2)+
@@ -774,7 +775,7 @@ jobsDataPromise
       };
     });
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Full available 2026 regional first-observed activity, Singapore then Hong Kong then Mainland China; true interval counts">'+
+      '" role="img" aria-label="Full available 2026 daily first-observed activity, Hong Kong then Singapore then Mainland China; true daily counts">'+
       legend+gridTicks+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>';
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'UTC',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -782,7 +783,7 @@ jobsDataPromise
     const densityEnd=densityDate.format(new Date(tMax-dayMs)).replaceAll('/','.').replace(/^\d{4}\./,'');
     const distNote=document.getElementById('distNote');
     if(distNote)distNote.textContent='首次抓取 · '+densityStart+'–'+densityEnd+
-      '（'+(bucketDays===1?'按日汇总':'每 '+bucketDays+' 天汇总')+' · '+plottedRows+' 个 SG/HK/CN 职位）';
+      '（逐日记录 · '+plottedRows+' 个 SG/HK/CN 职位）';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});

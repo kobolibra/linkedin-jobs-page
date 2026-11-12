@@ -638,12 +638,15 @@ body.compact .job > .mono { margin-top:2px; }
   fill:var(--viz-quiet);font:500 9px var(--mono);
   font-variant-numeric:tabular-nums;
 }
-#dist .region-series.sg{--region-ink:#6e8f3b;--region-band:27%}
-#dist .region-series.hk{--region-ink:#b27a22;--region-band:24%}
-#dist .region-series.cn{--region-ink:#b33a36;--region-band:21%}
+/* Three locally related, opaque mineral tints: warm ochre foundation,
+   restrained sage middle, burgundy cap. The stronger lower band provides
+   hierarchy without changing plotted counts or adding false separation. */
+#dist .region-series.hk{--region-ink:#b27a22;--region-band:31%}
+#dist .region-series.sg{--region-ink:#6e8f3b;--region-band:29%}
+#dist .region-series.cn{--region-ink:#b33a36;--region-band:25%}
 #dist .region-spark-line,
 #dist .region-legend-swatch{
-  fill:none;stroke:var(--region-ink);stroke-width:1.9;
+  fill:none;stroke:var(--region-ink);stroke-width:1.65;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
@@ -655,9 +658,9 @@ body.compact .job > .mono { margin-top:2px; }
   fill:color-mix(in srgb,var(--region-ink) var(--region-band),var(--surface));
   stroke:none;
 }
-[data-theme="dark"] #dist .region-series.sg{--region-band:37%}
-[data-theme="dark"] #dist .region-series.hk{--region-band:35%}
-[data-theme="dark"] #dist .region-series.cn{--region-band:33%}
+[data-theme="dark"] #dist .region-series.hk{--region-band:40%}
+[data-theme="dark"] #dist .region-series.sg{--region-band:39%}
+[data-theme="dark"] #dist .region-series.cn{--region-band:35%}
 #dist .region-legend-swatch{stroke-width:3.4}
 #dist .region-legend-label{
   fill:var(--viz-secondary);font:600 9px var(--mono);

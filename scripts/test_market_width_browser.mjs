@@ -94,6 +94,13 @@ async function renderLeft(page,chartData,theme){
    bins:hits.length,
    pointTotal:hits.reduce((sum,node)=>sum+Number(node.dataset.count),0),
    bandPaths:[...document.querySelectorAll('#dist .region-fill .region-stack-band')].map(p=>p.getAttribute('d')),
+   matchingContours:['hk','sg','cn'].every(k=>{
+    const ink=document.querySelector('#dist .region-series.'+k+'.region-boundary .region-spark-line')?.getAttribute('d')||'';
+    const runs=ink.split(/ (?=M[\d.]+,[\d.]+)/);
+    const bands=[...document.querySelectorAll('#dist .region-series.'+k+'.region-fill .region-stack-band')];
+    return bands.length===runs.filter(Boolean).length&&
+     bands.every((band,i)=>band.getAttribute('d').startsWith(runs[i]));
+   }),
    linePaths:lines.map(p=>p.getAttribute('d')),
    markers:document.querySelectorAll('#dist .region-spark-dot').length,
    markerInks:[...document.querySelectorAll('#dist .region-spark-dot')].map(dot=>({
@@ -104,7 +111,7 @@ async function renderLeft(page,chartData,theme){
    filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
    paths:lines.map(p=>p.getAttribute('d')),
    dateNote:document.querySelector('#distNote')?.textContent||'',
-   points:hits.map(p=>({x:Number(p.getAttribute('cx')),n:Number(p.dataset.count)}))};
+   points:hits.map(p=>({x:Number(p.getAttribute('cx')),n:Number(p.dataset.count),bin:Number(p.dataset.bin)}))};
  });
  assert.deepEqual(quality.series,{
   cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'
@@ -114,8 +121,8 @@ async function renderLeft(page,chartData,theme){
  assert.equal(quality.regions,3);
  assert.equal(quality.bars,30);
  assert.equal(quality.barOpacity,'1','blue bars must use undiluted original 青瓷蓝');
- assert.deepEqual(quality.stackOrder,['sg','hk','cn'],
-  'regional stack order is SG below HK below CN, with no OTHER');
+ assert.deepEqual(quality.stackOrder,['hk','sg','cn'],
+  'real production distribution anchors HK below SG and CN; OTHER is excluded');
  assert.equal(quality.otherSeries,0,'OTHER never belongs in this chart or legend');
  assert.ok(quality.bandCount>=3,'each active region has at least one tinted band');
  assert.ok(Object.values(quality.bandFills).every(Boolean),
@@ -126,9 +133,9 @@ async function renderLeft(page,chartData,theme){
   assert.equal(first[k].upper-first[k].lower,first[k].count,'band thickness is exact own count');
  }
  if(first.sg&&first.hk&&first.cn){
-  assert.equal(first.sg.lower,0,'SG starts at baseline zero');
-  assert.equal(first.hk.lower,first.sg.upper,'HK stacks on SG');
-  assert.equal(first.cn.lower,first.hk.upper,'CN stacks on HK');
+  assert.equal(first.hk.lower,0,'largest HK series anchors the zero baseline');
+  assert.equal(first.sg.lower,first.hk.upper,'SG stacks above HK');
+  assert.equal(first.cn.lower,first.sg.upper,'CN stays on top, not in the middle');
   assert.equal(first.cn.upper,first.sg.count+first.hk.count+first.cn.count,
    'top of CN corresponds to the total across three regions');
  }
@@ -147,6 +154,9 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.grid>=2&&quality.filled>0,'both charts plot genuine values');
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
   'regional lines begin at actual observations, not baseline zeros');
+ assert.equal(quality.matchingContours,true,
+  'upper band boundaries and ink must use identical SVG segment paths');
+ assert.match(quality.dateNote,/逐日记录/,'all points use calendar-day resolution without weekly buckets');
  assert.equal(quality.captions,0,'do not add redundant chart subtitles');
  assert.ok(quality.dateTicks>=2&&quality.dateTicks<=5,
   'short intervals do not duplicate date ticks');
@@ -218,9 +228,9 @@ async function inspectMosaic(page,nonzero){
   return {board:{w:board.width,h:board.height,x:board.x,y:board.y},rects};
  });
  assert.equal(details.rects.length,18,'one integrated cloud must always include all 18 firms');
- const badGap=details.rects.filter(t=>Object.values(t.inset).some(v=>Math.abs(v-1)>0.1));
- assert.equal(badGap.length,0,'each tile must use exactly 1px inset for 2px shared seams: '+JSON.stringify(badGap));
- assert.ok(details.rects.every(t=>t.cornerRadius==='1.5px'),'tight mosaic needs subtle, not card-like rounding');
+ const badGap=details.rects.filter(t=>Object.values(t.inset).some(v=>Math.abs(v-.5)>.1));
+ assert.equal(badGap.length,0,'each tile must use a .5px inset for a 1px shared hairline: '+JSON.stringify(badGap));
+ assert.ok(details.rects.every(t=>t.cornerRadius==='1px'),'tight mosaic corners must be barely rounded');
 
  assert.equal(new Set(details.rects.map(t=>t.i)).size,18,'unique institutional tiles');
  assert.equal(details.rects.filter(t=>!t.zero).length,nonzero,'correct hiring breadth');
@@ -292,9 +302,13 @@ try{
    assert.equal(new Set(positives.map(t=>t.faceBg)).size,4,
     'the controlled sample of four distinct counts must have four unique tones');
    const ordered=[...positives].sort((a,b)=>Number(a.count)-Number(b.count));
+   if(theme==='light')assert.ok(lum(zeroBg)>lum(ordered[0].faceBg),
+    'no-posting porcelain should recede as a lighter tint, never a dark gray interruption');
+   else assert.ok(lum(zeroBg)<lum(ordered[0].faceBg),
+    'dark-mode zero tiles must stay a subtle shade behind the active indigo ramp');
    assert.deepEqual(ordered.map(t=>Number(t.count)),[2,3,4,5]);
    assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>25),
-    'positive Indigo tiles remain distinct from muted slate-indigo zero tiles');
+    'positive indigo tiles remain distinct from matching porcelain-blue zero tiles');
    if(theme==='light')assert.ok(positives.every(t=>{
     const [r,g,b]=rgb(t.faceBg);return b>r&&b>g&&r>=175;
    }),'approved Soft Indigo C remains bright with blue-violet tint, not mint or turquoise');
@@ -414,6 +428,32 @@ try{
   animations:'disabled'
  });
  await gapPage.close();
+ // Actual Jan-Nov history still plots each UTC day separately: no weekly
+ // summing, no collapsed zero weeks, and exact one-day hover intervals.
+ const dailyPage=await make(960,'light');
+ const dailyRows=[
+  {location:'HK',firstSeen:'2026-01-22T09:00:00Z',company:'HSBC',jobStatus:'active'},
+  {location:'SG',firstSeen:'2026-01-22T09:00:00Z',company:'DBS Bank',jobStatus:'active'},
+  {location:'CN',firstSeen:'2026-01-22T09:00:00Z',company:'Citi',jobStatus:'active'},
+  {location:'HK',firstSeen:'2026-01-23T09:00:00Z',company:'HSBC',jobStatus:'active'},
+  {location:'SG',firstSeen:'2026-11-12T09:00:00Z',company:'DBS Bank',jobStatus:'active'},
+  {location:'CN',firstSeen:'2026-11-12T09:00:00Z',company:'Citi',jobStatus:'active'}
+ ];
+ const dailyQuality=await renderLeft(dailyPage,dailyRows,'light');
+ assert.equal(dailyQuality.pointTotal,6,'all six genuine daily observations are retained');
+ assert.match(dailyQuality.dateNote,/2026\.01\.22.*11\.12/,'dates span the actual earliest and latest 2026 observations');
+ const near=dailyQuality.points.filter(p=>p.bin===0||p.bin===1);
+ assert.ok(near.some(p=>p.bin===0)&&near.some(p=>p.bin===1),
+  'Jan 22 and Jan 23 must have separate calendar-day buckets, not one weekly aggregate');
+ assert.ok(Math.max(...near.map(p=>p.x))-Math.min(...near.map(p=>p.x))<3,
+  'adjacent 2026 daily buckets should be adjacent on the real-time axis');
+ assert.ok(dailyQuality.points.some(p=>p.bin>=294),
+  'Nov 12 must occupy the final daily bucket across the entire 2026 history');
+ await dailyPage.locator('.analytics-card').screenshot({
+  path:new URL('artifacts/market-width/full-year-daily-960-light.png',source).pathname,
+  animations:'disabled'
+ });
+ await dailyPage.close();
  // A pre-2026 outlier must not change the earliest 2026 tick or hide valid records.
  const focusPage=await make(960,'light');
  const focusRows=[{location:'CN',firstSeen:'2025-03-01T12:00:00Z',company:'HSBC',jobStatus:'active'}];
