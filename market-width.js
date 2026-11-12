@@ -1,6 +1,6 @@
-/* Market Width: daily area-proportional market map. Zero-role institutions
-   occupy no tile area and are explicitly named in a separate neutral rail.
-   Uses the same deduplicated first-seen active chart rows as New Postings. */
+/* Market Width: daily, area-proportional market map. Zero-posting institutions
+   are absent from the visualization, but included in the 18-firm denominator.
+   The underlying daily-first-seen, currently-active data contract is unchanged. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -16,6 +16,20 @@ const DISPLAY=Object.freeze([
  'Société Générale','DBS Bank','Deutsche Bank','Goldman Sachs',
  'BlackRock','Bank of America','Fidelity International',
  'Morgan Stanley','BBVA','Natixis','UBS','Schroders','Invesco'
+]);
+/* Carefully selected capital-markets/brand shorthand, NEVER arbitrary truncation.
+   Full official DISPLAY names remain in accessible labels and tooltips.
+   Examples: Morgan Stanley MS (NYSE), Standard Chartered SC (SEC filings),
+   JPMorgan/JPM, BofA, SocGen, GS and FIL. */
+const COMPACT=Object.freeze([
+ 'HSBC','Standard Chartered','Citi','JPMorgan','BNP Paribas',
+ 'SocGen','DBS','Deutsche Bank','Goldman Sachs','BlackRock',
+ 'BofA','Fidelity Intl.','Morgan Stanley','BBVA','Natixis',
+ 'UBS','Schroders','Invesco'
+]);
+const MICRO=Object.freeze([
+ 'HSBC','SC','Citi','JPM','BNP','SG','DBS','DB','GS','BLK',
+ 'BofA','FIL','MS','BBVA','Natixis','UBS','SDR','IVZ'
 ]);
 const ALIASES={
  'HSBC':['the hongkong and shanghai banking corporation'],
@@ -132,10 +146,10 @@ const prettyDate=key=>{
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
- const zeroPanel=el('marketWidthZeroPanel'),zeros=el('marketWidthZeroNames'),detail=el('marketWidthDetail');
+ const detail=el('marketWidthDetail');
  const prev=el('marketWidthPrev'),next=el('marketWidthNext'),date=el('marketWidthDate');
  const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
- if(!rootEl||!board||!zeroPanel||!zeros||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
+ if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
  const series=aggregate(rows,days),last=series.keys.length-1;
  let day=series.counts.all.findLastIndex(line=>line.some(Boolean));
  if(day<0)day=last;
@@ -150,11 +164,7 @@ function render(rows,days){
  function draw(){
   const data=daily(series,region,day),values=data.values;
   const active=values.map((n,i)=>({i,count:n})).filter(item=>item.count>0);
-  const zero=values.map((n,i)=>n===0?i:-1).filter(i=>i>=0);
-  rootEl.classList.toggle('is-sparse',active.length<=4&&zero.length>0);
   rootEl.classList.toggle('is-all-zero',active.length===0);
-  rootEl.classList.toggle('has-no-zeros',zero.length===0);
-  zeroPanel.hidden=zero.length===0;
   const fallbackWidth=board.getBoundingClientRect().width||540;
   const fallbackHeight=board.getBoundingClientRect().height||320;
   const width=Math.max(1,Math.round(fallbackWidth)),height=Math.max(1,Math.round(fallbackHeight));
@@ -168,7 +178,11 @@ function render(rows,days){
    for(const tile of tiles){
     const button=document.createElement('button');
     button.type='button';
-    button.className='mw-tile mw-tone-'+toneOf(tile.count)+(active.length>=10?' mw-tile-dense':'');
+    const tiny=tile.w<63||tile.h<35;
+    const compact=tile.w<155||tile.h<68;
+    button.className='mw-tile mw-tone-'+toneOf(tile.count)+
+     (active.length>=10?' mw-tile-dense':'')+
+     (compact?' mw-tile-compact':'')+(tiny?' mw-tile-tiny':'');
     button.dataset.firm=String(tile.i);
     button.setAttribute('aria-label',label(tile.i,tile.count));
     button.title=label(tile.i,tile.count);
@@ -178,32 +192,17 @@ function render(rows,days){
     button.style.width=(tile.w/width*100).toFixed(5)+'%';
     button.style.height=(tile.h/height*100).toFixed(5)+'%';
     const face=document.createElement('span');face.className='mw-tile-face';
-    // Treat the real browser width as the gate for readable, *complete*
-    // official names. Never abbreviate bank names to make them fit a tile.
-    if(tile.w>=155&&tile.h>=54){
-     const name=document.createElement('span');name.className='mw-tile-name';
-     name.textContent=DISPLAY[tile.i];face.append(name);
-    }else if(tile.w>=68&&tile.h>=53){
-     const name=document.createElement('span');name.className='mw-tile-name mw-tile-name-small';
-     name.textContent=DISPLAY[tile.i];face.append(name);
-    }
-    if(tile.w>=36&&tile.h>=32){
-     const amount=document.createElement('strong');amount.className='mw-tile-count';
-     amount.textContent=fmt(tile.count);face.append(amount);
-    }
+    const name=document.createElement('span');name.className='mw-tile-name';
+    name.textContent=tiny?MICRO[tile.i]:compact?COMPACT[tile.i]:DISPLAY[tile.i];
+    const amount=document.createElement('strong');amount.className='mw-tile-count';
+    amount.textContent=fmt(tile.count);
+    // Every positive tile has a visible name/token AND its exact count.
+    // Narrow rectangles use vetted financial-market abbreviations, not blanks.
+    face.append(name,amount);
     button.append(face);fragment.append(button);
    }
    board.append(fragment);
   }
-  zeros.replaceChildren();
-  const zeroItems=document.createDocumentFragment();
-  for(const i of zero){
-   const item=document.createElement('span');
-   item.className='mw-zero-name';item.textContent=DISPLAY[i];
-   item.title=DISPLAY[i]+' · 0 new postings';
-   zeroItems.append(item);
-  }
-  zeros.append(zeroItems);
   count.textContent=fmt(data.total);
   firms.textContent=data.firms+'/18';
   date.textContent=prettyDate(series.keys[day]);
@@ -280,7 +279,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,REGIONS,firmIndex,aggregate,daily,limit,treemap,toneOf,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,toneOf,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
