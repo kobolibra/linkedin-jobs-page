@@ -185,7 +185,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-10','market-width.css?v=market-width-10'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-11','market-width.css?v=market-width-11'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -207,11 +207,11 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=150/);
 });
 
-test('distinct mineral-zero and warm-plum live color channels maintain shared app styling',()=>{
+test('neutral-zero and mineral-petrol live channels match site navy and respect dark mode',()=>{
  const css=read('market-width.css'),html=read('index.html');
- assert.match(css,/--mw-zero:#e9e8e6/);
- assert.match(css,/--mw-tone-1:#d8bdb3/);
- assert.match(css,/--mw-tone-5:#60465c/);
+ assert.match(css,/--mw-zero:#e8ebe9/);
+ assert.match(css,/--mw-tone-1:#b9cdbf/);
+ assert.match(css,/--mw-tone-5:#315764/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
  assert.match(css,/\.mw-is-zero/);
  assert.match(css,/background:var\(--glass-light\)/);
@@ -240,4 +240,36 @@ test('typography tiers grow with each tile geometry, never the count of active f
  assert.ok(feature.name>=20&&feature.count>=28);
  assert.ok(feature.name>large.name&&large.name>medium.name&&medium.name>small.name);
  assert.ok(feature.count>large.count&&large.count>medium.count&&medium.count>small.count);
+});
+
+
+test('Market Width tile seams are a continuous mosaic, not individually spaced cards',()=>{
+ const css=read('market-width.css');
+ assert.match(css,/--mw-seam:1px/);
+ assert.match(css,/\.mw-tile\s*\{[^}]*padding:var\(--mw-seam\)/);
+ assert.match(css,/\.mw-tile-face\s*\{[^}]*border-radius:1\.5px/);
+ assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
+});
+
+test('light and dark positive color steps are legible and visibly distinct from neutral zero',()=>{
+ const css=read('market-width.css');
+ const light=['#e8ebe9','#b9cdbf','#a2bdb2','#85a7a1','#4b747b','#315764'];
+ const dark=['#2a3e4e','#496b6a','#587977','#8faea6','#b6cec2','#d8e3d6'];
+ const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
+ const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
+ const luminance=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
+ const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+ for(const [theme,palette] of [['light',light],['dark',dark]]){
+  assert.equal(new Set(palette).size,6,theme+' color steps cannot repeat');
+  const x=channel(palette[0]),y=channel(palette[1]);
+  assert.ok(Math.hypot(...x.map((v,i)=>v-y[i]))>60,'zero vs positive must be visually distinct: '+theme);
+  for(let i=0;i<palette.length;i++){
+   const ink=i===0?(theme==='light'?'#536167':'#c5d0d6'):
+    (theme==='dark'?(i<=2?'#f9fbf8':'#26383b'):(i<=3?'#26383b':'#f9fbf8'));
+   assert.ok(contrast(palette[i],ink)>=4.5,'small text AA '+theme+' '+i+' contrast='+contrast(palette[i],ink));
+  }
+ }
+ light.forEach(color=>assert.ok(css.includes(color)));
+ dark.forEach(color=>assert.ok(css.includes(color)));
+ assert.doesNotMatch(css,/#(?:d8bdb3|b38b90|60465c|ac928d|edcbd1)/);
 });
