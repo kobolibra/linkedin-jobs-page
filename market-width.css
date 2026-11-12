@@ -9,28 +9,28 @@
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
-/* MARKET WIDTH / EDITORIAL IVORY
-   The site's porcelain, deep navy, and quiet brass are the entire palette.
-   Positive: a clean warm-ivory plane; inactive: a neutral pale surround.
-   No count-based color steps, corporate rainbows, or decorative keylines.
-   Use the same navy and gold tokens as the rest of the website.
-   Geometry, text fit, and data semantics are intentionally unchanged. */
+/* MARKET WIDTH / CLEAR SEA GLASS
+   A crisp mineral-green activity fill on the site's neutral gray canvas.
+   The palette has only two data states: positive and zero; tile geometry
+   and exact numbers carry quantitative meaning. Navy remains the shared
+   typography voice, without extraneous gilding or decorative stripes.
+   Does not alter the original mixed treemap layout. */
 .analytics-card > .ac-col-market {
   position:relative;grid-column:2;display:flex;flex-direction:column;
   min-width:0;min-height:0;padding:21px 20px 18px;
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
-  --mw-zero:#f0f1ef;--mw-zero-ink:#626e75;
-  --mw-active:#fbf0e1;--mw-active-ink:var(--navy);
-  --mw-accent:var(--gold-deep);
+  --mw-zero:var(--surface-2);--mw-zero-ink:#586770;
+  --mw-active:#bde8dc;--mw-active-ink:var(--navy);
+  --mw-accent:var(--navy-3);
   --mw-seam:1px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:var(--surface);
-  --mw-zero:#293945;--mw-zero-ink:#cdd8dd;
-  --mw-active:#34526b;--mw-active-ink:var(--navy);
-  --mw-accent:var(--gold-hi);
+  --mw-zero:var(--surface-2);--mw-zero-ink:var(--viz-secondary);
+  --mw-active:#335d58;--mw-active-ink:var(--ink);
+  --mw-accent:#c9f0e0;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
@@ -124,8 +124,8 @@
   color:var(--mw-tile-ink,#193b57);
   transition:filter .14s ease,box-shadow .14s ease;
 }
-/* The central active area carries warm ivory; numbers provide a subtle
-   brass accent. Zero tiles remain in the site's neutral surface hierarchy. */
+/* Crisp sea-glass active tiles contrast with site-native neutral zero tiles;
+   color does not represent a second posting-count scale. */
 .mw-is-zero {--mw-tile-fill:var(--mw-zero);--mw-tile-ink:var(--mw-zero-ink)}
 .mw-is-active {--mw-tile-fill:var(--mw-active);--mw-tile-ink:var(--mw-active-ink)}
 .mw-is-active .mw-tile-count {color:var(--mw-accent)}
