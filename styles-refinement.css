@@ -497,14 +497,6 @@ body.compact .job > .mono { margin-top:2px; }
   stroke:color-mix(in srgb,var(--ink) 30%,transparent);
   stroke-width:1;
 }
-.region-density-note,
-[data-theme="dark"] .region-density-note{
-  color:var(--viz-quiet);
-  font:400 10px/1.5 var(--sans);
-  letter-spacing:0;
-  margin-top:12px;
-  min-height:15px;
-}
 .rhythm-baseline{stroke:var(--viz-rule);stroke-width:1}
 .rhythm-stick{stroke:var(--viz-blue);stroke-width:1.1;opacity:.38}
 .rhythm-stick.weekend{opacity:.2}
@@ -585,9 +577,6 @@ body.compact .job > .mono { margin-top:2px; }
   }
   .analytics-card .spark{height:auto;min-height:116px}
   .rhythm-svg{max-height:155px}
-  .region-density-note,[data-theme="dark"] .region-density-note{
-    margin-left:0;font-size:10px;
-  }
   .top50-head{gap:12px}
   .top50-tabs{max-width:100%}
   .top50-tab,.top50-tab.active{min-height:35px}
@@ -622,12 +611,9 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){.rhythm-svg{transition:none;transform:none}}
 
 
-/* C-PREVIEW CHART COMPOSITION — GRAPHICS ONLY.
-   SG/HK/CN appear as cumulative stacked areas (bottom to top), preserving
-   the original regional olive, ochre, and burgundy contour inks.
-   Each intervening band is a subtle tint of its own regional ink.
-   The 30-day bars keep the original #spark 青瓷蓝 token, undiluted.
-   No global layout, filters, data, or other visual colors change. */
+/* REGIONAL CUMULATIVE STACK / true vertically summed active-role cohorts.
+   Continuous HK / SG / CN bands are additive at every day on a zero-origin
+   axis; the separate 30-day chart retains its original undiluted blue. */
 #dist .region-time-svg{shape-rendering:geometricPrecision}
 #dist .region-spark-grid{
   stroke:var(--viz-rule);stroke-width:.75;opacity:.42;
