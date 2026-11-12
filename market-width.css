@@ -162,7 +162,10 @@
 .mw-tile-large .mw-tile-face {padding:10px 12px}
 .mw-tile-medium .mw-tile-face {padding:6px 7px}
 .mw-tile-small .mw-tile-face {padding:3px 4px}
-.mw-tile-small .mw-tile-name {line-height:1.07}
+.mw-tile-small .mw-tile-name {
+  line-height:1.07;
+  overflow-wrap:anywhere; /* only narrow tiles may break single-word names */
+}
 .mw-tile-display-floor .mw-tile-face {padding:2px 3px}
 .mw-empty {
   position:absolute;top:50%;left:50%;
