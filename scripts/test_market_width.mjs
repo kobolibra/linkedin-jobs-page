@@ -205,6 +205,9 @@ test('extremely skewed counts preserve an honestly labeled legibility floor',()=
  assert.equal(tiles.find(t=>t.i===1).count,1);
  assert.equal(tiles.find(t=>t.i===1).visualFloor,true);
  assert.ok(tiles.find(t=>t.i===1).w*tiles.find(t=>t.i===1).h>1000);
+ const tiny=tiles.find(t=>t.i===1);
+ assert.ok(Math.min(tiny.w,tiny.h)>=18,
+  'smallest active rectangle must fit a micro name and count: '+JSON.stringify(tiny));
 });
 
 test('homepage and About describe an all-in-one daily map, without zero lists or visible numeric zero tiles',()=>{
