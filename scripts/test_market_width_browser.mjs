@@ -117,7 +117,8 @@ try{
     assert.ok(Math.abs(bounds.right.h-bounds.left.h)<3,'charts align in desktop grid');
    }else{
     assert.ok(bounds.right.y>=bounds.left.b-2);
-    assert.ok(Math.abs(bounds.regionW-bounds.topW)<12,'mobile region control is full width');
+    assert.ok(bounds.regionW>=145&&bounds.regionW<=bounds.right.w-16,
+     'region selector stays compact and inside the Market Width panel: '+JSON.stringify(bounds));
    }
    const before=await page.evaluate(()=>({
     page:document.documentElement.scrollHeight,
