@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,zeroPerimeter,marketTiles,tileTypography}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -136,47 +136,22 @@ test('four positive and fourteen zero cells geometrically cover the whole board'
   assert.ok(Math.abs(sum-w*h)<1e-6,'geometry total: '+JSON.stringify({w,h,sum,tiles}));
  }
 });
-test('active institutions stay strictly inside the neutral perimeter when four or more are inactive',()=>{
+test('the original mixed treemap includes active tiles on the outside, without a forced zero ring',()=>{
  const edge=(t,W,H)=>Math.abs(t.x)<1e-7||Math.abs(t.y)<1e-7||
   Math.abs(t.x+t.w-W)<1e-7||Math.abs(t.y+t.h-H)<1e-7;
  for(const [W,H] of [[350,290],[505,319],[640,340],[960,400]]){
-  for(let nZero=4;nZero<=17;nZero++){
-   const values=Array.from({length:18},(_,i)=>i<18-nZero?1+(i%7):0);
-   const tiles=marketTiles(values,W,H);
-   assert.equal(tiles.length,18,'all institutions remain visible');
-   const active=tiles.filter(t=>!t.zero),zeros=tiles.filter(t=>t.zero);
-   assert.equal(active.length,18-nZero);
-   assert.equal(zeros.length,nZero);
-   assert.ok(active.every(t=>t.zone==='core'&&!edge(t,W,H)),
-    'active tiles must never touch outer boundary: '+JSON.stringify({W,H,nZero,active}));
-   assert.ok(zeros.every(t=>t.zone==='perimeter'&&edge(t,W,H)),
-    'zero tiles must all lie on the outer boundary: '+JSON.stringify({W,H,nZero,zeros}));
-   assert.ok(tiles.every(t=>t.w>0&&t.h>0));
-   const sum=tiles.reduce((a,t)=>a+t.w*t.h,0);
-   assert.ok(Math.abs(sum-W*H)<1e-5,'no coverage gaps '+JSON.stringify({W,H,nZero,sum}));
-   for(let i=0;i<tiles.length;i++)for(let j=i+1;j<tiles.length;j++){
-    const a=tiles[i],b=tiles[j];
-    const dx=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x));
-    const dy=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
-    assert.ok(dx*dy<1e-5,'tiles never overlap');
-   }
-  }
- }
-});
-
-test('with fewer than four zero institutions, use honest outer bands without duplicating tiles',()=>{
- for(const nZero of [1,2,3]){
-  const values=Array.from({length:18},(_,i)=>i>=18-nZero?0:2);
-  const tiles=marketTiles(values,500,340);
+  const counts=Array.from({length:18},(_,i)=>i===1?2:i===11?4:i===12?3:i===16?5:0);
+  const tiles=marketTiles(counts,W,H);
   assert.equal(tiles.length,18);
-  assert.equal(tiles.filter(t=>t.zero).length,nZero);
-  assert.ok(tiles.filter(t=>t.zero).every(t=>t.zone==='perimeter'&&(Math.abs(t.x)<1e-7||Math.abs(t.y)<1e-7||Math.abs(t.x+t.w-500)<1e-7||Math.abs(t.y+t.h-340)<1e-7)));
-  assert.ok(tiles.filter(t=>!t.zero).every(t=>t.zone==='core'));
+  assert.equal(tiles.filter(t=>!t.zero).length,4);
+  assert.ok(tiles.filter(t=>!t.zero).some(t=>edge(t,W,H)),
+   'active tiles must be allowed on the normal outer edge, not artificially ringed');
+  assert.ok(tiles.every(t=>!('zone' in t)),'never impose core/perimeter zones');
+  const total=tiles.reduce((sum,t)=>sum+t.w*t.h,0);
+  assert.ok(Math.abs(total-W*H)<1e-5);
+  assert.deepEqual(tiles,marketTiles(counts,W,H),'original mixed order must be stable');
  }
- const core=zeroPerimeter(Array.from({length:14},(_,i)=>({i})),500,340);
- assert.equal(core.outer.length,14);
- assert.ok(core.core.x>0&&core.core.y>0);
- assert.ok(core.core.x>=44,'side bands must allow whole micro labels on mobile');
+ assert.doesNotMatch(read('market-width.js'),/zeroPerimeter|zone:'perimeter'|zone:'core'/);
 });
 
 test('all 18 zero institutions still produce an 18-cell muted mosaic',()=>{
@@ -231,7 +206,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-15','market-width.css?v=market-width-16'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-17','market-width.css?v=market-width-17'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -253,18 +228,16 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=82/);
 });
 
-test('ivory activity and neutral perimeter use the established navy and brass tokens',()=>{
+test('the restored mixed layout uses only sea-glass activity and the website neutral tokens',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:#f0f1ef/);
- assert.match(css,/--mw-active:#fbf0e1/);
+ assert.match(css,/--mw-zero:var\(--surface-2\)/);
+ assert.match(css,/--mw-active:#bde8dc/);
  assert.match(css,/--mw-active-ink:var\(--navy\)/);
- assert.match(css,/--mw-accent:var\(--gold-deep\)/);
- assert.match(css,/--mw-accent:var\(--gold-hi\)/);
+ assert.match(css,/--mw-accent:var\(--navy-3\)/);
  assert.match(css,/--mw-seam:1px/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
- assert.match(js,/function zeroPerimeter\(/);
- assert.match(js,/zone:'perimeter'/);
- assert.match(js,/zone:'core'/);
+ assert.match(js,/function marketTiles\(/);
+ assert.doesNotMatch(js,/zeroPerimeter|zone:'perimeter'|zone:'core'|dataset\.zone/);
  assert.match(js,/\(zero\?'mw-is-zero':'mw-is-active'\)/);
  assert.doesNotMatch(js,/activityTier|toneOf|mw-activity-|mw-firm-/);
  assert.doesNotMatch(css,/--mw-(?:low|mid|high|tone-\d)|\.mw-activity-|\.mw-firm-/);
@@ -275,9 +248,8 @@ test('ivory activity and neutral perimeter use the established navy and brass to
  assert.match(css,/background:var\(--glass-light\)/);
  assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
  assert.match(css,/\.mw-detail\[hidden\]/);
- assert.doesNotMatch(html,/18 institutions · 30 days|Explore exact institution counts|First observed on LinkedIn/);
+ assert.doesNotMatch(html,/Active institutions are grouped in the center|Neutral inactive institutions sit around the perimeter/);
 });
-
 test('all 18 firms use one centered name-over-count lockup, never side-by-side micro tiles',()=>{
  const js=read('market-width.js'),css=read('market-width.css');
  assert.match(js,/lockup\.className='mw-tile-lockup'/);
@@ -308,28 +280,29 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('light ivory and dark active states maintain WCAG AA with exact site navy/gold tokens',()=>{
- const css=read('market-width.css');
- const light={zero:'#f0f1ef',zeroInk:'#626e75',active:'#fbf0e1',activeInk:'#16395a',accent:'#8a6520'};
- const dark={zero:'#293945',zeroInk:'#cdd8dd',active:'#34526b',activeInk:'#f5f0e8',accent:'#e5bd68'};
- const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
+test('clear sea-glass and neutral fills meet AA contrast in light and dark themes',()=>{
+ const css=read('market-width.css'),global=read('styles.css');
+ const light={zero:'#e8eae9',zeroInk:'#586770',active:'#bde8dc',activeInk:'#16395a',accent:'#2e6090'};
+ const dark={zero:'#263b4b',zeroInk:'#d0dce4',active:'#335d58',activeInk:'#f5f0e8',accent:'#c9f0e0'};
+ const ch=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
- const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
+ const lum=x=>{const c=ch(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
  for(const [theme,palette] of [['light',light],['dark',dark]]){
-  for(const color of [palette.zero,palette.zeroInk,palette.active])assert.ok(css.includes(color),'missing '+theme+' color '+color);
-  const tokens=read('styles.css');
-  assert.ok(tokens.includes(palette.activeInk)&&tokens.includes(palette.accent),'must reuse site tokens');
   for(const [fill,ink] of [[palette.zero,palette.zeroInk],[palette.active,palette.activeInk],[palette.active,palette.accent]])
-   assert.ok(contrast(fill,ink)>=4.5,'small text AA '+JSON.stringify({theme,fill,ink,ratio:contrast(fill,ink)}));
-  const distance=Math.hypot(...channel(palette.active).map((v,i)=>v-channel(palette.zero)[i]));
-  assert.ok(distance>15,'active ivory and neutral surround must retain chromatic distinction in '+theme);
+   assert.ok(contrast(fill,ink)>=4.5,
+    'small text AA '+JSON.stringify({theme,fill,ink,contrast:contrast(fill,ink)}));
+  assert.ok(css.includes(palette.active),'theme fill '+theme);
+  assert.ok(css.includes(palette.zeroInk),'zero label '+theme);
+  if(theme==='light')assert.ok(global.includes(palette.activeInk)&&global.includes(palette.accent),
+   'brand type and count accents reuse global navy');
  }
- assert.ok(lum(light.active)>.85,'active ivory should be luminous, not muddy');
- assert.ok(lum(light.zero)>.85,'zero surface must match the pale neutral canvas');
- assert.ok(channel(light.active)[0]-channel(light.active)[2]>20,'ivory hue should be warm, not gray or blue');
- assert.ok(lum(light.accent)<.2,'brass count accent should remain legible and restrained');
+ const [r,g,b]=ch(light.active);
+ assert.ok(g>r+30&&g>b+8&&b>r+20,'positive tile should have clear sea-glass hue');
+ assert.ok(lum(light.active)>.73,'positive tile must remain light');
+ assert.ok(lum(light.zero)>.78,'zero tile matches site native surface');
  assert.doesNotMatch(css,/linear-gradient\(/);
 });
+
 
 
