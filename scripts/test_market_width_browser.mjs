@@ -48,7 +48,7 @@ const make=async(width,theme)=>{
 const summary=page=>page.locator('.mw-summary').textContent().then(v=>v.replace(/\s+/g,' ').trim());
 // Render both left charts with their production SVG logic and a deterministic
 // fixture, not a hand-drawn approximation. The fixture is the same as Market Width.
-async function renderLeft(page,chartData){
+async function renderLeft(page,chartData,theme){
  await page.evaluate(([draw,rows])=>{
   const norm=location=>location;
   const seenAt=job=>job.firstSeen;
@@ -77,8 +77,8 @@ async function renderLeft(page,chartData){
  assert.deepEqual(quality.series,{
   cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'
  },'CN/HK/SG colors must remain exactly the original site colors');
- assert.equal(quality.barColor,'rgb(51, 78, 172)',
-  '30-day columns must reuse the existing blue #334EAC');
+ assert.equal(quality.barColor,theme==='light'?'rgb(51, 78, 172)':'rgb(112, 150, 209)',
+  '30-day columns must reuse the existing light/dark blue tokens');
  assert.equal(quality.regions,3);
  assert.equal(quality.bars,30);
  assert.equal(quality.bins,120,'40 unchanged time bins for each of three regions');
@@ -199,7 +199,7 @@ try{
   for(const theme of ['light','dark']){
    const page=await make(width,theme);
    await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
-   await renderLeft(page,regular);
+   await renderLeft(page,regular,theme);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect postings');
