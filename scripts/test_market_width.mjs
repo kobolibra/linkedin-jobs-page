@@ -127,6 +127,15 @@ test('one coherent mosaic contains all 18 firms even when 17 are zero',()=>{
  assert.deepEqual(tiles,marketTiles(values,600,340),'stable data returns a stable cloud');
 });
 
+test('four positive and fourteen zero cells geometrically cover the whole board',()=>{
+ const values=Array(18).fill(0);values[1]=2;values[12]=3;values[11]=4;values[16]=5;
+ for(const [w,h] of [[505,319],[350,290],[580,340]]){
+  const tiles=marketTiles(values,w,h);
+  const sum=tiles.reduce((a,t)=>a+t.w*t.h,0);
+  assert.equal(tiles.length,18);
+  assert.ok(Math.abs(sum-w*h)<1e-6,'geometry total: '+JSON.stringify({w,h,sum,tiles}));
+ }
+});
 test('all 18 zero institutions still produce an 18-cell muted mosaic',()=>{
  const tiles=marketTiles(Array(18).fill(0),390,290);
  assert.equal(tiles.length,18);
