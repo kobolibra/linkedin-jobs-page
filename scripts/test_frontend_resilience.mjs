@@ -143,8 +143,10 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-band:24%\}/);
  assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-band:27%\}/);
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
- assert.match(source,/const regionOrder=\["SG","HK","CN"\];/);
+ assert.match(source,/const regionOrder=\["HK","SG","CN"\];/);
  assert.match(source,/const totalBuckets=Array\.from\(/);
+ assert.match(source,/const bins=totalDays;/,'every UTC calendar day remains a distinct observation');
+ assert.doesNotMatch(source,/bucketDays|每 7 天汇总|每 3 天汇总/);
  assert.match(source,/const observedTimes=allTimes\.filter\(t=>/);
  assert.match(source,/series\.map\(layer=>layer\.area\)\.join\(''\)/);
  assert.match(source,/series\.map\(layer=>layer\.outline\)\.join\(''\)/);
@@ -159,7 +161,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
  assert.match(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-full-history-5/);
+ assert.match(html,/app\.js\?v=region-daily-stacked-6/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
