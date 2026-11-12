@@ -306,6 +306,7 @@ function render(rows,days){
    button.dataset.layout=type.tier;
    button.dataset.firm=String(tile.i);
    button.dataset.zero=String(zero);
+   button.dataset.zone=tile.zone;
    button.setAttribute('aria-label',label(tile.i));
    button.setAttribute('aria-pressed',String(selectedFirm===tile.i));
    button.title=label(tile.i);
