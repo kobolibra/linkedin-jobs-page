@@ -9,24 +9,26 @@
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
-/* MARKET WIDTH / EDITORIAL AREA MAP
-   The tile AREA is the metric, not a dashboard-style rainbow heat scale.
-   A single restrained stone-to-plum range echoes the global ink, burgundy and
-   warm-metal accents. No fake quantitative area for zero-role firms.
-   All pointer/focus effects are paint-only: never modify block geometry. */
+/* MARKET WIDTH / INTEGRATED MARKET MOSAIC
+   Neutral slate = no new postings; ink-plum = observed posting activity.
+   Active tile area tracks count shares, except a minimum readable footprint
+   for extreme outliers. Muted zero tiles are non-quantitative placeholders.
+   Pointer and focus effects are paint-only, without layout reflow. */
 .analytics-card > .ac-col-market {
   position:relative;grid-column:2;display:flex;flex-direction:column;
   min-width:0;min-height:0;padding:21px 20px 18px;
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
-  --mw-tone-1:#ddd9d4;--mw-tone-2:#c7bcb6;--mw-tone-3:#aa9694;
-  --mw-tone-4:#81757e;--mw-tone-5:#5b5264;
+  --mw-zero:#e9e8e5;--mw-zero-ink:#575b60;
+  --mw-tone-1:#c9a9a1;--mw-tone-2:#b68c91;--mw-tone-3:#8d6479;
+  --mw-tone-4:#76596d;--mw-tone-5:#554358;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:color-mix(in srgb,var(--ink) 4%,var(--surface));
-  --mw-tone-1:#545157;--mw-tone-2:#6d656d;--mw-tone-3:#93838c;
-  --mw-tone-4:#ac939e;--mw-tone-5:#c2a9b0;
+  --mw-zero:#414348;--mw-zero-ink:#c8cbd0;
+  --mw-tone-1:#a58b8b;--mw-tone-2:#bb989e;--mw-tone-3:#cca4b0;
+  --mw-tone-4:#d7b3c1;--mw-tone-5:#edcbd1;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
@@ -121,22 +123,26 @@
   color:var(--mw-tile-ink,#27272a);
   transition:filter .14s ease,box-shadow .14s ease;
 }
+.mw-is-zero {--mw-tone-color:var(--mw-zero);--mw-tile-ink:var(--mw-zero-ink)}
 .mw-tone-1 {--mw-tone-color:var(--mw-tone-1)}
 .mw-tone-2 {--mw-tone-color:var(--mw-tone-2)}
 .mw-tone-3 {--mw-tone-color:var(--mw-tone-3)}
-.mw-tone-4 {--mw-tone-color:var(--mw-tone-4);--mw-tile-ink:#fff}
-.mw-tone-5 {--mw-tone-color:var(--mw-tone-5);--mw-tile-ink:#fff}
+.mw-tone-3 {--mw-tile-ink:#faf9f7}
+.mw-tone-4 {--mw-tone-color:var(--mw-tone-4);--mw-tile-ink:#faf9f7}
+.mw-tone-5 {--mw-tone-color:var(--mw-tone-5);--mw-tile-ink:#faf9f7}
 [data-theme="dark"] .mw-tone-1,
 [data-theme="dark"] .mw-tone-2,
-[data-theme="dark"] .mw-tone-3 {--mw-tile-ink:#f7f5f5}
+[data-theme="dark"] .mw-tone-3,
 [data-theme="dark"] .mw-tone-4,
-[data-theme="dark"] .mw-tone-5 {--mw-tile-ink:#25212a}
+[data-theme="dark"] .mw-tone-5 {--mw-tile-ink:#29232a}
 .mw-tile:hover .mw-tile-face,.mw-tile:focus-visible .mw-tile-face {
   filter:brightness(.93);
 }
 .mw-tile[aria-pressed="true"] .mw-tile-face {
   box-shadow:inset 0 0 0 2px color-mix(in srgb,currentColor 44%,transparent);
 }
+.mw-is-zero .mw-tile-face {justify-content:center;align-items:center;padding:4px}
+.mw-is-zero .mw-tile-name {text-align:center;font-weight:550;letter-spacing:-.005em}
 .mw-tile-name {
   display:block;max-width:100%;min-width:0;overflow:hidden;
   overflow-wrap:normal;word-break:normal;
