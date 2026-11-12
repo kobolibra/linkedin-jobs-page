@@ -101,7 +101,15 @@
         <section class="ac-col ac-col-postings" aria-labelledby="postingsTitle"><h3 id="postingsTitle">New Postings: A Rolling 30-Day Snapshot</h3><div class="spark" id="spark"></div></section>
       </div>
       <section class="ac-col ac-col-market" aria-labelledby="marketWidthTitle">
-        <h3 id="marketWidthTitle">Market Width: 18 institutions we watch closely</h3>
+        <div class="mw-topline">
+          <h3 id="marketWidthTitle">Market Width: 18 institutions we watch closely</h3>
+          <div id="marketWidthRegions" class="mw-tabs" role="tablist" aria-label="Market Width region">
+            <button type="button" class="mw-tab active" role="tab" aria-selected="true" data-market-region="all">ALL</button>
+            <button type="button" class="mw-tab" role="tab" aria-selected="false" tabindex="-1" data-market-region="CN">CN</button>
+            <button type="button" class="mw-tab" role="tab" aria-selected="false" tabindex="-1" data-market-region="HK">HK</button>
+            <button type="button" class="mw-tab" role="tab" aria-selected="false" tabindex="-1" data-market-region="SG">SG</button>
+          </div>
+        </div>
         <div id="marketWidth" class="mw-map-layout" role="group" aria-label="Daily treemap of 18 institutions. Rectangle size reflects new postings, with neutral non-quantitative placeholders for institutions with no new postings. Positions follow the squarified layout; no fixed inner or outer zone.">
           <div id="marketWidthMap" class="mw-map-board" role="group" aria-label="All 18 institutions and their daily new posting activity"></div>
           <div id="marketWidthDetail" class="mw-detail" hidden></div>
@@ -115,15 +123,8 @@
             <button type="button" class="mw-nav" id="marketWidthNext" aria-label="Next day"><span class="mw-chevron mw-chevron-next" aria-hidden="true"></span></button>
           </div>
         </div>
-        <div class="mw-topline">
-          <div id="marketWidthRegions" class="mw-tabs" role="tablist" aria-label="Market Width region">
-            <button type="button" class="mw-tab active" role="tab" aria-selected="true" data-market-region="all">ALL</button>
-            <button type="button" class="mw-tab" role="tab" aria-selected="false" tabindex="-1" data-market-region="CN">CN</button>
-            <button type="button" class="mw-tab" role="tab" aria-selected="false" tabindex="-1" data-market-region="HK">HK</button>
-            <button type="button" class="mw-tab" role="tab" aria-selected="false" tabindex="-1" data-market-region="SG">SG</button>
-          </div>
-          <span class="mw-encoding" title="Tile area and shade reflect newly observed postings on the selected day, excluding reposts. Identical counts share the same shade; zero-count tiles have a muted neutral-indigo background.">Size and shade reflect new postings of the day, excluding reposts</span>
-        </div>
+        <span class="mw-encoding" title="Tile area and shade reflect newly observed postings on the selected day, excluding reposts. Identical counts share the same shade; zero-count tiles have a muted neutral-indigo background.">Size and shade reflect new postings of the day, excluding reposts</span>
+
         </div>
       </section><div class="ac-col ac-col-top50"><div class="top50-head"><h3 id="top50Title">Top 30 Institutions by Active Roles: Who Is Hiring and Where?</h3><div class="top50-tabs" id="top50Tabs" role="tablist" aria-label="Top 30 地区视图"><button class="top50-tab active" data-top-region="all" role="tab" aria-selected="true">ALL</button><button class="top50-tab" data-top-region="CN" role="tab" aria-selected="false">CN</button><button class="top50-tab" data-top-region="HK" role="tab" aria-selected="false">HK</button><button class="top50-tab" data-top-region="SG" role="tab" aria-selected="false">SG</button></div><button type="button" class="top50-toggle" id="top50Toggle" aria-controls="top50" aria-expanded="true" hidden>Collapse</button></div><div class="top50-chart" id="top50" aria-label="职位数量最多的 30 家公司"></div></div><section class="ac-col ac-col-cn-map" aria-labelledby="cnCityMapTitle"><div class="cn-map-head"><h3 id="cnCityMapTitle">Citywalk: A City-Level View of CN Roles</h3><button type="button" class="top50-toggle" id="cnCityMapToggle" aria-controls="cnCityMap" aria-expanded="false">Expand</button></div><div id="cnCityMap" hidden></div></section></div></div>
     </header>
