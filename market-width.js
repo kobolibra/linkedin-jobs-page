@@ -205,12 +205,12 @@ function fitTileContent(button,rect,zero){
  const availableH=face.clientHeight-parseFloat(computed.paddingTop)-parseFloat(computed.paddingBottom);
  // Preserve a readable count. Reduce name size and use approved names before
  // allowing any overlap or clipping. Measurements use the real rendered font.
- for(const label of [...new Set(allowed)]){
-  name.textContent=label;
-  for(let size=initial.name;size>=8;size-=.5){
-   name.style.fontSize=size+'px';
-   if(count)count.style.fontSize=Math.max(10,initial.count-(initial.name-size)*.9)+'px';
-   lockup.style.gap=Math.max(1,initial.gap-(initial.name-size)*.22)+'px';
+ for(let size=initial.name;size>=8;size-=.5){
+  name.style.fontSize=size+'px';
+  if(count)count.style.fontSize=Math.max(10,initial.count-(initial.name-size)*.9)+'px';
+  lockup.style.gap=Math.max(1,initial.gap-(initial.name-size)*.22)+'px';
+  for(const label of [...new Set(allowed)]){
+   name.textContent=label;
    if(name.scrollWidth<=name.clientWidth+.75 &&
       lockup.scrollHeight<=availableH+.75 &&
       lockup.scrollWidth<=lockup.clientWidth+.75){
