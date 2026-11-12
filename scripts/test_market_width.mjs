@@ -176,6 +176,7 @@ test('with fewer than four zero institutions, use honest outer bands without dup
  const core=zeroPerimeter(Array.from({length:14},(_,i)=>({i})),500,340);
  assert.equal(core.outer.length,14);
  assert.ok(core.core.x>0&&core.core.y>0);
+ assert.ok(core.core.x>=44,'side bands must allow whole micro labels on mobile');
 });
 
 test('all 18 zero institutions still produce an 18-cell muted mosaic',()=>{
@@ -249,7 +250,7 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.equal(MICRO[11],'FIL');
  assert.ok(!COMPACT.some(v=>v.endsWith(' St.')||v.endsWith(' C.')));
  assert.ok(COMPACT.every(Boolean)&&MICRO.every(Boolean));
- assert.match(read('market-width.js'),/const allowed=rect\.w>=150/);
+ assert.match(read('market-width.js'),/const allowed=rect\.w>=82/);
 });
 
 test('clean mineral blue belongs to active inner tiles; neutral gray belongs to outer placeholders',()=>{
