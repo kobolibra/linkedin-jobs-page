@@ -153,7 +153,7 @@ function marketTiles(values,width=640,height=340){
    .map(r=>({...r,count:0,zero:true,visualFloor:false}));
  }
  const total=positive.reduce((sum,t)=>sum+t.count,0);
- const zeroShare=Math.min(.3,zeros.length*.0135);
+ const zeroShare=Math.min(.30,zeros.length*.020);
  const floor=Math.min(.0135,(1-zeroShare)/Math.max(1,positive.length*1.4));
  let free=1-zeroShare,remainingTotal=total;
  let unassigned=[...positive],allocated=[];
