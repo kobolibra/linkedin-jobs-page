@@ -100,7 +100,7 @@ try{
    assert.equal(await page.locator('#marketWidthDetails tr').count(),18);
    if(width!==960){
     await page.locator('.ac-col-market').screenshot({
-     path:new URL('artifacts/market-width/matrix-+width+'-'+theme+'.png',source).pathname,
+     path:new URL('artifacts/market-width/matrix-'+width+'-'+theme+'.png',source).pathname,
      animations:'disabled'
     });
    }
