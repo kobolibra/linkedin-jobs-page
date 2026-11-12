@@ -99,5 +99,5 @@ test('homepage positions both charts left, aligned radar right, and preserves ot
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
  assert.match(read('scripts/public_assets.mjs'),/'market-width\\.js', 'market-width\\.css'/);
  assert.match(html,/Radial scale adapts to the selected date and region/);
- assert.doesNotMatch(html,/7-DAY DAILY AVG|7d avg|18 FIRMS \\/ 03 REGIONS/);
+ assert.doesNotMatch(html,/7-DAY DAILY AVG|7d avg|18 FIRMS/);
 });
