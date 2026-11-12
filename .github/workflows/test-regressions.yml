@@ -143,6 +143,13 @@ jobs:
           name: journey-sankey-browser-visuals
           path: artifacts/journey-visual
           if-no-files-found: ignore
+      - name: Upload Market Width matrix visual evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-width-matrix-browser-visuals
+          path: artifacts/market-width
+          if-no-files-found: ignore
       - name: Verify publication excludes server code, private data and credentials
         run: |
           node --test scripts/test_public_assets.mjs
