@@ -158,8 +158,8 @@ function zeroPerimeter(zeros,W,H){
  }
  const top=count.top?Math.min(48,Math.max(30,H*.128)):0;
  const bottom=count.bottom?Math.min(48,Math.max(30,H*.128)):0;
- const left=count.left?Math.min(62,Math.max(34,W*.11)):0;
- const right=count.right?Math.min(62,Math.max(34,W*.11)):0;
+ const left=count.left?Math.min(62,Math.max(44,W*.11)):0;
+ const right=count.right?Math.min(62,Math.max(44,W*.11)):0;
  const core={x:left,y:top,w:W-left-right,h:H-top-bottom};
  const rails=[
   {side:'top',rect:{x:0,y:0,w:W,h:top},axis:'x',reverse:false},
@@ -239,9 +239,9 @@ function fitTileContent(button,rect,zero){
  const count=button.querySelector('.mw-tile-count');
  const lockup=button.querySelector('.mw-tile-lockup');
  const initial=tileTypography(rect.w,rect.h);
- const allowed=rect.w>=150&&rect.h>=75
+ const allowed=rect.w>=82&&rect.h>=70
   ?[DISPLAY[rect.i],COMPACT[rect.i],MICRO[rect.i]]
-  :rect.w>=100&&rect.h>=50
+  :rect.w>=70&&rect.h>=48
    ?[COMPACT[rect.i],MICRO[rect.i]]
    :[MICRO[rect.i]];
  const computed=getComputedStyle(face);
