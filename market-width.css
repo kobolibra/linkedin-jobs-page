@@ -106,8 +106,7 @@
   background:var(--mw-map-ground);border-radius:6px;overflow:hidden;
 }
 .mw-map-layout.is-all-zero .mw-map-board {
-  background:color-mix(in srgb,var(--ink) 2%,transparent);
-  border:1px solid var(--mw-rule);
+  background:var(--mw-map-ground);
 }
 .mw-tile {
   display:block;position:absolute;box-sizing:border-box;
