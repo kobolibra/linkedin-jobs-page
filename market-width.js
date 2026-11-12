@@ -9,10 +9,13 @@ const FIRMS=Object.freeze([
  'Bank of America','Fidelity International','Morgan Stanley','BBVA',
  'Natixis','UBS','Schroders','Invesco'
 ]);
-const SHORT=Object.freeze([
- 'HSBC','Standard C.','Citi','JPMorgan','BNP Paribas','SocGen',
- 'DBS','Deutsche','Goldman','BlackRock','BofA','Fidelity',
- 'Morgan St.','BBVA','Natixis','UBS','Schroders','Invesco'
+// Match the official institution names in About. Never invent visual-only
+// abbreviations: in particular, not "Standard C." or "Morgan St.".
+const DISPLAY=Object.freeze([
+ 'HSBC','Standard Chartered','Citi','JPMorgan Chase','BNP Paribas',
+ 'Société Générale','DBS Bank','Deutsche Bank','Goldman Sachs',
+ 'BlackRock','Bank of America','Fidelity International',
+ 'Morgan Stanley','BBVA','Natixis','UBS','Schroders','Invesco'
 ]);
 const ALIASES={
  'HSBC':['the hongkong and shanghai banking corporation'],
@@ -88,32 +91,20 @@ function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||!days.length)return;
  const el=id=>document.getElementById(id);
  const host=el('marketWidth'),scroll=el('marketWidthScroll'),prev=el('marketWidthPrev'),next=el('marketWidthNext');
- const dateText=el('marketWidthDate'),firmText=el('marketWidthFirms'),countText=el('marketWidthCount');
- const inspection=el('marketWidthInspection');
- const tabs=el('marketWidthRegions');
+ const dateText=el('marketWidthDate'),firmText=el('marketWidthFirms'),countText=el('marketWidthCount'),tabs=el('marketWidthRegions');
  if(!host||!scroll||!prev||!next||!dateText||!firmText||!countText||!tabs)return;
- const series=aggregate(rows,days);
- const last=series.keys.length-1;
+ const series=aggregate(rows,days),last=series.keys.length-1;
  let day=series.counts.all.findLastIndex(row=>row.some(Boolean));
  if(day<0)day=last;
  let region='all';
- // The visible interface has no repeating day-summary or explanatory status line.
- const displayCompany=i=>SHORT[i];
- const tooltip=(i,j,n)=>FIRMS[i]+' · '+prettyDate(series.keys[j])+' · '+n+' new '+(n===1?'role':'roles');
- const gridCell=(i,j,n,selected,firstFocusable)=>{
-  const band=bandOf(n);
-  return '<button type="button" role="gridcell" aria-colindex="'+(j+2)+'"'+
-   ' aria-selected="'+String(selected)+'" aria-label="'+escapeHTML(tooltip(i,j,n))+'"'+
-   ' title="'+escapeHTML(tooltip(i,j,n))+'" data-firm="'+i+'" data-day="'+j+'"'+
-   ' tabindex="'+(firstFocusable?'0':'-1')+'" class="mw-cell mw-level-'+band+(selected?' is-selected':'')+'"'+
-   ' data-level="'+band+'"></button>';
+ const tooltip=(i,j,n)=>FIRMS[i]+' · '+prettyDate(series.keys[j])+' · '+n+' new '+(n===1?'posting':'postings');
+ const gridCell=(i,j,n,selected,tabStop)=>{
+  const title=escapeHTML(tooltip(i,j,n));
+  return '<button type="button" role="gridcell" aria-colindex="'+(j+2)+'" aria-selected="'+String(selected)+'"'+
+   ' aria-label="'+title+'" title="'+title+'" data-firm="'+i+'" data-day="'+j+'"'+
+   ' tabindex="'+(tabStop?'0':'-1')+'" class="mw-cell mw-level-'+bandOf(n)+(selected?' is-selected':'')+'"></button>';
  };
- function updateInspection(text){
-  if(!inspection)return;
-  inspection.textContent=text||'';
-  inspection.hidden=!text;
- }
- function showSelected(){
+ function displaySelected(){
   const snapshot=daily(series,region,day),key=series.keys[day];
   countText.textContent=fmt(snapshot.total);
   firmText.textContent=snapshot.firms+'/18';
@@ -122,132 +113,120 @@ function render(rows,days){
   prev.disabled=day===0;next.disabled=day===last;
  }
  function positionFocus(){
-  const frame=host.querySelector('.mw-column-focus'),header=host.querySelector('.mw-day-head.is-selected');
-  const rows=host.querySelectorAll('.mw-company-row');
-  if(!frame||!header||!rows.length)return;
-  const base=host.getBoundingClientRect(),col=header.getBoundingClientRect();
-  const bottom=rows[rows.length-1].getBoundingClientRect().bottom;
-  frame.style.left=(col.left-base.left-1)+'px';
-  frame.style.top=(col.top-base.top+1)+'px';
-  frame.style.width=(col.width+2)+'px';
-  frame.style.height=(bottom-col.top)+'px';
+  const marker=host.querySelector('.mw-column-focus');
+  const col=host.querySelector('.mw-day-head[data-day="'+day+'"]');
+  const first=host.querySelector('.mw-company-row'),lastRow=host.querySelector('.mw-company-row:last-of-type');
+  if(!marker||!col||!first||!lastRow)return;
+  const base=host.getBoundingClientRect(),headBox=col.getBoundingClientRect();
+  const firstBox=first.getBoundingClientRect(),endBox=lastRow.getBoundingClientRect();
+  marker.style.left=(headBox.left-base.left-.5)+'px';
+  marker.style.width=(headBox.width+1)+'px';
+  marker.style.top=(firstBox.top-base.top-2)+'px';
+  marker.style.height=(endBox.bottom-firstBox.top+4)+'px';
  }
- function paint(focusFirm=null,scrollToSelected=false){
-  const position=scroll.scrollLeft;
-  const regionCounts=series.counts[region],rank=sortedFirms(regionCounts);
-  const headerDays=series.keys.map((key,j)=>{
-   const show=j===0||j===last||(j%7===0&&j<=last-5);
-   return '<span role="columnheader" class="mw-day-head'+(j===day?' is-selected':'')+'"'+
-    ' aria-label="'+escapeHTML(key)+'" title="'+escapeHTML(key)+'">'+
-    (show?'<span class="mw-axis-tick">'+escapeHTML(prettyDate(key))+'</span>':'')+'</span>';
-  }).join('');
-  const head='<div class="mw-matrix-row mw-header" role="row"><span role="columnheader" class="mw-head-firm">Institution</span>'+
-   headerDays+'<span role="columnheader" class="mw-head-total" title="New first-seen roles in the rolling 30 days">30d</span></div>';
-  const lines=rank.map(({i,total},rankIndex)=>{
+ function ensureVisible(){
+  const cell=host.querySelector('.mw-cell[data-day="'+day+'"]');
+  if(!cell||scroll.scrollWidth<=scroll.clientWidth)return;
+  const a=scroll.getBoundingClientRect(),b=cell.getBoundingClientRect();
+  const inset=scroll.clientWidth<480?111:9;
+  if(b.right>a.right-8)scroll.scrollLeft+=b.right-a.right+14;
+  else if(b.left<a.left+inset)scroll.scrollLeft-=a.left+inset-b.left;
+ }
+ // Only region changes re-create the matrix, because the institution ordering
+ // changes. Date changes update 36 cell classes + a highlight, and never change
+ // the grid's height or insert hover content into document flow.
+ function paintRegion(focusFirm=null){
+  const x=scroll.scrollLeft,rank=sortedFirms(series.counts[region]),counts=series.counts[region];
+  const headers=series.keys.map((key,j)=>
+   '<span role="columnheader" class="mw-day-head" data-day="'+j+'" aria-label="'+escapeHTML(key)+'" title="'+escapeHTML(key)+'"></span>').join('');
+  const head='<div role="row" class="mw-matrix-row mw-header"><span role="columnheader" class="mw-head-firm">Institution</span>'+
+   headers+'<span role="columnheader" class="mw-head-total">30d</span></div>';
+  const lines=rank.map(({i,total},index)=>{
    const label='<span class="mw-company" role="rowheader" aria-label="'+escapeHTML(FIRMS[i])+'" title="'+escapeHTML(FIRMS[i])+'">'+
-    '<span class="mw-rank">'+String(rankIndex+1).padStart(2,'0')+'</span><span class="mw-company-name">'+escapeHTML(displayCompany(i))+'</span></span>';
-   const cells=series.keys.map((_,j)=>gridCell(i,j,regionCounts[j][i],j===day,rankIndex===0&&j===day)).join('');
-   return '<div class="mw-matrix-row mw-company-row" role="row" data-firm-row="'+i+'" aria-rowindex="'+(rankIndex+2)+'">'+
-    label+cells+'<span class="mw-row-total" role="gridcell" aria-label="'+escapeHTML(FIRMS[i])+' 30 day total: '+total+'">'+fmt(total)+'</span></div>';
+    '<span class="mw-rank">'+String(index+1).padStart(2,'0')+'</span><span class="mw-company-name">'+escapeHTML(DISPLAY[i])+'</span></span>';
+   const cells=series.keys.map((_,j)=>gridCell(i,j,counts[j][i],j===day,index===0&&j===day)).join('');
+   return '<div class="mw-matrix-row mw-company-row" role="row" data-firm-row="'+i+'" aria-rowindex="'+(index+2)+'">'+
+    label+cells+'<span class="mw-row-total" role="gridcell" aria-label="'+escapeHTML(FIRMS[i])+' 30-day new posting total '+total+'">'+fmt(total)+'</span></div>';
   }).join('');
   host.style.setProperty('--mw-days',String(series.keys.length));
   host.setAttribute('aria-rowcount',String(rank.length+1));
   host.setAttribute('aria-colcount',String(series.keys.length+2));
   host.innerHTML=head+lines+'<span class="mw-column-focus" aria-hidden="true"></span>';
-  for(const tab of tabs.querySelectorAll('[data-market-region]')){
-   const active=tab.dataset.marketRegion===region;
-   tab.classList.toggle('active',active);
-   tab.setAttribute('aria-selected',String(active));
-   tab.tabIndex=active?0:-1;
-  }
-  updateInspection('');
-  showSelected();
+  tabs.querySelectorAll('[data-market-region]').forEach(btn=>{
+   const active=btn.dataset.marketRegion===region;
+   btn.classList.toggle('active',active);
+   btn.setAttribute('aria-selected',String(active));
+   btn.tabIndex=active?0:-1;
+  });
+  displaySelected();
   positionFocus();
-  scroll.scrollLeft=position;
-  if(scrollToSelected)ensureVisible();
-  if(focusFirm!==null){
-   const cell=host.querySelector('.mw-cell[data-firm="'+focusFirm+'"][data-day="'+day+'"]');
-   cell?.focus({preventScroll:true});
+  scroll.scrollLeft=x;
+  ensureVisible();
+  if(focusFirm!==null)host.querySelector('.mw-cell[data-firm="'+focusFirm+'"][data-day="'+day+'"]')?.focus({preventScroll:true});
+ }
+ function chooseDay(next,focusFirm=null){
+  const selected=Math.max(0,Math.min(last,next));
+  const changed=selected!==day;
+  if(changed){
+   const older=host.querySelectorAll('.mw-cell[data-day="'+day+'"]');
+   older.forEach(cell=>{cell.classList.remove('is-selected');cell.setAttribute('aria-selected','false');cell.tabIndex=-1;});
+   day=selected;
+   const newer=host.querySelectorAll('.mw-cell[data-day="'+day+'"]');
+   newer.forEach((cell,i)=>{cell.classList.add('is-selected');cell.setAttribute('aria-selected','true');cell.tabIndex=i===0?0:-1;});
   }
+  if(focusFirm!==null){
+   const target=host.querySelector('.mw-cell[data-firm="'+focusFirm+'"][data-day="'+day+'"]');
+   if(target){host.querySelectorAll('.mw-cell[tabindex="0"]').forEach(cell=>cell.tabIndex=-1);target.tabIndex=0;target.focus({preventScroll:true});}
+  }
+  displaySelected();
+  positionFocus();
+  ensureVisible();
  }
-  function ensureVisible(){
-  const cell=host.querySelector('.mw-cell.is-selected');
-  if(!cell||scroll.scrollWidth<=scroll.clientWidth)return;
-  const cellBox=cell.getBoundingClientRect(),area=scroll.getBoundingClientRect();
-  // The labels are sticky on small screens; keep a small clear margin.
-  const leftMargin=scroll.clientWidth<480?116:14;
-  if(cellBox.right>area.right-8)scroll.scrollLeft+=cellBox.right-area.right+14;
-  else if(cellBox.left<area.left+leftMargin)scroll.scrollLeft-=area.left+leftMargin-cellBox.left;
+ function chooseRegion(next){
+  if(!REGIONS.includes(next)||next===region)return;
+  region=next;paintRegion();
  }
- function setDay(index,focusFirm=null){
-  day=Math.max(0,Math.min(last,index));
-  paint(focusFirm,true);
- }
- function setRegion(nextRegion){
-  if(!REGIONS.includes(nextRegion))return;
-  region=nextRegion;
-  paint(null,true);
- }
- prev.addEventListener('click',()=>setDay(day-1));
- next.addEventListener('click',()=>setDay(day+1));
+ prev.addEventListener('click',()=>chooseDay(day-1));
+ next.addEventListener('click',()=>chooseDay(day+1));
  tabs.addEventListener('click',event=>{
   const btn=event.target.closest('[data-market-region]');
-  if(btn)setRegion(btn.dataset.marketRegion);
+  if(btn)chooseRegion(btn.dataset.marketRegion);
  });
  tabs.addEventListener('keydown',event=>{
   if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;
-  const index=REGIONS.indexOf(region);
-  const nextIndex=event.key==='Home'?0:event.key==='End'?3:(index+(event.key==='ArrowRight'?1:3))%4;
-  setRegion(REGIONS[nextIndex]);
-  tabs.querySelector('[data-market-region="'+region+'"]')?.focus();
+  const i=REGIONS.indexOf(region);
+  const next=REGIONS[event.key==='Home'?0:event.key==='End'?3:(i+(event.key==='ArrowRight'?1:3))%4];
+  chooseRegion(next);tabs.querySelector('[data-market-region="'+next+'"]')?.focus();
   event.preventDefault();
  });
  host.addEventListener('click',event=>{
   const cell=event.target.closest('.mw-cell');
-  if(!cell)return;
-  setDay(Number(cell.dataset.day),Number(cell.dataset.firm));
- });
- host.addEventListener('pointerover',event=>{
-  const cell=event.target.closest('.mw-cell');
-  if(!cell)return;
-  updateInspection(tooltip(Number(cell.dataset.firm),Number(cell.dataset.day),series.counts[region][Number(cell.dataset.day)][Number(cell.dataset.firm)]));
- });
- host.addEventListener('pointerout',event=>{
-  if(event.target.closest('.mw-cell'))updateInspection('');
- });
- host.addEventListener('focusin',event=>{
-  const cell=event.target.closest('.mw-cell');
-  if(cell)updateInspection(tooltip(Number(cell.dataset.firm),Number(cell.dataset.day),series.counts[region][Number(cell.dataset.day)][Number(cell.dataset.firm)]));
- });
- host.addEventListener('focusout',event=>{
-  if(event.target.closest('.mw-cell'))updateInspection('');
+  if(cell)chooseDay(Number(cell.dataset.day),Number(cell.dataset.firm));
  });
  host.addEventListener('keydown',event=>{
   if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' '].includes(event.key))return;
   const cell=event.target.closest('.mw-cell');
   if(!cell)return;
-  const rank=sortedFirms(series.counts[region]);
-  const currentFirm=Number(cell.dataset.firm),currentDay=Number(cell.dataset.day);
-  let nextDay=currentDay,nextFirm=currentFirm;
-  if(event.key==='ArrowLeft')nextDay=Math.max(0,currentDay-1);
-  if(event.key==='ArrowRight')nextDay=Math.min(last,currentDay+1);
-  if(event.key==='Home')nextDay=0;
-  if(event.key==='End')nextDay=last;
+  const firm=Number(cell.dataset.firm),oldDay=Number(cell.dataset.day);
+  let next=oldDay,nextFirm=firm;
+  if(event.key==='ArrowLeft')next=Math.max(0,oldDay-1);
+  if(event.key==='ArrowRight')next=Math.min(last,oldDay+1);
+  if(event.key==='Home')next=0;
+  if(event.key==='End')next=last;
   if(event.key==='ArrowUp'||event.key==='ArrowDown'){
-   const idx=rank.findIndex(row=>row.i===currentFirm),step=event.key==='ArrowUp'?-1:1;
-   nextFirm=rank[Math.max(0,Math.min(rank.length-1,idx+step))].i;
+   const sorted=sortedFirms(series.counts[region]),index=sorted.findIndex(x=>x.i===firm);
+   const change=event.key==='ArrowUp'?-1:1;
+   nextFirm=sorted[Math.min(sorted.length-1,Math.max(0,index+change))].i;
   }
-  if(event.key==='Enter'||event.key===' '){setDay(currentDay,currentFirm);}
-  else setDay(nextDay,nextFirm);
+  chooseDay(next,nextFirm);
   event.preventDefault();
  });
- paint(null,false);
+ paintRegion();
  if(typeof ResizeObserver==='function')new ResizeObserver(positionFocus).observe(host);
  else if(root?.addEventListener)root.addEventListener('resize',positionFocus);
- // On narrow screens show the recent days rather than the oldest unseen days.
- if(scroll.scrollWidth>scroll.clientWidth)scroll.scrollLeft=scroll.scrollWidth;
+ if(scroll.scrollWidth>scroll.clientWidth)ensureVisible();
 }
-const api={FIRMS,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms,render};
+const api={FIRMS,DISPLAY,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
