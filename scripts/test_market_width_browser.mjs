@@ -70,7 +70,8 @@ async function renderLeft(page,chartData,theme){
   const series=Object.fromEntries(['cn','hk','sg'].map(r=>
    [r,getComputedStyle(document.querySelector('#dist .region-series.'+r+' .region-spark-line')).stroke]));
   const stackBands=[...document.querySelectorAll('#dist .region-stack-band')];
-  const regionGroups=[...document.querySelectorAll('#dist svg > g.region-series')];
+  const regionGroups=[...document.querySelectorAll('#dist svg > g.region-series')]
+   .filter(g=>g.querySelector('.region-stack-band'));
   const stackPoint=k=>{
    const node=document.querySelector('#dist .region-series.'+k+' .region-spark-hit[data-bin="0"]');
    return node?{count:Number(node.dataset.count),lower:Number(node.dataset.lower),upper:Number(node.dataset.upper)}:null;
