@@ -191,6 +191,8 @@ try{
  }));
  await many.evaluate(([jobs,date])=>window.MarketWidth.render(jobs,[date]),[rows,days[28].key]);
  assert.equal(await many.locator('.mw-tile').count(),18);
+ const denseNames=await many.locator('.mw-tile-name').count();
+ assert.ok(denseNames>=16,'dense view should identify most firms by full official names: '+denseNames);
  assert.equal(await many.locator('#marketWidthZeroPanel').isHidden(),true);
  await ratioTest(many);
  await many.locator('.ac-col-market').screenshot({
