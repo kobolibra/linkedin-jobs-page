@@ -171,6 +171,13 @@
   flex:0 0 auto;align-self:center;
   margin:0;font:700 9px/1 var(--mono);
 }
+/* Preserve complete established brand names in very narrow neutral tiles:
+   wrap, rather than inventing an unrecognized ticker-like abbreviation. */
+.mw-tile-tiny.mw-is-zero .mw-tile-face {justify-content:center;align-items:center}
+.mw-tile-tiny.mw-is-zero .mw-tile-name {
+  white-space:normal;overflow-wrap:anywhere;text-align:center;
+  font:550 8.5px/1.07 var(--sans);letter-spacing:-.015em;
+}
 .mw-empty {
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);width:max-content;max-width:90%;
