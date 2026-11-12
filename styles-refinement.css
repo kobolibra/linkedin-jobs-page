@@ -631,10 +631,32 @@ body.compact .job > .mono { margin-top:2px; }
 #dist .region-series.sg{--region-ink:#6e8f3b;--region-band:29%}
 #dist .region-series.cn{--region-ink:#b33a36;--region-band:25%}
 #dist .region-spark-line,
-#dist .region-legend-swatch{
+#dist .region-stat-key{
   fill:none;stroke:var(--region-ink);stroke-width:1.65;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
+}
+/* One analytical key rather than a second miniature chart: cumulative
+   totals and mutually exclusive shares align to the existing three inks.
+   The SVG uses a dedicated top gutter so the text never covers the bands. */
+#dist .region-stat-key{stroke-width:3.3}
+#dist .region-stat-total,
+#dist .region-stat-count{
+  fill:var(--viz-secondary);
+  font:650 13px var(--mono);
+  font-variant-numeric:tabular-nums;
+}
+#dist .region-stat-count{font-size:11.5px}
+#dist .region-stat-share{
+  fill:var(--viz-secondary);opacity:.82;
+  font:500 10.2px var(--mono);
+  font-variant-numeric:tabular-nums;
+}
+#dist .region-stat-label,
+#dist .region-stat-region{
+  fill:var(--viz-quiet);
+  font:600 9px var(--sans);
+  letter-spacing:.01em;
 }
 /* Each band occupies the real space between two cumulative regional
    boundaries, with a restrained SHADE of the original line color.
@@ -647,10 +669,6 @@ body.compact .job > .mono { margin-top:2px; }
 [data-theme="dark"] #dist .region-series.hk{--region-band:40%}
 [data-theme="dark"] #dist .region-series.sg{--region-band:39%}
 [data-theme="dark"] #dist .region-series.cn{--region-band:35%}
-#dist .region-legend-swatch{stroke-width:3.4}
-#dist .region-legend-label{
-  fill:var(--viz-secondary);font:600 9px var(--mono);
-}
 #dist .region-spark-dot{
   fill:var(--region-ink);stroke:var(--surface);stroke-width:1.1;
   pointer-events:none;
@@ -681,15 +699,18 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
-/* SVG viewBoxes shrink substantially on a 390px phone. Increase chart-only
-   text sizes there so y ticks, dates and three-region legend stay readable,
-   without moving any geometry or changing other page typography. */
+/* SVG text scales with the viewBox: the compact regional key has slightly
+   larger type on narrow phones, with the same fixed four-column alignment. */
 @media(max-width:720px){
   #dist .region-spark-value,
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:12.5px;letter-spacing:0}
-  #dist .region-legend-label{font-size:12px}
+  #dist .region-stat-total{font-size:18px}
+  #dist .region-stat-count{font-size:16px}
+  #dist .region-stat-share{font-size:13.2px;opacity:.96}
+  #dist .region-stat-label,
+  #dist .region-stat-region{font-size:12.5px;letter-spacing:0}
 }
 
 /* Masthead copy: disciplined editorial typography, no structural change. */

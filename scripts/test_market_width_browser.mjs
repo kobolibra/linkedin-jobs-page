@@ -80,7 +80,26 @@ async function renderLeft(page,chartData,theme){
     stacked:Number(node.dataset.stacked),bin:Number(node.dataset.bin)}:null;
   };
   const svg=document.querySelector('#dist .region-time-svg');
+  const statRows=[...svg.querySelectorAll('.region-stat-item')];
+  const svgRect=node=>{const r=node?.getBBox();return r?{x:r.x,y:r.y,right:r.x+r.width,bottom:r.y+r.height}:null;};
+  const keyBounds=svgRect(svg.querySelector('.region-current-key'));
+  const gridTop=Math.min(...[...svg.querySelectorAll('.region-spark-grid')]
+   .map(line=>Number(line.getAttribute('y1'))));
   return {series,bars:bars.length,regions:lines.length,
+   legendTotal:Number((svg.querySelector('.region-stat-total')?.textContent||'0').replace(/,/g,'')),
+   legendTotalText:svg.querySelector('.region-stat-total')?.textContent||'',
+   legendLabel:svg.querySelector('.region-stat-label')?.textContent||'',
+   legendCount:svg.querySelectorAll('.region-current-key').length,
+   oldLegendCount:svg.querySelectorAll('.region-legend-swatch,.region-legend-label').length,
+   legendBounds:keyBounds,gridTop,
+   legendItems:statRows.map(node=>({
+     region:node.dataset.region,count:Number(node.dataset.count),
+     share:node.dataset.share,label:node.querySelector('.region-stat-region')?.textContent,
+     visibleCount:node.querySelector('.region-stat-count')?.textContent,
+     visibleShare:node.querySelector('.region-stat-share')?.textContent,
+     ink:getComputedStyle(node.querySelector('.region-stat-key')).stroke,
+     bounds:svgRect(node)
+   })),
    stackOrder:regionGroups.map(g=>[...g.classList].find(c=>c!=='region-series')),
    bandCount:stackBands.length,
    bandFills:Object.fromEntries(['sg','hk','cn'].map(k=>{
@@ -134,7 +153,29 @@ async function renderLeft(page,chartData,theme){
   'real production distribution anchors HK below SG and CN; OTHER is excluded');
  assert.equal(quality.otherSeries,0,'OTHER never belongs in this chart or legend');
  assert.equal(quality.chartKind,'cumulative-stack','this must be a cumulative, not per-day regional chart');
- assert.match(quality.chartAria,/y-axis is the sum of all three regions/);
+ assert.equal(quality.legendCount,1,'exactly one integrated regional snapshot key');
+ assert.equal(quality.oldLegendCount,0,'do not duplicate the obsolete minimalist legend');
+ assert.equal(quality.legendTotal,quality.finalTotal,'inset total must equal the final cumulative y-axis total');
+ assert.equal(quality.legendLabel,'ACTIVE ROLES');
+ assert.equal(quality.legendTotalText,quality.finalTotal.toLocaleString('en-US'));
+ assert.deepEqual(quality.legendItems.map(x=>x.region),['HK','SG','CN']);
+ assert.deepEqual(quality.legendItems.map(x=>x.count),['hk','sg','cn'].map(k=>quality.regionFinals[k]),
+  'HK/SG/CN numbers are taken from the chart rather than another data source');
+ for(const item of quality.legendItems){
+  assert.equal(item.visibleCount,item.count.toLocaleString('en-US'),
+   'each snapshot value has accurate thousands separators');
+  assert.equal(item.visibleShare,item.share,'the displayed percentage matches its data attribute');
+  assert.equal(item.label,item.region,'labels identify the same region as the band');
+  assert.equal(item.ink,quality.series[item.region.toLowerCase()],
+   'stat swatches use the identical region ink as the stacked boundaries');
+ }
+ assert.equal(quality.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000,
+  'three dynamic shares sum to 100.0%, including rounding allocation');
+ assert.ok(quality.legendBounds&&quality.legendBounds.x>=38&&quality.legendBounds.right<=508,
+  'the complete four-column key fits within the plotting width');
+ assert.ok(quality.legendBounds.bottom<quality.gridTop-5,
+  'summary key occupies the upper gutter rather than covering filled chart data');
+ assert.match(quality.chartAria,/y-axis is the sum of (?:all|these) three regions/);
  assert.equal(quality.notePresent,false,'verbose first-observed footnote and its whitespace are removed');
  assert.ok(quality.bandCount>=3,'each active region has at least one tinted band');
  assert.ok(Object.values(quality.bandFills).every(Boolean),
@@ -511,6 +552,27 @@ try{
   animations:'disabled'
  });
  await dailyPage.close();
+ // Published data rolling into Nov 13 must automatically extend the axis
+ // and recompute ALL counts and shares from the new document on reload.
+ const tomorrowPage=await make(390,'light');
+ const tomorrowRows=[...dailyRows,{
+  location:'HK',firstSeen:'2026-11-13T01:00:00Z',company:'HSBC',jobStatus:'active'
+ }];
+ const tomorrow=await renderLeft(tomorrowPage,tomorrowRows,'light');
+ assert.equal(tomorrow.dayBins,296,'Nov 13 extends the observed date domain without any date constant');
+ assert.equal(tomorrow.finalTotal,7,'the newly published job extends the rightmost stacked total');
+ assert.deepEqual(tomorrow.regionFinals,{hk:3,sg:2,cn:2});
+ assert.equal(tomorrow.legendTotal,7,'inset summary immediately uses the updated total');
+ assert.deepEqual(tomorrow.legendItems.map(x=>x.count),[3,2,2],
+  'the three inset counts follow the newest data without manual code edits');
+ assert.equal(tomorrow.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000);
+ const tomorrowTicks=await tomorrowPage.locator('#dist .region-spark-date').allTextContents();
+ assert.equal(tomorrowTicks.at(-1),'Nov 13','the rightmost chart date advances with the data');
+ await tomorrowPage.locator('.ac-col-density').screenshot({
+  path:new URL('artifacts/market-width/daily-rollover-nov13-390-light.png',source).pathname,
+  animations:'disabled'
+ });
+ await tomorrowPage.close();
  // A pre-2026 outlier must not change the earliest 2026 tick or hide valid records.
  const focusPage=await make(960,'light');
  const focusRows=[{location:'CN',firstSeen:'2025-03-01T12:00:00Z',company:'HSBC',jobStatus:'active'}];
