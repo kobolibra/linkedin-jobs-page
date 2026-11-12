@@ -9,10 +9,13 @@ const FIRMS=Object.freeze([
  'Bank of America','Fidelity International','Morgan Stanley','BBVA',
  'Natixis','UBS','Schroders','Invesco'
 ]);
-const SHORT=Object.freeze([
- 'HSBC','Standard C.','Citi','JPMorgan','BNP Paribas','SocGen',
- 'DBS','Deutsche','Goldman','BlackRock','BofA','Fidelity',
- 'Morgan St.','BBVA','Natixis','UBS','Schroders','Invesco'
+// Match the official institution names in About. Never invent visual-only
+// abbreviations: in particular, not "Standard C." or "Morgan St.".
+const DISPLAY=Object.freeze([
+ 'HSBC','Standard Chartered','Citi','JPMorgan Chase','BNP Paribas',
+ 'Société Générale','DBS Bank','Deutsche Bank','Goldman Sachs',
+ 'BlackRock','Bank of America','Fidelity International',
+ 'Morgan Stanley','BBVA','Natixis','UBS','Schroders','Invesco'
 ]);
 const ALIASES={
  'HSBC':['the hongkong and shanghai banking corporation'],
@@ -140,7 +143,7 @@ function render(rows,days){
    headers+'<span role="columnheader" class="mw-head-total">30d</span></div>';
   const lines=rank.map(({i,total},index)=>{
    const label='<span class="mw-company" role="rowheader" aria-label="'+escapeHTML(FIRMS[i])+'" title="'+escapeHTML(FIRMS[i])+'">'+
-    '<span class="mw-rank">'+String(index+1).padStart(2,'0')+'</span><span class="mw-company-name">'+escapeHTML(SHORT[i])+'</span></span>';
+    '<span class="mw-rank">'+String(index+1).padStart(2,'0')+'</span><span class="mw-company-name">'+escapeHTML(DISPLAY[i])+'</span></span>';
    const cells=series.keys.map((_,j)=>gridCell(i,j,counts[j][i],j===day,index===0&&j===day)).join('');
    return '<div class="mw-matrix-row mw-company-row" role="row" data-firm-row="'+i+'" aria-rowindex="'+(index+2)+'">'+
     label+cells+'<span class="mw-row-total" role="gridcell" aria-label="'+escapeHTML(FIRMS[i])+' 30-day new posting total '+total+'">'+fmt(total)+'</span></div>';
@@ -223,7 +226,7 @@ function render(rows,days){
  else if(root?.addEventListener)root.addEventListener('resize',positionFocus);
  if(scroll.scrollWidth>scroll.clientWidth)ensureVisible();
 }
-const api={FIRMS,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms,render};
+const api={FIRMS,DISPLAY,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
