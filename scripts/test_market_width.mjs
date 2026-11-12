@@ -116,15 +116,15 @@ test('homepage shows editorial 18-by-30 matrix, aligned beside left charts',()=>
  assert.doesNotMatch(read('about.html'),/Market Width radar/);
 });
 
-test('publication matrix keeps exact zeros, five positive bands and accessible controls',()=>{
- const html=read('index.html'),js=read('market-width.js');
- assert.doesNotMatch(html,/Zero means no qualifying roles recorded|First observed on LinkedIn|New roles \\u00b7 selected day|18 institutions \\u00b7 30 days/);
+test('publication matrix is concise and accessible without redundant copy',()=>{
+ const html=read('index.html'),js=read('market-width.js'),css=read('market-width.css');
+ assert.doesNotMatch(html,/Zero means no qualifying roles recorded|First observed on LinkedIn|New roles · selected day|18 institutions · 30 days/);
  assert.match(js,/aria-label/);
  assert.match(js,/role="gridcell"/);
  assert.match(js,/pointerover/);
  assert.match(js,/ArrowDown/);
  assert.match(js,/scroll\.scrollLeft/);
- assert.doesNotMatch(html,/Explore exact institution counts|id="marketWidthDetails"|id="marketWidthStatus"|New roles \\u00b7 selected day/);
+ assert.doesNotMatch(html,/Explore exact institution counts|id="marketWidthDetails"|id="marketWidthStatus"|New roles · selected day/);
  assert.ok(html.includes('class="mw-column-focus"')===false);
  assert.match(js,/class="mw-column-focus"/);
  assert.match(js,/positionFocus\(\)/);
