@@ -71,10 +71,9 @@ const LEVELS=Object.freeze([
  {label:"1",min:1,max:1},
  {label:"2–3",min:2,max:3},
  {label:"4–7",min:4,max:7},
- {label:"8–15",min:8,max:15},
- {label:"16+",min:16,max:Infinity}
+ {label:"8+",min:8,max:Infinity}
 ]);
-const bandOf=n=>n<=0?0:n===1?1:n<=3?2:n<=7?3:n<=15?4:5;
+const bandOf=n=>n<=0?0:n===1?1:n<=3?2:n<=7?3:4;
 const rowTotals=(counts)=>FIRMS.map((_,i)=>counts.reduce((sum,row)=>sum+(row[i]||0),0));
 const sortedFirms=(counts)=>rowTotals(counts).map((total,i)=>({i,total}))
  .sort((a,b)=>b.total-a.total||a.i-b.i);
@@ -90,17 +89,17 @@ function render(rows,days){
  const el=id=>document.getElementById(id);
  const host=el('marketWidth'),scroll=el('marketWidthScroll'),prev=el('marketWidthPrev'),next=el('marketWidthNext');
  const dateText=el('marketWidthDate'),firmText=el('marketWidthFirms'),countText=el('marketWidthCount');
- const note=el('marketWidthStatus'),inspection=el('marketWidthInspection'),detail=el('marketWidthDetails');
+ const inspection=el('marketWidthInspection');
  const tabs=el('marketWidthRegions');
- if(!host||!scroll||!prev||!next||!dateText||!firmText||!countText||!detail||!tabs)return;
+ if(!host||!scroll||!prev||!next||!dateText||!firmText||!countText||!tabs)return;
  const series=aggregate(rows,days);
  const last=series.keys.length-1;
  let day=series.counts.all.findLastIndex(row=>row.some(Boolean));
  if(day<0)day=last;
  let region='all';
- let overview='';
+ // The visible interface has no repeating day-summary or explanatory status line.
  const displayCompany=i=>SHORT[i];
- const tooltip=(i,j,n)=>FIRMS[i]+' · '+series.keys[j]+' · '+n+' newly observed, still-active '+(n===1?'role':'roles');
+ const tooltip=(i,j,n)=>FIRMS[i]+' · '+prettyDate(series.keys[j])+' · '+n+' new '+(n===1?'role':'roles');
  const gridCell=(i,j,n,selected,firstFocusable)=>{
   const band=bandOf(n);
   return '<button type="button" role="gridcell" aria-colindex="'+(j+2)+'"'+
@@ -109,24 +108,29 @@ function render(rows,days){
    ' tabindex="'+(firstFocusable?'0':'-1')+'" class="mw-cell mw-level-'+band+(selected?' is-selected':'')+'"'+
    ' data-level="'+band+'"></button>';
  };
- function updateInspection(text){if(inspection)inspection.textContent=text;}
+ function updateInspection(text){
+  if(!inspection)return;
+  inspection.textContent=text||'';
+  inspection.hidden=!text;
+ }
  function showSelected(){
   const snapshot=daily(series,region,day),key=series.keys[day];
   countText.textContent=fmt(snapshot.total);
-  firmText.textContent=snapshot.firms+' / 18';
+  firmText.textContent=snapshot.firms+'/18';
   dateText.textContent=prettyDate(key);
   dateText.setAttribute('aria-label',key);
   prev.disabled=day===0;next.disabled=day===last;
-  overview=prettyDate(key)+' · '+snapshot.total+' new '+(snapshot.total===1?'role':'roles')+' across '+snapshot.firms+' institutions';
-  updateInspection(overview);
-  if(note)note.textContent=key+', '+(region==='all'?'all regions':region)+': '+snapshot.total+' new roles observed among '+snapshot.firms+' tracked institutions, currently active at latest check.';
-  detail.replaceChildren(...sortedFirms(series.counts[region]).map(({i,total})=>{
-   const tr=document.createElement('tr');
-   for(const val of [FIRMS[i],String(snapshot.values[i]),String(total)]){
-    const td=document.createElement('td');td.textContent=val;tr.appendChild(td);
-   }
-   return tr;
-  }));
+ }
+ function positionFocus(){
+  const frame=host.querySelector('.mw-column-focus'),header=host.querySelector('.mw-day-head.is-selected');
+  const rows=host.querySelectorAll('.mw-company-row');
+  if(!frame||!header||!rows.length)return;
+  const base=host.getBoundingClientRect(),col=header.getBoundingClientRect();
+  const bottom=rows[rows.length-1].getBoundingClientRect().bottom;
+  frame.style.left=(col.left-base.left-1)+'px';
+  frame.style.top=(col.top-base.top+1)+'px';
+  frame.style.width=(col.width+2)+'px';
+  frame.style.height=(bottom-col.top)+'px';
  }
  function paint(focusFirm=null,scrollToSelected=false){
   const position=scroll.scrollLeft;
@@ -149,7 +153,7 @@ function render(rows,days){
   host.style.setProperty('--mw-days',String(series.keys.length));
   host.setAttribute('aria-rowcount',String(rank.length+1));
   host.setAttribute('aria-colcount',String(series.keys.length+2));
-  host.innerHTML=head+lines;
+  host.innerHTML=head+lines+'<span class="mw-column-focus" aria-hidden="true"></span>';
   for(const tab of tabs.querySelectorAll('[data-market-region]')){
    const active=tab.dataset.marketRegion===region;
    tab.classList.toggle('active',active);
@@ -157,7 +161,8 @@ function render(rows,days){
    tab.tabIndex=active?0:-1;
   }
   updateInspection('');
-  updateSelectedNoRedraw();
+  showSelected();
+  positionFocus();
   scroll.scrollLeft=position;
   if(scrollToSelected)ensureVisible();
   if(focusFirm!==null){
@@ -165,8 +170,7 @@ function render(rows,days){
    cell?.focus({preventScroll:true});
   }
  }
- function updateSelectedNoRedraw(){showSelected();}
- function ensureVisible(){
+  function ensureVisible(){
   const cell=host.querySelector('.mw-cell.is-selected');
   if(!cell||scroll.scrollWidth<=scroll.clientWidth)return;
   const cellBox=cell.getBoundingClientRect(),area=scroll.getBoundingClientRect();
@@ -209,14 +213,14 @@ function render(rows,days){
   updateInspection(tooltip(Number(cell.dataset.firm),Number(cell.dataset.day),series.counts[region][Number(cell.dataset.day)][Number(cell.dataset.firm)]));
  });
  host.addEventListener('pointerout',event=>{
-  if(event.target.closest('.mw-cell'))updateInspection(overview);
+  if(event.target.closest('.mw-cell'))updateInspection('');
  });
  host.addEventListener('focusin',event=>{
   const cell=event.target.closest('.mw-cell');
   if(cell)updateInspection(tooltip(Number(cell.dataset.firm),Number(cell.dataset.day),series.counts[region][Number(cell.dataset.day)][Number(cell.dataset.firm)]));
  });
  host.addEventListener('focusout',event=>{
-  if(event.target.closest('.mw-cell'))updateInspection(overview);
+  if(event.target.closest('.mw-cell'))updateInspection('');
  });
  host.addEventListener('keydown',event=>{
   if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' '].includes(event.key))return;
@@ -238,6 +242,8 @@ function render(rows,days){
   event.preventDefault();
  });
  paint(null,false);
+ if(typeof ResizeObserver==='function')new ResizeObserver(positionFocus).observe(host);
+ else if(root?.addEventListener)root.addEventListener('resize',positionFocus);
  // On narrow screens show the recent days rather than the oldest unseen days.
  if(scroll.scrollWidth>scroll.clientWidth)scroll.scrollLeft=scroll.scrollWidth;
 }
