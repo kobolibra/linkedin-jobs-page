@@ -93,6 +93,8 @@ async function renderLeft(page,chartData,theme){
    postingTicks:scale('#spark .rhythm-scale-label'),
    bins:hits.length,
    pointTotal:hits.reduce((sum,node)=>sum+Number(node.dataset.count),0),
+   bandPaths:[...document.querySelectorAll('#dist .region-fill .region-stack-band')].map(p=>p.getAttribute('d')),
+   linePaths:lines.map(p=>p.getAttribute('d')),
    markers:document.querySelectorAll('#dist .region-spark-dot').length,
    markerInks:[...document.querySelectorAll('#dist .region-spark-dot')].map(dot=>({
     fill:getComputedStyle(dot).fill,
@@ -133,12 +135,15 @@ async function renderLeft(page,chartData,theme){
  const observations=chartData.filter(r=>['SG','HK','CN'].includes(r.location))
   .map(r=>new Date(r.firstSeen).getTime());
  const sampleSpan=Math.max(...observations)-Math.min(...observations);
- const expectedBins=Math.min(40,Math.max(2,Math.ceil(sampleSpan/86400000)+1));
+ const expectedBins=Math.max(1,Math.ceil(sampleSpan/86400000)+1);
  assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
   'only populated regional intervals need hover targets');
- assert.ok(quality.pointTotal>0&&
-  quality.pointTotal<=chartData.filter(r=>['SG','HK','CN'].includes(r.location)).length,
-  'recent-time window must not fabricate jobs or admit OTHER; older excluded records are allowed');
+ assert.equal(quality.pointTotal,
+  chartData.filter(r=>['SG','HK','CN'].includes(r.location)&&
+    new Date(r.firstSeen).getTime()>=
+      (chartData.some(j=>['SG','HK','CN'].includes(j.location)&&new Date(j.firstSeen).getUTCFullYear()>=2026)
+        ?Date.UTC(2026,0,1):-Infinity)).length,
+  '2026 timeline includes every available SG/HK/CN record, without OTHER or pre-2026 anomalies');
  assert.ok(quality.grid>=2&&quality.filled>0,'both charts plot genuine values');
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
   'regional lines begin at actual observations, not baseline zeros');
@@ -311,6 +316,7 @@ try{
     return {left:rect('.analytics-left'),right:rect('.ac-col-market'),
      dist:rect('.ac-col-density'),post:rect('.ac-col-postings'),top:rect('.ac-col-top50'),
      board:rect('#marketWidthMap'),footer:rect('.mw-footer'),
+     heading:rect('#marketWidthTitle'),
      summary:rect('.mw-summary'),date:rect('.mw-date-nav'),
      tabs:rect('#marketWidthRegions'),encoding:rect('.mw-encoding'),
      pageWidth:document.documentElement.scrollWidth,
@@ -320,20 +326,26 @@ try{
    });
    assert.ok(bounds.footer.y>=bounds.board.b-2,
     'Market Width information must follow its treemap board');
-   assert.ok(['summary','date','tabs','encoding'].every(k=>bounds[k].y>=bounds.board.b-2),
-    'summary, date, region tabs and explanation must appear below the chart');
+   assert.ok(['summary','date','encoding'].every(k=>bounds[k].y>=bounds.board.b-2),
+    'summary, date and explanation must appear below the chart');
+   assert.ok(bounds.tabs.b<=bounds.board.y+2,
+    'region controls must sit alongside the heading, above the map');
    assert.ok(bounds.board.h>=280,'footer must not compress the map');
    assert.ok(bounds.post.y>=bounds.dist.b-2);
    assert.ok(bounds.top.y>=Math.max(bounds.left.b,bounds.right.b)-2);
    assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
+   assert.ok(bounds.tabs.x>=bounds.heading.x+bounds.heading.w-2,
+    'region tabs must align right of Market Width heading');
+   assert.ok(Math.abs((bounds.tabs.y+bounds.tabs.h/2)-(bounds.heading.y+bounds.heading.h/2))<10,
+    'region tabs and heading should share one centered baseline');
    if(bounds.topBg)assert.equal(bounds.regionBg,bounds.topBg,'Top30 and Market Width region controls share chrome');
    if(width>720){
     assert.ok(bounds.right.x>=bounds.left.x+bounds.left.w-2);
     assert.ok(Math.abs(bounds.right.h-bounds.left.h)<3,'charts align in desktop grid');
    }else{
     assert.ok(bounds.right.y>=bounds.left.b-2);
-    assert.ok(Math.abs(bounds.regionW-bounds.topW)<12,
-     'mobile region selector width should match Top30: '+JSON.stringify(bounds));
+    assert.ok(bounds.regionW<bounds.right.w/2,
+     'mobile title and regional controls share a compact row: '+JSON.stringify(bounds));
    }
    const before=await page.evaluate(()=>({
     page:document.documentElement.scrollHeight,
@@ -402,7 +414,7 @@ try{
   animations:'disabled'
  });
  await gapPage.close();
- // An old outlier must not compress seven active dates to the far-right.
+ // A pre-2026 outlier must not change the earliest 2026 tick or hide valid records.
  const focusPage=await make(960,'light');
  const focusRows=[{location:'CN',firstSeen:'2025-03-01T12:00:00Z',company:'HSBC',jobStatus:'active'}];
  for(let i=0;i<7;i++)for(const region of ['SG','HK','CN'])
@@ -410,11 +422,16 @@ try{
    firstSeen:new Date(Date.UTC(2026,10,5+i,12)).toISOString(),
    company:'HSBC',jobStatus:'active'});
  const focused=await renderLeft(focusPage,focusRows,'light');
- assert.match(focused.dateNote,/近 7 天/,'focused time horizon must be disclosed');
- assert.equal(focused.pointTotal,63,'recent records remain exact');
+ assert.match(focused.dateNote,/2026/,'full-year timeline must disclose 2026 date range');
+ assert.equal(focused.pointTotal,63,'all 2026 records remain exact');
  assert.ok(Math.min(...focused.points.map(p=>p.x))<100&&
   Math.max(...focused.points.map(p=>p.x))>430,
-  'current activity should occupy the chart width rather than the right edge');
+  'entire available 2026 range must occupy the plotting width');
+ const dateLabels=await focusPage.locator('#dist .region-spark-date').allTextContents();
+ assert.ok(dateLabels[0].includes('2026'),'first axis tick identifies the year');
+ const paths=focused.linePaths.filter(Boolean);
+ assert.ok(paths.every(d=>/^M[\d.]+,[\d.]+ L/.test(d)&&d.includes(' C')),
+  'multi-point region boundaries use continuous cubic paths and aligned shoulders');
  await focusPage.locator('.analytics-card').screenshot({
   path:new URL('artifacts/market-width/recent-focus-960-light.png',source).pathname,
   animations:'disabled'

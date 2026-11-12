@@ -627,33 +627,31 @@ jobsDataPromise
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const dayMs=86400000;
-    const latestStamp=allTimes.length?Math.max(...allTimes):Date.now();
-    const earliestStamp=allTimes.length?Math.min(...allTimes):latestStamp;
+    // Cover the complete observed 2026+ range instead of the last 7/14/30 days.
+    // Pre-2026 anomalies cannot compress the requested 2026 timeline.
+    const observedTimes=allTimes.filter(t=>t>=Date.UTC(2026,0,1));
+    const timelineTimes=observedTimes.length?observedTimes:allTimes;
+    const latestStamp=timelineTimes.length?Math.max(...timelineTimes):Date.now();
+    const earliestStamp=timelineTimes.length?Math.min(...timelineTimes):latestStamp;
     const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
     const latestDay=utcDay(latestStamp),earliestDay=utcDay(earliestStamp);
-    // A single ancient outlier can compress recent hiring to the far-right
-    // edge. Show a clearly dated 7-, 14-, or 30-day recent window instead.
-    // Use the smallest window containing at least 80% of the valid SG/HK/CN
-    // observations; all underlying records remain untouched elsewhere.
-    const horizon=[7,14,30].find(n=>
-      allTimes.filter(t=>t>=latestDay-(n-1)*dayMs).length>=allTimes.length*.8
-    )||30;
-    const tMin=Math.max(earliestDay,latestDay-(horizon-1)*dayMs);
-    const tMax=latestDay+dayMs; // exclusive UTC day boundary
-    const tSpan=tMax-tMin;
-    const bins=Math.max(1,Math.round(tSpan/dayMs));
+    const tMin=earliestDay,tMax=latestDay+dayMs; // exclusive UTC day boundary
+    const totalDays=Math.max(1,Math.round((tMax-tMin)/dayMs));
+    // Dynamic granularity spans the full available history without squeezing
+    // hundreds of subpixel daily bars into a 468px plot.
+    const bucketDays=totalDays>120?7:totalDays>55?3:1;
+    const bins=Math.ceil(totalDays/bucketDays);
     const plottedRows=regionOrder.reduce((sum,k)=>sum+
       regionRecords[k].filter(x=>x.t.getTime()>=tMin&&x.t.getTime()<tMax).length,0);
-    /* The timeline displays first-observed daily counts, stacked SG/HK/CN.
-       The stated date window is explicitly limited to recent records.
-       Band boundaries remain actual counts, never artificially spaced. */
+    /* SG/HK/CN cumulative bands contain exact counts for each date interval;
+       aggregation never fabricates a missing observation or false continuity. */
     const TW=520,TH=190,left=38,right=14,top=27,base=159,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
       const timestamp=x.t.getTime();
       if(timestamp<tMin||timestamp>=tMax)return;
-      const bi=Math.min(bins-1,Math.floor((timestamp-tMin)/dayMs));
+      const bi=Math.min(bins-1,Math.floor((timestamp-tMin)/(bucketDays*dayMs)));
       bucketCounts[ri][bi]++;
     }));
     // Both left charts use the same honest 1/2/5 integer axis. Rounding
@@ -670,8 +668,9 @@ jobsDataPromise
     const totalBuckets=Array.from({length:bins},(_,i)=>
       bucketCounts.reduce((sum,series)=>sum+series[i],0));
     const regionAxis=niceCountAxis(Math.max(1,...totalBuckets));
-    const binEdge=i=>left+(i/bins)*plotW;
-    const trendX=i=>binEdge(i+.5);
+    // Exact day-weighted edges, including a partial final interval.
+    const binEdge=i=>left+(Math.min(totalDays,i*bucketDays)/totalDays)*plotW;
+    const trendX=i=>(binEdge(i)+binEdge(i+1))/2;
     const trendY=value=>base-(value/regionAxis.max)*(base-top);
     const gridTicks=regionAxis.ticks.map(v=>
       '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
@@ -680,11 +679,18 @@ jobsDataPromise
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'});
-    const dateTicks=[...new Set([0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)))].map(i=>{
-      const date=new Date(tMin+i*dayMs);
-      return '<text class="region-spark-date" x="'+trendX(i).toFixed(2)+
-        '" y="184" text-anchor="'+(i===0?'start':i===bins-1?'end':'middle')+'">'+
-        escSvg(regionTickFormat.format(date))+'</text>';
+    const datePositions=[...new Set([0,.25,.5,.75,1]
+      .map(f=>Math.round((totalDays-1)*f)))];
+    const dateTicks=datePositions.map((day,i)=>{
+      const date=new Date(tMin+day*dayMs);
+      const x=left+(totalDays>1?day/(totalDays-1):0)*plotW;
+      const first=i===0,last=i===datePositions.length-1;
+      const label=first
+        ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
+        :regionTickFormat.format(date);
+      return '<text class="region-spark-date" x="'+x.toFixed(2)+
+        '" y="184" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        escSvg(label)+'</text>';
     }).join('');
     const legendStep=59,legendLeft=TW-right-regionOrder.length*legendStep;
     const legend=regionOrder.map((k,i)=>{
@@ -709,30 +715,38 @@ jobsDataPromise
       });
       if(run.length)runs.push(run);
       const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
-      // Linear boundaries interpolate adjacent actual bin heights. Each
-      // contiguous positive run has shoulders at the exact bin edges, so an
-      // isolated observation still has visible width without inventing jobs.
-      // Corresponding lower/upper contours enclose each tinted area band.
-      const upperPath=indices=>{
-        const first=indices[0],last=indices[indices.length-1];
-        return [fmtPoint(binEdge(first),trendY(upper[first])),
-          ...indices.map(i=>fmtPoint(trendX(i),trendY(upper[i]))),
-          fmtPoint(binEdge(last+1),trendY(upper[last]))];
+      // A single monotone cubic boundary is reused by the fill and ink.
+      // Its horizontal shoulders reach precisely the same bin edges.
+      const boundaryPath=(indices,values,reverse=false)=>{
+        const ordered=reverse?[...indices].reverse():indices;
+        const points=ordered.map(i=>({x:trendX(i),y:trendY(values[i])}));
+        const startX=reverse?binEdge(indices[indices.length-1]+1):binEdge(indices[0]);
+        const endX=reverse?binEdge(indices[0]):binEdge(indices[indices.length-1]+1);
+        const secants=points.slice(1).map((p,i)=>
+          (p.y-points[i].y)/(p.x-points[i].x));
+        // Zero end slopes meet shoulders without elbows; bounded interior
+        // slopes prevent smooth curves from overshooting actual counts.
+        const slope=points.map((_,i)=>{
+          if(i===0||i===points.length-1)return 0;
+          const a=secants[i-1],b=secants[i];
+          return a*b<=0?0:Math.sign(a)*Math.min(Math.abs(a),Math.abs(b));
+        });
+        let d='M'+fmtPoint(startX,points[0].y)+' L'+fmtPoint(points[0].x,points[0].y);
+        for(let i=1;i<points.length;i++){
+          const a=points[i-1],b=points[i],dx=b.x-a.x;
+          d+=' C'+fmtPoint(a.x+dx/3,a.y+slope[i-1]*dx/3)+
+            ' '+fmtPoint(b.x-dx/3,b.y-slope[i]*dx/3)+
+            ' '+fmtPoint(b.x,b.y);
+        }
+        return d+' L'+fmtPoint(endX,points[points.length-1].y);
       };
-      const lowerPath=indices=>{
-        const first=indices[0],last=indices[indices.length-1];
-        return [fmtPoint(binEdge(last+1),trendY(lower[last])),
-          ...[...indices].reverse().map(i=>fmtPoint(trendX(i),trendY(lower[i]))),
-          fmtPoint(binEdge(first),trendY(lower[first]))];
-      };
-      const areas=runs.map(indices=>'<path class="region-stack-band" d="M'+
-        upperPath(indices).join(' L')+' L'+lowerPath(indices).join(' L')+' Z"/>'
+      const upperPath=indices=>boundaryPath(indices,upper);
+      const lowerPath=indices=>boundaryPath(indices,lower,true);
+      const areas=runs.map(indices=>'<path class="region-stack-band" d="'+
+        upperPath(indices)+' '+lowerPath(indices).replace(/^M/,'L')+' Z"/>'
       ).join('');
-      // Only the real sample centres form the boundary stroke. The half-bin
-      // shoulders belong to the fill polygon, not the line: drawing them as
-      // strokes created flat tails and conspicuous end kinks.
-      const contour=runs.map(indices=>'M'+indices.map(i=>
-        fmtPoint(trendX(i),trendY(upper[i]))).join(' L')).join(' ');
+      // Stroke and tint have identical endpoints and cubic control points.
+      const contour=runs.map(indices=>upperPath(indices)).join(' ');
       const isolated=runs.filter(indices=>indices.length===1).map(indices=>{
         const i=indices[0];
         return '<circle class="region-spark-dot" cx="'+trendX(i).toFixed(2)+
@@ -740,7 +754,8 @@ jobsDataPromise
       }).join('');
       const hits=heights.map((n,i)=>{
         if(n<=0)return '';
-        const from=new Date(tMin+i*dayMs),to=new Date(tMin+(i+1)*dayMs);
+        const from=new Date(tMin+i*bucketDays*dayMs);
+        const to=new Date(Math.min(tMax,tMin+(i+1)*bucketDays*dayMs));
         const countText=REGIONS[k].label+' · '+n+' roles · '+
           regionTickFormat.format(from)+' – '+regionTickFormat.format(to);
         return '<circle class="region-spark-hit" cx="'+trendX(i).toFixed(2)+
@@ -759,7 +774,7 @@ jobsDataPromise
       };
     });
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Recent stacked regional first-observed activity, Singapore then Hong Kong then Mainland China; equal-scale true daily counts">'+
+      '" role="img" aria-label="Full available 2026 regional first-observed activity, Singapore then Hong Kong then Mainland China; true interval counts">'+
       legend+gridTicks+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>';
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'UTC',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -767,7 +782,7 @@ jobsDataPromise
     const densityEnd=densityDate.format(new Date(tMax-dayMs)).replaceAll('/','.').replace(/^\d{4}\./,'');
     const distNote=document.getElementById('distNote');
     if(distNote)distNote.textContent='首次抓取 · '+densityStart+'–'+densityEnd+
-      '（近 '+bins+' 天，'+plottedRows+' 个 SG/HK/CN 职位）';
+      '（'+(bucketDays===1?'按日汇总':'每 '+bucketDays+' 天汇总')+' · '+plottedRows+' 个 SG/HK/CN 职位）';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
