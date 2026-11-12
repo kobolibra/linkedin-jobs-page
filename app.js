@@ -647,7 +647,7 @@ jobsDataPromise
     /* The timeline displays first-observed daily counts, stacked SG/HK/CN.
        The stated date window is explicitly limited to recent records.
        Band boundaries remain actual counts, never artificially spaced. */
-    const TW=520,TH=164,left=38,right=14,top=36,base=131,plotW=TW-left-right;
+    const TW=520,TH=190,left=38,right=14,top=27,base=159,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
@@ -683,7 +683,7 @@ jobsDataPromise
     const dateTicks=[...new Set([0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)))].map(i=>{
       const date=new Date(tMin+i*dayMs);
       return '<text class="region-spark-date" x="'+trendX(i).toFixed(2)+
-        '" y="154" text-anchor="'+(i===0?'start':i===bins-1?'end':'middle')+'">'+
+        '" y="184" text-anchor="'+(i===0?'start':i===bins-1?'end':'middle')+'">'+
         escSvg(regionTickFormat.format(date))+'</text>';
     }).join('');
     const legendStep=59,legendLeft=TW-right-regionOrder.length*legendStep;
