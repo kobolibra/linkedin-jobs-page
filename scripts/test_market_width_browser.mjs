@@ -62,7 +62,9 @@ async function inspectMosaic(page,nonzero){
     nameHeight:name?.clientHeight,contentHeight:name?.scrollHeight,
     faceBg:getComputedStyle(face).backgroundColor,
     faceInk:getComputedStyle(face).color,
-    tone:[...node.classList].find(c=>c.startsWith('mw-activity-'))||null,
+    active:node.classList.contains('mw-is-active'),
+    countInk:number?getComputedStyle(number).color:null,
+    faceShadow:getComputedStyle(face).boxShadow,
     inset,cornerRadius:getComputedStyle(face).borderTopLeftRadius,
 
     layout:node.dataset.layout,labelForm:node.dataset.labelForm,
@@ -84,9 +86,8 @@ async function inspectMosaic(page,nonzero){
  assert.ok(details.rects.every(t=>t.name.length>0),'every rectangle names its firm');
  assert.ok(details.rects.every(t=>t.zero?t.count===null:t.count!==null),
   'zero tiles have no number; positive tiles show an exact count');
- assert.ok(details.rects.every(t=>t.zero?t.tone===null:
-  t.tone==='mw-activity-'+(Number(t.count)<=1?'low':Number(t.count)<=4?'mid':'high')),
-  'activity tone must follow posting count, never institution identity');
+ assert.ok(details.rects.every(t=>t.active===!t.zero),
+  'there must be exactly one positive porcelain surface state, independent of firm and count');
  assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new postings')),
   'zero labels are contextual rather than a numeric 0');
  assert.ok(details.rects.every(t=>t.w>0&&t.h>0&&t.x>=details.board.x-1&&t.y>=details.board.y-1));
@@ -120,16 +121,23 @@ try{
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
    const zeroBg=zeros[0].faceBg;
-   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>20),
-    'every institution ink must differ clearly from the muted zero-neutral');
-   assert.ok(new Set(positives.map(t=>t.faceBg)).size<=3,
-    'all active firms must share a restrained three-step mineral navy family');
-   const fill=i=>positives.find(t=>t.i===i)?.faceBg;
-   assert.equal(fill(1),fill(12),'equal activity tiers share one intentional hue');
-   assert.equal(fill(11),fill(12),'same medium tier shares one mineral-blue hue');
-   assert.notEqual(fill(16),fill(12),'the lead institution receives the deeper activity tone');
-   if(theme==='light')assert.ok(initial.rects.every(t=>lum(t.faceBg)>=.5),
-    'the light homepage must stay pale, without navy or dark-blue billboard tiles');
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
+    'the lifted porcelain surface must separate from the neutral zero state');
+   assert.equal(new Set(positives.map(t=>t.faceBg)).size,1,
+    'all active firms have one porcelain fill; area and labels encode count, not pigment');
+   assert.equal(new Set(zeros.map(t=>t.faceBg)).size,1,
+    'all zero firms share a neutral background');
+   const accent=theme==='light'?'rgb(36, 90, 165)':'rgb(194, 212, 255)';
+   assert.ok(positives.every(t=>t.countInk===accent),
+    'cobalt is reserved for exact count typography: '+JSON.stringify({theme,positives}));
+   assert.ok(positives.every(t=>t.faceShadow.includes(accent)),
+    'a fine cobalt keyline must identify every positive surface without a tinted fill');
+   if(theme==='light'){
+    assert.ok(initial.rects.every(t=>lum(t.faceBg)>.78),
+     'the light homepage must not contain gray-blue or dark billboard tiles');
+    assert.ok(positives.every(t=>lum(t.faceBg)>.94),
+     'active porcelain must remain near-white regardless of count');
+   }
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
      'small-name contrast must be AA: '+JSON.stringify({theme,i:tile.i,bg:tile.faceBg,ink:tile.faceInk,ratio:contrast(tile.faceBg,tile.faceInk)}));

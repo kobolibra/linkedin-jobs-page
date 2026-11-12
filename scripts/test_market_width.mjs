@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,activityTier}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -185,7 +185,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-13','market-width.css?v=market-width-13'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-14','market-width.css?v=market-width-14'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -207,28 +207,24 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=150/);
 });
 
-test('one mineral navy family replaces firm-by-firm color assignments',()=>{
+test('light editorial Market Width uses only neutral absence and porcelain presence',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:#e6e8e5/);
+ assert.match(css,/--mw-zero:#e8eae9/);
+ assert.match(css,/--mw-active:#fafbfe/);
+ assert.match(css,/--mw-accent:#245aa5/);
  assert.match(css,/--mw-seam:1px/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
- assert.match(js,/\(zero\?'mw-is-zero':'mw-activity-'\+activityTier\(tile.count\)\)/);
- assert.doesNotMatch(css,/\.mw-firm-\d+|--mw-firm-|--mw-tone-[1-5]/);
- assert.doesNotMatch(js,/mw-firm-|toneOf/);
- assert.deepEqual([0,1,2,3,4,5,8,20].map(activityTier),
-  ['low','low','mid','mid','mid','high','high','high']);
- const cssColors=[...css.matchAll(/--mw-(zero|low|mid|high):(#(?:[a-f0-9]{6}))/gi)];
- assert.equal(cssColors.length,8,'four visual roles in each of two themes');
- for(const theme of ['light','dark']){
-  const roles=cssColors.slice(theme==='light'?0:4,theme==='light'?4:8);
-  assert.deepEqual(roles.map(m=>m[1]),['zero','low','mid','high']);
-  assert.equal(new Set(roles.map(m=>m[2].toLowerCase())).size,4,
-   'no repeated tones within theme');
- }
+ assert.match(js,/\(zero\?'mw-is-zero':'mw-is-active'\)/);
+ assert.doesNotMatch(js,/activityTier|toneOf|mw-activity-|mw-firm-/);
+ assert.doesNotMatch(css,/--mw-(?:low|mid|high|tone-\d)|\.mw-activity-|\.mw-firm-/);
+ assert.match(css,/\.mw-is-zero \{--mw-tile-fill:var\(--mw-zero\);--mw-tile-ink:var\(--mw-zero-ink\)\}/);
+ assert.match(css,/\.mw-is-active \{--mw-tile-fill:var\(--mw-active\);--mw-tile-ink:var\(--mw-active-ink\)\}/);
+ assert.match(css,/\.mw-is-active \.mw-tile-face \{box-shadow:inset 0 2px 0 var\(--mw-accent\)\}/);
+ assert.match(css,/\.mw-is-active \.mw-tile-count \{color:var\(--mw-accent\)\}/);
+ assert.match(css,/\.mw-is-active\[aria-pressed="true"\] \.mw-tile-face/);
  assert.match(css,/background:var\(--glass-light\)/);
  assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
  assert.match(css,/\.mw-detail\[hidden\]/);
- assert.doesNotMatch(css,/\.mw-zero-panel|\.mw-zero-name|\.mw-map-layout\.is-sparse/);
  assert.doesNotMatch(html,/18 institutions · 30 days|Explore exact institution counts|First observed on LinkedIn/);
 });
 
@@ -261,34 +257,25 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('porcelain navy roles meet AA contrast and distinguish positive activity from zero',()=>{
+test('porcelain and cobalt meet AA contrast and keep large light surfaces colorless',()=>{
  const css=read('market-width.css');
- const light=[
-  ['#e6e8e5','#4e5b60'],['#cfdee1','#263843'],
-  ['#bcd1d7','#263843'],['#a7c2cb','#243844']
- ];
- const dark=[
-  ['#293b4a','#cbd5d9'],['#476d81','#f8faf8'],
-  ['#799eaf','#172d3f'],['#a9c5cd','#172d3f']
- ];
+ const light={zero:'#e8eae9',zeroInk:'#59656a',active:'#fafbfe',activeInk:'#193b57',accent:'#245aa5'};
+ const dark={zero:'#283947',zeroInk:'#cad5dc',active:'#344c64',activeInk:'#f3f7fd',accent:'#c2d4ff'};
  const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
- // Light-mode fill must remain a *light surface*, never a navy billboard.
- assert.ok(light.every(([bg])=>lum(bg)>=.5),'all light-theme tiles must have pale material luminance');
- for(let i=1;i<light.length;i++)assert.ok(lum(light[i][0])<lum(light[i-1][0]),
-  'subtle tonal hierarchy darkens gradually with activity, without a dark block');
- for(const palette of [light,dark]){
-  const neutral=palette[0][0];
-  for(const [i,[bg,ink]] of palette.entries()){
-   assert.ok(css.includes(bg)&&css.includes(ink),'expected theme token '+bg);
-   assert.ok(contrast(bg,ink)>=4.5,'small label AA '+JSON.stringify({i,bg,ink,contrast:contrast(bg,ink)}));
-   if(i)assert.ok(Math.hypot(...channel(bg).map((x,j)=>x-channel(neutral)[j]))>20,
-    'each positive tone must separate from neutral '+bg);
-  }
+ for(const [theme,palette] of [['light',light],['dark',dark]]){
+  for(const color of Object.values(palette))assert.ok(css.includes(color),'missing '+theme+' color '+color);
+  for(const [fill,ink] of [[palette.zero,palette.zeroInk],[palette.active,palette.activeInk],[palette.active,palette.accent]])
+   assert.ok(contrast(fill,ink)>=4.5,'small text AA '+JSON.stringify({theme,fill,ink,ratio:contrast(fill,ink)}));
+  const difference=Math.hypot(...channel(palette.active).map((v,i)=>v-channel(palette.zero)[i]));
+  assert.ok(difference>30,'active porcelain must differ perceptibly from neutral '+theme);
  }
- assert.match(css,/\.mw-is-zero \{--mw-tile-fill:var\(--mw-zero\)/);
- for(const tone of ['low','mid','high'])assert.ok(css.includes('.mw-activity-'+tone+' {--mw-tile-fill:var(--mw-'+tone+')'));
- assert.match(css,/\.mw-tile\[aria-pressed="true"\] \.mw-tile-face \{[\s\S]*?var\(--gold-hi\)/);
+ assert.ok(lum(light.active)>.94,'positive surface must remain luminous, not dusty blue');
+ assert.ok(lum(light.zero)>.78,'zero surface must remain inside the pale site-neutral family');
+ assert.ok(lum(light.active)>lum(light.zero),'positive tile should read as clean lifted porcelain');
+ assert.ok(lum(light.accent)<.2,'cobalt accent must be firm and deliberate');
+ assert.doesNotMatch(css,/linear-gradient\(/,'tile paint must be opaque and clean, with no decorative gradients');
 });
+

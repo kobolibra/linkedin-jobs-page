@@ -1,9 +1,9 @@
 /* Market Width: one integrated 18-institution market map. Muted neutral
    placeholders indicate zero new postings (no visible zero digits). Positive
    posting tiles preserve their relative count proportions, with a tiny visual
-   floor for genuinely unreadable cells. All active firms share one
-   porcelain/navy color family; only three restrained activity steps remain.
-   Exact first-seen, currently-active counts still live in size and labels. */
+   floor for genuinely unreadable cells. Neutral zero tiles and luminous
+   porcelain positive tiles form a two-state visual grammar. Posting volume
+   is expressed through area and exact text; cobalt only accents active ink. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -229,7 +229,6 @@ function fitTileContent(button,rect,zero){
  button.dataset.labelForm='micro';
  button.dataset.fontFit='8';
 }
-const activityTier=n=>n<=1?'low':n<=4?'mid':'high';
 const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
 const prettyDate=key=>{
  const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -265,7 +264,7 @@ function render(rows,days){
    const button=document.createElement('button');
    const zero=tile.zero,type=tileTypography(tile.w,tile.h);
    button.type='button';
-   button.className='mw-tile '+(zero?'mw-is-zero':'mw-activity-'+activityTier(tile.count))+
+   button.className='mw-tile '+(zero?'mw-is-zero':'mw-is-active')+
     ' mw-tile-'+type.tier+(!zero&&tile.visualFloor?' mw-display-floor':'');
    button.dataset.layout=type.tier;
    button.dataset.firm=String(tile.i);
@@ -366,7 +365,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,activityTier,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
