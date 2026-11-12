@@ -123,8 +123,9 @@ try{
    });
    assert.ok(moved.dx<3,'date switching must move the complete vertical frame: '+JSON.stringify(moved));
    // Capture the uncluttered default state, not the temporary focused-cell hint.
-   await page.locator('[data-market-region="all"]').focus();
+   await page.evaluate(()=>{if(document.activeElement instanceof HTMLElement)document.activeElement.blur();});
    assert.equal(await page.locator('#marketWidthInspection').isHidden(),true);
+   assert.equal(await page.locator('.mw-tab:focus-visible').count(),0,'no golden keyboard focus in default screenshot');
    if(width!==960){
     await page.locator('.ac-col-market').screenshot({
      path:new URL('artifacts/market-width/matrix-'+width+'-'+theme+'.png',source).pathname,
