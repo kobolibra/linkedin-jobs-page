@@ -71,7 +71,7 @@ async function inspectMosaic(page,nonzero){
  const totalArea=details.rects.reduce((sum,t)=>sum+t.area,0);
  const boardArea=details.board.w*details.board.h;
  assert.ok(Math.abs(totalArea-boardArea)<=boardArea*.001,
-  'all 18 tiles fully cover the mosaic: '+JSON.stringify({boardArea,totalArea}));
+  'all 18 tiles fully cover the mosaic: '+JSON.stringify({boardArea,totalArea,board:details.board,rects:details.rects.map(t=>({i:t.i,count:t.count,area:t.area,x:t.x,y:t.y,w:t.w,h:t.h}))}));
  const over=details.rects.filter(t=>t.contentWidth>t.nameWidth+1||t.contentHeight>t.nameHeight+1);
  assert.equal(over.length,0,'firm tokens must fit without being clipped: '+JSON.stringify(over));
  return details;
