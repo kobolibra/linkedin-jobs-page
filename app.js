@@ -638,7 +638,9 @@ jobsDataPromise
     const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
     const tMin=utcDay(earliestStamp),tMax=utcDay(latestStamp)+dayMs;
     const bins=Math.max(1,Math.round((tMax-tMin)/dayMs));
-    const TW=520,TH=318,left=43,right=14,top=30,base=284,plotW=TW-left-right;
+    // Reserve a small, readable editorial data key above the plot, without
+    // taking height away from the cumulative ribbons or inventing a mini-chart.
+    const TW=520,TH=341,left=43,right=14,top=51,base=305,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     // Exact UTC daily observations. No rolling windows and no weekly buckets.
     const bucketCounts=regionOrder.map(()=>Array.from({length:bins},()=>0));
@@ -690,17 +692,40 @@ jobsDataPromise
         ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
         :regionTickFormat.format(date);
       return '<text class="region-spark-date" x="'+x.toFixed(2)+
-        '" y="308" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        '" y="332" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
         escSvg(label)+'</text>';
     }).join('');
-    const legendStep=59,legendLeft=TW-right-regionOrder.length*legendStep;
-    const legend=regionOrder.map((k,i)=>{
-      const x=legendLeft+i*legendStep;
-      return '<g class="region-series '+k.toLowerCase()+'">'+
-        '<line class="region-legend-swatch" x1="'+x+'" x2="'+(x+9)+'" y1="13" y2="13"/>'+
-        '<text class="region-legend-label" x="'+(x+13)+'" y="16">'+escSvg(k)+'</text>'+
-        '<title>'+escSvg(REGIONS[k].label)+' · '+rc[k]+' currently active roles</title></g>';
-    }).join('');
+    // Snapshot counts and share labels are generated from precisely the same
+    // 2026 cumulative series and denominator as the stacked y-axis. Never
+    // reuse the all-time count or display a static percentage.
+    const snapshotCounts=cumulativeSeries.map(values=>values[bins]);
+    const countFormat=new Intl.NumberFormat('en-US');
+    // Largest-remainder allocation keeps the three displayed shares at
+    // exactly 100.0%, even for uneven counts after tenths-place rounding.
+    const rawShareTenths=snapshotCounts.map(n=>endTotal?n*1000/endTotal:0);
+    const shareTenths=rawShareTenths.map(n=>Math.floor(n));
+    const leftover=endTotal?1000-shareTenths.reduce((a,n)=>a+n,0):0;
+    const shareRank=rawShareTenths.map((n,i)=>({i,fraction:n-Math.floor(n)}))
+      .sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
+    for(let i=0;i<leftover;i++)shareTenths[shareRank[i].i]++;
+    const summaryCols=[154,278,402];
+    const legend='<g class="region-current-key" aria-hidden="true">'+
+      '<g class="region-current-total"><text class="region-stat-total" x="'+left+
+      '" y="16">'+countFormat.format(endTotal)+'</text>'+
+      '<text class="region-stat-label" x="'+left+'" y="33">ACTIVE ROLES</text></g>'+
+      regionOrder.map((k,i)=>{
+        const x=summaryCols[i],count=snapshotCounts[i];
+        const share=(shareTenths[i]/10).toFixed(1)+'%';
+        return '<g class="region-series '+k.toLowerCase()+
+          ' region-stat-item" data-region="'+k+'" data-count="'+count+
+          '" data-share="'+share+'">'+
+          '<text class="region-stat-count" x="'+x+'" y="16">'+countFormat.format(count)+'</text>'+
+          '<text class="region-stat-share" x="'+(x+56)+'" y="16">'+share+'</text>'+
+          '<line class="region-stat-key" x1="'+x+'" x2="'+(x+11)+'" y1="30" y2="30"/>'+
+          '<text class="region-stat-region" x="'+(x+17)+'" y="33">'+escSvg(k)+'</text>'+
+          '<title>'+escSvg(REGIONS[k].label)+' · '+countFormat.format(count)+
+            ' of '+countFormat.format(endTotal)+' currently active roles · '+share+'</title></g>';
+      }).join('')+'</g>';
     // Hermite slopes are monotone for every independently cumulative region.
     // Adding each region's control-point values (not independently smoothing
     // stacked boundaries) prevents ribbon overlaps or artificial separation.
@@ -771,7 +796,9 @@ jobsDataPromise
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN; y-axis is the sum of all three regions, not the historical inventory on each date">'+
+      '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
+      ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
+      '. The y-axis is the sum of these three regions, not historical active inventory">'+
       legend+gridTicks+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
