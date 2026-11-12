@@ -36,7 +36,7 @@ try{
    assert.equal(await page.locator('.mw-ring').count(),3);
    assert.equal(await page.locator('.mw-reference').count(),0);
    assert.match(await page.locator('#marketWidthScale').textContent(),/Detail scale/);
-   assert.match(await page.locator('#marketWidthInspection').textContent(),/HSBC/);
+   assert.match(await page.locator('#marketWidthInspection').textContent(),/Schroders 5/);
    assert.equal(await page.locator('.mw-area,.mw-single,.mw-spoke,.mw-value').count(),0);
    assert.equal(await page.locator('.mw-dot').count(),4);
    assert.equal(await page.locator('.mw-tick-mark').count(),18);
