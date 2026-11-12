@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-12T16:03:15.662239+00:00",
+    "checkedAt": "2026-11-12T22:02:55.182068+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-12T16:03:03.707268+00:00",
+    "checkedAt": "2026-11-12T22:02:43.329573+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-12T16:03:09.562933+00:00",
+    "checkedAt": "2026-11-12T22:02:49.080740+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-12T16:03:12.654988+00:00",
+    "checkedAt": "2026-11-12T22:02:52.184384+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11320,5 +11320,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHR_sC2I_SvsQ/company-logo_100_100/company-logo_100_100/0/1645675753337/_logo?e=2147483647&v=beta&t=6l144BSiZIAsBvwE07_J2gsTdCk6IAwc6UkHt98hoqU",
     "companyUrl": "https://www.linkedin.com/company/%E7%99%BE%E5%A5%87%E6%98%9F",
     "sourceJobId": "4489087560"
+  },
+  "香格里拉饭店管理(上海)有限公司": {
+    "name": "香格里拉饭店管理(上海)有限公司",
+    "checkedAt": "2026-11-12T22:02:41.972845+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E9%A6%99%E6%A0%BC%E9%87%8C%E6%8B%89%E9%A5%AD%E5%BA%97%E7%AE%A1%E7%90%86-%E4%B8%8A%E6%B5%B7-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4487862936"
   }
 }
