@@ -196,7 +196,12 @@ function marketTiles(values,width=640,height=340){
  const {core,outer}=zeroPerimeter(zeros,W,H);
  const total=positive.reduce((sum,t)=>sum+t.count,0);
  const coreShare=core.w*core.h/(W*H);
- const floor=Math.min(.0135,coreShare/Math.max(1,positive.length*1.4));
+ // A percentage-of-canvas floor alone can produce 7px slivers in highly
+ // skewed 700:1 data. Guarantee a usable short edge in the two-rectangle
+ // split; cap the floor so even dense dates retain quantitative space.
+ const minShortEdge=Math.max(18,Math.min(22,W*.045));
+ const readableFloor=Math.max(.0135,minShortEdge*Math.max(core.w,core.h)/(W*H));
+ const floor=Math.min(readableFloor,coreShare/Math.max(1,positive.length*1.4));
  let free=coreShare,remainingTotal=total;
  let unassigned=[...positive],allocated=[];
  // Water filling preserves ratios among every tile that is not floored.
