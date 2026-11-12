@@ -627,10 +627,6 @@ body.compact .job > .mono { margin-top:2px; }
    and OTHER slate series identities. The thirty daily columns reuse the
    existing #spark blue token. No data or global page styling is changed. */
 #dist .region-time-svg{shape-rendering:geometricPrecision}
-#dist .region-chart-caption,
-#spark .rhythm-caption{
-  fill:var(--viz-quiet);font:500 10px var(--sans);letter-spacing:0;
-}
 #dist .region-spark-grid{
   stroke:var(--viz-rule);stroke-width:.75;opacity:.42;
   vector-effect:non-scaling-stroke;
@@ -654,8 +650,10 @@ body.compact .job > .mono { margin-top:2px; }
 #dist .region-legend-label{
   fill:var(--viz-secondary);font:600 9px var(--mono);
 }
-#dist .region-spark-area{
-  fill:var(--region-ink);opacity:.055;stroke:none;
+#dist .region-spark-dot{
+  fill:var(--region-ink);
+  stroke:var(--surface);stroke-width:1.1;
+  pointer-events:none;
 }
 #dist .region-spark-hit{
   fill:transparent;stroke:transparent;cursor:crosshair;
@@ -682,7 +680,6 @@ body.compact .job > .mono { margin-top:2px; }
 #spark .rhythm-point:focus-visible .rhythm-bar{
   stroke:var(--ink);stroke-width:1.8;
 }
-[data-theme="dark"] #dist .region-spark-area{opacity:.09}
 [data-theme="dark"] #spark .rhythm-bar{opacity:.67}
 [data-theme="dark"] #spark .rhythm-bar.weekend{opacity:.48}
 [data-theme="dark"] #spark .rhythm-bar.peak{opacity:.86}
