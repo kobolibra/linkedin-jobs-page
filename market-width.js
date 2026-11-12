@@ -1,8 +1,9 @@
 /* Market Width: one integrated 18-institution market map. Muted neutral
    placeholders indicate zero new postings (no visible zero digits). Positive
    posting tiles preserve their relative count proportions, with a tiny visual
-   floor for genuinely unreadable cells. All counts retain their original
-   first-seen, currently-active meaning. */
+   floor for genuinely unreadable cells. Fixed categorical color identifies
+   each active institution; size and numerals, never color, encode counts.
+   All counts retain their original first-seen, currently-active meaning. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -228,7 +229,6 @@ function fitTileContent(button,rect,zero){
  button.dataset.labelForm='micro';
  button.dataset.fontFit='8';
 }
-const toneOf=n=>n<=1?1:n<=3?2:n<=7?3:n<=15?4:5;
 const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
 const prettyDate=key=>{
  const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -264,7 +264,7 @@ function render(rows,days){
    const button=document.createElement('button');
    const zero=tile.zero,type=tileTypography(tile.w,tile.h);
    button.type='button';
-   button.className='mw-tile '+(zero?'mw-is-zero':'mw-tone-'+toneOf(tile.count))+
+   button.className='mw-tile '+(zero?'mw-is-zero':'mw-firm-'+tile.i)+
     ' mw-tile-'+type.tier+(!zero&&tile.visualFloor?' mw-display-floor':'');
    button.dataset.layout=type.tier;
    button.dataset.firm=String(tile.i);
@@ -365,7 +365,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,toneOf,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);

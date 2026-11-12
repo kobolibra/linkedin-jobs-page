@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,toneOf}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -110,7 +110,7 @@ test('one positive, all zero and all 18 positive are handled deterministically',
  assert.deepEqual(dense,treemap(equal,640,340),'same data returns same layout');
  assert.ok(dense.every(r=>r.w>0&&r.h>0));
  assert.equal(treemap([{i:11,count:3},{i:2,count:3}],640,340)[0].i,2,'stable equal-count tie');
- assert.deepEqual([0,1,2,3,4,7,8,15,16].map(toneOf),[1,1,2,2,3,3,4,4,5]);
+ assert.doesNotMatch(read('market-width.js'),/toneOf|mw-tone-/);
 });
 
 test('one coherent mosaic contains all 18 firms even when 17 are zero',()=>{
@@ -185,7 +185,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-11','market-width.css?v=market-width-11'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-12','market-width.css?v=market-width-12'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -207,20 +207,35 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=150/);
 });
 
-test('neutral-zero and mineral-petrol live channels match site navy and respect dark mode',()=>{
- const css=read('market-width.css'),html=read('index.html');
- assert.match(css,/--mw-zero:#e8ebe9/);
- assert.match(css,/--mw-tone-1:#b9cdbf/);
- assert.match(css,/--mw-tone-5:#315764/);
+test('18 distinct fixed categorical colors belong to institutions, not posting counts',()=>{
+ const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
+ assert.match(css,/--mw-zero:#e6eae8/);
+ assert.match(css,/--mw-seam:1px/);
+ assert.match(css,/\.mw-tile:not\(\.mw-is-zero\) \{--mw-tile-ink:#f8faf7\}/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
- assert.match(css,/\.mw-is-zero/);
+ assert.match(js,/\(zero\?'mw-is-zero':'mw-firm-'\+tile\.i\)/);
+ assert.doesNotMatch(js,/toneOf|mw-tone-/);
+ const tones=[...css.matchAll(/\.mw-firm-(\d+) \{--mw-tile-fill:(#[A-Fa-f0-9]{6})\}/g)];
+ assert.equal(tones.length,18,'all 18 colors must be explicit');
+ assert.deepEqual(tones.map(m=>Number(m[1])),Array.from({length:18},(_,i)=>i));
+ assert.equal(new Set(tones.map(m=>m[2].toUpperCase())).size,18,'one distinct ink per firm');
+ const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
+ const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
+ const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
+ const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+ for(const m of tones){
+  assert.ok(contrast(m[2],'#f8faf7')>=4.5,'small type must meet AA '+m[1]+' '+m[2]);
+  assert.ok(Math.hypot(...channel(m[2]).map((v,i)=>v-channel('#243543')[i]))>60,
+   'active institution colors must separate from dark zero neutral');
+ }
+ assert.ok(contrast('#e6eae8','#4e5b60')>=4.5);
+ assert.ok(contrast('#243543','#cbd5d9')>=4.5);
  assert.match(css,/background:var\(--glass-light\)/);
  assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
  assert.match(css,/\.mw-detail\[hidden\]/);
  assert.doesNotMatch(css,/\.mw-zero-panel|\.mw-zero-name|\.mw-map-layout\.is-sparse/);
  assert.doesNotMatch(html,/18 institutions · 30 days|Explore exact institution counts|First observed on LinkedIn/);
 });
-
 
 test('all 18 firms use one centered name-over-count lockup, never side-by-side micro tiles',()=>{
  const js=read('market-width.js'),css=read('market-width.css');
@@ -251,25 +266,12 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('light and dark positive color steps are legible and visibly distinct from neutral zero',()=>{
+test('active colors remain categorical in each theme while neutral zero tiles remain distinct',()=>{
  const css=read('market-width.css');
- const light=['#e8ebe9','#b9cdbf','#a2bdb2','#85a7a1','#4b747b','#315764'];
- const dark=['#2a3e4e','#496b6a','#587977','#8faea6','#b6cec2','#d8e3d6'];
- const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
- const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
- const luminance=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
- const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
- for(const [theme,palette] of [['light',light],['dark',dark]]){
-  assert.equal(new Set(palette).size,6,theme+' color steps cannot repeat');
-  const x=channel(palette[0]),y=channel(palette[1]);
-  assert.ok(Math.hypot(...x.map((v,i)=>v-y[i]))>60,'zero vs positive must be visually distinct: '+theme);
-  for(let i=0;i<palette.length;i++){
-   const ink=i===0?(theme==='light'?'#536167':'#c5d0d6'):
-    (theme==='dark'?(i<=2?'#f9fbf8':'#26383b'):(i<=3?'#26383b':'#f9fbf8'));
-   assert.ok(contrast(palette[i],ink)>=4.5,'small text AA '+theme+' '+i+' contrast='+contrast(palette[i],ink));
-  }
+ for(const hex of ["#9A3E52","#28766D","#3D6399","#94652F","#486F44","#72528C","#A3503E","#446EA0","#2B748A","#775778","#915C43","#7E6A32","#426E80","#4E5F97","#8E466E","#606569","#59733F","#905D37"]){
+  assert.ok(css.includes(hex),'missing institution ink '+hex);
  }
- light.forEach(color=>assert.ok(css.includes(color)));
- dark.forEach(color=>assert.ok(css.includes(color)));
- assert.doesNotMatch(css,/#(?:d8bdb3|b38b90|60465c|ac928d|edcbd1)/);
+ assert.doesNotMatch(css,/--mw-tone-[1-5]|\.mw-tone-[1-5]/);
+ assert.match(css,/\.mw-is-zero \{--mw-tile-fill:var\(--mw-zero\)/);
+ assert.match(css,/\.mw-tile\[aria-pressed="true"\] \.mw-tile-face \{[\s\S]*?var\(--gold-hi\)/);
 });
