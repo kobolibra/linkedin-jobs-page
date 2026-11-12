@@ -209,7 +209,7 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
 
 test('one mineral navy family replaces firm-by-firm color assignments',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:#e5e8e7/);
+ assert.match(css,/--mw-zero:#e6e8e5/);
  assert.match(css,/--mw-seam:1px/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
  assert.match(js,/\(zero\?'mw-is-zero':'mw-activity-'\+activityTier\(tile.count\)\)/);
@@ -264,23 +264,27 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
 test('porcelain navy roles meet AA contrast and distinguish positive activity from zero',()=>{
  const css=read('market-width.css');
  const light=[
-  ['#e5e8e7','#52616b'],['#a4b8c4','#203849'],
-  ['#50718c','#f8faf8'],['#234b68','#f8faf8']
+  ['#e6e8e5','#4e5b60'],['#cfdee1','#263843'],
+  ['#bcd1d7','#263843'],['#a7c2cb','#243844']
  ];
  const dark=[
-  ['#293b4a','#d0d8de'],['#50718c','#f8faf8'],
-  ['#83a5b8','#172d3f'],['#b9ced8','#172d3f']
+  ['#293b4a','#cbd5d9'],['#476d81','#f8faf8'],
+  ['#799eaf','#172d3f'],['#a9c5cd','#172d3f']
  ];
  const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+ // Light-mode fill must remain a *light surface*, never a navy billboard.
+ assert.ok(light.every(([bg])=>lum(bg)>=.5),'all light-theme tiles must have pale material luminance');
+ for(let i=1;i<light.length;i++)assert.ok(lum(light[i][0])<lum(light[i-1][0]),
+  'subtle tonal hierarchy darkens gradually with activity, without a dark block');
  for(const palette of [light,dark]){
   const neutral=palette[0][0];
   for(const [i,[bg,ink]] of palette.entries()){
    assert.ok(css.includes(bg)&&css.includes(ink),'expected theme token '+bg);
    assert.ok(contrast(bg,ink)>=4.5,'small label AA '+JSON.stringify({i,bg,ink,contrast:contrast(bg,ink)}));
-   if(i)assert.ok(Math.hypot(...channel(bg).map((x,j)=>x-channel(neutral)[j]))>60,
+   if(i)assert.ok(Math.hypot(...channel(bg).map((x,j)=>x-channel(neutral)[j]))>20,
     'each positive tone must separate from neutral '+bg);
   }
  }
