@@ -155,7 +155,11 @@ function marketTiles(values,width=640,height=340){
  }
  const total=positive.reduce((sum,t)=>sum+t.count,0);
  const zeroShare=Math.min(.30,zeros.length*.020);
- const floor=Math.min(.0135,(1-zeroShare)/Math.max(1,positive.length*1.4));
+ // Preserve the original squarified placement. Raise the display-only
+ // floor only for extreme skew so a 700:1 positive cell is not a 7px sliver.
+ const minEdge=Math.max(18,Math.min(22,W*.045));
+ const readableFloor=Math.max(.0135,minEdge*Math.max(W,H)/(W*H));
+ const floor=Math.min(readableFloor,(1-zeroShare)/Math.max(1,positive.length*1.4));
  let free=1-zeroShare,remainingTotal=total;
  let unassigned=[...positive],allocated=[];
  // Water filling makes floor-adjustments local while preserving the ratios
