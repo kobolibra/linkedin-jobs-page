@@ -50,6 +50,10 @@ try{
    assert.equal(await page.locator('.mw-cell[data-level="3"]').count(),2*29);
    assert.equal(await page.locator('.mw-cell.is-selected').count(),18);
    assert.equal(await page.locator('.mw-legend-chip').count(),6);
+   assert.equal(await page.locator('.mw-axis-tick').count(),5,'only five evenly spaced date ticks');
+   const ticks=await page.locator('.mw-axis-tick').evaluateAll(nodes=>nodes.map(n=>{const r=n.getBoundingClientRect();return {x:r.left,right:r.right};}));
+   assert.ok(ticks.every((r,i)=>i===0||r.x>=ticks[i-1].right-1),'date labels must never overlap: '+JSON.stringify(ticks));
+   assert.equal(await page.locator('.mw-cell.is-selected.mw-level-0').first().evaluate(el=>getComputedStyle(el).boxShadow),'none','selected zero cells must remain visually quiet');
    assert.equal(await page.locator('.mw-svg,.mw-area,.mw-dot,.mw-spoke').count(),0);
    assert.equal(await page.locator('#marketWidthDetails tr').count(),18);
    assert.equal(await page.locator('#marketWidthDetails tr:first-child td').count(),3);
