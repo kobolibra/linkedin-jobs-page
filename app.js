@@ -756,7 +756,11 @@ jobsDataPromise
           (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+hits+'</g>'
       };
     });
-    distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
+    distEl.innerHTML='<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
+      ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
+      '" data-region-hk="'+cumulativeSeries[0][bins]+
+      '" data-region-sg="'+cumulativeSeries[1][bins]+
+      '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN; y-axis is the sum of all three regions, not the historical inventory on each date">'+
       legend+gridTicks+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>';
