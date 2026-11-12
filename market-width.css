@@ -22,7 +22,7 @@
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
-  --mw-zero:#c7cbd8;--mw-zero-ink:#47546a;
+  --mw-zero:#cac7cb;--mw-zero-ink:#47546a;
   --mw-ramp-light:#e3e7f4;--mw-ramp-deep:#9fafd7;
   --mw-active-ink:#102b44;--mw-accent:#102b44;
   --mw-seam:1px;
