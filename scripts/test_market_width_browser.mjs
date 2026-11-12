@@ -64,6 +64,17 @@ try{
    assert.equal(await page.locator('.mw-tile').count(),4);
    assert.equal(await page.locator('.mw-zero-name').count(),14);
    assert.equal(await page.locator('.mw-map-layout.is-sparse').count(),1);
+   if(width<=720){
+    const visible=await page.evaluate(()=>{
+     const parent=document.querySelector('#marketWidthZeroPanel').getBoundingClientRect();
+     const all=[...document.querySelectorAll('.mw-zero-name')].map(n=>n.getBoundingClientRect());
+     const grid=document.querySelector('.mw-zero-names');
+     return {allVisible:all.every(r=>r.bottom<=parent.bottom+1&&r.top>=parent.top-1),scroll:grid.scrollHeight,client:grid.clientHeight,columns:getComputedStyle(grid).gridTemplateColumns.split(' ').length};
+    });
+    assert.equal(visible.columns,3,'mobile zero-name roster uses three columns');
+    assert.ok(visible.allVisible&&visible.scroll<=visible.client+2,
+     'all zero institutions must be actually visible, no hidden internal scroll: '+JSON.stringify(visible));
+   }
    assert.equal(await page.locator('.mw-matrix,.mw-cell,.mw-legend-chip,.mw-column-focus').count(),0);
    assert.equal(await page.locator('.mw-encoding').textContent(),'Area = new postings');
    assert.equal(await page.locator('.mw-date-nav .mw-chevron').count(),2);
@@ -123,6 +134,13 @@ try{
    assert.equal(await page.locator('.mw-tile').count(),0);
    assert.equal(await page.locator('.mw-zero-name').count(),18);
    assert.equal(await page.locator('.mw-empty').count(),1);
+   if(width<=720){
+    const zeroVisible=await page.evaluate(()=>{
+      const panel=document.querySelector('#marketWidthZeroPanel').getBoundingClientRect();
+      return [...document.querySelectorAll('.mw-zero-name')].every(n=>n.getBoundingClientRect().bottom<=panel.bottom+1);
+    });
+    assert.ok(zeroVisible,'all-zero day still exposes all 18 institutions on mobile');
+   }
    await page.locator('#marketWidthPrev').click();
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    // With no focus or tooltip show the intended default visual state.
@@ -130,6 +148,10 @@ try{
    if(width!==960){
     await page.locator('.ac-col-market').screenshot({
      path:new URL('artifacts/market-width/treemap-'+width+'-'+theme+'.png',source).pathname,
+     animations:'disabled'
+    });
+    await page.locator('.analytics-card').screenshot({
+     path:new URL('artifacts/market-width/analytics-'+width+'-'+theme+'.png',source).pathname,
      animations:'disabled'
     });
    }
