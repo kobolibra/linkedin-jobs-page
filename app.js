@@ -642,18 +642,29 @@ jobsDataPromise
       const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));
       bucketCounts[ri][bi]++;
     }));
+    // Both left charts use the same honest 1/2/5 integer axis. Rounding
+    // arbitrary thirds produced misleading labels such as 0, 1, 3, 4.
+    const niceCountAxis=maxValue=>{
+      const observed=Math.max(1,Math.ceil(Number(maxValue)||0));
+      const rough=observed/4;
+      const magnitude=10**Math.floor(Math.log10(rough));
+      const selected=[1,2,5,10].find(v=>v*magnitude>=rough)*magnitude;
+      const step=Math.max(1,Math.round(selected));
+      const upper=Math.ceil(observed/step)*step;
+      return {max:upper,step,ticks:Array.from({length:Math.round(upper/step)+1},(_,i)=>i*step)};
+    };
     const maxBucket=Math.max(1,...bucketCounts.flat());
+    const regionAxis=niceCountAxis(maxBucket);
     const trendX=i=>left+(i/(bins-1))*plotW;
-    const trendY=value=>base-(value/maxBucket)*(base-top);
-    const tickValues=[0,1/3,2/3,1].map(t=>Math.round(maxBucket*t));
-    const gridTicks=[...new Set(tickValues)].map(v=>
+    const trendY=value=>base-(value/regionAxis.max)*(base-top);
+    const gridTicks=regionAxis.ticks.map(v=>
       '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
       '" x2="'+(TW-right)+'" y2="'+trendY(v).toFixed(2)+'"/>'+
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'});
-    const dateTicks=[0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)).map(i=>{
+    const dateTicks=[...new Set([0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)))].map(i=>{
       const date=new Date(tMin+i*tSpan/(bins-1));
       return '<text class="region-spark-date" x="'+trendX(i).toFixed(2)+
         '" y="154" text-anchor="'+(i===0?'start':i===bins-1?'end':'middle')+'">'+
@@ -669,27 +680,34 @@ jobsDataPromise
     }).join('');
     const series=regionOrder.map((k,ri)=>{
       const pts=bucketCounts[ri].map((n,i)=>({
-        x:trendX(i),y:trendY(n),n
+        x:trendX(i),y:trendY(n),n,i
       }));
-      const path=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
-      const area=ri===0&&pts.length?
-        '<path class="region-spark-area" d="'+path+' L'+pts[pts.length-1].x.toFixed(2)+
-        ','+base+' L'+pts[0].x.toFixed(2)+','+base+' Z"/>':'';
-      const hits=pts.map((p,i)=>{
-        const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
+      // A long zero run is already described by the baseline grid. Connecting
+      // every region along y=0 draws a useless overlapping horizontal stripe.
+      // Split line segments at each true zero, retaining every actual count.
+      const path=pts.map((p,i)=>p.n>0?
+        (i>0&&pts[i-1].n>0?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2):''
+      ).filter(Boolean).join(' ');
+      const dots=pts.filter((p,i)=>p.n>0&&
+        !(i>0&&pts[i-1].n>0&&i+1<pts.length&&pts[i+1].n>0)).map(p=>
+        '<circle class="region-spark-dot" cx="'+p.x.toFixed(2)+
+        '" cy="'+p.y.toFixed(2)+'" r="2.1"/>'
+      ).join('');
+      const hits=pts.filter(p=>p.n>0).map(p=>{
+        const i=p.i,from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
         return '<circle class="region-spark-hit" cx="'+p.x.toFixed(2)+
-          '" cy="'+p.y.toFixed(2)+'" r="5" role="img" aria-label="'+
+          '" cy="'+p.y.toFixed(2)+'" r="5" data-count="'+p.n+
+          '" role="img" aria-label="'+
           escSvg(k+' '+p.n+' jobs between '+regionTickFormat.format(from)+' and '+regionTickFormat.format(to))+
           '"><title>'+escSvg(REGIONS[k].label)+' · '+p.n+' roles · '+
           escSvg(regionTickFormat.format(from)+' – '+regionTickFormat.format(to))+
           '</title></circle>';
       }).join('');
-      return '<g class="region-series '+k.toLowerCase()+'">'+area+
-        '<path class="region-spark-line" d="'+path+'"/>'+hits+'</g>';
+      return '<g class="region-series '+k.toLowerCase()+'">'+
+        (path?'<path class="region-spark-line" d="'+path+'"/>':'')+dots+hits+'</g>';
     }).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Regional trend of active jobs grouped into 40 first-observed date buckets; hover or focus points for exact counts">'+
-      '<text class="region-chart-caption" x="'+left+'" y="16">First-observed active roles by geography</text>'+
+      '" role="img" aria-label="Regional trend of first-observed active roles, with natural breaks in zero-posting intervals">'+
       legend+gridTicks+series+dateTicks+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -709,9 +727,10 @@ jobsDataPromise
        ornamental line/stem/node combination. */
     const SW=520,SH=150,sLeft=33,sRight=17,sTop=18,sBase=124,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
-    const sy=v=>sBase-(v/smax)*sPlotH;
+    const rhythmAxis=niceCountAxis(smax);
+    const sy=v=>sBase-(v/rhythmAxis.max)*sPlotH;
     const barWidth=Math.min(11.3,sPlotW/days.length*.72);
-    const scaleValues=[...new Set([0,Math.ceil(smax/3),Math.ceil(2*smax/3),smax])];
+    const scaleValues=rhythmAxis.ticks;
     const guides=scaleValues.map(v=>
       '<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(v).toFixed(2)+
       '" x2="'+(SW-sRight)+'" y2="'+sy(v).toFixed(2)+'"/>'+
@@ -738,7 +757,6 @@ jobsDataPromise
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
       '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
-      '<text class="rhythm-caption" x="'+sLeft+'" y="11">New postings per day</text>'+
       guides+bars+dateLabels+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
