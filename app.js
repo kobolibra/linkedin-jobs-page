@@ -627,19 +627,66 @@ jobsDataPromise
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const tMin=allTimes.length?Math.min(...allTimes):Date.now(),tMax=allTimes.length?Math.max(...allTimes):tMin,tSpan=Math.max(1,tMax-tMin);
-    const TW=520,TH=126,left=48,right=48,top=27,rowGap=27,plotW=TW-left-right,bins=40,cellW=plotW/bins;
+    /* Regional trend / C visual presentation.
+       Keep the original 40 first-seen time buckets, exact regional totals,
+       region identities and date range. Only the SVG chart type changes:
+       overlapping region time series replace the stacked density strips. */
+    const TW=520,TH=164,left=38,right=14,top=36,base=131,plotW=TW-left-right,bins=40;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
-    regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));bucketCounts[ri][bi]++;}));
+    regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
+      const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));
+      bucketCounts[ri][bi]++;
+    }));
     const maxBucket=Math.max(1,...bucketCounts.flat());
-    const monthStart=new Date(tMin);monthStart.setHours(0,0,0,0);monthStart.setDate(1);const monthSegments=[];let lastMonthLabelX=-Infinity;for(let d=new Date(monthStart);d.getTime()<tMax;d.setMonth(d.getMonth()+1)){const next=new Date(d);next.setMonth(next.getMonth()+1);const segStart=Math.max(tMin,d.getTime()),segEnd=Math.min(tMax,next.getTime());if(segEnd<=segStart)continue;const x1=left+((segStart-tMin)/tSpan)*plotW,x2=left+((segEnd-tMin)/tSpan)*plotW,label=d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();// Keep every boundary, but render a month label only when its own interval can fit it.
-      // The 520-unit SVG shrinks on phones; even a short month name needs a
-      // real visual lane or neighboring labels collide.
-      const showLabel=((x1+x2)/2-lastMonthLabelX)>=44 && (x1+x2)/2>=left+10 && (x1+x2)/2<=left+plotW-10;
-      monthSegments.push('<line class="region-month-boundary" x1="'+x1.toFixed(1)+'" y1="'+(TH-13)+'" x2="'+x1.toFixed(1)+'" y2="'+(TH-7)+'"/>'+(showLabel?'<text class="region-month-label'+(segEnd===tMax?' region-month-current':'')+'" x="'+((x1+x2)/2).toFixed(1)+'" y="'+(TH-5)+'">'+label+'</text>':''));
-      if(showLabel)lastMonthLabelX=(x1+x2)/2;}monthSegments.push('<line class="region-month-boundary" x1="'+(left+plotW).toFixed(1)+'" y1="'+(TH-13)+'" x2="'+(left+plotW).toFixed(1)+'" y2="'+(TH-7)+'"/>');const axisTicks=monthSegments.join('');
-    const rows=regionOrder.map((k,ri)=>{const y=top+ri*rowGap,pct=chartData.length?Math.round(rc[k]/chartData.length*100):0,rowMax=Math.max(1,...bucketCounts[ri]);const cells=bucketCounts[ri].map((n,i)=>{const x=left+i*cellW,w=cellW,ratio=n/rowMax,level=n===0?0:ratio<=0.12?1:ratio<=0.32?2:ratio<=0.62?3:4,alpha=[0.18,0.38,0.62,0.82,1][level];const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);return '<rect class="region-density density-'+level+' '+k.toLowerCase()+'" x="'+x.toFixed(2)+'" y="'+(y-8)+'" width="'+w.toFixed(2)+'" height="16" rx="0" opacity="'+alpha.toFixed(3)+'"><title>'+escSvg(from.toLocaleDateString('zh-CN'))+'–'+escSvg(to.toLocaleDateString('zh-CN'))+' · '+escSvg(REGIONS[k].label)+' · '+n+' 个职位</title></rect>';}).join('');return '<text class="region-time-name" x="0" y="'+(y+1)+'">'+escSvg(REGIONS[k].label)+'</text><text class="region-time-count" x="'+(TW-1)+'" y="'+(y-3)+'">'+rc[k].toLocaleString()+'</text><text class="region-time-pct" x="'+(TW-1)+'" y="'+(y+8)+'">'+pct+'%</text>'+cells;}).join('');
-    distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+'" role="img" aria-label="按首次发现日期统计的三条地区横向时间分布；色带深浅表示时间窗口内职位密度">'+axisTicks+rows+'</svg>';
+    const trendX=i=>left+(i/(bins-1))*plotW;
+    const trendY=value=>base-(value/maxBucket)*(base-top);
+    const tickValues=[0,1/3,2/3,1].map(t=>Math.round(maxBucket*t));
+    const gridTicks=[...new Set(tickValues)].map(v=>
+      '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
+      '" x2="'+(TW-right)+'" y2="'+trendY(v).toFixed(2)+'"/>'+
+      '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
+      '" text-anchor="end">'+v+'</text>'
+    ).join('');
+    const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'});
+    const dateTicks=[0,10,20,30,39].map(i=>{
+      const date=new Date(tMin+i*tSpan/(bins-1));
+      return '<text class="region-spark-date" x="'+trendX(i).toFixed(2)+
+        '" y="154" text-anchor="'+(i===0?'start':i===39?'end':'middle')+'">'+
+        escSvg(regionTickFormat.format(date))+'</text>';
+    }).join('');
+    const legendStep=55,legendLeft=TW-right-regionOrder.length*legendStep;
+    const legend=regionOrder.map((k,i)=>{
+      const x=legendLeft+i*legendStep;
+      return '<g class="region-series '+k.toLowerCase()+'">'+
+        '<line class="region-legend-swatch" x1="'+x+'" x2="'+(x+9)+'" y1="13" y2="13"/>'+
+        '<text class="region-legend-label" x="'+(x+13)+'" y="16">'+escSvg(k)+'</text>'+
+        '<title>'+escSvg(REGIONS[k].label)+' · '+rc[k]+' active roles</title></g>';
+    }).join('');
+    const series=regionOrder.map((k,ri)=>{
+      const pts=bucketCounts[ri].map((n,i)=>({
+        x:trendX(i),y:trendY(n),n
+      }));
+      const path=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
+      const area=ri===0&&pts.length?
+        '<path class="region-spark-area" d="'+path+' L'+pts[pts.length-1].x.toFixed(2)+
+        ','+base+' L'+pts[0].x.toFixed(2)+','+base+' Z"/>':'';
+      const hits=pts.map((p,i)=>{
+        const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
+        return '<circle class="region-spark-hit" cx="'+p.x.toFixed(2)+
+          '" cy="'+p.y.toFixed(2)+'" r="5" tabindex="0" role="img" aria-label="'+
+          escSvg(k+' '+p.n+' jobs between '+regionTickFormat.format(from)+' and '+regionTickFormat.format(to))+
+          '"><title>'+escSvg(REGIONS[k].label)+' · '+p.n+' roles · '+
+          escSvg(regionTickFormat.format(from)+' – '+regionTickFormat.format(to))+
+          '</title></circle>';
+      }).join('');
+      return '<g class="region-series '+k.toLowerCase()+'">'+area+
+        '<path class="region-spark-line" d="'+path+'"/>'+hits+'</g>';
+    }).join('');
+    distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
+      '" role="img" aria-label="Regional trend of active jobs grouped into 40 first-observed date buckets; hover or focus points for exact counts">'+
+      '<text class="region-chart-caption" x="'+left+'" y="16">First-observed active roles by geography</text>'+
+      legend+gridTicks+series+dateTicks+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
     const densityStart=densityDate.format(new Date(tMin)).replaceAll('/','.');
@@ -652,29 +699,43 @@ jobsDataPromise
     const today=new Date(),days=[];
     for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
-    /* Editorial time-series: keep every daily value without floating labels.
-       Trend geometry and the aligned two-row value rail are independent layers. */
-    /* Professional clean trend: two meaningful callouts and all data on demand. */
-    const SW=520,SH=150,sLeft=26,sRight=19,sTop=18,sBase=112,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
+    /* 30-day column presentation / C preview. The original days, totals,
+       date-window, active-job filtering and point tooltips are unchanged.
+       All thirty exact data points now draw simple columns rather than an
+       ornamental line/stem/node combination. */
+    const SW=520,SH=150,sLeft=33,sRight=17,sTop=18,sBase=124,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
     const sy=v=>sBase-(v/smax)*sPlotH;
-    const peakIndex=peak>0?days.findIndex(d=>d.total===peak):-1;
-    const latestIndex=days.length-1;
-    const lowValue=Math.min(...days.map(d=>d.total));
-    const lowIndex=days.findIndex(d=>d.total===lowValue);
-    const pts=days.map((d,i)=>({x:sx(i),y:sy(d.total),total:d.total}));
-    const series=pts.map(p=>p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
-    const lines=[0,.5,1].map(t=>'<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(smax*t).toFixed(2)+'" x2="'+(SW-sRight)+'" y2="'+sy(smax*t).toFixed(2)+'"/>').join('');
-    const stems=pts.map((p,i)=>'<line class="rhythm-stick'+(days[i].weekend?' weekend':'')+'" x1="'+p.x.toFixed(2)+'" y1="'+sBase+'" x2="'+p.x.toFixed(2)+'" y2="'+p.y.toFixed(2)+'"/>').join('');
-    const nodes=pts.map((p,i)=>{const highlight=i===peakIndex||i===latestIndex;return '<g class="rhythm-point" tabindex="0" role="button" data-day="'+i+'" aria-label="'+days[i].label+': '+p.total+' new postings"><circle class="rhythm-point-hit" cx="'+p.x.toFixed(2)+'" cy="'+p.y.toFixed(2)+'" r="8"/><circle class="rhythm-node'+(days[i].weekend?' weekend':'')+(highlight?' focus':'')+'" cx="'+p.x.toFixed(2)+'" cy="'+p.y.toFixed(2)+'" r="'+(highlight?3.7:2.35)+'"/><title>'+days[i].label+' · '+p.total+' new postings</title></g>';}).join('');
-    const keyLabel=(i,key)=>{const p=pts[i],anchor=i>25?'end':i<4?'start':'middle',dx=anchor==='end'?-4:anchor==='start'?4:0;return '<text class="rhythm-key-label rhythm-key-'+key+'" x="'+(p.x+dx).toFixed(2)+'" y="'+(key==='latest'?Math.min(130,p.y+14):Math.max(11,p.y-12)).toFixed(2)+'" text-anchor="'+anchor+'">'+key.toUpperCase()+' '+p.total+'</text>';};
-    // Prioritize high and low; the latest value remains available in its point tooltip.
-    // For nearby extrema, move the low callout below its point instead of hiding it.
-    const lowLabel=(i)=>{const p=pts[i],anchor=i>25?'end':i<4?'start':'middle',dx=anchor==='end'?-4:anchor==='start'?4:0;return '<text class="rhythm-key-label rhythm-key-low" x="'+(p.x+dx).toFixed(2)+'" y="'+Math.min(130,p.y+14).toFixed(2)+'" text-anchor="'+anchor+'">LOW '+p.total+'</text>';};
-    const callouts=(peakIndex>=0?keyLabel(peakIndex,'high'):'')+(lowIndex!==peakIndex?lowLabel(lowIndex):'')+(latestIndex!==peakIndex&&latestIndex!==lowIndex&&Math.abs(latestIndex-peakIndex)>4&&Math.abs(latestIndex-lowIndex)>4?keyLabel(latestIndex,'latest'):'');
-    const axis=[0,7,14,21,29].map(i=>'<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+'" y="144" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+days[i].label+'</text>').join('');
+    const barWidth=Math.min(11.3,sPlotW/days.length*.72);
+    const scaleValues=[...new Set([0,Math.ceil(smax/3),Math.ceil(2*smax/3),smax])];
+    const guides=scaleValues.map(v=>
+      '<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(v).toFixed(2)+
+      '" x2="'+(SW-sRight)+'" y2="'+sy(v).toFixed(2)+'"/>'+
+      '<text class="rhythm-scale-label" x="'+(sLeft-10)+'" y="'+(sy(v)+3).toFixed(2)+
+      '" text-anchor="end">'+v+'</text>'
+    ).join('');
+    const bars=days.map((d,i)=>{
+      const x=sx(i)-barWidth/2,y=sy(d.total),h=Math.max(0,sBase-y);
+      const peak=d.total===peak&&peak>0;
+      return '<g class="rhythm-point" tabindex="0" role="img" data-day="'+i+
+        '" aria-label="'+d.label+': '+d.total+' new postings">'+
+        '<rect class="rhythm-bar'+(d.weekend?' weekend':'')+(peak?' peak':'')+
+        '" x="'+x.toFixed(2)+'" y="'+y.toFixed(2)+'" width="'+barWidth.toFixed(2)+
+        '" height="'+h.toFixed(2)+'" rx="0.8"/>'+
+        '<rect class="rhythm-bar-hit" x="'+(x-2).toFixed(2)+'" y="'+sTop+
+        '" width="'+(barWidth+4).toFixed(2)+'" height="'+(sBase-sTop)+'"/>'+
+        '<title>'+d.label+' · '+d.total+' new postings</title></g>';
+    }).join('');
+    const dateLabels=[0,7,14,21,29].map(i=>
+      '<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+
+      '" y="145" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+
+      days[i].label+'</text>'
+    ).join('');
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="30-day new postings trend. Point tooltips contain each date and its value."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg>';
+    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
+      '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
+      '<text class="rhythm-caption" x="'+sLeft+'" y="11">New postings per day</text>'+
+      guides+bars+dateLabels+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
     // as New Postings, with the radar exposing a separate region selector.
