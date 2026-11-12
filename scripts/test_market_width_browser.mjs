@@ -72,10 +72,14 @@ async function renderLeft(page,chartData,theme){
   const stackBands=[...document.querySelectorAll('#dist .region-stack-band')];
   const regionGroups=[...document.querySelectorAll('#dist svg > g.region-series')]
    .filter(g=>g.querySelector('.region-stack-band'));
-  const stackPoint=k=>{
-   const node=document.querySelector('#dist .region-series.'+k+' .region-spark-hit[data-bin="0"]');
-   return node?{count:Number(node.dataset.count),lower:Number(node.dataset.lower),upper:Number(node.dataset.upper)}:null;
+  const stackPoint=(k,last=false)=>{
+   const list=[...document.querySelectorAll('#dist .region-series.'+k+' .region-spark-hit')];
+   const node=last?list.at(-1):list[0];
+   return node?{count:Number(node.dataset.count),lower:Number(node.dataset.lower),
+    upper:Number(node.dataset.upper),cumulative:Number(node.dataset.cumulative),
+    stacked:Number(node.dataset.stacked),bin:Number(node.dataset.bin)}:null;
   };
+  const svg=document.querySelector('#dist .region-time-svg');
   return {series,bars:bars.length,regions:lines.length,
    stackOrder:regionGroups.map(g=>[...g.classList].find(c=>c!=='region-series')),
    bandCount:stackBands.length,
@@ -84,6 +88,11 @@ async function renderLeft(page,chartData,theme){
     return [k,node?getComputedStyle(node).fill:null];
    })),
    stackFirst:Object.fromEntries(['sg','hk','cn'].map(k=>[k,stackPoint(k)])),
+   stackLast:Object.fromEntries(['sg','hk','cn'].map(k=>[k,stackPoint(k,true)])),
+   chartKind:svg?.dataset.chartKind,dayBins:Number(svg?.dataset.dayBins),
+   regionFinals:Object.fromEntries(['hk','sg','cn'].map(k=>[k,Number(svg?.dataset['region'+k.toUpperCase()])])),
+   finalTotal:Number(svg?.dataset.finalTotal),
+   chartAria:svg?.getAttribute('aria-label')||'',
    otherSeries:document.querySelectorAll('#dist .region-series.other').length,
    grid:document.querySelectorAll('#dist .region-spark-grid').length,
    barColor:bars.length?getComputedStyle(bars[0]).fill:null,
@@ -110,7 +119,7 @@ async function renderLeft(page,chartData,theme){
    dateTicks:document.querySelectorAll('#dist .region-spark-date').length,
    filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
    paths:lines.map(p=>p.getAttribute('d')),
-   dateNote:document.querySelector('#distNote')?.textContent||'',
+   notePresent:!!document.querySelector('#distNote'),
    points:hits.map(p=>({x:Number(p.getAttribute('cx')),n:Number(p.dataset.count),bin:Number(p.dataset.bin)}))};
  });
  assert.deepEqual(quality.series,{
@@ -124,39 +133,52 @@ async function renderLeft(page,chartData,theme){
  assert.deepEqual(quality.stackOrder,['hk','sg','cn'],
   'real production distribution anchors HK below SG and CN; OTHER is excluded');
  assert.equal(quality.otherSeries,0,'OTHER never belongs in this chart or legend');
+ assert.equal(quality.chartKind,'cumulative-stack','this must be a cumulative, not per-day regional chart');
+ assert.match(quality.chartAria,/y-axis is the sum of all three regions/);
+ assert.equal(quality.notePresent,false,'verbose first-observed footnote and its whitespace are removed');
  assert.ok(quality.bandCount>=3,'each active region has at least one tinted band');
  assert.ok(Object.values(quality.bandFills).every(Boolean),
   'SG/HK/CN ribbons must each have a visible regional color shade');
  const first=quality.stackFirst;
  for(const k of ['sg','hk','cn'])if(first[k]){
   assert.ok(first[k].upper>first[k].lower,'regional bands must have positive thickness');
-  assert.equal(first[k].upper-first[k].lower,first[k].count,'band thickness is exact own count');
+  assert.equal(first[k].upper-first[k].lower,first[k].cumulative,'band thickness is each region’s cumulative current-active cohort');
+  assert.ok(first[k].cumulative>=first[k].count,'daily new observations cannot exceed their cumulative total');
  }
  if(first.sg&&first.hk&&first.cn){
   assert.equal(first.hk.lower,0,'largest HK series anchors the zero baseline');
   assert.equal(first.sg.lower,first.hk.upper,'SG stacks above HK');
   assert.equal(first.cn.lower,first.sg.upper,'CN stays on top, not in the middle');
-  assert.equal(first.cn.upper,first.sg.count+first.hk.count+first.cn.count,
-   'top of CN corresponds to the total across three regions');
+  assert.equal(first.cn.upper,first.sg.cumulative+first.hk.cumulative+first.cn.cumulative,
+   'uppermost cumulative boundary equals the three regional cumulative totals');
  }
  const observations=chartData.filter(r=>['SG','HK','CN'].includes(r.location))
   .map(r=>new Date(r.firstSeen).getTime());
  const sampleSpan=Math.max(...observations)-Math.min(...observations);
- const expectedBins=Math.max(1,Math.ceil(sampleSpan/86400000)+1);
+ const expectedBins=Math.max(1,Math.floor(sampleSpan/86400000)+1);
  assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
-  'only populated regional intervals need hover targets');
+  'each genuine first-seen observation remains in one daily bucket');
+ assert.equal(quality.dayBins,Math.max(1,Math.round(sampleSpan/86400000)+1),
+  'the full observed range has exactly one UTC bucket per day');
  assert.equal(quality.pointTotal,
   chartData.filter(r=>['SG','HK','CN'].includes(r.location)&&
     new Date(r.firstSeen).getTime()>=
       (chartData.some(j=>['SG','HK','CN'].includes(j.location)&&new Date(j.firstSeen).getUTCFullYear()>=2026)
         ?Date.UTC(2026,0,1):-Infinity)).length,
   '2026 timeline includes every available SG/HK/CN record, without OTHER or pre-2026 anomalies');
+ assert.equal(quality.finalTotal,quality.pointTotal,
+  'rightmost cumulative stacked total equals the count of all included active roles');
+ assert.equal(quality.regionFinals.hk+quality.regionFinals.sg+quality.regionFinals.cn,quality.finalTotal,
+  'the three final regional layers must sum to the y-axis endpoint');
+ assert.ok(Math.max(...quality.regionTicks.map(t=>t.value))>=quality.finalTotal,
+  'the y-axis must fit the complete vertically stacked total, not a daily peak');
  assert.ok(quality.grid>=2&&quality.filled>0,'both charts plot genuine values');
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
   'regional lines begin at actual observations, not baseline zeros');
  assert.equal(quality.matchingContours,true,
   'upper band boundaries and ink must use identical SVG segment paths');
- assert.match(quality.dateNote,/逐日记录/,'all points use calendar-day resolution without weekly buckets');
+ assert.ok(quality.linePaths.every(d=>d&&d.split('M').length===2),
+  'one unbroken cumulative contour per region, including days without new postings');
  assert.equal(quality.captions,0,'do not add redundant chart subtitles');
  assert.ok(quality.dateTicks>=2&&quality.dateTicks<=5,
   'short intervals do not duplicate date ticks');
@@ -346,6 +368,8 @@ try{
     'region controls must sit alongside the heading, above the map');
    assert.ok(bounds.board.h>=280,'footer must not compress the map');
    assert.ok(bounds.post.y>=bounds.dist.b-2);
+   assert.ok(bounds.dist.h>bounds.post.h*1.3,
+    'allocate materially more vertical space to the true stacked regional chart');
    assert.ok(bounds.top.y>=Math.max(bounds.left.b,bounds.right.b)-2);
    assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
    assert.ok(bounds.tabs.x>=bounds.heading.x+bounds.heading.w-2,
@@ -405,8 +429,8 @@ try{
    await page.close();
   }
  }
- // Sparse temporal data must not create a long multicolor y=0 stripe.
- // Two distant CN observations stay separate; nothing is fabricated between.
+ // A gap in first-seen observations MUST NOT break already accumulated
+ // active-role cohorts. The area remains stacked, with flat portions.
  const gapPage=await make(960,'light');
  const gapped=[
   {location:'CN',firstSeen:'2026-10-14T09:00:00Z',company:'HSBC',jobStatus:'active'},
@@ -418,11 +442,11 @@ try{
  const gapQuality=await renderLeft(gapPage,gapped,'light');
  assert.equal(gapQuality.pointTotal,4,'keep all SG/HK/CN records and exclude OTHER');
  assert.equal(gapQuality.otherSeries,0,'OTHER not plotted even when it exists in input');
- assert.equal((gapQuality.paths[2].match(/M/g)||[]).length,2,
-  'separated CN observations must form two disconnected contours');
- assert.ok(gapQuality.bandCount>=4,'isolated observations produce true tinted areas');
- assert.ok(gapQuality.markerInks.every(m=>m.fill===m.expected),
-  'isolated SG/HK/CN data markers must use the exact line color, not default black');
+ assert.ok(gapQuality.paths.every(d=>(d.match(/M/g)||[]).length===1),
+  'all three cumulative contours stay continuous even through dates with zero new observations');
+ assert.equal(gapQuality.bandCount,3,'one additive area per region, with no disconnected fragments');
+ assert.equal(gapQuality.finalTotal,4,'all four recorded roles remain in the final cumulative stack');
+ assert.deepEqual(gapQuality.regionFinals,{hk:1,sg:1,cn:2});
  await gapPage.locator('.analytics-card').screenshot({
   path:new URL('artifacts/market-width/region-gap-960-light.png',source).pathname,
   animations:'disabled'
@@ -441,7 +465,9 @@ try{
  ];
  const dailyQuality=await renderLeft(dailyPage,dailyRows,'light');
  assert.equal(dailyQuality.pointTotal,6,'all six genuine daily observations are retained');
- assert.match(dailyQuality.dateNote,/2026\.01\.22.*11\.12/,'dates span the actual earliest and latest 2026 observations');
+ assert.equal(dailyQuality.dayBins,295,'Jan 22 through Nov 12 have 295 independent calendar days');
+ assert.equal(dailyQuality.finalTotal,6,'full-year final y-axis stack equals all six active roles');
+ assert.deepEqual(dailyQuality.regionFinals,{hk:2,sg:2,cn:2});
  const near=dailyQuality.points.filter(p=>p.bin===0||p.bin===1);
  assert.ok(near.some(p=>p.bin===0)&&near.some(p=>p.bin===1),
   'Jan 22 and Jan 23 must have separate calendar-day buckets, not one weekly aggregate');
@@ -462,7 +488,8 @@ try{
    firstSeen:new Date(Date.UTC(2026,10,5+i,12)).toISOString(),
    company:'HSBC',jobStatus:'active'});
  const focused=await renderLeft(focusPage,focusRows,'light');
- assert.match(focused.dateNote,/2026/,'full-year timeline must disclose 2026 date range');
+ assert.equal(focused.notePresent,false,'no verbose footnote is reintroduced on narrow time ranges');
+ assert.equal(focused.finalTotal,63,'the 2025 outlier is excluded from the 2026 cumulative total');
  assert.equal(focused.pointTotal,63,'all 2026 records remain exact');
  assert.ok(Math.min(...focused.points.map(p=>p.x))<100&&
   Math.max(...focused.points.map(p=>p.x))>430,
@@ -470,8 +497,8 @@ try{
  const dateLabels=await focusPage.locator('#dist .region-spark-date').allTextContents();
  assert.ok(dateLabels[0].includes('2026'),'first axis tick identifies the year');
  const paths=focused.linePaths.filter(Boolean);
- assert.ok(paths.every(d=>/^M[\d.]+,[\d.]+ L/.test(d)&&d.includes(' C')),
-  'multi-point region boundaries use continuous cubic paths and aligned shoulders');
+ assert.ok(paths.every(d=>/^M[\d.]+,[\d.]+ C/.test(d)),
+  'continuous regional contours use monotone cubic segments across all daily observations');
  await focusPage.locator('.analytics-card').screenshot({
   path:new URL('artifacts/market-width/recent-focus-960-light.png',source).pathname,
   animations:'disabled'
