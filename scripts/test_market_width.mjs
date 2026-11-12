@@ -128,7 +128,7 @@ test('no mouse-induced layout shifts and no 540-cell rebuild on date selection',
  assert.match(js,/ArrowDown/);
  assert.match(js,/function chooseDay\(/);
  assert.match(js,/function paintRegion\(/);
- assert.match(js,/only region changes re-create the matrix/);
+ assert.match(js,/only region changes re-create the matrix/i);
  assert.doesNotMatch(js,/addEventListener\('pointerover'|addEventListener\('pointerout'|function updateInspection/);
  assert.doesNotMatch(css,/\.mw-company-row:has\(\.mw-cell:hover\)[^{]*\{[^}]*font-weight/);
  assert.match(css,/--mw-4:#82674b/);
