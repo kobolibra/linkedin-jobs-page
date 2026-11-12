@@ -97,6 +97,8 @@ test('homepage shows editorial 18-by-30 matrix, aligned beside left charts',()=>
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.match(css,/@media\s*\(max-width:720px\)/);
  assert.match(css,/position:sticky/);
+ assert.match(css,/\.mw-cell\.is-selected:not\(\.mw-level-0\)/);
+ assert.match(js,/j%7===0&&j<=last-5/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.ok(html.includes('id="marketWidthScroll"'));
  assert.ok(html.includes('18 institutions · 30 days'));
