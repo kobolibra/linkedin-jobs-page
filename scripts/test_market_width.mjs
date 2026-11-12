@@ -200,10 +200,13 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.ok(html.includes('Size and shade reflect new postings of the day, excluding reposts'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
+ assert.ok(pos('id="marketWidthTitle"')<pos('id="marketWidthRegions"')&&
+   pos('id="marketWidthRegions"')<pos('id="marketWidthMap"'),
+   'regional filters must sit to the right of the chart title, above the board');
  assert.ok(pos('id="marketWidthMap"')<pos('class="mw-footer"')&&
    pos('class="mw-footer"')<pos('id="marketWidthCount"')&&
-   pos('id="marketWidthCount"')<pos('id="marketWidthRegions"'),
-   'the board must appear above its summary, daily navigation, region selector and encoding');
+   pos('id="marketWidthCount"')<pos('class="mw-encoding"'),
+   'the board must sit above daily summary, navigation and explanation');
  assert.ok(pos('id="marketWidthMap"')<pos('id="marketWidthPrev"'),
    'date controls belong below the treemap, not above');
  assert.match(css,/\.mw-footer\s*\{[^}]*display:flex/);
