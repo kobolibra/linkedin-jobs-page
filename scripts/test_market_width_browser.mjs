@@ -81,7 +81,11 @@ async function renderLeft(page,chartData,theme){
   '30-day columns must reuse the existing light/dark blue tokens');
  assert.equal(quality.regions,3);
  assert.equal(quality.bars,30);
- assert.equal(quality.bins,120,'40 unchanged time bins for each of three regions');
+ const observations=chartData.map(r=>new Date(r.firstSeen).getTime());
+ const sampleSpan=Math.max(...observations)-Math.min(...observations);
+ const expectedBins=Math.min(40,Math.max(2,Math.ceil(sampleSpan/86400000)+1));
+ assert.equal(quality.bins,expectedBins*3,
+  'region lines use all true first-seen records without artificial subday zero gaps');
  assert.ok(quality.grid>=2&&quality.filled>0,'both charts have real plotted data');
  assert.ok(quality.paths.every(p=>p?.startsWith('M')&&p.includes('L')),
   'regional lines must contain actual time series paths');
