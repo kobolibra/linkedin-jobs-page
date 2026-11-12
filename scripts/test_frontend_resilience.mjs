@@ -164,7 +164,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/#dist \.region-spark-line,[\s\S]*?stroke-width:1\.65/);
  assert.match(css,/#spark \.rhythm-bar\{\s*fill:var\(--viz-blue\);opacity:1/);
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
- assert.match(source,/const bucketCounts=regionOrder\.map\(k=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
+ assert.match(source,/const bucketCounts=regionOrder\.map\(\(\)=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
  assert.match(source,/regionRecords\[k\]\.forEach\(x=>\{/);
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
