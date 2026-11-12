@@ -9,30 +9,31 @@
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
-/* MARKET WIDTH / PORCELAIN NAVY
-   One mineral-blue family shares the site's porcelain surfaces, navy
-   typography and restrained brass interaction accent. No firm-by-firm hues.
-   Zero tiles are neutral; positive activity has only three tonal steps.
-   Area and the printed numeral retain the exact daily-count encoding.
-   Text inks are specified independently for WCAG AA in both themes. */
+/* MARKET WIDTH / LIGHT PORCELAIN
+   Light-first tile surfaces belong to the website's translucent porcelain
+   panels. A muted mineral-mist family adds just enough blue to distinguish
+   activity without introducing dark blocks into the pale dashboard.
+   The hierarchy is primarily the exact area and numeral, not saturation.
+   Navy remains typography ink; brass remains a focus-only accent.
+   All on-tile text passes WCAG AA in both themes. */
 .analytics-card > .ac-col-market {
   position:relative;grid-column:2;display:flex;flex-direction:column;
   min-width:0;min-height:0;padding:21px 20px 18px;
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
-  --mw-zero:#e5e8e7;--mw-zero-ink:#52616b;
-  --mw-low:#a4b8c4;--mw-low-ink:#203849;
-  --mw-mid:#50718c;--mw-mid-ink:#f8faf8;
-  --mw-high:#234b68;--mw-high-ink:#f8faf8;
+  --mw-zero:#e6e8e5;--mw-zero-ink:#4e5b60;
+  --mw-low:#cfdee1;--mw-low-ink:#263843;
+  --mw-mid:#bcd1d7;--mw-mid-ink:#263843;
+  --mw-high:#a7c2cb;--mw-high-ink:#243844;
   --mw-seam:1px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:color-mix(in srgb,var(--ink) 4%,var(--surface));
-  --mw-zero:#293b4a;--mw-zero-ink:#d0d8de;
-  --mw-low:#50718c;--mw-low-ink:#f8faf8;
-  --mw-mid:#83a5b8;--mw-mid-ink:#172d3f;
-  --mw-high:#b9ced8;--mw-high-ink:#172d3f;
+  --mw-zero:#293b4a;--mw-zero-ink:#cbd5d9;
+  --mw-low:#476d81;--mw-low-ink:#f8faf8;
+  --mw-mid:#799eaf;--mw-mid-ink:#172d3f;
+  --mw-high:#a9c5cd;--mw-high-ink:#172d3f;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
