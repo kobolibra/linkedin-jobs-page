@@ -162,8 +162,11 @@ try{
     'the controlled sample of four distinct counts must have four unique tones');
    const ordered=[...positives].sort((a,b)=>Number(a.count)-Number(b.count));
    assert.deepEqual(ordered.map(t=>Number(t.count)),[2,3,4,5]);
-   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
-    'numeric active colors must remain distinct from neutral zeros');
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>25),
+    'approved Soft Indigo at two or more postings must remain distinguishable from neutral zeros');
+   if(theme==='light')assert.ok(positives.every(t=>{
+    const [r,g,b]=rgb(t.faceBg);return b>r&&b>g&&r>=175;
+   }),'approved Soft Indigo C remains bright with blue-violet tint, not mint or turquoise');
    const accent=theme==='light'?'rgb(16, 43, 68)':'rgb(245, 240, 232)';
    assert.ok(positives.every(t=>t.countInk===accent),
     'precise counts use high-contrast site-compatible text');
