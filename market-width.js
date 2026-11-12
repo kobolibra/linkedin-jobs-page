@@ -168,7 +168,7 @@ function render(rows,days){
    for(const tile of tiles){
     const button=document.createElement('button');
     button.type='button';
-    button.className='mw-tile mw-tone-'+toneOf(tile.count);
+    button.className='mw-tile mw-tone-'+toneOf(tile.count)+(active.length>=10?' mw-tile-dense':'');
     button.dataset.firm=String(tile.i);
     button.setAttribute('aria-label',label(tile.i,tile.count));
     button.title=label(tile.i,tile.count);
@@ -183,7 +183,7 @@ function render(rows,days){
     if(tile.w>=155&&tile.h>=54){
      const name=document.createElement('span');name.className='mw-tile-name';
      name.textContent=DISPLAY[tile.i];face.append(name);
-    }else if(tile.w>=95&&tile.h>=56){
+    }else if(tile.w>=68&&tile.h>=53){
      const name=document.createElement('span');name.className='mw-tile-name mw-tile-name-small';
      name.textContent=DISPLAY[tile.i];face.append(name);
     }
