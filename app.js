@@ -631,7 +631,11 @@ jobsDataPromise
        Keep the original 40 first-seen time buckets, exact regional totals,
        region identities and date range. Only the SVG chart type changes:
        overlapping region time series replace the stacked density strips. */
-    const TW=520,TH=164,left=38,right=14,top=36,base=131,plotW=TW-left-right,bins=40;
+    // A sub-day 40-bin ribbon produces false zero gaps when drawn as a line.
+    // For a short span use one bin per observed calendar day; retain 40 bins
+    // for longer histories. The underlying records and total counts do not change.
+    const bins=Math.min(40,Math.max(2,Math.ceil(tSpan/86400000)+1));
+    const TW=520,TH=164,left=38,right=14,top=36,base=131,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
@@ -649,10 +653,10 @@ jobsDataPromise
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'});
-    const dateTicks=[0,10,20,30,39].map(i=>{
+    const dateTicks=[0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)).map(i=>{
       const date=new Date(tMin+i*tSpan/(bins-1));
       return '<text class="region-spark-date" x="'+trendX(i).toFixed(2)+
-        '" y="154" text-anchor="'+(i===0?'start':i===39?'end':'middle')+'">'+
+        '" y="154" text-anchor="'+(i===0?'start':i===bins-1?'end':'middle')+'">'+
         escSvg(regionTickFormat.format(date))+'</text>';
     }).join('');
     const legendStep=55,legendLeft=TW-right-regionOrder.length*legendStep;
