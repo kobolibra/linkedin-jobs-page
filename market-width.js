@@ -190,12 +190,16 @@ function marketTiles(values,width=640,height=340){
    preferences minimize color changes; an actual shared edge takes priority
    over preference so two touching positive tiles never merge optically.
    Rectangles, values and the original squarified geometry are untouched. */
-const PREFERRED_INK=Object.freeze([0,1,2,3,4,0,3,1,4,2,0,2,3,1,4,0,4,1]);
+const PREFERRED_INK=Object.freeze([4,2,1,3,0,4,1,2,0,3,4,1,3,2,0,4,0,2]);
 function colorTiles(tiles){
  const active=(tiles||[]).filter(t=>!t.zero);
  const count=active.length;
  const paint=Array(count).fill(-1);
  const neighbors=Array.from({length:count},()=>[]);
+ // Give the largest posting footprint a site-blue visual anchor. All other
+ // colors distinguish neighboring firms, without encoding a second scale.
+ const lead=active.reduce((best,t,j)=>best<0||t.count>active[best].count?j:best,-1);
+ if(lead>=0)paint[lead]=0;
  const touches=(a,b)=>{
   const x=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
   const y=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
@@ -228,7 +232,7 @@ function colorTiles(tiles){
   }
   return false;
  }
- if(!assign(count))throw new Error('Market Width color adjacency cannot be resolved');
+ if(!assign(count-(lead>=0?1:0)))throw new Error('Market Width color adjacency cannot be resolved');
  const byFirm=Array(18).fill(null);
  active.forEach((t,j)=>{byFirm[t.i]=paint[j]});
  return byFirm;
