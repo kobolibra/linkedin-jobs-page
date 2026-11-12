@@ -22,14 +22,14 @@
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
   --mw-zero:#e8ebe9;--mw-zero-ink:#536167;
-  --mw-tone-1:#c4d2c7;--mw-tone-2:#a2bdb2;--mw-tone-3:#85a7a1;
+  --mw-tone-1:#b9cdbf;--mw-tone-2:#a2bdb2;--mw-tone-3:#85a7a1;
   --mw-tone-4:#4b747b;--mw-tone-5:#315764;
   --mw-seam:1px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:color-mix(in srgb,var(--ink) 4%,var(--surface));
-  --mw-zero:#384855;--mw-zero-ink:#c5d0d6;
-  --mw-tone-1:#3f6264;--mw-tone-2:#587977;--mw-tone-3:#8faea6;
+  --mw-zero:#2a3e4e;--mw-zero-ink:#c5d0d6;
+  --mw-tone-1:#496b6a;--mw-tone-2:#587977;--mw-tone-3:#8faea6;
   --mw-tone-4:#b6cec2;--mw-tone-5:#d8e3d6;
 }
 .analytics-card > .ac-col-market h3 {
