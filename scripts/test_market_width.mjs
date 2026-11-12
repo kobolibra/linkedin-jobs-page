@@ -273,7 +273,7 @@ test('porcelain and cobalt meet AA contrast and keep large light surfaces colorl
   assert.ok(difference>30,'active porcelain must differ perceptibly from neutral '+theme);
  }
  assert.ok(lum(light.active)>.94,'positive surface must remain luminous, not dusty blue');
- assert.ok(lum(light.zero)>.78,'zero surface must remain inside the site's pale neutral family');
+ assert.ok(lum(light.zero)>.78,'zero surface must remain inside the pale site-neutral family');
  assert.ok(lum(light.active)>lum(light.zero),'positive tile should read as clean lifted porcelain');
  assert.ok(lum(light.accent)<.2,'cobalt accent must be firm and deliberate');
  assert.doesNotMatch(css,/linear-gradient\(/,'tile paint must be opaque and clean, with no decorative gradients');
