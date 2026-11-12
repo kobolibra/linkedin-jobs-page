@@ -1,65 +1,110 @@
-/* Browser acceptance: real layout, controls, labels and chart geometry. */
+/* Browser verification: 18 companies × 30 dates, stable absolute cells,
+   no zero decorations, region filters, selected-day navigation, layout, themes. */
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,mkdirSync} from 'node:fs';
 import {chromium} from 'playwright';
 const source=new URL('../',import.meta.url);
 const html=readFileSync(new URL('index.html',source),'utf8');
-const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css'].map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
+const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css']
+ .map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
 const script=readFileSync(new URL('market-width.js',source),'utf8');
 const block=html.match(/<div class="analytics reveal"[\s\S]*?(?=<\/header>)/)?.[0];
-assert.ok(block,'homepage analytics present');
-const analytics=block.slice(0,block.indexOf('</div></div>\n    ')>=0?block.indexOf('</div></div>\n    ')+12:undefined);
-const sample=[];
-for(const date of ['2026-11-09','2026-11-10','2026-11-11']){
- for(const [company,i] of [['HSBC',0],['Citi',1],['Invesco',2],['Schroders',3]]){
-  for(let n=0;n<(i+2);n++)sample.push({company,location:['CN','HK','SG'][i%3],firstSeen:date,jobStatus:'active'});
+assert.ok(block,'homepage analytics block is present');
+const sample=[],days=Array.from({length:30},(_,index)=>{
+ const d=new Date(Date.UTC(2026,9,14+index,12));
+ const key=d.toISOString().slice(0,10);
+ return {key,label:key};
+});
+for(let day=0;day<29;day++){
+ for(const [company,count,region] of [['HSBC',2,'CN'],['Citi',3,'HK'],['Invesco',4,'SG'],['Schroders',5,'CN']]){
+  for(let n=0;n<count;n++)sample.push({company,location:region,firstSeen:days[day].key+'T09:00:00Z',jobStatus:'active'});
  }
 }
-const days=['2026-11-09','2026-11-10','2026-11-11'].map(key=>({key,label:key,date:new Date(key+'T12:00:00Z')}));
 const browser=await chromium.launch({headless:true});
+mkdirSync(new URL('../artifacts/market-width/',source),{recursive:true});
 try{
  for(const width of [1440,960,390]){
   for(const theme of ['light','dark']){
    const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1});
    await page.setContent('<!doctype html><html data-theme="'+theme+'"><head><style>'+styles+'</style></head><body><div class="shell">'+block+'</div></body></html>');
    await page.addScriptTag({content:script});
-   await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[sample,days.map(({key,label})=>({key,label,date:key}))]);
-   const metrics=await page.evaluate(()=>{
-    const box=selector=>{const el=document.querySelector(selector);assert(el,selector);const b=el.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height,b:b.bottom}};
-    function assert(el,label){if(!el)throw Error('Missing '+label);}
-    return {left:box('.analytics-left'),radar:box('.ac-col-market'),dist:box('.ac-col-density'),postings:box('.ac-col-postings'),top:box('.ac-col-top50'),svg:box('.mw-svg'),count:document.querySelector('#marketWidthCount').textContent,firm:document.querySelector('#marketWidthFirms').textContent,axes:document.querySelectorAll('.mw-firm').length,table:document.querySelectorAll('#marketWidthDetails tr').length,scroll:document.documentElement.scrollWidth};
+   await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[sample,days]);
+   const box=await page.evaluate(()=>{
+    const measure=selector=>{
+     const el=document.querySelector(selector);
+     if(!el)throw Error('Missing '+selector);
+     const b=el.getBoundingClientRect();
+     return {x:b.x,y:b.y,w:b.width,h:b.height,b:b.bottom};
+    };
+    return {left:measure('.analytics-left'),right:measure('.ac-col-market'),
+      dist:measure('.ac-col-density'),postings:measure('.ac-col-postings'),
+      top:measure('.ac-col-top50'),matrix:measure('.mw-matrix'),
+      scroll:measure('.mw-matrix-scroll'),pageWidth:document.documentElement.scrollWidth};
    });
-   assert.equal(metrics.count,'14');
-   assert.equal(metrics.firm,'4 / 18');
-   assert.equal(metrics.axes,18);assert.equal(metrics.table,18);
-   assert.ok(metrics.svg.w>180&&metrics.svg.h>130,JSON.stringify({width,theme,metrics}));
-   assert.equal(await page.locator('.mw-ring').count(),3);
-   assert.equal(await page.locator('.mw-reference').count(),0);
-   assert.match(await page.locator('#marketWidthScale').textContent(),/Detail scale/);
-   assert.match(await page.locator('#marketWidthInspection').textContent(),/Schroders 5/);
-   assert.equal(await page.locator('.mw-area,.mw-single,.mw-spoke,.mw-value').count(),0);
-   assert.equal(await page.locator('.mw-dot').count(),4);
-   assert.equal(await page.locator('.mw-tick-mark').count(),18);
-   assert.equal(await page.locator('.mw-guide line[x1="320"]').count(),0);
-   assert.equal(await page.locator('.mw-point').count(),4);
-   const coords=await page.evaluate(()=>{const r=document.querySelector('.mw-svg').getBoundingClientRect();const p=document.querySelector('.mw-point .mw-dot').getBoundingClientRect();return {distance:Math.hypot((p.left+p.width/2)-(r.left+r.width/2),(p.top+p.height/2)-(r.top+r.height*218/442)),width:r.width};});
-   assert.ok(coords.distance/coords.width>.08,'a positive low-volume day must not collapse at center: '+JSON.stringify(coords));
-   assert.ok(metrics.postings.y>=metrics.dist.b-2,JSON.stringify({width,theme,metrics}));
-   assert.ok(metrics.top.y>=Math.max(metrics.left.b,metrics.radar.b)-2,JSON.stringify({width,theme,metrics}));
+   assert.equal(await page.locator('#marketWidthCount').textContent(),'14');
+   assert.equal(await page.locator('#marketWidthFirms').textContent(),'4 / 18');
+   assert.equal(await page.locator('.mw-company-row').count(),18);
+   assert.equal(await page.locator('.mw-cell').count(),540);
+   assert.equal(await page.locator('.mw-cell[data-level="0"]').count(),540-4*29);
+   assert.equal(await page.locator('.mw-cell[data-level="2"]').count(),2*29);
+   assert.equal(await page.locator('.mw-cell[data-level="3"]').count(),2*29);
+   assert.equal(await page.locator('.mw-cell.is-selected').count(),18);
+   assert.equal(await page.locator('.mw-legend-chip').count(),6);
+   assert.equal(await page.locator('.mw-svg,.mw-area,.mw-dot,.mw-spoke').count(),0);
+   assert.equal(await page.locator('#marketWidthDetails tr').count(),18);
+   assert.equal(await page.locator('#marketWidthDetails tr:first-child td').count(),3);
+   assert.ok(box.matrix.w>=420,JSON.stringify({width,theme,box}));
+   assert.ok(box.postings.y>=box.dist.b-2,JSON.stringify({width,theme,box}));
+   assert.ok(box.top.y>=Math.max(box.left.b,box.right.b)-2,JSON.stringify({width,theme,box}));
+   assert.ok(box.pageWidth<=width+2,'avoid whole-page horizontal overflow: '+JSON.stringify({width,theme,box}));
    if(width>720){
-    assert.ok(metrics.radar.x>=metrics.left.x+metrics.left.w-2,JSON.stringify({width,theme,metrics}));
-    assert.ok(Math.abs(metrics.radar.h-metrics.left.h)<3,JSON.stringify({width,theme,metrics}));
-   }else assert.ok(metrics.radar.y>=metrics.left.b-2,JSON.stringify({width,theme,metrics}));
+    assert.ok(box.right.x>=box.left.x+box.left.w-2,JSON.stringify({width,theme,box}));
+    assert.ok(Math.abs(box.right.h-box.left.h)<3,JSON.stringify({width,theme,box}));
+   }else{
+    assert.ok(box.right.y>=box.left.b-2,JSON.stringify({width,theme,box}));
+    assert.ok(await page.evaluate(()=>document.querySelector('.mw-matrix-scroll').scrollWidth>document.querySelector('.mw-matrix-scroll').clientWidth));
+    assert.equal(await page.locator('.mw-company').first().evaluate(el=>getComputedStyle(el).position),'sticky');
+   }
+   const cellStyle=await page.evaluate(()=>{
+    const get=selector=>getComputedStyle(document.querySelector(selector)).backgroundColor;
+    return {zero:get('.mw-level-0'),two:get('.mw-level-2'),four:get('.mw-level-3')};
+   });
+   assert.notEqual(cellStyle.zero,cellStyle.two);
+   assert.notEqual(cellStyle.two,cellStyle.four);
+   assert.match(await page.locator('#marketWidthInspection').textContent(),/14 new roles/);
+   // Hover a real positive cell and verify the full institution/date/count.
+   await page.locator('.mw-cell[data-firm="16"][data-day="28"]').hover();
+   assert.match(await page.locator('#marketWidthInspection').textContent(),/Schroders.*5 newly observed/);
    await page.locator('[data-market-region="CN"]').click();
    assert.equal(await page.locator('#marketWidthCount').textContent(),'7');
+   assert.equal(await page.locator('#marketWidthFirms').textContent(),'2 / 18');
    await page.locator('[data-market-region="HK"]').click();
    assert.equal(await page.locator('#marketWidthCount').textContent(),'3');
-   await page.locator('#marketWidthPrev').click();
-   assert.match(await page.locator('#marketWidthDate').textContent(),/2026-11-10/);
+   await page.locator('[data-market-region="SG"]').click();
+   assert.equal(await page.locator('#marketWidthCount').textContent(),'4');
    await page.locator('[data-market-region="all"]').click();
+   assert.equal(await page.locator('#marketWidthCount').textContent(),'14');
+   // Empty latest day is explicitly shown as zero rather than a made-up stem.
+   await page.locator('#marketWidthNext').click();
+   assert.equal(await page.locator('#marketWidthCount').textContent(),'0');
+   assert.equal(await page.locator('#marketWidthFirms').textContent(),'0 / 18');
+   assert.equal(await page.locator('.mw-cell.is-selected[data-level="0"]').count(),18);
+   assert.match(await page.locator('#marketWidthDate').getAttribute('aria-label'),/2026-11-12/);
+   await page.locator('#marketWidthPrev').click();
+   assert.equal(await page.locator('#marketWidthCount').textContent(),'14');
+   // Selected date updates from keyboard, not only pointer.
+   const selected=page.locator('.mw-cell[data-firm="16"][data-day="28"]');
+   await selected.focus();
+   await selected.press('ArrowLeft');
+   assert.equal(await page.locator('.mw-cell[data-firm="16"][data-day="27"].is-selected').count(),1);
    assert.equal(await page.locator('#marketWidthDetails tr').count(),18);
-   assert.equal(await page.locator('#marketWidthDetails tr:first-child td').count(),2);
-   console.log('market-width browser PASS '+width+'px '+theme);
+   if(width!==960){
+    await page.locator('.ac-col-market').screenshot({
+     path:new URL('../artifacts/market-width/matrix-'+width+'-'+theme+'.png',source).pathname,
+     animations:'disabled'
+    });
+   }
+   console.log('market-width 30d matrix PASS '+width+'px '+theme);
    await page.close();
   }
  }
