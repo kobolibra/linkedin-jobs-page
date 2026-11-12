@@ -179,13 +179,13 @@
   color:var(--mw-secondary);text-align:right;
   font:500 10px/1.4 var(--mono);font-variant-numeric:tabular-nums;
 }
-@media(max-width:1024px){
-  .mw-company,.mw-head-firm {
-    position:sticky;left:0;z-index:4;
-    background:color-mix(in srgb,var(--bg) 54%,var(--surface));
-  }
-  .mw-company {padding-right:2px}
+/* The matrix can scroll even at desktop browser widths: keep institution
+   names and ranking visible wherever its internal viewport is narrower. */
+.mw-company,.mw-head-firm {
+  position:sticky;left:0;z-index:4;
+  background:color-mix(in srgb,var(--bg) 54%,var(--surface));
 }
+.mw-company {padding-right:2px}
 @media(max-width:720px){
   .analytics-card > .analytics-left {grid-column:1;grid-template-rows:auto auto}
   .analytics-left > .ac-col {padding:18px 15px 17px}
