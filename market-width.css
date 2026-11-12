@@ -22,15 +22,18 @@
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
-  --mw-zero:#cac7cb;--mw-zero-ink:#47546a;
-  --mw-ramp-light:#e3e7f4;--mw-ramp-deep:#9fafd7;
+  --mw-ramp-light:#d8e0f4;--mw-ramp-deep:#9badd7;
+  /* Absence is the softest, low-chroma porcelain of the SAME indigo ramp,
+     rather than an unrelated gray rectangle or a fourth data category. */
+  --mw-zero:color-mix(in oklab,var(--mw-ramp-light) 34%,var(--mw-map-ground));
+  --mw-zero-ink:#526379;
   --mw-active-ink:#102b44;--mw-accent:#102b44;
-  --mw-seam:1px;
+  --mw-seam:.5px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:var(--surface);
-  --mw-zero:#323b4b;--mw-zero-ink:#cbd3e0;
-  --mw-ramp-light:#59658a;--mw-ramp-deep:#454f73;
+  --mw-zero-ink:#d1ddec;
+  --mw-ramp-light:#627499;--mw-ramp-deep:#465779;
   --mw-active-ink:var(--ink);--mw-accent:var(--ink);
 }
 .analytics-card > .ac-col-market h3 {
@@ -123,7 +126,7 @@
 .mw-tile-face {
   display:grid;place-items:center;
   box-sizing:border-box;width:100%;height:100%;min-width:0;min-height:0;
-  padding:9px 10px;border-radius:1.5px;overflow:hidden;
+  padding:9px 10px;border-radius:1px;overflow:hidden;
   background:var(--mw-tile-fill);
   color:var(--mw-tile-ink,#193b57);
   transition:filter .14s ease,box-shadow .14s ease;
