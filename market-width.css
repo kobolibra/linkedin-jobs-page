@@ -9,12 +9,13 @@
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
-/* MARKET WIDTH / EDITORIAL CHROMATIC QUINTET
-   Five clean, equally light categorical surface inks: marine, jade, blush,
-   ochre and iris. Their common lightness and restrained chroma keep the
-   website's light porcelain/navy language intact while visibly separating
-   nearby hiring institutions. No count buckets, no fixed geographic hues,
-   no decoration, and no change to the mixed squarified treemap geometry. */
+/* MARKET WIDTH / PERCEPTUAL SEQUENTIAL RAMP
+   Light-first, tailored GnBu-family green-to-blue sequential trajectory. Zero is neutral;
+   every positive count maps monotonically to a fixed perceptual color mix,
+   identical for matching counts across firms, dates and regions.
+   No categorical firm colors, adjacency overrides, or discrete bands.
+   Color is a supporting quantitative cue; area and exact count remain
+   the primary posting-volume encodings. Never change treemap geometry. */
 .analytics-card > .ac-col-market {
   position:relative;grid-column:2;display:flex;flex-direction:column;
   min-width:0;min-height:0;padding:21px 20px 18px;
@@ -22,23 +23,15 @@
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
   --mw-zero:var(--surface-2);--mw-zero-ink:#586770;
-  --mw-active-ink:var(--navy);--mw-accent:var(--navy-2);
-  --mw-paint-0:#bfdff5;
-  --mw-paint-1:#bde5d6;
-  --mw-paint-2:#f0ccd2;
-  --mw-paint-3:#f2dab0;
-  --mw-paint-4:#d7c9f4;
+  --mw-ramp-light:#c7ebdd;--mw-ramp-deep:#4eb3d3;
+  --mw-active-ink:#102b44;--mw-accent:#102b44;
   --mw-seam:1px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:var(--surface);
   --mw-zero:var(--surface-2);--mw-zero-ink:var(--viz-secondary);
+  --mw-ramp-light:#477482;--mw-ramp-deep:#255363;
   --mw-active-ink:var(--ink);--mw-accent:var(--ink);
-  --mw-paint-0:#315a79;
-  --mw-paint-1:#356857;
-  --mw-paint-2:#855567;
-  --mw-paint-3:#81643f;
-  --mw-paint-4:#65547f;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
@@ -132,15 +125,14 @@
   color:var(--mw-tile-ink,#193b57);
   transition:filter .14s ease,box-shadow .14s ease;
 }
-/* Color is an adjacency cue, not a volume scale. Inactive remains
-   unmistakably neutral; positive firm names stay site-navy in every hue. */
+/* One perceptually blended continuous ramp. The requested varying
+   color lives *between tiles* by numeric value; no gradients or overlays
+   are painted inside individual rectangles. */
 .mw-is-zero {--mw-tile-fill:var(--mw-zero);--mw-tile-ink:var(--mw-zero-ink)}
-.mw-is-active {--mw-tile-fill:var(--mw-paint-0);--mw-tile-ink:var(--mw-active-ink)}
-.mw-hue-0 {--mw-tile-fill:var(--mw-paint-0)}
-.mw-hue-1 {--mw-tile-fill:var(--mw-paint-1)}
-.mw-hue-2 {--mw-tile-fill:var(--mw-paint-2)}
-.mw-hue-3 {--mw-tile-fill:var(--mw-paint-3)}
-.mw-hue-4 {--mw-tile-fill:var(--mw-paint-4)}
+.mw-is-active {
+  --mw-tile-fill:color-mix(in oklab,var(--mw-ramp-light),var(--mw-ramp-deep) var(--mw-tone,0%));
+  --mw-tile-ink:var(--mw-active-ink);
+}
 .mw-is-active .mw-tile-count {color:var(--mw-accent)}
 .mw-tile:hover .mw-tile-face,.mw-tile:focus-visible .mw-tile-face {
   filter:brightness(.965);
