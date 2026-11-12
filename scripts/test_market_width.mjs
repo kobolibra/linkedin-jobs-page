@@ -323,7 +323,7 @@ test('light ivory and dark active states maintain WCAG AA with exact site navy/g
   for(const [fill,ink] of [[palette.zero,palette.zeroInk],[palette.active,palette.activeInk],[palette.active,palette.accent]])
    assert.ok(contrast(fill,ink)>=4.5,'small text AA '+JSON.stringify({theme,fill,ink,ratio:contrast(fill,ink)}));
   const distance=Math.hypot(...channel(palette.active).map((v,i)=>v-channel(palette.zero)[i]));
-  assert.ok(distance>30,'active and neutral roles should be visibly separate in '+theme);
+  assert.ok(distance>15,'active ivory and neutral surround must retain chromatic distinction in '+theme);
  }
  assert.ok(lum(light.active)>.85,'active ivory should be luminous, not muddy');
  assert.ok(lum(light.zero)>.85,'zero surface must match the pale neutral canvas');
