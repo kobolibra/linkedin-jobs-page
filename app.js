@@ -716,10 +716,10 @@ jobsDataPromise
     ).join('');
     const bars=days.map((d,i)=>{
       const x=sx(i)-barWidth/2,y=sy(d.total),h=Math.max(0,sBase-y);
-      const peak=d.total===peak&&peak>0;
+      const isPeak=d.total===peak&&peak>0;
       return '<g class="rhythm-point" tabindex="0" role="img" data-day="'+i+
         '" aria-label="'+d.label+': '+d.total+' new postings">'+
-        '<rect class="rhythm-bar'+(d.weekend?' weekend':'')+(peak?' peak':'')+
+        '<rect class="rhythm-bar'+(d.weekend?' weekend':'')+(isPeak?' peak':'')+
         '" x="'+x.toFixed(2)+'" y="'+y.toFixed(2)+'" width="'+barWidth.toFixed(2)+
         '" height="'+h.toFixed(2)+'" rx="0.8"/>'+
         '<rect class="rhythm-bar-hit" x="'+(x-2).toFixed(2)+'" y="'+sTop+
