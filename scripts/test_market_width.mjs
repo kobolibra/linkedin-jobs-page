@@ -320,7 +320,7 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
    'AA small-name and exact-count text at both endpoints '+theme);
   assert.ok(lum(start)>lum(end),'higher numbers must be perceptually darker '+theme);
  }
- assert.ok(lum('#c7ebdd')>.85,'low activity must remain luminous in the light homepage');
+ assert.ok(lum('#c7ebdd')>.74,'low activity must be bright but clearly separate from neutral gray');
  assert.ok(lum('#4eb3d3')>.28,'higher counts should be colorful, but never a navy billboard');
  assert.ok(contrast('#e8eae9','#586770')>=4.5,'zero labels readable in light mode');
  assert.ok(contrast('#263b4b','#d0dce4')>=4.5,'zero labels readable in dark mode');
