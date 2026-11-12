@@ -627,10 +627,11 @@ jobsDataPromise
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const tMin=allTimes.length?Math.min(...allTimes):Date.now(),tMax=allTimes.length?Math.max(...allTimes):tMin,tSpan=Math.max(1,tMax-tMin);
-    /* Regional trend / C visual presentation.
-       Keep the original 40 first-seen time buckets, exact regional totals,
-       region identities and date range. Only the SVG chart type changes:
-       overlapping region time series replace the stacked density strips. */
+    /* Region-stacked area visualization / approved C presentation.
+       Each first-seen time bucket stacks regions vertically (CN, HK, SG,
+       OTHER), so the uppermost boundary equals the sum across regions.
+       Counts are NOT running totals across dates: zero-day gaps stay blank.
+       Original records, region colors, filters and time horizon are retained. */
     // A sub-day 40-bin ribbon produces false zero gaps when drawn as a line.
     // For a short span use one bin per observed calendar day; retain 40 bins
     // for longer histories. The underlying records and total counts do not change.
@@ -653,9 +654,11 @@ jobsDataPromise
       const upper=Math.ceil(observed/step)*step;
       return {max:upper,step,ticks:Array.from({length:Math.round(upper/step)+1},(_,i)=>i*step)};
     };
-    const maxBucket=Math.max(1,...bucketCounts.flat());
-    const regionAxis=niceCountAxis(maxBucket);
-    const trendX=i=>left+(i/(bins-1))*plotW;
+    const totalBuckets=Array.from({length:bins},(_,i)=>
+      bucketCounts.reduce((sum,series)=>sum+series[i],0));
+    const regionAxis=niceCountAxis(Math.max(1,...totalBuckets));
+    const binEdge=i=>left+(i/bins)*plotW;
+    const trendX=i=>binEdge(i+.5);
     const trendY=value=>base-(value/regionAxis.max)*(base-top);
     const gridTicks=regionAxis.ticks.map(v=>
       '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
@@ -679,35 +682,54 @@ jobsDataPromise
         '<title>'+escSvg(REGIONS[k].label)+' · '+rc[k]+' active roles</title></g>';
     }).join('');
     const series=regionOrder.map((k,ri)=>{
-      const pts=bucketCounts[ri].map((n,i)=>({
-        x:trendX(i),y:trendY(n),n,i
-      }));
-      // A long zero run is already described by the baseline grid. Connecting
-      // every region along y=0 draws a useless overlapping horizontal stripe.
-      // Split line segments at each true zero, retaining every actual count.
-      const path=pts.map((p,i)=>p.n>0?
-        (i>0&&pts[i-1].n>0?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2):''
-      ).filter(Boolean).join(' ');
-      const dots=pts.filter((p,i)=>p.n>0&&
-        !(i>0&&pts[i-1].n>0&&i+1<pts.length&&pts[i+1].n>0)).map(p=>
-        '<circle class="region-spark-dot" cx="'+p.x.toFixed(2)+
-        '" cy="'+p.y.toFixed(2)+'" r="2.1"/>'
-      ).join('');
-      const hits=pts.filter(p=>p.n>0).map(p=>{
-        const i=p.i,from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
-        return '<circle class="region-spark-hit" cx="'+p.x.toFixed(2)+
-          '" cy="'+p.y.toFixed(2)+'" r="5" data-count="'+p.n+
-          '" role="img" aria-label="'+
-          escSvg(k+' '+p.n+' jobs between '+regionTickFormat.format(from)+' and '+regionTickFormat.format(to))+
-          '"><title>'+escSvg(REGIONS[k].label)+' · '+p.n+' roles · '+
-          escSvg(regionTickFormat.format(from)+' – '+regionTickFormat.format(to))+
-          '</title></circle>';
+      const heights=bucketCounts[ri];
+      const lower=heights.map((_,i)=>bucketCounts.slice(0,ri)
+        .reduce((sum,series)=>sum+series[i],0));
+      const upper=heights.map((n,i)=>lower[i]+n);
+      // Draw separated ribbons only on consecutive bins with actual counts.
+      // A region with zero jobs contributes no visible area or baseline trace.
+      const runs=[];
+      let run=[];
+      heights.forEach((n,i)=>{
+        if(n>0)run.push(i);
+        else if(run.length){runs.push(run);run=[]}
+      });
+      if(run.length)runs.push(run);
+      const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
+      const areas=runs.map(indices=>{
+        const upperPoints=indices.flatMap(i=>[
+          fmtPoint(binEdge(i),trendY(upper[i])),
+          fmtPoint(binEdge(i+1),trendY(upper[i]))
+        ]);
+        const lowerPoints=[...indices].reverse().flatMap(i=>[
+          fmtPoint(binEdge(i+1),trendY(lower[i])),
+          fmtPoint(binEdge(i),trendY(lower[i]))
+        ]);
+        return '<path class="region-stack-band" d="M'+upperPoints.join(' L')+
+          ' L'+lowerPoints.join(' L')+' Z"/>';
       }).join('');
-      return '<g class="region-series '+k.toLowerCase()+'">'+
-        (path?'<path class="region-spark-line" d="'+path+'"/>':'')+dots+hits+'</g>';
+      const contour=runs.flatMap(indices=>indices.map((i,j)=>
+        (j?'L':'M')+fmtPoint(binEdge(i),trendY(upper[i]))+
+        ' L'+fmtPoint(binEdge(i+1),trendY(upper[i]))
+      )).join(' ');
+      const hits=heights.map((n,i)=>{
+        if(n<=0)return '';
+        const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
+        const countText=REGIONS[k].label+' · '+n+' roles · '+
+          regionTickFormat.format(from)+' – '+regionTickFormat.format(to);
+        return '<circle class="region-spark-hit" cx="'+trendX(i).toFixed(2)+
+          '" cy="'+trendY((upper[i]+lower[i])/2).toFixed(2)+
+          '" r="5" data-bin="'+i+'" data-count="'+n+
+          '" data-lower="'+lower[i]+'" data-upper="'+upper[i]+
+          '" role="img" aria-label="'+escSvg(countText)+
+          '"><title>'+escSvg(countText)+'</title></circle>';
+      }).join('');
+      return '<g class="region-series '+k.toLowerCase()+'">'+areas+
+        (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+
+        hits+'</g>';
     }).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Regional trend of first-observed active roles, with natural breaks in zero-posting intervals">'+
+      '" role="img" aria-label="Stacked regional area chart of first-observed active roles; each date-bin height equals the sum of its regions, with no bridge over empty dates">'+
       legend+gridTicks+series+dateTicks+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
