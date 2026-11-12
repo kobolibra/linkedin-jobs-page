@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,zeroPerimeter,marketTiles,tileTypography}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -136,6 +136,49 @@ test('four positive and fourteen zero cells geometrically cover the whole board'
   assert.ok(Math.abs(sum-w*h)<1e-6,'geometry total: '+JSON.stringify({w,h,sum,tiles}));
  }
 });
+test('active institutions stay strictly inside the neutral perimeter when four or more are inactive',()=>{
+ const edge=(t,W,H)=>Math.abs(t.x)<1e-7||Math.abs(t.y)<1e-7||
+  Math.abs(t.x+t.w-W)<1e-7||Math.abs(t.y+t.h-H)<1e-7;
+ for(const [W,H] of [[350,290],[505,319],[640,340],[960,400]]){
+  for(let nZero=4;nZero<=17;nZero++){
+   const values=Array.from({length:18},(_,i)=>i<18-nZero?1+(i%7):0);
+   const tiles=marketTiles(values,W,H);
+   assert.equal(tiles.length,18,'all institutions remain visible');
+   const active=tiles.filter(t=>!t.zero),zeros=tiles.filter(t=>t.zero);
+   assert.equal(active.length,18-nZero);
+   assert.equal(zeros.length,nZero);
+   assert.ok(active.every(t=>t.zone==='core'&&!edge(t,W,H)),
+    'active tiles must never touch outer boundary: '+JSON.stringify({W,H,nZero,active}));
+   assert.ok(zeros.every(t=>t.zone==='perimeter'&&edge(t,W,H)),
+    'zero tiles must all lie on the outer boundary: '+JSON.stringify({W,H,nZero,zeros}));
+   assert.ok(tiles.every(t=>t.w>0&&t.h>0));
+   const sum=tiles.reduce((a,t)=>a+t.w*t.h,0);
+   assert.ok(Math.abs(sum-W*H)<1e-5,'no coverage gaps '+JSON.stringify({W,H,nZero,sum}));
+   for(let i=0;i<tiles.length;i++)for(let j=i+1;j<tiles.length;j++){
+    const a=tiles[i],b=tiles[j];
+    const dx=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x));
+    const dy=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+    assert.ok(dx*dy<1e-5,'tiles never overlap');
+   }
+  }
+ }
+});
+
+test('with fewer than four zero institutions, use honest outer bands without duplicating tiles',()=>{
+ for(const nZero of [1,2,3]){
+  const values=Array.from({length:18},(_,i)=>i>=18-nZero?0:2);
+  const tiles=marketTiles(values,500,340);
+  assert.equal(tiles.length,18);
+  assert.equal(tiles.filter(t=>t.zero).length,nZero);
+  assert.ok(tiles.filter(t=>t.zero).every(t=>t.zone==='perimeter'&&(Math.abs(t.x)<1e-7||Math.abs(t.y)<1e-7||Math.abs(t.x+t.w-500)<1e-7||Math.abs(t.y+t.h-340)<1e-7)));
+  assert.ok(tiles.filter(t=>!t.zero).every(t=>t.zone==='core'));
+ }
+ const core=zeroPerimeter(Array.from({length:14},(_,i)=>({i})),500,340);
+ assert.equal(core.outer.length,14);
+ assert.ok(core.core.x>0&&core.core.y>0);
+ assert.ok(core.core.x>=44,'side bands must allow whole micro labels on mobile');
+});
+
 test('all 18 zero institutions still produce an 18-cell muted mosaic',()=>{
  const tiles=marketTiles(Array(18).fill(0),390,290);
  assert.equal(tiles.length,18);
@@ -163,6 +206,9 @@ test('extremely skewed counts preserve an honestly labeled legibility floor',()=
  assert.equal(tiles.find(t=>t.i===1).count,1);
  assert.equal(tiles.find(t=>t.i===1).visualFloor,true);
  assert.ok(tiles.find(t=>t.i===1).w*tiles.find(t=>t.i===1).h>1000);
+ const tiny=tiles.find(t=>t.i===1);
+ assert.ok(Math.min(tiny.w,tiny.h)>=18,
+  'smallest active rectangle must fit a micro name and count: '+JSON.stringify(tiny));
 });
 
 test('homepage and About describe an all-in-one daily map, without zero lists or visible numeric zero tiles',()=>{
@@ -185,7 +231,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-14','market-width.css?v=market-width-14'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-15','market-width.css?v=market-width-15'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -204,24 +250,26 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.equal(MICRO[11],'FIL');
  assert.ok(!COMPACT.some(v=>v.endsWith(' St.')||v.endsWith(' C.')));
  assert.ok(COMPACT.every(Boolean)&&MICRO.every(Boolean));
- assert.match(read('market-width.js'),/const allowed=rect\.w>=150/);
+ assert.match(read('market-width.js'),/const allowed=rect\.w>=82/);
 });
 
-test('light editorial Market Width uses only neutral absence and porcelain presence',()=>{
+test('clean mineral blue belongs to active inner tiles; neutral gray belongs to outer placeholders',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:#e8eae9/);
- assert.match(css,/--mw-active:#fafbfe/);
- assert.match(css,/--mw-accent:#245aa5/);
+ assert.match(css,/--mw-zero:#f0f1ef/);
+ assert.match(css,/--mw-active:#d6ebff/);
+ assert.match(css,/--mw-accent:#1d5f9a/);
  assert.match(css,/--mw-seam:1px/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
+ assert.match(js,/function zeroPerimeter\(/);
+ assert.match(js,/zone:'perimeter'/);
+ assert.match(js,/zone:'core'/);
  assert.match(js,/\(zero\?'mw-is-zero':'mw-is-active'\)/);
  assert.doesNotMatch(js,/activityTier|toneOf|mw-activity-|mw-firm-/);
  assert.doesNotMatch(css,/--mw-(?:low|mid|high|tone-\d)|\.mw-activity-|\.mw-firm-/);
  assert.match(css,/\.mw-is-zero \{--mw-tile-fill:var\(--mw-zero\);--mw-tile-ink:var\(--mw-zero-ink\)\}/);
  assert.match(css,/\.mw-is-active \{--mw-tile-fill:var\(--mw-active\);--mw-tile-ink:var\(--mw-active-ink\)\}/);
- assert.match(css,/\.mw-is-active \.mw-tile-face \{box-shadow:inset 0 2px 0 var\(--mw-accent\)\}/);
  assert.match(css,/\.mw-is-active \.mw-tile-count \{color:var\(--mw-accent\)\}/);
- assert.match(css,/\.mw-is-active\[aria-pressed="true"\] \.mw-tile-face/);
+ assert.doesNotMatch(css,/\.mw-is-active \.mw-tile-face \{box-shadow:inset 0 2px 0/);
  assert.match(css,/background:var\(--glass-light\)/);
  assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
  assert.match(css,/\.mw-detail\[hidden\]/);
@@ -243,6 +291,7 @@ test('typography tiers grow with each tile geometry, never the count of active f
  const small=tileTypography(55,34),medium=tileTypography(120,80);
  const large=tileTypography(175,110),feature=tileTypography(480,260);
  assert.deepEqual([small.tier,medium.tier,large.tier,feature.tier],['small','medium','large','feature']);
+ assert.equal(tileTypography(85,92).tier,'medium','tall mobile positive tiles should not use tiny labels');
  assert.ok(feature.name>=20&&feature.count>=28);
  assert.ok(feature.name>large.name&&large.name>medium.name&&medium.name>small.name);
  assert.ok(feature.count>large.count&&large.count>medium.count&&medium.count>small.count);
@@ -257,10 +306,10 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('porcelain and cobalt meet AA contrast and keep large light surfaces colorless',()=>{
+test('clean ice-blue and neutral tiles have deliberate hue and AA contrast in both modes',()=>{
  const css=read('market-width.css');
- const light={zero:'#e8eae9',zeroInk:'#59656a',active:'#fafbfe',activeInk:'#193b57',accent:'#245aa5'};
- const dark={zero:'#283947',zeroInk:'#cad5dc',active:'#344c64',activeInk:'#f3f7fd',accent:'#c2d4ff'};
+ const light={zero:'#f0f1ef',zeroInk:'#626e75',active:'#d6ebff',activeInk:'#173c5c',accent:'#1d5f9a'};
+ const dark={zero:'#293945',zeroInk:'#cdd8dd',active:'#34526b',activeInk:'#eef6fc',accent:'#b9dcfc'};
  const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
@@ -269,13 +318,14 @@ test('porcelain and cobalt meet AA contrast and keep large light surfaces colorl
   for(const color of Object.values(palette))assert.ok(css.includes(color),'missing '+theme+' color '+color);
   for(const [fill,ink] of [[palette.zero,palette.zeroInk],[palette.active,palette.activeInk],[palette.active,palette.accent]])
    assert.ok(contrast(fill,ink)>=4.5,'small text AA '+JSON.stringify({theme,fill,ink,ratio:contrast(fill,ink)}));
-  const difference=Math.hypot(...channel(palette.active).map((v,i)=>v-channel(palette.zero)[i]));
-  assert.ok(difference>30,'active porcelain must differ perceptibly from neutral '+theme);
+  const distance=Math.hypot(...channel(palette.active).map((v,i)=>v-channel(palette.zero)[i]));
+  assert.ok(distance>30,'active blue should be visibly separate from neutral '+theme);
  }
- assert.ok(lum(light.active)>.94,'positive surface must remain luminous, not dusty blue');
- assert.ok(lum(light.zero)>.78,'zero surface must remain inside the pale site-neutral family');
- assert.ok(lum(light.active)>lum(light.zero),'positive tile should read as clean lifted porcelain');
- assert.ok(lum(light.accent)<.2,'cobalt accent must be firm and deliberate');
- assert.doesNotMatch(css,/linear-gradient\(/,'tile paint must be opaque and clean, with no decorative gradients');
+ assert.ok(lum(light.active)>.78,'active surface should remain clean and very light');
+ assert.ok(lum(light.zero)>.85,'zero surface must match the pale neutral canvas');
+ assert.ok(channel(light.active)[2]-channel(light.active)[0]>30,'clear blue hue, not a dirty gray blend');
+ assert.ok(lum(light.accent)<.2,'blue count accent must be concise and legible');
+ assert.doesNotMatch(css,/linear-gradient\(/);
 });
+
 
