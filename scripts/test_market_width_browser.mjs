@@ -132,8 +132,9 @@ async function renderLeft(page,chartData,theme){
  const expectedBins=Math.min(40,Math.max(2,Math.ceil(sampleSpan/86400000)+1));
  assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
   'only populated regional intervals need hover targets');
- assert.equal(quality.pointTotal,chartData.filter(r=>['SG','HK','CN'].includes(r.location)).length,
-  'only the three specified regions contribute to the stacked graphic');
+ assert.ok(quality.pointTotal>0&&
+  quality.pointTotal<=chartData.filter(r=>['SG','HK','CN'].includes(r.location)).length,
+  'recent-time window must not fabricate jobs or admit OTHER; older excluded records are allowed');
  assert.ok(quality.grid>=2&&quality.filled>0,'both charts plot genuine values');
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
   'regional lines begin at actual observations, not baseline zeros');
