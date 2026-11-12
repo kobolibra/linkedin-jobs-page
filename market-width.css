@@ -40,8 +40,9 @@
 }
 .mw-topline {
   display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:8px 14px;margin:0;
+  flex-wrap:nowrap;gap:12px;margin:0 0 14px;min-width:0;
 }
+.mw-topline h3{min-width:0;flex:1 1 auto}
 .mw-tabs {
   box-sizing:border-box;display:inline-flex;align-items:center;
   flex:none;gap:2px;height:35px;padding:3px;
@@ -99,11 +100,8 @@
 .mw-tab:focus-visible,.mw-nav:focus-visible,.mw-tile:focus-visible {
   outline:2px solid var(--gold);outline-offset:2px;
 }
- .mw-footer {display:flex;flex-direction:column;gap:11px;min-width:0;padding-top:13px}
-.mw-footer .mw-subline {order:0}
-.mw-footer .mw-topline {order:1}
-.mw-footer .mw-tabs {flex-shrink:0}
-.mw-footer .mw-encoding {flex:1 1 225px;text-align:right}
+.mw-footer {display:flex;flex-direction:column;gap:10px;min-width:0;padding-top:13px}
+.mw-footer .mw-encoding {display:block;text-align:left}
 .mw-map-layout {
   position:relative;display:flex;flex-direction:column;min-width:0;
   flex:1 1 auto;min-height:316px;height:345px;
@@ -199,11 +197,12 @@
     border-left:0!important;border-top:1px solid var(--mw-rule)!important;
   }
   .analytics-card > .ac-col-market h3 {font-size:12px}
-  .mw-topline {gap:8px}
+  .mw-topline {gap:7px;margin-bottom:12px}
+  .mw-topline h3{font-size:11px;line-height:1.35}
+  .mw-tabs {width:auto;flex:none;height:31px;padding:2px;gap:0}
+  .mw-tab {flex:none;min-width:28px;height:27px;padding:4px 6px;font-size:9px}
   .mw-footer{padding-top:13px;gap:10px}
-  .mw-tabs {width:100%}
-  .mw-tab {flex:1;min-width:0}
-  .mw-footer .mw-encoding {display:block;flex:1 1 100%;width:100%;text-align:left}
+  .mw-footer .mw-encoding {width:100%;text-align:left}
   .mw-map-layout {
     display:flex;flex-direction:column;
     height:auto;min-height:0;flex:none;
@@ -211,9 +210,9 @@
   .mw-map-board {height:290px;min-height:290px;flex:0 0 290px}
 }
 @media(max-width:400px){
-  .mw-topline {margin:0;gap:6px}
-  .mw-tabs {height:35px;padding:3px}
-  .mw-tab {flex:1;min-width:0;height:29px;padding:4px 8px}
+  .mw-topline {margin:0 0 10px;gap:6px}
+  .mw-tabs {height:29px;padding:2px}
+  .mw-tab {min-width:27px;height:25px;padding:3px 5px}
   .mw-encoding {font-size:9px}
   .mw-subline {margin:11px 0}
   .mw-summary {font-size:10px}
