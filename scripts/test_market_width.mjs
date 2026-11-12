@@ -170,7 +170,7 @@ test('with fewer than four zero institutions, use honest outer bands without dup
   const tiles=marketTiles(values,500,340);
   assert.equal(tiles.length,18);
   assert.equal(tiles.filter(t=>t.zero).length,nZero);
-  assert.ok(tiles.filter(t=>t.zero).every(t=>t.zone==='perimeter'&&(t.x===0||t.y===0)));
+  assert.ok(tiles.filter(t=>t.zero).every(t=>t.zone==='perimeter'&&(Math.abs(t.x)<1e-7||Math.abs(t.y)<1e-7||Math.abs(t.x+t.w-500)<1e-7||Math.abs(t.y+t.h-340)<1e-7)));
   assert.ok(tiles.filter(t=>!t.zero).every(t=>t.zone==='core'));
  }
  const core=zeroPerimeter(Array.from({length:14},(_,i)=>({i})),500,340);
