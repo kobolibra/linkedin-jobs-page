@@ -231,7 +231,7 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
 test('one ordered perceptual ramp replaces categorical institution colors',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
  assert.match(css,/--mw-zero:var\(--surface-2\)/);
- assert.match(css,/--mw-ramp-light:#f0f9e8;--mw-ramp-deep:#4eb3d3/);
+ assert.match(css,/--mw-ramp-light:#c7ebdd;--mw-ramp-deep:#4eb3d3/);
  assert.match(css,/--mw-active-ink:#102b44;--mw-accent:#102b44/);
  assert.match(css,/color-mix\(in oklab,var\(--mw-ramp-light\),var\(--mw-ramp-deep\) var\(--mw-tone,0%\)\)/);
  assert.match(css,/--mw-seam:1px/);
@@ -311,7 +311,7 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
  const endpoints=[
-  ['light','#f0f9e8','#4eb3d3','#102b44'],
+  ['light','#c7ebdd','#4eb3d3','#102b44'],
   ['dark','#477482','#255363','#f5f0e8']
  ];
  for(const [theme,start,end,ink] of endpoints){
@@ -320,7 +320,7 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
    'AA small-name and exact-count text at both endpoints '+theme);
   assert.ok(lum(start)>lum(end),'higher numbers must be perceptually darker '+theme);
  }
- assert.ok(lum('#f0f9e8')>.85,'low activity must remain luminous in the light homepage');
+ assert.ok(lum('#c7ebdd')>.85,'low activity must remain luminous in the light homepage');
  assert.ok(lum('#4eb3d3')>.28,'higher counts should be colorful, but never a navy billboard');
  assert.ok(contrast('#e8eae9','#586770')>=4.5,'zero labels readable in light mode');
  assert.ok(contrast('#263b4b','#d0dce4')>=4.5,'zero labels readable in dark mode');
