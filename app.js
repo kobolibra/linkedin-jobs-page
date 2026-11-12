@@ -646,7 +646,7 @@ jobsDataPromise
       regionRecords[k].filter(x=>x.t.getTime()>=tMin&&x.t.getTime()<tMax).length,0);
     /* HK/SG/CN cumulative bands contain exact daily first-seen counts.
        No missing days or job counts are fabricated by the geometry. */
-    const TW=520,TH=210,left=38,right=14,top=24,base=175,plotW=TW-left-right;
+    const TW=520,TH=225,left=38,right=14,top=24,base=190,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
@@ -690,7 +690,7 @@ jobsDataPromise
         ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
         :regionTickFormat.format(date);
       return '<text class="region-spark-date" x="'+x.toFixed(2)+
-        '" y="203" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        '" y="218" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
         escSvg(label)+'</text>';
     }).join('');
     const legendStep=59,legendLeft=TW-right-regionOrder.length*legendStep;
