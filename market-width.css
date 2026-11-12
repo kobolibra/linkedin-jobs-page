@@ -9,24 +9,30 @@
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
-/* MARKET WIDTH / INSTITUTION COLOR SYSTEM
-   Area (plus the exact numeral) represents daily postings; color identifies
-   the institution, never a second quantitative scale. The 18 fixed editorial
-   jewel inks sit within the site's navy / porcelain / brass visual language.
-   Inactive institutions share one deliberately quiet neutral. All active
-   inks support AA small white text in both themes; no hover reflow. */
+/* MARKET WIDTH / PORCELAIN NAVY
+   One mineral-blue family shares the site's porcelain surfaces, navy
+   typography and restrained brass interaction accent. No firm-by-firm hues.
+   Zero tiles are neutral; positive activity has only three tonal steps.
+   Area and the printed numeral retain the exact daily-count encoding.
+   Text inks are specified independently for WCAG AA in both themes. */
 .analytics-card > .ac-col-market {
   position:relative;grid-column:2;display:flex;flex-direction:column;
   min-width:0;min-height:0;padding:21px 20px 18px;
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
-  --mw-zero:#e6eae8;--mw-zero-ink:#4e5b60;
+  --mw-zero:#e5e8e7;--mw-zero-ink:#52616b;
+  --mw-low:#a4b8c4;--mw-low-ink:#203849;
+  --mw-mid:#50718c;--mw-mid-ink:#f8faf8;
+  --mw-high:#234b68;--mw-high-ink:#f8faf8;
   --mw-seam:1px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:color-mix(in srgb,var(--ink) 4%,var(--surface));
-  --mw-zero:#243543;--mw-zero-ink:#cbd5d9;
+  --mw-zero:#293b4a;--mw-zero-ink:#d0d8de;
+  --mw-low:#50718c;--mw-low-ink:#f8faf8;
+  --mw-mid:#83a5b8;--mw-mid-ink:#172d3f;
+  --mw-high:#b9ced8;--mw-high-ink:#172d3f;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
@@ -117,32 +123,15 @@
   box-sizing:border-box;width:100%;height:100%;min-width:0;min-height:0;
   padding:9px 10px;border-radius:1.5px;overflow:hidden;
   background:var(--mw-tile-fill);
-  color:var(--mw-tile-ink,#f8faf7);
+  color:var(--mw-tile-ink,#203849);
   transition:filter .14s ease,box-shadow .14s ease;
 }
-/* The registry index and firm-to-color assignment are stable across
-   counts, dates and regions. These are editorial identifiers, not copied
-   corporate logos or brand specifications. */
-.mw-tile:not(.mw-is-zero) {--mw-tile-ink:#f8faf7}
+/* Shared visual hierarchy: neutral absence, three restrained navy tones
+   for recorded activity. The color does not identify a company; the label does. */
 .mw-is-zero {--mw-tile-fill:var(--mw-zero);--mw-tile-ink:var(--mw-zero-ink)}
-.mw-firm-0 {--mw-tile-fill:#9A3E52} /* HSBC */
-.mw-firm-1 {--mw-tile-fill:#28766D} /* Standard Chartered */
-.mw-firm-2 {--mw-tile-fill:#3D6399} /* Citi */
-.mw-firm-3 {--mw-tile-fill:#94652F} /* JPMorgan Chase */
-.mw-firm-4 {--mw-tile-fill:#486F44} /* BNP Paribas */
-.mw-firm-5 {--mw-tile-fill:#72528C} /* Société Générale */
-.mw-firm-6 {--mw-tile-fill:#A3503E} /* DBS */
-.mw-firm-7 {--mw-tile-fill:#446EA0} /* Deutsche Bank */
-.mw-firm-8 {--mw-tile-fill:#2B748A} /* Goldman Sachs */
-.mw-firm-9 {--mw-tile-fill:#775778} /* BlackRock */
-.mw-firm-10 {--mw-tile-fill:#915C43} /* Bank of America */
-.mw-firm-11 {--mw-tile-fill:#7E6A32} /* Fidelity International */
-.mw-firm-12 {--mw-tile-fill:#426E80} /* Morgan Stanley */
-.mw-firm-13 {--mw-tile-fill:#4E5F97} /* BBVA */
-.mw-firm-14 {--mw-tile-fill:#8E466E} /* Natixis */
-.mw-firm-15 {--mw-tile-fill:#606569} /* UBS */
-.mw-firm-16 {--mw-tile-fill:#59733F} /* Schroders */
-.mw-firm-17 {--mw-tile-fill:#905D37} /* Invesco */
+.mw-activity-low {--mw-tile-fill:var(--mw-low);--mw-tile-ink:var(--mw-low-ink)}
+.mw-activity-mid {--mw-tile-fill:var(--mw-mid);--mw-tile-ink:var(--mw-mid-ink)}
+.mw-activity-high {--mw-tile-fill:var(--mw-high);--mw-tile-ink:var(--mw-high-ink)}
 .mw-tile:hover .mw-tile-face,.mw-tile:focus-visible .mw-tile-face {
   filter:brightness(.965);
 }
