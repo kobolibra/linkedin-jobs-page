@@ -33,7 +33,7 @@
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:var(--surface);
   --mw-zero-ink:#d1ddec;
-  --mw-ramp-light:#627499;--mw-ramp-deep:#465779;
+  --mw-ramp-light:#58688b;--mw-ramp-deep:#465779;
   --mw-active-ink:var(--ink);--mw-accent:var(--ink);
 }
 .analytics-card > .ac-col-market h3 {
