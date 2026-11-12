@@ -136,12 +136,12 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-full-history-5/);
+ assert.match(html,/styles-refinement\.css\?v=region-daily-shades-6/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
- assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:21%\}/);
- assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-band:24%\}/);
- assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-band:27%\}/);
+ assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:25%\}/);
+ assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-band:31%\}/);
+ assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-band:29%\}/);
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
  assert.match(source,/const regionOrder=\["HK","SG","CN"\];/);
  assert.match(source,/const totalBuckets=Array\.from\(/);
@@ -153,7 +153,8 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/const contour=runs\.map\(indices=>upperPath\(indices\)\)/);
  assert.match(source,/class="region-stack-band"/);
  assert.match(css,/#dist \.region-stack-band\{/);
- assert.match(css,/--region-band:27%/);
+ assert.match(css,/--region-band:29%/);
+ assert.match(css,/#dist \.region-spark-line,[\s\S]*?stroke-width:1\.65/);
  assert.match(css,/#spark \.rhythm-bar\{\s*fill:var\(--viz-blue\);opacity:1/);
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
  assert.match(source,/const bucketCounts=regionOrder\.map\(k=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
