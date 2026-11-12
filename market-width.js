@@ -1,9 +1,9 @@
 /* Market Width: one integrated 18-institution market map. Muted neutral
    placeholders indicate zero new postings (no visible zero digits). Positive
    posting tiles preserve their relative count proportions, with a tiny visual
-   floor for genuinely unreadable cells. Neutral zero tiles and luminous
-   porcelain positive tiles form a two-state visual grammar. Posting volume
-   is expressed through area and exact text; cobalt only accents active ink. */
+   floor for genuinely unreadable cells. Active firms occupy the map's
+   central core; zero placeholders form the quiet non-quantitative perimeter.
+   Posting volume is expressed through active-tile area and exact numbers. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -139,11 +139,51 @@ function treemap(values,width=640,height=340){
  commit();
  return out;
 }
-/* A zero datum has no quantitative area, but the user needs all eighteen
-   institutions visible in one coherent mosaic. Give neutral placeholders a
-   small, NON-QUANTITATIVE visual footprint, then distribute the remaining
-   area among positive counts. A small display floor is used only when a
-   strictly proportional positive cell would be too tiny to label. */
+/* Placement is a visual hierarchy, not a data transformation:
+   central area = institutions with new postings, perimeter = zero-placeholders.
+   A 4-sided rectangular frame requires at least four zero institutions; for
+   1–3 zeros we use as many outside bands as possible without fabricating
+   extra institution tiles. The ring is strictly non-quantitative. */
+function zeroPerimeter(zeros,W,H){
+ const count={top:0,bottom:0,right:0,left:0};
+ const order=['top','bottom','right','left'];
+ const sides=Math.min(zeros.length,4);
+ for(let i=0;i<sides;i++)count[order[i]]=1;
+ const sideLength={top:W,bottom:W,right:H,left:H};
+ for(let i=sides;i<zeros.length;i++){
+  const candidates=order.filter(side=>count[side]>0);
+  const best=candidates.reduce((a,b)=>
+   sideLength[b]/(count[b]+.5)>sideLength[a]/(count[a]+.5)?b:a);
+  count[best]++;
+ }
+ const top=count.top?Math.min(48,Math.max(30,H*.128)):0;
+ const bottom=count.bottom?Math.min(48,Math.max(30,H*.128)):0;
+ const left=count.left?Math.min(62,Math.max(34,W*.11)):0;
+ const right=count.right?Math.min(62,Math.max(34,W*.11)):0;
+ const core={x:left,y:top,w:W-left-right,h:H-top-bottom};
+ const rails=[
+  {side:'top',rect:{x:0,y:0,w:W,h:top},axis:'x',reverse:false},
+  {side:'right',rect:{x:W-right,y:top,w:right,h:core.h},axis:'y',reverse:false},
+  {side:'bottom',rect:{x:0,y:H-bottom,w:W,h:bottom},axis:'x',reverse:true},
+  {side:'left',rect:{x:0,y:top,w:left,h:core.h},axis:'y',reverse:true}
+ ];
+ let cursor=0;const outer=[];
+ for(const {side,rect,axis,reverse} of rails){
+  const n=count[side];
+  for(let j=0;j<n;j++){
+   const k=reverse?n-j-1:j;
+   const geometry=axis==='x'
+    ?{x:rect.x+k*rect.w/n,y:rect.y,w:rect.w/n,h:rect.h}
+    :{x:rect.x,y:rect.y+k*rect.h/n,w:rect.w,h:rect.h/n};
+   outer.push({...geometry,i:zeros[cursor++].i,count:0,
+    zero:true,visualFloor:false,zone:'perimeter'});
+  }
+ }
+ return {core,outer};
+}
+/* All positive areas preserve their real count ratios except for the
+   existing strictly local legibility floor. Neutral placeholders retain
+   their institution names and no visible numeric zero. */
 function marketTiles(values,width=640,height=340){
  const W=Math.max(1,Number(width)||640),H=Math.max(1,Number(height)||340);
  const input=(values||[]).map(n=>Math.max(0,Number(n)||0));
@@ -151,15 +191,15 @@ function marketTiles(values,width=640,height=340){
  const zeros=input.map((count,i)=>({i,count})).filter(t=>t.count===0);
  if(!positive.length){
   return treemap(input.map((_,i)=>({i,count:1})),W,H)
-   .map(r=>({...r,count:0,zero:true,visualFloor:false}));
+   .map(r=>({...r,count:0,zero:true,visualFloor:false,zone:'neutral'}));
  }
+ const {core,outer}=zeroPerimeter(zeros,W,H);
  const total=positive.reduce((sum,t)=>sum+t.count,0);
- const zeroShare=Math.min(.30,zeros.length*.020);
- const floor=Math.min(.0135,(1-zeroShare)/Math.max(1,positive.length*1.4));
- let free=1-zeroShare,remainingTotal=total;
+ const coreShare=core.w*core.h/(W*H);
+ const floor=Math.min(.0135,coreShare/Math.max(1,positive.length*1.4));
+ let free=coreShare,remainingTotal=total;
  let unassigned=[...positive],allocated=[];
- // Water filling makes floor-adjustments local while preserving the ratios
- // of all other positive institutions.
+ // Water filling preserves ratios among every tile that is not floored.
  while(unassigned.length){
   const tiny=unassigned.filter(t=>free*t.count/remainingTotal<floor-1e-10);
   if(!tiny.length){
@@ -171,14 +211,11 @@ function marketTiles(values,width=640,height=340){
   remainingTotal-=tiny.reduce((sum,t)=>sum+t.count,0);
   unassigned=unassigned.filter(t=>!tiny.some(a=>a.i===t.i));
  }
- const weighted=[
-  ...allocated.map(t=>({i:t.i,count:t.weight})),
-  ...zeros.map(t=>({i:t.i,count:zeroShare/zeros.length}))
- ];
  const floored=new Set(allocated.filter(t=>t.visualFloor).map(t=>t.i));
- return treemap(weighted,W,H).map(r=>({
-  ...r,count:input[r.i],zero:input[r.i]===0,visualFloor:floored.has(r.i)
- }));
+ const inside=treemap(allocated.map(t=>({i:t.i,count:t.weight})),core.w,core.h)
+  .map(r=>({...r,x:core.x+r.x,y:core.y+r.y,count:input[r.i],
+   zero:false,visualFloor:floored.has(r.i),zone:'core'}));
+ return [...inside,...outer];
 }
 /* One visual grammar regardless of box size:
    a centred vertical lockup, name above count (zero: name only).
@@ -365,7 +402,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,zeroPerimeter,marketTiles,tileTypography,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
