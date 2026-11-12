@@ -129,8 +129,8 @@
 }
 .mw-matrix {
   position:relative;isolation:isolate;
-  --mw-company-width:105px;--mw-total-width:35px;--mw-gap:2px;
-  width:100%;min-width:435px;display:flex;flex-direction:column;
+  --mw-company-width:146px;--mw-total-width:35px;--mw-gap:2px;
+  width:100%;min-width:506px;display:flex;flex-direction:column;
   gap:1px;padding:0 0 3px;color:var(--mw-secondary);
 }
 .mw-matrix-row {
