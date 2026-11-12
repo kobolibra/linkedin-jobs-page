@@ -648,8 +648,8 @@ body.compact .job > .mono { margin-top:2px; }
 }
 #dist .region-stat-count{font-size:11.5px}
 #dist .region-stat-share{
-  fill:var(--viz-quiet);
-  font:500 9.4px var(--mono);
+  fill:var(--viz-secondary);opacity:.82;
+  font:500 10.2px var(--mono);
   font-variant-numeric:tabular-nums;
 }
 #dist .region-stat-label,
@@ -706,11 +706,11 @@ body.compact .job > .mono { margin-top:2px; }
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:12.5px;letter-spacing:0}
-  #dist .region-stat-total{font-size:16.5px}
-  #dist .region-stat-count{font-size:15px}
-  #dist .region-stat-share{font-size:12px}
+  #dist .region-stat-total{font-size:18px}
+  #dist .region-stat-count{font-size:16px}
+  #dist .region-stat-share{font-size:13.2px;opacity:.96}
   #dist .region-stat-label,
-  #dist .region-stat-region{font-size:12px;letter-spacing:0}
+  #dist .region-stat-region{font-size:12.5px;letter-spacing:0}
 }
 
 /* Masthead copy: disciplined editorial typography, no structural change. */
