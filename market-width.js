@@ -1,6 +1,8 @@
-/* Market Width: daily area-proportional market map. Zero-role institutions
-   occupy no tile area and are explicitly named in a separate neutral rail.
-   Uses the same deduplicated first-seen active chart rows as New Postings. */
+/* Market Width: one integrated 18-institution market map. Muted neutral
+   placeholders indicate zero new postings (no visible zero digits). Positive
+   posting tiles preserve their relative count proportions, with a tiny visual
+   floor for genuinely unreadable cells. All counts retain their original
+   first-seen, currently-active meaning. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -16,6 +18,20 @@ const DISPLAY=Object.freeze([
  'Société Générale','DBS Bank','Deutsche Bank','Goldman Sachs',
  'BlackRock','Bank of America','Fidelity International',
  'Morgan Stanley','BBVA','Natixis','UBS','Schroders','Invesco'
+]);
+/* Carefully selected capital-markets/brand shorthand, NEVER arbitrary truncation.
+   Full official DISPLAY names remain in accessible labels and tooltips.
+   Examples: Morgan Stanley MS (NYSE), Standard Chartered SC (SEC filings),
+   JPMorgan/JPM, BofA, SocGen, GS and FIL. */
+const COMPACT=Object.freeze([
+ 'HSBC','Standard Chartered','Citi','JPMorgan','BNP Paribas',
+ 'SocGen','DBS','Deutsche Bank','Goldman Sachs','BlackRock',
+ 'BofA','Fidelity Intl.','Morgan Stanley','BBVA','Natixis',
+ 'UBS','Schroders','Invesco'
+]);
+const MICRO=Object.freeze([
+ 'HSBC','SC','Citi','JPM','BNP','SG','DBS','DB','GS','BLK',
+ 'BofA','FIL','MS','BBVA','Natixis','UBS','SDR','IVZ'
 ]);
 const ALIASES={
  'HSBC':['the hongkong and shanghai banking corporation'],
@@ -122,6 +138,47 @@ function treemap(values,width=640,height=340){
  commit();
  return out;
 }
+/* A zero datum has no quantitative area, but the user needs all eighteen
+   institutions visible in one coherent mosaic. Give neutral placeholders a
+   small, NON-QUANTITATIVE visual footprint, then distribute the remaining
+   area among positive counts. A small display floor is used only when a
+   strictly proportional positive cell would be too tiny to label. */
+function marketTiles(values,width=640,height=340){
+ const W=Math.max(1,Number(width)||640),H=Math.max(1,Number(height)||340);
+ const input=(values||[]).map(n=>Math.max(0,Number(n)||0));
+ const positive=input.map((count,i)=>({i,count})).filter(t=>t.count>0);
+ const zeros=input.map((count,i)=>({i,count})).filter(t=>t.count===0);
+ if(!positive.length){
+  return treemap(input.map((_,i)=>({i,count:1})),W,H)
+   .map(r=>({...r,count:0,zero:true,visualFloor:false}));
+ }
+ const total=positive.reduce((sum,t)=>sum+t.count,0);
+ const zeroShare=Math.min(.3,zeros.length*.0135);
+ const floor=Math.min(.0135,(1-zeroShare)/Math.max(1,positive.length*1.4));
+ let free=1-zeroShare,remainingTotal=total;
+ let unassigned=[...positive],allocated=[];
+ // Water filling makes floor-adjustments local while preserving the ratios
+ // of all other positive institutions.
+ while(unassigned.length){
+  const tiny=unassigned.filter(t=>free*t.count/remainingTotal<floor-1e-10);
+  if(!tiny.length){
+   allocated.push(...unassigned.map(t=>({i:t.i,weight:free*t.count/remainingTotal,visualFloor:false})));
+   break;
+  }
+  allocated.push(...tiny.map(t=>({i:t.i,weight:floor,visualFloor:true})));
+  free-=tiny.length*floor;
+  remainingTotal-=tiny.reduce((sum,t)=>sum+t.count,0);
+  unassigned=unassigned.filter(t=>!tiny.some(a=>a.i===t.i));
+ }
+ const weighted=[
+  ...allocated.map(t=>({i:t.i,count:t.weight})),
+  ...zeros.map(t=>({i:t.i,count:zeroShare/zeros.length}))
+ ];
+ const floored=new Set(allocated.filter(t=>t.visualFloor).map(t=>t.i));
+ return treemap(weighted,W,H).map(r=>({
+  ...r,count:input[r.i],zero:input[r.i]===0,visualFloor:floored.has(r.i)
+ }));
+}
 const toneOf=n=>n<=1?1:n<=3?2:n<=7?3:n<=15?4:5;
 const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
 const prettyDate=key=>{
@@ -132,99 +189,72 @@ const prettyDate=key=>{
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
- const zeroPanel=el('marketWidthZeroPanel'),zeros=el('marketWidthZeroNames'),detail=el('marketWidthDetail');
+ const detail=el('marketWidthDetail');
  const prev=el('marketWidthPrev'),next=el('marketWidthNext'),date=el('marketWidthDate');
  const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
- if(!rootEl||!board||!zeroPanel||!zeros||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
+ if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
  const series=aggregate(rows,days),last=series.keys.length-1;
  let day=series.counts.all.findLastIndex(line=>line.some(Boolean));
  if(day<0)day=last;
  let region='all',selectedFirm=null,lastSize='';
- const label=(i,n)=>DISPLAY[i]+' · '+fmt(n)+' new '+(n===1?'posting':'postings')+' · '+series.keys[day]+' · '+(region==='all'?'all regions':region);
- const quietDetail=()=>{if(selectedFirm===null){detail.textContent='';detail.hidden=true;}};
- const explain=i=>{
-  const n=series.counts[region][day][i];
-  detail.textContent=label(i,n);
-  detail.hidden=false;
+ const datum=i=>series.counts[region][day][i];
+ const label=i=>{
+  const n=datum(i),what=n>0?fmt(n)+' new '+(n===1?'posting':'postings'):'No new postings';
+  return DISPLAY[i]+' · '+what+' · '+series.keys[day]+' · '+(region==='all'?'all regions':region);
  };
+ const quietDetail=()=>{if(selectedFirm===null){detail.textContent='';detail.hidden=true;}};
+ const explain=i=>{detail.textContent=label(i);detail.hidden=false;};
  function draw(){
   const data=daily(series,region,day),values=data.values;
-  const active=values.map((n,i)=>({i,count:n})).filter(item=>item.count>0);
-  const zero=values.map((n,i)=>n===0?i:-1).filter(i=>i>=0);
-  rootEl.classList.toggle('is-sparse',active.length<=4&&zero.length>0);
-  rootEl.classList.toggle('is-all-zero',active.length===0);
-  rootEl.classList.toggle('has-no-zeros',zero.length===0);
-  zeroPanel.hidden=zero.length===0;
-  const fallbackWidth=board.getBoundingClientRect().width||540;
-  const fallbackHeight=board.getBoundingClientRect().height||320;
-  const width=Math.max(1,Math.round(fallbackWidth)),height=Math.max(1,Math.round(fallbackHeight));
-  const tiles=treemap(active,width,height);
-  board.replaceChildren();
-  if(!tiles.length){
-   const empty=document.createElement('p');empty.className='mw-empty';
-   empty.textContent='No new postings recorded';board.append(empty);
-  }else{
-   const fragment=document.createDocumentFragment();
-   for(const tile of tiles){
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='mw-tile mw-tone-'+toneOf(tile.count)+(active.length>=10?' mw-tile-dense':'');
-    button.dataset.firm=String(tile.i);
-    button.setAttribute('aria-label',label(tile.i,tile.count));
-    button.title=label(tile.i,tile.count);
-    button.setAttribute('aria-pressed',String(selectedFirm===tile.i));
-    button.style.left=(tile.x/width*100).toFixed(5)+'%';
-    button.style.top=(tile.y/height*100).toFixed(5)+'%';
-    button.style.width=(tile.w/width*100).toFixed(5)+'%';
-    button.style.height=(tile.h/height*100).toFixed(5)+'%';
-    const face=document.createElement('span');face.className='mw-tile-face';
-    // Treat the real browser width as the gate for readable, *complete*
-    // official names. Never abbreviate bank names to make them fit a tile.
-    if(tile.w>=155&&tile.h>=54){
-     const name=document.createElement('span');name.className='mw-tile-name';
-     name.textContent=DISPLAY[tile.i];face.append(name);
-    }else if(tile.w>=68&&tile.h>=53){
-     const name=document.createElement('span');name.className='mw-tile-name mw-tile-name-small';
-     name.textContent=DISPLAY[tile.i];face.append(name);
-    }
-    if(tile.w>=36&&tile.h>=32){
-     const amount=document.createElement('strong');amount.className='mw-tile-count';
-     amount.textContent=fmt(tile.count);face.append(amount);
-    }
-    button.append(face);fragment.append(button);
+  rootEl.classList.toggle('is-all-zero',data.firms===0);
+  const width=Math.max(1,Math.round(board.getBoundingClientRect().width||540));
+  const height=Math.max(1,Math.round(board.getBoundingClientRect().height||320));
+  const tiles=marketTiles(values,width,height);
+  const fragment=document.createDocumentFragment();
+  for(const tile of tiles){
+   const button=document.createElement('button');
+   const zero=tile.zero,tiny=tile.w<73||tile.h<33,compact=tile.w<162||tile.h<67;
+   button.type='button';
+   button.className='mw-tile '+(zero?'mw-is-zero':'mw-tone-'+toneOf(tile.count))+
+    (tiny?' mw-tile-tiny':compact?' mw-tile-compact':'')+
+    (!zero&&tile.visualFloor?' mw-display-floor':'');
+   button.dataset.firm=String(tile.i);
+   button.dataset.zero=String(zero);
+   button.setAttribute('aria-label',label(tile.i));
+   button.setAttribute('aria-pressed',String(selectedFirm===tile.i));
+   button.title=label(tile.i);
+   button.style.left=(tile.x/width*100).toFixed(5)+'%';
+   button.style.top=(tile.y/height*100).toFixed(5)+'%';
+   button.style.width=(tile.w/width*100).toFixed(5)+'%';
+   button.style.height=(tile.h/height*100).toFixed(5)+'%';
+   const face=document.createElement('span');face.className='mw-tile-face';
+   const name=document.createElement('span');name.className='mw-tile-name';
+   name.textContent=tiny?MICRO[tile.i]:compact?COMPACT[tile.i]:DISPLAY[tile.i];
+   face.append(name);
+   if(!zero){
+    const amount=document.createElement('strong');amount.className='mw-tile-count';
+    amount.textContent=fmt(tile.count);
+    face.append(amount);
    }
-   board.append(fragment);
+   button.append(face);fragment.append(button);
   }
-  zeros.replaceChildren();
-  const zeroItems=document.createDocumentFragment();
-  for(const i of zero){
-   const item=document.createElement('span');
-   item.className='mw-zero-name';item.textContent=DISPLAY[i];
-   item.title=DISPLAY[i]+' · 0 new postings';
-   zeroItems.append(item);
-  }
-  zeros.append(zeroItems);
-  count.textContent=fmt(data.total);
-  firms.textContent=data.firms+'/18';
-  date.textContent=prettyDate(series.keys[day]);
-  date.setAttribute('aria-label',series.keys[day]);
+  board.replaceChildren(fragment);
+  count.textContent=fmt(data.total);firms.textContent=data.firms+'/18';
+  date.textContent=prettyDate(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
   prev.disabled=day===0;next.disabled=day===last;
   tabs.querySelectorAll('[data-market-region]').forEach(tab=>{
    const on=tab.dataset.marketRegion===region;
-   tab.classList.toggle('active',on);
-   tab.setAttribute('aria-selected',String(on));
+   tab.classList.toggle('active',on);tab.setAttribute('aria-selected',String(on));
    tab.tabIndex=on?0:-1;
   });
   selectedFirm=null;detail.hidden=true;detail.textContent='';
   lastSize=width+'x'+height;
  }
  function chooseDay(next){
-  const to=Math.max(0,Math.min(last,next));
-  if(to===day)return;day=to;draw();
+  const to=Math.max(0,Math.min(last,next));if(to===day)return;day=to;draw();
  }
  function chooseRegion(value){
-  if(!REGIONS.includes(value)||value===region)return;
-  region=value;draw();
+  if(!REGIONS.includes(value)||value===region)return;region=value;draw();
  }
  prev.addEventListener('click',()=>chooseDay(day-1));
  next.addEventListener('click',()=>chooseDay(day+1));
@@ -236,26 +266,22 @@ function render(rows,days){
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
   const index=REGIONS.indexOf(region);
   chooseRegion(REGIONS[e.key==='Home'?0:e.key==='End'?3:(index+(e.key==='ArrowRight'?1:3))%4]);
-  tabs.querySelector('[data-market-region="'+region+'"]')?.focus();
-  e.preventDefault();
+  tabs.querySelector('[data-market-region="'+region+'"]')?.focus();e.preventDefault();
  });
  board.addEventListener('pointerover',e=>{
-  const tile=e.target.closest('.mw-tile');
-  if(tile)explain(Number(tile.dataset.firm));
+  const tile=e.target.closest('.mw-tile');if(tile)explain(Number(tile.dataset.firm));
  });
  board.addEventListener('pointerout',e=>{
   if(e.target.closest('.mw-tile')&&!board.querySelector('.mw-tile:hover'))quietDetail();
  });
  board.addEventListener('focusin',e=>{
-  const tile=e.target.closest('.mw-tile');
-  if(tile)explain(Number(tile.dataset.firm));
+  const tile=e.target.closest('.mw-tile');if(tile)explain(Number(tile.dataset.firm));
  });
  board.addEventListener('focusout',e=>{
   if(e.target.closest('.mw-tile'))quietDetail();
  });
  board.addEventListener('click',e=>{
-  const tile=e.target.closest('.mw-tile');
-  if(!tile)return;
+  const tile=e.target.closest('.mw-tile');if(!tile)return;
   const chosen=Number(tile.dataset.firm);
   selectedFirm=selectedFirm===chosen?null:chosen;
   board.querySelectorAll('.mw-tile').forEach(item=>item.setAttribute('aria-pressed',String(Number(item.dataset.firm)===selectedFirm)));
@@ -263,7 +289,11 @@ function render(rows,days){
  });
  board.addEventListener('keydown',e=>{
   if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Escape'].includes(e.key))return;
-  if(e.key==='Escape'){selectedFirm=null;quietDetail();board.querySelectorAll('.mw-tile').forEach(t=>t.setAttribute('aria-pressed','false'));e.preventDefault();return;}
+  if(e.key==='Escape'){
+   selectedFirm=null;quietDetail();
+   board.querySelectorAll('.mw-tile').forEach(t=>t.setAttribute('aria-pressed','false'));
+   e.preventDefault();return;
+  }
   const available=[...board.querySelectorAll('.mw-tile')],idx=available.indexOf(document.activeElement);
   if(idx<0||available.length<2)return;
   const step=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;
@@ -280,7 +310,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,REGIONS,firmIndex,aggregate,daily,limit,treemap,toneOf,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,toneOf,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
