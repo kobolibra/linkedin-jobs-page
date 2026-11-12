@@ -153,7 +153,7 @@ function marketTiles(values,width=640,height=340){
    .map(r=>({...r,count:0,zero:true,visualFloor:false}));
  }
  const total=positive.reduce((sum,t)=>sum+t.count,0);
- const zeroShare=Math.min(.3,zeros.length*.0135);
+ const zeroShare=Math.min(.30,zeros.length*.020);
  const floor=Math.min(.0135,(1-zeroShare)/Math.max(1,positive.length*1.4));
  let free=1-zeroShare,remainingTotal=total;
  let unassigned=[...positive],allocated=[];
@@ -178,6 +178,55 @@ function marketTiles(values,width=640,height=340){
  return treemap(weighted,W,H).map(r=>({
   ...r,count:input[r.i],zero:input[r.i]===0,visualFloor:floored.has(r.i)
  }));
+}
+/* One visual grammar regardless of box size:
+   a centred vertical lockup, name above count (zero: name only).
+   Typography is determined by each rectangle, not the number of firms
+   active on that date, and then fitted against actual rendered text. */
+function tileTypography(w,h){
+ const area=w*h;
+ if(w>=210&&h>=95&&area>=24500)return {tier:'feature',name:21,count:30,gap:9};
+ if(w>=145&&h>=76&&area>=11500)return {tier:'large',name:16,count:23,gap:6};
+ if(w>=90&&h>=48&&area>=4100)return {tier:'medium',name:12.5,count:17,gap:4};
+ return {tier:'small',name:10,count:12,gap:2};
+}
+function fitTileContent(button,rect,zero){
+ const face=button.querySelector('.mw-tile-face');
+ const name=button.querySelector('.mw-tile-name');
+ const count=button.querySelector('.mw-tile-count');
+ const lockup=button.querySelector('.mw-tile-lockup');
+ const initial=tileTypography(rect.w,rect.h);
+ const allowed=rect.w>=150&&rect.h>=75
+  ?[DISPLAY[rect.i],COMPACT[rect.i],MICRO[rect.i]]
+  :rect.w>=100&&rect.h>=50
+   ?[COMPACT[rect.i],MICRO[rect.i]]
+   :[MICRO[rect.i]];
+ const computed=getComputedStyle(face);
+ const availableH=face.clientHeight-parseFloat(computed.paddingTop)-parseFloat(computed.paddingBottom);
+ // Preserve a readable count. Reduce name size and use approved names before
+ // allowing any overlap or clipping. Measurements use the real rendered font.
+ for(let size=initial.name;size>=8;size-=.5){
+  name.style.fontSize=size+'px';
+  if(count)count.style.fontSize=Math.max(10,initial.count-(initial.name-size)*.9)+'px';
+  lockup.style.gap=Math.max(1,initial.gap-(initial.name-size)*.22)+'px';
+  for(const label of [...new Set(allowed)]){
+   name.textContent=label;
+   if(name.scrollWidth<=name.clientWidth+.75 &&
+      lockup.scrollHeight<=availableH+.75 &&
+      lockup.scrollWidth<=lockup.clientWidth+.75){
+    button.dataset.labelForm=label===DISPLAY[rect.i]?'full':label===COMPACT[rect.i]?'compact':'micro';
+    button.dataset.fontFit=String(size);
+    return;
+   }
+  }
+ }
+ // Subpixel and extraordinarily narrow rectangles may not fit two glyphs at
+ // any standard size; keep both fields stacked and retain full accessible text.
+ name.textContent=MICRO[rect.i];name.style.fontSize='8px';
+ if(count)count.style.fontSize='10px';
+ lockup.style.gap='1px';
+ button.dataset.labelForm='micro';
+ button.dataset.fontFit='8';
 }
 const toneOf=n=>n<=1?1:n<=3?2:n<=7?3:n<=15?4:5;
 const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
@@ -213,11 +262,11 @@ function render(rows,days){
   const fragment=document.createDocumentFragment();
   for(const tile of tiles){
    const button=document.createElement('button');
-   const zero=tile.zero,tiny=tile.w<73||tile.h<33,compact=tile.w<162||tile.h<67;
+   const zero=tile.zero,type=tileTypography(tile.w,tile.h);
    button.type='button';
    button.className='mw-tile '+(zero?'mw-is-zero':'mw-tone-'+toneOf(tile.count))+
-    (tiny?' mw-tile-tiny':compact?' mw-tile-compact':'')+
-    (!zero&&tile.visualFloor?' mw-display-floor':'');
+    ' mw-tile-'+type.tier+(!zero&&tile.visualFloor?' mw-display-floor':'');
+   button.dataset.layout=type.tier;
    button.dataset.firm=String(tile.i);
    button.dataset.zero=String(zero);
    button.setAttribute('aria-label',label(tile.i));
@@ -228,17 +277,23 @@ function render(rows,days){
    button.style.width=(tile.w/width*100).toFixed(5)+'%';
    button.style.height=(tile.h/height*100).toFixed(5)+'%';
    const face=document.createElement('span');face.className='mw-tile-face';
+   const lockup=document.createElement('span');lockup.className='mw-tile-lockup';
    const name=document.createElement('span');name.className='mw-tile-name';
-   name.textContent=tiny?MICRO[tile.i]:compact?COMPACT[tile.i]:DISPLAY[tile.i];
-   face.append(name);
+   name.textContent=DISPLAY[tile.i];
+   lockup.append(name);
    if(!zero){
     const amount=document.createElement('strong');amount.className='mw-tile-count';
-    amount.textContent=fmt(tile.count);
-    face.append(amount);
+    amount.textContent=fmt(tile.count);lockup.append(amount);
    }
-   button.append(face);fragment.append(button);
+   face.append(lockup);button.append(face);fragment.append(button);
   }
   board.replaceChildren(fragment);
+  // Measure and fit against actual DOM dimensions once per date, region or
+  // board resize, never during hover. Every positive tile remains stacked.
+  for(const tile of tiles){
+   const button=board.querySelector('.mw-tile[data-firm="'+tile.i+'"]');
+   if(button)fitTileContent(button,tile,tile.zero);
+  }
   count.textContent=fmt(data.total);firms.textContent=data.firms+'/18';
   date.textContent=prettyDate(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
   prev.disabled=day===0;next.disabled=day===last;
@@ -310,7 +365,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,toneOf,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,toneOf,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);

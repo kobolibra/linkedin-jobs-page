@@ -46,6 +46,10 @@ async function inspectMosaic(page,nonzero){
   const rects=nodes.map(node=>{
    const r=node.getBoundingClientRect(),face=node.querySelector('.mw-tile-face');
    const name=node.querySelector('.mw-tile-name'),number=node.querySelector('.mw-tile-count');
+   const group=node.querySelector('.mw-tile-lockup');
+   const fr=face.getBoundingClientRect(),nr=name.getBoundingClientRect(),gr=group.getBoundingClientRect();
+   const cr=number?.getBoundingClientRect(),style=getComputedStyle(name);
+   const approxCenter=(box)=>Math.abs((box.left+box.right)/2-(fr.left+fr.right)/2);
    const zero=node.dataset.zero==='true';
    return {
     i:Number(node.dataset.firm),zero,name:name?.textContent,count:number?.textContent||null,
@@ -54,7 +58,12 @@ async function inspectMosaic(page,nonzero){
     nameWidth:name?.clientWidth,contentWidth:name?.scrollWidth,
     nameHeight:name?.clientHeight,contentHeight:name?.scrollHeight,
     faceBg:getComputedStyle(face).backgroundColor,
-    faceInk:getComputedStyle(face).color
+    faceInk:getComputedStyle(face).color,
+    layout:node.dataset.layout,labelForm:node.dataset.labelForm,
+    nameFont:parseFloat(style.fontSize),
+    countFont:number?parseFloat(getComputedStyle(number).fontSize):null,
+    centeredX:approxCenter(gr),centeredY:Math.abs((gr.top+gr.bottom)/2-(fr.top+fr.bottom)/2),
+    stacked:cr?nr.bottom<=cr.top+1:true,lockupHeight:gr.height,faceHeight:fr.height
    };
   });
   return {board:{w:board.width,h:board.height,x:board.x,y:board.y},rects};
@@ -74,6 +83,12 @@ async function inspectMosaic(page,nonzero){
   'all 18 tiles fully cover the mosaic: '+JSON.stringify({boardArea,totalArea,board:details.board,rects:details.rects.map(t=>({i:t.i,count:t.count,area:t.area,x:t.x,y:t.y,w:t.w,h:t.h}))}));
  const over=details.rects.filter(t=>t.contentWidth>t.nameWidth+1||t.contentHeight>t.nameHeight+1);
  assert.equal(over.length,0,'firm tokens must fit without being clipped: '+JSON.stringify(over));
+ const broken=details.rects.filter(t=>!t.stacked||t.centeredX>3||t.centeredY>3);
+ assert.equal(broken.length,0,
+  'the unified name-above-count lockup must stay optically centered at every geometry: '+JSON.stringify(broken));
+ const spacious=details.rects.filter(t=>t.layout==='feature'&&!t.zero&&t.w>=300&&t.h>=150);
+ assert.ok(spacious.every(t=>t.nameFont>=18&&t.countFont>=25),
+  'a spacious rectangle must not show a 9px label or number: '+JSON.stringify(spacious));
  return details;
 }
 const rgb=raw=>(raw.match(/[\d.]+/g)||[]).slice(0,3).map(Number);
@@ -170,6 +185,9 @@ try{
  assert.equal(await summary(one),'1 new postings across 1/18 institutions');
  const sparse=await inspectMosaic(one,1);
  assert.equal(sparse.rects.find(t=>t.i===1).count,'1');
+ const featured=sparse.rects.find(t=>t.i===1);
+ assert.ok(featured.layout==='feature'&&featured.nameFont>=18&&featured.countFont>=25,
+  'single hiring firm must use feature-size centered typography: '+JSON.stringify(featured));
  await one.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/single-active-960-light.png',source).pathname,animations:'disabled'});
  await one.close();
  // Dense: all eighteen have one job.
