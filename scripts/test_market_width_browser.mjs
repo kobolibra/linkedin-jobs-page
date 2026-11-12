@@ -33,6 +33,13 @@ try{
    assert.equal(metrics.firm,'4 / 18');
    assert.equal(metrics.axes,18);assert.equal(metrics.table,18);
    assert.ok(metrics.svg.w>180&&metrics.svg.h>130,JSON.stringify({width,theme,metrics}));
+   assert.ok(await page.locator('.mw-ring').count()===5);
+   assert.equal(await page.locator('.mw-reference').count(),0);
+   assert.match(await page.locator('#marketWidthScale').textContent(),/ADAPTIVE/);
+   assert.match(await page.locator('#marketWidthInspection').textContent(),/Highest/);
+   assert.ok(await page.locator('.mw-area').count()===1);
+   const coords=await page.evaluate(()=>{const r=document.querySelector('.mw-svg').getBoundingClientRect();const p=document.querySelector('.mw-point circle').getBoundingClientRect();return {distance:Math.hypot((p.left+p.width/2)-(r.left+r.width/2),(p.top+p.height/2)-(r.top+r.height*218/442)),width:r.width};});
+   assert.ok(coords.distance/coords.width>.08,'a positive low-volume day must not collapse at center: '+JSON.stringify(coords));
    assert.ok(metrics.postings.y>=metrics.dist.b-2,JSON.stringify({width,theme,metrics}));
    assert.ok(metrics.top.y>=Math.max(metrics.left.b,metrics.radar.b)-2,JSON.stringify({width,theme,metrics}));
    if(width>720){
@@ -47,6 +54,7 @@ try{
    assert.match(await page.locator('#marketWidthDate').textContent(),/2026-11-10/);
    await page.locator('[data-market-region="all"]').click();
    assert.equal(await page.locator('#marketWidthDetails tr').count(),18);
+   assert.equal(await page.locator('#marketWidthDetails tr:first-child td').count(),2);
    console.log('market-width browser PASS '+width+'px '+theme);
    await page.close();
   }
