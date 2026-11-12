@@ -10,7 +10,7 @@
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
 /* MARKET WIDTH / PERCEPTUAL SEQUENTIAL RAMP
-   Light-first, vetted GnBu-family sequential blue-green trajectory. Zero is neutral;
+   Light-first, tailored GnBu-family green-to-blue sequential trajectory. Zero is neutral;
    every positive count maps monotonically to a fixed perceptual color mix,
    identical for matching counts across firms, dates and regions.
    No categorical firm colors, adjacency overrides, or discrete bands.
@@ -23,7 +23,7 @@
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
   --mw-zero:var(--surface-2);--mw-zero-ink:#586770;
-  --mw-ramp-light:#f0f9e8;--mw-ramp-deep:#4eb3d3;
+  --mw-ramp-light:#c7ebdd;--mw-ramp-deep:#4eb3d3;
   --mw-active-ink:#102b44;--mw-accent:#102b44;
   --mw-seam:1px;
 }
