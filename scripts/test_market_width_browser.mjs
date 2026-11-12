@@ -37,6 +37,18 @@ try{
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-company-row').count(),18);
+   assert.equal(await page.locator('.mw-company-row[data-firm-row="1"] .mw-company-name').textContent(),'Standard Chartered');
+   assert.equal(await page.locator('.mw-company-row[data-firm-row="12"] .mw-company-name').textContent(),'Morgan Stanley');
+   const labelFit=await page.evaluate(()=>{
+     const names=['Standard Chartered','Morgan Stanley','Fidelity International'];
+     return names.map(name=>{
+       const el=[...document.querySelectorAll('.mw-company-name')].find(x=>x.textContent===name);
+       if(!el)throw Error('Missing full label '+name);
+       return {name,available:el.clientWidth,rendered:el.scrollWidth};
+     });
+   });
+   assert.ok(labelFit.every(x=>x.rendered<=x.available+1),'Full names must fit without visual truncation: '+JSON.stringify(labelFit));
+
    assert.equal(await page.locator('.mw-cell').count(),540);
    assert.equal(await page.locator('.mw-level-0.mw-cell').count(),540-4*29);
    assert.equal(await page.locator('.mw-level-2.mw-cell').count(),2*29);
