@@ -676,6 +676,9 @@ jobsDataPromise
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+'" role="img" aria-label="30-day new postings trend. Point tooltips contain each date and its value."><title>New postings / past 30 days</title>'+lines+stems+'<polyline class="rhythm-line" points="'+series+'"/>'+nodes+callouts+axis+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
+    // Use the same first-seen daily buckets and deduplicated active chart data
+    // as New Postings, with the radar exposing a separate region selector.
+    window.MarketWidth?.render(chartData,days);
     top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);
     // Let the browser paint the stats and all three charts before the large
