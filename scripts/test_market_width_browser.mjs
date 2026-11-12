@@ -116,6 +116,15 @@ try{
    await selected.press('ArrowLeft');
    assert.equal(await page.locator('.mw-cell[data-firm="16"][data-day="27"].is-selected').count(),1);
    assert.equal(await page.locator('.mw-column-focus').count(),1);
+   const moved=await page.evaluate(()=>{
+     const frame=document.querySelector('.mw-column-focus').getBoundingClientRect();
+     const head=document.querySelector('.mw-day-head.is-selected').getBoundingClientRect();
+     return {dx:Math.abs(frame.left-head.left),top:frame.top,bottom:frame.bottom};
+   });
+   assert.ok(moved.dx<3,'date switching must move the complete vertical frame: '+JSON.stringify(moved));
+   // Capture the uncluttered default state, not the temporary focused-cell hint.
+   await page.locator('[data-market-region="all"]').focus();
+   assert.equal(await page.locator('#marketWidthInspection').isHidden(),true);
    if(width!==960){
     await page.locator('.ac-col-market').screenshot({
      path:new URL('artifacts/market-width/matrix-'+width+'-'+theme+'.png',source).pathname,
