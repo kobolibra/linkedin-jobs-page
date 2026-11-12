@@ -132,7 +132,7 @@ function render(rows,days){
   const position=scroll.scrollLeft;
   const regionCounts=series.counts[region],rank=sortedFirms(regionCounts);
   const headerDays=series.keys.map((key,j)=>{
-   const show=j===0||j===last||j%7===0||key.slice(5,7)!==series.keys[Math.max(0,j-1)].slice(5,7);
+   const show=j===0||j===last||(j%7===0&&j<=last-5);
    return '<span role="columnheader" class="mw-day-head'+(j===day?' is-selected':'')+'"'+
     ' aria-label="'+escapeHTML(key)+'" title="'+escapeHTML(key)+'">'+
     (show?'<span class="mw-axis-tick">'+escapeHTML(prettyDate(key))+'</span>':'')+'</span>';
