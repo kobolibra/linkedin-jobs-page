@@ -623,15 +623,16 @@ jobsDataPromise
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
+    const regionOrder=["SG","HK","CN"];
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const tMin=allTimes.length?Math.min(...allTimes):Date.now(),tMax=allTimes.length?Math.max(...allTimes):tMin,tSpan=Math.max(1,tMax-tMin);
     /* Region-stacked area visualization / approved C presentation.
-       Each first-seen time bucket stacks regions vertically (CN, HK, SG,
-       OTHER), so the uppermost boundary equals the sum across regions.
+       Each first-seen time bucket stacks SG at the base, HK in the middle
+       and CN at the top. Only these three geographic areas are plotted,
+       and the uppermost boundary equals their combined sum.
        Counts are NOT running totals across dates: zero-day gaps stay blank.
-       Original records, region colors, filters and time horizon are retained. */
+       Original records, three region colors and time horizon are retained. */
     // A sub-day 40-bin ribbon produces false zero gaps when drawn as a line.
     // For a short span use one bin per observed calendar day; retain 40 bins
     // for longer histories. The underlying records and total counts do not change.
@@ -729,7 +730,7 @@ jobsDataPromise
         hits+'</g>';
     }).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Stacked regional area chart of first-observed active roles; each date-bin height equals the sum of its regions, with no bridge over empty dates">'+
+      '" role="img" aria-label="Stacked area of first-observed active roles, Singapore at the bottom, Hong Kong above and Mainland China on top; no filled area over zero-only date bins">'+
       legend+gridTicks+series+dateTicks+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
