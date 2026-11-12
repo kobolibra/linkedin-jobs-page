@@ -90,12 +90,16 @@ try{
      postings:r('.ac-col-postings'),top:r('.ac-col-top50'),map:r('#marketWidthMap'),
      pageWidth:document.documentElement.scrollWidth,
      tabs:getComputedStyle(document.querySelector('.mw-tabs')).backgroundColor,
-     top50:top50&&getComputedStyle(top50).backgroundColor};
+     top50:top50&&getComputedStyle(top50).backgroundColor,
+     tabsWidth:document.querySelector('.mw-tabs').getBoundingClientRect().width,
+     top50Width:top50?.getBoundingClientRect().width||0};
    });
    assert.ok(dimensions.postings.y>=dimensions.dist.b-2);
    assert.ok(dimensions.top.y>=Math.max(dimensions.left.b,dimensions.right.b)-2);
    assert.ok(dimensions.pageWidth<=width+2,'no page overflow '+JSON.stringify({width,theme,dimensions}));
    if(dimensions.top50)assert.equal(dimensions.tabs,dimensions.top50,'Top30 chrome parity');
+   if(width<=720)assert.ok(Math.abs(dimensions.tabsWidth-dimensions.top50Width)<12,
+    'mobile market region control should use the same full-width pattern as Top30: '+JSON.stringify(dimensions));
    if(width>720){
     assert.ok(dimensions.right.x>=dimensions.left.x+dimensions.left.w-2);
     assert.ok(Math.abs(dimensions.left.h-dimensions.right.h)<3,'desktop alignment');
@@ -134,6 +138,12 @@ try{
    assert.equal(await page.locator('.mw-tile').count(),0);
    assert.equal(await page.locator('.mw-zero-name').count(),18);
    assert.equal(await page.locator('.mw-empty').count(),1);
+   if(width===1440&&theme==='light'){
+    await page.locator('.ac-col-market').screenshot({
+     path:new URL('artifacts/market-width/treemap-all-zero-1440-light.png',source).pathname,
+     animations:'disabled'
+    });
+   }
    if(width<=720){
     const zeroVisible=await page.evaluate(()=>{
       const panel=document.querySelector('#marketWidthZeroPanel').getBoundingClientRect();
@@ -166,6 +176,10 @@ try{
  assert.equal(await page.locator('.mw-zero-name').count(),17);
  assert.equal(await page.locator('.mw-tile-name').textContent(),'Standard Chartered');
  await ratioTest(page);
+ await page.locator('.ac-col-market').screenshot({
+  path:new URL('artifacts/market-width/treemap-single-960-light.png',source).pathname,
+  animations:'disabled'
+ });
  await page.close();
  // 18-way distribution: no institution is artificially dropped.
  const many=await make(960,'dark');
@@ -179,5 +193,9 @@ try{
  assert.equal(await many.locator('.mw-tile').count(),18);
  assert.equal(await many.locator('#marketWidthZeroPanel').isHidden(),true);
  await ratioTest(many);
+ await many.locator('.ac-col-market').screenshot({
+  path:new URL('artifacts/market-width/treemap-18-active-960-dark.png',source).pathname,
+  animations:'disabled'
+ });
  await many.close();
 }finally{await browser.close();}
