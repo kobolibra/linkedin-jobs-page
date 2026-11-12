@@ -145,12 +145,15 @@ async function renderLeft(page,chartData,theme){
   assert.equal(first[k].upper-first[k].lower,first[k].cumulative,'band thickness is each region’s cumulative current-active cohort');
   assert.ok(first[k].cumulative>=first[k].count,'daily new observations cannot exceed their cumulative total');
  }
- if(first.sg&&first.hk&&first.cn){
-  assert.equal(first.hk.lower,0,'largest HK series anchors the zero baseline');
-  assert.equal(first.sg.lower,first.hk.upper,'SG stacks above HK');
-  assert.equal(first.cn.lower,first.sg.upper,'CN stays on top, not in the middle');
+ if(first.hk)assert.equal(first.hk.lower,0,'HK always anchors the zero baseline');
+ // In production the three regions may first appear on different dates.
+ // Compare adjacent cumulative boundaries only at the SAME UTC day.
+ if(first.sg&&first.hk&&first.cn&&
+    first.hk.bin===first.sg.bin&&first.sg.bin===first.cn.bin){
+  assert.equal(first.sg.lower,first.hk.upper,'SG stacks above HK on the same date');
+  assert.equal(first.cn.lower,first.sg.upper,'CN stacks on SG on the same date');
   assert.equal(first.cn.upper,first.sg.cumulative+first.hk.cumulative+first.cn.cumulative,
-   'uppermost cumulative boundary equals the three regional cumulative totals');
+   'uppermost cumulative boundary equals all three regions on the same date');
  }
  const observations=chartData.filter(r=>['SG','HK','CN'].includes(r.location))
   .map(r=>new Date(r.firstSeen).getTime());
