@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-12T04:03:00.911713+00:00",
+    "checkedAt": "2026-11-12T10:02:52.556236+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-12T04:02:48.898598+00:00",
+    "checkedAt": "2026-11-12T10:02:40.906689+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-12T04:02:54.688072+00:00",
+    "checkedAt": "2026-11-12T10:02:46.583768+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-12T04:02:57.847630+00:00",
+    "checkedAt": "2026-11-12T10:02:49.584311+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11248,5 +11248,29 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://cn.linkedin.com/company/%E9%91%AB%E5%B1%B1%E4%BF%9D%E9%99%A9%E4%BB%A3%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4488281021"
+  },
+  "alpha2fund": {
+    "name": "Alpha2Fund",
+    "checkedAt": "2026-11-12T10:02:36.344498+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "cc8f882d79d4fce1fc071450.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFclG6PQg6oNA/company-logo_100_100/B56aCpfPXaHUAI-/0/1789549934597/alpha_two_fund_logo?e=2147483647&v=beta&t=S_4yGCPrhdHI9dumuOL0HTUyXoqT4YvrT1dihj59-mY",
+    "companyUrl": "https://www.linkedin.com/company/alpha-squared",
+    "sourceJobId": "4490095135"
+  },
+  "enhanced investment products": {
+    "name": "Enhanced Investment Products",
+    "checkedAt": "2026-11-12T10:02:37.995516+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0ed7c8d8511c6b172f8e876d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQGQSi0ipmIiCg/company-logo_100_100/company-logo_100_100/0/1631306496931?e=2147483647&v=beta&t=BPitTcFDGQ71KTyFkrWJ9chkONMlXoP0aFWqYZXAMqU",
+    "companyUrl": "https://hk.linkedin.com/company/enhanced-investment-products-ltd",
+    "sourceJobId": "4489079853"
   }
 }
