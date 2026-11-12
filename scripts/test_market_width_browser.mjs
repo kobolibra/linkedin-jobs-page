@@ -94,6 +94,10 @@ async function renderLeft(page,chartData,theme){
    bins:hits.length,
    pointTotal:hits.reduce((sum,node)=>sum+Number(node.dataset.count),0),
    markers:document.querySelectorAll('#dist .region-spark-dot').length,
+   markerInks:[...document.querySelectorAll('#dist .region-spark-dot')].map(dot=>({
+    fill:getComputedStyle(dot).fill,
+    expected:getComputedStyle(dot.parentElement.querySelector('.region-spark-line')).stroke
+   })),
    dateTicks:document.querySelectorAll('#dist .region-spark-date').length,
    filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
    paths:lines.map(p=>p.getAttribute('d')),
@@ -391,6 +395,8 @@ try{
  assert.equal((gapQuality.paths[2].match(/M/g)||[]).length,2,
   'separated CN observations must form two disconnected contours');
  assert.ok(gapQuality.bandCount>=4,'isolated observations produce true tinted areas');
+ assert.ok(gapQuality.markerInks.every(m=>m.fill===m.expected),
+  'isolated SG/HK/CN data markers must use the exact line color, not default black');
  await gapPage.locator('.analytics-card').screenshot({
   path:new URL('artifacts/market-width/region-gap-960-light.png',source).pathname,
   animations:'disabled'
