@@ -106,7 +106,7 @@ try{
      pageWidth:document.documentElement.scrollWidth,
      regionBg:getComputedStyle(document.querySelector('.mw-tabs')).backgroundColor,
      topBg:top30&&getComputedStyle(top30).backgroundColor,
-     regionW:rect('.mw-tabs').width,topW:top30?.getBoundingClientRect().width||0};
+     regionW:rect('.mw-tabs').w,topW:top30?.getBoundingClientRect().width||0};
    });
    assert.ok(bounds.post.y>=bounds.dist.b-2);
    assert.ok(bounds.top.y>=Math.max(bounds.left.b,bounds.right.b)-2);
@@ -117,8 +117,8 @@ try{
     assert.ok(Math.abs(bounds.right.h-bounds.left.h)<3,'charts align in desktop grid');
    }else{
     assert.ok(bounds.right.y>=bounds.left.b-2);
-    assert.ok(bounds.regionW>=145&&bounds.regionW<=bounds.right.w-16,
-     'region selector stays compact and inside the Market Width panel: '+JSON.stringify(bounds));
+    assert.ok(Math.abs(bounds.regionW-bounds.topW)<12,
+     'mobile region selector width should match Top30: '+JSON.stringify(bounds));
    }
    const before=await page.evaluate(()=>({
     page:document.documentElement.scrollHeight,
