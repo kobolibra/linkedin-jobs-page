@@ -113,10 +113,13 @@ try{
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-encoding').textContent(),'Size reflects postings');
    const initial=await inspectMosaic(page,4);
+   assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
    const zeroBg=zeros[0].faceBg;
    assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>60),
-    'every positive tint must differ clearly from the muted zero-neutral');
+    'every institution ink must differ clearly from the muted zero-neutral');
+   assert.equal(new Set(positives.map(t=>t.faceBg)).size,positives.length,
+    'different active institutions must carry distinct stable inks even at similar counts');
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
      'small-name contrast must be AA: '+JSON.stringify({theme,i:tile.i,bg:tile.faceBg,ink:tile.faceInk,ratio:contrast(tile.faceBg,tile.faceInk)}));
