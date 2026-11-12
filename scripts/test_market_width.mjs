@@ -97,7 +97,7 @@ test('homepage positions both charts left, aligned radar right, and preserves ot
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
- assert.match(read('scripts/public_assets.mjs'),/'market-width\\.js', 'market-width\\.css'/);
+ assert.ok(read('scripts/public_assets.mjs').includes("'market-width.js', 'market-width.css'"));
  assert.match(html,/Radial scale adapts to the selected date and region/);
  assert.doesNotMatch(html,/7-DAY DAILY AVG|7d avg|18 FIRMS/);
 });
