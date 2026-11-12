@@ -32,6 +32,7 @@ on:
       - 'market-width.js'
       - 'market-width.css'
       - 'scripts/test_market_width.mjs'
+      - 'scripts/test_market_width_browser.mjs'
       - 'account.js'
       - 'account-auth.mjs'
       - 'account-preferences.mjs'
@@ -134,6 +135,7 @@ jobs:
           npm install --ignore-scripts --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
           node scripts/test_application_journey_visual.mjs
+          node scripts/test_market_width_browser.mjs
       - name: Upload My Journey visual evidence
         if: always()
         uses: actions/upload-artifact@v4
