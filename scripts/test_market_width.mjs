@@ -91,7 +91,7 @@ test('homepage positions both charts left, aligned radar right, and preserves ot
  assert.ok(pos('id="top50"')<pos('id="cnCityMap"'));
  assert.match(css,/\.analytics-card > \.analytics-left[\s\S]*?grid-column:1/);
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
- assert.match(css,/@media \(max-width:720px\)/);
+ assert.match(css,/@media\s*\(max-width:720px\)/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  for(const s of ['market-width.js?v=market-width-2','market-width.css?v=market-width-2'])assert.ok(html.includes(s));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
