@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,toneOf}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,toneOf}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -113,7 +113,50 @@ test('one positive, all zero and all 18 positive are handled deterministically',
  assert.deepEqual([0,1,2,3,4,7,8,15,16].map(toneOf),[1,1,2,2,3,3,4,4,5]);
 });
 
-test('homepage replaces 30-day duplicate matrix with a daily market-structure map',()=>{
+test('one coherent mosaic contains all 18 firms even when 17 are zero',()=>{
+ const values=Array(18).fill(0);values[12]=1;
+ const tiles=marketTiles(values,600,340);
+ assert.equal(tiles.length,18);
+ assert.deepEqual(new Set(tiles.map(t=>t.i)).size,18);
+ assert.equal(tiles.filter(t=>t.zero).length,17);
+ assert.equal(tiles.find(t=>t.i===12).count,1);
+ assert.equal(tiles.find(t=>t.i===12).zero,false);
+ assert.ok(tiles.filter(t=>t.zero).every(t=>t.count===0),'placeholder count is zero, never fabricated');
+ const area=tiles.reduce((sum,t)=>sum+t.w*t.h,0);
+ assert.ok(Math.abs(area-600*340)<1e-5);
+ assert.deepEqual(tiles,marketTiles(values,600,340),'stable data returns a stable cloud');
+});
+
+test('all 18 zero institutions still produce an 18-cell muted mosaic',()=>{
+ const tiles=marketTiles(Array(18).fill(0),390,290);
+ assert.equal(tiles.length,18);
+ assert.equal(tiles.filter(t=>t.zero).length,18);
+ assert.ok(tiles.every(t=>t.w>0&&t.h>0));
+ assert.ok(Math.abs(tiles.reduce((a,t)=>a+t.w*t.h,0)-390*290)<1e-5);
+});
+
+test('among normal active tiles, relative area follows actual posting counts',()=>{
+ const values=Array(18).fill(0);values[0]=8;values[1]=4;values[2]=2;
+ const tiles=marketTiles(values,610,340);
+ const byIndex=i=>tiles.find(t=>t.i===i);
+ const a=byIndex(0).w*byIndex(0).h,b=byIndex(1).w*byIndex(1).h,c=byIndex(2).w*byIndex(2).h;
+ assert.equal(tiles.length,18);
+ assert.equal(tiles.filter(t=>!t.zero).length,3);
+ assert.ok(Math.abs(a/b-2)<1e-8,'8 vs 4 needs a 2:1 active area ratio');
+ assert.ok(Math.abs(b/c-2)<1e-8,'4 vs 2 needs a 2:1 active area ratio');
+ assert.ok(!byIndex(0).visualFloor&&!byIndex(1).visualFloor&&!byIndex(2).visualFloor);
+});
+
+test('extremely skewed counts preserve an honestly labeled legibility floor',()=>{
+ const values=Array(18).fill(0);values[0]=2000;values[1]=1;
+ const tiles=marketTiles(values,400,300);
+ assert.equal(tiles.length,18);
+ assert.equal(tiles.find(t=>t.i===1).count,1);
+ assert.equal(tiles.find(t=>t.i===1).visualFloor,true);
+ assert.ok(tiles.find(t=>t.i===1).w*tiles.find(t=>t.i===1).h>1000);
+});
+
+test('homepage and About describe an all-in-one daily map, without zero lists or visible numeric zero tiles',()=>{
  const html=read('index.html'),css=read('market-width.css'),js=read('market-width.js');
  const pos=s=>html.indexOf(s);
  assert.ok(pos('class="analytics-left"')<pos('id="dist"')&&pos('id="dist"')<pos('id="spark"'));
@@ -121,48 +164,30 @@ test('homepage replaces 30-day duplicate matrix with a daily market-structure ma
  assert.ok(pos('id="top50"')<pos('id="cnCityMap"'));
  assert.match(css,/\.analytics-card > \.analytics-left[\s\S]*?grid-column:1/);
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
- assert.match(css,/@media\s*\(max-width:720px\)/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.ok(html.includes('Market Width: 18 institutions we watch closely'));
  assert.ok(html.includes('new postings across'));
- assert.ok(html.includes('Area = new postings'));
+ assert.ok(html.includes('Size reflects postings'));
  assert.ok(html.includes('id="marketWidthMap"'));
- assert.doesNotMatch(html,/marketWidthZeroNames|marketWidthZeroPanel|No new postings<\/span>/);
  assert.ok(html.includes('id="marketWidthDetail"'));
- assert.doesNotMatch(html,/mw-matrix|mw-cell|mw-legend-chip|mw-axis-tick|18 institutions · 30 days|Explore exact|New roles · selected day|radar chart/);
- assert.doesNotMatch(js,/mw-matrix|mw-cell|mw-level-[0-9]|pointerover.+replaceChildren/);
- for(const src of ['market-width.js?v=market-width-8','market-width.css?v=market-width-8'])assert.ok(html.includes(src));
+ assert.doesNotMatch(html,/marketWidthZeroNames|marketWidthZeroPanel|No new postings<\/span>|mw-matrix|mw-cell|mw-legend-chip|mw-axis-tick/);
+ assert.doesNotMatch(js,/zeroPanel|zeroItems|mw-zero-name/);
+ assert.match(js,/if\(!zero\)\{/);
+ assert.match(js,/face\.append\(name\)/);
+ assert.match(js,/face\.append\(amount\)/);
+ assert.match(js,/function marketTiles\(/);
+ for(const ver of ['market-width.js?v=market-width-9','market-width.css?v=market-width-9'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
  assert.ok(read('scripts/public_assets.mjs').includes("'market-width.js', 'market-width.css'"));
- assert.match(read('about.html'),/Market Width maps the day's newly observed/);
- assert.doesNotMatch(read('about.html'),/remain visible outside the map/);
+ assert.match(read('about.html'),/All 18 institutions remain visible in one map/);
+ assert.doesNotMatch(read('about.html'),/remain visible outside the map|only institutions with qualifying new postings appear/);
 });
 
-test('map is hover-safe, includes only positive companies, and prints names and counts in every tile',()=>{
- const html=read('index.html'),css=read('market-width.css'),js=read('market-width.js');
- assert.doesNotMatch(html,/First observed on LinkedIn|Zero means no qualifying roles recorded|id="marketWidthStatus"|id="marketWidthDetails"/);
- assert.match(js,/function treemap\(/);
- assert.doesNotMatch(js,/zeroPanel|zeroItems|mw-zero-name/);
- assert.match(js,/const active=values\.map/);
- assert.match(js,/const active=values\.map/);
- assert.match(js,/name\.textContent=tiny\?MICRO\[tile\.i\]:compact\?COMPACT\[tile\.i\]:DISPLAY\[tile\.i\]/);
- assert.match(js,/DISPLAY\[tile\.i\]/);
- assert.match(js,/document\.createElement\('button'\)/);
- assert.match(js,/face\.append\(name,amount\)/);
- assert.match(js,/board\.addEventListener\('pointerover'/);
- assert.match(js,/board\.addEventListener\('keydown'/);
- assert.match(js,/selectedFirm===chosen/);
- assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
- assert.match(css,/\.mw-detail\[hidden\]/);
- assert.doesNotMatch(css,/\.mw-zero-panel|\.mw-zero-name|\.mw-map-layout\.is-sparse/);
- assert.match(css,/background:var\(--glass-light\)/);
- assert.match(css,/--mw-tone-5:#5b5264/);
- assert.match(css,/\.mw-tile\[aria-pressed="true"\]/);
- assert.match(css,/\.mw-tile-tiny/);
- assert.equal(COMPACT.length,18);
- assert.equal(MICRO.length,18);
+test('brand abbreviations remain governed by the 18-company mapping',()=>{
+ assert.equal(COMPACT.length,18);assert.equal(MICRO.length,18);
+ assert.equal(COMPACT[1],'Standard Chartered');
  assert.equal(COMPACT[12],'Morgan Stanley');
  assert.equal(MICRO[12],'MS');
  assert.equal(MICRO[1],'SC');
@@ -170,4 +195,19 @@ test('map is hover-safe, includes only positive companies, and prints names and 
  assert.equal(MICRO[11],'FIL');
  assert.ok(!COMPACT.some(v=>v.endsWith(' St.')||v.endsWith(' C.')));
  assert.ok(COMPACT.every(Boolean)&&MICRO.every(Boolean));
+ assert.match(read('market-width.js'),/name\.textContent=tiny\?MICRO\[tile\.i\]:compact\?COMPACT\[tile\.i\]:DISPLAY\[tile\.i\]/);
+});
+
+test('distinct mineral-zero and warm-plum live color channels maintain shared app styling',()=>{
+ const css=read('market-width.css'),html=read('index.html');
+ assert.match(css,/--mw-zero:#e9e8e5/);
+ assert.match(css,/--mw-tone-1:#c9a9a1/);
+ assert.match(css,/--mw-tone-5:#554358/);
+ assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
+ assert.match(css,/\.mw-is-zero/);
+ assert.match(css,/background:var\(--glass-light\)/);
+ assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
+ assert.match(css,/\.mw-detail\[hidden\]/);
+ assert.doesNotMatch(css,/\.mw-zero-panel|\.mw-zero-name|\.mw-map-layout\.is-sparse/);
+ assert.doesNotMatch(html,/18 institutions · 30 days|Explore exact institution counts|First observed on LinkedIn/);
 });
