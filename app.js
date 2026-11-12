@@ -697,22 +697,27 @@ jobsDataPromise
       });
       if(run.length)runs.push(run);
       const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
-      const areas=runs.map(indices=>{
-        const upperPoints=indices.flatMap(i=>[
-          fmtPoint(binEdge(i),trendY(upper[i])),
-          fmtPoint(binEdge(i+1),trendY(upper[i]))
-        ]);
-        const lowerPoints=[...indices].reverse().flatMap(i=>[
-          fmtPoint(binEdge(i+1),trendY(lower[i])),
-          fmtPoint(binEdge(i),trendY(lower[i]))
-        ]);
-        return '<path class="region-stack-band" d="M'+upperPoints.join(' L')+
-          ' L'+lowerPoints.join(' L')+' Z"/>';
-      }).join('');
-      const contour=runs.flatMap(indices=>indices.map((i,j)=>
-        (j?'L':'M')+fmtPoint(binEdge(i),trendY(upper[i]))+
-        ' L'+fmtPoint(binEdge(i+1),trendY(upper[i]))
-      )).join(' ');
+      // Linear boundaries interpolate adjacent actual bin heights. Each
+      // contiguous positive run has shoulders at the exact bin edges, so an
+      // isolated observation still has visible width without inventing jobs.
+      // Corresponding lower/upper contours enclose each tinted area band.
+      const upperPath=indices=>{
+        const first=indices[0],last=indices[indices.length-1];
+        return [fmtPoint(binEdge(first),trendY(upper[first])),
+          ...indices.map(i=>fmtPoint(trendX(i),trendY(upper[i]))),
+          fmtPoint(binEdge(last+1),trendY(upper[last]))];
+      };
+      const lowerPath=indices=>{
+        const first=indices[0],last=indices[indices.length-1];
+        return [fmtPoint(binEdge(last+1),trendY(lower[last])),
+          ...[...indices].reverse().map(i=>fmtPoint(trendX(i),trendY(lower[i]))),
+          fmtPoint(binEdge(first),trendY(lower[first]))];
+      };
+      const areas=runs.map(indices=>'<path class="region-stack-band" d="M'+
+        upperPath(indices).join(' L')+' L'+lowerPath(indices).join(' L')+' Z"/>'
+      ).join('');
+      const contour=runs.map(indices=>'M'+upperPath(indices).join(' L'))
+        .join(' ');
       const hits=heights.map((n,i)=>{
         if(n<=0)return '';
         const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
