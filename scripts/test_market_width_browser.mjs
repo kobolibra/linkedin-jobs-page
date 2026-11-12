@@ -63,7 +63,6 @@ async function inspectMosaic(page,nonzero){
     faceBg:getComputedStyle(face).backgroundColor,
     faceInk:getComputedStyle(face).color,
     active:node.classList.contains('mw-is-active'),
-    zone:node.dataset.zone,
     countInk:number?getComputedStyle(number).color:null,
     faceShadow:getComputedStyle(face).boxShadow,
     inset,cornerRadius:getComputedStyle(face).borderTopLeftRadius,
@@ -89,16 +88,15 @@ async function inspectMosaic(page,nonzero){
   'zero tiles have no number; positive tiles show an exact count');
  assert.ok(details.rects.every(t=>t.active===!t.zero),
   'there must be exactly one positive porcelain surface state, independent of firm and count');
- assert.ok(details.rects.every(t=>t.zero?(nonzero===0?t.zone==='neutral':t.zone==='perimeter'):t.zone==='core'),
-  'activity belongs to core, absence belongs to perimeter');
  if(nonzero>0&&18-nonzero>=4){
-  const edge=(t)=>Math.abs(t.x-details.board.x)<1.25||
+  const edge=t=>Math.abs(t.x-details.board.x)<1.25||
    Math.abs(t.y-details.board.y)<1.25||
    Math.abs(t.x+t.w-details.board.x-details.board.w)<1.25||
    Math.abs(t.y+t.h-details.board.y-details.board.h)<1.25;
-  assert.ok(details.rects.filter(t=>!t.zero).every(t=>!edge(t)),
-   'active tiles must not touch the board boundary');
-  assert.ok(details.rects.filter(t=>t.zero).every(edge),
+  assert.ok(details.rects.filter(t=>!t.zero).some(edge),
+   'mixed treemap must permit active firms on the outer edge again');
+ }
+ assert.ok(details.rects.filter(t=>t.zero).every(edge),
    'every inactive placeholder must touch the board boundary');
  }
  assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new postings')),
@@ -134,24 +132,24 @@ try{
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
    const zeroBg=zeros[0].faceBg;
-   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>15),
-    'warm ivory center must remain distinct from the neutral surround');
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
+    'positive sea-glass cells must separate clearly from neutral placeholders');
    assert.equal(new Set(positives.map(t=>t.faceBg)).size,1,
-    'active cells share one clean surface; count is encoded in area and text');
+    'one clean and recognizable data hue, no arbitrary firm rainbow');
    assert.equal(new Set(zeros.map(t=>t.faceBg)).size,1,
-    'outer inactive cells are consistently neutral');
-   if(theme==='light')assert.ok(positives.every(t=>{
-    const [r,g,b]=rgb(t.faceBg);
-    return r>b+20&&g>b+10&&r>g;
-   }),'active tiles must be warm ivory, not blue/gray');
-   const accent=theme==='light'?'rgb(138, 101, 32)':'rgb(229, 189, 104)';
+    'zero cells share the site neutral surface');
+   const accent=theme==='light'?'rgb(46, 96, 144)':'rgb(201, 240, 224)';
    assert.ok(positives.every(t=>t.countInk===accent),
-    'exact counts must use the existing global brass color tokens');
+    'exact counts must use the chosen restrained ink in '+theme);
    assert.ok(positives.every(t=>t.faceShadow==='none'),
-    'no decorative stripes or fake tile elevation');
+    'avoid painted keylines or decorative elevation');
    if(theme==='light'){
-    assert.ok(initial.rects.every(t=>lum(t.faceBg)>.85),
-     'light theme stays luminous, not muddy');
+    assert.ok(initial.rects.every(t=>lum(t.faceBg)>.73),
+     'all light-theme tiles stay bright');
+    assert.ok(positives.every(t=>{
+     const [r,g,b]=rgb(t.faceBg);
+     return g>r+30&&g>b+8&&b>r+20;
+    }),'activity fill is clear sea glass, not pastel blue-gray or gold');
    }
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
