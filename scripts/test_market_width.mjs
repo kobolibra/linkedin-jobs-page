@@ -291,6 +291,7 @@ test('typography tiers grow with each tile geometry, never the count of active f
  const small=tileTypography(55,34),medium=tileTypography(120,80);
  const large=tileTypography(175,110),feature=tileTypography(480,260);
  assert.deepEqual([small.tier,medium.tier,large.tier,feature.tier],['small','medium','large','feature']);
+ assert.equal(tileTypography(85,92).tier,'medium','tall mobile positive tiles should not use tiny labels');
  assert.ok(feature.name>=20&&feature.count>=28);
  assert.ok(feature.name>large.name&&large.name>medium.name&&medium.name>small.name);
  assert.ok(feature.count>large.count&&large.count>medium.count&&medium.count>small.count);
