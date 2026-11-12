@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorTiles,tileTypography}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -206,7 +206,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-18','market-width.css?v=market-width-18'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-width-19'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -228,69 +228,52 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=82/);
 });
 
-test('five light editorial pigments with original mixed treemap and neutral zero semantics',()=>{
+test('one ordered perceptual ramp replaces categorical institution colors',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
  assert.match(css,/--mw-zero:var\(--surface-2\)/);
- assert.match(css,/--mw-active-ink:var\(--navy\)/);
- assert.match(css,/--mw-accent:var\(--navy-2\)/);
+ assert.match(css,/--mw-ramp-light:#e7f4ef;--mw-ramp-deep:#4e9faf/);
+ assert.match(css,/--mw-active-ink:#102b44;--mw-accent:#102b44/);
+ assert.match(css,/color-mix\(in oklab,var\(--mw-ramp-light\),var\(--mw-ramp-deep\) var\(--mw-tone,0%\)\)/);
  assert.match(css,/--mw-seam:1px/);
- assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
- assert.match(js,/function marketTiles\(/);
- assert.match(js,/function colorTiles\(/);
- assert.doesNotMatch(js,/zeroPerimeter|zone:'perimeter'|zone:'core'|dataset\.zone/);
- assert.match(js,/\(zero\?'mw-is-zero':'mw-is-active mw-hue-'\+colors\[tile\.i\]\)/);
- assert.doesNotMatch(js,/activityTier|toneOf|mw-activity-|mw-firm-/);
- assert.doesNotMatch(css,/--mw-(?:low|mid|high|tone-\d)|\.mw-activity-|\.mw-firm-/);
- for(let i=0;i<5;i++)assert.ok(css.includes('.mw-hue-'+i+' {--mw-tile-fill:var(--mw-paint-'+i+')}'));
+ assert.match(js,/function colorLevel\(count\)/);
+ assert.match(js,/button\.style\.setProperty\('--mw-tone',colorPosition\(tile\.count\)\)/);
+ assert.doesNotMatch(js,/PREFERRED_INK|colorTiles|mw-hue-|zeroPerimeter|zone:'perimeter'|zone:'core'/);
+ assert.doesNotMatch(css,/\.mw-hue-|--mw-paint-|--mw-tone-\d|linear-gradient\(/);
  assert.match(css,/\.mw-is-zero \{--mw-tile-fill:var\(--mw-zero\);--mw-tile-ink:var\(--mw-zero-ink\)\}/);
- assert.match(css,/\.mw-is-active \{--mw-tile-fill:var\(--mw-paint-0\);--mw-tile-ink:var\(--mw-active-ink\)\}/);
  assert.match(css,/\.mw-is-active \.mw-tile-count \{color:var\(--mw-accent\)\}/);
- assert.doesNotMatch(css,/\.mw-is-active \.mw-tile-face \{box-shadow:inset 0 2px 0/);
  assert.match(css,/background:var\(--glass-light\)/);
  assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
  assert.match(css,/\.mw-detail\[hidden\]/);
  assert.doesNotMatch(html,/Active institutions are grouped in the center|Neutral inactive institutions sit around the perimeter/);
 });
 
-test('palette resolves the actual tile-adjacency graph without changing a single coordinate',()=>{
- const touch=(a,b)=>{
-  const x=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
-  const y=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
-  return ((Math.abs(a.x+a.w-b.x)<.02||Math.abs(b.x+b.w-a.x)<.02)&&y>.5)||
-   ((Math.abs(a.y+a.h-b.y)<.02||Math.abs(b.y+b.h-a.y)<.02)&&x>.5);
- };
- const cases=[
-  Array.from({length:18},(_,i)=>i===1?2:i===11?4:i===12?3:i===16?5:0),
-  Array.from({length:18},()=>1),
-  Array.from({length:18},(_,i)=>i%4?0:i+1),
-  Array.from({length:18},(_,i)=>i%3?i+1:0),
-  Array.from({length:18},(_,i)=>i===1?700:i===12?1:0),
-  Array.from({length:18},()=>0)
- ];
- for(const [w,h] of [[350,290],[510,316],[960,400]]){
-  for(const values of cases){
-   const before=marketTiles(values,w,h);
-   const snapshot=JSON.stringify(before);
-   const colors=colorTiles(before),again=colorTiles(before);
-   assert.deepEqual(colors,again,'same layout must have deterministic colors');
-   assert.equal(JSON.stringify(before),snapshot,'color allocation must never change treemap geometry');
-   assert.equal(colors.length,18);
-   const active=before.filter(t=>!t.zero);
-   if(active.length){
-    const largest=active.reduce((a,b)=>b.count>a.count?b:a);
-    assert.equal(colors[largest.i],0,'lead posting area must anchor the site-blue pigment');
-   }
-   for(const t of before)assert.ok(t.zero?colors[t.i]===null:
-    Number.isInteger(colors[t.i])&&colors[t.i]>=0&&colors[t.i]<=4);
-   for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++)
-    if(touch(active[i],active[j]))assert.notEqual(colors[active[i].i],colors[active[j].i],
-     'adjacent positive rectangles must not share paint '+JSON.stringify({w,h,a:active[i].i,b:active[j].i}));
-   if(active.length===4&&values[1]===2&&values[11]===4)
-    assert.equal(new Set(active.map(t=>colors[t.i])).size,4,'four active institutions should use four distinct hues');
-   if(active.length===18)assert.equal(new Set(colors).size,5,'dense map uses all five coordinated tones');
-  }
+test('same counts always equal the same color level, independently of institution, layout and region',()=>{
+ assert.equal(colorLevel(0),null);
+ assert.equal(colorLevel(-1),null);
+ assert.equal(colorLevel(1),0);
+ assert.equal(colorPosition(1),'0.0000%');
+ assert.equal(colorLevel(2),.25);
+ assert.equal(colorLevel(3),.4);
+ assert.equal(colorLevel(5),4/7);
+ const values=[1,2,3,5,8,13,24,50,100,700,10000];
+ for(let i=1;i<values.length;i++){
+  assert.ok(colorLevel(values[i])>colorLevel(values[i-1]),
+   'count-to-color map must increase smoothly for every positive count');
  }
+ for(const [w,h] of [[350,290],[510,316],[960,400]]){
+  const counts=Array.from({length:18},(_,i)=>[0,1,2,3,5,10][i%6]);
+  const cells=marketTiles(counts,w,h);
+  const snapshot=JSON.stringify(cells);
+  const levels=cells.map(t=>colorLevel(t.count));
+  assert.equal(JSON.stringify(cells),snapshot,'color must not mutate any geometry or data');
+  for(let i=0;i<cells.length;i++)for(let j=i+1;j<cells.length;j++)
+   if(cells[i].count===cells[j].count)assert.equal(levels[i],levels[j],
+    'same positive count always yields exactly the same level');
+ }
+ assert.equal(colorPosition(2),colorPosition(2));
+ assert.equal(colorPosition(700),colorPosition(700));
 });
+
 test('all 18 firms use one centered name-over-count lockup, never side-by-side micro tiles',()=>{
  const js=read('market-width.js'),css=read('market-width.css');
  assert.match(js,/lockup\.className='mw-tile-lockup'/);
@@ -321,40 +304,29 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('five high-key pigments match in perceptual lightness, differ in hue and pass small-text AA',()=>{
- const css=read('market-width.css');
- const global=read('styles.css');
- const light=['#bfdff5','#bde5d6','#f0ccd2','#f2dab0','#d7c9f4'];
- const dark=['#315a79','#356857','#855567','#81643f','#65547f'];
+test('numerical ramp remains light-first and accessible at both extremes, in both themes',()=>{
+ const css=read('market-width.css'),global=read('styles.css');
  const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
- const lab=x=>{
-  const c=channel(x).map(v=>linear(v/255)),f=v=>v>.008856?Math.cbrt(v):7.787*v+16/116;
-  const X=(c[0]*.4124564+c[1]*.3575761+c[2]*.1804375)/.95047;
-  const Y=c[0]*.2126729+c[1]*.7151522+c[2]*.072175;
-  const Z=(c[0]*.0193339+c[1]*.119192+c[2]*.9503041)/1.08883;
-  return [116*f(Y)-16,500*(f(X)-f(Y)),200*(f(Y)-f(Z))];
- };
- for(const [theme,colors,ink] of [['light',light,'#16395a'],['dark',dark,'#f5f0e8']]){
-  assert.equal(new Set(colors).size,5);
-  for(let i=0;i<5;i++){
-   assert.ok(css.includes('--mw-paint-'+i+':'+colors[i]),'missing '+theme+' palette entry '+i);
-   assert.ok(contrast(colors[i],ink)>=4.5,'small text must be readable '+JSON.stringify({theme,paint:colors[i]}));
-   if(theme==='light')assert.ok(lab(colors[i])[0]>=81&&lab(colors[i])[0]<=90,
-    'light fills must share bright editorial lightness');
-  }
-  for(let i=0;i<5;i++)for(let j=i+1;j<5;j++){
-   const delta=Math.hypot(...lab(colors[i]).map((v,k)=>v-lab(colors[j])[k]));
-   assert.ok(delta>=17,'hues must be genuinely distinct '+JSON.stringify({theme,i,j,delta}));
-  }
+ const endpoints=[
+  ['light','#e7f4ef','#4e9faf','#102b44'],
+  ['dark','#477482','#255363','#f5f0e8']
+ ];
+ for(const [theme,start,end,ink] of endpoints){
+  assert.ok(css.includes(start)&&css.includes(end),'missing fixed '+theme+' ramp endpoints');
+  assert.ok(contrast(start,ink)>=4.5&&contrast(end,ink)>=4.5,
+   'AA small-name and exact-count text at both endpoints '+theme);
+  assert.ok(lum(start)>lum(end),'higher numbers must be perceptually darker '+theme);
  }
- assert.ok(contrast('#e8eae9','#586770')>=4.5,'light zero labels readable');
- assert.ok(contrast('#263b4b','#d0dce4')>=4.5,'dark zero labels readable');
- assert.ok(global.includes('--navy:#16395a'),'reuse actual site navy');
- assert.doesNotMatch(css,/linear-gradient\(/);
+ assert.ok(lum('#e7f4ef')>.85,'low activity must remain luminous in the light homepage');
+ assert.ok(lum('#4e9faf')>.28,'higher counts should be colorful, but never a navy billboard');
+ assert.ok(contrast('#e8eae9','#586770')>=4.5,'zero labels readable in light mode');
+ assert.ok(contrast('#263b4b','#d0dce4')>=4.5,'zero labels readable in dark mode');
+ assert.ok(global.includes('--navy:#16395a'),'use the website navy as art direction');
 });
+
 
 
 
