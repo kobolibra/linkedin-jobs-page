@@ -317,7 +317,7 @@ test('clean ice-blue and neutral tiles have deliberate hue and AA contrast in bo
   assert.ok(distance>30,'active blue should be visibly separate from neutral '+theme);
  }
  assert.ok(lum(light.active)>.78,'active surface should remain clean and very light');
- assert.ok(lum(light.zero)>.85,'zero surface must match the site's light neutral canvas');
+ assert.ok(lum(light.zero)>.85,'zero surface must match the pale neutral canvas');
  assert.ok(channel(light.active)[2]-channel(light.active)[0]>30,'clear blue hue, not a dirty gray blend');
  assert.ok(lum(light.accent)<.2,'blue count accent must be concise and legible');
  assert.doesNotMatch(css,/linear-gradient\(/);
