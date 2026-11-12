@@ -623,9 +623,11 @@ body.compact .job > .mono { margin-top:2px; }
 
 
 /* C-PREVIEW CHART COMPOSITION — GRAPHICS ONLY.
-   The regional lines keep their original CN burgundy, HK ochre, SG olive,
-   and OTHER slate series identities. The thirty daily columns reuse the
-   existing #spark blue token. No data or global page styling is changed. */
+   SG/HK/CN appear as cumulative stacked areas (bottom to top), preserving
+   the original regional olive, ochre, and burgundy contour inks.
+   Each intervening band is a subtle tint of its own regional ink.
+   The 30-day bars keep the original #spark 青瓷蓝 token, undiluted.
+   No global layout, filters, data, or other visual colors change. */
 #dist .region-time-svg{shape-rendering:geometricPrecision}
 #dist .region-spark-grid{
   stroke:var(--viz-rule);stroke-width:.75;opacity:.42;
@@ -636,39 +638,29 @@ body.compact .job > .mono { margin-top:2px; }
   fill:var(--viz-quiet);font:500 9px var(--mono);
   font-variant-numeric:tabular-nums;
 }
-#dist .region-series.cn{--region-ink:#b33a36}
-#dist .region-series.hk{--region-ink:#b27a22}
-#dist .region-series.sg{--region-ink:#6e8f3b}
-#dist .region-series.other{--region-ink:#6f7f86}
+#dist .region-series.sg{--region-ink:#6e8f3b;--region-band:27%}
+#dist .region-series.hk{--region-ink:#b27a22;--region-band:24%}
+#dist .region-series.cn{--region-ink:#b33a36;--region-band:21%}
 #dist .region-spark-line,
 #dist .region-legend-swatch{
-  fill:none;stroke:var(--region-ink);stroke-width:2;
+  fill:none;stroke:var(--region-ink);stroke-width:1.9;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
-/* Stacked area fills preserve the exact original regional inks, with
-   restrained translucency. Bands are actual cumulative polygons, not
-   overlapping zero-based overlays or fake decorative gradients. */
-#dist .region-stack-band {
-  fill:var(--region-ink);
-  fill-opacity:.21;
+/* Each band occupies the real space between two cumulative regional
+   boundaries, with a restrained SHADE of the original line color.
+   Opaque surface-mixed shades avoid accidental color blending between
+   stacked bands while preserving the site's porcelain backgrounds. */
+#dist .region-stack-band{
+  fill:color-mix(in srgb,var(--region-ink) var(--region-band),var(--surface));
   stroke:none;
 }
-#dist .region-series.cn .region-stack-band {fill-opacity:.17}
-#dist .region-series.hk .region-stack-band {fill-opacity:.23}
-#dist .region-series.sg .region-stack-band {fill-opacity:.22}
-#dist .region-series.other .region-stack-band {fill-opacity:.17}
-[data-theme="dark"] #dist .region-stack-band{fill-opacity:.32}
-[data-theme="dark"] #dist .region-series.cn .region-stack-band{fill-opacity:.27}
-[data-theme="dark"] #dist .region-series.other .region-stack-band{fill-opacity:.25}
+[data-theme="dark"] #dist .region-series.sg{--region-band:37%}
+[data-theme="dark"] #dist .region-series.hk{--region-band:35%}
+[data-theme="dark"] #dist .region-series.cn{--region-band:33%}
 #dist .region-legend-swatch{stroke-width:3.4}
 #dist .region-legend-label{
   fill:var(--viz-secondary);font:600 9px var(--mono);
-}
-#dist .region-spark-dot{
-  fill:var(--region-ink);
-  stroke:var(--surface);stroke-width:1.1;
-  pointer-events:none;
 }
 #dist .region-spark-hit{
   fill:transparent;stroke:transparent;cursor:crosshair;
@@ -681,11 +673,9 @@ body.compact .job > .mono { margin-top:2px; }
   font-variant-numeric:tabular-nums;
 }
 #spark .rhythm-bar{
-  fill:var(--viz-blue);opacity:.60;
+  fill:var(--viz-blue);opacity:1;
   transition:opacity .16s ease;
 }
-#spark .rhythm-bar.weekend{opacity:.4}
-#spark .rhythm-bar.peak{opacity:.78}
 #spark .rhythm-bar-hit{fill:transparent;cursor:crosshair}
 #spark .rhythm-point:hover .rhythm-bar,
 #spark .rhythm-point:focus-visible .rhythm-bar{opacity:1}
@@ -695,9 +685,6 @@ body.compact .job > .mono { margin-top:2px; }
 #spark .rhythm-point:focus-visible .rhythm-bar{
   stroke:var(--ink);stroke-width:1.8;
 }
-[data-theme="dark"] #spark .rhythm-bar{opacity:.67}
-[data-theme="dark"] #spark .rhythm-bar.weekend{opacity:.48}
-[data-theme="dark"] #spark .rhythm-bar.peak{opacity:.86}
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
