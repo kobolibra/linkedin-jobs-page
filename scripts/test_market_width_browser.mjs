@@ -151,7 +151,7 @@ try{
    await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
-   assert.equal(await page.locator('.mw-encoding').textContent(),'Size reflects postings');
+   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect postings');
    const initial=await inspectMosaic(page,4);
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
