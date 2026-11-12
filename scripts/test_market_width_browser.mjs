@@ -429,6 +429,30 @@ try{
    await page.close();
   }
  }
+ // Visual acceptance against ACTUAL published jobs, not just fixture bars.
+ // This also protects the y-axis from silently regressing to one-day peaks.
+ const indexDoc=JSON.parse(readFileSync(new URL('jobs-index.json',source),'utf8'));
+ const indexRows=Array.isArray(indexDoc)?indexDoc:(indexDoc.jobs||[]);
+ const liveRows=indexRows.filter(j=>j?.jobStatus!=='expired');
+ const valid2026=liveRows.filter(j=>
+  ['HK','SG','CN'].includes(j.location)&&Number.isFinite(Date.parse(j.firstSeen||j.pushTime))&&
+  Date.parse(j.firstSeen||j.pushTime)>=Date.UTC(2026,0,1));
+ assert.ok(valid2026.length>1000,'production source must contain a substantive 2026 active cohort');
+ for(const [width,theme] of [[1440,'light'],[1440,'dark'],[390,'light']]){
+  const productionPage=await make(width,theme);
+  const visual=await renderLeft(productionPage,liveRows,theme);
+  assert.equal(visual.finalTotal,valid2026.length,
+   'real production y-axis must end at the sum of all first-observed active HK/SG/CN roles');
+  assert.equal(visual.regionFinals.hk+visual.regionFinals.sg+visual.regionFinals.cn,
+   visual.finalTotal,'real stacked areas must sum at the right edge');
+  assert.equal(visual.notePresent,false,'production chart contains no redundant note');
+  assert.ok(visual.dayBins>120,'real chart plots its full 2026 calendar domain');
+  await productionPage.locator('.analytics-left').screenshot({
+   path:new URL('artifacts/market-width/production-cumulative-'+width+'-'+theme+'.png',source).pathname,
+   animations:'disabled'
+  });
+  await productionPage.close();
+ }
  // A gap in first-seen observations MUST NOT break already accumulated
  // active-role cohorts. The area remains stacked, with flat portions.
  const gapPage=await make(960,'light');
