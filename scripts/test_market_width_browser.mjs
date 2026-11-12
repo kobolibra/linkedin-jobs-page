@@ -45,6 +45,9 @@ async function inspectMosaic(page,nonzero){
   const nodes=[...document.querySelectorAll('.mw-tile')];
   const rects=nodes.map(node=>{
    const r=node.getBoundingClientRect(),face=node.querySelector('.mw-tile-face');
+   const faceRect=face.getBoundingClientRect();
+   const inset={left:faceRect.left-r.left,right:r.right-faceRect.right,top:faceRect.top-r.top,bottom:r.bottom-faceRect.bottom};
+
    const name=node.querySelector('.mw-tile-name'),number=node.querySelector('.mw-tile-count');
    const group=node.querySelector('.mw-tile-lockup');
    const fr=face.getBoundingClientRect(),nr=name.getBoundingClientRect(),gr=group.getBoundingClientRect();
@@ -59,6 +62,8 @@ async function inspectMosaic(page,nonzero){
     nameHeight:name?.clientHeight,contentHeight:name?.scrollHeight,
     faceBg:getComputedStyle(face).backgroundColor,
     faceInk:getComputedStyle(face).color,
+    inset,cornerRadius:getComputedStyle(face).borderTopLeftRadius,
+
     layout:node.dataset.layout,labelForm:node.dataset.labelForm,
     nameFont:parseFloat(style.fontSize),
     countFont:number?parseFloat(getComputedStyle(number).fontSize):null,
@@ -69,6 +74,10 @@ async function inspectMosaic(page,nonzero){
   return {board:{w:board.width,h:board.height,x:board.x,y:board.y},rects};
  });
  assert.equal(details.rects.length,18,'one integrated cloud must always include all 18 firms');
+ const badGap=details.rects.filter(t=>Object.values(t.inset).some(v=>Math.abs(v-1)>0.1));
+ assert.equal(badGap.length,0,'each tile must use exactly 1px inset for 2px shared seams: '+JSON.stringify(badGap));
+ assert.ok(details.rects.every(t=>t.cornerRadius==='1.5px'),'tight mosaic needs subtle, not card-like rounding');
+
  assert.equal(new Set(details.rects.map(t=>t.i)).size,18,'unique institutional tiles');
  assert.equal(details.rects.filter(t=>!t.zero).length,nonzero,'correct hiring breadth');
  assert.ok(details.rects.every(t=>t.name.length>0),'every rectangle names its firm');
