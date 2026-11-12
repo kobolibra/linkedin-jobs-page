@@ -9,6 +9,13 @@ const html=readFileSync(new URL('index.html',source),'utf8');
 const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css']
  .map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
 const script=readFileSync(new URL('market-width.js',source),'utf8');
+const appSource=readFileSync(new URL('app.js',source),'utf8');
+const leftStart=appSource.indexOf('    const rc={CN:0,HK:0,SG:0,OTHER:0};');
+const leftEndTag="    requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));";
+const leftEnd=appSource.indexOf(leftEndTag,leftStart);
+assert.ok(leftStart>=0&&leftEnd>leftStart,'left chart drawing must use real app.js code');
+const leftDrawing=appSource.slice(leftStart,leftEnd+leftEndTag.length);
+
 const analytics=html.match(/<div class="analytics reveal"[\s\S]*?(?=<\/header>)/)?.[0];
 assert.ok(analytics,'homepage analytics block exists');
 const firms=['HSBC','Standard Chartered','Citi','JPMorgan Chase','BNP Paribas',
@@ -39,6 +46,53 @@ const make=async(width,theme)=>{
  return page;
 };
 const summary=page=>page.locator('.mw-summary').textContent().then(v=>v.replace(/\s+/g,' ').trim());
+// Render both left charts with their production SVG logic and a deterministic
+// fixture, not a hand-drawn approximation. The fixture is the same as Market Width.
+async function renderLeft(page,chartData,theme){
+ await page.evaluate(([draw,rows])=>{
+  const norm=location=>location;
+  const seenAt=job=>job.firstSeen;
+  const dayKey=date=>new Date(date).toISOString().slice(0,10);
+  const keyOf=dayKey;
+  const REGIONS={CN:{label:'Mainland China'},HK:{label:'Hong Kong'},
+   SG:{label:'Singapore'},OTHER:{label:'Other'}};
+  const cityEl=document.createElement('select');
+  new Function('chartData','norm','seenAt','dayKey','keyOf',
+   'REGIONS','cityEl',draw)(rows,norm,seenAt,dayKey,keyOf,REGIONS,cityEl);
+ },[leftDrawing,chartData]);
+ const quality=await page.evaluate(()=>{
+  const lines=[...document.querySelectorAll('#dist .region-spark-line')];
+  const bars=[...document.querySelectorAll('#spark .rhythm-bar')];
+  const series=Object.fromEntries(['cn','hk','sg'].map(r=>
+   [r,getComputedStyle(document.querySelector('#dist .region-series.'+r+' .region-spark-line')).stroke]));
+  return {series,bars:bars.length,regions:lines.length,
+   grid:document.querySelectorAll('#dist .region-spark-grid').length,
+   barColor:bars.length?getComputedStyle(bars[0]).fill:null,
+   label:document.querySelector('#spark .rhythm-caption')?.textContent,
+   regionTitle:document.querySelector('#dist .region-chart-caption')?.textContent,
+   bins:document.querySelectorAll('#dist .region-spark-hit').length,
+   filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
+   paths:lines.map(p=>p.getAttribute('d'))};
+ });
+ assert.deepEqual(quality.series,{
+  cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'
+ },'CN/HK/SG colors must remain exactly the original site colors');
+ assert.equal(quality.barColor,theme==='light'?'rgb(51, 78, 172)':'rgb(112, 150, 209)',
+  '30-day columns must reuse the existing light/dark blue tokens');
+ assert.equal(quality.regions,3);
+ assert.equal(quality.bars,30);
+ const observations=chartData.map(r=>new Date(r.firstSeen).getTime());
+ const sampleSpan=Math.max(...observations)-Math.min(...observations);
+ const expectedBins=Math.min(40,Math.max(2,Math.ceil(sampleSpan/86400000)+1));
+ assert.equal(quality.bins,expectedBins*3,
+  'region lines use all true first-seen records without artificial subday zero gaps');
+ assert.ok(quality.grid>=2&&quality.filled>0,'both charts have real plotted data');
+ assert.ok(quality.paths.every(p=>p?.startsWith('M')&&p.includes('L')),
+  'regional lines must contain actual time series paths');
+ assert.equal(quality.label,'New postings per day');
+ assert.match(quality.regionTitle,/by geography/);
+}
+
 async function inspectMosaic(page,nonzero){
  const details=await page.evaluate(()=>{
   const board=document.querySelector('#marketWidthMap').getBoundingClientRect();
@@ -149,6 +203,7 @@ try{
   for(const theme of ['light','dark']){
    const page=await make(width,theme);
    await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
+   await renderLeft(page,regular,theme);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect postings');
@@ -162,8 +217,11 @@ try{
     'the controlled sample of four distinct counts must have four unique tones');
    const ordered=[...positives].sort((a,b)=>Number(a.count)-Number(b.count));
    assert.deepEqual(ordered.map(t=>Number(t.count)),[2,3,4,5]);
-   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
-    'numeric active colors must remain distinct from neutral zeros');
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>25),
+    'approved Soft Indigo at two or more postings must remain distinguishable from neutral zeros');
+   if(theme==='light')assert.ok(positives.every(t=>{
+    const [r,g,b]=rgb(t.faceBg);return b>r&&b>g&&r>=175;
+   }),'approved Soft Indigo C remains bright with blue-violet tint, not mint or turquoise');
    const accent=theme==='light'?'rgb(16, 43, 68)':'rgb(245, 240, 232)';
    assert.ok(positives.every(t=>t.countInk===accent),
     'precise counts use high-contrast site-compatible text');

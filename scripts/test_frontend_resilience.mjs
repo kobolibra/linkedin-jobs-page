@@ -129,15 +129,27 @@ test('guestbook prefetch waits for jobs and stays deferred while loading',async(
 
 
 
-test('30-day trend uses scoped Porcelain blue without recoloring other charts',()=>{
+test('C-style columns keep original blue and regional trend keeps the original area colors',()=>{
  const css=readFileSync(new URL('../styles-refinement.css',import.meta.url),'utf8');
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(css,/#spark\s*\{\s*--viz-blue:\s*#334EAC\s*;\s*\}/);
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=rolling-porcelain-blue-1/);
+ assert.match(html,/styles-refinement\.css\?v=left-c-lines-bars-1/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
+ assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
+ assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36\}/);
+ assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22\}/);
+ assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b\}/);
+ assert.match(css,/#dist \.region-series\.other\{--region-ink:#6f7f86\}/);
+ assert.match(source,/const bucketCounts=regionOrder\.map\(k=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
+ assert.match(source,/regionRecords\[k\]\.forEach\(x=>\{/);
+ assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
+ assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
+ assert.match(source,/const dateLabels=\[0,7,14,21,29\]/);
+ assert.match(html,/app\.js\?v=left-c-lines-bars-1/);
+
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
 

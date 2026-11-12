@@ -622,6 +622,74 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){.rhythm-svg{transition:none;transform:none}}
 
 
+/* C-PREVIEW CHART COMPOSITION — GRAPHICS ONLY.
+   The regional lines keep their original CN burgundy, HK ochre, SG olive,
+   and OTHER slate series identities. The thirty daily columns reuse the
+   existing #spark blue token. No data or global page styling is changed. */
+#dist .region-time-svg{shape-rendering:geometricPrecision}
+#dist .region-chart-caption,
+#spark .rhythm-caption{
+  fill:var(--viz-quiet);font:500 10px var(--sans);letter-spacing:0;
+}
+#dist .region-spark-grid{
+  stroke:var(--viz-rule);stroke-width:.75;opacity:.42;
+  vector-effect:non-scaling-stroke;
+}
+#dist .region-spark-value,
+#dist .region-spark-date{
+  fill:var(--viz-quiet);font:500 9px var(--mono);
+  font-variant-numeric:tabular-nums;
+}
+#dist .region-series.cn{--region-ink:#b33a36}
+#dist .region-series.hk{--region-ink:#b27a22}
+#dist .region-series.sg{--region-ink:#6e8f3b}
+#dist .region-series.other{--region-ink:#6f7f86}
+#dist .region-spark-line,
+#dist .region-legend-swatch{
+  fill:none;stroke:var(--region-ink);stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+}
+#dist .region-legend-swatch{stroke-width:3.4}
+#dist .region-legend-label{
+  fill:var(--viz-secondary);font:600 9px var(--mono);
+}
+#dist .region-spark-area{
+  fill:var(--region-ink);opacity:.055;stroke:none;
+}
+#dist .region-spark-hit{
+  fill:transparent;stroke:transparent;cursor:crosshair;
+}
+#dist .region-spark-hit:hover{
+  fill:var(--region-ink);stroke:var(--surface);stroke-width:2;
+}
+#spark .rhythm-scale-label{
+  fill:var(--viz-quiet);font:500 9px var(--mono);
+  font-variant-numeric:tabular-nums;
+}
+#spark .rhythm-bar{
+  fill:var(--viz-blue);opacity:.60;
+  transition:opacity .16s ease;
+}
+#spark .rhythm-bar.weekend{opacity:.4}
+#spark .rhythm-bar.peak{opacity:.78}
+#spark .rhythm-bar-hit{fill:transparent;cursor:crosshair}
+#spark .rhythm-point:hover .rhythm-bar,
+#spark .rhythm-point:focus-visible .rhythm-bar{opacity:1}
+#spark .rhythm-point:focus-visible{
+  outline:none;
+}
+#spark .rhythm-point:focus-visible .rhythm-bar{
+  stroke:var(--ink);stroke-width:1.8;
+}
+[data-theme="dark"] #dist .region-spark-area{opacity:.09}
+[data-theme="dark"] #spark .rhythm-bar{opacity:.67}
+[data-theme="dark"] #spark .rhythm-bar.weekend{opacity:.48}
+[data-theme="dark"] #spark .rhythm-bar.peak{opacity:.86}
+@media(prefers-reduced-motion:reduce){
+  #spark .rhythm-bar{transition:none}
+}
+
 /* Masthead copy: disciplined editorial typography, no structural change. */
 .nj-market-statement{letter-spacing:-.025em;text-wrap:balance}
 .nj-market-statement span{display:block;line-height:1.16}
