@@ -230,7 +230,7 @@ function tileTypography(w,h){
  const area=w*h;
  if(w>=210&&h>=95&&area>=24500)return {tier:'feature',name:21,count:30,gap:9};
  if(w>=145&&h>=76&&area>=11500)return {tier:'large',name:16,count:23,gap:6};
- if(w>=90&&h>=48&&area>=4100)return {tier:'medium',name:12.5,count:17,gap:4};
+ if(w>=78&&h>=56&&area>=6000)return {tier:'medium',name:12.5,count:17,gap:4};
  return {tier:'small',name:10,count:12,gap:2};
 }
 function fitTileContent(button,rect,zero){
