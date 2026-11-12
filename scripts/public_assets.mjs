@@ -8,7 +8,7 @@ import {buildGuestPreview} from './guest_preview.mjs';
 export const PUBLIC_FILES = [
   'preview-index.json', 'auth-guest.js', 'auth-guest.css', 'guest-resume.js', 'auth-login-design.css', 'account.js', 'account-sync.js', 'auth-login.js', 'auth.css', 'account-identity.css', 'login.html', 'privacy.html', 'about.html', 'about.css', 'about.js',
   'site.webmanifest', 'favicon.ico', 'apple-touch-icon.png', 'index.html', '_headers', 'jobs-index.json', 'jobs-version.json', 'company-logos.json',
-  'cn-city-map.js', 'cn-city-map.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
+  'cn-city-map.js', 'cn-city-map.css', 'market-width.js', 'market-width.css', 'assets/maps/cn-cities.json', 'assets/maps/NOTICE.txt',
   'job-store.js', 'list-query.js', 'list-view.js', 'job-applications.js', 'job-applications.css',
   'app.js', 'company-insight.js', 'company-logos.js', 'editorial-mapping.js',
   'guestbook.js', 'row-fixes.js', 'row-hover.js', 'salary-display.js', 'top30-layout.js',
