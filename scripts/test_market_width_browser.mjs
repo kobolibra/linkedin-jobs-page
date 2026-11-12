@@ -145,6 +145,8 @@ try{
    const initial=await inspectMosaic(page,4);
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
+   assert.equal(initial.rects.find(t=>t.i===16)?.hue,'mw-hue-0',
+    'Schroders is the five-posting leader and must anchor the site-blue palette');
    const zeroBg=zeros[0].faceBg;
    const lightPalette=['rgb(191, 223, 245)','rgb(189, 229, 214)',
     'rgb(240, 204, 210)','rgb(242, 218, 176)','rgb(215, 201, 244)'];
@@ -244,6 +246,7 @@ try{
  const sparse=await inspectMosaic(one,1);
  assert.equal(sparse.rects.find(t=>t.i===1).count,'1');
  const featured=sparse.rects.find(t=>t.i===1);
+ assert.equal(featured.hue,'mw-hue-0','one active company uses clean site-blue as the anchor');
  assert.ok(featured.layout==='feature'&&featured.nameFont>=18&&featured.countFont>=25,
   'single hiring firm must use feature-size centered typography: '+JSON.stringify(featured));
  await one.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/single-active-960-light.png',source).pathname,animations:'disabled'});
