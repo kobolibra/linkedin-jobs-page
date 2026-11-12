@@ -63,6 +63,7 @@ async function inspectMosaic(page,nonzero){
     faceBg:getComputedStyle(face).backgroundColor,
     faceInk:getComputedStyle(face).color,
     active:node.classList.contains('mw-is-active'),
+    zone:node.dataset.zone,
     countInk:number?getComputedStyle(number).color:null,
     faceShadow:getComputedStyle(face).boxShadow,
     inset,cornerRadius:getComputedStyle(face).borderTopLeftRadius,
@@ -88,6 +89,18 @@ async function inspectMosaic(page,nonzero){
   'zero tiles have no number; positive tiles show an exact count');
  assert.ok(details.rects.every(t=>t.active===!t.zero),
   'there must be exactly one positive porcelain surface state, independent of firm and count');
+ assert.ok(details.rects.every(t=>t.zero?(nonzero===0?t.zone==='neutral':t.zone==='perimeter'):t.zone==='core'),
+  'activity belongs to core, absence belongs to perimeter');
+ if(nonzero>0&&18-nonzero>=4){
+  const edge=(t)=>Math.abs(t.x-details.board.x)<1.25||
+   Math.abs(t.y-details.board.y)<1.25||
+   Math.abs(t.x+t.w-details.board.x-details.board.w)<1.25||
+   Math.abs(t.y+t.h-details.board.y-details.board.h)<1.25;
+  assert.ok(details.rects.filter(t=>!t.zero).every(t=>!edge(t)),
+   'active tiles must not touch the board boundary');
+  assert.ok(details.rects.filter(t=>t.zero).every(edge),
+   'every inactive placeholder must touch the board boundary');
+ }
  assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new postings')),
   'zero labels are contextual rather than a numeric 0');
  assert.ok(details.rects.every(t=>t.w>0&&t.h>0&&t.x>=details.board.x-1&&t.y>=details.board.y-1));
@@ -122,21 +135,19 @@ try{
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
    const zeroBg=zeros[0].faceBg;
    assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
-    'the lifted porcelain surface must separate from the neutral zero state');
+    'clear ice-blue active center must be distinguishable from neutral perimeter');
    assert.equal(new Set(positives.map(t=>t.faceBg)).size,1,
-    'all active firms have one porcelain fill; area and labels encode count, not pigment');
+    'active cells share one clean surface; count is encoded in area and text');
    assert.equal(new Set(zeros.map(t=>t.faceBg)).size,1,
-    'all zero firms share a neutral background');
-   const accent=theme==='light'?'rgb(36, 90, 165)':'rgb(194, 212, 255)';
+    'outer inactive cells are consistently neutral');
+   const accent=theme==='light'?'rgb(29, 95, 154)':'rgb(185, 220, 252)';
    assert.ok(positives.every(t=>t.countInk===accent),
-    'cobalt is reserved for exact count typography: '+JSON.stringify({theme,positives}));
-   assert.ok(positives.every(t=>t.faceShadow.includes(accent)),
-    'a fine cobalt keyline must identify every positive surface without a tinted fill');
+    'precise count typography uses one site-compatible ink');
+   assert.ok(positives.every(t=>t.faceShadow==='none'),
+    'no decorative blue stripes or fake tile elevation');
    if(theme==='light'){
     assert.ok(initial.rects.every(t=>lum(t.faceBg)>.78),
-     'the light homepage must not contain gray-blue or dark billboard tiles');
-    assert.ok(positives.every(t=>lum(t.faceBg)>.94),
-     'active porcelain must remain near-white regardless of count');
+     'light theme remains bright including its central tiles');
    }
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
