@@ -102,7 +102,7 @@ test('homepage positions both charts left, aligned radar right, and preserves ot
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.match(css,/@media\s*\(max-width:720px\)/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
- for(const s of ['market-width.js?v=market-width-3','market-width.css?v=market-width-2'])assert.ok(html.includes(s));
+ for(const s of ['market-width.js?v=market-width-3','market-width.css?v=market-width-3'])assert.ok(html.includes(s));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
