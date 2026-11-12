@@ -1,6 +1,6 @@
-/* Market Width: a 30-day institution-by-day matrix, not a radar.
-   Every cell is one company's first-seen, currently active role count on one
-   date. Bins have stable absolute thresholds across dates and regions. */
+/* Market Width: daily area-proportional market map. Zero-role institutions
+   occupy no tile area and are explicitly named in a separate neutral rail.
+   Uses the same deduplicated first-seen active chart rows as New Postings. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -67,166 +67,220 @@ function limit(n){
  return [1,2,5,10].map(unit=>unit*p).find(x=>x>=n)||10*p;
 }
 
-// Absolute, persistent legend bands. Do not autoscale by day/region: each
-// color has one interpretation throughout the full 30-day comparison.
-const LEVELS=Object.freeze([
- {label:"0",min:0,max:0},
- {label:"1",min:1,max:1},
- {label:"2–3",min:2,max:3},
- {label:"4–7",min:4,max:7},
- {label:"8+",min:8,max:Infinity}
-]);
-const bandOf=n=>n<=0?0:n===1?1:n<=3?2:n<=7?3:4;
-const rowTotals=(counts)=>FIRMS.map((_,i)=>counts.reduce((sum,row)=>sum+(row[i]||0),0));
-const sortedFirms=(counts)=>rowTotals(counts).map((total,i)=>({i,total}))
- .sort((a,b)=>b.total-a.total||a.i-b.i);
-const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+/* Squarified treemap: rectangles cover exactly the full positive-count area.
+   The geometry is proportional to counts, NOT sqrt(counts), a count floor,
+   or an artificial minimum size. Stable count-descending order breaks ties by
+   the institution's canonical registry position. */
+function treemap(values,width=640,height=340){
+ const W=Math.max(1,Number(width)||640),H=Math.max(1,Number(height)||340);
+ const items=(values||[]).map((item,index)=>({
+  i:Number.isInteger(item.i)?item.i:index,
+  count:Number(item.count)||0
+ })).filter(item=>item.count>0).sort((a,b)=>b.count-a.count||a.i-b.i);
+ if(!items.length)return [];
+ const total=items.reduce((sum,item)=>sum+item.count,0),unit=W*H/total;
+ const blocks=items.map(item=>({...item,area:item.count*unit}));
+ let remaining={x:0,y:0,w:W,h:H};
+ const out=[];let row=[];
+ const worst=(line,side)=>{
+  const a=line.map(item=>item.area),sum=a.reduce((x,y)=>x+y,0);
+  return Math.max(side*side*Math.max(...a)/(sum*sum),
+   sum*sum/(side*side*Math.min(...a)));
+ };
+ const commit=()=>{
+  if(!row.length)return;
+  const sum=row.reduce((a,b)=>a+b.area,0);
+  if(remaining.w>=remaining.h){
+   const depth=remaining.h,strip=Math.min(remaining.w,sum/Math.max(depth,1e-9));
+   let offset=remaining.y;
+   row.forEach((item,index)=>{
+    const height=index===row.length-1
+     ?Math.max(0,remaining.y+remaining.h-offset):item.area/Math.max(strip,1e-9);
+    out.push({i:item.i,count:item.count,x:remaining.x,y:offset,w:strip,h:height});
+    offset+=height;
+   });
+   remaining={x:remaining.x+strip,y:remaining.y,w:Math.max(0,remaining.w-strip),h:remaining.h};
+  }else{
+   const depth=remaining.w,strip=Math.min(remaining.h,sum/Math.max(depth,1e-9));
+   let offset=remaining.x;
+   row.forEach((item,index)=>{
+    const width=index===row.length-1
+     ?Math.max(0,remaining.x+remaining.w-offset):item.area/Math.max(strip,1e-9);
+    out.push({i:item.i,count:item.count,x:offset,y:remaining.y,w:width,h:strip});
+    offset+=width;
+   });
+   remaining={x:remaining.x,y:remaining.y+strip,w:remaining.w,h:Math.max(0,remaining.h-strip)};
+  }
+  row=[];
+ };
+ for(const item of blocks){
+  if(!row.length){row=[item];continue;}
+  const side=Math.max(1e-8,Math.min(remaining.w,remaining.h));
+  if(worst([...row,item],side)<=worst(row,side)+1e-10)row.push(item);
+  else{commit();row=[item];}
+ }
+ commit();
+ return out;
+}
+const toneOf=n=>n<=1?1:n<=3?2:n<=7?3:n<=15?4:5;
 const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
 const prettyDate=key=>{
- const match=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
- if(!match)return String(key||'');
- return new Date(Number(match[1]),Number(match[2])-1,Number(match[3]),12).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+ const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ if(!m)return String(key||'');
+ return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 };
 function render(rows,days){
- if(typeof document==='undefined'||!Array.isArray(days)||!days.length)return;
- const el=id=>document.getElementById(id);
- const host=el('marketWidth'),scroll=el('marketWidthScroll'),prev=el('marketWidthPrev'),next=el('marketWidthNext');
- const dateText=el('marketWidthDate'),firmText=el('marketWidthFirms'),countText=el('marketWidthCount'),tabs=el('marketWidthRegions');
- if(!host||!scroll||!prev||!next||!dateText||!firmText||!countText||!tabs)return;
+ if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
+ const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
+ const zeroPanel=el('marketWidthZeroPanel'),zeros=el('marketWidthZeroNames'),detail=el('marketWidthDetail');
+ const prev=el('marketWidthPrev'),next=el('marketWidthNext'),date=el('marketWidthDate');
+ const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
+ if(!rootEl||!board||!zeroPanel||!zeros||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
  const series=aggregate(rows,days),last=series.keys.length-1;
- let day=series.counts.all.findLastIndex(row=>row.some(Boolean));
+ let day=series.counts.all.findLastIndex(line=>line.some(Boolean));
  if(day<0)day=last;
- let region='all';
- const tooltip=(i,j,n)=>FIRMS[i]+' · '+prettyDate(series.keys[j])+' · '+n+' new '+(n===1?'posting':'postings');
- const gridCell=(i,j,n,selected,tabStop)=>{
-  const title=escapeHTML(tooltip(i,j,n));
-  return '<button type="button" role="gridcell" aria-colindex="'+(j+2)+'" aria-selected="'+String(selected)+'"'+
-   ' aria-label="'+title+'" title="'+title+'" data-firm="'+i+'" data-day="'+j+'"'+
-   ' tabindex="'+(tabStop?'0':'-1')+'" class="mw-cell mw-level-'+bandOf(n)+(selected?' is-selected':'')+'"></button>';
+ let region='all',selectedFirm=null,lastSize='';
+ const label=(i,n)=>DISPLAY[i]+' · '+fmt(n)+' new '+(n===1?'posting':'postings')+' · '+series.keys[day]+' · '+(region==='all'?'all regions':region);
+ const quietDetail=()=>{if(selectedFirm===null){detail.textContent='';detail.hidden=true;}};
+ const explain=i=>{
+  const n=series.counts[region][day][i];
+  detail.textContent=label(i,n);
+  detail.hidden=false;
  };
- function displaySelected(){
-  const snapshot=daily(series,region,day),key=series.keys[day];
-  countText.textContent=fmt(snapshot.total);
-  firmText.textContent=snapshot.firms+'/18';
-  dateText.textContent=prettyDate(key);
-  dateText.setAttribute('aria-label',key);
+ function draw(){
+  const data=daily(series,region,day),values=data.values;
+  const active=values.map((n,i)=>({i,count:n})).filter(item=>item.count>0);
+  const zero=values.map((n,i)=>n===0?i:-1).filter(i=>i>=0);
+  rootEl.classList.toggle('is-sparse',active.length<=4&&zero.length>0);
+  rootEl.classList.toggle('is-all-zero',active.length===0);
+  rootEl.classList.toggle('has-no-zeros',zero.length===0);
+  zeroPanel.hidden=zero.length===0;
+  const fallbackWidth=board.getBoundingClientRect().width||540;
+  const fallbackHeight=board.getBoundingClientRect().height||320;
+  const width=Math.max(1,Math.round(fallbackWidth)),height=Math.max(1,Math.round(fallbackHeight));
+  const tiles=treemap(active,width,height);
+  board.replaceChildren();
+  if(!tiles.length){
+   const empty=document.createElement('p');empty.className='mw-empty';
+   empty.textContent='No new postings recorded';board.append(empty);
+  }else{
+   const fragment=document.createDocumentFragment();
+   for(const tile of tiles){
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='mw-tile mw-tone-'+toneOf(tile.count);
+    button.dataset.firm=String(tile.i);
+    button.setAttribute('aria-label',label(tile.i,tile.count));
+    button.title=label(tile.i,tile.count);
+    button.setAttribute('aria-pressed',String(selectedFirm===tile.i));
+    button.style.left=(tile.x/width*100).toFixed(5)+'%';
+    button.style.top=(tile.y/height*100).toFixed(5)+'%';
+    button.style.width=(tile.w/width*100).toFixed(5)+'%';
+    button.style.height=(tile.h/height*100).toFixed(5)+'%';
+    const face=document.createElement('span');face.className='mw-tile-face';
+    // Treat the real browser width as the gate for readable, *complete*
+    // official names. Never abbreviate bank names to make them fit a tile.
+    if(tile.w>=155&&tile.h>=54){
+     const name=document.createElement('span');name.className='mw-tile-name';
+     name.textContent=DISPLAY[tile.i];face.append(name);
+    }else if(tile.w>=95&&tile.h>=56){
+     const name=document.createElement('span');name.className='mw-tile-name mw-tile-name-small';
+     name.textContent=DISPLAY[tile.i];face.append(name);
+    }
+    if(tile.w>=36&&tile.h>=32){
+     const amount=document.createElement('strong');amount.className='mw-tile-count';
+     amount.textContent=fmt(tile.count);face.append(amount);
+    }
+    button.append(face);fragment.append(button);
+   }
+   board.append(fragment);
+  }
+  zeros.replaceChildren();
+  const zeroItems=document.createDocumentFragment();
+  for(const i of zero){
+   const item=document.createElement('span');
+   item.className='mw-zero-name';item.textContent=DISPLAY[i];
+   item.title=DISPLAY[i]+' · 0 new postings';
+   zeroItems.append(item);
+  }
+  zeros.append(zeroItems);
+  count.textContent=fmt(data.total);
+  firms.textContent=data.firms+'/18';
+  date.textContent=prettyDate(series.keys[day]);
+  date.setAttribute('aria-label',series.keys[day]);
   prev.disabled=day===0;next.disabled=day===last;
- }
- function positionFocus(){
-  const marker=host.querySelector('.mw-column-focus');
-  const col=host.querySelector('.mw-day-head[data-day="'+day+'"]');
-  const first=host.querySelector('.mw-company-row'),lastRow=host.querySelector('.mw-company-row:last-of-type');
-  if(!marker||!col||!first||!lastRow)return;
-  const base=host.getBoundingClientRect(),headBox=col.getBoundingClientRect();
-  const firstBox=first.getBoundingClientRect(),endBox=lastRow.getBoundingClientRect();
-  marker.style.left=(headBox.left-base.left-.5)+'px';
-  marker.style.width=(headBox.width+1)+'px';
-  marker.style.top=(firstBox.top-base.top-2)+'px';
-  marker.style.height=(endBox.bottom-firstBox.top+4)+'px';
- }
- function ensureVisible(){
-  const cell=host.querySelector('.mw-cell[data-day="'+day+'"]');
-  if(!cell||scroll.scrollWidth<=scroll.clientWidth)return;
-  const a=scroll.getBoundingClientRect(),b=cell.getBoundingClientRect();
-  const inset=scroll.clientWidth<480?111:9;
-  if(b.right>a.right-8)scroll.scrollLeft+=b.right-a.right+14;
-  else if(b.left<a.left+inset)scroll.scrollLeft-=a.left+inset-b.left;
- }
- // Only region changes re-create the matrix, because the institution ordering
- // changes. Date changes update 36 cell classes + a highlight, and never change
- // the grid's height or insert hover content into document flow.
- function paintRegion(focusFirm=null){
-  const x=scroll.scrollLeft,rank=sortedFirms(series.counts[region]),counts=series.counts[region];
-  const headers=series.keys.map((key,j)=>
-   '<span role="columnheader" class="mw-day-head" data-day="'+j+'" aria-label="'+escapeHTML(key)+'" title="'+escapeHTML(key)+'"></span>').join('');
-  const head='<div role="row" class="mw-matrix-row mw-header"><span role="columnheader" class="mw-head-firm">Institution</span>'+
-   headers+'<span role="columnheader" class="mw-head-total">30d</span></div>';
-  const lines=rank.map(({i,total},index)=>{
-   const label='<span class="mw-company" role="rowheader" aria-label="'+escapeHTML(FIRMS[i])+'" title="'+escapeHTML(FIRMS[i])+'">'+
-    '<span class="mw-rank">'+String(index+1).padStart(2,'0')+'</span><span class="mw-company-name">'+escapeHTML(DISPLAY[i])+'</span></span>';
-   const cells=series.keys.map((_,j)=>gridCell(i,j,counts[j][i],j===day,index===0&&j===day)).join('');
-   return '<div class="mw-matrix-row mw-company-row" role="row" data-firm-row="'+i+'" aria-rowindex="'+(index+2)+'">'+
-    label+cells+'<span class="mw-row-total" role="gridcell" aria-label="'+escapeHTML(FIRMS[i])+' 30-day new posting total '+total+'">'+fmt(total)+'</span></div>';
-  }).join('');
-  host.style.setProperty('--mw-days',String(series.keys.length));
-  host.setAttribute('aria-rowcount',String(rank.length+1));
-  host.setAttribute('aria-colcount',String(series.keys.length+2));
-  host.innerHTML=head+lines+'<span class="mw-column-focus" aria-hidden="true"></span>';
-  tabs.querySelectorAll('[data-market-region]').forEach(btn=>{
-   const active=btn.dataset.marketRegion===region;
-   btn.classList.toggle('active',active);
-   btn.setAttribute('aria-selected',String(active));
-   btn.tabIndex=active?0:-1;
+  tabs.querySelectorAll('[data-market-region]').forEach(tab=>{
+   const on=tab.dataset.marketRegion===region;
+   tab.classList.toggle('active',on);
+   tab.setAttribute('aria-selected',String(on));
+   tab.tabIndex=on?0:-1;
   });
-  displaySelected();
-  positionFocus();
-  scroll.scrollLeft=x;
-  ensureVisible();
-  if(focusFirm!==null)host.querySelector('.mw-cell[data-firm="'+focusFirm+'"][data-day="'+day+'"]')?.focus({preventScroll:true});
+  selectedFirm=null;detail.hidden=true;detail.textContent='';
+  lastSize=width+'x'+height;
  }
- function chooseDay(next,focusFirm=null){
-  const selected=Math.max(0,Math.min(last,next));
-  const changed=selected!==day;
-  if(changed){
-   const older=host.querySelectorAll('.mw-cell[data-day="'+day+'"]');
-   older.forEach(cell=>{cell.classList.remove('is-selected');cell.setAttribute('aria-selected','false');cell.tabIndex=-1;});
-   day=selected;
-   const newer=host.querySelectorAll('.mw-cell[data-day="'+day+'"]');
-   newer.forEach((cell,i)=>{cell.classList.add('is-selected');cell.setAttribute('aria-selected','true');cell.tabIndex=i===0?0:-1;});
-  }
-  if(focusFirm!==null){
-   const target=host.querySelector('.mw-cell[data-firm="'+focusFirm+'"][data-day="'+day+'"]');
-   if(target){host.querySelectorAll('.mw-cell[tabindex="0"]').forEach(cell=>cell.tabIndex=-1);target.tabIndex=0;target.focus({preventScroll:true});}
-  }
-  displaySelected();
-  positionFocus();
-  ensureVisible();
+ function chooseDay(next){
+  const to=Math.max(0,Math.min(last,next));
+  if(to===day)return;day=to;draw();
  }
- function chooseRegion(next){
-  if(!REGIONS.includes(next)||next===region)return;
-  region=next;paintRegion();
+ function chooseRegion(value){
+  if(!REGIONS.includes(value)||value===region)return;
+  region=value;draw();
  }
  prev.addEventListener('click',()=>chooseDay(day-1));
  next.addEventListener('click',()=>chooseDay(day+1));
- tabs.addEventListener('click',event=>{
-  const btn=event.target.closest('[data-market-region]');
-  if(btn)chooseRegion(btn.dataset.marketRegion);
+ tabs.addEventListener('click',e=>{
+  const target=e.target.closest('[data-market-region]');
+  if(target)chooseRegion(target.dataset.marketRegion);
  });
- tabs.addEventListener('keydown',event=>{
-  if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;
-  const i=REGIONS.indexOf(region);
-  const next=REGIONS[event.key==='Home'?0:event.key==='End'?3:(i+(event.key==='ArrowRight'?1:3))%4];
-  chooseRegion(next);tabs.querySelector('[data-market-region="'+next+'"]')?.focus();
-  event.preventDefault();
+ tabs.addEventListener('keydown',e=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+  const index=REGIONS.indexOf(region);
+  chooseRegion(REGIONS[e.key==='Home'?0:e.key==='End'?3:(index+(e.key==='ArrowRight'?1:3))%4]);
+  tabs.querySelector('[data-market-region="'+region+'"]')?.focus();
+  e.preventDefault();
  });
- host.addEventListener('click',event=>{
-  const cell=event.target.closest('.mw-cell');
-  if(cell)chooseDay(Number(cell.dataset.day),Number(cell.dataset.firm));
+ board.addEventListener('pointerover',e=>{
+  const tile=e.target.closest('.mw-tile');
+  if(tile)explain(Number(tile.dataset.firm));
  });
- host.addEventListener('keydown',event=>{
-  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' '].includes(event.key))return;
-  const cell=event.target.closest('.mw-cell');
-  if(!cell)return;
-  const firm=Number(cell.dataset.firm),oldDay=Number(cell.dataset.day);
-  let next=oldDay,nextFirm=firm;
-  if(event.key==='ArrowLeft')next=Math.max(0,oldDay-1);
-  if(event.key==='ArrowRight')next=Math.min(last,oldDay+1);
-  if(event.key==='Home')next=0;
-  if(event.key==='End')next=last;
-  if(event.key==='ArrowUp'||event.key==='ArrowDown'){
-   const sorted=sortedFirms(series.counts[region]),index=sorted.findIndex(x=>x.i===firm);
-   const change=event.key==='ArrowUp'?-1:1;
-   nextFirm=sorted[Math.min(sorted.length-1,Math.max(0,index+change))].i;
-  }
-  chooseDay(next,nextFirm);
-  event.preventDefault();
+ board.addEventListener('pointerout',e=>{
+  if(e.target.closest('.mw-tile')&&!board.querySelector('.mw-tile:hover'))quietDetail();
  });
- paintRegion();
- if(typeof ResizeObserver==='function')new ResizeObserver(positionFocus).observe(host);
- else if(root?.addEventListener)root.addEventListener('resize',positionFocus);
- if(scroll.scrollWidth>scroll.clientWidth)ensureVisible();
+ board.addEventListener('focusin',e=>{
+  const tile=e.target.closest('.mw-tile');
+  if(tile)explain(Number(tile.dataset.firm));
+ });
+ board.addEventListener('focusout',e=>{
+  if(e.target.closest('.mw-tile'))quietDetail();
+ });
+ board.addEventListener('click',e=>{
+  const tile=e.target.closest('.mw-tile');
+  if(!tile)return;
+  const chosen=Number(tile.dataset.firm);
+  selectedFirm=selectedFirm===chosen?null:chosen;
+  board.querySelectorAll('.mw-tile').forEach(item=>item.setAttribute('aria-pressed',String(Number(item.dataset.firm)===selectedFirm)));
+  if(selectedFirm===null)quietDetail();else explain(selectedFirm);
+ });
+ board.addEventListener('keydown',e=>{
+  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Escape'].includes(e.key))return;
+  if(e.key==='Escape'){selectedFirm=null;quietDetail();board.querySelectorAll('.mw-tile').forEach(t=>t.setAttribute('aria-pressed','false'));e.preventDefault();return;}
+  const available=[...board.querySelectorAll('.mw-tile')],idx=available.indexOf(document.activeElement);
+  if(idx<0||available.length<2)return;
+  const step=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;
+  available[(idx+step+available.length)%available.length].focus();e.preventDefault();
+ });
+ draw();
+ if(typeof ResizeObserver==='function'){
+  new ResizeObserver(()=>{
+   const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
+   if(size!==lastSize)draw();
+  }).observe(board);
+ }else if(root?.addEventListener)root.addEventListener('resize',()=>{
+  const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
+  if(size!==lastSize)draw();
+ });
 }
-const api={FIRMS,DISPLAY,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms,render};
+const api={FIRMS,DISPLAY,REGIONS,firmIndex,aggregate,daily,limit,treemap,toneOf,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
