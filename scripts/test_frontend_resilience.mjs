@@ -136,7 +136,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-point-colors-4/);
+ assert.match(html,/styles-refinement\.css\?v=region-full-history-5/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:21%\}/);
@@ -145,10 +145,10 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
  assert.match(source,/const regionOrder=\["SG","HK","CN"\];/);
  assert.match(source,/const totalBuckets=Array\.from\(/);
- assert.match(source,/const horizon=\[7,14,30\]\.find\(n=>/);
+ assert.match(source,/const observedTimes=allTimes\.filter\(t=>/);
  assert.match(source,/series\.map\(layer=>layer\.area\)\.join\(''\)/);
  assert.match(source,/series\.map\(layer=>layer\.outline\)\.join\(''\)/);
- assert.match(source,/const contour=runs\.map\(indices=>'M'\+indices\.map/);
+ assert.match(source,/const contour=runs\.map\(indices=>upperPath\(indices\)\)/);
  assert.match(source,/class="region-stack-band"/);
  assert.match(css,/#dist \.region-stack-band\{/);
  assert.match(css,/--region-band:27%/);
