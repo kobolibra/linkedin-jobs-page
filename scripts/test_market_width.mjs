@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms}=require('../market-width.js');
+const {FIRMS,DISPLAY,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -12,6 +12,12 @@ test('tracked institutions match the 18-company collector registry and About lis
  const names=[...collector.matchAll(/^    "([^"]+)": \{"canonical":/gm)].map(m=>m[1]);
  assert.deepEqual(FIRMS,names);
  assert.equal(new Set(FIRMS).size,18);
+ const aboutBrands=[...((about.match(/<div class="about-company-list">([\s\S]*?)<\/div>/)||[])[1]||'').matchAll(/<span>([^<]+)<\/span>/g)].map(x=>x[1]);
+ assert.deepEqual(DISPLAY,aboutBrands,'chart labels must match the canonical About-page brands exactly');
+ assert.equal(DISPLAY[1],'Standard Chartered');
+ assert.equal(DISPLAY[12],'Morgan Stanley');
+ assert.ok(DISPLAY.every(name=>!name.endsWith(' St.')&&!name.endsWith(' C.')));
+
  assert.equal((about.match(/<div class="about-company-list">([\s\S]*?)<\/div>/)||[])[1].match(/<span>/g).length,18);
  assert.deepEqual(REGIONS,['all','CN','HK','SG']);
 });
