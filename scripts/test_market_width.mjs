@@ -276,6 +276,10 @@ test('palette resolves the actual tile-adjacency graph without changing a single
    assert.equal(JSON.stringify(before),snapshot,'color allocation must never change treemap geometry');
    assert.equal(colors.length,18);
    const active=before.filter(t=>!t.zero);
+   if(active.length){
+    const largest=active.reduce((a,b)=>b.count>a.count?b:a);
+    assert.equal(colors[largest.i],0,'lead posting area must anchor the site-blue pigment');
+   }
    for(const t of before)assert.ok(t.zero?colors[t.i]===null:
     Number.isInteger(colors[t.i])&&colors[t.i]>=0&&colors[t.i]<=4);
    for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++)
