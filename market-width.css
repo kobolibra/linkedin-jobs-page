@@ -20,15 +20,15 @@
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
-  --mw-zero:#e9e8e5;--mw-zero-ink:#575b60;
-  --mw-tone-1:#c9a9a1;--mw-tone-2:#b68c91;--mw-tone-3:#8d6479;
-  --mw-tone-4:#76596d;--mw-tone-5:#554358;
+  --mw-zero:#e9e8e6;--mw-zero-ink:#575b60;
+  --mw-tone-1:#dbc2ba;--mw-tone-2:#c8a69e;--mw-tone-3:#b38b90;
+  --mw-tone-4:#805b70;--mw-tone-5:#60465c;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
   --mw-map-ground:color-mix(in srgb,var(--ink) 4%,var(--surface));
-  --mw-zero:#414348;--mw-zero-ink:#c8cbd0;
-  --mw-tone-1:#a58b8b;--mw-tone-2:#bb989e;--mw-tone-3:#cca4b0;
-  --mw-tone-4:#d7b3c1;--mw-tone-5:#edcbd1;
+  --mw-zero:#414349;--mw-zero-ink:#c8cbd0;
+  --mw-tone-1:#ac928d;--mw-tone-2:#bda6a3;--mw-tone-3:#cbb5b1;
+  --mw-tone-4:#d9c6c0;--mw-tone-5:#ecdcd5;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
@@ -115,69 +115,55 @@
   outline:none;touch-action:manipulation;
 }
 .mw-tile-face {
-  display:flex;flex-direction:column;justify-content:space-between;
+  display:grid;place-items:center;
   box-sizing:border-box;width:100%;height:100%;min-width:0;min-height:0;
-  padding:10px 11px;border-radius:3px;overflow:hidden;
+  padding:9px 10px;border-radius:3px;overflow:hidden;
   background:var(--mw-tone-color);
-  color:var(--mw-tile-ink,#27272a);
+  color:var(--mw-tile-ink,#29252b);
   transition:filter .14s ease,box-shadow .14s ease;
 }
 .mw-is-zero {--mw-tone-color:var(--mw-zero);--mw-tile-ink:var(--mw-zero-ink)}
 .mw-tone-1 {--mw-tone-color:var(--mw-tone-1)}
 .mw-tone-2 {--mw-tone-color:var(--mw-tone-2)}
 .mw-tone-3 {--mw-tone-color:var(--mw-tone-3)}
-.mw-tone-3 {--mw-tile-ink:#faf9f7}
-.mw-tone-4 {--mw-tone-color:var(--mw-tone-4);--mw-tile-ink:#faf9f7}
-.mw-tone-5 {--mw-tone-color:var(--mw-tone-5);--mw-tile-ink:#faf9f7}
+.mw-tone-4 {--mw-tone-color:var(--mw-tone-4);--mw-tile-ink:#faf8f5}
+.mw-tone-5 {--mw-tone-color:var(--mw-tone-5);--mw-tile-ink:#faf8f5}
 [data-theme="dark"] .mw-tone-1,
 [data-theme="dark"] .mw-tone-2,
 [data-theme="dark"] .mw-tone-3,
 [data-theme="dark"] .mw-tone-4,
-[data-theme="dark"] .mw-tone-5 {--mw-tile-ink:#29232a}
+[data-theme="dark"] .mw-tone-5 {--mw-tile-ink:#29252b}
 .mw-tile:hover .mw-tile-face,.mw-tile:focus-visible .mw-tile-face {
-  filter:brightness(.93);
+  filter:brightness(.96);
 }
 .mw-tile[aria-pressed="true"] .mw-tile-face {
-  box-shadow:inset 0 0 0 2px color-mix(in srgb,currentColor 44%,transparent);
+  box-shadow:inset 0 0 0 2px color-mix(in srgb,currentColor 46%,transparent);
 }
-.mw-is-zero .mw-tile-face {justify-content:center;align-items:center;padding:4px}
-.mw-is-zero .mw-tile-name {text-align:center;font-weight:550;letter-spacing:-.005em}
+/* The same centered name-above-number typography applies to every tile,
+   including micro and dense cases. Zero tiles omit the number, not the label. */
+.mw-tile-lockup {
+  box-sizing:border-box;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  width:100%;max-height:100%;min-width:0;
+  gap:4px;text-align:center;
+}
 .mw-tile-name {
-  display:block;max-width:100%;min-width:0;overflow:hidden;
-  overflow-wrap:normal;word-break:normal;
-  font:600 11.5px/1.22 var(--sans);letter-spacing:-.012em;
+  display:block;flex:0 1 auto;width:100%;min-width:0;max-width:100%;
+  text-align:center;white-space:normal;overflow-wrap:normal;word-break:normal;
+  font:600 12px/1.16 var(--sans);letter-spacing:-.012em;
 }
 .mw-tile-count {
-  align-self:flex-end;min-width:0;margin-top:auto;
-  font:600 17px/1 var(--sans);letter-spacing:-.03em;
-  font-variant-numeric:tabular-nums;
+  display:block;flex:0 0 auto;align-self:center;margin:0;
+  text-align:center;font:600 18px/1 var(--sans);
+  letter-spacing:-.035em;font-variant-numeric:tabular-nums;
 }
-.mw-tile-compact .mw-tile-face {padding:6px 8px}
-.mw-tile-compact .mw-tile-name {font-size:10px;line-height:1.13}
-.mw-tile-compact .mw-tile-count {font-size:14px}
-.mw-tile-dense .mw-tile-face {padding:5px 6px}
-.mw-tile-dense .mw-tile-name {font-size:9.2px;line-height:1.12}
-.mw-tile-dense .mw-tile-count {font-size:13px}
-.mw-tile-tiny .mw-tile-face {
-  display:flex;flex-direction:row;align-items:center;
-  justify-content:space-around;gap:2px;padding:2px 3px;
-}
-.mw-tile-tiny .mw-tile-name {
-  flex:1 1 auto;min-width:0;
-  font:700 9px/1.1 var(--sans);letter-spacing:-.03em;
-  white-space:nowrap;text-overflow:clip;
-}
-.mw-tile-tiny .mw-tile-count {
-  flex:0 0 auto;align-self:center;
-  margin:0;font:700 9px/1 var(--mono);
-}
-/* Preserve complete established brand names in very narrow neutral tiles:
-   wrap, rather than inventing an unrecognized ticker-like abbreviation. */
-.mw-tile-tiny.mw-is-zero .mw-tile-face {justify-content:center;align-items:center}
-.mw-tile-tiny.mw-is-zero .mw-tile-name {
-  white-space:normal;overflow-wrap:anywhere;text-align:center;
-  font:550 8.5px/1.07 var(--sans);letter-spacing:-.015em;
-}
+.mw-is-zero .mw-tile-name {font-weight:550;letter-spacing:-.006em}
+.mw-tile-feature .mw-tile-face {padding:14px 17px}
+.mw-tile-large .mw-tile-face {padding:10px 12px}
+.mw-tile-medium .mw-tile-face {padding:6px 7px}
+.mw-tile-small .mw-tile-face {padding:3px 4px}
+.mw-tile-small .mw-tile-name {line-height:1.07}
+.mw-tile-display-floor .mw-tile-face {padding:2px 3px}
 .mw-empty {
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);width:max-content;max-width:90%;
@@ -223,9 +209,8 @@
   .mw-date-nav {gap:0}
   .mw-nav {width:25px;height:27px}
   .mw-date-nav output {min-width:44px;font-size:10px}
-  .mw-tile-face {padding:6px 7px}
-  .mw-tile-compact .mw-tile-face {padding:4px 5px}
-  .mw-tile-tiny .mw-tile-face {padding:2px}
+  .mw-tile-feature .mw-tile-face {padding:11px 12px}
+  .mw-tile-large .mw-tile-face {padding:8px 9px}
   .mw-detail {right:15px;bottom:16px}
 }
 @media(prefers-reduced-motion:reduce){.mw-tile-face{transition:none}}
