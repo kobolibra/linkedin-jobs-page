@@ -90,7 +90,7 @@ async function renderLeft(page,chartData,theme){
    stackFirst:Object.fromEntries(['sg','hk','cn'].map(k=>[k,stackPoint(k)])),
    stackLast:Object.fromEntries(['sg','hk','cn'].map(k=>[k,stackPoint(k,true)])),
    chartKind:svg?.dataset.chartKind,dayBins:Number(svg?.dataset.dayBins),
-   regionFinals:Object.fromEntries(['hk','sg','cn'].map(k=>[k,Number(svg?.dataset['region'+k.toUpperCase()])])),
+   regionFinals:Object.fromEntries(['hk','sg','cn'].map(k=>[k,Number(svg?.getAttribute('data-region-'+k))])),
    finalTotal:Number(svg?.dataset.finalTotal),
    chartAria:svg?.getAttribute('aria-label')||'',
    otherSeries:document.querySelectorAll('#dist .region-series.other').length,
