@@ -96,7 +96,9 @@ async function renderLeft(page,chartData,theme){
    markers:document.querySelectorAll('#dist .region-spark-dot').length,
    dateTicks:document.querySelectorAll('#dist .region-spark-date').length,
    filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
-   paths:lines.map(p=>p.getAttribute('d'))};
+   paths:lines.map(p=>p.getAttribute('d')),
+   dateNote:document.querySelector('#distNote')?.textContent||'',
+   points:hits.map(p=>({x:Number(p.getAttribute('cx')),n:Number(p.dataset.count)}))};
  });
  assert.deepEqual(quality.series,{
   cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'
@@ -270,7 +272,7 @@ try{
    await renderLeft(page,regular,theme);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
-   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect postings');
+   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect new postings of the day, excluding reposts');
    const initial=await inspectMosaic(page,4);
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
@@ -282,7 +284,7 @@ try{
    const ordered=[...positives].sort((a,b)=>Number(a.count)-Number(b.count));
    assert.deepEqual(ordered.map(t=>Number(t.count)),[2,3,4,5]);
    assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>25),
-    'approved Soft Indigo at two or more postings must remain distinguishable from neutral zeros');
+    'positive Indigo tiles remain distinct from muted slate-indigo zero tiles');
    if(theme==='light')assert.ok(positives.every(t=>{
     const [r,g,b]=rgb(t.faceBg);return b>r&&b>g&&r>=175;
    }),'approved Soft Indigo C remains bright with blue-violet tint, not mint or turquoise');
@@ -303,11 +305,19 @@ try{
     const top30=document.querySelector('.top50-tabs');
     return {left:rect('.analytics-left'),right:rect('.ac-col-market'),
      dist:rect('.ac-col-density'),post:rect('.ac-col-postings'),top:rect('.ac-col-top50'),
+     board:rect('#marketWidthMap'),footer:rect('.mw-footer'),
+     summary:rect('.mw-summary'),date:rect('.mw-date-nav'),
+     tabs:rect('#marketWidthRegions'),encoding:rect('.mw-encoding'),
      pageWidth:document.documentElement.scrollWidth,
      regionBg:getComputedStyle(document.querySelector('.mw-tabs')).backgroundColor,
      topBg:top30&&getComputedStyle(top30).backgroundColor,
      regionW:rect('.mw-tabs').w,topW:top30?.getBoundingClientRect().width||0};
    });
+   assert.ok(bounds.footer.y>=bounds.board.b-2,
+    'Market Width information must follow its treemap board');
+   assert.ok(['summary','date','tabs','encoding'].every(k=>bounds[k].y>=bounds.board.b-2),
+    'summary, date, region tabs and explanation must appear below the chart');
+   assert.ok(bounds.board.h>=280,'footer must not compress the map');
    assert.ok(bounds.post.y>=bounds.dist.b-2);
    assert.ok(bounds.top.y>=Math.max(bounds.left.b,bounds.right.b)-2);
    assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
@@ -385,6 +395,24 @@ try{
   animations:'disabled'
  });
  await gapPage.close();
+ // An old outlier must not compress seven active dates to the far-right.
+ const focusPage=await make(960,'light');
+ const focusRows=[{location:'CN',firstSeen:'2025-03-01T12:00:00Z',company:'HSBC',jobStatus:'active'}];
+ for(let i=0;i<7;i++)for(const region of ['SG','HK','CN'])
+  for(let n=0;n<3;n++)focusRows.push({location:region,
+   firstSeen:new Date(Date.UTC(2026,10,5+i,12)).toISOString(),
+   company:'HSBC',jobStatus:'active'});
+ const focused=await renderLeft(focusPage,focusRows,'light');
+ assert.match(focused.dateNote,/近 7 天/,'focused time horizon must be disclosed');
+ assert.equal(focused.pointTotal,63,'recent records remain exact');
+ assert.ok(Math.min(...focused.points.map(p=>p.x))<100&&
+  Math.max(...focused.points.map(p=>p.x))>430,
+  'current activity should occupy the chart width rather than the right edge');
+ await focusPage.locator('.analytics-card').screenshot({
+  path:new URL('artifacts/market-width/recent-focus-960-light.png',source).pathname,
+  animations:'disabled'
+ });
+ await focusPage.close();
  // Sparse: only one firm is hiring, the other 17 are muted within the SAME map.
  const one=await make(960,'light');
  await one.evaluate(([date])=>window.MarketWidth.render([{company:'Standard Chartered',location:'CN',firstSeen:date+'T09:00:00Z',jobStatus:'active'}],[date]),[days[28].key]);
