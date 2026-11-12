@@ -231,7 +231,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-15','market-width.css?v=market-width-15'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-15','market-width.css?v=market-width-16'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -253,11 +253,13 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=82/);
 });
 
-test('clean mineral blue belongs to active inner tiles; neutral gray belongs to outer placeholders',()=>{
+test('ivory activity and neutral perimeter use the established navy and brass tokens',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
  assert.match(css,/--mw-zero:#f0f1ef/);
- assert.match(css,/--mw-active:#d6ebff/);
- assert.match(css,/--mw-accent:#1d5f9a/);
+ assert.match(css,/--mw-active:#fbf0e1/);
+ assert.match(css,/--mw-active-ink:var\(--navy\)/);
+ assert.match(css,/--mw-accent:var\(--gold-deep\)/);
+ assert.match(css,/--mw-accent:var\(--gold-hi\)/);
  assert.match(css,/--mw-seam:1px/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
  assert.match(js,/function zeroPerimeter\(/);
@@ -306,25 +308,27 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('clean ice-blue and neutral tiles have deliberate hue and AA contrast in both modes',()=>{
+test('light ivory and dark active states maintain WCAG AA with exact site navy/gold tokens',()=>{
  const css=read('market-width.css');
- const light={zero:'#f0f1ef',zeroInk:'#626e75',active:'#d6ebff',activeInk:'#173c5c',accent:'#1d5f9a'};
- const dark={zero:'#293945',zeroInk:'#cdd8dd',active:'#34526b',activeInk:'#eef6fc',accent:'#b9dcfc'};
+ const light={zero:'#f0f1ef',zeroInk:'#626e75',active:'#fbf0e1',activeInk:'#16395a',accent:'#8a6520'};
+ const dark={zero:'#293945',zeroInk:'#cdd8dd',active:'#34526b',activeInk:'#f5f0e8',accent:'#e5bd68'};
  const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
  for(const [theme,palette] of [['light',light],['dark',dark]]){
-  for(const color of Object.values(palette))assert.ok(css.includes(color),'missing '+theme+' color '+color);
+  for(const color of [palette.zero,palette.zeroInk,palette.active])assert.ok(css.includes(color),'missing '+theme+' color '+color);
+  const tokens=read('styles.css');
+  assert.ok(tokens.includes(palette.activeInk)&&tokens.includes(palette.accent),'must reuse site tokens');
   for(const [fill,ink] of [[palette.zero,palette.zeroInk],[palette.active,palette.activeInk],[palette.active,palette.accent]])
    assert.ok(contrast(fill,ink)>=4.5,'small text AA '+JSON.stringify({theme,fill,ink,ratio:contrast(fill,ink)}));
   const distance=Math.hypot(...channel(palette.active).map((v,i)=>v-channel(palette.zero)[i]));
-  assert.ok(distance>30,'active blue should be visibly separate from neutral '+theme);
+  assert.ok(distance>30,'active and neutral roles should be visibly separate in '+theme);
  }
- assert.ok(lum(light.active)>.78,'active surface should remain clean and very light');
+ assert.ok(lum(light.active)>.85,'active ivory should be luminous, not muddy');
  assert.ok(lum(light.zero)>.85,'zero surface must match the pale neutral canvas');
- assert.ok(channel(light.active)[2]-channel(light.active)[0]>30,'clear blue hue, not a dirty gray blend');
- assert.ok(lum(light.accent)<.2,'blue count accent must be concise and legible');
+ assert.ok(channel(light.active)[0]-channel(light.active)[2]>20,'ivory hue should be warm, not gray or blue');
+ assert.ok(lum(light.accent)<.2,'brass count accent should remain legible and restrained');
  assert.doesNotMatch(css,/linear-gradient\(/);
 });
 
