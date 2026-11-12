@@ -199,6 +199,10 @@
     border-left:0!important;border-top:1px solid var(--mw-rule)!important;
   }
   .analytics-card > .ac-col-market h3 {font-size:12px}
+  .mw-topline {gap:5px}
+  .mw-tabs {width:100%;box-sizing:border-box}
+  .mw-tab {flex:1;min-width:0}
+  .mw-encoding {display:block;width:100%;text-align:right}
   .mw-map-layout,.mw-map-layout.is-sparse {
     display:flex;flex-direction:column;gap:8px;
     height:auto;min-height:0;flex:none;
@@ -219,8 +223,8 @@
 }
 @media(max-width:400px){
   .mw-topline {margin-top:12px;gap:6px}
-  .mw-tabs {height:31px;padding:2px}
-  .mw-tab {min-width:35px;height:27px;padding:4px 8px}
+  .mw-tabs {height:35px;padding:3px}
+  .mw-tab {min-width:0;height:29px;padding:4px 8px}
   .mw-encoding {font-size:9px}
   .mw-subline {margin:11px 0}
   .mw-summary {font-size:10px}
