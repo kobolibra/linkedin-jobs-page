@@ -120,7 +120,7 @@ try{
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
    const zeroBg=zeros[0].faceBg;
-   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>60),
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>20),
     'every institution ink must differ clearly from the muted zero-neutral');
    assert.ok(new Set(positives.map(t=>t.faceBg)).size<=3,
     'all active firms must share a restrained three-step mineral navy family');
@@ -128,6 +128,8 @@ try{
    assert.equal(fill(1),fill(12),'equal activity tiers share one intentional hue');
    assert.equal(fill(11),fill(12),'same medium tier shares one mineral-blue hue');
    assert.notEqual(fill(16),fill(12),'the lead institution receives the deeper activity tone');
+   if(theme==='light')assert.ok(initial.rects.every(t=>lum(t.faceBg)>=.5),
+    'the light homepage must stay pale, without navy or dark-blue billboard tiles');
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
      'small-name contrast must be AA: '+JSON.stringify({theme,i:tile.i,bg:tile.faceBg,ink:tile.faceInk,ratio:contrast(tile.faceBg,tile.faceInk)}));
