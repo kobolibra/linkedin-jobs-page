@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,REGIONS,firmIndex,aggregate,daily,limit,POWER,domain,scaledRadius,inverseRadius,radialPoints}=require('../market-width.js');
+const {FIRMS,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -70,30 +70,25 @@ test('7-day average and firm breadth describe daily additions, never all active 
  assert.equal(limit(89),100);
 });
 
-test('compressed radial scale expands low daily counts, preserves zero and ordering',()=>{
- assert.ok(POWER>0&&POWER<.5);
- assert.equal(scaledRadius(0,100),0);
- assert.equal(scaledRadius(100,100),1);
- assert.ok(scaledRadius(1,100)>.18);
- assert.ok(scaledRadius(5,100)>scaledRadius(1,100));
- assert.ok(scaledRadius(80,100)>scaledRadius(5,100));
- assert.ok(Math.abs(inverseRadius(scaledRadius(4,100),100)-4)<.00001);
- assert.equal(domain([0,0,0]),1);
- assert.equal(domain([1,7,0]),7);
- assert.ok(scaledRadius(1,domain([1,7,0]))>.4);
+test('heatmap count bands are absolute and stable across dates and regions',()=>{
+ assert.deepEqual(LEVELS.map(x=>x.label),['0','1','2–3','4–7','8–15','16+']);
+ assert.deepEqual([0,1,2,3,4,7,8,15,16,900].map(bandOf),[0,1,2,2,3,3,4,4,5,5]);
+ assert.ok(LEVELS.every((x,i)=>i===0||x.min===LEVELS[i-1].max+1));
+ assert.ok(!Object.hasOwn(LEVELS[0],'fill')); // color is a shared design token
 });
 
-test('zero values create no radial glyphs and preserve 18 firm positions',()=>{
- const points=radialPoints([0,0,6,...Array(15).fill(0)],6);
- assert.equal(points.length,18);
- assert.equal(points.filter(p=>p.value>0).length,1);
- assert.equal(points[2].value,6);
- assert.equal(points[0].value,0);
- assert.equal(points[0].x,320);
- assert.equal(points[0].y,218);
+test('institutions rank by 30-day first-seen totals, with deterministic ties',()=>{
+ const counts=Array.from({length:3},()=>Array(18).fill(0));
+ counts[0][3]=4;counts[1][3]=4;counts[1][5]=1;counts[2][5]=8;
+ const totals=rowTotals(counts);
+ assert.equal(totals[3],8);assert.equal(totals[5],9);
+ const rank=sortedFirms(counts);
+ assert.deepEqual(rank.slice(0,2).map(x=>x.i),[5,3]);
+ assert.equal(rank[2].i,0);assert.equal(rank.length,18);
 });
-test('homepage positions both charts left, aligned radar right, and preserves other analyses',()=>{
- const html=read('index.html'),css=read('market-width.css');
+
+test('homepage shows editorial 18-by-30 matrix, aligned beside left charts',()=>{
+ const html=read('index.html'),css=read('market-width.css'),js=read('market-width.js');
  const pos=s=>html.indexOf(s);
  assert.ok(pos('class="analytics-left"')<pos('id="dist"')&&pos('id="dist"')<pos('id="spark"'));
  assert.ok(pos('id="spark"')<pos('id="marketWidth"')&&pos('id="marketWidth"')<pos('id="top50"'));
@@ -101,12 +96,31 @@ test('homepage positions both charts left, aligned radar right, and preserves ot
  assert.match(css,/\.analytics-card > \.analytics-left[\s\S]*?grid-column:1/);
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.match(css,/@media\s*\(max-width:720px\)/);
+ assert.match(css,/position:sticky/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
- for(const s of ['market-width.js?v=market-width-3','market-width.css?v=market-width-3'])assert.ok(html.includes(s));
+ assert.ok(html.includes('id="marketWidthScroll"'));
+ assert.ok(html.includes('18 institutions · 30 days'));
+ assert.ok(html.includes('Market Width: New Roles by Institution'));
+ assert.doesNotMatch(html,/id="marketWidthDay"|ADAPTIVE COUNT SCALE|radar chart|Radial scale/);
+ assert.doesNotMatch(js,/\bpathOf\b|\bradialPoints\b|mw-area|mw-dot|polygon/);
+ assert.ok(js.includes('repeat(var(--mw-days),minmax(0,1fr))')===false); // grid is authored in CSS
+ assert.ok(css.includes('repeat(var(--mw-days),minmax(0,1fr))'));
+ for(const s of ['market-width.js?v=market-width-4','market-width.css?v=market-width-4'])assert.ok(html.includes(s));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
  assert.ok(read('scripts/public_assets.mjs').includes("'market-width.js', 'market-width.css'"));
- assert.match(html,/Dots indicate positive counts/);
- assert.doesNotMatch(html,/7-DAY DAILY AVG|7d avg|18 FIRMS/);
+ assert.match(read('about.html'),/Market Width matrix maps 18 institutions/);
+ assert.doesNotMatch(read('about.html'),/Market Width radar/);
+});
+
+test('publication matrix keeps exact zeros, five positive bands and accessible controls',()=>{
+ const html=read('index.html'),js=read('market-width.js');
+ assert.match(html,/Zero means no qualifying roles recorded/);
+ assert.match(js,/aria-label/);
+ assert.match(js,/role="gridcell"/);
+ assert.match(js,/pointerover/);
+ assert.match(js,/ArrowDown/);
+ assert.match(js,/scroll\.scrollLeft/);
+ assert.ok(html.includes('Explore exact institution counts'));
 });
