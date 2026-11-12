@@ -21,7 +21,7 @@ for(let day=0;day<29;day++){
  }
 }
 const browser=await chromium.launch({headless:true});
-mkdirSync(new URL('../artifacts/market-width/',source),{recursive:true});
+mkdirSync(new URL('artifacts/market-width/',source),{recursive:true});
 try{
  for(const width of [1440,960,390]){
   for(const theme of ['light','dark']){
@@ -100,7 +100,7 @@ try{
    assert.equal(await page.locator('#marketWidthDetails tr').count(),18);
    if(width!==960){
     await page.locator('.ac-col-market').screenshot({
-     path:new URL('../artifacts/market-width/matrix-'+width+'-'+theme+'.png',source).pathname,
+     path:new URL('artifacts/market-width/matrix-+width+'-'+theme+'.png',source).pathname,
      animations:'disabled'
     });
    }
