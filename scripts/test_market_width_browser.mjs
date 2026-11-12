@@ -40,7 +40,7 @@ try{
     assert.ok(Math.abs(metrics.radar.h-metrics.left.h)<3,JSON.stringify({width,theme,metrics}));
    }else assert.ok(metrics.radar.y>=metrics.left.b-2,JSON.stringify({width,theme,metrics}));
    await page.locator('[data-market-region="CN"]').click();
-   assert.equal(await page.locator('#marketWidthCount').textContent(),'6');
+   assert.equal(await page.locator('#marketWidthCount').textContent(),'7');
    await page.locator('[data-market-region="HK"]').click();
    assert.equal(await page.locator('#marketWidthCount').textContent(),'3');
    await page.locator('#marketWidthPrev').click();
