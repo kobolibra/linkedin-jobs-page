@@ -623,14 +623,16 @@ jobsDataPromise
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    const regionOrder=["CN","HK","SG","OTHER"].filter(k=>rc[k]>0);
+    const regionOrder=["SG","HK","CN"];
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const tMin=allTimes.length?Math.min(...allTimes):Date.now(),tMax=allTimes.length?Math.max(...allTimes):tMin,tSpan=Math.max(1,tMax-tMin);
-    /* Regional trend / C visual presentation.
-       Keep the original 40 first-seen time buckets, exact regional totals,
-       region identities and date range. Only the SVG chart type changes:
-       overlapping region time series replace the stacked density strips. */
+    /* Region-stacked area visualization / approved C presentation.
+       Each first-seen time bucket stacks SG at the base, HK in the middle
+       and CN at the top. Only these three geographic areas are plotted,
+       and the uppermost boundary equals their combined sum.
+       Counts are NOT running totals across dates: zero-day gaps stay blank.
+       Original records, three region colors and time horizon are retained. */
     // A sub-day 40-bin ribbon produces false zero gaps when drawn as a line.
     // For a short span use one bin per observed calendar day; retain 40 bins
     // for longer histories. The underlying records and total counts do not change.
@@ -642,18 +644,31 @@ jobsDataPromise
       const bi=Math.min(bins-1,Math.floor((x.t.getTime()-tMin)/tSpan*bins));
       bucketCounts[ri][bi]++;
     }));
-    const maxBucket=Math.max(1,...bucketCounts.flat());
-    const trendX=i=>left+(i/(bins-1))*plotW;
-    const trendY=value=>base-(value/maxBucket)*(base-top);
-    const tickValues=[0,1/3,2/3,1].map(t=>Math.round(maxBucket*t));
-    const gridTicks=[...new Set(tickValues)].map(v=>
+    // Both left charts use the same honest 1/2/5 integer axis. Rounding
+    // arbitrary thirds produced misleading labels such as 0, 1, 3, 4.
+    const niceCountAxis=maxValue=>{
+      const observed=Math.max(1,Math.ceil(Number(maxValue)||0));
+      const rough=observed/4;
+      const magnitude=10**Math.floor(Math.log10(rough));
+      const selected=[1,2,5,10].find(v=>v*magnitude>=rough)*magnitude;
+      const step=Math.max(1,Math.round(selected));
+      const upper=Math.ceil(observed/step)*step;
+      return {max:upper,step,ticks:Array.from({length:Math.round(upper/step)+1},(_,i)=>i*step)};
+    };
+    const totalBuckets=Array.from({length:bins},(_,i)=>
+      bucketCounts.reduce((sum,series)=>sum+series[i],0));
+    const regionAxis=niceCountAxis(Math.max(1,...totalBuckets));
+    const binEdge=i=>left+(i/bins)*plotW;
+    const trendX=i=>binEdge(i+.5);
+    const trendY=value=>base-(value/regionAxis.max)*(base-top);
+    const gridTicks=regionAxis.ticks.map(v=>
       '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
       '" x2="'+(TW-right)+'" y2="'+trendY(v).toFixed(2)+'"/>'+
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric'});
-    const dateTicks=[0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)).map(i=>{
+    const dateTicks=[...new Set([0,.25,.5,.75,1].map(t=>Math.round((bins-1)*t)))].map(i=>{
       const date=new Date(tMin+i*tSpan/(bins-1));
       return '<text class="region-spark-date" x="'+trendX(i).toFixed(2)+
         '" y="154" text-anchor="'+(i===0?'start':i===bins-1?'end':'middle')+'">'+
@@ -668,28 +683,59 @@ jobsDataPromise
         '<title>'+escSvg(REGIONS[k].label)+' · '+rc[k]+' active roles</title></g>';
     }).join('');
     const series=regionOrder.map((k,ri)=>{
-      const pts=bucketCounts[ri].map((n,i)=>({
-        x:trendX(i),y:trendY(n),n
-      }));
-      const path=pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2)).join(' ');
-      const area=ri===0&&pts.length?
-        '<path class="region-spark-area" d="'+path+' L'+pts[pts.length-1].x.toFixed(2)+
-        ','+base+' L'+pts[0].x.toFixed(2)+','+base+' Z"/>':'';
-      const hits=pts.map((p,i)=>{
+      const heights=bucketCounts[ri];
+      const lower=heights.map((_,i)=>bucketCounts.slice(0,ri)
+        .reduce((sum,series)=>sum+series[i],0));
+      const upper=heights.map((n,i)=>lower[i]+n);
+      // Draw separated ribbons only on consecutive bins with actual counts.
+      // A region with zero jobs contributes no visible area or baseline trace.
+      const runs=[];
+      let run=[];
+      heights.forEach((n,i)=>{
+        if(n>0)run.push(i);
+        else if(run.length){runs.push(run);run=[]}
+      });
+      if(run.length)runs.push(run);
+      const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
+      // Linear boundaries interpolate adjacent actual bin heights. Each
+      // contiguous positive run has shoulders at the exact bin edges, so an
+      // isolated observation still has visible width without inventing jobs.
+      // Corresponding lower/upper contours enclose each tinted area band.
+      const upperPath=indices=>{
+        const first=indices[0],last=indices[indices.length-1];
+        return [fmtPoint(binEdge(first),trendY(upper[first])),
+          ...indices.map(i=>fmtPoint(trendX(i),trendY(upper[i]))),
+          fmtPoint(binEdge(last+1),trendY(upper[last]))];
+      };
+      const lowerPath=indices=>{
+        const first=indices[0],last=indices[indices.length-1];
+        return [fmtPoint(binEdge(last+1),trendY(lower[last])),
+          ...[...indices].reverse().map(i=>fmtPoint(trendX(i),trendY(lower[i]))),
+          fmtPoint(binEdge(first),trendY(lower[first]))];
+      };
+      const areas=runs.map(indices=>'<path class="region-stack-band" d="M'+
+        upperPath(indices).join(' L')+' L'+lowerPath(indices).join(' L')+' Z"/>'
+      ).join('');
+      const contour=runs.map(indices=>'M'+upperPath(indices).join(' L'))
+        .join(' ');
+      const hits=heights.map((n,i)=>{
+        if(n<=0)return '';
         const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
-        return '<circle class="region-spark-hit" cx="'+p.x.toFixed(2)+
-          '" cy="'+p.y.toFixed(2)+'" r="5" role="img" aria-label="'+
-          escSvg(k+' '+p.n+' jobs between '+regionTickFormat.format(from)+' and '+regionTickFormat.format(to))+
-          '"><title>'+escSvg(REGIONS[k].label)+' · '+p.n+' roles · '+
-          escSvg(regionTickFormat.format(from)+' – '+regionTickFormat.format(to))+
-          '</title></circle>';
+        const countText=REGIONS[k].label+' · '+n+' roles · '+
+          regionTickFormat.format(from)+' – '+regionTickFormat.format(to);
+        return '<circle class="region-spark-hit" cx="'+trendX(i).toFixed(2)+
+          '" cy="'+trendY((upper[i]+lower[i])/2).toFixed(2)+
+          '" r="5" data-bin="'+i+'" data-count="'+n+
+          '" data-lower="'+lower[i]+'" data-upper="'+upper[i]+
+          '" role="img" aria-label="'+escSvg(countText)+
+          '"><title>'+escSvg(countText)+'</title></circle>';
       }).join('');
-      return '<g class="region-series '+k.toLowerCase()+'">'+area+
-        '<path class="region-spark-line" d="'+path+'"/>'+hits+'</g>';
+      return '<g class="region-series '+k.toLowerCase()+'">'+areas+
+        (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+
+        hits+'</g>';
     }).join('');
     distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Regional trend of active jobs grouped into 40 first-observed date buckets; hover or focus points for exact counts">'+
-      '<text class="region-chart-caption" x="'+left+'" y="16">First-observed active roles by geography</text>'+
+      '" role="img" aria-label="Stacked area of first-observed active roles, Singapore at the bottom, Hong Kong above and Mainland China on top; no filled area over zero-only date bins">'+
       legend+gridTicks+series+dateTicks+'</svg>';
     const densityWindowDays=Math.max(1,Math.floor((tMax-tMin)/86400000)+1);
     const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Singapore',year:'numeric',month:'2-digit',day:'2-digit'});
@@ -709,9 +755,10 @@ jobsDataPromise
        ornamental line/stem/node combination. */
     const SW=520,SH=150,sLeft=33,sRight=17,sTop=18,sBase=124,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
-    const sy=v=>sBase-(v/smax)*sPlotH;
+    const rhythmAxis=niceCountAxis(smax);
+    const sy=v=>sBase-(v/rhythmAxis.max)*sPlotH;
     const barWidth=Math.min(11.3,sPlotW/days.length*.72);
-    const scaleValues=[...new Set([0,Math.ceil(smax/3),Math.ceil(2*smax/3),smax])];
+    const scaleValues=rhythmAxis.ticks;
     const guides=scaleValues.map(v=>
       '<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(v).toFixed(2)+
       '" x2="'+(SW-sRight)+'" y2="'+sy(v).toFixed(2)+'"/>'+
@@ -738,7 +785,6 @@ jobsDataPromise
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
       '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
-      '<text class="rhythm-caption" x="'+sLeft+'" y="11">New postings per day</text>'+
       guides+bars+dateLabels+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
