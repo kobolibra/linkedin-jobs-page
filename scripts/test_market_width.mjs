@@ -197,7 +197,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.ok(html.includes('Market Width: 18 institutions we watch closely'));
  assert.ok(html.includes('new postings across'));
- assert.ok(html.includes('Size reflects postings'));
+ assert.ok(html.includes('Size and shade reflect postings'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
  assert.doesNotMatch(html,/marketWidthZeroNames|marketWidthZeroPanel|No new postings<\/span>|mw-matrix|mw-cell|mw-legend-chip|mw-axis-tick/);
