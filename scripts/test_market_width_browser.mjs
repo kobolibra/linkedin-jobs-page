@@ -163,8 +163,10 @@ async function renderLeft(page,chartData,theme){
  const expectedBins=Math.max(1,Math.floor(sampleSpan/86400000)+1);
  assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
   'each genuine first-seen observation remains in one daily bucket');
- assert.equal(quality.dayBins,Math.max(1,Math.round(sampleSpan/86400000)+1),
-  'the full observed range has exactly one UTC bucket per day');
+ assert.equal(quality.dayBins,Math.max(1,
+  Math.floor(Math.max(...observations)/86400000)-
+  Math.floor(Math.min(...observations)/86400000)+1),
+  'one bin per UTC calendar date, independent of source timestamps within each day');
  assert.equal(quality.pointTotal,
   chartData.filter(r=>['SG','HK','CN'].includes(r.location)&&
     new Date(r.firstSeen).getTime()>=
