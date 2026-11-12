@@ -21,7 +21,7 @@
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
   --mw-zero:#e9e8e6;--mw-zero-ink:#575b60;
-  --mw-tone-1:#dbc2ba;--mw-tone-2:#c8a69e;--mw-tone-3:#b38b90;
+  --mw-tone-1:#d8bdb3;--mw-tone-2:#c8a69e;--mw-tone-3:#b38b90;
   --mw-tone-4:#805b70;--mw-tone-5:#60465c;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
