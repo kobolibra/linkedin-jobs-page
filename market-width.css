@@ -22,7 +22,7 @@
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
   --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
   --mw-zero:#f0f1ef;--mw-zero-ink:#626e75;
-  --mw-active:#e0f0ff;--mw-active-ink:#173c5c;
+  --mw-active:#d6ebff;--mw-active-ink:#173c5c;
   --mw-accent:#1d5f9a;
   --mw-seam:1px;
 }
