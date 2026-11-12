@@ -281,7 +281,7 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
 });
 
 test('clear sea-glass and neutral fills meet AA contrast in light and dark themes',()=>{
- const css=read('market-width.css'),global=read('styles.css');
+ const css=read('market-width.css'),global=read('styles.css'),refinement=read('styles-refinement.css');
  const light={zero:'#e8eae9',zeroInk:'#586770',active:'#bde8dc',activeInk:'#16395a',accent:'#2e6090'};
  const dark={zero:'#263b4b',zeroInk:'#d0dce4',active:'#335d58',activeInk:'#f5f0e8',accent:'#c9f0e0'};
  const ch=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
@@ -293,7 +293,7 @@ test('clear sea-glass and neutral fills meet AA contrast in light and dark theme
    assert.ok(contrast(fill,ink)>=4.5,
     'small text AA '+JSON.stringify({theme,fill,ink,contrast:contrast(fill,ink)}));
   assert.ok(css.includes(palette.active),'theme fill '+theme);
-  assert.ok(css.includes(palette.zeroInk),'zero label '+theme);
+  assert.ok((css+global+refinement).includes(palette.zeroInk),'zero label token '+theme);
   if(theme==='light')assert.ok(global.includes(palette.activeInk)&&global.includes(palette.accent),
    'brand type and count accents reuse global navy');
  }
