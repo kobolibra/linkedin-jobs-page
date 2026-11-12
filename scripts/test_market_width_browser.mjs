@@ -134,20 +134,24 @@ try{
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
    const zeroBg=zeros[0].faceBg;
-   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
-    'clear ice-blue active center must be distinguishable from neutral perimeter');
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>15),
+    'warm ivory center must remain distinct from the neutral surround');
    assert.equal(new Set(positives.map(t=>t.faceBg)).size,1,
     'active cells share one clean surface; count is encoded in area and text');
    assert.equal(new Set(zeros.map(t=>t.faceBg)).size,1,
     'outer inactive cells are consistently neutral');
-   const accent=theme==='light'?'rgb(29, 95, 154)':'rgb(185, 220, 252)';
+   if(theme==='light')assert.ok(positives.every(t=>{
+    const [r,g,b]=rgb(t.faceBg);
+    return r>b+20&&g>b+10&&r>g;
+   }),'active tiles must be warm ivory, not blue/gray');
+   const accent=theme==='light'?'rgb(138, 101, 32)':'rgb(229, 189, 104)';
    assert.ok(positives.every(t=>t.countInk===accent),
-    'precise count typography uses one site-compatible ink');
+    'exact counts must use the existing global brass color tokens');
    assert.ok(positives.every(t=>t.faceShadow==='none'),
-    'no decorative blue stripes or fake tile elevation');
+    'no decorative stripes or fake tile elevation');
    if(theme==='light'){
-    assert.ok(initial.rects.every(t=>lum(t.faceBg)>.78),
-     'light theme remains bright including its central tiles');
+    assert.ok(initial.rects.every(t=>lum(t.faceBg)>.85),
+     'light theme stays luminous, not muddy');
    }
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
