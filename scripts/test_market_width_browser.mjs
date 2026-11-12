@@ -43,6 +43,16 @@ async function inspectMosaic(page,nonzero){
  const details=await page.evaluate(()=>{
   const board=document.querySelector('#marketWidthMap').getBoundingClientRect();
   const nodes=[...document.querySelectorAll('.mw-tile')];
+  // CSS Color 4 oklab mixes may serialize as color(srgb ...).
+  // Convert via real canvas pixels before checking contrast or lightness.
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=1;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});
+  const pixelColor=color=>{
+   ctx.clearRect(0,0,1,1);
+   ctx.fillStyle='#000';ctx.fillStyle=color;ctx.fillRect(0,0,1,1);
+   const rgba=ctx.getImageData(0,0,1,1).data;
+   return 'rgb('+rgba[0]+', '+rgba[1]+', '+rgba[2]+')';
+  };
   const rects=nodes.map(node=>{
    const r=node.getBoundingClientRect(),face=node.querySelector('.mw-tile-face');
    const faceRect=face.getBoundingClientRect();
@@ -60,10 +70,10 @@ async function inspectMosaic(page,nonzero){
     area:r.width*r.height,x:r.x,y:r.y,w:r.width,h:r.height,
     nameWidth:name?.clientWidth,contentWidth:name?.scrollWidth,
     nameHeight:name?.clientHeight,contentHeight:name?.scrollHeight,
-    faceBg:getComputedStyle(face).backgroundColor,
-    faceInk:getComputedStyle(face).color,
+    faceBg:pixelColor(getComputedStyle(face).backgroundColor),
+    faceInk:pixelColor(getComputedStyle(face).color),
     active:node.classList.contains('mw-is-active'),
-    hue:[...node.classList].find(c=>/^mw-hue-[0-4]$/.test(c))||null,
+    tone:node.style.getPropertyValue('--mw-tone')||null,
     countInk:number?getComputedStyle(number).color:null,
     faceShadow:getComputedStyle(face).boxShadow,
     inset,cornerRadius:getComputedStyle(face).borderTopLeftRadius,
@@ -89,21 +99,21 @@ async function inspectMosaic(page,nonzero){
   'zero tiles have no number; positive tiles show an exact count');
  assert.ok(details.rects.every(t=>t.active===!t.zero),
   'active surface and zero surface must remain distinct');
- assert.ok(details.rects.every(t=>t.zero?t.hue===null:/^mw-hue-[0-4]$/.test(t.hue)),
-  'five-tone classes belong exclusively to active firms');
- const neighbors=(a,b)=>{
-  const x=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
-  const y=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
-  return ((Math.abs(a.x+a.w-b.x)<1||Math.abs(b.x+b.w-a.x)<1)&&y>1)||
-   ((Math.abs(a.y+a.h-b.y)<1||Math.abs(b.y+b.h-a.y)<1)&&x>1);
- };
- const live=details.rects.filter(t=>!t.zero);
- for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++)
-  if(neighbors(live[i],live[j]))assert.notEqual(live[i].hue,live[j].hue,
-   'adjacent active firms must have distinct pigment '+JSON.stringify({a:live[i].i,b:live[j].i}));
- if(nonzero===4)assert.equal(new Set(live.map(t=>t.faceBg)).size,4,
-  'four different active companies must show four distinguishable paints');
-
+ assert.ok(details.rects.every(t=>t.zero?t.tone===null:t.tone===
+  (((Number(t.count)-1)/(Number(t.count)+2))*100).toFixed(4)+'%'),
+  'each exact count maps to one fixed numeric tone');
+ for(const a of details.rects)for(const b of details.rects){
+  if(!a.zero&&!b.zero&&a.count===b.count)
+   assert.equal(a.faceBg,b.faceBg,'equal counts must always have identical paint');
+ }
+ const live=details.rects.filter(t=>!t.zero).sort((a,b)=>Number(a.count)-Number(b.count));
+ for(let i=1;i<live.length;i++)if(Number(live[i].count)>Number(live[i-1].count)){
+  const a=rgb(live[i-1].faceBg),b=rgb(live[i].faceBg);
+  assert.ok(a.some((v,k)=>Math.abs(v-b[k])>=1),
+   'higher count must visibly change the shade');
+  assert.ok(lum(live[i-1].faceBg)>lum(live[i].faceBg),
+   'higher count must be darker, in either theme');
+ }
  if(nonzero>0&&18-nonzero>=4){
   const edge=t=>Math.abs(t.x-details.board.x)<1.25||
    Math.abs(t.y-details.board.y)<1.25||
@@ -145,29 +155,22 @@ try{
    const initial=await inspectMosaic(page,4);
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
-   assert.equal(initial.rects.find(t=>t.i===16)?.hue,'mw-hue-0',
-    'Schroders is the five-posting leader and must anchor the site-blue palette');
    const zeroBg=zeros[0].faceBg;
-   const lightPalette=['rgb(191, 223, 245)','rgb(189, 229, 214)',
-    'rgb(240, 204, 210)','rgb(242, 218, 176)','rgb(215, 201, 244)'];
-   const darkPalette=['rgb(49, 90, 121)','rgb(53, 104, 87)',
-    'rgb(133, 85, 103)','rgb(129, 100, 63)','rgb(101, 84, 127)'];
-   const palette=theme==='light'?lightPalette:darkPalette;
-   assert.ok(positives.every(t=>palette.includes(t.faceBg)),
-    'active fills must belong to five approved editorial tones');
-   assert.equal(new Set(positives.map(t=>t.faceBg)).size,4,
-    'four sampled active institutions should have four distinct fills');
    assert.equal(new Set(zeros.map(t=>t.faceBg)).size,1,
-    'zero institutions share the global neutral background');
+    'zeros must always share one neutral background');
+   assert.equal(new Set(positives.map(t=>t.faceBg)).size,4,
+    'the controlled sample of four distinct counts must have four unique tones');
+   const ordered=[...positives].sort((a,b)=>Number(a.count)-Number(b.count));
+   assert.deepEqual(ordered.map(t=>Number(t.count)),[2,3,4,5]);
    assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>30),
-    'every chromatic active paint must separate from a zero placeholder');
-   const accent=theme==='light'?'rgb(31, 74, 114)':'rgb(245, 240, 232)';
+    'numeric active colors must remain distinct from neutral zeros');
+   const accent=theme==='light'?'rgb(16, 43, 68)':'rgb(245, 240, 232)';
    assert.ok(positives.every(t=>t.countInk===accent),
-    'counts reuse site-wide navy/ink');
+    'precise counts use high-contrast site-compatible text');
    assert.ok(positives.every(t=>t.faceShadow==='none'),
-    'no decorative keyline or artificial elevation');
-   if(theme==='light')assert.ok(positives.every(t=>lum(t.faceBg)>.53),
-    'keep all light fills luminous');
+    'avoid decorative keylines and artificial elevation');
+   if(theme==='light')assert.ok(positives.every(t=>lum(t.faceBg)>.28),
+    'even the highest rendered tiles must remain appropriately luminous');
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
      'small-name contrast must be AA: '+JSON.stringify({theme,i:tile.i,bg:tile.faceBg,ink:tile.faceInk,ratio:contrast(tile.faceBg,tile.faceInk)}));
@@ -246,7 +249,7 @@ try{
  const sparse=await inspectMosaic(one,1);
  assert.equal(sparse.rects.find(t=>t.i===1).count,'1');
  const featured=sparse.rects.find(t=>t.i===1);
- assert.equal(featured.hue,'mw-hue-0','one active company uses clean site-blue as the anchor');
+ assert.equal(featured.tone,'0.0000%','count one uses the lightest positive shade');
  assert.ok(featured.layout==='feature'&&featured.nameFont>=18&&featured.countFont>=25,
   'single hiring firm must use feature-size centered typography: '+JSON.stringify(featured));
  await one.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/single-active-960-light.png',source).pathname,animations:'disabled'});
@@ -257,8 +260,8 @@ try{
  await dense.evaluate(([rows,date])=>window.MarketWidth.render(rows,[date]),[jobs,days[28].key]);
  assert.equal(await summary(dense),'18 new postings across 18/18 institutions');
  const denseMap=await inspectMosaic(dense,18);
- assert.equal(new Set(denseMap.rects.map(t=>t.hue)).size,5,
-  'all-positive dense map uses all five coordinated hues');
+ assert.equal(new Set(denseMap.rects.map(t=>t.faceBg)).size,1,
+  'eighteen identical posting counts must render exactly the same fill');
  await dense.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/all-active-960-dark.png',source).pathname,animations:'disabled'});
  await dense.close();
  // Extreme skew: the tiny positive posting still has a legible name and count.
