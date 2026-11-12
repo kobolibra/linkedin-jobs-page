@@ -217,7 +217,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-width-header-22'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-width-porcelain-23'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -241,12 +241,13 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
 
 test('one ordered perceptual ramp replaces categorical institution colors',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:#cac7cb;--mw-zero-ink:#47546a/);
- assert.match(css,/--mw-zero:#323b4b;--mw-zero-ink:#cbd3e0/);
- assert.match(css,/--mw-ramp-light:#e3e7f4;--mw-ramp-deep:#9fafd7/);
+ assert.match(css,/--mw-zero:color-mix\(in oklab,var\(--mw-ramp-light\) 34%,var\(--mw-map-ground\)\)/);
+ assert.match(css,/--mw-zero-ink:#526379/);
+ assert.match(css,/--mw-zero-ink:#d1ddec/);
+ assert.match(css,/--mw-ramp-light:#d8e0f4;--mw-ramp-deep:#9badd7/);
  assert.match(css,/--mw-active-ink:#102b44;--mw-accent:#102b44/);
  assert.match(css,/color-mix\(in oklab,var\(--mw-ramp-light\),var\(--mw-ramp-deep\) var\(--mw-tone,0%\)\)/);
- assert.match(css,/--mw-seam:1px/);
+ assert.match(css,/--mw-seam:\.5px/);
  assert.match(js,/function colorLevel\(count\)/);
  assert.match(js,/button\.style\.setProperty\('--mw-tone',colorPosition\(tile\.count\)\)/);
  assert.doesNotMatch(js,/PREFERRED_INK|colorTiles|mw-hue-|zeroPerimeter|zone:'perimeter'|zone:'core'/);
@@ -308,11 +309,11 @@ test('typography tiers grow with each tile geometry, never the count of active f
 });
 
 
-test('Market Width tile seams are a continuous mosaic, not individually spaced cards',()=>{
+test('Market Width shares a half-pixel tile inset for a single-pixel mosaic hairline',()=>{
  const css=read('market-width.css');
- assert.match(css,/--mw-seam:1px/);
+ assert.match(css,/--mw-seam:\.5px/);
  assert.match(css,/\.mw-tile\s*\{[^}]*padding:var\(--mw-seam\)/);
- assert.match(css,/\.mw-tile-face\s*\{[^}]*border-radius:1\.5px/);
+ assert.match(css,/\.mw-tile-face\s*\{[^}]*border-radius:1px/);
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
@@ -323,8 +324,8 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
  const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
  const endpoints=[
-  ['light','#e3e7f4','#9fafd7','#102b44'],
-  ['dark','#59658a','#454f73','#f5f0e8']
+  ['light','#d8e0f4','#9badd7','#102b44'],
+  ['dark','#627499','#465779','#f5f0e8']
  ];
  for(const [theme,start,end,ink] of endpoints){
   assert.ok(css.includes(start)&&css.includes(end),'missing fixed '+theme+' ramp endpoints');
@@ -332,10 +333,10 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
    'AA small-name and exact-count text at both endpoints '+theme);
   assert.ok(lum(start)>lum(end),'higher numbers must be perceptually darker '+theme);
  }
- assert.ok(lum('#e3e7f4')>.79,'approved C low end stays luminous, softly indigo and above the site-neutral fill');
- assert.ok(lum('#9fafd7')>.42,'approved C high end stays airy, never a navy billboard');
- assert.ok(contrast('#cac7cb','#47546a')>=4.5,'matching slate-indigo zero labels readable in light mode');
- assert.ok(contrast('#323b4b','#cbd3e0')>=4.5,'dark muted-indigo zero labels readable');
+ assert.ok(lum('#d8e0f4')>.72,'indigo low-count tiles stay bright enough to read as porcelain blue');
+ assert.ok(lum('#9badd7')>.40,'higher-count tones retain luminous mid-blue depth');
+ assert.ok(css.includes('var(--mw-ramp-light) 34%,var(--mw-map-ground)'),
+  'zero tiles must share the same pigment family as positive tiles, softened by the background');
  assert.ok(global.includes('--navy:#16395a'),'use the website navy as art direction');
 });
 
@@ -344,18 +345,3 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
 
 
 
-// TEMP DESIGN AUDIT - remove after extracting exact active-role time distribution.
-test('diagnostic of current visible hiring-region distribution',()=>{
- const raw=JSON.parse(readFileSync(new URL('../jobs-index.json',import.meta.url),'utf8'));
- const rows=Array.isArray(raw)?raw:Array.isArray(raw.jobs)?raw.jobs:[];
- const active=rows.filter(j=>j?.jobStatus!=='expired');
- const selected=active.filter(j=>['SG','HK','CN'].includes(j.location)&&Number.isFinite(Date.parse(j.firstSeen||j.pushTime))&&Date.parse(j.firstSeen||j.pushTime)>=Date.UTC(2026,0,1));
- const counts=Object.fromEntries(['SG','HK','CN'].map(k=>[k,selected.filter(j=>j.location===k).length]));
- const times=selected.map(j=>Date.parse(j.firstSeen||j.pushTime));
- const start=Math.min(...times),end=Math.max(...times),days=Math.floor((end-start)/86400000)+1;
- const per=Object.fromEntries(['SG','HK','CN'].map(k=>[k,Array.from({length:days},()=>0)]));
- for(const j of selected){const index=Math.floor((Date.parse(j.firstSeen||j.pushTime)-start)/86400000);if(index>=0&&index<days)per[j.location][index]++;}
- const summary=Object.fromEntries(Object.entries(per).map(([k,a])=>[k,{total:a.reduce((p,n)=>p+n,0),daysWithPosts:a.filter(n=>n>0).length,mean:a.reduce((p,n)=>p+n,0)/a.length,peak:Math.max(...a),median:[...a].sort((x,y)=>x-y)[Math.floor(a.length/2)],p90:[...a].sort((x,y)=>x-y)[Math.floor(a.length*.9)]}]));
- console.log('REAL_REGION_DISTRIBUTION '+JSON.stringify({totalRows:rows.length,activeRows:active.length,regionCounts:counts,first:new Date(start).toISOString().slice(0,10),last:new Date(end).toISOString().slice(0,10),days,summary}));
- assert.ok(selected.length>0);
-});
