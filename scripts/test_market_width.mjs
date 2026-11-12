@@ -87,7 +87,7 @@ test('institutions rank by 30-day first-seen totals, with deterministic ties',()
  assert.equal(rank[2].i,0);assert.equal(rank.length,18);
 });
 
-test('homepage shows editorial 18-by-30 matrix, aligned beside left charts',()=>{
+test('market-width matches the shared editorial frame, with one concise headline',()=>{
  const html=read('index.html'),css=read('market-width.css'),js=read('market-width.js');
  const pos=s=>html.indexOf(s);
  assert.ok(pos('class="analytics-left"')<pos('id="dist"')&&pos('id="dist"')<pos('id="spark"'));
@@ -98,37 +98,39 @@ test('homepage shows editorial 18-by-30 matrix, aligned beside left charts',()=>
  assert.match(css,/@media\s*\(max-width:720px\)/);
  assert.match(css,/position:sticky/);
  assert.match(css,/\.mw-column-focus/);
- assert.match(js,/j%7===0&&j<=last-5/);
+ assert.ok(html.includes('Market Width: 18 institutions we watch closely'));
+ assert.ok(html.includes('new postings across'));
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
+ assert.equal((html.match(/mw-legend-chip/g)||[]).length,5);
  assert.ok(html.includes('id="marketWidthScroll"'));
- assert.ok(!html.includes('18 institutions · 30 days'));
- assert.ok(html.includes('Market Width: New Roles by Institution'));
- assert.doesNotMatch(html,/id="marketWidthDay"|ADAPTIVE COUNT SCALE|radar chart|Radial scale/);
- assert.doesNotMatch(js,/\bpathOf\b|\bradialPoints\b|mw-area|mw-dot|polygon/);
- assert.ok(js.includes('repeat(var(--mw-days),minmax(0,1fr))')===false); // grid is authored in CSS
+ assert.doesNotMatch(html,/mw-metric|mw-inspection|mw-footnote|mw-axis-tick|18 institutions · 30 days|Explore exact|New roles · selected day|radar chart/);
+ assert.doesNotMatch(js,/\bpathOf\b|\bradialPoints\b|mw-area|mw-dot|polygon|pointerover|pointerout|marketWidthInspection/);
  assert.ok(css.includes('repeat(var(--mw-days),minmax(0,1fr))'));
- for(const s of ['market-width.js?v=market-width-5','market-width.css?v=market-width-5'])assert.ok(html.includes(s));
+ for(const src of ['market-width.js?v=market-width-6','market-width.css?v=market-width-6'])assert.ok(html.includes(src));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
  assert.ok(read('scripts/public_assets.mjs').includes("'market-width.js', 'market-width.css'"));
  assert.match(read('about.html'),/Market Width matrix maps 18 institutions/);
- assert.doesNotMatch(read('about.html'),/Market Width radar/);
 });
 
-test('publication matrix is concise and accessible without redundant copy',()=>{
- const html=read('index.html'),js=read('market-width.js'),css=read('market-width.css');
- assert.doesNotMatch(html,/Zero means no qualifying roles recorded|First observed on LinkedIn|New roles · selected day|18 institutions · 30 days/);
- assert.match(js,/aria-label/);
+test('no mouse-induced layout shifts and no 540-cell rebuild on date selection',()=>{
+ const html=read('index.html'),css=read('market-width.css'),js=read('market-width.js');
+ assert.doesNotMatch(html,/First observed on LinkedIn|Zero means no qualifying roles recorded|id="marketWidthStatus"|id="marketWidthDetails"/);
  assert.match(js,/role="gridcell"/);
- assert.match(js,/pointerover/);
+ assert.match(js,/aria-label/);
  assert.match(js,/ArrowDown/);
- assert.match(js,/scroll\.scrollLeft/);
- assert.doesNotMatch(html,/Explore exact institution counts|id="marketWidthDetails"|id="marketWidthStatus"|New roles · selected day/);
- assert.ok(html.includes('class="mw-column-focus"')===false);
- assert.match(js,/class="mw-column-focus"/);
- assert.match(js,/positionFocus\(\)/);
- assert.match(css,/\.mw-metric strong/);
- assert.match(css,/\.mw-legend-item/);
- assert.ok(html.includes('Firms posting'));
+ assert.match(js,/function chooseDay\(/);
+ assert.match(js,/function paintRegion\(/);
+ assert.match(js,/only region changes re-create the matrix/);
+ assert.doesNotMatch(js,/addEventListener\('pointerover'|addEventListener\('pointerout'|function updateInspection/);
+ assert.doesNotMatch(css,/\.mw-company-row:has\(\.mw-cell:hover\)[^{]*\{[^}]*font-weight/);
+ assert.match(css,/--mw-4:#82674b/);
+ assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
+ assert.match(css,/border-left:1px solid color-mix/);
+ assert.match(css,/border-right:1px solid color-mix/);
+ assert.doesNotMatch(css,/\.mw-axis-tick/);
+ assert.match(css,/\.mw-tabs[\s\S]*?background:var\(--glass-light\)/);
+ assert.match(css,/\.mw-chevron-prev/);
+ assert.match(html,/mw-topline[\s\S]*?mw-legend[\s\S]*?mw-subline[\s\S]*?mw-date-nav[\s\S]*?mw-matrix-scroll/);
 });
