@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,REGIONS,firmIndex,aggregate,daily,limit}=require('../market-width.js');
+const {FIRMS,REGIONS,firmIndex,aggregate,daily,limit,POWER,domain,scaledRadius,inverseRadius}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -70,6 +70,19 @@ test('7-day average and firm breadth describe daily additions, never all active 
  assert.equal(limit(89),100);
 });
 
+test('compressed radial scale expands low daily counts, preserves zero and ordering',()=>{
+ assert.ok(POWER>0&&POWER<.5);
+ assert.equal(scaledRadius(0,100),0);
+ assert.equal(scaledRadius(100,100),1);
+ assert.ok(scaledRadius(1,100)>.18);
+ assert.ok(scaledRadius(5,100)>scaledRadius(1,100));
+ assert.ok(scaledRadius(80,100)>scaledRadius(5,100));
+ assert.ok(Math.abs(inverseRadius(scaledRadius(4,100),100)-4)<.00001);
+ assert.equal(domain([0,0,0]),1);
+ assert.equal(domain([1,7,0]),7);
+ assert.ok(scaledRadius(1,domain([1,7,0]))>.4);
+});
+
 test('homepage positions both charts left, aligned radar right, and preserves other analyses',()=>{
  const html=read('index.html'),css=read('market-width.css');
  const pos=s=>html.indexOf(s);
@@ -80,9 +93,11 @@ test('homepage positions both charts left, aligned radar right, and preserves ot
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.match(css,/@media \(max-width:720px\)/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
- for(const s of ['market-width.js?v=market-width-1','market-width.css?v=market-width-1'])assert.ok(html.includes(s));
+ for(const s of ['market-width.js?v=market-width-2','market-width.css?v=market-width-2'])assert.ok(html.includes(s));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
- assert.match(read('scripts/public_assets.mjs'),/'market-width\.js', 'market-width\.css'/);
+ assert.match(read('scripts/public_assets.mjs'),/'market-width\\.js', 'market-width\\.css'/);
+ assert.match(html,/Radial scale adapts to the selected date and region/);
+ assert.doesNotMatch(html,/7-DAY DAILY AVG|7d avg|18 FIRMS \\/ 03 REGIONS/);
 });
