@@ -72,6 +72,7 @@ try{
       dist:rect('.ac-col-density'),postings:rect('.ac-col-postings'),top:rect('.ac-col-top50'),
       matrix:rect('.mw-matrix'),focus,header,first,lastBottom:last.bottom,
       legend,tabs,date,summary:rect('.mw-summary'),
+      scroll:rect('.mw-matrix-scroll'),firstRank:rect('.mw-rank'),headerFirm:rect('.mw-head-firm'),
       pageWidth:document.documentElement.scrollWidth,
       docHeight:document.documentElement.scrollHeight,
       regionColor:styles(document.querySelector('.mw-tabs')).backgroundColor,
@@ -87,6 +88,8 @@ try{
    assert.ok(measure.postings.y>=measure.dist.b-2,JSON.stringify({width,theme,measure}));
    assert.ok(measure.top.y>=Math.max(measure.left.b,measure.right.b)-2,JSON.stringify({width,theme,measure}));
    assert.ok(measure.pageWidth<=width+2,JSON.stringify({width,theme,measure}));
+   assert.ok(measure.firstRank.x>=measure.scroll.x-1,'rank must remain visible inside horizontal viewport: '+JSON.stringify({width,theme,measure}));
+   assert.ok(measure.headerFirm.x>=measure.scroll.x-1,'institution column title must remain visible when the matrix scrolls');
    assert.ok(measure.legend.y<measure.date.y,'scale above date controls');
    assert.ok(measure.date.y>=measure.tabs.y,'date below region scale row');
    assert.ok(Math.abs(measure.focus.x-measure.header.x)<3,'selection aligns with date');
