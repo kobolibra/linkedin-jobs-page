@@ -155,8 +155,10 @@ async function renderLeft(page,chartData,theme){
   assert.equal(first.cn.upper,first.sg.cumulative+first.hk.cumulative+first.cn.cumulative,
    'uppermost cumulative boundary equals all three regions on the same date');
  }
- const observations=chartData.filter(r=>['SG','HK','CN'].includes(r.location))
-  .map(r=>new Date(r.firstSeen).getTime());
+ const allObservations=chartData.filter(r=>['SG','HK','CN'].includes(r.location))
+  .map(r=>new Date(r.firstSeen||r.pushTime).getTime()).filter(Number.isFinite);
+ const observations=allObservations.some(t=>t>=Date.UTC(2026,0,1))
+  ?allObservations.filter(t=>t>=Date.UTC(2026,0,1)):allObservations;
  const sampleSpan=Math.max(...observations)-Math.min(...observations);
  const expectedBins=Math.max(1,Math.floor(sampleSpan/86400000)+1);
  assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
