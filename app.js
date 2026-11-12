@@ -674,7 +674,7 @@ jobsDataPromise
       const hits=pts.map((p,i)=>{
         const from=new Date(tMin+i*tSpan/bins),to=new Date(tMin+(i+1)*tSpan/bins);
         return '<circle class="region-spark-hit" cx="'+p.x.toFixed(2)+
-          '" cy="'+p.y.toFixed(2)+'" r="5" tabindex="0" role="img" aria-label="'+
+          '" cy="'+p.y.toFixed(2)+'" r="5" role="img" aria-label="'+
           escSvg(k+' '+p.n+' jobs between '+regionTickFormat.format(from)+' and '+regionTickFormat.format(to))+
           '"><title>'+escSvg(REGIONS[k].label)+' · '+p.n+' roles · '+
           escSvg(regionTickFormat.format(from)+' – '+regionTickFormat.format(to))+
