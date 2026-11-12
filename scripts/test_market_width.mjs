@@ -343,3 +343,19 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
 
 
 
+
+// TEMP DESIGN AUDIT - remove after extracting exact active-role time distribution.
+test('diagnostic of current visible hiring-region distribution',()=>{
+ const raw=JSON.parse(readFileSync(new URL('../jobs-index.json',import.meta.url),'utf8'));
+ const rows=Array.isArray(raw)?raw:Array.isArray(raw.jobs)?raw.jobs:[];
+ const active=rows.filter(j=>j?.jobStatus!=='expired');
+ const selected=active.filter(j=>['SG','HK','CN'].includes(j.location)&&Number.isFinite(Date.parse(j.firstSeen||j.pushTime))&&Date.parse(j.firstSeen||j.pushTime)>=Date.UTC(2026,0,1));
+ const counts=Object.fromEntries(['SG','HK','CN'].map(k=>[k,selected.filter(j=>j.location===k).length]));
+ const times=selected.map(j=>Date.parse(j.firstSeen||j.pushTime));
+ const start=Math.min(...times),end=Math.max(...times),days=Math.floor((end-start)/86400000)+1;
+ const per=Object.fromEntries(['SG','HK','CN'].map(k=>[k,Array.from({length:days},()=>0)]));
+ for(const j of selected){const index=Math.floor((Date.parse(j.firstSeen||j.pushTime)-start)/86400000);if(index>=0&&index<days)per[j.location][index]++;}
+ const summary=Object.fromEntries(Object.entries(per).map(([k,a])=>[k,{total:a.reduce((p,n)=>p+n,0),daysWithPosts:a.filter(n=>n>0).length,mean:a.reduce((p,n)=>p+n,0)/a.length,peak:Math.max(...a),median:[...a].sort((x,y)=>x-y)[Math.floor(a.length/2)],p90:[...a].sort((x,y)=>x-y)[Math.floor(a.length*.9)]}]));
+ console.log('REAL_REGION_DISTRIBUTION '+JSON.stringify({totalRows:rows.length,activeRows:active.length,regionCounts:counts,first:new Date(start).toISOString().slice(0,10),last:new Date(end).toISOString().slice(0,10),days,summary}));
+ assert.ok(selected.length>0);
+});
