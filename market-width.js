@@ -1,7 +1,6 @@
-/* Market Width — daily first-seen roles, not active stock.
-   Quiet editorial radar: one day, one region, one count series.
-   Concave DAILY scale keeps low-volume days legible without hiding zeroes.
-   It is intentionally not an area-comparison chart between dates. */
+/* Market Width: a 30-day institution-by-day matrix, not a radar.
+   Every cell is one company's first-seen, currently active role count on one
+   date. Bins have stable absolute thresholds across dates and regions. */
 (function(root){
 'use strict';
 const FIRMS=Object.freeze([
@@ -64,105 +63,185 @@ function limit(n){
  const p=10**Math.floor(Math.log10(n));
  return [1,2,5,10].map(unit=>unit*p).find(x=>x>=n)||10*p;
 }
-// A concave count transform improves resolution around 1–5 daily
-// records while leaving 0 exactly at the center and preserving count order.
-// The radius max is the highest ACTUAL daily count in the selected region/date,
-// not a 30-day extreme that can turn every ordinary day into a small dot.
-const POWER=.23;
-const scaledRadius=(value,max)=>value<=0?0:Math.pow(value/Math.max(1,max),POWER);
-const inverseRadius=(fraction,max)=>Math.pow(Math.max(0,fraction),1/POWER)*Math.max(1,max);
-const domain=values=>Math.max(1,...values);
-const XML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:1}).format(n);
-/* Zero is absence of a glyph. A dot's angle identifies the firm and its
-   radius encodes the count; the muted rings are orientation, not data series.
-   No polygon is connected through zero and no baseline spoke reaches the origin. */
-function radialPoints(values,max){
- const cx=320,cy=218,R=135,angle=i=>Math.PI*(i*2/18-.5);
- return values.map((value,i)=>{
-  const a=angle(i),radius=value>0?R*scaledRadius(value,max):0;
-  return {firm:i,value,angle:a,x:cx+radius*Math.cos(a),y:cy+radius*Math.sin(a)};
- });
-}
+
+// Absolute, persistent legend bands. Do not autoscale by day/region: each
+// color has one interpretation throughout the full 30-day comparison.
+const LEVELS=Object.freeze([
+ {label:"0",min:0,max:0},
+ {label:"1",min:1,max:1},
+ {label:"2–3",min:2,max:3},
+ {label:"4–7",min:4,max:7},
+ {label:"8–15",min:8,max:15},
+ {label:"16+",min:16,max:Infinity}
+]);
+const bandOf=n=>n<=0?0:n===1?1:n<=3?2:n<=7?3:n<=15?4:5;
+const rowTotals=(counts)=>FIRMS.map((_,i)=>counts.reduce((sum,row)=>sum+(row[i]||0),0));
+const sortedFirms=(counts)=>rowTotals(counts).map((total,i)=>({i,total}))
+ .sort((a,b)=>b.total-a.total||a.i-b.i);
+const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
+const prettyDate=key=>{
+ const match=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ if(!match)return String(key||'');
+ return new Date(Number(match[1]),Number(match[2])-1,Number(match[3]),12).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+};
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||!days.length)return;
  const el=id=>document.getElementById(id);
- const host=el('marketWidth'),slider=el('marketWidthDay'),prev=el('marketWidthPrev'),next=el('marketWidthNext');
+ const host=el('marketWidth'),scroll=el('marketWidthScroll'),prev=el('marketWidthPrev'),next=el('marketWidthNext');
  const dateText=el('marketWidthDate'),firmText=el('marketWidthFirms'),countText=el('marketWidthCount');
- const note=el('marketWidthStatus'),detail=el('marketWidthDetails'),scaleText=el('marketWidthScale');
- const tabs=el('marketWidthRegions'),inspection=el('marketWidthInspection');
- if(!host||!slider||!prev||!next||!dateText||!firmText||!countText||!detail||!tabs)return;
- const series=aggregate(rows,days),last=series.keys.length-1;
- let day=series.counts.all.findLastIndex(values=>values.some(Boolean));
+ const note=el('marketWidthStatus'),inspection=el('marketWidthInspection'),detail=el('marketWidthDetails');
+ const tabs=el('marketWidthRegions');
+ if(!host||!scroll||!prev||!next||!dateText||!firmText||!countText||!detail||!tabs)return;
+ const series=aggregate(rows,days);
+ const last=series.keys.length-1;
+ let day=series.counts.all.findLastIndex(row=>row.some(Boolean));
  if(day<0)day=last;
  let region='all';
- slider.min='0';slider.max=String(last);slider.step='1';
- const fixed=n=>Number(n).toFixed(2),coord=(angle,r)=>[320+Math.cos(angle)*r,218+Math.sin(angle)*r];
- const rings=[47,91,135].map((r,i)=>'<circle class="mw-ring'+(i===2?' mw-outer':'')+'" cx="320" cy="218" r="'+r+'"/>').join('');
- const ticks=FIRMS.map((_,i)=>{
-  const a=Math.PI*(i*2/18-.5),[x1,y1]=coord(a,139),[x2,y2]=coord(a,145);
-  return '<line class="mw-tick-mark" x1="'+fixed(x1)+'" y1="'+fixed(y1)+'" x2="'+fixed(x2)+'" y2="'+fixed(y2)+'"/>';
- }).join('');
- function draw(){
-  const snapshot=daily(series,region,day),values=snapshot.values,key=series.keys[day],max=domain(values);
-  const points=radialPoints(values,max),active=points.filter(p=>p.value>0);
-  // The label rail is outside the orbit. No leader lines are drawn for zeros.
-  const labels=points.map(p=>{
-   const [x,y]=coord(p.angle,174),c=Math.cos(p.angle);
-   const anchor=Math.abs(c)<.12?'middle':c>0?'start':'end';
-   const xx=x+(anchor==='start'?7:anchor==='end'?-7:0);
-   return '<text class="mw-firm'+(p.value?' mw-active-label':'')+'" x="'+fixed(xx)+'" y="'+fixed(y+3)+'" text-anchor="'+anchor+'" data-firm-label="'+p.firm+'"><title>'+XML(FIRMS[p.firm])+' · '+p.value+' new postings</title>'+XML(SHORT[p.firm])+'</text>';
-  }).join('');
-  // Do not join disconnected points. No shaded/filled radar polygon exists.
-  const glyphs=active.map(p=>{
-   const title=XML(FIRMS[p.firm]+' · '+p.value+' newly observed roles · '+key+' · '+(region==='all'?'all regions':region));
-   return '<g class="mw-point" tabindex="0" role="img" data-firm="'+p.firm+'" aria-label="'+title+'">'+
-    '<circle class="mw-hit" cx="'+fixed(p.x)+'" cy="'+fixed(p.y)+'" r="12"/>'+
-    '<circle class="mw-dot" cx="'+fixed(p.x)+'" cy="'+fixed(p.y)+'" r="4.5"/>'+
-    '<title>'+title+'</title></g>';
-  }).join('');
-  const empty=snapshot.total===0?'<g class="mw-empty-state"><text x="320" y="214" text-anchor="middle">No new roles</text><text x="320" y="232" text-anchor="middle" class="mw-empty-sub">recorded for this date</text></g>':'';
-  const a11y='Market Width · '+key+' · '+(region==='all'?'all regions':region)+' · '+snapshot.total+' new postings from '+snapshot.firms+' of 18 selected firms. Dots represent positive counts; zero has no dot. The radius is nonlinear and recalibrated for each day and region.';
-  host.innerHTML='<svg class="mw-svg" viewBox="0 0 640 440" role="img" aria-label="'+XML(a11y)+'"><title>Market Width · New roles by institution</title><desc>Minimal radial dot plot on three faint reference rings. Eighteen company labels. Each visible dot is a positive count; no lines connect dots to zero. Inspect the table for exact daily figures. Radius uses a nonlinear, date-specific scale.</desc><g class="mw-guide" aria-hidden="true">'+rings+ticks+'</g>'+glyphs+labels+empty+'</svg>';
-  dateText.textContent=key;countText.textContent=fmt(snapshot.total);firmText.textContent=snapshot.firms+' / 18';
-  slider.value=String(day);prev.disabled=day===0;next.disabled=day===last;
-  if(scaleText)scaleText.textContent='Detail scale · 0–'+fmt(max)+' roles per firm';
-  if(note)note.textContent=a11y;
-  const rank=[...active].sort((a,b)=>b.value-a.value||a.firm-b.firm);
-  const overview=rank.length?rank.slice(0,2).map(p=>FIRMS[p.firm]+' '+p.value).join('  ·  '):'No newly observed roles on this date';
-  if(inspection)inspection.textContent=overview;
-  detail.replaceChildren(...FIRMS.map((name,i)=>{
+ let overview='';
+ const displayCompany=i=>SHORT[i];
+ const tooltip=(i,j,n)=>FIRMS[i]+' · '+series.keys[j]+' · '+n+' newly observed, still-active '+(n===1?'role':'roles');
+ const gridCell=(i,j,n,selected,firstFocusable)=>{
+  const band=bandOf(n);
+  return '<button type="button" role="gridcell" aria-colindex="'+(j+2)+'"'+
+   ' aria-selected="'+String(selected)+'" aria-label="'+escapeHTML(tooltip(i,j,n))+'"'+
+   ' title="'+escapeHTML(tooltip(i,j,n))+'" data-firm="'+i+'" data-day="'+j+'"'+
+   ' tabindex="'+(firstFocusable?'0':'-1')+'" class="mw-cell mw-level-'+band+(selected?' is-selected':'')+'"'+
+   ' data-level="'+band+'"></button>';
+ };
+ function updateInspection(text){if(inspection)inspection.textContent=text;}
+ function showSelected(){
+  const snapshot=daily(series,region,day),key=series.keys[day];
+  countText.textContent=fmt(snapshot.total);
+  firmText.textContent=snapshot.firms+' / 18';
+  dateText.textContent=prettyDate(key);
+  dateText.setAttribute('aria-label',key);
+  prev.disabled=day===0;next.disabled=day===last;
+  overview=prettyDate(key)+' · '+snapshot.total+' new '+(snapshot.total===1?'role':'roles')+' across '+snapshot.firms+' institutions';
+  updateInspection(overview);
+  if(note)note.textContent=key+', '+(region==='all'?'all regions':region)+': '+snapshot.total+' new roles observed among '+snapshot.firms+' tracked institutions, currently active at latest check.';
+  detail.replaceChildren(...sortedFirms(series.counts[region]).map(({i,total})=>{
    const tr=document.createElement('tr');
-   for(const value of [name,String(values[i])]){const td=document.createElement('td');td.textContent=value;tr.append(td);}
+   for(const val of [FIRMS[i],String(snapshot.values[i]),String(total)]){
+    const td=document.createElement('td');td.textContent=val;tr.appendChild(td);
+   }
    return tr;
   }));
-  tabs.querySelectorAll('[data-market-region]').forEach(btn=>{
-   const chosen=btn.dataset.marketRegion===region;
-   btn.classList.toggle('active',chosen);btn.setAttribute('aria-selected',String(chosen));btn.tabIndex=chosen?0:-1;
-  });
-  const svg=host.querySelector('.mw-svg');
-  for(const g of host.querySelectorAll('.mw-point')){
-   const label=host.querySelector('[data-firm-label="'+g.dataset.firm+'"]');
-   const show=()=>{g.classList.add('is-focused');label?.classList.add('is-focused');if(inspection)inspection.textContent=FIRMS[Number(g.dataset.firm)]+'  ·  '+values[Number(g.dataset.firm)]+' new roles';};
-   const hide=()=>{g.classList.remove('is-focused');label?.classList.remove('is-focused');if(inspection)inspection.textContent=overview;};
-   g.addEventListener('pointerenter',show);g.addEventListener('pointerleave',hide);
-   g.addEventListener('focus',show);g.addEventListener('blur',hide);
+ }
+ function paint(focusFirm=null,scrollToSelected=false){
+  const position=scroll.scrollLeft;
+  const regionCounts=series.counts[region],rank=sortedFirms(regionCounts);
+  const headerDays=series.keys.map((key,j)=>{
+   const show=j===0||j===last||j%7===0||key.slice(5,7)!==series.keys[Math.max(0,j-1)].slice(5,7);
+   return '<span role="columnheader" class="mw-day-head'+(j===day?' is-selected':'')+'"'+
+    ' aria-label="'+escapeHTML(key)+'" title="'+escapeHTML(key)+'">'+
+    (show?'<span class="mw-axis-tick">'+escapeHTML(prettyDate(key))+'</span>':'')+'</span>';
+  }).join('');
+  const head='<div class="mw-matrix-row mw-header" role="row"><span role="columnheader" class="mw-head-firm">Institution</span>'+
+   headerDays+'<span role="columnheader" class="mw-head-total" title="New first-seen roles in the rolling 30 days">30d</span></div>';
+  const lines=rank.map(({i,total},rankIndex)=>{
+   const label='<span class="mw-company" role="rowheader" aria-label="'+escapeHTML(FIRMS[i])+'" title="'+escapeHTML(FIRMS[i])+'">'+
+    '<span class="mw-rank">'+String(rankIndex+1).padStart(2,'0')+'</span><span class="mw-company-name">'+escapeHTML(displayCompany(i))+'</span></span>';
+   const cells=series.keys.map((_,j)=>gridCell(i,j,regionCounts[j][i],j===day,rankIndex===0&&j===day)).join('');
+   return '<div class="mw-matrix-row mw-company-row" role="row" data-firm-row="'+i+'" aria-rowindex="'+(rankIndex+2)+'">'+
+    label+cells+'<span class="mw-row-total" role="gridcell" aria-label="'+escapeHTML(FIRMS[i])+' 30 day total: '+total+'">'+fmt(total)+'</span></div>';
+  }).join('');
+  host.style.setProperty('--mw-days',String(series.keys.length));
+  host.setAttribute('aria-rowcount',String(rank.length+1));
+  host.setAttribute('aria-colcount',String(series.keys.length+2));
+  host.innerHTML=head+lines;
+  for(const tab of tabs.querySelectorAll('[data-market-region]')){
+   const active=tab.dataset.marketRegion===region;
+   tab.classList.toggle('active',active);
+   tab.setAttribute('aria-selected',String(active));
+   tab.tabIndex=active?0:-1;
+  }
+  updateInspection('');
+  updateSelectedNoRedraw();
+  scroll.scrollLeft=position;
+  if(scrollToSelected)ensureVisible();
+  if(focusFirm!==null){
+   const cell=host.querySelector('.mw-cell[data-firm="'+focusFirm+'"][data-day="'+day+'"]');
+   cell?.focus({preventScroll:true});
   }
  }
- slider.addEventListener('input',()=>{day=Number(slider.value);draw();});
- prev.addEventListener('click',()=>{day=Math.max(0,day-1);draw();});
- next.addEventListener('click',()=>{day=Math.min(last,day+1);draw();});
- tabs.addEventListener('click',e=>{const btn=e.target.closest('[data-market-region]');if(!btn)return;region=btn.dataset.marketRegion;draw();});
- tabs.addEventListener('keydown',e=>{
-  if(!['ArrowRight','ArrowLeft','Home','End'].includes(e.key))return;
-  const pos=REGIONS.indexOf(region);
-  region=REGIONS[e.key==='Home'?0:e.key==='End'?3:(pos+(e.key==='ArrowRight'?1:3))%4];
-  draw();tabs.querySelector('[data-market-region="'+region+'"]')?.focus();e.preventDefault();
+ function updateSelectedNoRedraw(){showSelected();}
+ function ensureVisible(){
+  const cell=host.querySelector('.mw-cell.is-selected');
+  if(!cell||scroll.scrollWidth<=scroll.clientWidth)return;
+  const cellBox=cell.getBoundingClientRect(),area=scroll.getBoundingClientRect();
+  // The labels are sticky on small screens; keep a small clear margin.
+  const leftMargin=scroll.clientWidth<480?116:14;
+  if(cellBox.right>area.right-8)scroll.scrollLeft+=cellBox.right-area.right+14;
+  else if(cellBox.left<area.left+leftMargin)scroll.scrollLeft-=area.left+leftMargin-cellBox.left;
+ }
+ function setDay(index,focusFirm=null){
+  day=Math.max(0,Math.min(last,index));
+  paint(focusFirm,true);
+ }
+ function setRegion(nextRegion){
+  if(!REGIONS.includes(nextRegion))return;
+  region=nextRegion;
+  paint(null,true);
+ }
+ prev.addEventListener('click',()=>setDay(day-1));
+ next.addEventListener('click',()=>setDay(day+1));
+ tabs.addEventListener('click',event=>{
+  const btn=event.target.closest('[data-market-region]');
+  if(btn)setRegion(btn.dataset.marketRegion);
  });
- draw();
+ tabs.addEventListener('keydown',event=>{
+  if(!['ArrowRight','ArrowLeft','Home','End'].includes(event.key))return;
+  const index=REGIONS.indexOf(region);
+  const nextIndex=event.key==='Home'?0:event.key==='End'?3:(index+(event.key==='ArrowRight'?1:3))%4;
+  setRegion(REGIONS[nextIndex]);
+  tabs.querySelector('[data-market-region="'+region+'"]')?.focus();
+  event.preventDefault();
+ });
+ host.addEventListener('click',event=>{
+  const cell=event.target.closest('.mw-cell');
+  if(!cell)return;
+  setDay(Number(cell.dataset.day),Number(cell.dataset.firm));
+ });
+ host.addEventListener('pointerover',event=>{
+  const cell=event.target.closest('.mw-cell');
+  if(!cell)return;
+  updateInspection(tooltip(Number(cell.dataset.firm),Number(cell.dataset.day),series.counts[region][Number(cell.dataset.day)][Number(cell.dataset.firm)]));
+ });
+ host.addEventListener('pointerout',event=>{
+  if(event.target.closest('.mw-cell'))updateInspection(overview);
+ });
+ host.addEventListener('focusin',event=>{
+  const cell=event.target.closest('.mw-cell');
+  if(cell)updateInspection(tooltip(Number(cell.dataset.firm),Number(cell.dataset.day),series.counts[region][Number(cell.dataset.day)][Number(cell.dataset.firm)]));
+ });
+ host.addEventListener('focusout',event=>{
+  if(event.target.closest('.mw-cell'))updateInspection(overview);
+ });
+ host.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' '].includes(event.key))return;
+  const cell=event.target.closest('.mw-cell');
+  if(!cell)return;
+  const rank=sortedFirms(series.counts[region]);
+  const currentFirm=Number(cell.dataset.firm),currentDay=Number(cell.dataset.day);
+  let nextDay=currentDay,nextFirm=currentFirm;
+  if(event.key==='ArrowLeft')nextDay=Math.max(0,currentDay-1);
+  if(event.key==='ArrowRight')nextDay=Math.min(last,currentDay+1);
+  if(event.key==='Home')nextDay=0;
+  if(event.key==='End')nextDay=last;
+  if(event.key==='ArrowUp'||event.key==='ArrowDown'){
+   const idx=rank.findIndex(row=>row.i===currentFirm),step=event.key==='ArrowUp'?-1:1;
+   nextFirm=rank[Math.max(0,Math.min(rank.length-1,idx+step))].i;
+  }
+  if(event.key==='Enter'||event.key===' '){setDay(currentDay,currentFirm);}
+  else setDay(nextDay,nextFirm);
+  event.preventDefault();
+ });
+ paint(null,false);
+ // On narrow screens show the recent days rather than the oldest unseen days.
+ if(scroll.scrollWidth>scroll.clientWidth)scroll.scrollLeft=scroll.scrollWidth;
 }
-
-const api={FIRMS,REGIONS,firmIndex,aggregate,daily,limit,POWER,domain,scaledRadius,inverseRadius,radialPoints,render};
+const api={FIRMS,REGIONS,LEVELS,firmIndex,aggregate,daily,limit,bandOf,rowTotals,sortedFirms,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
