@@ -238,7 +238,7 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
 
 test('one ordered perceptual ramp replaces categorical institution colors',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:#c7cbd8;--mw-zero-ink:#47546a/);
+ assert.match(css,/--mw-zero:#cac7cb;--mw-zero-ink:#47546a/);
  assert.match(css,/--mw-zero:#323b4b;--mw-zero-ink:#cbd3e0/);
  assert.match(css,/--mw-ramp-light:#e3e7f4;--mw-ramp-deep:#9fafd7/);
  assert.match(css,/--mw-active-ink:#102b44;--mw-accent:#102b44/);
@@ -331,7 +331,7 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
  }
  assert.ok(lum('#e3e7f4')>.79,'approved C low end stays luminous, softly indigo and above the site-neutral fill');
  assert.ok(lum('#9fafd7')>.42,'approved C high end stays airy, never a navy billboard');
- assert.ok(contrast('#c7cbd8','#47546a')>=4.5,'matching slate-indigo zero labels readable in light mode');
+ assert.ok(contrast('#cac7cb','#47546a')>=4.5,'matching slate-indigo zero labels readable in light mode');
  assert.ok(contrast('#323b4b','#cbd3e0')>=4.5,'dark muted-indigo zero labels readable');
  assert.ok(global.includes('--navy:#16395a'),'use the website navy as art direction');
 });
