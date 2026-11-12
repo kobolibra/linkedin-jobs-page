@@ -63,14 +63,22 @@ async function renderLeft(page,chartData,theme){
  const quality=await page.evaluate(()=>{
   const lines=[...document.querySelectorAll('#dist .region-spark-line')];
   const bars=[...document.querySelectorAll('#spark .rhythm-bar')];
+  const hits=[...document.querySelectorAll('#dist .region-spark-hit')];
+  const scale=selector=>[...document.querySelectorAll(selector)].map(node=>({
+   value:Number(node.textContent),y:Number(node.getAttribute('y'))
+  }));
   const series=Object.fromEntries(['cn','hk','sg'].map(r=>
    [r,getComputedStyle(document.querySelector('#dist .region-series.'+r+' .region-spark-line')).stroke]));
   return {series,bars:bars.length,regions:lines.length,
    grid:document.querySelectorAll('#dist .region-spark-grid').length,
    barColor:bars.length?getComputedStyle(bars[0]).fill:null,
-   label:document.querySelector('#spark .rhythm-caption')?.textContent,
-   regionTitle:document.querySelector('#dist .region-chart-caption')?.textContent,
-   bins:document.querySelectorAll('#dist .region-spark-hit').length,
+   captions:document.querySelectorAll('#dist .region-chart-caption,#spark .rhythm-caption').length,
+   regionTicks:scale('#dist .region-spark-value'),
+   postingTicks:scale('#spark .rhythm-scale-label'),
+   bins:hits.length,
+   pointTotal:hits.reduce((sum,node)=>sum+Number(node.dataset.count),0),
+   markers:document.querySelectorAll('#dist .region-spark-dot').length,
+   dateTicks:document.querySelectorAll('#dist .region-spark-date').length,
    filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
    paths:lines.map(p=>p.getAttribute('d'))};
  });
@@ -84,13 +92,33 @@ async function renderLeft(page,chartData,theme){
  const observations=chartData.map(r=>new Date(r.firstSeen).getTime());
  const sampleSpan=Math.max(...observations)-Math.min(...observations);
  const expectedBins=Math.min(40,Math.max(2,Math.ceil(sampleSpan/86400000)+1));
- assert.equal(quality.bins,expectedBins*3,
-  'region lines use all true first-seen records without artificial subday zero gaps');
- assert.ok(quality.grid>=2&&quality.filled>0,'both charts have real plotted data');
- assert.ok(quality.paths.every(p=>p?.startsWith('M')&&p.includes('L')),
-  'regional lines must contain actual time series paths');
- assert.equal(quality.label,'New postings per day');
- assert.match(quality.regionTitle,/by geography/);
+ assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
+  'only populated regional intervals need hover targets');
+ assert.equal(quality.pointTotal,chartData.length,
+  'regional chart preserves every genuine source record');
+ assert.ok(quality.grid>=2&&quality.filled>0,'both charts plot genuine values');
+ assert.ok(quality.paths.every(p=>p?.startsWith('M')),
+  'regional lines begin at actual observations, not baseline zeros');
+ assert.equal(quality.captions,0,'do not add redundant chart subtitles');
+ assert.ok(quality.dateTicks>=2&&quality.dateTicks<=5,
+  'short intervals do not duplicate date ticks');
+ const checkScale=(ticks,name)=>{
+  assert.ok(ticks.length>=2,name+' needs at least two integer ticks');
+  assert.equal(ticks[0].value,0,name+' starts at zero');
+  const step=ticks[1].value;
+  assert.ok(Number.isInteger(step)&&step>0,name+' has positive integer steps');
+  for(let i=0;i<ticks.length;i++){
+   assert.equal(ticks[i].value,i*step,name+' must have regular numeric labels');
+   if(i>=2)assert.ok(Math.abs((ticks[i].y-ticks[i-1].y)-
+    (ticks[1].y-ticks[0].y))<.12,name+' labels must be equally spaced');
+  }
+  const magnitude=10**Math.floor(Math.log10(step));
+  assert.ok([1,2,5].some(m=>Math.abs(m-step/magnitude)<1e-8),
+   name+' uses a conventional 1/2/5 integer magnitude');
+ };
+ checkScale(quality.regionTicks,'Geographic Y axis');
+ checkScale(quality.postingTicks,'New postings Y axis');
+ return quality;
 }
 
 async function inspectMosaic(page,nonzero){
@@ -300,6 +328,27 @@ try{
    await page.close();
   }
  }
+ // Sparse temporal data must not create a long multicolor y=0 stripe.
+ // Two distant CN observations stay separate; nothing is fabricated between.
+ const gapPage=await make(960,'light');
+ const gapped=[
+  {location:'CN',firstSeen:'2026-10-14T09:00:00Z',company:'HSBC',jobStatus:'active'},
+  {location:'CN',firstSeen:'2026-11-11T09:00:00Z',company:'HSBC',jobStatus:'active'},
+  {location:'HK',firstSeen:'2026-10-22T09:00:00Z',company:'Citi',jobStatus:'active'},
+  {location:'SG',firstSeen:'2026-11-08T09:00:00Z',company:'DBS Bank',jobStatus:'active'}
+ ];
+ const gapQuality=await renderLeft(gapPage,gapped,'light');
+ assert.equal(gapQuality.pointTotal,4,'retain exact regional totals across long gaps');
+ assert.equal((gapQuality.paths[0].match(/M/g)||[]).length,2,
+  'distant CN observations must form separate path segments');
+ assert.doesNotMatch(gapQuality.paths[0],/L/,
+  'never draw a continuous line through unobserved zero intervals');
+ assert.ok(gapQuality.markers>=4,'isolated real observations have visible markers');
+ await gapPage.locator('.analytics-card').screenshot({
+  path:new URL('artifacts/market-width/region-gap-960-light.png',source).pathname,
+  animations:'disabled'
+ });
+ await gapPage.close();
  // Sparse: only one firm is hiring, the other 17 are muted within the SAME map.
  const one=await make(960,'light');
  await one.evaluate(([date])=>window.MarketWidth.render([{company:'Standard Chartered',location:'CN',firstSeen:date+'T09:00:00Z',jobStatus:'active'}],[date]),[days[28].key]);
