@@ -175,7 +175,7 @@ async function renderLeft(page,chartData,theme){
   'the complete four-column key fits within the plotting width');
  assert.ok(quality.legendBounds.bottom<quality.gridTop-5,
   'summary key occupies the upper gutter rather than covering filled chart data');
- assert.match(quality.chartAria,/y-axis is the sum of all three regions/);
+ assert.match(quality.chartAria,/y-axis is the sum of (?:all|these) three regions/);
  assert.equal(quality.notePresent,false,'verbose first-observed footnote and its whitespace are removed');
  assert.ok(quality.bandCount>=3,'each active region has at least one tinted band');
  assert.ok(Object.values(quality.bandFills).every(Boolean),
