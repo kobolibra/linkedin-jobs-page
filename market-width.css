@@ -9,29 +9,28 @@
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
 .analytics-left .region-density-note{margin-top:5px}
-/* MARKET WIDTH / PORCELAIN + COBALT
-   Purposeful two-state grammar: zero = quiet mineral neutral, positive =
-   luminous porcelain with a precise cobalt hairline and cobalt count.
-   Tile AREA and numeral already encode volume; multiple fill-color buckets
-   added redundant signals and turned this light editorial page muddy.
-   The one crisp accent is calibrated to the site's navy typography.
-   Keep saturated ink on thin elements only, never a large tile fill. */
+/* MARKET WIDTH / LIGHT-CLEAR MINERAL
+   Meaning precedes decoration: precise active postings form an inner mosaic;
+   the zero institutions sit in a visibly quieter neutral perimeter.
+   The site's existing blue-ink hierarchy meets one clean icy-blue surface,
+   not 18 unrelated hues, gray-blue gradients, or bright decorative rails.
+   Gold remains reserved for keyboard focus and deliberate selection. */
 .analytics-card > .ac-col-market {
   position:relative;grid-column:2;display:flex;flex-direction:column;
   min-width:0;min-height:0;padding:21px 20px 18px;
   border-left:1px solid var(--viz-rule)!important;
   --mw-quiet:var(--viz-quiet);--mw-ink:var(--viz-secondary);
-  --mw-rule:var(--viz-rule);--mw-map-ground:color-mix(in srgb,var(--ink) 3%,var(--surface));
-  --mw-zero:#e8eae9;--mw-zero-ink:#59656a;
-  --mw-active:#fafbfe;--mw-active-ink:#193b57;
-  --mw-accent:#245aa5;
+  --mw-rule:var(--viz-rule);--mw-map-ground:var(--surface);
+  --mw-zero:#f0f1ef;--mw-zero-ink:#626e75;
+  --mw-active:#e0f0ff;--mw-active-ink:#173c5c;
+  --mw-accent:#1d5f9a;
   --mw-seam:1px;
 }
 [data-theme="dark"] .analytics-card > .ac-col-market {
-  --mw-map-ground:color-mix(in srgb,var(--ink) 4%,var(--surface));
-  --mw-zero:#283947;--mw-zero-ink:#cad5dc;
-  --mw-active:#344c64;--mw-active-ink:#f3f7fd;
-  --mw-accent:#c2d4ff;
+  --mw-map-ground:var(--surface);
+  --mw-zero:#293945;--mw-zero-ink:#cdd8dd;
+  --mw-active:#34526b;--mw-active-ink:#eef6fc;
+  --mw-accent:#b9dcfc;
 }
 .analytics-card > .ac-col-market h3 {
   margin:0!important;color:var(--mw-ink);
@@ -125,11 +124,10 @@
   color:var(--mw-tile-ink,#193b57);
   transition:filter .14s ease,box-shadow .14s ease;
 }
-/* No firm colors, no count-driven gradients, no third state.
-   A 2px cobalt keyline is the only saturated surface treatment. */
+/* A clean two-state fill: light colored core, near-background surround.
+   No decoration competes with the legible counts and institution names. */
 .mw-is-zero {--mw-tile-fill:var(--mw-zero);--mw-tile-ink:var(--mw-zero-ink)}
 .mw-is-active {--mw-tile-fill:var(--mw-active);--mw-tile-ink:var(--mw-active-ink)}
-.mw-is-active .mw-tile-face {box-shadow:inset 0 2px 0 var(--mw-accent)}
 .mw-is-active .mw-tile-count {color:var(--mw-accent)}
 .mw-tile:hover .mw-tile-face,.mw-tile:focus-visible .mw-tile-face {
   filter:brightness(.965);
@@ -137,9 +135,7 @@
 .mw-tile[aria-pressed="true"] .mw-tile-face {
   box-shadow:inset 0 0 0 2px var(--gold-hi);
 }
-.mw-is-active[aria-pressed="true"] .mw-tile-face {
-  box-shadow:inset 0 0 0 2px var(--gold-hi),inset 0 3px 0 var(--mw-accent);
-}
+
 /* The same centered name-above-number typography applies to every tile,
    including micro and dense cases. Zero tiles omit the number, not the label. */
 .mw-tile-lockup {
