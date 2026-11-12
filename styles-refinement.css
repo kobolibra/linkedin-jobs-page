@@ -646,6 +646,21 @@ body.compact .job > .mono { margin-top:2px; }
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
+/* Stacked area fills preserve the exact original regional inks, with
+   restrained translucency. Bands are actual cumulative polygons, not
+   overlapping zero-based overlays or fake decorative gradients. */
+#dist .region-stack-band {
+  fill:var(--region-ink);
+  fill-opacity:.21;
+  stroke:none;
+}
+#dist .region-series.cn .region-stack-band {fill-opacity:.17}
+#dist .region-series.hk .region-stack-band {fill-opacity:.23}
+#dist .region-series.sg .region-stack-band {fill-opacity:.22}
+#dist .region-series.other .region-stack-band {fill-opacity:.17}
+[data-theme="dark"] #dist .region-stack-band{fill-opacity:.32}
+[data-theme="dark"] #dist .region-series.cn .region-stack-band{fill-opacity:.27}
+[data-theme="dark"] #dist .region-series.other .region-stack-band{fill-opacity:.25}
 #dist .region-legend-swatch{stroke-width:3.4}
 #dist .region-legend-label{
   fill:var(--viz-secondary);font:600 9px var(--mono);
