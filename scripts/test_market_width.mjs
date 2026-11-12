@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,toneOf}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,toneOf}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -182,10 +182,10 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.doesNotMatch(html,/marketWidthZeroNames|marketWidthZeroPanel|No new postings<\/span>|mw-matrix|mw-cell|mw-legend-chip|mw-axis-tick/);
  assert.doesNotMatch(js,/zeroPanel|zeroItems|mw-zero-name/);
  assert.match(js,/if\(!zero\)\{/);
- assert.match(js,/face\.append\(name\)/);
- assert.match(js,/face\.append\(amount\)/);
+ assert.match(js,/lockup\.append\(name\)/);
+ assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-9','market-width.css?v=market-width-9'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-10','market-width.css?v=market-width-10'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -204,14 +204,14 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.equal(MICRO[11],'FIL');
  assert.ok(!COMPACT.some(v=>v.endsWith(' St.')||v.endsWith(' C.')));
  assert.ok(COMPACT.every(Boolean)&&MICRO.every(Boolean));
- assert.match(read('market-width.js'),/name\.textContent=tiny\?MICRO\[tile\.i\]:compact\?COMPACT\[tile\.i\]:DISPLAY\[tile\.i\]/);
+ assert.match(read('market-width.js'),/const allowed=rect\.w>=150/);
 });
 
 test('distinct mineral-zero and warm-plum live color channels maintain shared app styling',()=>{
  const css=read('market-width.css'),html=read('index.html');
- assert.match(css,/--mw-zero:#e9e8e5/);
- assert.match(css,/--mw-tone-1:#c9a9a1/);
- assert.match(css,/--mw-tone-5:#554358/);
+ assert.match(css,/--mw-zero:#e9e8e6/);
+ assert.match(css,/--mw-tone-1:#d8bdb3/);
+ assert.match(css,/--mw-tone-5:#60465c/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
  assert.match(css,/\.mw-is-zero/);
  assert.match(css,/background:var\(--glass-light\)/);
@@ -219,4 +219,25 @@ test('distinct mineral-zero and warm-plum live color channels maintain shared ap
  assert.match(css,/\.mw-detail\[hidden\]/);
  assert.doesNotMatch(css,/\.mw-zero-panel|\.mw-zero-name|\.mw-map-layout\.is-sparse/);
  assert.doesNotMatch(html,/18 institutions · 30 days|Explore exact institution counts|First observed on LinkedIn/);
+});
+
+
+test('all 18 firms use one centered name-over-count lockup, never side-by-side micro tiles',()=>{
+ const js=read('market-width.js'),css=read('market-width.css');
+ assert.match(js,/lockup\.className='mw-tile-lockup'/);
+ assert.match(js,/face\.append\(lockup\)/);
+ assert.match(js,/function fitTileContent\(/);
+ assert.match(css,/\.mw-tile-lockup\s*\{[^}]*flex-direction:column/);
+ assert.match(css,/\.mw-tile-name\s*\{[^}]*text-align:center/);
+ assert.match(css,/\.mw-tile-count\s*\{[^}]*align-self:center/);
+ assert.doesNotMatch(css,/\.mw-tile-tiny|\.mw-tile-dense|flex-direction:row;align-items:center/);
+});
+
+test('typography tiers grow with each tile geometry, never the count of active firms',()=>{
+ const small=tileTypography(55,34),medium=tileTypography(120,80);
+ const large=tileTypography(175,110),feature=tileTypography(480,260);
+ assert.deepEqual([small.tier,medium.tier,large.tier,feature.tier],['small','medium','large','feature']);
+ assert.ok(feature.name>=20&&feature.count>=28);
+ assert.ok(feature.name>large.name&&large.name>medium.name&&medium.name>small.name);
+ assert.ok(feature.count>large.count&&large.count>medium.count&&medium.count>small.count);
 });
