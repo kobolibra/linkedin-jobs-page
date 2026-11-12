@@ -662,6 +662,10 @@ body.compact .job > .mono { margin-top:2px; }
 #dist .region-legend-label{
   fill:var(--viz-secondary);font:600 9px var(--mono);
 }
+#dist .region-spark-dot{
+  fill:var(--region-ink);stroke:var(--surface);stroke-width:1.1;
+  pointer-events:none;
+}
 #dist .region-spark-hit{
   fill:transparent;stroke:transparent;cursor:crosshair;
 }

@@ -197,16 +197,24 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.ok(html.includes('Market Width: 18 institutions we watch closely'));
  assert.ok(html.includes('new postings across'));
- assert.ok(html.includes('Size and shade reflect postings'));
+ assert.ok(html.includes('Size and shade reflect new postings of the day, excluding reposts'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
+ assert.ok(pos('id="marketWidthMap"')<pos('class="mw-footer"')&&
+   pos('class="mw-footer"')<pos('id="marketWidthCount"')&&
+   pos('id="marketWidthCount"')<pos('id="marketWidthRegions"'),
+   'the board must appear above its summary, daily navigation, region selector and encoding');
+ assert.ok(pos('id="marketWidthMap"')<pos('id="marketWidthPrev"'),
+   'date controls belong below the treemap, not above');
+ assert.match(css,/\.mw-footer\s*\{[^}]*display:flex/);
+
  assert.doesNotMatch(html,/marketWidthZeroNames|marketWidthZeroPanel|No new postings<\/span>|mw-matrix|mw-cell|mw-legend-chip|mw-axis-tick/);
  assert.doesNotMatch(js,/zeroPanel|zeroItems|mw-zero-name/);
  assert.match(js,/if\(!zero\)\{/);
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-width-20'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-width-21'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -230,7 +238,8 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
 
 test('one ordered perceptual ramp replaces categorical institution colors',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
- assert.match(css,/--mw-zero:var\(--surface-2\)/);
+ assert.match(css,/--mw-zero:#cac7cb;--mw-zero-ink:#47546a/);
+ assert.match(css,/--mw-zero:#323b4b;--mw-zero-ink:#cbd3e0/);
  assert.match(css,/--mw-ramp-light:#e3e7f4;--mw-ramp-deep:#9fafd7/);
  assert.match(css,/--mw-active-ink:#102b44;--mw-accent:#102b44/);
  assert.match(css,/color-mix\(in oklab,var\(--mw-ramp-light\),var\(--mw-ramp-deep\) var\(--mw-tone,0%\)\)/);
@@ -322,8 +331,8 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
  }
  assert.ok(lum('#e3e7f4')>.79,'approved C low end stays luminous, softly indigo and above the site-neutral fill');
  assert.ok(lum('#9fafd7')>.42,'approved C high end stays airy, never a navy billboard');
- assert.ok(contrast('#e8eae9','#586770')>=4.5,'zero labels readable in light mode');
- assert.ok(contrast('#263b4b','#d0dce4')>=4.5,'zero labels readable in dark mode');
+ assert.ok(contrast('#cac7cb','#47546a')>=4.5,'matching slate-indigo zero labels readable in light mode');
+ assert.ok(contrast('#323b4b','#cbd3e0')>=4.5,'dark muted-indigo zero labels readable');
  assert.ok(global.includes('--navy:#16395a'),'use the website navy as art direction');
 });
 
