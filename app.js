@@ -670,7 +670,9 @@ jobsDataPromise
       const upper=Math.ceil(observed/step)*step;
       return {max:upper,step,ticks:Array.from({length:Math.round(upper/step)+1},(_,i)=>i*step)};
     };
-    const trendX=i=>left+i/bins*plotW;
+    // First observed day sits exactly at the left edge, final day at the
+    // right edge. Do not reserve an empty full-day margin before the data.
+    const trendX=i=>left+(bins===1?0:Math.max(0,i-1)/(bins-1))*plotW;
     const trendY=value=>base-value/regionMax*(base-top);
     const gridTicks=regionTicks.map(v=>
       '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
@@ -711,13 +713,21 @@ jobsDataPromise
       arrays.slice(0,layers).reduce((sum,values)=>sum+values[i],0));
     const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
     const contourPath=(values,slopes,reverse=false)=>{
-      let d='M'+fmtPoint(trendX(reverse?bins:0),trendY(values[reverse?bins:0]));
-      for(let j=0;j<bins;j++){
-        const a=reverse?bins-j: j,b=reverse?a-1:a+1;
-        const direction=reverse?-1:1;
-        d+=' C'+fmtPoint(trendX(a)+direction*plotW/bins/3,
+      if(bins===1){
+        const y=trendY(values[1]);
+        return reverse
+          ?'M'+fmtPoint(TW-right,y)+' L'+fmtPoint(left,y)
+          :'M'+fmtPoint(left,y)+' L'+fmtPoint(TW-right,y);
+      }
+      // There is no invisible zero-valued "day before" the earliest data.
+      // Draw actual end-of-day cumulative positions from day 1 through N.
+      let d='M'+fmtPoint(trendX(reverse?bins:1),trendY(values[reverse?bins:1]));
+      for(let j=1;j<bins;j++){
+        const a=reverse?bins-j+1:j,b=reverse?a-1:a+1;
+        const direction=reverse?-1:1,dx=Math.abs(trendX(b)-trendX(a));
+        d+=' C'+fmtPoint(trendX(a)+direction*dx/3,
           trendY(values[a]+direction*slopes[a]/3))+
-          ' '+fmtPoint(trendX(b)-direction*plotW/bins/3,
+          ' '+fmtPoint(trendX(b)-direction*dx/3,
           trendY(values[b]-direction*slopes[b]/3))+
           ' '+fmtPoint(trendX(b),trendY(values[b]));
       }
