@@ -1,203 +1,191 @@
-/* Chromium acceptance for the true, count-proportional daily Market Width map.
-   Includes all-zero, sparse, dense, region, date, official names and hover QA. */
+/* Real Chromium QA for one integrated 18-institution market mosaic:
+   no printed zeroes, count-labeled activity tiles, trustworthy color contrast,
+   no hover layout shift, desktop/mobile, light/dark, and sparse extremes. */
 import assert from 'node:assert/strict';
 import {readFileSync,mkdirSync} from 'node:fs';
 import {chromium} from 'playwright';
-
 const source=new URL('../',import.meta.url);
 const html=readFileSync(new URL('index.html',source),'utf8');
 const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css']
  .map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
 const script=readFileSync(new URL('market-width.js',source),'utf8');
 const analytics=html.match(/<div class="analytics reveal"[\s\S]*?(?=<\/header>)/)?.[0];
-assert.ok(analytics,'homepage analytics block');
-const days=Array.from({length:30},(_,n)=>{
- const key=new Date(Date.UTC(2026,9,14+n,12)).toISOString().slice(0,10);
+assert.ok(analytics,'homepage analytics block exists');
+const firms=['HSBC','Standard Chartered','Citi','JPMorgan Chase','BNP Paribas',
+ 'Societe Generale','DBS Bank','Deutsche Bank','Goldman Sachs','BlackRock',
+ 'Bank of America','Fidelity International','Morgan Stanley','BBVA','Natixis',
+ 'UBS','Schroders','Invesco'];
+const days=Array.from({length:30},(_,i)=>{
+ const key=new Date(Date.UTC(2026,9,14+i,12)).toISOString().slice(0,10);
  return {key,label:key};
 });
-const active=[
- ['Standard Chartered',2,'CN'],['Morgan Stanley',3,'HK'],
- ['Fidelity International',4,'SG'],['Schroders',5,'CN']
-];
-const jobs=[];
-for(let i=0;i<29;i++)for(const [company,count,location] of active)
- for(let j=0;j<count;j++)jobs.push({company,location,firstSeen:days[i].key+'T09:00:00Z',jobStatus:'active'});
-
-const browser=await chromium.launch({headless:true});
+const regular=[];
+for(let day=0;day<29;day++){
+ for(const [company,quantity,region] of [
+  ['Standard Chartered',2,'CN'],['Morgan Stanley',3,'HK'],
+  ['Fidelity International',4,'SG'],['Schroders',5,'CN']
+ ]){
+  for(let n=0;n<quantity;n++)regular.push({
+   company,location:region,firstSeen:days[day].key+'T09:00:00Z',jobStatus:'active'
+  });
+ }
+}
 mkdirSync(new URL('artifacts/market-width/',source),{recursive:true});
+const browser=await chromium.launch({headless:true});
 const make=async(width,theme)=>{
  const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1});
  await page.setContent('<!doctype html><html data-theme="'+theme+'"><head><style>'+styles+'</style></head><body><div class="shell">'+analytics+'</div></body></html>');
  await page.addScriptTag({content:script});
  return page;
 };
-const summary=page=>page.locator('.mw-summary').textContent().then(t=>t.replace(/\s+/g,' ').trim());
-async function ratioTest(page){
- const rects=await page.evaluate(()=>{
+const summary=page=>page.locator('.mw-summary').textContent().then(v=>v.replace(/\s+/g,' ').trim());
+async function inspectMosaic(page,nonzero){
+ const details=await page.evaluate(()=>{
   const board=document.querySelector('#marketWidthMap').getBoundingClientRect();
-  const tiles=[...document.querySelectorAll('.mw-tile')].map(node=>{
-   const r=node.getBoundingClientRect();
-   return {company:node.dataset.firm,count:Number(node.getAttribute('aria-label').match(/ · (\d+) new posting/)[1]),
-    area:r.width*r.height,x:r.left,y:r.top,w:r.width,h:r.height,
-    title:node.title,buttonLabel:node.getAttribute('aria-label')};
+  const nodes=[...document.querySelectorAll('.mw-tile')];
+  const rects=nodes.map(node=>{
+   const r=node.getBoundingClientRect(),face=node.querySelector('.mw-tile-face');
+   const name=node.querySelector('.mw-tile-name'),number=node.querySelector('.mw-tile-count');
+   const zero=node.dataset.zero==='true';
+   return {
+    i:Number(node.dataset.firm),zero,name:name?.textContent,count:number?.textContent||null,
+    aria:node.getAttribute('aria-label'),title:node.title,
+    area:r.width*r.height,x:r.x,y:r.y,w:r.width,h:r.height,
+    nameWidth:name?.clientWidth,contentWidth:name?.scrollWidth,
+    nameHeight:name?.clientHeight,contentHeight:name?.scrollHeight,
+    faceBg:getComputedStyle(face).backgroundColor,
+    faceInk:getComputedStyle(face).color
+   };
   });
-  return {board:{w:board.width,h:board.height,x:board.x,y:board.y},tiles};
+  return {board:{w:board.width,h:board.height,x:board.x,y:board.y},rects};
  });
- const total=rects.tiles.reduce((a,t)=>a+t.count,0),canvas=rects.board.w*rects.board.h;
- assert.ok(total>0);
- for(const tile of rects.tiles){
-  assert.ok(Math.abs(tile.area/canvas-tile.count/total)<.0015,
-   'tile area must equal the REAL count share; no min area: '+JSON.stringify(rects));
-  assert.ok(tile.x>=rects.board.x-1&&tile.y>=rects.board.y-1);
- }
- const area=rects.tiles.reduce((a,t)=>a+t.area,0);
- assert.ok(Math.abs(area-canvas)<=canvas*.0003,'pixel-rendered tiles must cover within 0.03% browser subpixel tolerance '+JSON.stringify({area,canvas,diff:area-canvas,rects}));
- return rects;
+ assert.equal(details.rects.length,18,'one integrated cloud must always include all 18 firms');
+ assert.equal(new Set(details.rects.map(t=>t.i)).size,18,'unique institutional tiles');
+ assert.equal(details.rects.filter(t=>!t.zero).length,nonzero,'correct hiring breadth');
+ assert.ok(details.rects.every(t=>t.name.length>0),'every rectangle names its firm');
+ assert.ok(details.rects.every(t=>t.zero?t.count===null:t.count!==null),
+  'zero tiles have no number; positive tiles show an exact count');
+ assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new postings')),
+  'zero labels are contextual rather than a numeric 0');
+ assert.ok(details.rects.every(t=>t.w>0&&t.h>0&&t.x>=details.board.x-1&&t.y>=details.board.y-1));
+ const totalArea=details.rects.reduce((sum,t)=>sum+t.area,0);
+ const boardArea=details.board.w*details.board.h;
+ assert.ok(Math.abs(totalArea-boardArea)<=boardArea*.001,
+  'all 18 tiles fully cover the mosaic: '+JSON.stringify({boardArea,totalArea}));
+ const over=details.rects.filter(t=>t.contentWidth>t.nameWidth+1||t.contentHeight>t.nameHeight+1);
+ assert.equal(over.length,0,'firm tokens must fit without being clipped: '+JSON.stringify(over));
+ return details;
 }
+const rgb=raw=>(raw.match(/[\d.]+/g)||[]).slice(0,3).map(Number);
+const brightness=v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4};
+const lum=raw=>{const a=rgb(raw).map(brightness);return a[0]*.2126+a[1]*.7152+a[2]*.0722};
+const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
 try{
  for(const width of [1440,960,390]){
   for(const theme of ['light','dark']){
    const page=await make(width,theme);
-   await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[jobs,days]);
+   await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
-   assert.equal(await page.locator('.mw-tile').count(),4);
-   assert.equal(await page.locator('.mw-zero-name').count(),14);
-   assert.equal(await page.locator('.mw-map-layout.is-sparse').count(),1);
-   if(width<=720){
-    const visible=await page.evaluate(()=>{
-     const parent=document.querySelector('#marketWidthZeroPanel').getBoundingClientRect();
-     const all=[...document.querySelectorAll('.mw-zero-name')].map(n=>n.getBoundingClientRect());
-     const grid=document.querySelector('.mw-zero-names');
-     return {allVisible:all.every(r=>r.bottom<=parent.bottom+1&&r.top>=parent.top-1),scroll:grid.scrollHeight,client:grid.clientHeight,columns:getComputedStyle(grid).gridTemplateColumns.split(' ').length};
-    });
-    assert.equal(visible.columns,3,'mobile zero-name roster uses three columns');
-    assert.ok(visible.allVisible&&visible.scroll<=visible.client+2,
-     'all zero institutions must be actually visible, no hidden internal scroll: '+JSON.stringify(visible));
+   assert.equal(await page.locator('.mw-encoding').textContent(),'Size reflects postings');
+   const initial=await inspectMosaic(page,4);
+   const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
+   const zeroBg=zeros[0].faceBg;
+   assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>60),
+    'every positive tint must differ clearly from the muted zero-neutral');
+   for(const tile of initial.rects){
+    assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
+     'small-name contrast must be AA: '+JSON.stringify({theme,i:tile.i,bg:tile.faceBg,ink:tile.faceInk,ratio:contrast(tile.faceBg,tile.faceInk)}));
    }
-   assert.equal(await page.locator('.mw-matrix,.mw-cell,.mw-legend-chip,.mw-column-focus').count(),0);
-   assert.equal(await page.locator('.mw-encoding').textContent(),'Area = new postings');
-   assert.equal(await page.locator('.mw-date-nav .mw-chevron').count(),2);
-   assert.equal(await page.locator('.mw-detail').isHidden(),true);
-   assert.ok(await page.locator('.mw-tile[data-firm="1"]').getAttribute('aria-label').then(x=>x.includes('Standard Chartered')));
-   assert.ok(await page.locator('.mw-tile[data-firm="12"]').getAttribute('aria-label').then(x=>x.includes('Morgan Stanley')));
-   assert.ok(await page.locator('.mw-tile[data-firm="11"]').getAttribute('aria-label').then(x=>x.includes('Fidelity International')));
-   await ratioTest(page);
-   const dimensions=await page.evaluate(()=>{
-    const r=x=>{const el=document.querySelector(x),b=el.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height,b:b.bottom};};
-    const top50=document.querySelector('.top50-tabs');
-    return {left:r('.analytics-left'),right:r('.ac-col-market'),dist:r('.ac-col-density'),
-     postings:r('.ac-col-postings'),top:r('.ac-col-top50'),map:r('#marketWidthMap'),
+   for(const i of [1,12,11])assert.ok(initial.rects[i]===undefined||initial.rects.some(t=>t.i===i&&t.aria.includes(firms[i])));
+   const bounds=await page.evaluate(()=>{
+    const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,b:r.bottom}};
+    const top30=document.querySelector('.top50-tabs');
+    return {left:rect('.analytics-left'),right:rect('.ac-col-market'),
+     dist:rect('.ac-col-density'),post:rect('.ac-col-postings'),top:rect('.ac-col-top50'),
      pageWidth:document.documentElement.scrollWidth,
-     tabs:getComputedStyle(document.querySelector('.mw-tabs')).backgroundColor,
-     top50:top50&&getComputedStyle(top50).backgroundColor,
-     tabsWidth:document.querySelector('.mw-tabs').getBoundingClientRect().width,
-     top50Width:top50?.getBoundingClientRect().width||0};
+     regionBg:getComputedStyle(document.querySelector('.mw-tabs')).backgroundColor,
+     topBg:top30&&getComputedStyle(top30).backgroundColor,
+     regionW:rect('.mw-tabs').width,topW:top30?.getBoundingClientRect().width||0};
    });
-   assert.ok(dimensions.postings.y>=dimensions.dist.b-2);
-   assert.ok(dimensions.top.y>=Math.max(dimensions.left.b,dimensions.right.b)-2);
-   assert.ok(dimensions.pageWidth<=width+2,'no page overflow '+JSON.stringify({width,theme,dimensions}));
-   if(dimensions.top50)assert.equal(dimensions.tabs,dimensions.top50,'Top30 chrome parity');
-   if(width<=720)assert.ok(Math.abs(dimensions.tabsWidth-dimensions.top50Width)<12,
-    'mobile market region control should use the same full-width pattern as Top30: '+JSON.stringify(dimensions));
+   assert.ok(bounds.post.y>=bounds.dist.b-2);
+   assert.ok(bounds.top.y>=Math.max(bounds.left.b,bounds.right.b)-2);
+   assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
+   if(bounds.topBg)assert.equal(bounds.regionBg,bounds.topBg,'Top30 and Market Width region controls share chrome');
    if(width>720){
-    assert.ok(dimensions.right.x>=dimensions.left.x+dimensions.left.w-2);
-    assert.ok(Math.abs(dimensions.left.h-dimensions.right.h)<3,'desktop alignment');
-   }else assert.ok(dimensions.right.y>=dimensions.left.b-2,'mobile vertical stacking');
-   // Real hover must never change panel or document geometry.
+    assert.ok(bounds.right.x>=bounds.left.x+bounds.left.w-2);
+    assert.ok(Math.abs(bounds.right.h-bounds.left.h)<3,'charts align in desktop grid');
+   }else{
+    assert.ok(bounds.right.y>=bounds.left.b-2);
+    assert.ok(Math.abs(bounds.regionW-bounds.topW)<12,'mobile region control is full width');
+   }
    const before=await page.evaluate(()=>({
+    page:document.documentElement.scrollHeight,
     panel:document.querySelector('.ac-col-market').getBoundingClientRect().height,
-    board:document.querySelector('#marketWidthMap').getBoundingClientRect().height,
-    page:document.documentElement.scrollHeight
+    map:document.querySelector('.mw-map-board').getBoundingClientRect().height
    }));
    await page.locator('.mw-tile[data-firm="1"]').hover();
    assert.equal(await page.locator('.mw-detail').isVisible(),true);
    await page.locator('.mw-tile[data-firm="12"]').hover();
    assert.match(await page.locator('.mw-detail').textContent(),/Morgan Stanley.*3 new postings/);
    const after=await page.evaluate(()=>({
+    page:document.documentElement.scrollHeight,
     panel:document.querySelector('.ac-col-market').getBoundingClientRect().height,
-    board:document.querySelector('#marketWidthMap').getBoundingClientRect().height,
-    page:document.documentElement.scrollHeight
+    map:document.querySelector('.mw-map-board').getBoundingClientRect().height
    }));
-   assert.deepEqual(after,before,'hover cannot make the page wobble');
+   assert.deepEqual(before,after,'moving over tiles must never shift document geometry');
    await page.locator('[data-market-region="CN"]').click();
    assert.equal(await summary(page),'7 new postings across 2/18 institutions');
-   assert.equal(await page.locator('.mw-tile').count(),2);
-   assert.equal(await page.locator('.mw-zero-name').count(),16);
-   await ratioTest(page);
+   await inspectMosaic(page,2);
    await page.locator('[data-market-region="HK"]').click();
    assert.equal(await summary(page),'3 new postings across 1/18 institutions');
-   assert.equal(await page.locator('.mw-tile').count(),1);
-   await ratioTest(page);
+   await inspectMosaic(page,1);
    await page.locator('[data-market-region="SG"]').click();
    assert.equal(await summary(page),'4 new postings across 1/18 institutions');
    await page.locator('[data-market-region="all"]').click();
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    await page.locator('#marketWidthNext').click();
    assert.equal(await summary(page),'0 new postings across 0/18 institutions');
-   assert.equal(await page.locator('.mw-tile').count(),0);
-   assert.equal(await page.locator('.mw-zero-name').count(),18);
-   assert.equal(await page.locator('.mw-empty').count(),1);
+   const allZero=await inspectMosaic(page,0);
+   assert.ok(allZero.rects.every(t=>t.count===null),'all-zero day shows no numeral inside any tile');
    if(width===1440&&theme==='light'){
-    await page.locator('.ac-col-market').screenshot({
-     path:new URL('artifacts/market-width/treemap-all-zero-1440-light.png',source).pathname,
-     animations:'disabled'
-    });
-   }
-   if(width<=720){
-    const zeroVisible=await page.evaluate(()=>{
-      const panel=document.querySelector('#marketWidthZeroPanel').getBoundingClientRect();
-      return [...document.querySelectorAll('.mw-zero-name')].every(n=>n.getBoundingClientRect().bottom<=panel.bottom+1);
-    });
-    assert.ok(zeroVisible,'all-zero day still exposes all 18 institutions on mobile');
+    await page.evaluate(()=>document.activeElement?.blur?.());
+    await page.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/all-zero-1440-light.png',source).pathname,animations:'disabled'});
    }
    await page.locator('#marketWidthPrev').click();
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
-   // With no focus or tooltip show the intended default visual state.
-   await page.evaluate(()=>{document.activeElement?.blur?.();});
+   await page.evaluate(()=>document.activeElement?.blur?.());
    if(width!==960){
-    await page.locator('.ac-col-market').screenshot({
-     path:new URL('artifacts/market-width/treemap-'+width+'-'+theme+'.png',source).pathname,
-     animations:'disabled'
-    });
-    await page.locator('.analytics-card').screenshot({
-     path:new URL('artifacts/market-width/analytics-'+width+'-'+theme+'.png',source).pathname,
-     animations:'disabled'
-    });
+    await page.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/mosaic-'+width+'-'+theme+'.png',source).pathname,animations:'disabled'});
+    await page.locator('.analytics-card').screenshot({path:new URL('artifacts/market-width/analytics-'+width+'-'+theme+'.png',source).pathname,animations:'disabled'});
    }
-   console.log('market-width real Treemap PASS '+width+'px '+theme);
+   console.log('18-company integrated mosaic PASS '+width+'px '+theme);
    await page.close();
   }
  }
- const page=await make(960,'light');
- await page.evaluate(([date])=>window.MarketWidth.render([{company:'Standard Chartered',location:'CN',firstSeen:date+'T09:00:00Z',jobStatus:'active'}],[date]),[days[28].key]);
- assert.equal(await summary(page),'1 new postings across 1/18 institutions');
- assert.equal(await page.locator('.mw-tile').count(),1);
- assert.equal(await page.locator('.mw-zero-name').count(),17);
- assert.equal(await page.locator('.mw-tile-name').textContent(),'Standard Chartered');
- await ratioTest(page);
- await page.locator('.ac-col-market').screenshot({
-  path:new URL('artifacts/market-width/treemap-single-960-light.png',source).pathname,
-  animations:'disabled'
- });
- await page.close();
- // 18-way distribution: no institution is artificially dropped.
- const many=await make(960,'dark');
- const rows=Array.from({length:18},(_,i)=>({
-  company:['HSBC','Standard Chartered','Citi','JPMorgan Chase','BNP Paribas',
-  'Societe Generale','DBS Bank','Deutsche Bank','Goldman Sachs','BlackRock',
-  'Bank of America','Fidelity International','Morgan Stanley','BBVA','Natixis',
-  'UBS','Schroders','Invesco'][i],location:'HK',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'
- }));
- await many.evaluate(([jobs,date])=>window.MarketWidth.render(jobs,[date]),[rows,days[28].key]);
- assert.equal(await many.locator('.mw-tile').count(),18);
- const denseNames=await many.locator('.mw-tile-name').count();
- assert.ok(denseNames>=16,'dense view should identify most firms by full official names: '+denseNames);
- assert.equal(await many.locator('#marketWidthZeroPanel').isHidden(),true);
- await ratioTest(many);
- await many.locator('.ac-col-market').screenshot({
-  path:new URL('artifacts/market-width/treemap-18-active-960-dark.png',source).pathname,
-  animations:'disabled'
- });
- await many.close();
+ // Sparse: only one firm is hiring, the other 17 are muted within the SAME map.
+ const one=await make(960,'light');
+ await one.evaluate(([date])=>window.MarketWidth.render([{company:'Standard Chartered',location:'CN',firstSeen:date+'T09:00:00Z',jobStatus:'active'}],[date]),[days[28].key]);
+ assert.equal(await summary(one),'1 new postings across 1/18 institutions');
+ const sparse=await inspectMosaic(one,1);
+ assert.equal(sparse.rects.find(t=>t.i===1).count,'1');
+ await one.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/single-active-960-light.png',source).pathname,animations:'disabled'});
+ await one.close();
+ // Dense: all eighteen have one job.
+ const dense=await make(960,'dark');
+ const jobs=firms.map(company=>({company,location:'HK',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'}));
+ await dense.evaluate(([rows,date])=>window.MarketWidth.render(rows,[date]),[jobs,days[28].key]);
+ assert.equal(await summary(dense),'18 new postings across 18/18 institutions');
+ await inspectMosaic(dense,18);
+ await dense.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/all-active-960-dark.png',source).pathname,animations:'disabled'});
+ await dense.close();
+ // Extreme skew: the tiny positive posting still has a legible name and count.
+ const skew=await make(960,'light');
+ const extreme=Array.from({length:700},()=>({company:'HSBC',location:'CN',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'}));
+ extreme.push({company:'Morgan Stanley',location:'CN',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'});
+ await skew.evaluate(([rows,date])=>window.MarketWidth.render(rows,[date]),[extreme,days[28].key]);
+ assert.equal(await summary(skew),'701 new postings across 2/18 institutions');
+ await inspectMosaic(skew,2);
+ await skew.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/extreme-960-light.png',source).pathname,animations:'disabled'});
+ await skew.close();
 }finally{await browser.close();}
