@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorTiles,tileTypography}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -206,7 +206,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-17','market-width.css?v=market-width-17'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-18','market-width.css?v=market-width-18'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -228,27 +228,68 @@ test('brand abbreviations remain governed by the 18-company mapping',()=>{
  assert.match(read('market-width.js'),/const allowed=rect\.w>=82/);
 });
 
-test('the restored mixed layout uses only sea-glass activity and the website neutral tokens',()=>{
+test('five light editorial pigments with original mixed treemap and neutral zero semantics',()=>{
  const css=read('market-width.css'),js=read('market-width.js'),html=read('index.html');
  assert.match(css,/--mw-zero:var\(--surface-2\)/);
- assert.match(css,/--mw-active:#bde8dc/);
  assert.match(css,/--mw-active-ink:var\(--navy\)/);
- assert.match(css,/--mw-accent:var\(--navy-3\)/);
+ assert.match(css,/--mw-accent:var\(--navy-2\)/);
  assert.match(css,/--mw-seam:1px/);
  assert.match(css,/\[data-theme="dark"\] \.analytics-card > \.ac-col-market/);
  assert.match(js,/function marketTiles\(/);
+ assert.match(js,/function colorTiles\(/);
  assert.doesNotMatch(js,/zeroPerimeter|zone:'perimeter'|zone:'core'|dataset\.zone/);
- assert.match(js,/\(zero\?'mw-is-zero':'mw-is-active'\)/);
+ assert.match(js,/\(zero\?'mw-is-zero':'mw-is-active mw-hue-'\+colors\[tile\.i\]\)/);
  assert.doesNotMatch(js,/activityTier|toneOf|mw-activity-|mw-firm-/);
  assert.doesNotMatch(css,/--mw-(?:low|mid|high|tone-\d)|\.mw-activity-|\.mw-firm-/);
+ for(let i=0;i<5;i++)assert.ok(css.includes('.mw-hue-'+i+' {--mw-tile-fill:var(--mw-paint-'+i+')}'));
  assert.match(css,/\.mw-is-zero \{--mw-tile-fill:var\(--mw-zero\);--mw-tile-ink:var\(--mw-zero-ink\)\}/);
- assert.match(css,/\.mw-is-active \{--mw-tile-fill:var\(--mw-active\);--mw-tile-ink:var\(--mw-active-ink\)\}/);
+ assert.match(css,/\.mw-is-active \{--mw-tile-fill:var\(--mw-paint-0\);--mw-tile-ink:var\(--mw-active-ink\)\}/);
  assert.match(css,/\.mw-is-active \.mw-tile-count \{color:var\(--mw-accent\)\}/);
  assert.doesNotMatch(css,/\.mw-is-active \.mw-tile-face \{box-shadow:inset 0 2px 0/);
  assert.match(css,/background:var\(--glass-light\)/);
  assert.match(css,/\.mw-detail\s*\{[\s\S]*?position:absolute/);
  assert.match(css,/\.mw-detail\[hidden\]/);
  assert.doesNotMatch(html,/Active institutions are grouped in the center|Neutral inactive institutions sit around the perimeter/);
+});
+
+test('palette resolves the actual tile-adjacency graph without changing a single coordinate',()=>{
+ const touch=(a,b)=>{
+  const x=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+  const y=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+  return ((Math.abs(a.x+a.w-b.x)<.02||Math.abs(b.x+b.w-a.x)<.02)&&y>.5)||
+   ((Math.abs(a.y+a.h-b.y)<.02||Math.abs(b.y+b.h-a.y)<.02)&&x>.5);
+ };
+ const cases=[
+  Array.from({length:18},(_,i)=>i===1?2:i===11?4:i===12?3:i===16?5:0),
+  Array.from({length:18},()=>1),
+  Array.from({length:18},(_,i)=>i%4?0:i+1),
+  Array.from({length:18},(_,i)=>i%3?i+1:0),
+  Array.from({length:18},(_,i)=>i===1?700:i===12?1:0),
+  Array.from({length:18},()=>0)
+ ];
+ for(const [w,h] of [[350,290],[510,316],[960,400]]){
+  for(const values of cases){
+   const before=marketTiles(values,w,h);
+   const snapshot=JSON.stringify(before);
+   const colors=colorTiles(before),again=colorTiles(before);
+   assert.deepEqual(colors,again,'same layout must have deterministic colors');
+   assert.equal(JSON.stringify(before),snapshot,'color allocation must never change treemap geometry');
+   assert.equal(colors.length,18);
+   const active=before.filter(t=>!t.zero);
+   if(active.length){
+    const largest=active.reduce((a,b)=>b.count>a.count?b:a);
+    assert.equal(colors[largest.i],0,'lead posting area must anchor the site-blue pigment');
+   }
+   for(const t of before)assert.ok(t.zero?colors[t.i]===null:
+    Number.isInteger(colors[t.i])&&colors[t.i]>=0&&colors[t.i]<=4);
+   for(let i=0;i<active.length;i++)for(let j=i+1;j<active.length;j++)
+    if(touch(active[i],active[j]))assert.notEqual(colors[active[i].i],colors[active[j].i],
+     'adjacent positive rectangles must not share paint '+JSON.stringify({w,h,a:active[i].i,b:active[j].i}));
+   if(active.length===4&&values[1]===2&&values[11]===4)
+    assert.equal(new Set(active.map(t=>colors[t.i])).size,4,'four active institutions should use four distinct hues');
+   if(active.length===18)assert.equal(new Set(colors).size,5,'dense map uses all five coordinated tones');
+  }
+ }
 });
 test('all 18 firms use one centered name-over-count lockup, never side-by-side micro tiles',()=>{
  const js=read('market-width.js'),css=read('market-width.css');
@@ -280,29 +321,41 @@ test('Market Width tile seams are a continuous mosaic, not individually spaced c
  assert.doesNotMatch(css,/margin:[1-9]px;[^}]*\.mw-tile/);
 });
 
-test('clear sea-glass and neutral fills meet AA contrast in light and dark themes',()=>{
- const css=read('market-width.css'),global=read('styles.css'),refinement=read('styles-refinement.css');
- const light={zero:'#e8eae9',zeroInk:'#586770',active:'#bde8dc',activeInk:'#16395a',accent:'#2e6090'};
- const dark={zero:'#263b4b',zeroInk:'#d0dce4',active:'#335d58',activeInk:'#f5f0e8',accent:'#c9f0e0'};
- const ch=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
+test('five high-key pigments match in perceptual lightness, differ in hue and pass small-text AA',()=>{
+ const css=read('market-width.css');
+ const global=read('styles.css');
+ const light=['#bfdff5','#bde5d6','#f0ccd2','#f2dab0','#d7c9f4'];
+ const dark=['#315a79','#356857','#855567','#81643f','#65547f'];
+ const channel=x=>x.match(/[a-f0-9]{2}/gi).map(v=>parseInt(v,16));
  const linear=x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4;
- const lum=x=>{const c=ch(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
+ const lum=x=>{const c=channel(x).map(v=>linear(v/255));return c[0]*.2126+c[1]*.7152+c[2]*.0722};
  const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
- for(const [theme,palette] of [['light',light],['dark',dark]]){
-  for(const [fill,ink] of [[palette.zero,palette.zeroInk],[palette.active,palette.activeInk],[palette.active,palette.accent]])
-   assert.ok(contrast(fill,ink)>=4.5,
-    'small text AA '+JSON.stringify({theme,fill,ink,contrast:contrast(fill,ink)}));
-  assert.ok(css.includes(palette.active),'theme fill '+theme);
-  assert.ok((css+global+refinement).includes(palette.zeroInk),'zero label token '+theme);
-  if(theme==='light')assert.ok(global.includes(palette.activeInk)&&global.includes(palette.accent),
-   'brand type and count accents reuse global navy');
+ const lab=x=>{
+  const c=channel(x).map(v=>linear(v/255)),f=v=>v>.008856?Math.cbrt(v):7.787*v+16/116;
+  const X=(c[0]*.4124564+c[1]*.3575761+c[2]*.1804375)/.95047;
+  const Y=c[0]*.2126729+c[1]*.7151522+c[2]*.072175;
+  const Z=(c[0]*.0193339+c[1]*.119192+c[2]*.9503041)/1.08883;
+  return [116*f(Y)-16,500*(f(X)-f(Y)),200*(f(Y)-f(Z))];
+ };
+ for(const [theme,colors,ink] of [['light',light,'#16395a'],['dark',dark,'#f5f0e8']]){
+  assert.equal(new Set(colors).size,5);
+  for(let i=0;i<5;i++){
+   assert.ok(css.includes('--mw-paint-'+i+':'+colors[i]),'missing '+theme+' palette entry '+i);
+   assert.ok(contrast(colors[i],ink)>=4.5,'small text must be readable '+JSON.stringify({theme,paint:colors[i]}));
+   if(theme==='light')assert.ok(lab(colors[i])[0]>=81&&lab(colors[i])[0]<=90,
+    'light fills must share bright editorial lightness');
+  }
+  for(let i=0;i<5;i++)for(let j=i+1;j<5;j++){
+   const delta=Math.hypot(...lab(colors[i]).map((v,k)=>v-lab(colors[j])[k]));
+   assert.ok(delta>=17,'hues must be genuinely distinct '+JSON.stringify({theme,i,j,delta}));
+  }
  }
- const [r,g,b]=ch(light.active);
- assert.ok(g>r+30&&g>b+8&&b>r+20,'positive tile should have clear sea-glass hue');
- assert.ok(lum(light.active)>.73,'positive tile must remain light');
- assert.ok(lum(light.zero)>.78,'zero tile matches site native surface');
+ assert.ok(contrast('#e8eae9','#586770')>=4.5,'light zero labels readable');
+ assert.ok(contrast('#263b4b','#d0dce4')>=4.5,'dark zero labels readable');
+ assert.ok(global.includes('--navy:#16395a'),'reuse actual site navy');
  assert.doesNotMatch(css,/linear-gradient\(/);
 });
+
 
 
 

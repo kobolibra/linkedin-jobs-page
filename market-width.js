@@ -184,6 +184,59 @@ function marketTiles(values,width=640,height=340){
   ...r,count:input[r.i],zero:input[r.i]===0,visualFloor:floored.has(r.i)
  }));
 }
+/* A restrained five-ink categorical palette differentiates neighboring
+   positive rectangles. These are visual distinctions, not a second scale:
+   area and the exact numeral still encode posting volume. Stable firm
+   preferences minimize color changes; an actual shared edge takes priority
+   over preference so two touching positive tiles never merge optically.
+   Rectangles, values and the original squarified geometry are untouched. */
+const PREFERRED_INK=Object.freeze([4,2,1,3,0,4,1,2,0,3,4,1,3,2,0,4,0,2]);
+function colorTiles(tiles){
+ const active=(tiles||[]).filter(t=>!t.zero);
+ const count=active.length;
+ const paint=Array(count).fill(-1);
+ const neighbors=Array.from({length:count},()=>[]);
+ // Give the largest posting footprint a site-blue visual anchor. All other
+ // colors distinguish neighboring firms, without encoding a second scale.
+ const lead=active.reduce((best,t,j)=>best<0||t.count>active[best].count?j:best,-1);
+ if(lead>=0)paint[lead]=0;
+ const touches=(a,b)=>{
+  const x=Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x);
+  const y=Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y);
+  return ((Math.abs(a.x+a.w-b.x)<.02||Math.abs(b.x+b.w-a.x)<.02)&&y>.5)
+   ||((Math.abs(a.y+a.h-b.y)<.02||Math.abs(b.y+b.h-a.y)<.02)&&x>.5);
+ };
+ for(let i=0;i<count;i++)for(let j=i+1;j<count;j++)
+  if(touches(active[i],active[j])){neighbors[i].push(j);neighbors[j].push(i)}
+ function assign(remaining){
+  if(!remaining)return true;
+  let next=-1,rank=-1;
+  for(let i=0;i<count;i++){
+   if(paint[i]>=0)continue;
+   const sat=new Set(neighbors[i].map(j=>paint[j]).filter(x=>x>=0)).size;
+   const score=sat*100000+neighbors[i].length*1000+
+    Math.min(999,(active[i].w*active[i].h)/1000);
+   if(score>rank){rank=score;next=i}
+  }
+  const forbidden=new Set(neighbors[next].map(j=>paint[j]).filter(x=>x>=0));
+  const preference=PREFERRED_INK[active[next].i]??0;
+  const usage=Array(5).fill(0);
+  paint.forEach(c=>{if(c>=0)usage[c]++});
+  const options=[0,1,2,3,4].filter(c=>!forbidden.has(c))
+   .sort((a,b)=>(a===preference?-10:usage[a])-
+                 (b===preference?-10:usage[b]) || a-b);
+  for(const color of options){
+   paint[next]=color;
+   if(assign(remaining-1))return true;
+   paint[next]=-1;
+  }
+  return false;
+ }
+ if(!assign(count-(lead>=0?1:0)))throw new Error('Market Width color adjacency cannot be resolved');
+ const byFirm=Array(18).fill(null);
+ active.forEach((t,j)=>{byFirm[t.i]=paint[j]});
+ return byFirm;
+}
 /* One visual grammar regardless of box size:
    a centred vertical lockup, name above count (zero: name only).
    Typography is determined by each rectangle, not the number of firms
@@ -263,12 +316,13 @@ function render(rows,days){
   const width=Math.max(1,Math.round(board.getBoundingClientRect().width||540));
   const height=Math.max(1,Math.round(board.getBoundingClientRect().height||320));
   const tiles=marketTiles(values,width,height);
+  const colors=colorTiles(tiles);
   const fragment=document.createDocumentFragment();
   for(const tile of tiles){
    const button=document.createElement('button');
    const zero=tile.zero,type=tileTypography(tile.w,tile.h);
    button.type='button';
-   button.className='mw-tile '+(zero?'mw-is-zero':'mw-is-active')+
+   button.className='mw-tile '+(zero?'mw-is-zero':'mw-is-active mw-hue-'+colors[tile.i])+
     ' mw-tile-'+type.tier+(!zero&&tile.visualFloor?' mw-display-floor':'');
    button.dataset.layout=type.tier;
    button.dataset.firm=String(tile.i);
@@ -369,7 +423,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,tileTypography,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorTiles,tileTypography,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
