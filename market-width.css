@@ -207,7 +207,14 @@
     height:280px;min-height:280px;flex:0 0 280px;
   }
   .mw-zero-panel,.mw-map-layout.is-sparse .mw-zero-panel {
-    height:auto;max-height:106px;flex:none;
+    height:auto;max-height:none;flex:none;
+  }
+  .mw-zero-names {
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px 8px;overflow:visible;font-size:9px;line-height:1.4;
+  }
+  .mw-map-layout.is-sparse .mw-zero-name,.mw-zero-name {
+    display:block;margin:0;white-space:normal;overflow-wrap:break-word;
   }
 }
 @media(max-width:400px){
