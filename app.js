@@ -623,40 +623,44 @@ jobsDataPromise
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    // Largest and most persistent series anchors the baseline; keep the
-    // smallest intermittent series on top, not sandwiched between two lines.
+    // One true cumulative regional stack: every vertical boundary is the sum
+    // of currently active roles first observed on or before that calendar day.
+    // The daily 30-day chart below retains the separate daily-new metric.
     const regionOrder=["HK","SG","CN"];
-    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k).map(j=>({j,t:new Date(seenAt(j))})).filter(x=>!isNaN(x.t)).sort((a,b)=>a.t-b.t)]));
+    const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k)
+      .map(j=>({j,t:new Date(seenAt(j))})).filter(x=>Number.isFinite(x.t.getTime()))]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const dayMs=86400000;
-    // Cover the complete observed 2026+ range instead of the last 7/14/30 days.
-    // Pre-2026 anomalies cannot compress the requested 2026 timeline.
     const observedTimes=allTimes.filter(t=>t>=Date.UTC(2026,0,1));
     const timelineTimes=observedTimes.length?observedTimes:allTimes;
     const latestStamp=timelineTimes.length?Math.max(...timelineTimes):Date.now();
     const earliestStamp=timelineTimes.length?Math.min(...timelineTimes):latestStamp;
     const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
-    const latestDay=utcDay(latestStamp),earliestDay=utcDay(earliestStamp);
-    const tMin=earliestDay,tMax=latestDay+dayMs; // exclusive UTC day boundary
-    const totalDays=Math.max(1,Math.round((tMax-tMin)/dayMs));
-    // One observation interval equals one UTC calendar day, irrespective of
-    // the calendar span. No 3/7-day consolidation or hidden smoothing.
-    const bins=totalDays;
-    const plottedRows=regionOrder.reduce((sum,k)=>sum+
-      regionRecords[k].filter(x=>x.t.getTime()>=tMin&&x.t.getTime()<tMax).length,0);
-    /* HK/SG/CN cumulative bands contain exact daily first-seen counts.
-       No missing days or job counts are fabricated by the geometry. */
-    const TW=520,TH=225,left=38,right=14,top=24,base=190,plotW=TW-left-right;
+    const tMin=utcDay(earliestStamp),tMax=utcDay(latestStamp)+dayMs;
+    const bins=Math.max(1,Math.round((tMax-tMin)/dayMs));
+    const TW=520,TH=318,left=43,right=14,top=30,base=284,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    const bucketCounts=regionOrder.map(k=>Array.from({length:bins},()=>0));
+    // Exact UTC daily observations. No rolling windows and no weekly buckets.
+    const bucketCounts=regionOrder.map(()=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
       const timestamp=x.t.getTime();
       if(timestamp<tMin||timestamp>=tMax)return;
-      const bi=Math.min(bins-1,Math.floor((timestamp-tMin)/dayMs));
-      bucketCounts[ri][bi]++;
+      bucketCounts[ri][Math.floor((timestamp-tMin)/dayMs)]++;
     }));
-    // Both left charts use the same honest 1/2/5 integer axis. Rounding
-    // arbitrary thirds produced misleading labels such as 0, 1, 3, 4.
+    const cumulativeSeries=bucketCounts.map(daily=>{
+      let running=0;
+      return [0,...daily.map(n=>(running+=n))];
+    });
+    const endTotal=cumulativeSeries.reduce((n,values)=>n+values[bins],0);
+    // Region plot gets a close-fitting, conventional 1/2/5 scale while
+    // preserving the zero origin and all cumulative totals.
+    const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/7));
+    const regionStep=Math.max(1,Math.round(
+      [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/7)*regionMagnitude));
+    const regionMax=Math.max(regionStep,Math.ceil(endTotal/regionStep)*regionStep);
+    const regionTicks=Array.from({length:Math.round(regionMax/regionStep)+1},
+      (_,i)=>i*regionStep);
+    // Keep the existing independent daily-new axis unchanged.
     const niceCountAxis=maxValue=>{
       const observed=Math.max(1,Math.ceil(Number(maxValue)||0));
       const rough=observed/4;
@@ -666,31 +670,27 @@ jobsDataPromise
       const upper=Math.ceil(observed/step)*step;
       return {max:upper,step,ticks:Array.from({length:Math.round(upper/step)+1},(_,i)=>i*step)};
     };
-    const totalBuckets=Array.from({length:bins},(_,i)=>
-      bucketCounts.reduce((sum,series)=>sum+series[i],0));
-    const regionAxis=niceCountAxis(Math.max(1,...totalBuckets));
-    // Uniform UTC calendar-day edges: fill, boundary and hover all use them.
-    const binEdge=i=>left+(i/bins)*plotW;
-    const trendX=i=>(binEdge(i)+binEdge(i+1))/2;
-    const trendY=value=>base-(value/regionAxis.max)*(base-top);
-    const gridTicks=regionAxis.ticks.map(v=>
+    // First observed day sits exactly at the left edge, final day at the
+    // right edge. Do not reserve an empty full-day margin before the data.
+    const trendX=i=>left+(bins===1?0:Math.max(0,i-1)/(bins-1))*plotW;
+    const trendY=value=>base-value/regionMax*(base-top);
+    const gridTicks=regionTicks.map(v=>
       '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
       '" x2="'+(TW-right)+'" y2="'+trendY(v).toFixed(2)+'"/>'+
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
-    const datePositions=[...new Set([0,.25,.5,.75,1]
-      .map(f=>Math.round((totalDays-1)*f)))];
+    const datePositions=[...new Set([0,.25,.5,.75,1].map(f=>Math.round((bins-1)*f)))];
     const dateTicks=datePositions.map((day,i)=>{
       const date=new Date(tMin+day*dayMs);
-      const x=left+(totalDays>1?day/(totalDays-1):0)*plotW;
+      const x=left+(bins>1?day/(bins-1):0)*plotW;
       const first=i===0,last=i===datePositions.length-1;
       const label=first
         ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
         :regionTickFormat.format(date);
       return '<text class="region-spark-date" x="'+x.toFixed(2)+
-        '" y="218" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        '" y="308" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
         escSvg(label)+'</text>';
     }).join('');
     const legendStep=59,legendLeft=TW-right-regionOrder.length*legendStep;
@@ -699,91 +699,81 @@ jobsDataPromise
       return '<g class="region-series '+k.toLowerCase()+'">'+
         '<line class="region-legend-swatch" x1="'+x+'" x2="'+(x+9)+'" y1="13" y2="13"/>'+
         '<text class="region-legend-label" x="'+(x+13)+'" y="16">'+escSvg(k)+'</text>'+
-        '<title>'+escSvg(REGIONS[k].label)+' · '+rc[k]+' active roles</title></g>';
+        '<title>'+escSvg(REGIONS[k].label)+' · '+rc[k]+' currently active roles</title></g>';
     }).join('');
+    // Hermite slopes are monotone for every independently cumulative region.
+    // Adding each region's control-point values (not independently smoothing
+    // stacked boundaries) prevents ribbon overlaps or artificial separation.
+    const regionSlopes=cumulativeSeries.map(values=>values.map((n,i)=>{
+      const previous=i?values[i]-values[i-1]:values[1]-values[0];
+      const next=i<bins?values[i+1]-values[i]:values[bins]-values[bins-1];
+      return previous<=0||next<=0?0:2*previous*next/(previous+next);
+    }));
+    const sumBoundary=(layers,arrays)=>Array.from({length:bins+1},(_,i)=>
+      arrays.slice(0,layers).reduce((sum,values)=>sum+values[i],0));
+    const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
+    const contourPath=(values,slopes,reverse=false)=>{
+      if(bins===1){
+        const y=trendY(values[1]);
+        return reverse
+          ?'M'+fmtPoint(TW-right,y)+' L'+fmtPoint(left,y)
+          :'M'+fmtPoint(left,y)+' L'+fmtPoint(TW-right,y);
+      }
+      // There is no invisible zero-valued "day before" the earliest data.
+      // Draw actual end-of-day cumulative positions from day 1 through N.
+      let d='M'+fmtPoint(trendX(reverse?bins:1),trendY(values[reverse?bins:1]));
+      for(let j=1;j<bins;j++){
+        const a=reverse?bins-j+1:j,b=reverse?a-1:a+1;
+        const direction=reverse?-1:1,dx=Math.abs(trendX(b)-trendX(a));
+        d+=' C'+fmtPoint(trendX(a)+direction*dx/3,
+          trendY(values[a]+direction*slopes[a]/3))+
+          ' '+fmtPoint(trendX(b)-direction*dx/3,
+          trendY(values[b]-direction*slopes[b]/3))+
+          ' '+fmtPoint(trendX(b),trendY(values[b]));
+      }
+      return d;
+    };
     const series=regionOrder.map((k,ri)=>{
-      const heights=bucketCounts[ri];
-      const lower=heights.map((_,i)=>bucketCounts.slice(0,ri)
-        .reduce((sum,series)=>sum+series[i],0));
-      const upper=heights.map((n,i)=>lower[i]+n);
-      // Draw separated ribbons only on consecutive bins with actual counts.
-      // A region with zero jobs contributes no visible area or baseline trace.
-      const runs=[];
-      let run=[];
-      heights.forEach((n,i)=>{
-        if(n>0)run.push(i);
-        else if(run.length){runs.push(run);run=[]}
-      });
-      if(run.length)runs.push(run);
-      const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
-      // A single monotone cubic boundary is reused by the fill and ink.
-      // Its horizontal shoulders reach precisely the same bin edges.
-      const boundaryPath=(indices,values,reverse=false)=>{
-        const ordered=reverse?[...indices].reverse():indices;
-        const points=ordered.map(i=>({x:trendX(i),y:trendY(values[i])}));
-        const startX=reverse?binEdge(indices[indices.length-1]+1):binEdge(indices[0]);
-        const endX=reverse?binEdge(indices[0]):binEdge(indices[indices.length-1]+1);
-        const secants=points.slice(1).map((p,i)=>
-          (p.y-points[i].y)/(p.x-points[i].x));
-        // Zero end slopes meet shoulders without elbows; bounded interior
-        // slopes prevent smooth curves from overshooting actual counts.
-        const slope=points.map((_,i)=>{
-          if(i===0||i===points.length-1)return 0;
-          const a=secants[i-1],b=secants[i];
-          return a*b<=0?0:Math.sign(a)*Math.min(Math.abs(a),Math.abs(b));
-        });
-        let d='M'+fmtPoint(startX,points[0].y)+' L'+fmtPoint(points[0].x,points[0].y);
-        for(let i=1;i<points.length;i++){
-          const a=points[i-1],b=points[i],dx=b.x-a.x;
-          d+=' C'+fmtPoint(a.x+dx/3,a.y+slope[i-1]*dx/3)+
-            ' '+fmtPoint(b.x-dx/3,b.y-slope[i]*dx/3)+
-            ' '+fmtPoint(b.x,b.y);
-        }
-        return d+' L'+fmtPoint(endX,points[points.length-1].y);
-      };
-      const upperPath=indices=>boundaryPath(indices,upper);
-      const lowerPath=indices=>boundaryPath(indices,lower,true);
-      const areas=runs.map(indices=>'<path class="region-stack-band" d="'+
-        upperPath(indices)+' '+lowerPath(indices).replace(/^M/,'L')+' Z"/>'
-      ).join('');
-      // Stroke and tint have identical endpoints and cubic control points.
-      const contour=runs.map(indices=>upperPath(indices)).join(' ');
-      const isolated=runs.filter(indices=>indices.length===1).map(indices=>{
-        const i=indices[0];
-        return '<circle class="region-spark-dot" cx="'+trendX(i).toFixed(2)+
-          '" cy="'+trendY(upper[i]).toFixed(2)+'" r="2"/>';
-      }).join('');
-      const hits=heights.map((n,i)=>{
-        if(n<=0)return '';
-        const from=new Date(tMin+i*dayMs);
-        const to=new Date(tMin+(i+1)*dayMs);
-        const countText=REGIONS[k].label+' · '+n+' roles · '+
-          regionTickFormat.format(from)+' – '+regionTickFormat.format(to);
-        return '<circle class="region-spark-hit" cx="'+trendX(i).toFixed(2)+
-          '" cy="'+trendY((upper[i]+lower[i])/2).toFixed(2)+
-          '" r="5" data-bin="'+i+'" data-count="'+n+
-          '" data-lower="'+lower[i]+'" data-upper="'+upper[i]+
-          '" role="img" aria-label="'+escSvg(countText)+
-          '"><title>'+escSvg(countText)+'</title></circle>';
-      }).join('');
+      const daily=bucketCounts[ri],regional=cumulativeSeries[ri];
+      const lower=sumBoundary(ri,cumulativeSeries);
+      const upper=sumBoundary(ri+1,cumulativeSeries);
+      const lowerSlope=sumBoundary(ri,regionSlopes);
+      const upperSlope=sumBoundary(ri+1,regionSlopes);
       const className='region-series '+k.toLowerCase();
+      const active=regional[bins]>0;
+      // Each band covers the entire timeline; zero daily additions do NOT
+      // interrupt the region's already cumulative area.
+      const contour=active?contourPath(upper,upperSlope):'';
+      const area=active?'<path class="region-stack-band" d="'+contour+
+        ' '+contourPath(lower,lowerSlope,true).replace(/^M/,'L')+' Z"/>':'';
+      const hits=daily.map((n,i)=>{
+        if(!n)return '';
+        const current=new Date(tMin+i*dayMs);
+        const label=REGIONS[k].label+' · '+regional[i+1]+' currently active roles first seen by '+
+          regionTickFormat.format(current)+' · +'+n+' first seen that day';
+        return '<circle class="region-spark-hit" cx="'+trendX(i+1).toFixed(2)+
+          '" cy="'+trendY((lower[i+1]+upper[i+1])/2).toFixed(2)+
+          '" r="5" data-bin="'+i+'" data-count="'+n+
+          '" data-cumulative="'+regional[i+1]+'" data-lower="'+lower[i+1]+
+          '" data-upper="'+upper[i+1]+'" data-stacked="'+
+          cumulativeSeries.reduce((sum,region)=>sum+region[i+1],0)+
+          '" role="img" aria-label="'+escSvg(label)+
+          '"><title>'+escSvg(label)+'</title></circle>';
+      }).join('');
       return {
-        area:'<g class="'+className+' region-fill">'+areas+'</g>',
+        area:'<g class="'+className+' region-fill">'+area+'</g>',
         outline:'<g class="'+className+' region-boundary">'+
-          (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+
-          isolated+hits+'</g>'
+          (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+hits+'</g>'
       };
     });
-    distEl.innerHTML='<svg class="region-time-svg" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Full available 2026 daily first-observed activity, Hong Kong then Singapore then Mainland China; true daily counts">'+
+    distEl.innerHTML='<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
+      ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
+      '" data-region-hk="'+cumulativeSeries[0][bins]+
+      '" data-region-sg="'+cumulativeSeries[1][bins]+
+      '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
+      '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN; y-axis is the sum of all three regions, not the historical inventory on each date">'+
       legend+gridTicks+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>';
-    const densityDate=new Intl.DateTimeFormat('zh-CN',{timeZone:'UTC',year:'numeric',month:'2-digit',day:'2-digit'});
-    const densityStart=densityDate.format(new Date(tMin)).replaceAll('/','.');
-    const densityEnd=densityDate.format(new Date(tMax-dayMs)).replaceAll('/','.').replace(/^\d{4}\./,'');
-    const distNote=document.getElementById('distNote');
-    if(distNote)distNote.textContent='首次抓取 · '+densityStart+'–'+densityEnd+
-      '（逐日记录 · '+plottedRows+' 个 SG/HK/CN 职位）';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});

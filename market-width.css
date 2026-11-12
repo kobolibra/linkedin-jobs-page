@@ -1,14 +1,13 @@
 /* Market Width — quiet analytical editorial, consistent with density and
    rolling-trend charts. Layout remains two aligned columns, not a floating card. */
-.analytics-card > .analytics-left{min-width:0;grid-column:1;display:grid;grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+.analytics-card > .analytics-left{min-width:0;grid-column:1;display:grid;grid-template-rows:minmax(0,1.85fr) minmax(0,1fr)}
 .analytics-left > .ac-col{display:flex;flex-direction:column;min-width:0;min-height:0;padding:21px 20px 17px}
-.analytics-left > .ac-col h3{margin:0 0 17px;color:var(--viz-secondary);font:600 12px/1.45 var(--sans);letter-spacing:.015em;text-transform:none;text-wrap:balance}
-.analytics-left > .ac-col-postings{border-top:1px solid var(--viz-rule)}
+.analytics-left > .ac-col h3{margin:0 0 13px;color:var(--viz-secondary);font:600 12px/1.45 var(--sans);letter-spacing:.015em;text-transform:none;text-wrap:balance}
+.analytics-left > .ac-col-postings{border-top:1px solid var(--viz-rule);padding-top:15px;padding-bottom:13px}
 .analytics-left #dist{display:flex;align-items:center;flex:1 1 auto;min-width:0}
 .analytics-left #dist .region-time-svg{width:100%;height:auto}
 .analytics-left .spark{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:0}
 .analytics-left .spark .rhythm-svg{width:100%;height:auto}
-.analytics-left .region-density-note{margin-top:5px}
 /* MARKET WIDTH / SOFT INDIGO — APPROVED VISUAL OPTION C
    Light-first, restrained monochromatic lavender-blue sequence. Zero is neutral;
    every positive count maps monotonically to a fixed perceptual color mix,

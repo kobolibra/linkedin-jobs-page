@@ -193,6 +193,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.ok(pos('id="spark"')<pos('id="marketWidth"')&&pos('id="marketWidth"')<pos('id="top50"'));
  assert.ok(pos('id="top50"')<pos('id="cnCityMap"'));
  assert.match(css,/\.analytics-card > \.analytics-left[\s\S]*?grid-column:1/);
+ assert.match(css,/grid-template-rows:minmax\(0,1\.85fr\) minmax\(0,1fr\)/,'first region chart receives more height');
+ assert.ok(!html.includes('id="distNote"'),'unnecessary first-seen footnote is completely removed');
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.ok(html.includes('Market Width: 18 institutions we watch closely'));
@@ -217,7 +219,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-width-porcelain-23'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=density-height-ratio-24'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
