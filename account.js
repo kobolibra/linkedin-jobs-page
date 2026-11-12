@@ -36,7 +36,7 @@
   // Download the index while the UI scripts execute, after identity is installed.
   if(storeSource){window.__jobsIndexDocument=window.JobIndexStore.load();window.__jobsIndexDocument.catch(()=>{});}
   const loads=sources.filter(src=>src!==storeSource).map(src=>({src,ready:loadScript(src)}));
-  const core=new Set(['company-logos.js','list-query.js','list-view.js','app.js','job-applications.js','row-fixes.js','row-hover.js','top30-layout.js']);
+  const core=new Set(['company-logos.js','list-query.js','list-view.js','app.js','job-applications.js','row-fixes.js','row-hover.js','top30-layout.js','market-width.js']);
   window.__appCoreReady=Promise.all(loads.filter(({src})=>core.has(src.split('?')[0])).map(({ready})=>ready));
   window.__appCoreReady.catch(()=>{});
   window.__appScriptsReady=Promise.all(loads.map(({ready})=>ready));
