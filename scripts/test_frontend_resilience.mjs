@@ -139,9 +139,9 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(html,/styles-refinement\.css\?v=left-c-axis-clean-3/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
- assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36\}/);
- assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22\}/);
- assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b\}/);
+ assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:21%\}/);
+ assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-band:24%\}/);
+ assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-band:27%\}/);
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
  assert.match(source,/const regionOrder=\["SG","HK","CN"\];/);
  assert.match(source,/const totalBuckets=Array\.from\(/);
