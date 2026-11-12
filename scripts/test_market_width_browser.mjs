@@ -124,6 +124,9 @@ try{
    assert.equal(await summary(page),'4 new postings across 1/18 institutions');
    await page.locator('[data-market-region="all"]').click();
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
+   // Region changes legitimately re-rank/rebuild the grid; capture a fresh cell
+   // to test that DATE changes alone preserve its DOM identity.
+   await page.evaluate(()=>window.__mwFirstCell=document.querySelector('.mw-cell[data-firm="16"][data-day="28"]'));
    await page.locator('#marketWidthNext').click();
    assert.equal(await summary(page),'0 new postings across 0/18 institutions');
    assert.equal(await page.locator('.mw-cell.is-selected.mw-level-0').count(),18);
