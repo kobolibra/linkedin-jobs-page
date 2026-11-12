@@ -62,6 +62,7 @@ async function inspectMosaic(page,nonzero){
     nameHeight:name?.clientHeight,contentHeight:name?.scrollHeight,
     faceBg:getComputedStyle(face).backgroundColor,
     faceInk:getComputedStyle(face).color,
+    tone:[...node.classList].find(c=>c.startsWith('mw-activity-'))||null,
     inset,cornerRadius:getComputedStyle(face).borderTopLeftRadius,
 
     layout:node.dataset.layout,labelForm:node.dataset.labelForm,
@@ -83,6 +84,9 @@ async function inspectMosaic(page,nonzero){
  assert.ok(details.rects.every(t=>t.name.length>0),'every rectangle names its firm');
  assert.ok(details.rects.every(t=>t.zero?t.count===null:t.count!==null),
   'zero tiles have no number; positive tiles show an exact count');
+ assert.ok(details.rects.every(t=>t.zero?t.tone===null:
+  t.tone==='mw-activity-'+(Number(t.count)<=1?'low':Number(t.count)<=4?'mid':'high')),
+  'activity tone must follow posting count, never institution identity');
  assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new postings')),
   'zero labels are contextual rather than a numeric 0');
  assert.ok(details.rects.every(t=>t.w>0&&t.h>0&&t.x>=details.board.x-1&&t.y>=details.board.y-1));
@@ -118,8 +122,12 @@ try{
    const zeroBg=zeros[0].faceBg;
    assert.ok(positives.every(t=>Math.hypot(...rgb(t.faceBg).map((v,i)=>v-rgb(zeroBg)[i]))>60),
     'every institution ink must differ clearly from the muted zero-neutral');
-   assert.equal(new Set(positives.map(t=>t.faceBg)).size,positives.length,
-    'different active institutions must carry distinct stable inks even at similar counts');
+   assert.ok(new Set(positives.map(t=>t.faceBg)).size<=3,
+    'all active firms must share a restrained three-step mineral navy family');
+   const fill=i=>positives.find(t=>t.i===i)?.faceBg;
+   assert.equal(fill(1),fill(12),'equal activity tiers share one intentional hue');
+   assert.equal(fill(11),fill(12),'same medium tier shares one mineral-blue hue');
+   assert.notEqual(fill(16),fill(12),'the lead institution receives the deeper activity tone');
    for(const tile of initial.rects){
     assert.ok(contrast(tile.faceBg,tile.faceInk)>=4.5,
      'small-name contrast must be AA: '+JSON.stringify({theme,i:tile.i,bg:tile.faceBg,ink:tile.faceInk,ratio:contrast(tile.faceBg,tile.faceInk)}));
