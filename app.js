@@ -708,19 +708,39 @@ jobsDataPromise
     const shareRank=rawShareTenths.map((n,i)=>({i,fraction:n-Math.floor(n)}))
       .sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
     for(let i=0;i<leftover;i++)shareTenths[shareRank[i].i]++;
-    // Three direct labels sit inside the early timeline's unused white space,
-    // vertically aligned with each region's actual latest cumulative slice.
-    // The right-end reference levels are 0, HK, HK+SG and HK+SG+CN:
-    // only the differences between adjacent levels are individual counts.
+    // A single cartographic dimension scale occupies the unused early-year
+    // portion of the plot. The four true y-levels are 0, HK, HK+SG, TOTAL.
+    // Each colored vertical interval is proportional to its own current
+    // active-role count. Short terminal caps define these four levels; no
+    // horizontal guides cross the trend, and nothing protrudes on the right.
     const endBoundaries=regionOrder.map((_,i)=>
       snapshotCounts.slice(0,i+1).reduce((n,v)=>n+v,0));
-    const bandMiddleY=regionOrder.map((_,i)=>trendY(endBoundaries[i]-snapshotCounts[i]/2));
-    // Keep sparse or highly imbalanced series legible without distorting the
-    // area boundaries. Real labels stay close to their actual band midpoints.
+    const measureValues=[0,...endBoundaries];
+    const measureX=left+16;
+    const dimensionSegments=regionOrder.map((k,i)=>{
+      if(snapshotCounts[i]===0)return '';
+      const from=trendY(measureValues[i]),to=trendY(measureValues[i+1]);
+      return '<g class="region-series '+k.toLowerCase()+'">'+
+        '<line class="region-dimension-span" x1="'+measureX+'" x2="'+measureX+
+        '" y1="'+from.toFixed(2)+'" y2="'+to.toFixed(2)+
+        '" data-region="'+k+'" data-count="'+snapshotCounts[i]+
+        '" data-lower="'+measureValues[i]+'" data-upper="'+measureValues[i+1]+'"/></g>';
+    }).join('');
+    const dimensionCaps=[...new Set(measureValues)].map(value=>{
+      if(!endTotal)return '';
+      const y=trendY(value).toFixed(2);
+      return '<line class="region-dimension-cap" x1="'+(measureX-4)+
+        '" x2="'+(measureX+4)+'" y1="'+y+'" y2="'+y+
+        '" data-level="'+value+'"/>';
+    }).join('');
+    const dimensionScale='<g class="region-dimension" aria-hidden="true">'+
+      dimensionSegments+dimensionCaps+'</g>';
+    const bandMiddleY=regionOrder.map((_,i)=>
+      trendY((measureValues[i]+measureValues[i+1])/2));
     const shortHistory=bins<100;
     const spaced=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    const minLabelY=top+21,maxLabelY=base-18,minGap=shortHistory?56:33;
+    const minLabelY=top+23,maxLabelY=base-23,minGap=shortHistory?48:37;
     let previous=minLabelY-minGap;
     spaced.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
     const overflow=spaced.length?Math.max(0,spaced.at(-1).y-maxLabelY):0;
@@ -734,19 +754,10 @@ jobsDataPromise
           ' region-end-label" data-region="'+k+'" data-count="'+count+
           '" data-share="'+share+'" data-band-center="'+bandMiddleY[i].toFixed(2)+
           '" style="top:'+(labelY[k]/TH*100).toFixed(4)+'%">'+
-          '<span class="region-end-name">'+k+'</span>'+
-          '<strong class="region-end-count">'+countFormat.format(count)+'</strong>'+
-          '<span class="region-end-share">'+share+'</span></div>';
+          '<div class="region-end-meta"><span class="region-end-name">'+k+'</span>'+
+          '<span class="region-end-share">'+share+'</span></div>'+
+          '<strong class="region-end-count">'+countFormat.format(count)+'</strong></div>';
       }).join('')+'</div>';
-    const endpointRules=endBoundaries.map((value,i)=>{
-      if(!snapshotCounts[i]||!endTotal)return '';
-      const y=trendY(value).toFixed(2);
-      return '<g class="region-series '+regionOrder[i].toLowerCase()+'">'+
-        '<line class="region-end-guide" x1="'+left+'" x2="'+(TW-right)+
-        '" y1="'+y+'" y2="'+y+'"/>'+
-        '<line class="region-end-tick" x1="'+(TW-right)+'" x2="'+(TW-4)+
-        '" y1="'+y+'" y2="'+y+'"/></g>';
-    }).join('');
     // Hermite slopes are monotone for every independently cumulative region.
     // Adding each region's control-point values (not independently smoothing
     // stacked boundaries) prevents ribbon overlaps or artificial separation.
@@ -822,7 +833,7 @@ jobsDataPromise
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
-      gridTicks+endpointRules+series.map(layer=>layer.area).join('')+
+      gridTicks+dimensionScale+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
       directLabels+'</div>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
