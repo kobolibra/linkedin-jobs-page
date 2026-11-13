@@ -213,7 +213,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=\[0\]/);
  assert.match(source,/days\[i\]\.date\.getDay\(\)!==1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=regional-axes-recovery-20261113/);
+ assert.match(html,/app\.js\?v=list-date-shadow-fix-20261113/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
