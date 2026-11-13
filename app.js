@@ -638,9 +638,9 @@ jobsDataPromise
     const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
     const tMin=utcDay(earliestStamp),tMax=utcDay(latestStamp)+dayMs;
     const bins=Math.max(1,Math.round((tMax-tMin)/dayMs));
-    // Preserve the full y-axis while allocating a slim, clearly separated
-    // right-side terminal label gutter, as in the approved design preview.
-    const TW=520,TH=360,left=43,right=124,top=18,base=326,plotW=TW-left-right;
+    // Both analytics plots reach the same right margin (17/520). Keep the
+    // cumulative plot wide; annotations stay in the unused early-year area.
+    const TW=520,TH=360,left=43,right=17,top=18,base=326,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     // Exact UTC daily observations. No rolling windows and no weekly buckets.
     const bucketCounts=regionOrder.map(()=>Array.from({length:bins},()=>0));
@@ -661,8 +661,11 @@ jobsDataPromise
     const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/4));
     const regionStep=Math.max(1,Math.round(
       [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/4)*regionMagnitude));
-    const regionMax=Math.max(regionStep,Math.ceil(endTotal/regionStep)*regionStep);
-    const regionTicks=Array.from({length:Math.round(regionMax/regionStep)+1},
+    // Keep a modest ~5% headroom instead of 20-25% unused upper space.
+    // Retain a linear zero-origin scale and conventional 1/2/5 tick steps.
+    const topIncrement=Math.max(.25,regionStep/4);
+    const regionMax=Math.max(regionStep,Math.ceil(endTotal*1.05/topIncrement)*topIncrement);
+    const regionTicks=Array.from({length:Math.floor(regionMax/regionStep)+1},
       (_,i)=>i*regionStep);
     // Keep the existing independent daily-new axis unchanged.
     const niceCountAxis=maxValue=>{
@@ -678,9 +681,10 @@ jobsDataPromise
     // right edge. Do not reserve an empty full-day margin before the data.
     const trendX=i=>left+(bins===1?0:Math.max(0,i-1)/(bins-1))*plotW;
     const trendY=value=>base-value/regionMax*(base-top);
+    // Preserve an absolute-value y scale but remove the redundant long
+    // horizontal gridlines. Only local dashed cumulative-height references
+    // below explain the three final regional intervals.
     const gridTicks=regionTicks.map(v=>
-      '<line class="region-spark-grid" x1="'+left+'" y1="'+trendY(v).toFixed(2)+
-      '" x2="'+(TW-right)+'" y2="'+trendY(v).toFixed(2)+'"/>'+
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
@@ -739,36 +743,71 @@ jobsDataPromise
     const shareRank=rawShareTenths.map((n,i)=>({i,fraction:n-Math.floor(n)}))
       .sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
     for(let i=0;i<leftover;i++)shareTenths[shareRank[i].i]++;
-    // Direct end-of-area labels, not a second y-axis, ruler or legend.
-    // Each annotation belongs to the *difference* between adjacent
-    // cumulative boundaries at the actual latest observed date.
+    // Exact final stacked levels: zero, HK, HK+SG, HK+SG+CN. Four SHORT
+    // dashed references are confined to the open early-year zone, never
+    // drawn through the area. Three staggered, detached double-end measures
+    // indicate the true vertical distance of each regional interval; they
+    // are not a second continuous value axis.
     const endBoundaries=regionOrder.map((_,i)=>
       snapshotCounts.slice(0,i+1).reduce((n,v)=>n+v,0));
+    const cumulativeLevels=[0,...endBoundaries];
     const bandMiddleY=regionOrder.map((_,i)=>
-      trendY(endBoundaries[i]-snapshotCounts[i]/2));
+      trendY((cumulativeLevels[i]+cumulativeLevels[i+1])/2));
     const shortHistory=bins<100;
+    const referenceLines=[...new Set(cumulativeLevels)].map(level=>
+      '<line class="region-measure-reference" data-level="'+level+
+      '" x1="91" x2="237" y1="'+trendY(level).toFixed(2)+
+      '" y2="'+trendY(level).toFixed(2)+'"/>').join('');
+    const verticalMeasures=regionOrder.map((k,i)=>{
+      const count=snapshotCounts[i];
+      if(!count)return '';
+      const x=106+i*10;
+      const low=trendY(cumulativeLevels[i]),high=trendY(cumulativeLevels[i+1]);
+      // For an almost-zero share, preserve the exact tiny length instead
+      // of drawing misleading larger arrows.
+      const arrowheads=low-high>=17
+        ?'<path class="region-measure-arrow" d="M'+(x-3)+','+(high+4).toFixed(2)+
+          ' L'+x+','+(high+.8).toFixed(2)+' L'+(x+3)+','+(high+4).toFixed(2)+
+          ' M'+(x-3)+','+(low-4).toFixed(2)+' L'+x+','+(low-.8).toFixed(2)+
+          ' L'+(x+3)+','+(low-4).toFixed(2)+'"/>':'';
+      return '<g class="region-series '+k.toLowerCase()+' region-measure-group">'+
+        '<line class="region-measure-height" data-region="'+k+
+        '" data-count="'+count+'" data-lower="'+cumulativeLevels[i]+
+        '" data-upper="'+cumulativeLevels[i+1]+'" x1="'+x+'" x2="'+x+
+        '" y1="'+low.toFixed(2)+'" y2="'+high.toFixed(2)+'"/>'+
+        arrowheads+'</g>';
+    }).join('');
+    const localMeasurements='<g class="region-measurements" aria-hidden="true">'+
+      referenceLines+verticalMeasures+'</g>';
+    // One-line typographic readings use genuine CSS pixels on mobile. They
+    // sit between dashed levels, where the early-year chart is still empty.
+    // The labels may shift to avoid collisions, but the dimension strokes
+    // never move away from their actual cumulative y coordinates.
     const visibleRows=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    const labelMargin=Math.max(22,19*TW/axisCssWidth);
+    const labelMargin=Math.max(17,16*TW/axisCssWidth);
     const minLabelY=top+labelMargin,maxLabelY=base-labelMargin;
-    const minGap=Math.max(38,39*TW/axisCssWidth);
+    const minGap=Math.max(25,24*TW/axisCssWidth);
     let previous=minLabelY-minGap;
-    visibleRows.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
+    visibleRows.forEach(row=>{
+      row.y=Math.max(minLabelY,row.target,previous+minGap);
+      previous=row.y;
+    });
     const overflow=visibleRows.length?Math.max(0,visibleRows.at(-1).y-maxLabelY):0;
     visibleRows.forEach(row=>row.y-=overflow);
     const labelY=Object.fromEntries(visibleRows.map(row=>[row.k,row.y]));
     const directLabels='<div class="region-end-labels" aria-hidden="true">'+
       regionOrder.map((k,i)=>{
-        if(!snapshotCounts[i])return '';
-        const count=snapshotCounts[i],share=(shareTenths[i]/10).toFixed(1)+'%';
+        const count=snapshotCounts[i];
+        if(!count)return '';
+        const share=(shareTenths[i]/10).toFixed(1)+'%';
         return '<div class="region-series '+k.toLowerCase()+
           ' region-end-label" data-region="'+k+'" data-count="'+count+
           '" data-share="'+share+'" data-band-center="'+bandMiddleY[i].toFixed(2)+
           '" style="top:'+(labelY[k]/TH*100).toFixed(4)+'%">'+
-          '<div class="region-end-meta"><span class="region-end-dot" aria-hidden="true"></span>'+
           '<span class="region-end-name">'+k+'</span>'+
-          '<span class="region-end-share">'+share+'</span></div>'+
-          '<strong class="region-end-count">'+countFormat.format(count)+'</strong></div>';
+          '<strong class="region-end-count">'+countFormat.format(count)+'</strong>'+
+          '<span class="region-end-share">'+share+'</span></div>';
       }).join('')+'</div>';
     // Retain ALL daily counts and every exact date. Only the painted
     // contours use shared adaptive knots: each cumulative boundary deviates
@@ -875,6 +914,7 @@ jobsDataPromise
       '" data-visible-total="'+endTotal+'">'+
       '<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
       ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
+      '" data-axis-max="'+regionMax+
       '" data-curve-knots="'+knotDays.length+'" data-curve-error="'+curveErrorPx.toFixed(3)+
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
@@ -882,7 +922,7 @@ jobsDataPromise
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
-      gridTicks+series.map(layer=>layer.area).join('')+
+      gridTicks+series.map(layer=>layer.area).join('')+localMeasurements+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
       directLabels+'</div>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */

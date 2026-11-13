@@ -88,6 +88,10 @@ async function renderLeft(page,chartData,theme){
   const weekendBars=bars.filter(node=>node.classList.contains('weekend'));
   const weekdayBars=bars.filter(node=>!node.classList.contains('weekend'));
   const regionDateNodes=[...svg.querySelectorAll('.region-spark-date')];
+  const referenceNodes=[...svg.querySelectorAll('.region-measure-reference')];
+  const heightNodes=[...svg.querySelectorAll('.region-measure-height')];
+  const endDate=regionDateNodes.at(-1);
+  const lastPostingLine=document.querySelector('#spark .rhythm-grid');
   const postingDateNodes=[...document.querySelectorAll('#spark .rhythm-axis-label')];
   return {series,bars:bars.length,regions:lines.length,
    viewportWidth:window.innerWidth,
@@ -101,6 +105,21 @@ async function renderLeft(page,chartData,theme){
    shortHistory:stage.classList.contains('is-short-history'),
    shortLabelDisplays:statRows.map(node=>getComputedStyle(node).display),
    shortLabelBackgrounds:statRows.map(node=>getComputedStyle(node).backgroundImage),
+   plotRight:Number(endDate?.getAttribute('x')),
+   postingsPlotRight:Number(lastPostingLine?.getAttribute('x2')),
+   heightRefs:referenceNodes.map(node=>({
+    level:Number(node.dataset.level),
+    x1:Number(node.getAttribute('x1')),x2:Number(node.getAttribute('x2')),
+    y:Number(node.getAttribute('y1'))
+   })),
+   heights:heightNodes.map(node=>({
+    region:node.dataset.region,count:Number(node.dataset.count),
+    lower:Number(node.dataset.lower),upper:Number(node.dataset.upper),
+    x1:Number(node.getAttribute('x1')),x2:Number(node.getAttribute('x2')),
+    y1:Number(node.getAttribute('y1')),y2:Number(node.getAttribute('y2')),
+    ink:getComputedStyle(node).stroke
+   })),
+   arrowheads:svg.querySelectorAll('.region-measure-arrow').length,
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
    oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
    legendBounds:rect(stage),svgBounds:rect(svg),
@@ -114,7 +133,11 @@ async function renderLeft(page,chartData,theme){
      const date=new Date();date.setHours(0,0,0,0);date.setDate(date.getDate()-29+day);
      return {day,label:node.textContent,weekday:date.getDay(),bounds:rect(node)};
    }),
-   metaCount:stage.querySelectorAll('.region-end-meta').length,
+   labelParts:statRows.map(node=>({
+     name:node.querySelectorAll('.region-end-name').length,
+     count:node.querySelectorAll('.region-end-count').length,
+     share:node.querySelectorAll('.region-end-share').length
+   })),
    legendItems:statRows.map(node=>({
      region:node.dataset.region,count:Number(node.dataset.count),
      share:node.dataset.share,label:node.querySelector('.region-end-name')?.textContent,
@@ -136,6 +159,7 @@ async function renderLeft(page,chartData,theme){
    chartKind:svg?.dataset.chartKind,dayBins:Number(svg?.dataset.dayBins),
    regionFinals:Object.fromEntries(['hk','sg','cn'].map(k=>[k,Number(svg?.getAttribute('data-region-'+k))])),
    finalTotal:Number(svg?.dataset.finalTotal),
+   axisMax:Number(svg?.dataset.axisMax),
    chartAria:svg?.getAttribute('aria-label')||'',
    otherSeries:document.querySelectorAll('#dist .region-series.other').length,
    grid:document.querySelectorAll('#dist .region-spark-grid').length,
@@ -196,8 +220,8 @@ async function renderLeft(page,chartData,theme){
   'only genuinely short observation windows use the tight two-line knockout layout');
  assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
   'both full-year and short-history annotations use a quiet two-level typographic layout');
- assert.equal(quality.metaCount,quality.legendItems.length,
-  'each regional reading has a small area/share line above its dominant count');
+ assert.ok(quality.labelParts.every(part=>part.name===1&&part.count===1&&part.share===1),
+  'each readable one-line annotation contains exact region, count and share');
  if(quality.shortHistory)assert.ok(quality.shortLabelBackgrounds.every(x=>x==='none'),
   'short-range data must remain visible beneath labels: no opaque knockout cards');
  const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
@@ -215,9 +239,9 @@ async function renderLeft(page,chartData,theme){
    :quality.series;
   assert.equal(item.ink,labelInks[item.region.toLowerCase()],
    'small region labels use accessible darkened ink while contours retain the approved pigment');
-  assert.ok(item.bounds.x>=quality.svgBounds.x+quality.svgBounds.w*.76&&
-    item.bounds.right<=quality.svgBounds.right+4,
-   'terminal regional data labels fit beside the latest area, inside its dedicated gutter');
+  assert.ok(item.bounds.x>=quality.svgBounds.x+quality.svgBounds.w*.24&&
+    item.bounds.right<=quality.svgBounds.x+quality.svgBounds.w*.76,
+   'regional readings must stay in the early-year LEFT whitespace, not any right gutter');
   assert.ok(item.bounds.y>=quality.svgBounds.y-1&&
     item.bounds.bottom<=quality.svgBounds.bottom+1,
    'data labels stay inside the plotting stage without a separate header');
@@ -233,7 +257,48 @@ async function renderLeft(page,chartData,theme){
    'the regional callouts must never overlap, even when cohort sizes differ');
  }
  assert.equal(quality.forbiddenGuideCount,0,
-  'approved chart uses no second measuring ruler, vertical caps or long leader lines');
+  'do not reintroduce previous duplicate axes or long right-side leaders');
+ assert.equal(quality.grid,0,'no full-width y gridlines should compete with the local measures');
+ if(quality.dayBins>1)assert.ok(
+  Math.abs(quality.plotRight-quality.postingsPlotRight)<=.1&&quality.plotRight>=503,
+  'regional trend and New Postings share an identical RIGHT edge, with no blank side gutter');
+ const visibleCounts=['HK','SG','CN'].map(k=>quality.regionFinals[k.toLowerCase()]);
+ const heights=quality.heights,levels=quality.heightRefs;
+ const nonempty=visibleCounts.filter(Boolean).length;
+ assert.equal(heights.length,nonempty,'one separate height indication for each nonempty region');
+ assert.equal(levels.length,nonempty+1,
+  'only short dotted marks at 0 and nonempty cumulative boundaries');
+ const y0=quality.regionTicks.find(t=>t.value===0).y-3;
+ const firstPositive=quality.regionTicks.find(t=>t.value>0);
+ const unitHeight=(y0-(firstPositive.y-3))/firstPositive.value;
+ let cumulative=0;
+ for(const [i,k] of ['HK','SG','CN'].entries()){
+  const value=visibleCounts[i],before=cumulative;
+  cumulative+=value;
+  if(!value)continue;
+  const span=heights.find(v=>v.region===k);
+  assert.ok(span,'region has an independent true-height bracket');
+  assert.equal(span.count,value);
+  assert.equal(span.lower,before);assert.equal(span.upper,cumulative);
+  assert.equal(span.x1,span.x2,'all measurement strokes are truly vertical');
+  assert.equal(span.x1,106+i*10,'the three strokes are staggered, not a second continuous y-axis');
+  assert.ok(Math.abs(span.y1-(y0-before*unitHeight))<.16);
+  assert.ok(Math.abs(span.y2-(y0-cumulative*unitHeight))<.16);
+  assert.ok(Math.abs((span.y1-span.y2)-value*unitHeight)<.16,
+   'each displayed vertical gap is exactly proportional to the regional role count');
+  assert.equal(span.ink,quality.series[k.toLowerCase()]);
+ }
+ assert.deepEqual(levels.map(x=>x.level).sort((a,b)=>a-b),
+  [...new Set([0,visibleCounts[0],visibleCounts[0]+visibleCounts[1],
+    visibleCounts[0]+visibleCounts[1]+visibleCounts[2]])].sort((a,b)=>a-b));
+ for(const level of levels){
+  assert.ok(level.x2-level.x1<=146.1&&level.x2<=237,
+   'no dotted guide may cross the chart: references belong ONLY to the left blank area');
+  assert.ok(Math.abs(level.y-(y0-level.level*unitHeight))<.16,
+   'each short dotted level is tied to an exact cumulative boundary');
+ }
+ assert.ok(quality.arrowheads<=nonempty,
+  'no excessive arrowhead ornaments on tiny or zero-count bands');
  assert.ok(quality.curveKnots>=1&&quality.curveKnots<=quality.dayBins,
   'adaptive spline cannot manufacture new dates or expand beyond daily observations');
  assert.ok(quality.curveError<=.581,
@@ -291,10 +356,12 @@ async function renderLeft(page,chartData,theme){
   'rightmost cumulative stacked total equals the count of all included active roles');
  assert.equal(quality.regionFinals.hk+quality.regionFinals.sg+quality.regionFinals.cn,quality.finalTotal,
   'the three final regional layers must sum to the y-axis endpoint');
- assert.ok(Math.max(...quality.regionTicks.map(t=>t.value))>=quality.finalTotal,
-  'the y-axis must fit the complete vertically stacked total, not a daily peak');
- assert.ok(quality.grid>=2&&quality.grid<=6,
-  'a restrained 1/2/5 geographic scale uses at most six lines, retaining original daily values');
+ assert.ok(quality.axisMax>=quality.finalTotal,
+  'the true y-axis maximum must contain the full three-region cumulative total');
+ if(quality.finalTotal>=10)assert.ok(quality.axisMax/quality.finalTotal<=1.2,
+  'the full-width regional chart must not waste excessive vertical headroom');
+ assert.ok(quality.regionTicks.length>=2&&quality.regionTicks.length<=6,
+  'only y-axis NUMBER labels remain; no full-width horizontal gridlines');
  // A valid historical cohort need not have new observations within the
  // independent rolling 30-day New Postings window.
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
@@ -731,8 +798,8 @@ try{
  assert.equal(focused.finalTotal,63,'the 2025 outlier is excluded from the 2026 cumulative total');
  assert.equal(focused.pointTotal,63,'all 2026 records remain exact');
  assert.ok(Math.min(...focused.points.map(p=>p.x))<100&&
-  Math.max(...focused.points.map(p=>p.x))>385,
-  'all valid 2026 days must use the full trend plot width, excluding the reserved terminal-label gutter');
+  Math.max(...focused.points.map(p=>p.x))>=503,
+  'the rightmost actual day must reach the same full-width plot edge as New Postings');
  const dateLabels=await focusPage.locator('#dist .region-spark-date').allTextContents();
  assert.ok(dateLabels[0].includes('Nov'),'short observed history begins with its actual calendar month');
  const paths=focused.linePaths.filter(Boolean);

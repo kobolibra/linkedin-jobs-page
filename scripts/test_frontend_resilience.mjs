@@ -136,7 +136,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=demo-mineral-palette-17/);
+ assert.match(html,/styles-refinement\.css\?v=left-measured-inset-18/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
@@ -155,8 +155,15 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
   'approved terminal labels must not create a redundant ruler, axis or long guides');
  assert.match(source,/const directLabels='<div class="region-end-labels"/,'labels are overlaid inside the main plot, not in a header');
  assert.match(source,/const shortHistory=bins<100;/);
- assert.match(css,/#dist \.region-end-meta\{/);
- assert.match(css,/#dist \.region-end-dot\{/);
+ assert.match(css,/#dist \.region-measure-reference\{/);
+ assert.match(css,/#dist \.region-measure-height\{/);
+ assert.match(css,/#dist \.region-measure-arrow\{/);
+ assert.doesNotMatch(css,/#dist \.region-end-meta|#dist \.region-end-dot|#dist \.region-spark-grid/);
+ assert.doesNotMatch(source,/class="region-spark-grid"/,'full-width gridlines must be removed');
+ assert.match(source,/const TW=520,TH=360,left=43,right=17,top=18,base=326/);
+ assert.match(source,/const cumulativeLevels=\[0,\.\.\.endBoundaries\]/);
+ assert.match(source,/const referenceLines=\[\.\.\.new Set\(cumulativeLevels\)\]/);
+ assert.match(source,/const verticalMeasures=regionOrder\.map/);
  assert.doesNotMatch(css,/\.region-dimension-span|\.region-dimension-cap|\.region-end-guide|\.region-end-tick/);
  assert.match(css,/#dist \.region-end-label\{/);
  assert.doesNotMatch(source,/region-current-key|region-stat-|region-mix-|summaryCols=|const legend=|const composition=/);
@@ -195,7 +202,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=\[0\]/);
  assert.match(source,/days\[i\]\.date\.getDay\(\)!==1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=calendar-monotone-13/);
+ assert.match(html,/app\.js\?v=left-measured-inset-15/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
