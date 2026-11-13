@@ -1,0 +1,152 @@
+name: Prepare regional title legend
+on:
+  push:
+    branches: [fix/region-title-legend-20261113]
+    paths: [.github/workflows/prepare-region-title-legend.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply exact legend-only correction
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          def edit(name, before, after):
+              p=Path(name); s=p.read_text()
+              assert s.count(before)==1, f'Unexpected source contract: {name}: {before[:80]}'
+              p.write_text(s.replace(before,after))
+          app_hash=hashlib.sha256(Path('app.js').read_bytes()).hexdigest()
+          assert app_hash=='dee27a3069bbcc6c63628110e427e72e52a6afdfb18f29946f747bc5af898c1e'
+          assert hashlib.sha256(Path('styles-refinement.css').read_bytes()).hexdigest()=='96e7f378cb425f566c9bb706f8b736d68daecd5953fc77a41da754780f483904'
+          raw=Path('index.html').read_bytes()
+          assert hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()=='71e11c3fa80a2fada1b8cfa867c06b77d506e047'
+          edit('index.html','</h3><div id="dist"></div>', '</h3><ul class="region-chart-legend" role="list" aria-label="Region colors"><li class="hk" data-region="HK"><span class="region-legend-swatch" aria-hidden="true"></span>Hong Kong</li><li class="sg" data-region="SG"><span class="region-legend-swatch" aria-hidden="true"></span>Singapore</li><li class="cn" data-region="CN"><span class="region-legend-swatch" aria-hidden="true"></span>Mainland China</li></ul><div id="dist"></div>')
+          edit('index.html','styles-refinement.css?v=region-balance-20261113','styles-refinement.css?v=region-legend-20261113')
+          # One palette definition powers both the real bands and their legend.
+          p=Path('styles-refinement.css'); s=p.read_text()
+          for k in ['hk','sg','cn']:
+              before=f'[data-theme="dark"] #dist .region-series.{k}'+'{'
+              after=f'[data-theme="dark"] #dist .region-series.{k},[data-theme="dark"] .region-chart-legend .{k}'+'{'
+              assert s.count(before)==1; s=s.replace(before,after)
+              before=f'\n#dist .region-series.{k}'+'{'
+              after=f'\n#dist .region-series.{k},.region-chart-legend .{k}'+'{'
+              assert s.count(before)==1; s=s.replace(before,after)
+          s += '''
+          /* Read-only color key: its own row directly below this chart title.
+             Right edge follows the plotted endpoint; colors share band tokens. */
+          #distTitle{margin-bottom:6px}
+          .ac-col-density > .region-chart-legend{
+            display:flex;flex:0 0 auto;justify-content:flex-end;align-items:center;
+            flex-wrap:wrap;gap:4px 12px;list-style:none;
+            margin:0 0 8px;padding:0 3.2692308% 0 0;
+            color:var(--viz-secondary);font:400 10.5px/1.4 var(--sans);
+            letter-spacing:0;
+          }
+          .region-chart-legend > li{
+            display:inline-flex;align-items:center;gap:5px;
+            margin:0;padding:0;white-space:nowrap;
+          }
+          .region-chart-legend .region-legend-swatch{
+            display:block;flex:none;box-sizing:border-box;width:8px;height:8px;
+            border:1px solid var(--region-ink);border-radius:1.5px;
+            background:var(--region-fill);
+          }
+          @media(max-width:720px){
+            .ac-col-density > .region-chart-legend{font-size:10px;column-gap:10px}
+          }
+          '''
+          p.write_text(s)
+          edit('scripts/test_frontend_resilience.mjs','styles-refinement\\.css\\?v=region-balance-20261113','styles-refinement\\.css\\?v=region-legend-20261113')
+          p=Path('scripts/test_frontend_resilience.mjs');s=p.read_text()
+          for k in ['hk','sg','cn']:
+              before='#dist \\.region-series\\.'+k+'\\{'
+              after='#dist \\.region-series\\.'+k+',\\.region-chart-legend \\.'+k+'\\{'
+              assert s.count(before)==1; s=s.replace(before,after)
+          p.write_text(s)
+          p=Path('scripts/assert_region_projections.mjs');s=p.read_text()
+          position=s.rfind(' return state;')
+          assert position>s.index('export async function assertRegionVisualBalance')
+          s=s[:position]+' state.legend=await assertRegionLegend(page);\n'+s[position:]
+          s+='''
+          // The visible legend explains actual band colors without becoming a control.
+          export async function assertRegionLegend(page){
+           const state=await page.evaluate(()=>{
+            const legend=document.querySelector('.region-chart-legend');
+            if(!legend)return null;
+            const rect=n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};
+            const svg=document.querySelector('#dist .region-time-svg'),plot=rect(svg);
+            const items=[...legend.children].map(n=>{
+             const k=n.dataset.region.toLowerCase(),swatch=n.querySelector('.region-legend-swatch');
+             const fill=document.querySelector('#dist .region-series.'+k+' .region-stack-band');
+             const outline=document.querySelector('#dist .region-series.'+k+' .region-spark-line');
+             const style=getComputedStyle(swatch),text=getComputedStyle(n),r=swatch.getBoundingClientRect();
+             return {region:n.dataset.region,text:n.textContent.trim(),box:rect(n),fill:style.backgroundColor,
+              ink:style.borderTopColor,expectedFill:fill?getComputedStyle(fill).fill:null,
+              expectedInk:outline?getComputedStyle(outline).stroke:null,font:text.fontFamily,
+              weight:text.fontWeight,size:parseFloat(text.fontSize),swatchWidth:r.width,swatchHeight:r.height};
+            });
+            return {count:document.querySelectorAll('.region-chart-legend').length,
+             followsTitle:legend.previousElementSibling?.id==='distTitle',precedesPlot:legend.nextElementSibling?.id==='dist',
+             title:rect(document.querySelector('#distTitle')),box:rect(legend),plot,
+             endpoint:plot.left+(plot.right-plot.left)*Number(svg.dataset.plotRight)/svg.viewBox.baseVal.width,
+             items,controls:legend.querySelectorAll('button,a,input,[role="button"],[tabindex]').length,
+             listRole:legend.getAttribute('role'),siteFont:getComputedStyle(document.body).fontFamily,
+             scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
+           });
+           assert.ok(state,'region legend is present');assert.equal(state.count,1);
+           assert.equal(state.followsTitle,true);assert.equal(state.precedesPlot,true);
+           assert.equal(state.listRole,'list');assert.equal(state.controls,0);
+           assert.deepEqual(state.items.map(n=>n.region),['HK','SG','CN']);
+           assert.deepEqual(state.items.map(n=>n.text),['Hong Kong','Singapore','Mainland China']);
+           assert.ok(state.box.top>=state.title.bottom+5,'legend sits on the next row below title');
+           assert.ok(state.plot.top>=state.box.bottom+7,'legend does not overlap the plot');
+           assert.ok(Math.abs(state.items.at(-1).box.right-state.endpoint)<1,'legend is right-aligned to plot endpoint');
+           for(const item of state.items){
+            assert.equal(item.fill,item.expectedFill,'legend fill must match the actual band in this theme');
+            assert.equal(item.ink,item.expectedInk,'legend edge matches its actual region contour');
+            assert.equal(item.font,state.siteFont);assert.equal(item.weight,'400');
+            assert.ok(item.size>=10&&item.size<=10.5);
+            assert.equal(item.swatchWidth,8);assert.equal(item.swatchHeight,8);
+            assert.ok(Math.abs(item.box.top-state.items[0].box.top)<1,'all regions fit on one line');
+            assert.ok(item.box.left>=state.plot.left&&item.box.right<=state.plot.right+1);
+           }
+           assert.ok(state.scrollWidth<=state.viewport+2,'legend does not cause horizontal overflow');
+           return state;
+          }
+          '''
+          p.write_text(s)
+          assert hashlib.sha256(Path('app.js').read_bytes()).hexdigest()==app_hash
+          PY
+          node --check scripts/assert_region_projections.mjs
+          node --test scripts/test_startup_date_scope.mjs scripts/test_calendar_axes.mjs scripts/test_frontend_resilience.mjs scripts/test_startup_loading.mjs
+      - name: Commit only runtime legend and related existing tests
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html styles-refinement.css scripts/test_frontend_resilience.mjs scripts/assert_region_projections.mjs
+          git diff --cached --check
+          git --no-pager diff --cached --stat
+          git commit -m 'Add right-aligned region color legend beneath the density title, sharing actual band palette'
+          git push origin HEAD:fix/region-title-legend-20261113
+      - name: Retain exact source for independent inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: region-legend-source
+          path: |
+            *.js
+            *.mjs
+            *.css
+            *.html
+            jobs-index.json
+            jobs-version.json
+            scripts/*.mjs
+          retention-days: 3
