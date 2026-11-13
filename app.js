@@ -694,11 +694,9 @@ jobsDataPromise
     const regionTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',timeZone:'UTC'});
     // This Date-only chart helper must NEVER shadow the ISO-safe list dayLabel.
     const regionAxisDayLabel=(date)=>regionTickFormat.format(date);
-    const yearLabel=date=>date.getUTCFullYear().toString();
     const axisCssWidth=distEl.getBoundingClientRect().width||TW;
-    const firstDate=new Date(tMin),lastDate=new Date(tMax-dayMs);
     // Calendar ticks describe a REGULAR cadence, not the two arbitrary data
-    // endpoints. Exact observed bounds are disclosed separately below the axis.
+    // endpoints. Keep the calendar axis free of supplementary range captions.
     const calendarCandidates=[];
     const calendarMode=bins>180?'quarter':bins>56?'month':bins>7?'week':'day';
     const calendarStep=calendarMode==='quarter'?(bins>730?12:bins>365?6:3):calendarMode==='week'
@@ -723,10 +721,6 @@ jobsDataPromise
         '" y="351" data-day="'+item.day+'" data-date="'+item.date+'" text-anchor="'+anchor+'">'+
         escSvg(item.label)+'</text>';
     }).join('');
-    const regionRangeStart=regionAxisDayLabel(firstDate)+(firstDate.getUTCFullYear()!==lastDate.getUTCFullYear()?' '+yearLabel(firstDate):'');
-    const regionRangeEnd=regionAxisDayLabel(lastDate)+' '+yearLabel(lastDate);
-    const regionRange='<div class="chart-date-range" data-calendar="utc" aria-label="Observed date range, UTC">'+
-      '<span>'+(bins===1?regionRangeEnd:regionRangeStart+' &ndash; '+regionRangeEnd)+'</span><span class="chart-date-zone">UTC</span></div>';
     // Snapshot counts and share labels are generated from precisely the same
     // 2026 cumulative series and denominator as the stacked y-axis. Never
     // reuse the all-time count or display a static percentage.
@@ -784,15 +778,15 @@ jobsDataPromise
     }).join('');
     const localMeasurements='<g class="region-measurements" aria-hidden="true">'+
       referenceLines+verticalMeasures+'</g>';
-    // One-line typographic readings use genuine CSS pixels on mobile. They
+    // Two-line regional readings use genuine CSS pixels on mobile. They
     // sit between dashed levels, where the early-year chart is still empty.
     // The labels may shift to avoid collisions, but the dimension strokes
     // never move away from their actual cumulative y coordinates.
     const visibleRows=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    const labelMargin=Math.max(17,16*TW/axisCssWidth);
+    const labelMargin=Math.max(22,22*TW/axisCssWidth);
     const minLabelY=top+labelMargin,maxLabelY=base-labelMargin;
-    const minGap=Math.max(25,24*TW/axisCssWidth);
+    const minGap=Math.max(40,40*TW/axisCssWidth);
     let previous=minLabelY-minGap;
     visibleRows.forEach(row=>{
       row.y=Math.max(minLabelY,row.target,previous+minGap);
@@ -935,7 +929,7 @@ jobsDataPromise
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       gridTicks+series.map(layer=>layer.area).join('')+localMeasurements+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
-      directLabels+'</div>'+regionRange;
+      directLabels+'</div>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
@@ -981,15 +975,10 @@ jobsDataPromise
         '" y="145" data-day="'+i+'" data-date="'+keyOf(days[i].date)+'" text-anchor="'+anchor+'">'+
         rhythmTickFormat.format(days[i].date)+'</text>';
     }).join('');
-    const rhythmFirst=days[0].date,rhythmLast=days[days.length-1].date;
-    const rhythmRangeStart=rhythmTickFormat.format(rhythmFirst)+(rhythmFirst.getFullYear()!==rhythmLast.getFullYear()?' '+rhythmFirst.getFullYear():'');
-    const rhythmRangeEnd=rhythmTickFormat.format(rhythmLast)+' '+rhythmLast.getFullYear();
-    const rhythmRange='<div class="chart-date-range" data-calendar="local" aria-label="Rolling 30-day range in local calendar days">'+
-      '<span>'+rhythmRangeStart+' &ndash; '+rhythmRangeEnd+'</span><span class="chart-date-zone">Local</span></div>';
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
       '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
-      guides+bars+dateLabels+'</svg>'+rhythmRange;
+      guides+bars+dateLabels+'</svg>';
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
     // as New Postings, with the radar exposing a separate region selector.

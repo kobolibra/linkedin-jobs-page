@@ -221,10 +221,10 @@ async function renderLeft(page,chartData,theme){
   'sum of directly annotated regional counts equals the cumulative y-axis endpoint');
  assert.equal(quality.stageTotal,quality.finalTotal);
  assert.equal(quality.shortHistory,quality.dayBins<100);
- assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
+ assert.ok(quality.shortLabelDisplays.every(v=>v==='grid'),
   'both full-year and short-history annotations use a quiet two-level typographic layout');
  assert.ok(quality.labelParts.every(part=>part.name===1&&part.count===1&&part.share===1),
-  'each readable one-line annotation contains exact region, count and share');
+  'each two-line annotation contains exact region, count and share');
  if(quality.shortHistory)assert.ok(quality.shortLabelBackgrounds.every(x=>x==='none'),
   'short-range data must remain visible beneath labels: no opaque knockout cards');
  const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
