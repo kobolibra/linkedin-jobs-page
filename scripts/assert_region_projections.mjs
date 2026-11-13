@@ -50,5 +50,57 @@ export async function assertRegionVisualBalance(page){
  for(const n of state.counts)assert.equal(n.size,state.viewport<=360?14.5:state.viewport<=720?15:16);
  for(const n of state.names)assert.ok(n.size>=10&&n.size<=10.5);
  for(const n of state.shares)assert.ok(n.size>=9.5&&n.size<=10.5);
+ state.legend=await assertRegionLegend(page);
+ return state;
+}
+
+// The visible legend explains actual band colors without becoming a control.
+export async function assertRegionLegend(page){
+ const state=await page.evaluate(()=>{
+  const legend=document.querySelector('.region-chart-legend');
+  if(!legend)return null;
+  const rect=n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};
+  const svg=document.querySelector('#dist .region-time-svg'),plot=rect(svg);
+  const rgb=hex=>{const match=/^#([0-9a-f]{6})$/i.exec(hex.trim());return match?'rgb('+[0,2,4].map(i=>parseInt(match[1].slice(i,i+2),16)).join(', ')+')':hex.trim();};
+  const items=[...legend.children].map(n=>{
+   const k=n.dataset.region.toLowerCase(),swatch=n.querySelector('.region-legend-swatch');
+   const fill=document.querySelector('#dist .region-series.'+k+' .region-stack-band');
+   const outline=document.querySelector('#dist .region-series.'+k+' .region-spark-line');
+   const palette=getComputedStyle(document.querySelector('#dist .region-series.'+k+'.region-fill'));
+   const style=getComputedStyle(swatch),text=getComputedStyle(n),r=swatch.getBoundingClientRect();
+   return {region:n.dataset.region,text:n.textContent.trim(),box:rect(n),fill:style.backgroundColor,
+    count:Number(svg.getAttribute('data-region-'+k)),hasBand:!!fill,hasOutline:!!outline,
+    ink:style.borderTopColor,expectedFill:fill?getComputedStyle(fill).fill:rgb(palette.getPropertyValue('--region-fill')),
+    expectedInk:outline?getComputedStyle(outline).stroke:rgb(palette.getPropertyValue('--region-ink')),font:text.fontFamily,
+    weight:text.fontWeight,size:parseFloat(text.fontSize),swatchWidth:r.width,swatchHeight:r.height};
+  });
+  return {count:document.querySelectorAll('.region-chart-legend').length,
+   followsTitle:legend.previousElementSibling?.id==='distTitle',precedesPlot:legend.nextElementSibling?.id==='dist',
+   title:rect(document.querySelector('#distTitle')),box:rect(legend),plot,
+   endpoint:plot.left+(plot.right-plot.left)*Number(svg.dataset.plotRight)/svg.viewBox.baseVal.width,
+   items,controls:legend.querySelectorAll('button,a,input,[role="button"],[tabindex]').length,
+   listRole:legend.getAttribute('role'),siteFont:getComputedStyle(document.body).fontFamily,
+   scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
+ });
+ assert.ok(state,'region legend is present');assert.equal(state.count,1);
+ assert.equal(state.followsTitle,true);assert.equal(state.precedesPlot,true);
+ assert.equal(state.listRole,'list');assert.equal(state.controls,0);
+ assert.deepEqual(state.items.map(n=>n.region),['HK','SG','CN']);
+ assert.deepEqual(state.items.map(n=>n.text),['Hong Kong','Singapore','Mainland China']);
+ assert.ok(state.box.top>=state.title.bottom+5,'legend sits on the next row below title');
+ assert.ok(state.plot.top>=state.box.bottom+7,'legend does not overlap the plot');
+ assert.ok(Math.abs(state.items.at(-1).box.right-state.endpoint)<1,'legend is right-aligned to plot endpoint');
+ for(const item of state.items){
+  assert.equal(item.hasBand,item.count>0,'only nonzero regions have an actual band');
+  assert.equal(item.hasOutline,item.count>0,'only nonzero regions have an outline');
+  assert.equal(item.fill,item.expectedFill,'legend fill must match the actual band in this theme');
+  assert.equal(item.ink,item.expectedInk,'legend edge matches its actual region contour');
+  assert.equal(item.font,state.siteFont);assert.equal(item.weight,'400');
+  assert.ok(item.size>=10&&item.size<=10.5);
+  assert.equal(item.swatchWidth,8);assert.equal(item.swatchHeight,8);
+  assert.ok(Math.abs(item.box.top-state.items[0].box.top)<1,'all regions fit on one line');
+  assert.ok(item.box.left>=state.plot.left&&item.box.right<=state.plot.right+1);
+ }
+ assert.ok(state.scrollWidth<=state.viewport+2,'legend does not cause horizontal overflow');
  return state;
 }
