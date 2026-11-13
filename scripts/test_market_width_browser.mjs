@@ -534,13 +534,18 @@ try{
    const phrase=document.querySelector('.mw-title-phrase');
    const range=document.createRange();range.selectNodeContents(phrase);
    const p=phrase.getBoundingClientRect(),panel=document.querySelector('.ac-col-market').getBoundingClientRect();
+   const tabs=document.querySelector('#marketWidthRegions').getBoundingClientRect();
+   const intersection=Math.max(0,Math.min(p.right,tabs.right)-Math.max(p.left,tabs.left))*
+    Math.max(0,Math.min(p.bottom,tabs.bottom)-Math.max(p.top,tabs.top));
    return {lines:range.getClientRects().length,right:p.right,panelRight:panel.right,
-    text:phrase.textContent,scroll:document.documentElement.scrollWidth};
+    text:phrase.textContent,scroll:document.documentElement.scrollWidth,intersection};
   });
   assert.equal(title.text,'18 institutions we watch closely');
   assert.equal(title.lines,1,'complete institution count and phrase occupy one line at '+width+'px');
   assert.ok(title.right<=title.panelRight+1&&title.scroll<=width+2,
    'the unbroken Market Width title fits a '+width+'px viewport: '+JSON.stringify(title));
+  assert.ok(title.intersection<1,
+   'the title phrase must never physically overlap the region tabs: '+JSON.stringify(title));
   await phone.locator('.mw-topline').screenshot({
    path:new URL('artifacts/market-width/header-'+width+'-light.png',source).pathname,
    animations:'disabled'
