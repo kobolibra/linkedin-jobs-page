@@ -616,7 +616,7 @@ body.compact .job > .mono { margin-top:2px; }
    axis; the separate 30-day chart retains its original undiluted blue. */
 #dist .region-time-svg{shape-rendering:geometricPrecision}
 #dist .region-spark-grid{
-  stroke:var(--viz-rule);stroke-width:.75;opacity:.42;
+  stroke:var(--viz-rule);stroke-width:.75;opacity:.30;
   vector-effect:non-scaling-stroke;
 }
 #dist .region-spark-value,
@@ -644,49 +644,51 @@ body.compact .job > .mono { margin-top:2px; }
 #dist .region-plot-stage > .region-time-svg{
   display:block;width:100%;height:auto;overflow:visible;
 }
-#dist .region-end-guide{
-  stroke:var(--viz-secondary);stroke-width:.75;opacity:.25;
-  stroke-dasharray:2 5;vector-effect:non-scaling-stroke;
+/* A SINGLE measured vertical rule, not horizontal guide lines:
+   four precise end-state levels (0 / HK / HK+SG / total) define three
+   true-height, region-colored intervals. Four tiny caps are the only
+   horizontal measuring marks. No extra extensions past the chart edge. */
+#dist .region-dimension-span{
+  stroke:var(--region-ink);stroke-width:1.75;opacity:.82;
+  vector-effect:non-scaling-stroke;
 }
-#dist .region-end-tick{
-  stroke:var(--region-ink);stroke-width:1.45;opacity:.7;
-  stroke-linecap:round;vector-effect:non-scaling-stroke;
+#dist .region-dimension-cap{
+  stroke:var(--viz-secondary);stroke-width:1;opacity:.64;
+  vector-effect:non-scaling-stroke;
 }
 #dist .region-end-labels{
   position:absolute;inset:0;pointer-events:none;
 }
 #dist .region-end-label{
-  position:absolute;left:calc(8.26923% + 9px);
-  transform:translateY(-50%);display:inline-flex;
-  align-items:baseline;gap:8px;white-space:nowrap;
-  font-variant-numeric:tabular-nums;
-  text-shadow:0 0 6px var(--surface),0 0 3px var(--surface);
+  position:absolute;left:calc(14.81% + 2px);
+  transform:translateY(-50%);display:flex;
+  flex-direction:column;align-items:flex-start;gap:2px;
+  white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+#dist .region-end-meta{
+  display:flex;align-items:baseline;gap:10px;
 }
 #dist .region-end-name{
-  color:var(--region-ink);font:700 11px/1.15 var(--mono);
-  letter-spacing:.02em;
-}
-#dist .region-end-count{
-  color:var(--viz-secondary);font:700 17px/1.15 var(--mono);
-  letter-spacing:-.02em;
+  color:var(--region-ink);font:700 10px/1.14 var(--mono);
+  letter-spacing:.055em;
 }
 #dist .region-end-share{
-  color:var(--viz-secondary);opacity:.82;
-  font:500 11.5px/1.15 var(--mono);
+  color:var(--viz-quiet);font:500 10.5px/1.14 var(--mono);
+  font-variant-numeric:tabular-nums;
 }
-/* When the observed span is short, early data already occupies the left
-   plot. Use a narrow two-line cartographic knockout instead of letting
-   cumulative boundaries pass through numbers. Full-year charts stay inline. */
+#dist .region-end-count{
+  display:block;color:var(--viz-secondary);
+  font:650 18px/1.05 var(--mono);
+  letter-spacing:-.028em;
+}
+/* For short-lived or extreme cohorts the true area can reach the ruler.
+   Subtle transparent-edged knockout keeps readings legible without
+   turning the callouts into cards or creating a separate legend. */
 #dist .region-plot-stage.is-short-history .region-end-label{
-  display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;
-  column-gap:5px;row-gap:0;align-items:baseline;
-  padding:2px 10px 2px 0;gap:0 5px;
-  background:linear-gradient(90deg,var(--surface) 0%,var(--surface) 88%,transparent 100%);
-  text-shadow:none;
+  padding:3px 12px 3px 0;
+  background:linear-gradient(90deg,
+    var(--surface) 0%,var(--surface) 77%,transparent 100%);
 }
-#dist .region-plot-stage.is-short-history .region-end-name{grid-column:1;grid-row:1}
-#dist .region-plot-stage.is-short-history .region-end-count{grid-column:2;grid-row:1}
-#dist .region-plot-stage.is-short-history .region-end-share{grid-column:2;grid-row:2}
 /* Each band occupies the real space between two cumulative regional
    boundaries, with a restrained SHADE of the original line color.
    Opaque surface-mixed shades avoid accidental color blending between
@@ -732,22 +734,22 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
-/* SVG coordinates scale on mobile; direct data annotations retain
-   readable CSS-pixel typography rather than becoming tiny SVG glyphs. */
+/* The measure scales with the SVG but its annotation typography
+   remains in legible CSS pixels across mobile widths and themes. */
 @media(max-width:720px){
   #dist .region-spark-value,
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:12.5px;letter-spacing:0}
-  #dist .region-end-label{gap:6px}
-  #dist .region-end-name{font-size:11px}
-  #dist .region-end-count{font-size:15px}
-  #dist .region-end-share{font-size:11px;opacity:.9}
+  #dist .region-end-meta{gap:7px}
+  #dist .region-end-name{font-size:10px}
+  #dist .region-end-count{font-size:15.5px}
+  #dist .region-end-share{font-size:10.5px}
 }
 @media(max-width:360px){
-  #dist .region-end-label{gap:5px}
-  #dist .region-end-count{font-size:14px}
-  #dist .region-end-share{font-size:10.5px}
+  #dist .region-end-meta{gap:5px}
+  #dist .region-end-count{font-size:14.5px}
+  #dist .region-end-share{font-size:10px}
 }
 
 /* Masthead copy: disciplined editorial typography, no structural change. */
