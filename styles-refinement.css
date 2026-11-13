@@ -655,8 +655,12 @@ body.compact .job > .mono { margin-top:2px; }
   display:inline-block;width:5px;height:5px;border-radius:50%;
   background:var(--region-ink);flex:none;
 }
+#dist .region-end-label.hk{--region-label-ink:#94641c}
+#dist .region-end-label.sg{--region-label-ink:#516e2a}
+#dist .region-end-label.cn{--region-label-ink:#a13b38}
+[data-theme="dark"] #dist .region-end-label{--region-label-ink:var(--region-ink)}
 #dist .region-end-name{
-  color:var(--region-ink);font:700 11px/1.1 var(--mono);
+  color:var(--region-label-ink);font:700 11px/1.1 var(--mono);
   letter-spacing:.025em;
 }
 #dist .region-end-share{
