@@ -136,7 +136,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-terminal-ruler-12/);
+ assert.match(html,/styles-refinement\.css\?v=region-vertical-measure-14/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:25%\}/);
@@ -151,11 +151,18 @@ test('C-style columns keep original blue and regional trend keeps the original a
   'percentages are computed rather than hardcoded');
  assert.match(source,/const endBoundaries=regionOrder\.map/,'final cumulative boundaries are summed by region');
  assert.match(source,/const bandMiddleY=regionOrder\.map/,'direct label position follows the final band midpoints');
- assert.match(source,/const endpointRules=endBoundaries\.map/,'three measurement levels originate from actual final boundaries');
+ assert.match(source,/const measureValues=\[0,\.\.\.endBoundaries\]/,'the measured y-levels are baseline, HK, HK+SG and total');
+ assert.match(source,/const dimensionSegments=regionOrder\.map/,'one vertical span per nonempty region');
+ assert.match(source,/const dimensionCaps=\[\.\.\.new Set\(measureValues\)\]/,'only four true-height endpoint microcaps');
+ assert.doesNotMatch(source,/endpointRules|region-end-guide|region-end-tick/,'no duplicate horizontal guides or right-edge extensions');
  assert.match(source,/const directLabels='<div class="region-end-labels"/,'labels are overlaid inside the main plot, not in a header');
  assert.match(source,/const shortHistory=bins<100;/,'short dated history receives a collision-safe compact key');
  assert.match(css,/#dist \.region-plot-stage\.is-short-history \.region-end-label\{/);
- assert.match(css,/#dist \.region-end-guide\{/);
+ assert.match(css,/#dist \.region-dimension-span\{/);
+ assert.match(css,/#dist \.region-dimension-cap\{/);
+ assert.match(css,/#dist \.region-end-meta\{/);
+ assert.doesNotMatch(css,/#dist \.region-plot-stage\.is-short-history \.region-end-label\{[^}]*background:/);
+ assert.doesNotMatch(css,/\.region-end-guide|\.region-end-tick/);
  assert.match(css,/#dist \.region-end-label\{/);
  assert.doesNotMatch(source,/region-current-key|region-stat-|region-mix-|summaryCols=|const legend=|const composition=/);
  assert.match(css,/#spark \.rhythm-bar\.weekend\{opacity:\.63\}/);
@@ -184,7 +191,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
  assert.match(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-terminal-ruler-11/);
+ assert.match(html,/app\.js\?v=region-vertical-measure-12/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
