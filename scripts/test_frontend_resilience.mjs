@@ -202,7 +202,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=\[0\]/);
  assert.match(source,/days\[i\]\.date\.getDay\(\)!==1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=left-measured-inset-14/);
+ assert.match(html,/app\.js\?v=left-measured-inset-15/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
