@@ -717,9 +717,10 @@ jobsDataPromise
     const bandMiddleY=regionOrder.map((_,i)=>trendY(endBoundaries[i]-snapshotCounts[i]/2));
     // Keep sparse or highly imbalanced series legible without distorting the
     // area boundaries. Real labels stay close to their actual band midpoints.
+    const shortHistory=bins<100;
     const spaced=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    const minLabelY=top+21,maxLabelY=base-18,minGap=33;
+    const minLabelY=top+21,maxLabelY=base-18,minGap=shortHistory?56:33;
     let previous=minLabelY-minGap;
     spaced.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
     const overflow=spaced.length?Math.max(0,spaced.at(-1).y-maxLabelY):0;
@@ -811,7 +812,8 @@ jobsDataPromise
           (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+hits+'</g>'
       };
     });
-    distEl.innerHTML='<div class="region-plot-stage" data-visible-total="'+endTotal+'">'+
+    distEl.innerHTML='<div class="region-plot-stage'+(shortHistory?' is-short-history':'')+
+      '" data-visible-total="'+endTotal+'">'+
       '<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
       ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
       '" data-region-hk="'+cumulativeSeries[0][bins]+
