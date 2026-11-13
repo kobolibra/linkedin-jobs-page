@@ -54,7 +54,7 @@ export async function assertRegionVisualBalance(page){
  return state;
 }
 
-// The visible legend explains actual band colors without becoming a control.
+// The visible legend matches actual contour colors without becoming a control.
 export async function assertRegionLegend(page){
  const state=await page.evaluate(()=>{
   const legend=document.querySelector('.region-chart-legend');
@@ -68,9 +68,9 @@ export async function assertRegionLegend(page){
    const outline=document.querySelector('#dist .region-series.'+k+' .region-spark-line');
    const palette=getComputedStyle(document.querySelector('#dist .region-series.'+k+'.region-fill'));
    const style=getComputedStyle(swatch),text=getComputedStyle(n),r=swatch.getBoundingClientRect();
-   return {region:n.dataset.region,text:n.textContent.trim(),box:rect(n),fill:style.backgroundColor,
+   return {region:n.dataset.region,text:n.textContent.trim(),box:rect(n),color:style.backgroundColor,
     count:Number(svg.getAttribute('data-region-'+k)),hasBand:!!fill,hasOutline:!!outline,
-    ink:style.borderTopColor,expectedFill:fill?getComputedStyle(fill).fill:rgb(palette.getPropertyValue('--region-fill')),
+    borders:['Top','Right','Bottom','Left'].map(side=>parseFloat(style['border'+side+'Width'])),opacity:Number(style.opacity),
     expectedInk:outline?getComputedStyle(outline).stroke:rgb(palette.getPropertyValue('--region-ink')),font:text.fontFamily,
     weight:text.fontWeight,size:parseFloat(text.fontSize),swatchWidth:r.width,swatchHeight:r.height};
   });
@@ -93,11 +93,12 @@ export async function assertRegionLegend(page){
  for(const item of state.items){
   assert.equal(item.hasBand,item.count>0,'only nonzero regions have an actual band');
   assert.equal(item.hasOutline,item.count>0,'only nonzero regions have an outline');
-  assert.equal(item.fill,item.expectedFill,'legend fill must match the actual band in this theme');
-  assert.equal(item.ink,item.expectedInk,'legend edge matches its actual region contour');
+  assert.equal(item.color,item.expectedInk,'legend line must match its actual region contour in this theme');
+  assert.ok(item.borders.every(width=>width===0),'legend lines have no border');
+  assert.equal(item.opacity,1,'legend lines preserve the full contour color');
   assert.equal(item.font,state.siteFont);assert.equal(item.weight,'400');
   assert.ok(item.size>=10&&item.size<=10.5);
-  assert.equal(item.swatchWidth,8);assert.equal(item.swatchHeight,8);
+  assert.ok(item.swatchWidth>=12&&item.swatchWidth<=20&&item.swatchHeight>=3&&item.swatchHeight<=4&&item.swatchWidth>=item.swatchHeight*4,'legend marks are short, thick horizontal lines');
   assert.ok(Math.abs(item.box.top-state.items[0].box.top)<1,'all regions fit on one line');
   assert.ok(item.box.left>=state.plot.left&&item.box.right<=state.plot.right+1);
  }
