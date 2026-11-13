@@ -144,12 +144,12 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-balance-20261113/);
+ assert.match(html,/styles-refinement\.css\?v=region-legend-20261113/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
- assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
- assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-fill:#ddc6a6\}/);
- assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-fill:#c1d3ad\}/);
+ assert.match(css,/#dist \.region-series\.cn,\.region-chart-legend \.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
+ assert.match(css,/#dist \.region-series\.hk,\.region-chart-legend \.hk\{--region-ink:#b27a22;--region-fill:#ddc6a6\}/);
+ assert.match(css,/#dist \.region-series\.sg,\.region-chart-legend \.sg\{--region-ink:#6e8f3b;--region-fill:#c1d3ad\}/);
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
  assert.match(source,/const regionOrder=\["HK","SG","CN"\];/);
  assert.match(source,/const cumulativeSeries=bucketCounts\.map\(daily=>/);
