@@ -1,0 +1,99 @@
+name: Verify live calendar staircase
+on:
+  push:
+    branches: [verify/calendar-staircase-production-20261113]
+    paths: [.github/workflows/verify-calendar-live.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned read-only verification browsers
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Wait for exact tested JS and CSS without changing production
+        run: |
+          mkdir -p artifacts/live-calendar
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          import hashlib, time, json
+          expected={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in ['app.js','styles-refinement.css']}
+          for attempt in range(36):
+              try:
+                  actual={}
+                  for name in expected:
+                      req=Request('https://linkedin.claudecowork.workers.dev/'+name+'?v=calendar-staircase-20261113',headers={'User-Agent':'NextJourney-Deployment-Verification/1.0','Cache-Control':'no-cache'})
+                      with urlopen(req,timeout=15) as response: actual[name]=hashlib.sha256(response.read()).hexdigest()
+                  if actual==expected:
+                      Path('artifacts/live-calendar/asset-hashes.json').write_text(json.dumps(actual,indent=2))
+                      print('EXACT_LIVE_ASSET_SHA256_MATCH',actual)
+                      break
+                  print('Awaiting tested assets',actual,flush=True)
+              except Exception as error:
+                  print(type(error).__name__,str(error),flush=True)
+              time.sleep(10)
+          else: raise SystemExit('Exact tested assets could not be verified in production')
+          PY
+      - name: Verify actual live dates, staircase, page startup and reloads
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium,webkit} from 'playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          const evidence=[];
+          for(const [engine,type] of Object.entries({chromium,webkit})){
+            const browser=await type.launch({headless:true});
+            try{for(const width of [390,1440])for(const theme of ['light','dark']){
+              const context=await browser.newContext({viewport:{width,height:900},colorScheme:theme,timezoneId:'Asia/Shanghai'});
+              const page=await context.newPage(),errors=[],renderErrors=[],privateRequests=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))renderErrors.push(m.text());});
+              page.on('request',r=>{if(/\/(?:jobs-index\.json|jobs-version\.json|auth\/preferences)(?:[?]|$)/.test(r.url()))privateRequests.push(r.url());});
+              for(let visit=0;visit<2;visit++){
+                const response=visit?await page.reload({waitUntil:'domcontentloaded'}):await page.goto('https://linkedin.claudecowork.workers.dev/',{waitUntil:'domcontentloaded'});
+                assert.equal(response.status(),200);
+                await page.waitForFunction(()=>document.querySelector('#jobs .job')||document.querySelector('#empty.show'),null,{timeout:45000});
+                const state=await page.evaluate(()=>{
+                  const rect=n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width};};
+                  const svg=document.querySelector('#dist svg');
+                  return {auth:document.documentElement.dataset.authState,ready:typeof renderReady!=='undefined'&&renderReady,rows:document.querySelectorAll('#jobs .job').length,empty:document.querySelector('#empty')?.classList.contains('show'),app:[...document.scripts].find(s=>s.src.includes('/app.js?'))?.src,plot:rect(svg),dates:[...document.querySelectorAll('#dist .region-spark-date')].map(n=>({text:n.textContent,date:n.dataset.date,box:rect(n)})),weeks:[...document.querySelectorAll('#spark .rhythm-axis-label')].map(n=>({text:n.textContent,day:Number(n.dataset.day),date:n.dataset.date,box:rect(n)})),labels:[...document.querySelectorAll('.region-end-label')].map(n=>({region:n.dataset.region,count:Number(n.dataset.count),box:rect(n)})),arrows:[...document.querySelectorAll('.region-measure-height')].map(n=>({region:n.dataset.region,count:Number(n.dataset.count),lo:Number(n.dataset.lower),hi:Number(n.dataset.upper),x:Number(n.getAttribute('x1')),y1:Number(n.getAttribute('y1')),y2:Number(n.getAttribute('y2'))})),max:Number(svg.dataset.axisMax),total:Number(svg.dataset.finalTotal),ranges:[...document.querySelectorAll('.chart-date-range')].map(n=>n.textContent),bars:document.querySelectorAll('#spark .rhythm-bar').length,scrollWidth:document.documentElement.scrollWidth};
+                });
+                assert.equal(state.auth,'guest');assert.equal(state.ready,true);assert.equal(state.empty,false);assert.ok(state.rows>0&&state.rows<=12);assert.equal(state.bars,30);
+                assert.ok(state.app.includes('calendar-staircase-20261113'));
+                assert.equal(state.ranges.length,2);
+                for(const marks of [state.dates,state.weeks])for(let i=1;i<marks.length;i++)assert.ok(marks[i].box.x>=marks[i-1].box.right-1,'date text collision');
+                for(let i=1;i<state.weeks.length;i++)assert.equal(state.weeks[i].day-state.weeks[i-1].day,7);
+                assert.ok(state.weeks.every(t=>new Date(t.date+'T00:00:00Z').getUTCDay()===1));
+                for(let i=0;i<state.arrows.length;i++){
+                  const a=state.arrows[i],label=state.labels[i];assert.equal(a.x,88+i*66);assert.equal(a.count,a.hi-a.lo);assert.equal(label.count,a.count);
+                  assert.ok(Math.abs(a.y1-a.y2-a.count/state.max*308)<.03);
+                  assert.ok(Math.abs(label.box.x-(state.plot.x+a.x/520*state.plot.width)-16)<1);
+                  assert.ok(label.box.right<=state.plot.right+1);
+                  if(i){assert.ok(label.box.x-state.labels[i-1].box.x>=state.plot.width*65/520);assert.ok(label.box.bottom<=state.labels[i-1].box.y+1);}
+                }
+                assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.ok(state.scrollWidth<=width+2);
+                assert.deepEqual(errors,[]);assert.deepEqual(renderErrors,[]);assert.deepEqual(privateRequests,[]);
+                if(!visit)await page.locator('.analytics-left').screenshot({path:`artifacts/live-calendar/${engine}-${width}-${theme}.png`,animations:'disabled'});
+                evidence.push({engine,width,theme,visit,state,pageErrors:errors.slice(),renderErrors:renderErrors.slice(),privateRequests:privateRequests.slice()});
+                console.log('LIVE_CALENDAR_PASS',engine,width,theme,visit);
+              }
+              await context.close();
+            }}finally{await browser.close();}
+          }
+          writeFileSync('artifacts/live-calendar/results.json',JSON.stringify(evidence,null,2));
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-calendar-staircase-evidence
+          path: artifacts/live-calendar
+          if-no-files-found: ignore
+          retention-days: 7
