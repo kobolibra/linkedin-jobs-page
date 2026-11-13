@@ -1,0 +1,95 @@
+name: Verify live regional title legend
+on:
+  push:
+    branches: [verify/region-legend-production-20261113]
+    paths: [.github/workflows/verify-region-legend.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned browser engines
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify exact tested stylesheet and unchanged application in production
+        run: |
+          mkdir -p artifacts/live-region-legend
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          import time,json,hashlib
+          versions={'app.js':'region-projection-20261113','styles-refinement.css':'region-legend-20261113'}
+          expected={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in versions}
+          assert expected['app.js']=='dee27a3069bbcc6c63628110e427e72e52a6afdfb18f29946f747bc5af898c1e'
+          assert expected['styles-refinement.css']=='266c0ef98520e9b170fe1fdbd454e763da5742e781dd4d95da01b3984207d5d0'
+          for attempt in range(36):
+              try:
+                  actual={}
+                  for name,version in versions.items():
+                      request=Request('https://linkedin.claudecowork.workers.dev/'+name+'?v='+version,headers={'User-Agent':'NextJourney-Deployment-Verification/1.0','Cache-Control':'no-cache'})
+                      with urlopen(request,timeout=15) as response: actual[name]=hashlib.sha256(response.read()).hexdigest()
+                  if actual==expected:
+                      Path('artifacts/live-region-legend/asset-hashes.json').write_text(json.dumps(actual,indent=2))
+                      print('EXACT_LIVE_ASSET_MATCH',actual);break
+                  print('Awaiting tested stylesheet',actual,flush=True)
+              except Exception as error: print(type(error).__name__,str(error),flush=True)
+              time.sleep(10)
+          else: raise SystemExit('Exact tested production assets could not be confirmed')
+          PY
+      - name: Verify actual production legend and startup without request mocks
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium,webkit} from 'playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          import {assertRegionProjections,assertRegionVisualBalance} from './scripts/assert_region_projections.mjs';
+          const out='artifacts/live-region-legend/',results=[];
+          const save=()=>writeFileSync(out+'results.json',JSON.stringify(results,null,2));
+          try{
+            for(const [engine,type] of Object.entries({chromium,webkit})){
+              const browser=await type.launch({headless:true});
+              try{
+                for(const width of [320,390,1440])for(const theme of ['light','dark']){
+                  const context=await browser.newContext({viewport:{width,height:1000},colorScheme:theme,timezoneId:'Asia/Shanghai',deviceScaleFactor:2});
+                  const page=await context.newPage(),errors=[],renderErrors=[],privateRequests=[];
+                  page.on('pageerror',error=>errors.push(error.message));
+                  page.on('console',message=>{if(message.type()==='error'&&message.text().includes('[jobs]'))renderErrors.push(message.text());});
+                  page.on('request',request=>{if(/\/(?:jobs-index\.json|jobs-version\.json|auth\/preferences)(?:[?]|$)/.test(request.url()))privateRequests.push(request.url());});
+                  for(let visit=0;visit<2;visit++){
+                    const response=visit?await page.reload({waitUntil:'domcontentloaded'}):await page.goto('https://linkedin.claudecowork.workers.dev/',{waitUntil:'domcontentloaded'});
+                    assert.equal(response.status(),200);
+                    await page.waitForFunction(()=>document.querySelector('#jobs .job')||document.querySelector('#empty.show'),null,{timeout:45000});
+                    const projections=await assertRegionProjections(page),visual=await assertRegionVisualBalance(page);
+                    const state=await page.evaluate(()=>({auth:document.documentElement.dataset.authState,ready:typeof renderReady!=='undefined'&&renderReady,rows:document.querySelectorAll('#jobs .job').length,empty:document.querySelector('#empty')?.classList.contains('show'),bars:document.querySelectorAll('#spark .rhythm-bar').length,rejectedCaptions:document.querySelectorAll('.chart-date-range,.chart-date-zone').length,css:[...document.querySelectorAll('link[rel="stylesheet"]')].find(n=>n.href.includes('/styles-refinement.css?'))?.href,title:document.querySelector('#distTitle').textContent}));
+                    results.push({engine,width,theme,visit,state,visual,projections,pageErrors:errors.slice(),renderErrors:renderErrors.slice(),privateRequests:privateRequests.slice()});save();
+                    assert.equal(state.auth,'guest');assert.equal(state.ready,true);assert.equal(state.empty,false);assert.equal(state.rows,12);assert.equal(state.bars,30);assert.equal(state.rejectedCaptions,0);
+                    assert.ok(state.css.includes('region-legend-20261113'));assert.equal(projections.groups.length,3);
+                    assert.equal(state.title,'How Active Roles Are Distributed: Mapping Geographic Density Over Time');
+                    assert.deepEqual(errors,[]);assert.deepEqual(renderErrors,[]);assert.deepEqual(privateRequests,[]);
+                    if(!visit){
+                      await page.locator('.analytics-left').screenshot({path:out+`${engine}-${width}-${theme}.png`,animations:'disabled'});
+                      if(width===1440)await page.locator('.analytics-card').screenshot({path:out+`${engine}-desktop-context-${theme}.png`,animations:'disabled'});
+                    }
+                    console.log('LIVE_LEGEND_PASS',engine,width,theme,visit);
+                  }
+                  await context.close();
+                }
+              }finally{await browser.close();}
+            }
+            assert.equal(results.length,24);save();
+          }catch(error){save();writeFileSync(out+'failure.json',JSON.stringify({error:String(error),stack:error.stack,completed:results.length},null,2));throw error;}
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-region-legend-evidence
+          path: artifacts/live-region-legend
+          if-no-files-found: ignore
+          retention-days: 7
