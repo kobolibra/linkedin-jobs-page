@@ -61,14 +61,17 @@ export async function assertRegionLegend(page){
   if(!legend)return null;
   const rect=n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};
   const svg=document.querySelector('#dist .region-time-svg'),plot=rect(svg);
+  const rgb=hex=>{const match=/^#([0-9a-f]{6})$/i.exec(hex.trim());return match?'rgb('+[0,2,4].map(i=>parseInt(match[1].slice(i,i+2),16)).join(', ')+')':hex.trim();};
   const items=[...legend.children].map(n=>{
    const k=n.dataset.region.toLowerCase(),swatch=n.querySelector('.region-legend-swatch');
    const fill=document.querySelector('#dist .region-series.'+k+' .region-stack-band');
    const outline=document.querySelector('#dist .region-series.'+k+' .region-spark-line');
+   const palette=getComputedStyle(document.querySelector('#dist .region-series.'+k+'.region-fill'));
    const style=getComputedStyle(swatch),text=getComputedStyle(n),r=swatch.getBoundingClientRect();
    return {region:n.dataset.region,text:n.textContent.trim(),box:rect(n),fill:style.backgroundColor,
-    ink:style.borderTopColor,expectedFill:fill?getComputedStyle(fill).fill:null,
-    expectedInk:outline?getComputedStyle(outline).stroke:null,font:text.fontFamily,
+    count:Number(svg.getAttribute('data-region-'+k)),hasBand:!!fill,hasOutline:!!outline,
+    ink:style.borderTopColor,expectedFill:fill?getComputedStyle(fill).fill:rgb(palette.getPropertyValue('--region-fill')),
+    expectedInk:outline?getComputedStyle(outline).stroke:rgb(palette.getPropertyValue('--region-ink')),font:text.fontFamily,
     weight:text.fontWeight,size:parseFloat(text.fontSize),swatchWidth:r.width,swatchHeight:r.height};
   });
   return {count:document.querySelectorAll('.region-chart-legend').length,
@@ -88,6 +91,8 @@ export async function assertRegionLegend(page){
  assert.ok(state.plot.top>=state.box.bottom+7,'legend does not overlap the plot');
  assert.ok(Math.abs(state.items.at(-1).box.right-state.endpoint)<1,'legend is right-aligned to plot endpoint');
  for(const item of state.items){
+  assert.equal(item.hasBand,item.count>0,'only nonzero regions have an actual band');
+  assert.equal(item.hasOutline,item.count>0,'only nonzero regions have an outline');
   assert.equal(item.fill,item.expectedFill,'legend fill must match the actual band in this theme');
   assert.equal(item.ink,item.expectedInk,'legend edge matches its actual region contour');
   assert.equal(item.font,state.siteFont);assert.equal(item.weight,'400');
