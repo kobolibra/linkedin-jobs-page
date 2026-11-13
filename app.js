@@ -700,7 +700,7 @@ jobsDataPromise
     let monthCursor=new Date(Date.UTC(firstDate.getUTCFullYear(),firstDate.getUTCMonth()+1,1));
     while(monthCursor.getTime()<lastDate.getTime()){
       const m=monthCursor.getUTCMonth();
-      if(bins<=65||bins<=160?m%2===0:m%3===0){
+      if(bins<=65||(bins<=160?m%2===0:m%3===0)){
         const day=Math.round((monthCursor.getTime()-tMin)/dayMs);
         calendarCandidates.push({day,label:m===0
           ?new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(monthCursor)+" '"+yearLabel(monthCursor)
@@ -767,16 +767,54 @@ jobsDataPromise
           '<span class="region-end-share">'+share+'</span></div>'+
           '<strong class="region-end-count">'+countFormat.format(count)+'</strong></div>';
       }).join('')+'</div>';
-    // Hermite slopes are monotone for every independently cumulative region.
-    // Adding each region's control-point values (not independently smoothing
-    // stacked boundaries) prevents ribbon overlaps or artificial separation.
-    const regionSlopes=cumulativeSeries.map(values=>values.map((n,i)=>{
-      const previous=i?values[i]-values[i-1]:values[1]-values[0];
-      const next=i<bins?values[i+1]-values[i]:values[bins]-values[bins-1];
-      return previous<=0||next<=0?0:2*previous*next/(previous+next);
-    }));
+    // Retain ALL daily counts and every exact date. Only the painted
+    // contours use shared adaptive knots: each cumulative boundary deviates
+    // by at most 0.58 SVG pixels from its real daily height.
+    // Monotone cubic slopes preserve the original vertical stack and cannot
+    // introduce an artificial dip in a cumulative series.
     const sumBoundary=(layers,arrays)=>Array.from({length:bins+1},(_,i)=>
       arrays.slice(0,layers).reduce((sum,values)=>sum+values[i],0));
+    const upperBoundaries=regionOrder.map((_,i)=>sumBoundary(i+1,cumulativeSeries));
+    const knotDays=bins===1?[1]:[1,bins];
+    const slopeAtKnots=(values,knots)=>{
+      const result=Array.from({length:bins+1},()=>0);
+      if(knots.length===1)return result;
+      const rates=knots.slice(1).map((day,j)=>
+        (values[day]-values[knots[j]])/(day-knots[j]));
+      result[knots[0]]=rates[0];
+      result[knots.at(-1)]=rates.at(-1);
+      for(let j=1;j<knots.length-1;j++){
+        const before=rates[j-1],after=rates[j];
+        result[knots[j]]=before<=0||after<=0?0:2*before*after/(before+after);
+      }
+      return result;
+    };
+    const cubicAt=(values,slopes,a,b,day)=>{
+      const t=(day-a)/(b-a),t2=t*t,t3=t2*t,span=b-a;
+      return (2*t3-3*t2+1)*values[a]+(t3-2*t2+t)*span*slopes[a]+
+        (-2*t3+3*t2)*values[b]+(t3-t2)*span*slopes[b];
+    };
+    let regionSlopes=[],curveErrorPx=0;
+    for(;;){
+      regionSlopes=cumulativeSeries.map(values=>slopeAtKnots(values,knotDays));
+      let worstDay=-1,worstError=0;
+      for(let seg=0;seg<knotDays.length-1;seg++){
+        const a=knotDays[seg],b=knotDays[seg+1];
+        for(let day=a+1;day<b;day++){
+          let interpolated=0;
+          for(let ri=0;ri<regionOrder.length;ri++){
+            interpolated+=cubicAt(cumulativeSeries[ri],regionSlopes[ri],a,b,day);
+            const error=Math.abs(interpolated-upperBoundaries[ri][day])*
+              (base-top)/regionMax;
+            if(error>worstError){worstError=error;worstDay=day;}
+          }
+        }
+      }
+      curveErrorPx=worstError;
+      if(worstDay<0||worstError<=.58||knotDays.length>=bins)break;
+      knotDays.push(worstDay);
+      knotDays.sort((x,y)=>x-y);
+    }
     const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
     const contourPath=(values,slopes,reverse=false)=>{
       if(bins===1){
@@ -785,16 +823,14 @@ jobsDataPromise
           ?'M'+fmtPoint(TW-right,y)+' L'+fmtPoint(left,y)
           :'M'+fmtPoint(left,y)+' L'+fmtPoint(TW-right,y);
       }
-      // There is no invisible zero-valued "day before" the earliest data.
-      // Draw actual end-of-day cumulative positions from day 1 through N.
-      let d='M'+fmtPoint(trendX(reverse?bins:1),trendY(values[reverse?bins:1]));
-      for(let j=1;j<bins;j++){
-        const a=reverse?bins-j+1:j,b=reverse?a-1:a+1;
-        const direction=reverse?-1:1,dx=Math.abs(trendX(b)-trendX(a));
-        d+=' C'+fmtPoint(trendX(a)+direction*dx/3,
-          trendY(values[a]+direction*slopes[a]/3))+
-          ' '+fmtPoint(trendX(b)-direction*dx/3,
-          trendY(values[b]-direction*slopes[b]/3))+
+      const indices=reverse?[...knotDays].reverse():knotDays;
+      let d='M'+fmtPoint(trendX(indices[0]),trendY(values[indices[0]]));
+      for(let j=1;j<indices.length;j++){
+        const a=indices[j-1],b=indices[j],dx=trendX(b)-trendX(a),days=b-a;
+        d+=' C'+fmtPoint(trendX(a)+dx/3,
+          trendY(values[a]+slopes[a]*days/3))+
+          ' '+fmtPoint(trendX(b)-dx/3,
+          trendY(values[b]-slopes[b]*days/3))+
           ' '+fmtPoint(trendX(b),trendY(values[b]));
       }
       return d;
@@ -836,6 +872,7 @@ jobsDataPromise
       '" data-visible-total="'+endTotal+'">'+
       '<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
       ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
+      '" data-curve-knots="'+knotDays.length+'" data-curve-error="'+curveErrorPx.toFixed(3)+
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
