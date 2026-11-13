@@ -136,7 +136,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-mix-rail-10/);
+ assert.match(html,/styles-refinement\.css\?v=region-terminal-ruler-11/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:25%\}/);
@@ -149,12 +149,13 @@ test('C-style columns keep original blue and regional trend keeps the original a
   'regional snapshot shares must derive from the same cumulative series as the chart');
  assert.match(source,/const shareTenths=rawShareTenths\.map\(n=>Math\.floor\(n\)\)/,
   'percentages are computed rather than hardcoded');
- assert.match(source,/const composition='<div class="region-mix"/,
-  'region mix renders as a crisp HTML data key, not shrinking SVG text');
- assert.match(source,/const compositionLabel=regionOrder\.map/);
- assert.match(css,/#dist \.region-mix-rail\{/);
- assert.match(css,/#dist \.region-mix-grid\{/);
- assert.doesNotMatch(source,/region-current-key|region-stat-|summaryCols=|const legend=/);
+ assert.match(source,/const endBoundaries=regionOrder\.map/,'final cumulative boundaries are summed by region');
+ assert.match(source,/const bandMiddleY=regionOrder\.map/,'direct label position follows the final band midpoints');
+ assert.match(source,/const endpointRules=endBoundaries\.map/,'three measurement levels originate from actual final boundaries');
+ assert.match(source,/const directLabels='<div class="region-end-labels"/,'labels are overlaid inside the main plot, not in a header');
+ assert.match(css,/#dist \.region-end-guide\{/);
+ assert.match(css,/#dist \.region-end-label\{/);
+ assert.doesNotMatch(source,/region-current-key|region-stat-|region-mix-|summaryCols=|const legend=|const composition=/);
  assert.match(css,/#spark \.rhythm-bar\.weekend\{opacity:\.63\}/);
  assert.match(css,/\[data-theme="dark"\] #spark \.rhythm-bar\.weekend\{opacity:\.71\}/);
  assert.match(source,/const bins=Math\.max\(1,Math\.round\(\(tMax-tMin\)\/dayMs\)\);/,'every UTC calendar day remains a distinct observation');
@@ -181,7 +182,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
  assert.match(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-mix-rail-9/);
+ assert.match(html,/app\.js\?v=region-terminal-ruler-10/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
