@@ -1,0 +1,54 @@
+name: Full homepage startup regression
+on:
+  pull_request:
+    paths:
+      - '*.js'
+      - '*.css'
+      - '*.html'
+      - 'jobs-index.json'
+      - 'scripts/guest_preview.mjs'
+      - 'scripts/test_homepage_startup.mjs'
+      - 'scripts/test_startup_date_scope.mjs'
+      - '.github/workflows/homepage-startup.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'app.js'
+      - 'account.js'
+      - 'auth-guest.js'
+      - 'list-view.js'
+      - 'index.html'
+      - 'scripts/test_homepage_startup.mjs'
+      - 'scripts/test_startup_date_scope.mjs'
+      - '.github/workflows/homepage-startup.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: homepage-startup-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  startup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify chart and job-list date scope with regression negative control
+        run: node --test scripts/test_startup_date_scope.mjs
+      - name: Install pinned Chromium and WebKit test engines
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Boot actual homepage through populated lists with canonical data
+        run: node scripts/test_homepage_startup.mjs
+      - name: Retain homepage startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-startup-browser-evidence
+          path: artifacts/homepage-startup
+          if-no-files-found: ignore
+          retention-days: 7
