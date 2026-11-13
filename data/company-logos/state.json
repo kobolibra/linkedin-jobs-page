@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-12T22:02:55.182068+00:00",
+    "checkedAt": "2026-11-13T10:03:28.662340+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-12T22:02:43.329573+00:00",
+    "checkedAt": "2026-11-13T10:03:16.794901+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-12T22:02:49.080740+00:00",
+    "checkedAt": "2026-11-13T10:03:22.595477+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-12T22:02:52.184384+00:00",
+    "checkedAt": "2026-11-13T10:03:25.881782+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11373,5 +11373,65 @@
         "deferred": true
       }
     ]
+  },
+  "abi": {
+    "name": "Abi",
+    "checkedAt": "2026-11-13T10:03:03.436518+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7c9d55586c41e9c4656cb71c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF7vT3BGFwvZg/company-logo_100_100/company-logo_100_100/0/1688483733963/abi_global_health_logo?e=2147483647&v=beta&t=5ZmILvd6i3aJnMQWQV-ng07JlXgfsFz1ZxxtZSTAjBg",
+    "companyUrl": "https://ie.linkedin.com/company/abi-global-health",
+    "sourceJobId": "4490352932"
+  },
+  "confidentiel": {
+    "name": "Confidentiel",
+    "checkedAt": "2026-11-13T10:03:04.900196+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3b19b9589f6fea05473efd05.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFUduoVQe8l0g/company-logo_100_100/company-logo_100_100/0/1630634576282/confidentielalpha_logo?e=2147483647&v=beta&t=yg-r8Fb6DgLTDdi4jwEGXN4IqKNuzH294FOo3y2lq_o",
+    "companyUrl": "https://www.linkedin.com/company/confidentielalpha",
+    "sourceJobId": "4489261792"
+  },
+  "edps systems limited": {
+    "name": "EDPS Systems Limited",
+    "checkedAt": "2026-11-13T10:03:07.791737+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3ea388f59a5feea4fda646e1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGndPGV7G_ikQ/company-logo_100_100/B56ZeyAz6HHQAQ-/0/1751038247550/edpssystemsltd_logo?e=2147483647&v=beta&t=M-OUNgs02LyJMaR6Pz6thVQvCMCjM6ZA-ilF2vrvMfU",
+    "companyUrl": "https://hk.linkedin.com/company/edpssystemsltd",
+    "sourceJobId": "4489535776"
+  },
+  "prime legacy properties limited": {
+    "name": "Prime Legacy Properties Limited",
+    "checkedAt": "2026-11-13T10:03:10.791380+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0f719b98880bad48b57ffb26.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQG1iMEf-YX9Nw/company-logo_100_100/company-logo_100_100/0/1724122908364/primelegacypropertieslimited_logo?e=2147483647&v=beta&t=BAqn6VgEi1lJ19HgzIRG6HWfLWZC-L1E9TBCHtR-MtI",
+    "companyUrl": "https://zm.linkedin.com/company/primelegacypropertieslimited",
+    "sourceJobId": "4488901588"
+  },
+  "quality healthcare medical services limited": {
+    "name": "Quality HealthCare Medical Services Limited",
+    "checkedAt": "2026-11-13T10:03:13.840964+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2987dacf3bb08726bf91ea01.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFsRazxEAMVDA/company-logo_100_100/B56ZsMDlyJJAAU-/0/1765433826917/quality_healthcare_logo?e=2147483647&v=beta&t=YJug4kFc2ySme1xbxCidUcJuUzLAI2PDu8PwDEJEoPo",
+    "companyUrl": "https://hk.linkedin.com/company/quality-healthcare",
+    "sourceJobId": "4489534815"
   }
 }
