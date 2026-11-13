@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="styles-list.css?v=mainland-ring-2" />
   <link rel="stylesheet" href="layout-fixes.css?v=lifecycle-row-6" />
   <link rel="stylesheet" href="styles-company.css?v=focused-insight-3" />
-  <link rel="stylesheet" href="styles-refinement.css?v=region-terminal-ruler-12" />
+  <link rel="stylesheet" href="styles-refinement.css?v=region-vertical-measure-13" />
   <link rel="stylesheet" href="styles-cursor.css?v=system-default-2" />
   <link rel="stylesheet" href="cn-city-map.css?v=cn-city-map-3" />
   <link rel="stylesheet" href="market-width.css?v=market-title-nowrap-26" />
@@ -55,7 +55,7 @@
   <link rel="preload" as="script" href="list-query.js?v=windowed-1" />
   <link rel="preload" as="script" href="list-view.js?v=role-history-4" />
   <link rel="preload" as="script" href="job-store.js?v=parallel-start-2" />
-  <link rel="preload" as="script" href="app.js?v=region-terminal-ruler-11" />
+  <link rel="preload" as="script" href="app.js?v=region-vertical-measure-12" />
   <link rel="preload" as="script" href="job-applications.js?v=17" />
   <link rel="preload" as="script" href="row-fixes.js?v=reader-actions-2" />
   <link rel="preload" as="script" href="row-hover.js?v=reader-hover-2" />
@@ -132,7 +132,7 @@
     <div class="content-row"><main id="jobs"></main><aside class="co-panel" id="coPanel" aria-labelledby="coName" aria-live="polite"><div class="co-card"><div class="co-head"><p class="co-eyebrow">Company Insight</p><button class="co-close" id="coClose" aria-label="清除机构筛选" title="清除机构筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="co-id"><span class="co-mono" id="coMono">—</span><h2 class="co-name" id="coName">—</h2></div><div class="co-meta" id="coRegions"></div><div class="co-status" id="coStatus"></div></div><div class="co-kpis"><div class="co-kpi"><p class="co-k">有效职位</p><p class="co-v tnum" id="coCount">—</p></div><div class="co-kpi co-kpi-fresh"><p class="co-k" title="近7×24小时首次记录的职位，包含其后关闭的职位">7日新增</p><p class="co-v tnum" id="coFresh">—</p></div><div class="co-kpi"><p class="co-k" title="有效职位从首次记录到现在的时长中位数">有效中位</p><p class="co-v tnum" id="coMed">—</p></div><div class="co-kpi"><p class="co-k" title="有效职位从首次记录到现在的平均时长">有效平均</p><p class="co-v tnum" id="coMean">—</p></div></div><section class="co-sec" id="coHistSec"><h3 class="co-h">有效职位挂出天数<span class="co-hint">点击筛选</span></h3><div class="co-hist" id="coHist"></div></section><section class="co-sec" id="coAxisSec"><h3 class="co-h">有效职位分布轴<span class="co-hint"><i class="co-sw co-sw-med"></i>中位<i class="co-sw co-sw-mean"></i>平均</span></h3><div class="co-axis"><div class="co-plot" id="coPlot"></div><div class="co-scale" id="coScale"></div></div><p class="co-range" id="coOpenRange"></p></section><section class="co-sec" id="coCloseSec"><h3 class="co-h" title="标记关闭日期减首次记录日期；重新发布不重置起点。这是观测到的职位存续时长">关闭用时<span class="co-hint" id="coCloseSample" title="可计算时长的关闭职位数 / 关闭职位总数"></span></h3><dl class="co-close-metrics"><div><dt>中位数</dt><dd id="coCloseMed">—</dd></div><div><dt>平均数</dt><dd id="coCloseMean">—</dd></div></dl><p class="co-range" id="coCloseRange"></p></section><section class="co-foot"><h3 class="co-h">招聘分析</h3><div id="coFoot"></div><details class="co-history"><summary>近4周明细</summary><table class="co-table" id="coRhythm" aria-label="最近四个等长7天窗口的新增与关闭职位"></table></details><p class="co-quality" id="coQuality"></p></section></div></aside></div>
     <div class="empty" id="empty" role="status" aria-live="polite"><div class="big">未找到匹配的职位</div><div>试试调整筛选条件或清空搜索关键词。</div></div><footer class="footer"><span>数据来源：LinkedIn · 每 6 小时自动同步</span><a href="https://linkedin.claudecowork.workers.dev/">linkedin.claudecowork.workers.dev</a></footer>
   </div><button class="totop" id="totop" aria-label="回到顶部"></button>
-<script type="application/json" id="appScripts">["visitor-count.js?v=counter-live-4","company-logos.js?v=first-paint-1","list-query.js?v=windowed-1","list-view.js?v=role-history-4","job-store.js?v=parallel-start-2","app.js?v=region-terminal-ruler-11","job-applications.js?v=17","row-fixes.js?v=reader-actions-2","row-hover.js?v=reader-hover-2","top30-layout.js?v=top30-monotonic-area-v17","ui-refinement.js?v=quiet-refinement-3","cn-city-map.js?v=shared-preview-1","market-width.js?v=market-width-19","salary-display.js?v=salary-history-2","company-insight.js?v=job-status-terms-1","guestbook.js?v=deferred-prefetch-160"]</script>
+<script type="application/json" id="appScripts">["visitor-count.js?v=counter-live-4","company-logos.js?v=first-paint-1","list-query.js?v=windowed-1","list-view.js?v=role-history-4","job-store.js?v=parallel-start-2","app.js?v=region-vertical-measure-12","job-applications.js?v=17","row-fixes.js?v=reader-actions-2","row-hover.js?v=reader-hover-2","top30-layout.js?v=top30-monotonic-area-v17","ui-refinement.js?v=quiet-refinement-3","cn-city-map.js?v=shared-preview-1","market-width.js?v=market-width-19","salary-display.js?v=salary-history-2","company-insight.js?v=job-status-terms-1","guestbook.js?v=deferred-prefetch-160"]</script>
 <script src="/guest-resume.js?v=1" defer></script>
 </body>
 </html>
