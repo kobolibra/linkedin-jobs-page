@@ -12,6 +12,14 @@ function indexHarness(fetch){
   vm.runInContext(indexSource.slice(indexSource.indexOf('async function fetchJobsIndex('),indexSource.indexOf('const valid=')),context);
   return context.fetchJobsIndex;
 }
+test('offline index fallback is labeled and access-denied responses remain protected',()=>{
+ assert.match(indexSource,/cacheState:'fresh'/);
+ assert.match(indexSource,/this\.cacheState='stale'/);
+ assert.match(indexSource,/status!==401&&status!==403/); // guarded status-0 fallback
+ assert.match(indexSource,/status>=500/);
+ assert.match(source,/stage==='render'/);
+ assert.match(source,/stage==='scripts'/);
+});
 test('stalled index requests abort and reject after bounded retries',async()=>{
   let requests=0,aborts=0;
   const load=indexHarness((_url,options)=>{
