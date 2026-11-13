@@ -16,7 +16,7 @@ test('offline index fallback is labeled and access-denied responses remain prote
  assert.match(indexSource,/cacheState:'fresh'/);
  assert.match(indexSource,/this\.cacheState='stale'/);
  assert.match(indexSource,/status===0/); // transport-only fallback
- assert.match(indexSource,/status>=500/);
+ assert.doesNotMatch(indexSource,/status>=500/); // auth-service failures must not reveal cached roles
  assert.match(source,/stage==='render'/);
  assert.match(source,/stage==='scripts'/);
 });
