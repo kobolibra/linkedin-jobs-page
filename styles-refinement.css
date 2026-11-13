@@ -618,8 +618,8 @@ body.compact .job > .mono { margin-top:2px; }
 /* The full-length horizontal grid was redundant with the local measuring
    references; leave the numeric y-axis labels but no long cross-plot lines. */
 #dist .region-measure-reference{
-  stroke:var(--viz-secondary);stroke-width:.9;stroke-dasharray:1.5 4.5;
-  opacity:.43;fill:none;vector-effect:non-scaling-stroke;
+  stroke:var(--viz-secondary);stroke-width:.9;stroke-dasharray:1.3 4;
+  opacity:.34;fill:none;vector-effect:non-scaling-stroke;
 }
 #dist .region-measure-height{
   stroke:var(--region-ink);stroke-width:1.05;opacity:.8;
@@ -664,7 +664,7 @@ body.compact .job > .mono { margin-top:2px; }
    values describe actual heights between nearby short dashed boundaries;
    none of this creates a second numeric axis or an external legend. */
 #dist .region-end-label{
-  position:absolute;left:27.7%;transform:translateY(-50%);
+  position:absolute;transform:translateY(-50%);
   display:flex;flex-direction:row;align-items:baseline;gap:7px;
   white-space:nowrap;font-variant-numeric:tabular-nums;
   text-shadow:0 0 3px var(--surface);
@@ -730,7 +730,7 @@ body.compact .job > .mono { margin-top:2px; }
 }
 @media(max-width:360px){
   #dist .region-end-label{gap:4px}
-  #dist .region-end-count{font-size:13.5px}
+  #dist .region-end-count{font-size:14px}
   #dist .region-end-share{font-size:9px}
   #dist .region-end-name{font-size:9.3px}
 }
@@ -780,3 +780,23 @@ body.compact .job > .mono { margin-top:2px; }
 .jobs-data-notice button,.jobs-load-retry{font:600 12px var(--sans);color:var(--navy);border:1px solid var(--line);border-radius:9px;padding:7px 11px;background:var(--surface);cursor:pointer}
 .jobs-data-notice button:hover,.jobs-load-retry:hover{border-color:var(--ink-soft)}
 @media(max-width:420px){.jobs-data-notice{align-items:flex-start;flex-direction:column}}
+
+/* Calendar labels share one typographic grammar; bounds are not axis ticks. */
+#dist .region-spark-date,#spark .rhythm-axis-label,
+[data-theme="dark"] #spark .rhythm-axis-label{
+  fill:var(--viz-secondary);font:500 12px var(--mono);letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+}
+#dist .chart-date-range,#spark .chart-date-range{
+  display:flex;justify-content:space-between;gap:12px;margin-top:3px;
+  color:var(--viz-quiet);font:500 10px/1.5 var(--mono);letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+}
+#dist .chart-date-range{padding-left:8.269%;padding-right:3.269%}
+#spark .chart-date-range{padding-left:6.346%;padding-right:3.269%}
+.chart-date-zone{opacity:.78}
+@media(max-width:720px){
+  #dist .region-spark-date,#spark .rhythm-axis-label,
+  [data-theme="dark"] #spark .rhythm-axis-label{font-size:16px}
+  #dist .chart-date-range,#spark .chart-date-range{font-size:9px}
+}

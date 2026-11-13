@@ -15,10 +15,10 @@ const mime={'.js':'application/javascript','.mjs':'application/javascript','.css
 const evidence=[];
 function originalBug(text){
  const start=text.indexOf("    const regionTickFormat=new Intl.DateTimeFormat(");
- const end=text.indexOf('    const calendarCandidates=[];',start);
+ const end=text.indexOf('    // Snapshot counts and share labels',start);
  assert.ok(start>=0&&end>start);
  const part=text.slice(start,end);
- assert.equal((part.match(/regionAxisDayLabel/g)||[]).length,4);
+ assert.ok(part.includes('const regionAxisDayLabel='));
  return text.slice(0,start)+part.replaceAll('regionAxisDayLabel','dayLabel')+text.slice(end);
 }
 async function check(browser,engine,{guest=false,width=390,theme='light',broken=false,document=index,label='canonical'}={}){
