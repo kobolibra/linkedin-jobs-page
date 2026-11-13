@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-13T16:03:09.014401+00:00",
+    "checkedAt": "2026-11-13T22:02:44.849362+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,23 +2705,12 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.53108010043469,
-        "deferred": true
       }
     ]
   },
@@ -3030,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-13T16:02:57.151454+00:00",
+    "checkedAt": "2026-11-13T22:02:33.079547+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3189,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-13T16:03:02.957056+00:00",
+    "checkedAt": "2026-11-13T22:02:38.755819+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5409,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-13T16:03:06.029263+00:00",
+    "checkedAt": "2026-11-13T22:02:41.837510+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11468,5 +11457,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFa4OtF75tQVQ/company-logo_100_100/B4EaHGG.W0G8AI-/0/1794325079754/yahoo_logo?e=2147483647&v=beta&t=PKFRV4FbI0W-cMFGk0b-NGS5Dy2l8deJkEmPggjvM6Y",
     "companyUrl": "https://www.linkedin.com/company/yahoo",
     "sourceJobId": "4489553941"
+  },
+  "renaissance harbour view hotel hong kong": {
+    "name": "Renaissance Harbour View Hotel Hong Kong",
+    "checkedAt": "2026-11-13T22:02:31.587720+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "99e0c336401c17213192cd45.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGTBykJrwnuWA/company-logo_100_100/company-logo_100_100/0/1672844373441/renaissance_harbour_view_hotel_logo?e=2147483647&v=beta&t=f68pOD-JJXFlSBCfA3eACH9fzRIuKrwUg-F1Ftwn_pk",
+    "companyUrl": "https://hk.linkedin.com/company/renaissance-harbour-view-hotel",
+    "sourceJobId": "4489585459"
   }
 }
