@@ -680,13 +680,11 @@ body.compact .job > .mono { margin-top:2px; }
   font:650 18px/1.05 var(--mono);
   letter-spacing:-.028em;
 }
-/* For short-lived or extreme cohorts the true area can reach the ruler.
-   Subtle transparent-edged knockout keeps readings legible without
-   turning the callouts into cards or creating a separate legend. */
+/* Short observation windows may already fill the left plotting area.
+   Use a subtle glyph-only halo rather than white rectangular knockout cards:
+   the actual area remains visible behind every measurement. */
 #dist .region-plot-stage.is-short-history .region-end-label{
-  padding:3px 12px 3px 0;
-  background:linear-gradient(90deg,
-    var(--surface) 0%,var(--surface) 77%,transparent 100%);
+  text-shadow:0 0 3px var(--surface),0 0 1px var(--surface);
 }
 /* Each band occupies the real space between two cumulative regional
    boundaries, with a restrained SHADE of the original line color.
