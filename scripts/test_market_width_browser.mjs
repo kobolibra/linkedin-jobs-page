@@ -526,6 +526,27 @@ try{
    await page.close();
   }
  }
+ // Protect narrower 320/360px phones against a partial Market Width
+ // title wrap, even when the filter tabs share the title row.
+ for(const width of [360,320]){
+  const phone=await make(width,'light');
+  const title=await phone.evaluate(()=>{
+   const phrase=document.querySelector('.mw-title-phrase');
+   const range=document.createRange();range.selectNodeContents(phrase);
+   const p=phrase.getBoundingClientRect(),panel=document.querySelector('.ac-col-market').getBoundingClientRect();
+   return {lines:range.getClientRects().length,right:p.right,panelRight:panel.right,
+    text:phrase.textContent,scroll:document.documentElement.scrollWidth};
+  });
+  assert.equal(title.text,'18 institutions we watch closely');
+  assert.equal(title.lines,1,'complete institution count and phrase occupy one line at '+width+'px');
+  assert.ok(title.right<=title.panelRight+1&&title.scroll<=width+2,
+   'the unbroken Market Width title fits a '+width+'px viewport: '+JSON.stringify(title));
+  await phone.locator('.mw-topline').screenshot({
+   path:new URL('artifacts/market-width/header-'+width+'-light.png',source).pathname,
+   animations:'disabled'
+  });
+  await phone.close();
+ }
  // Visual acceptance against ACTUAL published jobs, not just fixture bars.
  // This also protects the y-axis from silently regressing to one-day peaks.
  const indexDoc=JSON.parse(readFileSync(new URL('jobs-index.json',source),'utf8'));
