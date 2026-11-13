@@ -144,7 +144,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=regional-measures-20261113/);
+ assert.match(html,/styles-refinement\.css\?v=calendar-staircase-20261113/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
@@ -172,7 +172,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const cumulativeLevels=\[0,\.\.\.endBoundaries\]/);
  assert.match(source,/const referenceLines=\[\.\.\.new Set\(cumulativeLevels\)\]/);
  assert.match(source,/const verticalMeasures=regionOrder\.map/);
- assert.match(source,/const labelX=\{HK:139,SG:153,CN:167\}/,'region annotations use coordinated staggered inset alignment');
+ assert.match(source,/const measureX=\{HK:88,SG:154,CN:220\}/,'region annotations use coordinated staggered inset alignment');
  assert.match(source,/class="region-date-tick"/);
  assert.match(source,/class="rhythm-date-tick"/);
  assert.doesNotMatch(css,/\.region-dimension-span|\.region-dimension-cap|\.region-end-guide|\.region-end-tick/);
@@ -209,11 +209,11 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
  assert.match(source,/const calendarCandidates=\[\]/);
- assert.match(source,/const regionalGap=66\*TW\/axisCssWidth/);
- assert.match(source,/const rhythmMarks=\[0\]/);
- assert.match(source,/days\[i\]\.date\.getDay\(\)!==1/);
+ assert.match(source,/const calendarMode=bins>180/);
+ assert.match(source,/const rhythmMarks=days\.map/);
+ assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=list-date-shadow-fix-20261113/);
+ assert.match(html,/app\.js\?v=calendar-staircase-20261113/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });

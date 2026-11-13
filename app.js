@@ -691,51 +691,42 @@ jobsDataPromise
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
-    const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
-    // Chart-only Date formatter must not shadow the ISO-safe job-list dayLabel.
+    const regionTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',timeZone:'UTC'});
+    // This Date-only chart helper must NEVER shadow the ISO-safe list dayLabel.
     const regionAxisDayLabel=(date)=>regionTickFormat.format(date);
-    const yearLabel=date=>date.getUTCFullYear().toString().slice(-2);
+    const yearLabel=date=>date.getUTCFullYear().toString();
     const axisCssWidth=distEl.getBoundingClientRect().width||TW;
-    // Calendar anchors, not arbitrary 25%-interval timestamps. Select only
-    // ticks with sufficient physical distance for their text on this screen.
-    const regionalGap=66*TW/axisCssWidth;
     const firstDate=new Date(tMin),lastDate=new Date(tMax-dayMs);
-    const longHistory=bins>120;
-    const firstLabel=longHistory
-      ?new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(firstDate)+" '"+yearLabel(firstDate)
-      :regionAxisDayLabel(firstDate)+(firstDate.getUTCFullYear()!==lastDate.getUTCFullYear()?" '"+yearLabel(firstDate):'');
-    const lastLabel=firstDate.getUTCFullYear()===lastDate.getUTCFullYear()
-      ?regionAxisDayLabel(lastDate):regionAxisDayLabel(lastDate)+" '"+yearLabel(lastDate);
+    // Calendar ticks describe a REGULAR cadence, not the two arbitrary data
+    // endpoints. Exact observed bounds are disclosed separately below the axis.
     const calendarCandidates=[];
-    let monthCursor=new Date(Date.UTC(firstDate.getUTCFullYear(),firstDate.getUTCMonth()+1,1));
-    while(monthCursor.getTime()<lastDate.getTime()){
-      const m=monthCursor.getUTCMonth();
-      if(bins<=65||(bins<=160?m%2===0:m%3===0)){
-        const day=Math.round((monthCursor.getTime()-tMin)/dayMs);
-        calendarCandidates.push({day,label:m===0
-          ?new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(monthCursor)+" '"+yearLabel(monthCursor)
-          :new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(monthCursor)});
-      }
-      monthCursor=new Date(Date.UTC(monthCursor.getUTCFullYear(),m+1,1));
+    const calendarMode=bins>180?'quarter':bins>56?'month':bins>7?'week':'day';
+    const calendarStep=calendarMode==='quarter'?(bins>730?12:bins>365?6:3):calendarMode==='week'
+      ?(7/(bins-1)*plotW*axisCssWidth/TW>=43?7:14)
+      :calendarMode==='day'?Math.max(1,Math.ceil(bins/5),Math.ceil(40*Math.max(1,bins-1)/(plotW*axisCssWidth/TW))):1;
+    const monthFormat=new Intl.DateTimeFormat('en-GB',{month:'short',timeZone:'UTC'});
+    for(let day=0;day<bins;day++){
+      const date=new Date(tMin+day*dayMs),serial=Math.floor(date.getTime()/dayMs);
+      const month=date.getUTCMonth();
+      const include=calendarMode==='quarter'||calendarMode==='month'
+        ?date.getUTCDate()===1&&month%calendarStep===0
+        :calendarMode==='week'?(serial-4)%calendarStep===0
+        :day%calendarStep===0;
+      if(!include)continue;
+      calendarCandidates.push({day,date:date.toISOString().slice(0,10),label:
+        calendarMode==='quarter'||calendarMode==='month'?monthFormat.format(date):regionAxisDayLabel(date)});
     }
-    const datePositions=[{day:0,label:firstLabel}];
-    let previousX=left;
-    calendarCandidates.forEach(item=>{
-      const x=trendX(item.day+1);
-      if(x-previousX>=regionalGap&&TW-right-x>=regionalGap){
-        datePositions.push(item);
-        previousX=x;
-      }
-    });
-    if(bins>1)datePositions.push({day:bins-1,label:lastLabel});
-    const dateTicks=datePositions.map((item,i)=>{
-      const first=i===0,last=i===datePositions.length-1;
-      const x=trendX(item.day+1).toFixed(2);
-      return '<line class="region-date-tick" x1="'+x+'" x2="'+x+'" y1="333" y2="337"/>'+
-        '<text class="region-spark-date" x="'+x+
-        '" y="351" data-day="'+item.day+'" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+    const dateTicks=calendarCandidates.map(item=>{
+      const x=trendX(item.day+1),anchor=x-left<24?'start':TW-right-x<24?'end':'middle';
+      return '<line class="region-date-tick" x1="'+x.toFixed(2)+'" x2="'+x.toFixed(2)+'" y1="333" y2="337"/>'+
+        '<text class="region-spark-date" x="'+x.toFixed(2)+
+        '" y="351" data-day="'+item.day+'" data-date="'+item.date+'" text-anchor="'+anchor+'">'+
         escSvg(item.label)+'</text>';
     }).join('');
+    const regionRangeStart=regionAxisDayLabel(firstDate)+(firstDate.getUTCFullYear()!==lastDate.getUTCFullYear()?' '+yearLabel(firstDate):'');
+    const regionRangeEnd=regionAxisDayLabel(lastDate)+' '+yearLabel(lastDate);
+    const regionRange='<div class="chart-date-range" data-calendar="utc" aria-label="Observed date range, UTC">'+
+      '<span>'+(bins===1?regionRangeEnd:regionRangeStart+' &ndash; '+regionRangeEnd)+'</span><span class="chart-date-zone">UTC</span></div>';
     // Snapshot counts and share labels are generated from precisely the same
     // 2026 cumulative series and denominator as the stacked y-axis. Never
     // reuse the all-time count or display a static percentage.
@@ -760,24 +751,30 @@ jobsDataPromise
     const bandMiddleY=regionOrder.map((_,i)=>
       trendY((cumulativeLevels[i]+cumulativeLevels[i+1])/2));
     const shortHistory=bins<100;
-    const referenceLines=[...new Set(cumulativeLevels)].map(level=>
-      '<line class="region-measure-reference" data-level="'+level+
-      '" x1="91" x2="219" y1="'+trendY(level).toFixed(2)+
-      '" y2="'+trendY(level).toFixed(2)+'"/>').join('');
+    // Each arrow and its label advance together by 66 SVG units. Shared
+    // boundary references connect adjacent measures, creating a true staircase.
+    const measureX={HK:88,SG:154,CN:220};
+    const referenceLines=[...new Set(cumulativeLevels)].map(level=>{
+      const adjacent=regionOrder.filter((k,i)=>snapshotCounts[i]>0&&
+        (cumulativeLevels[i]===level||cumulativeLevels[i+1]===level)).map(k=>measureX[k]);
+      if(!adjacent.length)return '';
+      return '<line class="region-measure-reference" data-level="'+level+
+        '" x1="'+(Math.min(...adjacent)-10)+'" x2="'+(Math.max(...adjacent)+14)+
+        '" y1="'+trendY(level).toFixed(2)+'" y2="'+trendY(level).toFixed(2)+'"/>';
+    }).join('');
     const verticalMeasures=regionOrder.map((k,i)=>{
       const count=snapshotCounts[i];
       if(!count)return '';
-      const x=106+i*10;
+      const x=measureX[k];
       const low=trendY(cumulativeLevels[i]),high=trendY(cumulativeLevels[i+1]);
-      // For an almost-zero share, preserve the exact tiny length instead
-      // of drawing misleading larger arrows.
-      // Precise, open dimension-arrow tips: anchored inside each true
-      // cumulative boundary, with no filled triangles or decorative caps.
-      const arrowheads=low-high>=19
-        ?'<path class="region-measure-arrow" d="M'+(x-2.6)+','+(high+5).toFixed(2)+
-          ' L'+x+','+(high+1.5).toFixed(2)+' L'+(x+2.6)+','+(high+5).toFixed(2)+
-          ' M'+(x-2.6)+','+(low-5).toFixed(2)+' L'+x+','+(low-1.5).toFixed(2)+
-          ' L'+(x+2.6)+','+(low-5).toFixed(2)+'"/>':'';
+      // Open arrow tips touch the actual boundaries; no exaggerated lengths.
+      // Keep arrowheads legible in CSS pixels, and omit them for very thin bands.
+      const wing=2.4*TW/axisCssWidth,depth=3.8*TW/axisCssWidth;
+      const arrowheads=low-high>=depth*2+4
+        ?'<path class="region-measure-arrow" d="M'+(x-wing).toFixed(2)+','+(high+depth).toFixed(2)+
+          ' L'+x+','+high.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(high+depth).toFixed(2)+
+          ' M'+(x-wing).toFixed(2)+','+(low-depth).toFixed(2)+
+          ' L'+x+','+low.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(low-depth).toFixed(2)+'"/>':'';
       return '<g class="region-series '+k.toLowerCase()+' region-measure-group">'+
         '<line class="region-measure-height" data-region="'+k+
         '" data-count="'+count+'" data-lower="'+cumulativeLevels[i]+
@@ -807,7 +804,7 @@ jobsDataPromise
     // As the accumulated bands rise towards the right, the inset editorial
     // readings advance gently rightward too, rather than forming a rigid column.
     // Keep every value inside the existing left whitespace, never in a side panel.
-    const labelX={HK:139,SG:153,CN:167};
+    const labelX=Object.fromEntries(regionOrder.map(k=>[k,measureX[k]+16*TW/axisCssWidth]));
     const directLabels='<div class="region-end-labels" aria-hidden="true">'+
       regionOrder.map((k,i)=>{
         const count=snapshotCounts[i];
@@ -927,6 +924,7 @@ jobsDataPromise
       '" data-visible-total="'+endTotal+'">'+
       '<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
       ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
+      '" data-plot-right="'+(TW-right)+'" data-calendar-mode="'+calendarMode+'" data-calendar-step="'+calendarStep+
       '" data-axis-max="'+regionMax+
       '" data-curve-knots="'+knotDays.length+'" data-curve-error="'+curveErrorPx.toFixed(3)+
       '" data-region-hk="'+cumulativeSeries[0][bins]+
@@ -937,7 +935,7 @@ jobsDataPromise
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       gridTicks+series.map(layer=>layer.area).join('')+localMeasurements+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
-      directLabels+'</div>';
+      directLabels+'</div>'+regionRange;
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
@@ -972,33 +970,26 @@ jobsDataPromise
         '" width="'+(barWidth+4).toFixed(2)+'" height="'+(sBase-sTop)+'"/>'+
         '<title>'+d.label+' · '+d.total+' new postings</title></g>';
     }).join('');
-    // Monday-based, calendar-anchored marks. Endpoints retain the actual
-    // 30-day domain; only intermediate Monday labels are allowed, and the
-    // physical spacing budget prevents cramped dates on narrow viewports.
-    const rhythmCssWidth=document.getElementById('spark').getBoundingClientRect().width||SW;
-    const rhythmGap=65*SW/rhythmCssWidth;
-    const rhythmMarks=[0];
-    let lastMarkX=sx(0);
-    for(let i=1;i<days.length-1;i++){
-      if(days[i].date.getDay()!==1)continue;
-      const x=sx(i);
-      if(x-lastMarkX>=rhythmGap&&sx(days.length-1)-x>=rhythmGap){
-        rhythmMarks.push(i);
-        lastMarkX=x;
-      }
-    }
-    rhythmMarks.push(days.length-1);
-    const dateLabels=rhythmMarks.map((i,j)=>{
-      const x=sx(i).toFixed(1);
-      return '<line class="rhythm-date-tick" x1="'+x+'" x2="'+x+'" y1="130" y2="134"/>'+
-        '<text class="rhythm-axis-label" x="'+x+
-        '" y="145" data-day="'+i+'" text-anchor="'+(j===0?'start':j===rhythmMarks.length-1?'end':'middle')+'">'+
-        days[i].label+'</text>';
+    // A 30-day window always uses real Mondays, seven days apart. Do not
+    // inject arbitrary endpoints or silently drop weeks to fit endpoint text.
+    const rhythmTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short'});
+    const rhythmMarks=days.map((d,i)=>d.date.getDay()===1?i:-1).filter(i=>i>=0);
+    const dateLabels=rhythmMarks.map(i=>{
+      const x=sx(i),anchor=x-sLeft<24?'start':SW-sRight-x<24?'end':'middle';
+      return '<line class="rhythm-date-tick" x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="130" y2="134"/>'+
+        '<text class="rhythm-axis-label" x="'+x.toFixed(1)+
+        '" y="145" data-day="'+i+'" data-date="'+keyOf(days[i].date)+'" text-anchor="'+anchor+'">'+
+        rhythmTickFormat.format(days[i].date)+'</text>';
     }).join('');
+    const rhythmFirst=days[0].date,rhythmLast=days[days.length-1].date;
+    const rhythmRangeStart=rhythmTickFormat.format(rhythmFirst)+(rhythmFirst.getFullYear()!==rhythmLast.getFullYear()?' '+rhythmFirst.getFullYear():'');
+    const rhythmRangeEnd=rhythmTickFormat.format(rhythmLast)+' '+rhythmLast.getFullYear();
+    const rhythmRange='<div class="chart-date-range" data-calendar="local" aria-label="Rolling 30-day range in local calendar days">'+
+      '<span>'+rhythmRangeStart+' &ndash; '+rhythmRangeEnd+'</span><span class="chart-date-zone">Local</span></div>';
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
       '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
-      guides+bars+dateLabels+'</svg>';
+      guides+bars+dateLabels+'</svg>'+rhythmRange;
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
     // as New Postings, with the radar exposing a separate region selector.

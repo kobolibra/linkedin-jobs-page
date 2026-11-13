@@ -9,6 +9,8 @@ on:
       - 'scripts/guest_preview.mjs'
       - 'scripts/test_homepage_startup.mjs'
       - 'scripts/test_startup_date_scope.mjs'
+      - 'scripts/test_calendar_axes.mjs'
+      - 'scripts/test_calendar_browser.mjs'
       - '.github/workflows/homepage-startup.yml'
   push:
     branches: [main]
@@ -20,6 +22,8 @@ on:
       - 'index.html'
       - 'scripts/test_homepage_startup.mjs'
       - 'scripts/test_startup_date_scope.mjs'
+      - 'scripts/test_calendar_axes.mjs'
+      - 'scripts/test_calendar_browser.mjs'
       - '.github/workflows/homepage-startup.yml'
   workflow_dispatch:
 permissions:
@@ -38,17 +42,31 @@ jobs:
           node-version: '22'
       - name: Verify chart and job-list date scope with regression negative control
         run: node --test scripts/test_startup_date_scope.mjs
+      - name: Verify calendar cadence across timezones, leap day and year boundaries
+        run: |
+          TZ=Asia/Shanghai node --test scripts/test_calendar_axes.mjs
+          TZ=America/Los_Angeles node --test scripts/test_calendar_axes.mjs
       - name: Install pinned Chromium and WebKit test engines
         run: |
           npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
           npx playwright install --with-deps chromium webkit
       - name: Boot actual homepage through populated lists with canonical data
         run: node scripts/test_homepage_startup.mjs
+      - name: Verify calendar labels and true-height staircase geometry in both engines
+        run: node scripts/test_calendar_browser.mjs
       - name: Retain homepage startup evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: homepage-startup-browser-evidence
           path: artifacts/homepage-startup
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Retain calendar and regional annotation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: calendar-staircase-browser-evidence
+          path: artifacts/calendar-axes
           if-no-files-found: ignore
           retention-days: 7

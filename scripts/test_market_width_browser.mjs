@@ -105,7 +105,9 @@ async function renderLeft(page,chartData,theme){
    shortHistory:stage.classList.contains('is-short-history'),
    shortLabelDisplays:statRows.map(node=>getComputedStyle(node).display),
    shortLabelBackgrounds:statRows.map(node=>getComputedStyle(node).backgroundImage),
-   plotRight:Number(endDate?.getAttribute('x')),
+   plotRight:Number(svg.dataset.plotRight),
+   calendarMode:svg.dataset.calendarMode,calendarStep:Number(svg.dataset.calendarStep),
+   ranges:[...document.querySelectorAll('.chart-date-range')].map(n=>n.textContent),
    postingsPlotRight:Number(lastPostingLine?.getAttribute('x2')),
    heightRefs:referenceNodes.map(node=>({
     level:Number(node.dataset.level),
@@ -128,7 +130,7 @@ async function renderLeft(page,chartData,theme){
    forbiddenGuideCount:svg.querySelectorAll('.region-end-guide,.region-end-tick,.region-dimension-span,.region-dimension-cap').length,
    curveKnots:Number(svg.dataset.curveKnots),curveError:Number(svg.dataset.curveError),
    regionDateMarks:regionDateNodes.map(node=>({
-     day:Number(node.dataset.day),label:node.textContent,bounds:rect(node)
+     day:Number(node.dataset.day),date:node.dataset.date,label:node.textContent,bounds:rect(node)
    })),
    postingDateMarks:postingDateNodes.map(node=>{
      const day=Number(node.dataset.day);
@@ -218,8 +220,7 @@ async function renderLeft(page,chartData,theme){
  assert.equal(quality.labelTotal,quality.finalTotal,
   'sum of directly annotated regional counts equals the cumulative y-axis endpoint');
  assert.equal(quality.stageTotal,quality.finalTotal);
- assert.equal(quality.shortHistory,quality.dayBins<100,
-  'only genuinely short observation windows use the tight two-line knockout layout');
+ assert.equal(quality.shortHistory,quality.dayBins<100);
  assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
   'both full-year and short-history annotations use a quiet two-level typographic layout');
  assert.ok(quality.labelParts.every(part=>part.name===1&&part.count===1&&part.share===1),
@@ -241,8 +242,8 @@ async function renderLeft(page,chartData,theme){
    :quality.series;
   assert.equal(item.ink,labelInks[item.region.toLowerCase()],
    'small region labels use accessible darkened ink while contours retain the approved pigment');
-  assert.ok(item.bounds.x>=quality.svgBounds.x+quality.svgBounds.w*.24&&
-    item.bounds.right<=quality.svgBounds.x+quality.svgBounds.w*.76,
+  assert.ok(item.bounds.x>=quality.svgBounds.x+quality.svgBounds.w*.18&&
+    item.bounds.right<=quality.svgBounds.x+quality.svgBounds.w*.86,
    'regional readings must stay in the early-year LEFT whitespace, not any right gutter');
   assert.ok(item.bounds.y>=quality.svgBounds.y-1&&
     item.bounds.bottom<=quality.svgBounds.bottom+1,
@@ -283,7 +284,7 @@ async function renderLeft(page,chartData,theme){
   assert.equal(span.count,value);
   assert.equal(span.lower,before);assert.equal(span.upper,cumulative);
   assert.equal(span.x1,span.x2,'all measurement strokes are truly vertical');
-  assert.equal(span.x1,106+i*10,'the three strokes are staggered, not a second continuous y-axis');
+  assert.equal(span.x1,88+i*66,'the three strokes are staggered, not a second continuous y-axis');
   assert.ok(Math.abs(span.y1-(y0-before*unitHeight))<.16);
   assert.ok(Math.abs(span.y2-(y0-cumulative*unitHeight))<.16);
   assert.ok(Math.abs((span.y1-span.y2)-value*unitHeight)<.16,
@@ -294,7 +295,7 @@ async function renderLeft(page,chartData,theme){
   [...new Set([0,visibleCounts[0],visibleCounts[0]+visibleCounts[1],
     visibleCounts[0]+visibleCounts[1]+visibleCounts[2]])].sort((a,b)=>a-b));
  for(const level of levels){
-  assert.ok(level.x2-level.x1<=146.1&&level.x2<=237,
+  assert.ok(level.x2-level.x1<=156.1&&level.x2<=237,
    'no dotted guide may cross the chart: references belong ONLY to the left blank area');
   assert.ok(Math.abs(level.y-(y0-level.level*unitHeight))<.16,
    'each short dotted level is tied to an exact cumulative boundary');
@@ -377,7 +378,7 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.linePaths.every(d=>d&&d.split('M').length===2),
   'one unbroken cumulative contour per region, including days without new postings');
  assert.equal(quality.captions,0,'do not add redundant chart subtitles');
- assert.ok(quality.dateTicks>=1&&quality.dateTicks<=5,
+ assert.ok(quality.dateTicks>=1&&quality.dateTicks<=6,
   'geographic dates use only readable calendar anchors');
  assert.ok(quality.postingDateTicks>=2&&quality.postingDateTicks<=6,
   'rolling 30-day axis uses a restrained set of week-aligned labels');
@@ -391,12 +392,18 @@ async function renderLeft(page,chartData,theme){
  };
  checkDateSpacing(quality.regionDateMarks,'Regional history');
  checkDateSpacing(quality.postingDateMarks,'New Postings');
- assert.equal(quality.regionDateMarks[0].day,0);
- if(quality.dayBins>1)assert.equal(quality.regionDateMarks.at(-1).day,quality.dayBins-1);
- assert.equal(quality.postingDateMarks[0].day,0);
- assert.equal(quality.postingDateMarks.at(-1).day,29);
- assert.ok(quality.postingDateMarks.slice(1,-1).every(m=>m.weekday===1),
-  'every intermediate New Postings date belongs to an actual Monday boundary');
+ assert.equal(quality.ranges.length,2,'both exact date ranges are disclosed outside the regular axes');
+ assert.ok(quality.postingDateMarks.every(m=>m.weekday===1),'every New Postings tick is Monday');
+ for(let i=1;i<quality.postingDateMarks.length;i++)assert.equal(quality.postingDateMarks[i].day-quality.postingDateMarks[i-1].day,7,'no skipped or invented week');
+ if(['quarter','month'].includes(quality.calendarMode)){
+  const months=quality.regionDateMarks.map(m=>{const d=new Date(m.date+'T00:00:00Z');assert.equal(d.getUTCDate(),1);return d.getUTCFullYear()*12+d.getUTCMonth();});
+  for(let i=1;i<months.length;i++)assert.equal(months[i]-months[i-1],quality.calendarStep,'month cadence is fixed');
+ }
+ for(let i=1;i<quality.legendItems.length;i++){
+  const previous=quality.legendItems[i-1],current=quality.legendItems[i];
+  assert.ok(current.bounds.x-previous.bounds.x>=quality.svgBounds.w*65/520,'labels visibly progress rightward with their arrows');
+  assert.ok(current.bounds.y<previous.bounds.y,'regional readings ascend along the actual stack');
+ }
  const checkScale=(ticks,name)=>{
   assert.ok(ticks.length>=2,name+' needs at least two integer ticks');
   assert.equal(ticks[0].value,0,name+' starts at zero');
@@ -786,7 +793,8 @@ try{
   'the three inset counts follow the newest data without manual code edits');
  assert.equal(tomorrow.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000);
  const tomorrowTicks=await tomorrowPage.locator('#dist .region-spark-date').allTextContents();
- assert.equal(tomorrowTicks.at(-1),'Nov 13','the rightmost chart date advances with the data');
+ assert.deepEqual(tomorrowTicks,['Apr','Jul','Oct'],'regular quarters do not change to arbitrary endpoints');
+ assert.match(await tomorrowPage.locator('#dist .chart-date-range').textContent(),/13 Nov 2026/,'the exact range advances with the newly published data');
  await tomorrowPage.locator('.ac-col-density').screenshot({
   path:new URL('artifacts/market-width/daily-rollover-nov13-390-light.png',source).pathname,
   animations:'disabled'
