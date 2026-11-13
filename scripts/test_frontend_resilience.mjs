@@ -173,7 +173,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/class="region-stack-band"/);
  assert.match(css,/#dist \.region-stack-band\{/);
  assert.match(css,/--region-band:29%/);
- assert.match(css,/#dist \.region-spark-line,[\s\S]*?stroke-width:1\.65/);
+ assert.match(css,/#dist \.region-spark-line\{[^}]*stroke-width:1\.65/);
  assert.match(css,/#spark \.rhythm-bar\{\s*fill:var\(--viz-blue\);opacity:1/);
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
  assert.match(source,/const bucketCounts=regionOrder\.map\(\(\)=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
