@@ -440,6 +440,12 @@ try{
      dist:rect('.ac-col-density'),post:rect('.ac-col-postings'),top:rect('.ac-col-top50'),
      board:rect('#marketWidthMap'),footer:rect('.mw-footer'),
      heading:rect('#marketWidthTitle'),
+     titlePhrase:rect('.mw-title-phrase'),
+     titlePhraseLines:(()=>{
+       const range=document.createRange();
+       range.selectNodeContents(document.querySelector('.mw-title-phrase'));
+       return range.getClientRects().length;
+     })(),
      summary:rect('.mw-summary'),date:rect('.mw-date-nav'),
      tabs:rect('#marketWidthRegions'),encoding:rect('.mw-encoding'),
      pageWidth:document.documentElement.scrollWidth,
@@ -461,6 +467,10 @@ try{
    assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
    assert.ok(bounds.tabs.x>=bounds.heading.x+bounds.heading.w-2,
     'region tabs must align right of Market Width heading');
+   assert.equal(bounds.titlePhraseLines,1,
+    'the complete 18 institutions we watch closely phrase stays on one line');
+   assert.ok(bounds.titlePhrase.x+bounds.titlePhrase.w<=bounds.right.x+bounds.right.w+1,
+    'the unbroken Market Width subtitle must stay within its panel');
    assert.ok(Math.abs((bounds.tabs.y+bounds.tabs.h/2)-(bounds.heading.y+bounds.heading.h/2))<10,
     'region tabs and heading should share one centered baseline');
    if(bounds.topBg)assert.equal(bounds.regionBg,bounds.topBg,'Top30 and Market Width region controls share chrome');
