@@ -159,6 +159,7 @@ async function renderLeft(page,chartData,theme){
    chartKind:svg?.dataset.chartKind,dayBins:Number(svg?.dataset.dayBins),
    regionFinals:Object.fromEntries(['hk','sg','cn'].map(k=>[k,Number(svg?.getAttribute('data-region-'+k))])),
    finalTotal:Number(svg?.dataset.finalTotal),
+   axisMax:Number(svg?.dataset.axisMax),
    chartAria:svg?.getAttribute('aria-label')||'',
    otherSeries:document.querySelectorAll('#dist .region-series.other').length,
    grid:document.querySelectorAll('#dist .region-spark-grid').length,
@@ -355,8 +356,10 @@ async function renderLeft(page,chartData,theme){
   'rightmost cumulative stacked total equals the count of all included active roles');
  assert.equal(quality.regionFinals.hk+quality.regionFinals.sg+quality.regionFinals.cn,quality.finalTotal,
   'the three final regional layers must sum to the y-axis endpoint');
- assert.ok(Math.max(...quality.regionTicks.map(t=>t.value))>=quality.finalTotal,
-  'the y-axis must fit the complete vertically stacked total, not a daily peak');
+ assert.ok(quality.axisMax>=quality.finalTotal,
+  'the true y-axis maximum must contain the full three-region cumulative total');
+ if(quality.finalTotal>=10)assert.ok(quality.axisMax/quality.finalTotal<=1.2,
+  'the full-width regional chart must not waste excessive vertical headroom');
  assert.ok(quality.regionTicks.length>=2&&quality.regionTicks.length<=6,
   'only y-axis NUMBER labels remain; no full-width horizontal gridlines');
  // A valid historical cohort need not have new observations within the
