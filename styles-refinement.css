@@ -630,33 +630,56 @@ body.compact .job > .mono { margin-top:2px; }
 #dist .region-series.hk{--region-ink:#b27a22;--region-band:31%}
 #dist .region-series.sg{--region-ink:#6e8f3b;--region-band:29%}
 #dist .region-series.cn{--region-ink:#b33a36;--region-band:25%}
-#dist .region-spark-line,
-#dist .region-stat-key{
+#dist .region-spark-line{
   fill:none;stroke:var(--region-ink);stroke-width:1.65;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
-/* One analytical key rather than a second miniature chart: cumulative
-   totals and mutually exclusive shares align to the existing three inks.
-   The SVG uses a dedicated top gutter so the text never covers the bands. */
-#dist .region-stat-key{stroke-width:3.3}
-#dist .region-stat-total,
-#dist .region-stat-count{
-  fill:var(--viz-secondary);
-  font:650 13px var(--mono);
+/* The live regional mix is a single restrained composition key. Its
+   text stays at real CSS sizes instead of shrinking inside the SVG viewBox. */
+#dist .region-mix{
+  min-width:0;flex:none;
+  margin:1px 2.6923% 9px 8.2692%;
+}
+#dist .region-mix-meta,
+#dist .region-mix-item-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:7px;
+}
+#dist .region-mix-meta{margin-bottom:8px}
+#dist .region-mix-kicker,
+#dist .region-mix-total{
+  color:var(--viz-quiet);font:600 10px/1.25 var(--mono);
+  letter-spacing:.045em;white-space:nowrap;
+}
+#dist .region-mix-total{color:var(--viz-secondary);letter-spacing:0}
+#dist .region-mix-rail{
+  display:flex;width:100%;height:4px;overflow:hidden;border-radius:1px;
+  background:var(--viz-rule);margin-bottom:10px;
+}
+#dist .region-mix-segment{
+  flex-basis:0;min-width:0;background:var(--region-ink);opacity:.78;
+}
+#dist .region-mix-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+}
+#dist .region-mix-item{min-width:0}
+#dist .region-mix-name{
+  color:var(--viz-secondary);font:600 11px/1.2 var(--mono);
+  white-space:nowrap;
+}
+#dist .region-mix-swatch{
+  display:inline-block;width:10px;height:3px;margin-right:6px;
+  vertical-align:middle;border-radius:1px;background:var(--region-ink);
+}
+#dist .region-mix-share{
+  color:var(--viz-secondary);opacity:.8;
+  font:500 11px/1.2 var(--mono);white-space:nowrap;
   font-variant-numeric:tabular-nums;
 }
-#dist .region-stat-count{font-size:11.5px}
-#dist .region-stat-share{
-  fill:var(--viz-secondary);opacity:.82;
-  font:500 10.2px var(--mono);
-  font-variant-numeric:tabular-nums;
-}
-#dist .region-stat-label,
-#dist .region-stat-region{
-  fill:var(--viz-quiet);
-  font:600 9px var(--sans);
-  letter-spacing:.01em;
+#dist .region-mix-count{
+  display:block;margin-top:4px;color:var(--viz-secondary);
+  font:650 17px/1.25 var(--mono);
+  font-variant-numeric:tabular-nums;letter-spacing:-.015em;
 }
 /* Each band occupies the real space between two cumulative regional
    boundaries, with a restrained SHADE of the original line color.
@@ -687,6 +710,10 @@ body.compact .job > .mono { margin-top:2px; }
   fill:var(--viz-blue);opacity:1;
   transition:opacity .16s ease;
 }
+/* Same blue hue and exactly the same quantities; weekend activity is
+   differentiated only by a measured reduction in visual prominence. */
+#spark .rhythm-bar.weekend{opacity:.63}
+[data-theme="dark"] #spark .rhythm-bar.weekend{opacity:.71}
 #spark .rhythm-bar-hit{fill:transparent;cursor:crosshair}
 #spark .rhythm-point:hover .rhythm-bar,
 #spark .rhythm-point:focus-visible .rhythm-bar{opacity:1}
@@ -699,18 +726,23 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
-/* SVG text scales with the viewBox: the compact regional key has slightly
-   larger type on narrow phones, with the same fixed four-column alignment. */
+/* Keep tick labels legible while the composition key uses real CSS pixels. */
 @media(max-width:720px){
   #dist .region-spark-value,
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:12.5px;letter-spacing:0}
-  #dist .region-stat-total{font-size:18px}
-  #dist .region-stat-count{font-size:16px}
-  #dist .region-stat-share{font-size:13.2px;opacity:.96}
-  #dist .region-stat-label,
-  #dist .region-stat-region{font-size:12.5px;letter-spacing:0}
+  #dist .region-mix{margin-top:3px;margin-bottom:10px}
+  #dist .region-mix-meta{margin-bottom:9px}
+  #dist .region-mix-grid{gap:8px}
+  #dist .region-mix-count{font-size:16px}
+  #dist .region-mix-share{font-size:11px;opacity:.94}
+  #dist .region-mix-name{font-size:11px}
+}
+@media(max-width:360px){
+  #dist .region-mix-count{font-size:15px}
+  #dist .region-mix-share{font-size:10.5px}
+  #dist .region-mix-total,#dist .region-mix-kicker{font-size:9.5px}
 }
 
 /* Masthead copy: disciplined editorial typography, no structural change. */
