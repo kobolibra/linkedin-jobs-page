@@ -838,7 +838,7 @@ jobsDataPromise
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
-      gridTicks+dimensionScale+series.map(layer=>layer.area).join('')+
+      gridTicks+series.map(layer=>layer.area).join('')+dimensionScale+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
       directLabels+'</div>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
