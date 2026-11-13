@@ -11,6 +11,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 6d44ac4431a2b896cb7cccc19f75e9cc5615a9de
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
