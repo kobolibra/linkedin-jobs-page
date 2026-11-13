@@ -28,6 +28,8 @@ jobs:
           assert s.count(old)==1
           s=s.replace(old,old+'\n  font-variant-numeric:lining-nums tabular-nums;')
           p.write_text(s)
+          p=Path('scripts/test_calendar_axes.mjs')
+          p.write_text('\n'.join(line.rstrip() for line in p.read_text().splitlines())+'\n')
           PY
           node --check app.js
           node --check scripts/test_calendar_browser.mjs
