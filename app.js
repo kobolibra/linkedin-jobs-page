@@ -740,7 +740,12 @@ jobsDataPromise
     const shortHistory=bins<100;
     const spaced=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    const minLabelY=top+23,maxLabelY=base-23,minGap=shortHistory?48:37;
+    // HTML text is measured in CSS pixels, while SVG positions scale with
+    // width. Reserve enough *screen pixels* between the three readings even
+    // on a 320px handset, without changing the underlying measured heights.
+    const plotCssWidth=distEl.getBoundingClientRect().width||TW;
+    const minLabelY=top+23,maxLabelY=base-23;
+    const minGap=Math.max(shortHistory?48:37,(shortHistory?39:35)*TW/plotCssWidth);
     let previous=minLabelY-minGap;
     spaced.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
     const overflow=spaced.length?Math.max(0,spaced.at(-1).y-maxLabelY):0;
