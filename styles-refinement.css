@@ -665,24 +665,29 @@ body.compact .job > .mono { margin-top:2px; }
    none of this creates a second numeric axis or an external legend. */
 #dist .region-end-label{
   position:absolute;transform:translateY(-50%);
-  display:flex;flex-direction:row;align-items:baseline;gap:7px;
-  white-space:nowrap;font-variant-numeric:tabular-nums;
-  text-shadow:0 0 3px var(--surface);
+  display:grid;grid-template-columns:max-content max-content;
+  align-items:baseline;column-gap:7px;row-gap:3px;
+  white-space:nowrap;font-family:var(--sans);
+  font-variant-numeric:lining-nums tabular-nums;
 }
 #dist .region-end-label.hk{--region-label-ink:#94641c}
 #dist .region-end-label.sg{--region-label-ink:#516e2a}
 #dist .region-end-label.cn{--region-label-ink:#a13b38}
 [data-theme="dark"] #dist .region-end-label{--region-label-ink:var(--region-ink)}
 #dist .region-end-name{
-  color:var(--region-label-ink);font:700 10.5px/1.15 var(--mono);
-  letter-spacing:.045em;
+  grid-column:1 / -1;
+  color:var(--region-label-ink);font:600 11px/1.2 var(--sans);
+  letter-spacing:.04em;
 }
 #dist .region-end-count{
-  color:var(--viz-secondary);font:650 15px/1.14 var(--mono);
+  color:var(--viz-secondary);font:500 18px/1.1 var(--sans);
   letter-spacing:-.02em;
+  font-variant-numeric:lining-nums tabular-nums;
 }
 #dist .region-end-share{
-  color:var(--viz-quiet);font:500 10px/1.15 var(--mono);
+  color:var(--viz-quiet);font:400 10.5px/1.2 var(--sans);
+  letter-spacing:0;
+  font-variant-numeric:lining-nums tabular-nums;
 }
 /* In short date ranges the terminal callouts have a distinct outer gutter;
    no background knockout, second axis, or measurement tick is required. */
@@ -723,16 +728,15 @@ body.compact .job > .mono { margin-top:2px; }
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:13px;letter-spacing:0}
-  #dist .region-end-label{gap:5px}
-  #dist .region-end-name{font-size:10px}
-  #dist .region-end-count{font-size:14.5px}
-  #dist .region-end-share{font-size:9.5px}
+  #dist .region-end-label{column-gap:6px}
+  #dist .region-end-name{font-size:10.5px}
+  #dist .region-end-count{font-size:17px}
+  #dist .region-end-share{font-size:10px}
 }
 @media(max-width:360px){
-  #dist .region-end-label{gap:4px}
-  #dist .region-end-count{font-size:14px}
-  #dist .region-end-share{font-size:9px}
-  #dist .region-end-name{font-size:9.3px}
+  #dist .region-end-count{font-size:16px}
+  #dist .region-end-share{font-size:9.5px}
+  #dist .region-end-name{font-size:10px}
 }
 /* Masthead copy: disciplined editorial typography, no structural change. */
 .nj-market-statement{letter-spacing:-.025em;text-wrap:balance}
@@ -781,22 +785,13 @@ body.compact .job > .mono { margin-top:2px; }
 .jobs-data-notice button:hover,.jobs-load-retry:hover{border-color:var(--ink-soft)}
 @media(max-width:420px){.jobs-data-notice{align-items:flex-start;flex-direction:column}}
 
-/* Calendar labels share one typographic grammar; bounds are not axis ticks. */
+/* Calendar labels retain their approved cadence and typography. */
 #dist .region-spark-date,#spark .rhythm-axis-label,
 [data-theme="dark"] #spark .rhythm-axis-label{
   fill:var(--viz-secondary);font:500 12px var(--mono);letter-spacing:0;
   font-variant-numeric:tabular-nums;
 }
-#dist .chart-date-range,#spark .chart-date-range{
-  display:flex;justify-content:space-between;gap:12px;margin-top:3px;
-  color:var(--viz-quiet);font:500 10px/1.5 var(--mono);letter-spacing:0;
-  font-variant-numeric:tabular-nums;
-}
-#dist .chart-date-range{padding-left:8.269%;padding-right:3.269%}
-#spark .chart-date-range{padding-left:6.346%;padding-right:3.269%}
-.chart-date-zone{opacity:.78}
 @media(max-width:720px){
   #dist .region-spark-date,#spark .rhythm-axis-label,
   [data-theme="dark"] #spark .rhythm-axis-label{font-size:16px}
-  #dist .chart-date-range,#spark .chart-date-range{font-size:9px}
 }

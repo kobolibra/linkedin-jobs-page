@@ -29,6 +29,23 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
    const svg=document.querySelector('#dist svg');
    return {plot:rect(svg),dates:[...document.querySelectorAll('#dist .region-spark-date')].map(n=>({text:n.textContent,date:n.dataset.date,box:rect(n)})),weeks:[...document.querySelectorAll('#spark .rhythm-axis-label')].map(n=>({text:n.textContent,day:Number(n.dataset.day),date:n.dataset.date,box:rect(n)})),labels:[...document.querySelectorAll('.region-end-label')].map(n=>({region:n.dataset.region,count:Number(n.dataset.count),box:rect(n)})),arrows:[...document.querySelectorAll('.region-measure-height')].map(n=>({region:n.dataset.region,count:Number(n.dataset.count),lo:Number(n.dataset.lower),hi:Number(n.dataset.upper),x:Number(n.getAttribute('x1')),y1:Number(n.getAttribute('y1')),y2:Number(n.getAttribute('y2'))})),max:Number(svg.dataset.axisMax),total:Number(svg.dataset.finalTotal),ranges:document.querySelectorAll('.chart-date-range').length,scrollWidth:document.documentElement.scrollWidth};
   });
+  const type = await page.evaluate(()=>[...document.querySelectorAll('.region-end-label')].map(label=>{
+   const parts=['name','count','share'].map(part=>{
+    const node=label.querySelector('.region-end-'+part),r=node.getBoundingClientRect(),s=getComputedStyle(node);
+    return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,numeric:s.fontVariantNumeric};
+   });
+   return {parts,siteFont:getComputedStyle(document.body).fontFamily};
+  }));
+  for(const {parts:[name,count,share],siteFont} of type){
+   assert.ok(name.bottom+2<=count.y,'region acronym must occupy a separate first line');
+   assert.ok(Math.abs(name.x-count.x)<1,'both lines must share their left edge');
+   assert.ok(share.x>=count.right+5,'percentage must not crowd the count');
+   assert.ok(share.y<count.bottom&&share.bottom>count.y,'count and share stay on the second line');
+   for(const part of [name,count,share])assert.equal(part.font,siteFont,'reuse the site sans family');
+   assert.equal(name.weight,'600');assert.equal(count.weight,'500');assert.equal(share.weight,'400');
+   assert.ok(count.size>=16&&count.size<=18);assert.ok(count.size>name.size&&count.size>share.size);
+   assert.ok(count.numeric.includes('tabular-nums'),'keep aligned figures without monospaced letterforms');
+  }
   for(const marks of [state.dates,state.weeks])for(let i=1;i<marks.length;i++)assert.ok(marks[i].box.x>=marks[i-1].box.right-1,'calendar text collision');
   for(let i=1;i<state.weeks.length;i++)assert.equal(state.weeks[i].day-state.weeks[i-1].day,7);
   assert.ok(state.weeks.every(t=>new Date(t.date+'T00:00:00Z').getUTCDay()===1));
@@ -40,9 +57,9 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
    assert.ok(label.box.right<=state.plot.right+1,'annotation overflow');
    if(i){const prev=state.labels[i-1];assert.ok(label.box.x-prev.box.x>=state.plot.width*65/520);assert.ok(label.box.bottom<=prev.box.y+1,'regional labels overlap');}
   }
-  assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.equal(state.ranges,2);assert.ok(state.scrollWidth<=width+2);assert.deepEqual(errors,[]);
+  assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.equal(state.ranges,0);assert.ok(state.scrollWidth<=width+2);assert.deepEqual(errors,[]);
   await page.locator('.analytics-left').screenshot({path:new URL(engine+'-'+width+'-'+theme+'.png',out).pathname,animations:'disabled'});
-  results.push({engine,width,theme,state,errors});await page.close();
+  results.push({engine,width,theme,state,typography:type,errors});await page.close();
  }}finally{await browser.close();}
 }
 writeFileSync(new URL('results.json',out),JSON.stringify(results,null,2));console.log('Calendar/annotation visual matrix passed: '+results.length+' cases.');
