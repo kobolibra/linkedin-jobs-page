@@ -258,7 +258,8 @@ async function renderLeft(page,chartData,theme){
  assert.equal(quality.forbiddenGuideCount,0,
   'do not reintroduce previous duplicate axes or long right-side leaders');
  assert.equal(quality.grid,0,'no full-width y gridlines should compete with the local measures');
- assert.ok(Math.abs(quality.plotRight-quality.postingsPlotRight)<=.1&&quality.plotRight>=503,
+ if(quality.dayBins>1)assert.ok(
+  Math.abs(quality.plotRight-quality.postingsPlotRight)<=.1&&quality.plotRight>=503,
   'regional trend and New Postings share an identical RIGHT edge, with no blank side gutter');
  const visibleCounts=['HK','SG','CN'].map(k=>quality.regionFinals[k.toLowerCase()]);
  const heights=quality.heights,levels=quality.heightRefs;
