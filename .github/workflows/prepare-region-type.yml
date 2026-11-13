@@ -14,49 +14,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Apply scoped correction
+      - name: Update only the rejected visual caption contract
         run: |
-          python scripts/patches/region_label_typography_20261113.py
           python - <<'PY'
           from pathlib import Path
-          p=Path('styles-refinement.css')
+          p=Path('scripts/test_market_width_browser.mjs')
           s=p.read_text()
-          old='  color:var(--viz-secondary);font:500 18px/1.1 var(--sans);\n  letter-spacing:-.02em;'
-          assert s.count(old)==1
-          s=s.replace(old,old+'\n  font-variant-numeric:lining-nums tabular-nums;')
-          old='  color:var(--viz-quiet);font:400 10.5px/1.2 var(--sans);\n  letter-spacing:0;'
-          assert s.count(old)==1
-          s=s.replace(old,old+'\n  font-variant-numeric:lining-nums tabular-nums;')
+          pairs=[
+            ("assert.equal(quality.ranges.length,2,'both exact date ranges are disclosed outside the regular axes');", "assert.equal(quality.ranges.length,0,'unrequested range captions are absent from both charts');"),
+            ("assert.match(await tomorrowPage.locator('#dist .chart-date-range').textContent(),/13 Nov 2026/,'the exact range advances with the newly published data');", "assert.equal(await tomorrowPage.locator('#dist .chart-date-range').count(),0,'new publications must not reintroduce rejected range captions');")
+          ]
+          for before,after in pairs:
+              assert s.count(before)==1,before
+              s=s.replace(before,after)
           p.write_text(s)
-          p=Path('scripts/test_calendar_axes.mjs')
-          p.write_text('\n'.join(line.rstrip() for line in p.read_text().splitlines())+'\n')
           PY
-          node --check app.js
-          node --check scripts/test_calendar_browser.mjs
+          node --check scripts/test_market_width_browser.mjs
           node --test scripts/test_startup_date_scope.mjs scripts/test_calendar_axes.mjs scripts/test_frontend_resilience.mjs scripts/test_startup_loading.mjs
-      - name: Commit verified scoped files
+      - name: Commit verified regression correction
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add app.js styles-refinement.css index.html scripts/test_calendar_axes.mjs scripts/test_calendar_browser.mjs scripts/test_startup_date_scope.mjs scripts/test_frontend_resilience.mjs scripts/test_market_width_browser.mjs
+          git add scripts/test_market_width_browser.mjs
           git diff --cached --check
-          git --no-pager diff --cached --stat
-          git commit -m 'Remove unsolicited range captions and set regional labels in two coordinated sans-serif lines'
+          git commit -m 'Assert removed range captions stay absent, retaining date cadence and rollover checks'
           git push origin HEAD:fix/region-label-type-no-captions-20261113
-      - name: Retain source for independent visual comparison
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: region-type-source
-          path: |
-            *.js
-            *.mjs
-            *.css
-            *.html
-            jobs-index.json
-            jobs-version.json
-            scripts/*.mjs
-            .github/workflows/homepage-startup.yml
-            artifacts/region-type-before
-          include-hidden-files: true
-          retention-days: 3
