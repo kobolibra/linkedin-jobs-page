@@ -618,16 +618,21 @@ body.compact .job > .mono { margin-top:2px; }
 /* The full-length horizontal grid was redundant with the local measuring
    references; leave the numeric y-axis labels but no long cross-plot lines. */
 #dist .region-measure-reference{
-  stroke:var(--viz-secondary);stroke-width:.85;stroke-dasharray:2 5;
-  opacity:.39;fill:none;vector-effect:non-scaling-stroke;
+  stroke:var(--viz-secondary);stroke-width:.9;stroke-dasharray:1.5 4.5;
+  opacity:.43;fill:none;vector-effect:non-scaling-stroke;
 }
 #dist .region-measure-height{
-  stroke:var(--region-ink);stroke-width:1.5;opacity:.84;
+  stroke:var(--region-ink);stroke-width:1.05;opacity:.8;
   stroke-linecap:round;vector-effect:non-scaling-stroke;
 }
 #dist .region-measure-arrow{
-  stroke:var(--region-ink);stroke-width:1.25;opacity:.9;
+  stroke:var(--region-ink);stroke-width:1.1;opacity:.88;
   stroke-linejoin:round;stroke-linecap:round;fill:none;
+  vector-effect:non-scaling-stroke;
+}
+#dist .region-date-tick,
+#spark .rhythm-date-tick{
+  stroke:var(--viz-quiet);stroke-width:.85;opacity:.5;
   vector-effect:non-scaling-stroke;
 }
 #dist .region-spark-value,
@@ -718,13 +723,13 @@ body.compact .job > .mono { margin-top:2px; }
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:13px;letter-spacing:0}
-  #dist .region-end-label{gap:5px;left:27.0%}
+  #dist .region-end-label{gap:5px}
   #dist .region-end-name{font-size:10px}
   #dist .region-end-count{font-size:14.5px}
   #dist .region-end-share{font-size:9.5px}
 }
 @media(max-width:360px){
-  #dist .region-end-label{gap:4px;left:27.0%}
+  #dist .region-end-label{gap:4px}
   #dist .region-end-count{font-size:13.5px}
   #dist .region-end-share{font-size:9px}
   #dist .region-end-name{font-size:9.3px}
@@ -769,3 +774,9 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){.job .job-history-toggle{transition:none}}
 @media print{.job .job-history-toggle,.job-history-panel{display:none!important}}
 
+
+/* Keep actionable data-recovery controls quiet and distinct from the charts. */
+.jobs-data-notice{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink-soft);font-size:12px}
+.jobs-data-notice button,.jobs-load-retry{font:600 12px var(--sans);color:var(--navy);border:1px solid var(--line);border-radius:9px;padding:7px 11px;background:var(--surface);cursor:pointer}
+.jobs-data-notice button:hover,.jobs-load-retry:hover{border-color:var(--ink-soft)}
+@media(max-width:420px){.jobs-data-notice{align-items:flex-start;flex-direction:column}}
