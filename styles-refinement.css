@@ -635,9 +635,8 @@ body.compact .job > .mono { margin-top:2px; }
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
-/* Direct end-state labels, not a second chart or a statistics header.
-   Hairline reference levels extend left from each final cumulative boundary.
-   They are painted behind the fills so the actual series stays foreground. */
+/* Direct end-state measurements belong to the original plot, not a new
+   chart or header. No extra trend-spanning horizontal guidelines. */
 #dist .region-plot-stage{
   position:relative;width:100%;min-width:0;flex:none;
 }
