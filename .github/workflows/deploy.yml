@@ -45,9 +45,11 @@ on:
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
+# Never interrupt an already running n8n/RSS data upload when another
+# unrelated UI commit reaches main. The next pending run deploys latest main.
 concurrency:
   group: cloudflare-site
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: write

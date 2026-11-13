@@ -1,4 +1,5 @@
 import io
+import json
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -15,6 +16,14 @@ class VerificationTests(unittest.TestCase):
         url = request if isinstance(request, str) else request.full_url
         if '/auth/preferences' in url:
             raise HTTPError(url, 401, 'Unauthorized', {}, io.BytesIO(b'{}'))
+        if '/api/public-preview' in url:
+            root = Path(subject.__file__).parents[1]
+            index = json.loads((root / 'jobs-index.json').read_text('utf-8'))
+            return Response(json.dumps({
+                'jobs': [{'title': 'Public redacted listing'}],
+                'dataVersion': 'preview-' + index['dataVersion'],
+                'previewOverview': {'total': subject._expected_public_total(index)},
+            }).encode())
         for name in ('job-applications.js', 'job-applications.css'):
             if '/' + name in url:
                 return Response((Path(subject.__file__).parents[1] / name).read_bytes())
@@ -23,6 +32,41 @@ class VerificationTests(unittest.TestCase):
     def test_exact_assets_and_private_boundary(self):
         with patch.object(subject, 'urlopen', side_effect=self.fetch):
             self.assertTrue(subject.verify())
+
+    def test_production_verifier_uses_descriptive_client_identity(self):
+        requests = []
+        def fetch(request, **kwargs):
+            if isinstance(request, str):
+                raise AssertionError('All live fetches must set a descriptive user agent')
+            requests.append(request)
+            return self.fetch(request, **kwargs)
+        with patch.object(subject, 'urlopen', side_effect=fetch):
+            self.assertTrue(subject.verify())
+        self.assertTrue(requests)
+        self.assertTrue(all('NextJourney-DeployVerifier' in req.get_header('User-agent', '') for req in requests))
+        self.assertTrue(any('/api/public-preview?' in req.full_url for req in requests))
+
+    def test_stale_published_jobs_version_fails(self):
+        def fetch(request, **kwargs):
+            url = request.full_url
+            if '/api/public-preview' in url:
+                return Response(b'{"jobs":[{}],"dataVersion":"preview-stale","previewOverview":{"total":1}}')
+            return self.fetch(request, **kwargs)
+        with patch.object(subject, 'urlopen', side_effect=fetch):
+            with self.assertRaisesRegex(RuntimeError, 'version does not match'):
+                subject.verify()
+
+    def test_empty_published_job_preview_fails(self):
+        def fetch(request, **kwargs):
+            url = request.full_url
+            if '/api/public-preview' in url:
+                root = Path(subject.__file__).parents[1]
+                index = json.loads((root / 'jobs-index.json').read_text('utf-8'))
+                return Response(json.dumps({'jobs': [], 'dataVersion': 'preview-' + index['dataVersion'], 'previewOverview': {'total': subject._expected_public_total(index)}}).encode())
+            return self.fetch(request, **kwargs)
+        with patch.object(subject, 'urlopen', side_effect=fetch):
+            with self.assertRaisesRegex(RuntimeError, 'preview is empty'):
+                subject.verify()
 
     def test_wrong_asset_bytes_fail(self):
         with patch.object(subject, 'urlopen', return_value=Response(b'stale')):
