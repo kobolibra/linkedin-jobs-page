@@ -1,0 +1,99 @@
+name: Verify live regional typography
+on:
+  push:
+    branches: [verify/region-type-production-20261113]
+    paths: [.github/workflows/verify-region-type-live.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned verification browsers
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify exact deployed application and stylesheet
+        run: |
+          mkdir -p artifacts/live-region-type
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          import hashlib, time, json
+          expected={n:hashlib.sha256(Path(n).read_bytes()).hexdigest() for n in ['app.js','styles-refinement.css']}
+          for attempt in range(36):
+              try:
+                  actual={}
+                  for n in expected:
+                      req=Request('https://linkedin.claudecowork.workers.dev/'+n+'?v=region-type-clean-20261113',headers={'User-Agent':'NextJourney-Deployment-Verification/1.0','Cache-Control':'no-cache'})
+                      with urlopen(req,timeout=15) as response: actual[n]=hashlib.sha256(response.read()).hexdigest()
+                  if actual==expected:
+                      Path('artifacts/live-region-type/asset-hashes.json').write_text(json.dumps(actual,indent=2))
+                      print('EXACT_LIVE_SHA256_MATCH',actual)
+                      break
+                  print('Awaiting tested application bytes',flush=True)
+              except Exception as error: print(type(error).__name__,str(error),flush=True)
+              time.sleep(10)
+          else: raise SystemExit('Tested correction not verifiably live')
+          PY
+      - name: Verify actual production without request mocks or credentials
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium,webkit} from 'playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          const evidence=[];
+          for(const [engine,type] of Object.entries({chromium,webkit})){
+           const browser=await type.launch({headless:true});
+           try{for(const width of [390,1440])for(const theme of ['light','dark']){
+            const context=await browser.newContext({viewport:{width,height:1000},colorScheme:theme,timezoneId:'Asia/Shanghai'});
+            const page=await context.newPage(),errors=[],renderErrors=[],privateRequests=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))renderErrors.push(m.text());});
+            page.on('request',r=>{if(/\/(?:jobs-index\.json|jobs-version\.json|auth\/preferences)(?:[?]|$)/.test(r.url()))privateRequests.push(r.url());});
+            for(let visit=0;visit<2;visit++){
+             const response=visit?await page.reload({waitUntil:'domcontentloaded'}):await page.goto('https://linkedin.claudecowork.workers.dev/',{waitUntil:'domcontentloaded'});
+             assert.equal(response.status(),200);
+             await page.waitForFunction(()=>document.querySelector('#jobs .job')||document.querySelector('#empty.show'),null,{timeout:45000});
+             const state=await page.evaluate(()=>{
+              const rect=n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width};};
+              const svg=document.querySelector('#dist svg');
+              return {ready:typeof renderReady!=='undefined'&&renderReady,auth:document.documentElement.dataset.authState,rows:document.querySelectorAll('#jobs .job').length,empty:document.querySelector('#empty').classList.contains('show'),footers:document.querySelectorAll('.chart-date-range,.chart-date-zone').length,bars:document.querySelectorAll('#spark .rhythm-bar').length,app:[...document.scripts].find(s=>s.src.includes('/app.js?'))?.src,style:document.querySelector('link[href*="styles-refinement.css"]')?.href,plot:rect(svg),siteFont:getComputedStyle(document.body).fontFamily,dates:[...document.querySelectorAll('#dist .region-spark-date,#spark .rhythm-axis-label')].map(n=>n.textContent),labels:[...document.querySelectorAll('.region-end-label')].map(n=>({region:n.dataset.region,count:n.dataset.count,share:n.dataset.share,box:rect(n),parts:['name','count','share'].map(part=>{const e=n.querySelector('.region-end-'+part),s=getComputedStyle(e);return {...rect(e),text:e.textContent,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,numeric:s.fontVariantNumeric};})})),arrows:[...document.querySelectorAll('.region-measure-height')].map(n=>Number(n.getAttribute('x1'))),scrollWidth:document.documentElement.scrollWidth};
+             });
+             assert.equal(state.ready,true);assert.equal(state.auth,'guest');assert.equal(state.empty,false);assert.equal(state.footers,0);assert.equal(state.bars,30);assert.ok(state.rows>0&&state.rows<=12);
+             assert.ok(state.app.includes('region-type-clean-20261113'));assert.ok(state.style.includes('region-type-clean-20261113'));
+             assert.deepEqual(state.arrows,[88,154,220]);assert.equal(state.labels.length,3);
+             for(const label of state.labels){
+              const [name,count,share]=label.parts;
+              assert.ok(name.bottom+2<=count.y,'region must occupy its own first line');assert.ok(Math.abs(name.x-count.x)<1);
+              assert.ok(share.x>=count.right+5);assert.ok(share.y<count.bottom&&share.bottom>count.y);
+              for(const part of label.parts)assert.equal(part.font,state.siteFont);
+              assert.equal(name.weight,'600');assert.equal(count.weight,'500');assert.equal(share.weight,'400');assert.ok(count.size>=16&&count.size<=18);assert.ok(count.numeric.includes('tabular-nums'));
+              assert.ok(label.box.right<=state.plot.right+1);
+             }
+             for(let i=1;i<state.labels.length;i++){assert.ok(state.labels[i].box.x>state.labels[i-1].box.x);assert.ok(state.labels[i].box.bottom<=state.labels[i-1].box.y+1);}
+             assert.ok(state.scrollWidth<=width+2);assert.deepEqual(renderErrors,[]);assert.deepEqual(privateRequests,[]);
+             const optionalErrors=errors.filter(s=>s.includes('guestbook-api.claudecowork.workers.dev')&&/access control|CORS/i.test(s));
+             assert.deepEqual(errors.filter(s=>!optionalErrors.includes(s)),[]);
+             if(optionalErrors.length)console.warn('OPTIONAL_GUESTBOOK_DIAGNOSTIC',JSON.stringify(optionalErrors));
+             if(!visit)await page.locator('.analytics-left').screenshot({path:`artifacts/live-region-type/${engine}-${width}-${theme}.png`,animations:'disabled'});
+             evidence.push({engine,width,theme,visit,state,pageErrors:errors.slice(),renderErrors:renderErrors.slice(),optionalServiceErrors:optionalErrors,privateRequests:privateRequests.slice()});
+             writeFileSync('artifacts/live-region-type/results.json',JSON.stringify(evidence,null,2));
+             console.log('LIVE_REGION_TYPE_PASS',engine,width,theme,visit);
+            }
+            await context.close();
+           }}finally{await browser.close();}
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-region-type-evidence
+          path: artifacts/live-region-type
+          if-no-files-found: ignore
+          retention-days: 7
