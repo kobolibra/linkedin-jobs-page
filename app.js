@@ -589,11 +589,14 @@ jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-
 const jobsDataPromise=(window.__jobsIndexDocument||window.JobIndexStore.load())
   .then(data=>{window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
+let jobsDataReceived=false,jobsCoreReady=false;
 jobsDataPromise
   .then(async data=>{
+    jobsDataReceived=true;
     // Wait only for row/chart enhancements, not optional modules such as the
     // guestbook, avoiding a second chart layout or missing initial row actions.
     await window.__appCoreReady;
+    jobsCoreReady=true;
     if(!Array.isArray(data))data=[];
     // Use the deduplicated dataset as the single source for rendering and every statistic.
     data=keepLatestSameCityTitle(data);
@@ -726,7 +729,9 @@ jobsDataPromise
     if(bins>1)datePositions.push({day:bins-1,label:lastLabel});
     const dateTicks=datePositions.map((item,i)=>{
       const first=i===0,last=i===datePositions.length-1;
-      return '<text class="region-spark-date" x="'+trendX(item.day+1).toFixed(2)+
+      const x=trendX(item.day+1).toFixed(2);
+      return '<line class="region-date-tick" x1="'+x+'" x2="'+x+'" y1="333" y2="337"/>'+
+        '<text class="region-spark-date" x="'+x+
         '" y="351" data-day="'+item.day+'" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
         escSvg(item.label)+'</text>';
     }).join('');
@@ -756,7 +761,7 @@ jobsDataPromise
     const shortHistory=bins<100;
     const referenceLines=[...new Set(cumulativeLevels)].map(level=>
       '<line class="region-measure-reference" data-level="'+level+
-      '" x1="91" x2="237" y1="'+trendY(level).toFixed(2)+
+      '" x1="91" x2="219" y1="'+trendY(level).toFixed(2)+
       '" y2="'+trendY(level).toFixed(2)+'"/>').join('');
     const verticalMeasures=regionOrder.map((k,i)=>{
       const count=snapshotCounts[i];
@@ -765,11 +770,13 @@ jobsDataPromise
       const low=trendY(cumulativeLevels[i]),high=trendY(cumulativeLevels[i+1]);
       // For an almost-zero share, preserve the exact tiny length instead
       // of drawing misleading larger arrows.
-      const arrowheads=low-high>=17
-        ?'<path class="region-measure-arrow" d="M'+(x-3)+','+(high+4).toFixed(2)+
-          ' L'+x+','+(high+.8).toFixed(2)+' L'+(x+3)+','+(high+4).toFixed(2)+
-          ' M'+(x-3)+','+(low-4).toFixed(2)+' L'+x+','+(low-.8).toFixed(2)+
-          ' L'+(x+3)+','+(low-4).toFixed(2)+'"/>':'';
+      // Precise, open dimension-arrow tips: anchored inside each true
+      // cumulative boundary, with no filled triangles or decorative caps.
+      const arrowheads=low-high>=19
+        ?'<path class="region-measure-arrow" d="M'+(x-2.6)+','+(high+5).toFixed(2)+
+          ' L'+x+','+(high+1.5).toFixed(2)+' L'+(x+2.6)+','+(high+5).toFixed(2)+
+          ' M'+(x-2.6)+','+(low-5).toFixed(2)+' L'+x+','+(low-1.5).toFixed(2)+
+          ' L'+(x+2.6)+','+(low-5).toFixed(2)+'"/>':'';
       return '<g class="region-series '+k.toLowerCase()+' region-measure-group">'+
         '<line class="region-measure-height" data-region="'+k+
         '" data-count="'+count+'" data-lower="'+cumulativeLevels[i]+
@@ -796,6 +803,10 @@ jobsDataPromise
     const overflow=visibleRows.length?Math.max(0,visibleRows.at(-1).y-maxLabelY):0;
     visibleRows.forEach(row=>row.y-=overflow);
     const labelY=Object.fromEntries(visibleRows.map(row=>[row.k,row.y]));
+    // As the accumulated bands rise towards the right, the inset editorial
+    // readings advance gently rightward too, rather than forming a rigid column.
+    // Keep every value inside the existing left whitespace, never in a side panel.
+    const labelX={HK:139,SG:153,CN:167};
     const directLabels='<div class="region-end-labels" aria-hidden="true">'+
       regionOrder.map((k,i)=>{
         const count=snapshotCounts[i];
@@ -804,7 +815,8 @@ jobsDataPromise
         return '<div class="region-series '+k.toLowerCase()+
           ' region-end-label" data-region="'+k+'" data-count="'+count+
           '" data-share="'+share+'" data-band-center="'+bandMiddleY[i].toFixed(2)+
-          '" style="top:'+(labelY[k]/TH*100).toFixed(4)+'%">'+
+          '" style="top:'+(labelY[k]/TH*100).toFixed(4)+
+          '%;left:'+(labelX[k]/TW*100).toFixed(4)+'%">'+
           '<span class="region-end-name">'+k+'</span>'+
           '<strong class="region-end-count">'+countFormat.format(count)+'</strong>'+
           '<span class="region-end-share">'+share+'</span></div>';
@@ -975,11 +987,13 @@ jobsDataPromise
       }
     }
     rhythmMarks.push(days.length-1);
-    const dateLabels=rhythmMarks.map((i,j)=>
-      '<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+
-      '" y="145" data-day="'+i+'" text-anchor="'+(j===0?'start':j===rhythmMarks.length-1?'end':'middle')+'">'+
-      days[i].label+'</text>'
-    ).join('');
+    const dateLabels=rhythmMarks.map((i,j)=>{
+      const x=sx(i).toFixed(1);
+      return '<line class="rhythm-date-tick" x1="'+x+'" x2="'+x+'" y1="130" y2="134"/>'+
+        '<text class="rhythm-axis-label" x="'+x+
+        '" y="145" data-day="'+i+'" text-anchor="'+(j===0?'start':j===rhythmMarks.length-1?'end':'middle')+'">'+
+        days[i].label+'</text>';
+    }).join('');
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
       '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
@@ -1048,8 +1062,49 @@ jobsDataPromise
     renderReady=true;
     delete regionsEl.dataset.pendingRegion;
     apply();
+    if(window.JobIndexStore?.cacheState==='stale'){
+      const notice=document.createElement('div');
+      notice.className='jobs-data-notice';
+      notice.setAttribute('role','status');
+      const label=document.createElement('span');
+      label.textContent='当前使用上次保存的职位数据，最新同步暂不可用。';
+      const refresh=document.createElement('button');
+      refresh.type='button';refresh.textContent='重新获取';refresh.onclick=()=>location.reload();
+      notice.append(label,refresh);jobsEl.prepend(notice);
+    }
   })
-  .catch(()=>{jobsEl.innerHTML="";emptyEl.classList.add("show");emptyEl.querySelector(".big").textContent="职位数据加载失败，请刷新重试";emptyEl.querySelector(".big").nextElementSibling.textContent="网络暂时不可用，或数据加载超时。";});
+  .catch(error=>{
+    // A chart/runtime exception is not a network timeout. Retain the actual
+    // failure in the console and give users a specific, actionable state.
+    const status=Number(error?.status||0);
+    const stage=!jobsDataReceived?'index':!jobsCoreReady?'scripts':'render';
+    console.error('[jobs] '+stage+' failed',error);
+    jobsEl.replaceChildren();
+    const title=emptyEl.querySelector('.big');
+    const detail=title?.nextElementSibling;
+    if(stage==='render'){
+      title.textContent='页面数据处理失败';
+      detail.textContent='职位数据已获取，但页面渲染发生错误。请重新加载。';
+    }else if(stage==='scripts'){
+      title.textContent='页面资源加载失败';
+      detail.textContent='必要的页面脚本未完整加载，请刷新重试。';
+    }else if(status===401||status===403){
+      title.textContent='职位数据访问受限';
+      detail.textContent='请求被拒绝（HTTP '+status+'）。请检查登录状态或网络安全限制后重试。';
+    }else if(status===404){
+      title.textContent='职位数据文件暂不可用';
+      detail.textContent='服务器未找到本次数据文件（HTTP 404），请稍后再试。';
+    }else{
+      title.textContent='职位数据加载失败';
+      detail.textContent=/timeout|abort/i.test(String(error?.message||error?.name||''))
+        ?'数据下载超时，请检查网络连接后重试。'
+        :'数据请求或解析失败，请检查网络后重试。';
+    }
+    emptyEl.classList.add('show');
+    let retry=emptyEl.querySelector('.jobs-load-retry');
+    if(!retry){retry=document.createElement('button');retry.className='jobs-load-retry';
+      retry.type='button';retry.textContent='重新加载';retry.onclick=()=>location.reload();emptyEl.appendChild(retry);}
+  });
 const activeOnlyEl=document.getElementById("activeOnlyToggle"),activeCountEl=document.getElementById("activeJobCount");
 activeOnlyEl.addEventListener("click",()=>{activeOnly=!activeOnly;apply();});
 function countLoadedActiveJobs(){
