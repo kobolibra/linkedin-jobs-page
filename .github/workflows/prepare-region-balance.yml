@@ -1,0 +1,88 @@
+name: Prepare regional visual balance
+on:
+  push:
+    branches: [fix/region-visual-balance-20261113]
+    paths: [.github/workflows/prepare-region-balance.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply visually inspected style correction with exact hashes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path('styles-refinement.css');s=p.read_text()
+          assert hashlib.sha256(s.encode()).hexdigest()=='0c9d467f6ed9221b1409ea7c9feb9d67516ff67c5a5445d6a024e54a1854fe6a'
+          changes=[
+            ('stroke:var(--viz-secondary);stroke-width:.9;stroke-dasharray:1.3 4;\n  opacity:.34;', 'stroke:var(--viz-secondary);stroke-width:.85;stroke-dasharray:1.3 4;\n  opacity:.42;'),
+            ('stroke:var(--viz-secondary);stroke-width:.75;stroke-dasharray:1.3 4;\n  opacity:.2;', 'stroke:var(--viz-secondary);stroke-width:.85;stroke-dasharray:1.3 4;\n  opacity:.36;'),
+            ('[data-theme="dark"] #dist .region-projection-line{opacity:.22}', '[data-theme="dark"] #dist .region-projection-line{opacity:.34}'),
+            ('stroke:var(--region-ink);stroke-width:1.05;opacity:.8;', 'stroke:var(--region-ink);stroke-width:.85;opacity:.6;'),
+            ('stroke:var(--region-ink);stroke-width:1.1;opacity:.88;', 'stroke:var(--region-ink);stroke-width:.85;opacity:.64;'),
+            ('color:var(--region-label-ink);font:600 11px/1.2 var(--sans);', 'color:var(--region-label-ink);font:500 10.5px/1.2 var(--sans);'),
+            ('color:var(--viz-secondary);font:500 18px/1.1 var(--sans);', 'color:var(--viz-secondary);font:400 16px/1.1 var(--sans);'),
+            ('#dist .region-end-name{font-size:10.5px}', '#dist .region-end-name{font-size:10px}'),
+            ('#dist .region-end-count{font-size:17px}', '#dist .region-end-count{font-size:15px}'),
+            ('#dist .region-end-count{font-size:16px}', '#dist .region-end-count{font-size:14.5px}')
+          ]
+          for old,new in changes:
+              assert s.count(old)==1, old
+              s=s.replace(old,new)
+          assert hashlib.sha256(s.encode()).hexdigest()=='96e7f378cb425f566c9bb706f8b736d68daecd5953fc77a41da754780f483904'
+          p.write_text(s)
+          def replace(path,old,new,count=1):
+              p=Path(path);s=p.read_text();assert s.count(old)==count,(path,old);p.write_text(s.replace(old,new))
+          replace('index.html','styles-refinement.css?v=region-projection-20261113','styles-refinement.css?v=region-balance-20261113')
+          replace('scripts/test_frontend_resilience.mjs','styles-refinement\\.css\\?v=region-projection-20261113','styles-refinement\\.css\\?v=region-balance-20261113')
+          replace('scripts/test_calendar_browser.mjs',"assert.equal(name.weight,'600');assert.equal(count.weight,'500');", "assert.equal(name.weight,'500');assert.equal(count.weight,'400');")
+          replace('scripts/test_calendar_browser.mjs','assert.ok(count.size>=16&&count.size<=18);','assert.equal(count.size,width<=360?14.5:width<=720?15:16);')
+          for file in ['scripts/test_calendar_browser.mjs','scripts/test_homepage_startup.mjs']:
+              replace(file,"import {assertRegionProjections} from './assert_region_projections.mjs';", "import {assertRegionProjections,assertRegionVisualBalance} from './assert_region_projections.mjs';")
+          replace('scripts/test_calendar_browser.mjs','  const projections=await assertRegionProjections(page);','  const projections=await assertRegionProjections(page);\n  const visualBalance=await assertRegionVisualBalance(page);')
+          replace('scripts/test_calendar_browser.mjs','typography:type,projections,errors','typography:type,projections,visualBalance,errors')
+          replace('scripts/test_homepage_startup.mjs','   await assertRegionProjections(page);','   await assertRegionProjections(page);\n   await assertRegionVisualBalance(page);')
+          p=Path('scripts/assert_region_projections.mjs')
+          extra='''
+          // Check the complete weight hierarchy, not only line existence.
+          export async function assertRegionVisualBalance(page){
+           const state=await page.evaluate(()=>{
+            const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
+            return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),tips:all('.region-measure-arrow'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
+           });
+           for(const n of state.refs){assert.equal(n.width,.85);assert.equal(n.opacity,.42);}
+           for(const n of state.projections){assert.equal(n.width,.85);assert.equal(n.opacity,state.dark?.34:.36);}
+           for(const n of state.arrows){assert.equal(n.width,.85);assert.equal(n.opacity,.6);}
+           for(const n of state.tips){assert.equal(n.width,.85);assert.equal(n.opacity,.64);}
+           for(const n of state.contours)assert.equal(n.width,1.6,'data contours remain primary');
+           for(const [kind,weight] of [['names','500'],['counts','400'],['shares','400']])for(const n of state[kind]){
+            assert.equal(n.font,state.siteFont);assert.equal(n.weight,weight);assert.equal(n.opacity,1,'readable text is not faded');
+           }
+           for(const n of state.counts)assert.equal(n.size,state.viewport<=360?14.5:state.viewport<=720?15:16);
+           for(const n of state.names)assert.ok(n.size>=10&&n.size<=10.5);
+           for(const n of state.shares)assert.ok(n.size>=9.5&&n.size<=10.5);
+           return state;
+          }
+          '''
+          p.write_text(p.read_text().rstrip()+'\n'+extra)
+          assert hashlib.sha256(Path('app.js').read_bytes()).hexdigest()=='dee27a3069bbcc6c63628110e427e72e52a6afdfb18f29946f747bc5af898c1e'
+          PY
+          node --check scripts/assert_region_projections.mjs
+          node --check scripts/test_calendar_browser.mjs
+          node --test scripts/test_startup_date_scope.mjs scripts/test_calendar_axes.mjs scripts/test_frontend_resilience.mjs scripts/test_startup_loading.mjs
+      - name: Commit runtime styles and relevant tests only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add styles-refinement.css index.html scripts/assert_region_projections.mjs scripts/test_calendar_browser.mjs scripts/test_homepage_startup.mjs scripts/test_frontend_resilience.mjs
+          git diff --cached --check
+          git --no-pager diff --cached --stat
+          git commit -m 'Balance regional guides, lighter arrows and restrained two-line figures without changing app logic'
+          git push origin HEAD:fix/region-visual-balance-20261113
