@@ -100,6 +100,7 @@ async function renderLeft(page,chartData,theme){
    stageTotal:Number(stage.dataset.visibleTotal),
    shortHistory:stage.classList.contains('is-short-history'),
    shortLabelDisplays:statRows.map(node=>getComputedStyle(node).display),
+   shortLabelBackgrounds:statRows.map(node=>getComputedStyle(node).backgroundImage),
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
    oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
    legendBounds:rect(stage),svgBounds:rect(svg),
@@ -197,6 +198,8 @@ async function renderLeft(page,chartData,theme){
   'both full-year and short-history annotations use a quiet two-level typographic layout');
  assert.equal(quality.metaCount,quality.legendItems.length,
   'each regional reading has a small area/share line above its dominant count');
+ if(quality.shortHistory)assert.ok(quality.shortLabelBackgrounds.every(x=>x==='none'),
+  'short-range data must remain visible beneath labels: no opaque knockout cards');
  const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
  assert.deepEqual(quality.legendItems.map(x=>x.region),visibleRegionNames);
  assert.deepEqual(quality.legendItems.map(x=>x.count),
