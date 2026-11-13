@@ -11332,5 +11332,46 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E9%A6%99%E6%A0%BC%E9%87%8C%E6%8B%89%E9%A5%AD%E5%BA%97%E7%AE%A1%E7%90%86-%E4%B8%8A%E6%B5%B7-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4487862936"
+  },
+  "sps": {
+    "name": "SPS",
+    "checkedAt": "2026-11-13T04:02:52.836370+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3a52f0da68e67cbd91bee079.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFtwCKTmUC2Jg/company-logo_100_100/company-logo_100_100/0/1688136019442/sps_logo?e=2147483647&v=beta&t=d1Smcwp3DFIHDY7sUiVSSegv87L_XZD6da9pHoHruoo",
+    "companyUrl": "https://ch.linkedin.com/company/sps",
+    "sourceJobId": "4488588413"
+  },
+  "ssp asia pacific": {
+    "name": "SSP Asia Pacific",
+    "checkedAt": "2026-11-13T04:02:54.152533+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489509738",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489509738",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4489509738",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489509738",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489509738",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.07406021194505,
+        "deferred": true
+      }
+    ]
   }
 }
