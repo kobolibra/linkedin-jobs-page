@@ -21,9 +21,16 @@ test('a changed deployment downloads fresh data once instead of showing stale ro
  const fresh={jobs:[{title:'New'}],dataVersion:'a'.repeat(64)};
  assert.equal(await h.load(async()=>{calls++;return fresh;}),fresh);assert.equal(calls,1);
 });
-test('version failures never cause a stale snapshot to be presented as current',async()=>{
- const h=harness({cached:{jobs:[],dataVersion:'a'.repeat(64)},version:'invalid'});
- await assert.rejects(h.load(async()=>{throw Error('offline');}),/offline/);
+test('offline version failure recovers only a clearly labeled existing local snapshot',async()=>{
+ const cached={jobs:[{title:'Previously loaded'}],dataVersion:'a'.repeat(64)};
+ const h=harness({cached,version:'invalid'});
+ assert.equal(await h.load(async()=>{throw Error('offline');}),cached);
+ assert.equal(h.cacheState,'stale');
+});
+test('explicit access denial cannot fall back to an authenticated snapshot',async()=>{
+ const h=harness({cached:{jobs:[{title:'Private role'}],dataVersion:'b'.repeat(64)}});
+ await assert.rejects(h.load(async()=>{throw Object.assign(Error('forbidden'),{status:403});}),/forbidden/);
+ assert.equal(h.cacheState,'fresh');
 });
 test('guest preview never opens authenticated storage or requests its version',async()=>{
  const h=harness({guest:true,cached:{jobs:[{title:'Private role'}],dataVersion:'a'.repeat(64)}}),preview={jobs:[{title:'Preview'}]};
