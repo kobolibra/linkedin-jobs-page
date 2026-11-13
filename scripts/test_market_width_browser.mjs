@@ -293,8 +293,10 @@ async function renderLeft(page,chartData,theme){
   'the three final regional layers must sum to the y-axis endpoint');
  assert.ok(Math.max(...quality.regionTicks.map(t=>t.value))>=quality.finalTotal,
   'the y-axis must fit the complete vertically stacked total, not a daily peak');
- assert.ok(quality.grid>=2&&quality.grid<=6&&quality.filled>0,
+ assert.ok(quality.grid>=2&&quality.grid<=6,
   'a restrained 1/2/5 geographic scale uses at most six lines, retaining original daily values');
+ // A valid historical cohort need not have new observations within the
+ // independent rolling 30-day New Postings window.
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
   'regional lines begin at actual observations, not baseline zeros');
  assert.equal(quality.matchingContours,true,
