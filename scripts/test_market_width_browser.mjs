@@ -109,9 +109,11 @@ async function renderLeft(page,chartData,theme){
    regionDateMarks:regionDateNodes.map(node=>({
      day:Number(node.dataset.day),label:node.textContent,bounds:rect(node)
    })),
-   postingDateMarks:postingDateNodes.map(node=>({
-     day:Number(node.dataset.day),label:node.textContent,bounds:rect(node)
-   })),
+   postingDateMarks:postingDateNodes.map(node=>{
+     const day=Number(node.dataset.day);
+     const date=new Date();date.setHours(0,0,0,0);date.setDate(date.getDate()-29+day);
+     return {day,label:node.textContent,weekday:date.getDay(),bounds:rect(node)};
+   }),
    metaCount:stage.querySelectorAll('.region-end-meta').length,
    legendItems:statRows.map(node=>({
      region:node.dataset.region,count:Number(node.dataset.count),
@@ -316,6 +318,8 @@ async function renderLeft(page,chartData,theme){
  if(quality.dayBins>1)assert.equal(quality.regionDateMarks.at(-1).day,quality.dayBins-1);
  assert.equal(quality.postingDateMarks[0].day,0);
  assert.equal(quality.postingDateMarks.at(-1).day,29);
+ assert.ok(quality.postingDateMarks.slice(1,-1).every(m=>m.weekday===1),
+  'every intermediate New Postings date belongs to an actual Monday boundary');
  const checkScale=(ticks,name)=>{
   assert.ok(ticks.length>=2,name+' needs at least two integer ticks');
   assert.equal(ticks[0].value,0,name+' starts at zero');
@@ -646,6 +650,22 @@ try{
   animations:'disabled'
  });
  await gapPage.close();
+ // When all three cohorts grow linearly, the shared monotone
+ // presentation should collapse ~90 daily nodes into only two spline knots.
+ // All 270 true day/region readings must remain available in hover data.
+ const smoothPage=await make(960,'light');
+ const smoothRows=[];
+ for(let i=0;i<90;i++)for(const region of ['HK','SG','CN'])
+  smoothRows.push({location:region,firstSeen:new Date(Date.UTC(2026,3,1+i,9)).toISOString(),
+   company:'HSBC',jobStatus:'active'});
+ const smoothQuality=await renderLeft(smoothPage,smoothRows,'light');
+ assert.equal(smoothQuality.dayBins,90,'daily observations remain distinct after visual simplification');
+ assert.equal(smoothQuality.pointTotal,270,'no true daily observations were discarded');
+ assert.equal(smoothQuality.finalTotal,270,'the true cumulative total is unchanged');
+ assert.equal(smoothQuality.curveKnots,2,
+  'linear data needs only the two endpoints, not dozens of tiny daily kinks');
+ assert.ok(smoothQuality.curveError<.01,'linear fixture spline exactly matches all daily totals');
+ await smoothPage.close();
  // Actual Jan-Nov history still plots each UTC day separately: no weekly
  // summing, no collapsed zero weeks, and exact one-day hover intervals.
  const dailyPage=await make(960,'light');
