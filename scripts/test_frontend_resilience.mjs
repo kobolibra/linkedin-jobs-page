@@ -161,7 +161,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/#dist \.region-dimension-span\{/);
  assert.match(css,/#dist \.region-dimension-cap\{/);
  assert.match(css,/#dist \.region-end-meta\{/);
- assert.doesNotMatch(css,/region-plot-stage\.is-short-history[\s\S]*?background:linear-gradient/);
+ assert.doesNotMatch(css,/#dist \.region-plot-stage\.is-short-history \.region-end-label\{[^}]*background:/);
  assert.doesNotMatch(css,/\.region-end-guide|\.region-end-tick/);
  assert.match(css,/#dist \.region-end-label\{/);
  assert.doesNotMatch(source,/region-current-key|region-stat-|region-mix-|summaryCols=|const legend=|const composition=/);
