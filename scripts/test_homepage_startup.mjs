@@ -1,3 +1,4 @@
+import {assertRegionProjections} from './assert_region_projections.mjs';
 /* Full homepage boot: charts AND populated job-list, using actual shipped scripts.
    Auth APIs are local fixtures, never a real user session or security bypass. */
 import assert from 'node:assert/strict';
@@ -58,6 +59,7 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
    assert.equal(state.rows,0);assert.equal(state.empty,true);
    assert.ok(consoleErrors.some(s=>/Invalid time value|date value is not finite|invalid date/i.test(s)),'negative control must reproduce the actual date exception');
   }else{
+   await assertRegionProjections(page);
    assert.equal(state.ready,true);assert.equal(state.empty,false);assert.ok(state.rows>0);assert.ok(state.days>0);
    assert.ok(state.firstHeading?.includes('\u5e74'),'job-list keeps its original Chinese date labels');
    assert.equal(consoleErrors.length,0,consoleErrors.join('\n'));assert.equal(errors.length,0,errors.join('\n'));

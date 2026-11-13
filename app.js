@@ -928,8 +928,63 @@ jobsDataPromise
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       gridTicks+series.map(layer=>layer.area).join('')+localMeasurements+
+      '<g class="region-projections" aria-hidden="true" pointer-events="none"></g>'+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
       directLabels+'</div>';
+    // Project only the nonzero final boundaries to their actual right endpoints.
+    // Read real HTML label boxes before writing SVG segments: no background
+    // knockouts, guessed text widths, moved labels, or changes to data geometry.
+    distEl._regionProjectionCleanup?.();
+    const projectionSvg=distEl.querySelector('.region-time-svg');
+    const projectionLayer=projectionSvg.querySelector('.region-projections');
+    let projectionFrame=0,projectionDisposed=false,projectionMarkup='';
+    const updateRegionProjections=()=>{
+      projectionFrame=0;
+      if(projectionDisposed||!projectionSvg.isConnected)return;
+      const box=projectionSvg.getBoundingClientRect();
+      if(!box.width||!box.height)return;
+      const scaleX=TW/box.width,scaleY=TH/box.height;
+      const exclusions=[...distEl.querySelectorAll('.region-end-label')].map(node=>{
+        const r=node.getBoundingClientRect();
+        return {x1:(r.left-box.left-6)*scaleX,x2:(r.right-box.left+6)*scaleX,
+          y1:(r.top-box.top-4)*scaleY,y2:(r.bottom-box.top+4)*scaleY};
+      });
+      const markup=[...projectionSvg.querySelectorAll('.region-measure-reference')]
+        .filter(node=>Number(node.dataset.level)>0).map(node=>{
+          const level=Number(node.dataset.level),y=Number(node.getAttribute('y1'));
+          const start=Number(node.getAttribute('x2')),end=TW-right;
+          let segments=[[start,end]];
+          for(const gap of exclusions){
+            if(y<gap.y1||y>gap.y2)continue;
+            segments=segments.flatMap(([a,b])=>gap.x2<=a||gap.x1>=b?[[a,b]]:
+              [[a,Math.min(b,gap.x1)],[Math.max(a,gap.x2),b]].filter(([x1,x2])=>x2>x1));
+          }
+          return '<g class="region-projection" data-level="'+level+
+            '" data-start="'+start+'" data-end="'+end+'" data-y="'+y+'">'+
+            segments.filter(([a,b])=>b>a).map(([a,b])=>
+              '<line class="region-projection-line" x1="'+a.toFixed(3)+'" x2="'+b.toFixed(3)+
+              '" y1="'+y+'" y2="'+y+'"/>').join('')+'</g>';
+        }).join('');
+      if(markup!==projectionMarkup){projectionLayer.innerHTML=markup;projectionMarkup=markup;}
+      projectionLayer.dataset.ready='true';
+    };
+    const scheduleRegionProjections=()=>{
+      if(!projectionDisposed&&!projectionFrame)projectionFrame=requestAnimationFrame(updateRegionProjections);
+    };
+    // Recompute gaps for rotation, responsive layout and late font loading.
+    // A rerender disconnects the previous observer; lines never own interaction.
+    const projectionObserver=typeof ResizeObserver==='function'
+      ?new ResizeObserver(scheduleRegionProjections):null;
+    projectionObserver?.observe(projectionSvg);
+    distEl.querySelectorAll('.region-end-label').forEach(node=>projectionObserver?.observe(node));
+    if(!projectionObserver)window.addEventListener('resize',scheduleRegionProjections);
+    document.fonts?.ready.then(scheduleRegionProjections);
+    distEl._regionProjectionCleanup=()=>{
+      projectionDisposed=true;cancelAnimationFrame(projectionFrame);
+      projectionObserver?.disconnect();
+      window.removeEventListener('resize',scheduleRegionProjections);
+    };
+    updateRegionProjections();
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});

@@ -1,3 +1,4 @@
+import {assertRegionProjections} from './assert_region_projections.mjs';
 /* Visual geometry for actual shipped left charts, paired with full homepage boot CI. */
 import assert from 'node:assert/strict';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
@@ -24,6 +25,7 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
    const dayKey=d=>keyOf(new Date(d)),REGIONS={HK:{label:'Hong Kong'},SG:{label:'Singapore'},CN:{label:'Mainland China'},OTHER:{label:'Other'}},cityEl=document.createElement('select');
    new Function('chartData','norm','seenAt','dayKey','keyOf','REGIONS','cityEl',draw)(rows,norm,seenAt,dayKey,keyOf,REGIONS,cityEl);
   },{draw,rows});
+  const projections=await assertRegionProjections(page);
   const state=await page.evaluate(()=>{
    const rect=n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width};};
    const svg=document.querySelector('#dist svg');
@@ -59,7 +61,14 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
   }
   assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.equal(state.ranges,0);assert.ok(state.scrollWidth<=width+2);assert.deepEqual(errors,[]);
   await page.locator('.analytics-left').screenshot({path:new URL(engine+'-'+width+'-'+theme+'.png',out).pathname,animations:'disabled'});
-  results.push({engine,width,theme,state,typography:type,errors});await page.close();
+  results.push({engine,width,theme,state,typography:type,projections,errors});
+  // Text must stay unobstructed after rotation and a late change in font metrics.
+  if(width===390){
+   await page.setViewportSize({width:320,height:1000});await assertRegionProjections(page);
+   await page.addStyleTag({content:'#dist .region-end-label{letter-spacing:.15em} #dist .region-end-count{font-size:20px}'});
+   await assertRegionProjections(page);
+  }
+  await page.close();
  }}finally{await browser.close();}
 }
 writeFileSync(new URL('results.json',out),JSON.stringify(results,null,2));console.log('Calendar/annotation visual matrix passed: '+results.length+' cases.');

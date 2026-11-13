@@ -621,6 +621,12 @@ body.compact .job > .mono { margin-top:2px; }
   stroke:var(--viz-secondary);stroke-width:.9;stroke-dasharray:1.3 4;
   opacity:.34;fill:none;vector-effect:non-scaling-stroke;
 }
+/* Far projections are subordinate to local measures, values and contours. */
+#dist .region-projection-line{
+  stroke:var(--viz-secondary);stroke-width:.75;stroke-dasharray:1.3 4;
+  opacity:.2;fill:none;vector-effect:non-scaling-stroke;pointer-events:none;
+}
+[data-theme="dark"] #dist .region-projection-line{opacity:.22}
 #dist .region-measure-height{
   stroke:var(--region-ink);stroke-width:1.05;opacity:.8;
   stroke-linecap:round;vector-effect:non-scaling-stroke;
