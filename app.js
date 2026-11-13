@@ -747,8 +747,9 @@ jobsDataPromise
     const shortHistory=bins<100;
     const visibleRows=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    const minLabelY=top+22,maxLabelY=base-22;
-    const minGap=Math.max(38,31*TW/axisCssWidth);
+    const labelMargin=Math.max(22,19*TW/axisCssWidth);
+    const minLabelY=top+labelMargin,maxLabelY=base-labelMargin;
+    const minGap=Math.max(38,39*TW/axisCssWidth);
     let previous=minLabelY-minGap;
     visibleRows.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
     const overflow=visibleRows.length?Math.max(0,visibleRows.at(-1).y-maxLabelY):0;
