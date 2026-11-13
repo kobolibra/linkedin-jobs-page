@@ -87,7 +87,8 @@ async function renderLeft(page,chartData,theme){
   };};
   const weekendBars=bars.filter(node=>node.classList.contains('weekend'));
   const weekdayBars=bars.filter(node=>!node.classList.contains('weekend'));
-  const guideNodes=[...svg.querySelectorAll('.region-end-guide')];
+  const measuredSegments=[...svg.querySelectorAll('.region-dimension-span')];
+  const measuredCaps=[...svg.querySelectorAll('.region-dimension-cap')];
   return {series,bars:bars.length,regions:lines.length,
    viewportWidth:window.innerWidth,
    weekendCount:weekendBars.length,
@@ -102,13 +103,19 @@ async function renderLeft(page,chartData,theme){
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
    oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
    legendBounds:rect(stage),svgBounds:rect(svg),
-   guides:guideNodes.map(node=>({
-     region:[...node.parentElement.classList].find(c=>['hk','sg','cn'].includes(c)),
-     y:Number(node.getAttribute('y1')),
-     x1:Number(node.getAttribute('x1')),
-     x2:Number(node.getAttribute('x2')),
-     tickY:Number(node.parentElement.querySelector('.region-end-tick').getAttribute('y1'))
+   forbiddenGuideCount:svg.querySelectorAll('.region-end-guide,.region-end-tick').length,
+   measuredSegments:measuredSegments.map(node=>({
+     region:node.dataset.region,count:Number(node.dataset.count),
+     lower:Number(node.dataset.lower),upper:Number(node.dataset.upper),
+     x1:Number(node.getAttribute('x1')),x2:Number(node.getAttribute('x2')),
+     y1:Number(node.getAttribute('y1')),y2:Number(node.getAttribute('y2')),
+     ink:getComputedStyle(node).stroke
    })),
+   measuredCaps:measuredCaps.map(node=>({
+     value:Number(node.dataset.level),x1:Number(node.getAttribute('x1')),
+     x2:Number(node.getAttribute('x2')),y:Number(node.getAttribute('y1'))
+   })),
+   metaCount:stage.querySelectorAll('.region-end-meta').length,
    legendItems:statRows.map(node=>({
      region:node.dataset.region,count:Number(node.dataset.count),
      share:node.dataset.share,label:node.querySelector('.region-end-name')?.textContent,
@@ -186,10 +193,10 @@ async function renderLeft(page,chartData,theme){
  assert.equal(quality.stageTotal,quality.finalTotal);
  assert.equal(quality.shortHistory,quality.dayBins<100,
   'only genuinely short observation windows use the tight two-line knockout layout');
- if(quality.shortHistory)assert.ok(quality.shortLabelDisplays.every(v=>v==='grid'),
-  'short-history labels must not float over the same curve as long single-line text');
- else assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
-  'full-year callouts remain single-line flex rows (absolute-positioned inline-flex computes to flex)');
+ assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
+  'both full-year and short-history annotations use a quiet two-level typographic layout');
+ assert.equal(quality.metaCount,quality.legendItems.length,
+  'each regional reading has a small area/share line above its dominant count');
  const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
  assert.deepEqual(quality.legendItems.map(x=>x.region),visibleRegionNames);
  assert.deepEqual(quality.legendItems.map(x=>x.count),
@@ -219,23 +226,45 @@ async function renderLeft(page,chartData,theme){
   assert.ok(sortedLabels[i].bounds.y>=sortedLabels[i-1].bounds.bottom-.5,
    'the regional callouts must never overlap, even when cohort sizes differ');
  }
- assert.equal(quality.guides.length,visibleRegionNames.length,
-  'one subtle final-state reference guide per nonempty upper boundary');
+ assert.equal(quality.forbiddenGuideCount,0,
+  'remove all long cross-chart dashed rules and three outside-right terminal ticks');
+ assert.equal(quality.measuredSegments.length,visibleRegionNames.length,
+  'a single segmented dimension axis has one vertical length per nonempty region');
+ assert.equal(quality.measuredCaps.length,visibleRegionNames.length+1,
+  'four minimal end caps mark zero, HK, HK+SG, and total without extra lines');
  const maxAxis=Math.max(...quality.regionTicks.map(t=>t.value));
  const axisTop=quality.regionTicks.find(t=>t.value===maxAxis).y-3;
  const axisZero=quality.regionTicks.find(t=>t.value===0).y-3;
  let cumulative=0;
+ const capValues=[0];
  for(const k of ['HK','SG','CN']){
   const count=quality.regionFinals[k.toLowerCase()];
+  const before=cumulative;
   cumulative+=count;
   if(!count)continue;
-  const rule=quality.guides.find(g=>g.region===k.toLowerCase());
-  assert.ok(rule,'regional end-state guide exists for '+k);
-  const exactY=axisZero-(cumulative/maxAxis)*(axisZero-axisTop);
-  assert.ok(Math.abs(rule.y-exactY)<.2&&Math.abs(rule.tickY-exactY)<.2,
-   'right-edge guide must match the exact cumulative regional boundary, not an independent series');
-  assert.equal(rule.x1,43);
-  assert.equal(rule.x2,506);
+  const span=quality.measuredSegments.find(m=>m.region===k);
+  assert.ok(span,'visible measured vertical segment is required for '+k);
+  assert.equal(span.count,count);
+  assert.equal(span.lower,before);
+  assert.equal(span.upper,cumulative);
+  const fromY=axisZero-(before/maxAxis)*(axisZero-axisTop);
+  const toY=axisZero-(cumulative/maxAxis)*(axisZero-axisTop);
+  assert.ok(Math.abs(span.y1-fromY)<.2&&Math.abs(span.y2-toY)<.2,
+   'vertical segment endpoints must coincide with exact cumulative-area boundaries');
+  assert.ok(Math.abs((span.y1-span.y2)-count/maxAxis*(axisZero-axisTop))<.2,
+   'actual on-screen vertical segment length must be linear in its OWN regional count');
+  assert.equal(span.x1,span.x2,'measure must be vertical, not a cross-plot guide');
+  assert.equal(span.x1,59,'all three intervals share one compact x-coordinate at the left');
+  assert.equal(span.ink,quality.series[k.toLowerCase()],
+   'measurement ink uses the original regional line color');
+  capValues.push(cumulative);
+ }
+ for(const cap of quality.measuredCaps){
+  assert.ok(cap.x2-cap.x1<=8.1,'end tick is a microcap, not another horizontal line');
+  assert.ok(cap.x1>=55&&cap.x2<=63,'all caps belong to the LEFT measured ruler');
+  assert.ok(capValues.includes(cap.value),'cap belongs to an actual observed cumulative boundary');
+  assert.ok(Math.abs(cap.y-(axisZero-cap.value/maxAxis*(axisZero-axisTop)))<.2,
+   'each cap is placed on an exact cumulative region boundary');
  }
  assert.ok(quality.svgBounds.h>quality.svgBounds.w*.62,
   'main plot reclaims the former top-legend height');
