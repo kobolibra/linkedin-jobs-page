@@ -916,9 +916,25 @@ jobsDataPromise
         '" width="'+(barWidth+4).toFixed(2)+'" height="'+(sBase-sTop)+'"/>'+
         '<title>'+d.label+' · '+d.total+' new postings</title></g>';
     }).join('');
-    const dateLabels=[0,7,14,21,29].map(i=>
+    // Monday-based, calendar-anchored marks. Endpoints retain the actual
+    // 30-day domain; only intermediate Monday labels are allowed, and the
+    // physical spacing budget prevents cramped dates on narrow viewports.
+    const rhythmCssWidth=document.getElementById('spark').getBoundingClientRect().width||SW;
+    const rhythmGap=65*SW/rhythmCssWidth;
+    const rhythmMarks=[0];
+    let lastMarkX=sx(0);
+    for(let i=1;i<days.length-1;i++){
+      if(days[i].date.getDay()!==1)continue;
+      const x=sx(i);
+      if(x-lastMarkX>=rhythmGap&&sx(days.length-1)-x>=rhythmGap){
+        rhythmMarks.push(i);
+        lastMarkX=x;
+      }
+    }
+    rhythmMarks.push(days.length-1);
+    const dateLabels=rhythmMarks.map((i,j)=>
       '<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+
-      '" y="145" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+
+      '" y="145" data-day="'+i+'" text-anchor="'+(j===0?'start':j===rhythmMarks.length-1?'end':'middle')+'">'+
       days[i].label+'</text>'
     ).join('');
     const sparkEl=document.getElementById("spark");
