@@ -638,9 +638,9 @@ jobsDataPromise
     const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
     const tMin=utcDay(earliestStamp),tMax=utcDay(latestStamp)+dayMs;
     const bins=Math.max(1,Math.round((tMax-tMin)/dayMs));
-    // Preserve the original 254-unit cumulative plot height. A separately
-    // typeset HTML composition key replaces the tiny four-column SVG text.
-    const TW=520,TH=310,left=43,right=14,top=24,base=279,plotW=TW-left-right;
+    // Full-height cumulative area. Direct end-state labels occupy the
+    // largely empty early-year portion of the plot, never a separate header.
+    const TW=520,TH=360,left=43,right=14,top=18,base=326,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     // Exact UTC daily observations. No rolling windows and no weekly buckets.
     const bucketCounts=regionOrder.map(()=>Array.from({length:bins},()=>0));
@@ -692,7 +692,7 @@ jobsDataPromise
         ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
         :regionTickFormat.format(date);
       return '<text class="region-spark-date" x="'+x.toFixed(2)+
-        '" y="303" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        '" y="351" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
         escSvg(label)+'</text>';
     }).join('');
     // Snapshot counts and share labels are generated from precisely the same
@@ -708,29 +708,45 @@ jobsDataPromise
     const shareRank=rawShareTenths.map((n,i)=>({i,fraction:n-Math.floor(n)}))
       .sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
     for(let i=0;i<leftover;i++)shareTenths[shareRank[i].i]++;
-    // Compact reading hierarchy: (1) current total, (2) a restrained
-    // proportional color rule, (3) three scan-friendly region metrics.
-    // HTML, not shrinking SVG text, keeps all values legible on phones.
-    const compositionLabel=regionOrder.map((k,i)=>k+' '+
-      countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ');
-    const composition='<div class="region-mix" role="group" aria-label="Regional composition of '+
-      countFormat.format(endTotal)+' currently active roles: '+compositionLabel+'">'+
-      '<div class="region-mix-meta"><span class="region-mix-kicker">REGIONAL MIX</span>'+
-      '<span class="region-mix-total">'+countFormat.format(endTotal)+' ACTIVE ROLES</span></div>'+
-      '<div class="region-mix-rail" aria-hidden="true">'+
-      regionOrder.map((k,i)=>'<span class="region-series '+k.toLowerCase()+
-        ' region-mix-segment" style="flex-grow:'+snapshotCounts[i]+'"></span>').join('')+
-      '</div><div class="region-mix-grid">'+
+    // Three direct labels sit inside the early timeline's unused white space,
+    // vertically aligned with each region's actual latest cumulative slice.
+    // The right-end reference levels are 0, HK, HK+SG and HK+SG+CN:
+    // only the differences between adjacent levels are individual counts.
+    const endBoundaries=regionOrder.map((_,i)=>
+      snapshotCounts.slice(0,i+1).reduce((n,v)=>n+v,0));
+    const bandMiddleY=regionOrder.map((_,i)=>trendY(endBoundaries[i]-snapshotCounts[i]/2));
+    // Keep sparse or highly imbalanced series legible without distorting the
+    // area boundaries. Real labels stay close to their actual band midpoints.
+    const shortHistory=bins<100;
+    const spaced=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
+      .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
+    const minLabelY=top+21,maxLabelY=base-18,minGap=shortHistory?56:33;
+    let previous=minLabelY-minGap;
+    spaced.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
+    const overflow=spaced.length?Math.max(0,spaced.at(-1).y-maxLabelY):0;
+    spaced.forEach(row=>row.y-=overflow);
+    const labelY=Object.fromEntries(spaced.map(row=>[row.k,row.y]));
+    const directLabels='<div class="region-end-labels" aria-hidden="true">'+
       regionOrder.map((k,i)=>{
+        if(!snapshotCounts[i])return '';
         const count=snapshotCounts[i],share=(shareTenths[i]/10).toFixed(1)+'%';
         return '<div class="region-series '+k.toLowerCase()+
-          ' region-mix-item" data-region="'+k+'" data-count="'+count+
-          '" data-share="'+share+'">'+
-          '<div class="region-mix-item-head"><span class="region-mix-name">'+
-          '<span class="region-mix-swatch" aria-hidden="true"></span>'+k+'</span>'+
-          '<span class="region-mix-share">'+share+'</span></div>'+
-          '<strong class="region-mix-count">'+countFormat.format(count)+'</strong></div>';
-      }).join('')+'</div></div>';
+          ' region-end-label" data-region="'+k+'" data-count="'+count+
+          '" data-share="'+share+'" data-band-center="'+bandMiddleY[i].toFixed(2)+
+          '" style="top:'+(labelY[k]/TH*100).toFixed(4)+'%">'+
+          '<span class="region-end-name">'+k+'</span>'+
+          '<strong class="region-end-count">'+countFormat.format(count)+'</strong>'+
+          '<span class="region-end-share">'+share+'</span></div>';
+      }).join('')+'</div>';
+    const endpointRules=endBoundaries.map((value,i)=>{
+      if(!snapshotCounts[i]||!endTotal)return '';
+      const y=trendY(value).toFixed(2);
+      return '<g class="region-series '+regionOrder[i].toLowerCase()+'">'+
+        '<line class="region-end-guide" x1="'+left+'" x2="'+(TW-right)+
+        '" y1="'+y+'" y2="'+y+'"/>'+
+        '<line class="region-end-tick" x1="'+(TW-right)+'" x2="'+(TW-4)+
+        '" y1="'+y+'" y2="'+y+'"/></g>';
+    }).join('');
     // Hermite slopes are monotone for every independently cumulative region.
     // Adding each region's control-point values (not independently smoothing
     // stacked boundaries) prevents ribbon overlaps or artificial separation.
@@ -796,7 +812,9 @@ jobsDataPromise
           (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+hits+'</g>'
       };
     });
-    distEl.innerHTML=composition+'<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
+    distEl.innerHTML='<div class="region-plot-stage'+(shortHistory?' is-short-history':'')+
+      '" data-visible-total="'+endTotal+'">'+
+      '<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
       ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
@@ -804,8 +822,9 @@ jobsDataPromise
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
-      gridTicks+series.map(layer=>layer.area).join('')+
-      series.map(layer=>layer.outline).join('')+dateTicks+'</svg>';
+      gridTicks+endpointRules+series.map(layer=>layer.area).join('')+
+      series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
+      directLabels+'</div>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});

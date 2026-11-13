@@ -635,52 +635,58 @@ body.compact .job > .mono { margin-top:2px; }
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
-/* The live regional mix is a single restrained composition key. Its
-   text stays at real CSS sizes instead of shrinking inside the SVG viewBox. */
-#dist .region-mix{
-  min-width:0;flex:none;
-  margin:1px 2.6923% 9px 8.2692%;
+/* Direct end-state labels, not a second chart or a statistics header.
+   Hairline reference levels extend left from each final cumulative boundary.
+   They are painted behind the fills so the actual series stays foreground. */
+#dist .region-plot-stage{
+  position:relative;width:100%;min-width:0;flex:none;
 }
-#dist .region-mix-meta,
-#dist .region-mix-item-head{
-  display:flex;align-items:baseline;justify-content:space-between;gap:7px;
+#dist .region-plot-stage > .region-time-svg{
+  display:block;width:100%;height:auto;overflow:visible;
 }
-#dist .region-mix-meta{margin-bottom:8px}
-#dist .region-mix-kicker,
-#dist .region-mix-total{
-  color:var(--viz-quiet);font:600 10px/1.25 var(--mono);
-  letter-spacing:.045em;white-space:nowrap;
+#dist .region-end-guide{
+  stroke:var(--viz-secondary);stroke-width:.75;opacity:.25;
+  stroke-dasharray:2 5;vector-effect:non-scaling-stroke;
 }
-#dist .region-mix-total{color:var(--viz-secondary);letter-spacing:0}
-#dist .region-mix-rail{
-  display:flex;width:100%;height:4px;overflow:hidden;border-radius:1px;
-  background:var(--viz-rule);margin-bottom:10px;
+#dist .region-end-tick{
+  stroke:var(--region-ink);stroke-width:1.45;opacity:.7;
+  stroke-linecap:round;vector-effect:non-scaling-stroke;
 }
-#dist .region-mix-segment{
-  flex-basis:0;min-width:0;background:var(--region-ink);opacity:.78;
+#dist .region-end-labels{
+  position:absolute;inset:0;pointer-events:none;
 }
-#dist .region-mix-grid{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
-}
-#dist .region-mix-item{min-width:0}
-#dist .region-mix-name{
-  color:var(--viz-secondary);font:600 11px/1.2 var(--mono);
-  white-space:nowrap;
-}
-#dist .region-mix-swatch{
-  display:inline-block;width:10px;height:3px;margin-right:6px;
-  vertical-align:middle;border-radius:1px;background:var(--region-ink);
-}
-#dist .region-mix-share{
-  color:var(--viz-secondary);opacity:.8;
-  font:500 11px/1.2 var(--mono);white-space:nowrap;
+#dist .region-end-label{
+  position:absolute;left:calc(8.26923% + 9px);
+  transform:translateY(-50%);display:inline-flex;
+  align-items:baseline;gap:8px;white-space:nowrap;
   font-variant-numeric:tabular-nums;
+  text-shadow:0 0 6px var(--surface),0 0 3px var(--surface);
 }
-#dist .region-mix-count{
-  display:block;margin-top:4px;color:var(--viz-secondary);
-  font:650 17px/1.25 var(--mono);
-  font-variant-numeric:tabular-nums;letter-spacing:-.015em;
+#dist .region-end-name{
+  color:var(--region-ink);font:700 11px/1.15 var(--mono);
+  letter-spacing:.02em;
 }
+#dist .region-end-count{
+  color:var(--viz-secondary);font:700 17px/1.15 var(--mono);
+  letter-spacing:-.02em;
+}
+#dist .region-end-share{
+  color:var(--viz-secondary);opacity:.82;
+  font:500 11.5px/1.15 var(--mono);
+}
+/* When the observed span is short, early data already occupies the left
+   plot. Use a narrow two-line cartographic knockout instead of letting
+   cumulative boundaries pass through numbers. Full-year charts stay inline. */
+#dist .region-plot-stage.is-short-history .region-end-label{
+  display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;
+  column-gap:5px;row-gap:0;align-items:baseline;
+  padding:2px 10px 2px 0;gap:0 5px;
+  background:linear-gradient(90deg,var(--surface) 0%,var(--surface) 88%,transparent 100%);
+  text-shadow:none;
+}
+#dist .region-plot-stage.is-short-history .region-end-name{grid-column:1;grid-row:1}
+#dist .region-plot-stage.is-short-history .region-end-count{grid-column:2;grid-row:1}
+#dist .region-plot-stage.is-short-history .region-end-share{grid-column:2;grid-row:2}
 /* Each band occupies the real space between two cumulative regional
    boundaries, with a restrained SHADE of the original line color.
    Opaque surface-mixed shades avoid accidental color blending between
@@ -726,23 +732,22 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
-/* Keep tick labels legible while the composition key uses real CSS pixels. */
+/* SVG coordinates scale on mobile; direct data annotations retain
+   readable CSS-pixel typography rather than becoming tiny SVG glyphs. */
 @media(max-width:720px){
   #dist .region-spark-value,
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:12.5px;letter-spacing:0}
-  #dist .region-mix{margin-top:3px;margin-bottom:10px}
-  #dist .region-mix-meta{margin-bottom:9px}
-  #dist .region-mix-grid{gap:8px}
-  #dist .region-mix-count{font-size:16px}
-  #dist .region-mix-share{font-size:11px;opacity:.94}
-  #dist .region-mix-name{font-size:11px}
+  #dist .region-end-label{gap:6px}
+  #dist .region-end-name{font-size:11px}
+  #dist .region-end-count{font-size:15px}
+  #dist .region-end-share{font-size:11px;opacity:.9}
 }
 @media(max-width:360px){
-  #dist .region-mix-count{font-size:15px}
-  #dist .region-mix-share{font-size:10.5px}
-  #dist .region-mix-total,#dist .region-mix-kicker{font-size:9.5px}
+  #dist .region-end-label{gap:5px}
+  #dist .region-end-count{font-size:14px}
+  #dist .region-end-share{font-size:10.5px}
 }
 
 /* Masthead copy: disciplined editorial typography, no structural change. */

@@ -80,13 +80,14 @@ async function renderLeft(page,chartData,theme){
     stacked:Number(node.dataset.stacked),bin:Number(node.dataset.bin)}:null;
   };
   const svg=document.querySelector('#dist .region-time-svg');
-  const mix=document.querySelector('#dist .region-mix');
-  const statRows=[...mix.querySelectorAll('.region-mix-item')];
+  const stage=svg.closest('.region-plot-stage');
+  const statRows=[...stage.querySelectorAll('.region-end-label')];
   const rect=node=>{const r=node.getBoundingClientRect();return {
    x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom
   };};
   const weekendBars=bars.filter(node=>node.classList.contains('weekend'));
   const weekdayBars=bars.filter(node=>!node.classList.contains('weekend'));
+  const guideNodes=[...svg.querySelectorAll('.region-end-guide')];
   return {series,bars:bars.length,regions:lines.length,
    viewportWidth:window.innerWidth,
    weekendCount:weekendBars.length,
@@ -94,25 +95,28 @@ async function renderLeft(page,chartData,theme){
    weekdayOpacity:weekdayBars.length?getComputedStyle(weekdayBars[0]).opacity:null,
    weekendBlue:weekendBars.length?getComputedStyle(weekendBars[0]).fill:null,
    weekdayBlue:weekdayBars.length?getComputedStyle(weekdayBars[0]).fill:null,
-   legendTotal:Number((mix.querySelector('.region-mix-total')?.textContent||'0').replace(/[^\d]/g,'')),
-   legendTotalText:mix.querySelector('.region-mix-total')?.textContent||'',
-   legendLabel:mix.querySelector('.region-mix-kicker')?.textContent||'',
-   legendCount:document.querySelectorAll('#dist .region-mix').length,
-   oldLegendCount:svg.querySelectorAll('.region-current-key,.region-stat-item,.region-legend-swatch').length,
-   legendBounds:rect(mix),svgBounds:rect(svg),
-   railBounds:rect(mix.querySelector('.region-mix-rail')),
-   railSegments:[...mix.querySelectorAll('.region-mix-segment')].map(node=>({
-     region:[...node.classList].find(c=>['hk','sg','cn'].includes(c)),
-     width:node.getBoundingClientRect().width,
-     ink:getComputedStyle(node).backgroundColor
+   labelTotal:statRows.reduce((n,node)=>n+Number(node.dataset.count),0),
+   stageTotal:Number(stage.dataset.visibleTotal),
+   shortHistory:stage.classList.contains('is-short-history'),
+   shortLabelDisplays:statRows.map(node=>getComputedStyle(node).display),
+   legendCount:document.querySelectorAll('#dist .region-end-labels').length,
+   oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
+   legendBounds:rect(stage),svgBounds:rect(svg),
+   guides:guideNodes.map(node=>({
+     region:[...node.parentElement.classList].find(c=>['hk','sg','cn'].includes(c)),
+     y:Number(node.getAttribute('y1')),
+     x1:Number(node.getAttribute('x1')),
+     x2:Number(node.getAttribute('x2')),
+     tickY:Number(node.parentElement.querySelector('.region-end-tick').getAttribute('y1'))
    })),
    legendItems:statRows.map(node=>({
      region:node.dataset.region,count:Number(node.dataset.count),
-     share:node.dataset.share,label:node.querySelector('.region-mix-name')?.textContent,
-     visibleCount:node.querySelector('.region-mix-count')?.textContent,
-     visibleShare:node.querySelector('.region-mix-share')?.textContent,
-     ink:getComputedStyle(node.querySelector('.region-mix-swatch')).backgroundColor,
-     countFont:parseFloat(getComputedStyle(node.querySelector('.region-mix-count')).fontSize),
+     share:node.dataset.share,label:node.querySelector('.region-end-name')?.textContent,
+     visibleCount:node.querySelector('.region-end-count')?.textContent,
+     visibleShare:node.querySelector('.region-end-share')?.textContent,
+     ink:getComputedStyle(node.querySelector('.region-end-name')).color,
+     countFont:parseFloat(getComputedStyle(node.querySelector('.region-end-count')).fontSize),
+     bandCenter:Number(node.dataset.bandCenter),
      bounds:rect(node)
    })),
    stackOrder:regionGroups.map(g=>[...g.classList].find(c=>c!=='region-series')),
@@ -175,44 +179,69 @@ async function renderLeft(page,chartData,theme){
   'real production distribution anchors HK below SG and CN; OTHER is excluded');
  assert.equal(quality.otherSeries,0,'OTHER never belongs in this chart or legend');
  assert.equal(quality.chartKind,'cumulative-stack','this must be a cumulative, not per-day regional chart');
- assert.equal(quality.legendCount,1,'exactly one integrated regional snapshot key');
- assert.equal(quality.oldLegendCount,0,'do not duplicate the obsolete minimalist legend');
- assert.equal(quality.legendTotal,quality.finalTotal,'inset total must equal the final cumulative y-axis total');
- assert.equal(quality.legendLabel,'REGIONAL MIX');
- assert.equal(quality.legendTotalText,quality.finalTotal.toLocaleString('en-US')+' ACTIVE ROLES');
- assert.deepEqual(quality.legendItems.map(x=>x.region),['HK','SG','CN']);
- assert.deepEqual(quality.legendItems.map(x=>x.count),['hk','sg','cn'].map(k=>quality.regionFinals[k]),
-  'HK/SG/CN numbers are taken from the chart rather than another data source');
+ assert.equal(quality.legendCount,1,'one direct-annotation layer is part of the actual plotting stage');
+ assert.equal(quality.oldLegendCount,0,'the previous large statistics header is entirely removed');
+ assert.equal(quality.labelTotal,quality.finalTotal,
+  'sum of directly annotated regional counts equals the cumulative y-axis endpoint');
+ assert.equal(quality.stageTotal,quality.finalTotal);
+ assert.equal(quality.shortHistory,quality.dayBins<100,
+  'only genuinely short observation windows use the tight two-line knockout layout');
+ if(quality.shortHistory)assert.ok(quality.shortLabelDisplays.every(v=>v==='grid'),
+  'short-history labels must not float over the same curve as long single-line text');
+ else assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
+  'full-year callouts remain single-line flex rows (absolute-positioned inline-flex computes to flex)');
+ const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
+ assert.deepEqual(quality.legendItems.map(x=>x.region),visibleRegionNames);
+ assert.deepEqual(quality.legendItems.map(x=>x.count),
+  visibleRegionNames.map(k=>quality.regionFinals[k.toLowerCase()]),
+  'individual labels equal corresponding cumulative band thicknesses');
  for(const item of quality.legendItems){
   assert.equal(item.visibleCount,item.count.toLocaleString('en-US'),
-   'each snapshot value has accurate thousands separators');
-  assert.equal(item.visibleShare,item.share,'the displayed percentage matches its data attribute');
-  assert.equal(item.label,item.region,'labels identify the same region as the band');
+   'latest-count labels use exact unrounded values');
+  assert.equal(item.visibleShare,item.share,'shares are never stale or separately hardcoded');
+  assert.equal(item.label,item.region,'label is directly associated with its region');
   assert.equal(item.ink,quality.series[item.region.toLowerCase()],
-   'stat swatches use the identical region ink as the stacked boundaries');
+   'direct labels use the original region-specific ink');
+  assert.ok(item.bounds.x>=quality.svgBounds.x-1&&
+    item.bounds.right<=quality.svgBounds.x+quality.svgBounds.w*.54,
+   'data labels belong within the spare early-time region of the main plot');
+  assert.ok(item.bounds.y>=quality.svgBounds.y-1&&
+    item.bounds.bottom<=quality.svgBounds.bottom+1,
+   'data labels stay inside the plotting stage without a separate header');
  }
- assert.equal(quality.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000,
-  'three dynamic shares sum to 100.0%, including rounding allocation');
- assert.equal(quality.railSegments.length,3,'one continuous region-mix rule contains exactly three segments');
- for(const [i,segment] of quality.railSegments.entries()){
-  const region=['HK','SG','CN'][i];
-  assert.equal(segment.region,region.toLowerCase());
-  assert.equal(segment.ink,quality.series[region.toLowerCase()],
-   'the mix rail and the trend contour must share an identical palette');
-  if(quality.finalTotal){
-   assert.ok(Math.abs(segment.width/quality.railBounds.w-
-     quality.legendItems[i].count/quality.finalTotal)<.015,
-    'the small composition rule depicts actual current region shares');
-  }
+ if(quality.finalTotal){
+  assert.equal(quality.legendItems.reduce((total,item)=>total+
+    Math.round(parseFloat(item.share)*10),0),1000,
+   'directly annotated percentages total 100.0% after rounding');
  }
- assert.ok(quality.legendBounds.x>=quality.svgBounds.x-1&&
-  quality.legendBounds.right<=quality.svgBounds.right+1,
-  'the regional summary fits the chart width, including on phones');
- assert.ok(quality.legendBounds.bottom<=quality.svgBounds.y+1,
-  'text key sits above the SVG rather than covering any cumulative band');
+ const sortedLabels=[...quality.legendItems].sort((x,y)=>x.bounds.y-y.bounds.y);
+ for(let i=1;i<sortedLabels.length;i++){
+  assert.ok(sortedLabels[i].bounds.y>=sortedLabels[i-1].bounds.bottom-.5,
+   'the regional callouts must never overlap, even when cohort sizes differ');
+ }
+ assert.equal(quality.guides.length,visibleRegionNames.length,
+  'one subtle final-state reference guide per nonempty upper boundary');
+ const maxAxis=Math.max(...quality.regionTicks.map(t=>t.value));
+ const axisTop=quality.regionTicks.find(t=>t.value===maxAxis).y-3;
+ const axisZero=quality.regionTicks.find(t=>t.value===0).y-3;
+ let cumulative=0;
+ for(const k of ['HK','SG','CN']){
+  const count=quality.regionFinals[k.toLowerCase()];
+  cumulative+=count;
+  if(!count)continue;
+  const rule=quality.guides.find(g=>g.region===k.toLowerCase());
+  assert.ok(rule,'regional end-state guide exists for '+k);
+  const exactY=axisZero-(cumulative/maxAxis)*(axisZero-axisTop);
+  assert.ok(Math.abs(rule.y-exactY)<.2&&Math.abs(rule.tickY-exactY)<.2,
+   'right-edge guide must match the exact cumulative regional boundary, not an independent series');
+  assert.equal(rule.x1,43);
+  assert.equal(rule.x2,506);
+ }
+ assert.ok(quality.svgBounds.h>quality.svgBounds.w*.62,
+  'main plot reclaims the former top-legend height');
  if(quality.viewportWidth<=720){
-  assert.ok(quality.legendItems.every(item=>item.countFont>=15),
-   'regional count labels stay at real readable CSS sizes on phones');
+  assert.ok(quality.legendItems.every(item=>item.countFont>=14),
+   'direct labels retain legible real CSS-pixel sizes on narrow phones');
  }
  assert.match(quality.chartAria,/y-axis is the sum of (?:all|these) three regions/);
  assert.equal(quality.notePresent,false,'verbose first-observed footnote and its whitespace are removed');
@@ -637,7 +666,7 @@ try{
  assert.equal(tomorrow.dayBins,296,'Nov 13 extends the observed date domain without any date constant');
  assert.equal(tomorrow.finalTotal,7,'the newly published job extends the rightmost stacked total');
  assert.deepEqual(tomorrow.regionFinals,{hk:3,sg:2,cn:2});
- assert.equal(tomorrow.legendTotal,7,'inset summary immediately uses the updated total');
+ assert.equal(tomorrow.labelTotal,7,'direct band labels immediately use the updated total');
  assert.deepEqual(tomorrow.legendItems.map(x=>x.count),[3,2,2],
   'the three inset counts follow the newest data without manual code edits');
  assert.equal(tomorrow.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000);
