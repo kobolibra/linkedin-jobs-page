@@ -1,0 +1,91 @@
+name: Verify live regional visual balance
+on:
+  push:
+    branches: [verify/region-balance-production-20261113]
+    paths: [.github/workflows/verify-region-balance.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned browser engines
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify exact tested stylesheet and unchanged application in production
+        run: |
+          mkdir -p artifacts/live-balance
+          python - <<'PY'
+          import hashlib,json,time
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          versions={'styles-refinement.css':'region-balance-20261113','app.js':'region-projection-20261113'}
+          expected={n:hashlib.sha256(Path(n).read_bytes()).hexdigest() for n in versions}
+          assert expected['styles-refinement.css']=='96e7f378cb425f566c9bb706f8b736d68daecd5953fc77a41da754780f483904'
+          assert expected['app.js']=='dee27a3069bbcc6c63628110e427e72e52a6afdfb18f29946f747bc5af898c1e'
+          for attempt in range(36):
+              try:
+                  actual={}
+                  for name,version in versions.items():
+                      req=Request('https://linkedin.claudecowork.workers.dev/'+name+'?v='+version,headers={'User-Agent':'NextJourney-Visual-Acceptance/1.0','Cache-Control':'no-cache'})
+                      with urlopen(req,timeout=15) as response:actual[name]=hashlib.sha256(response.read()).hexdigest()
+                  if actual==expected:
+                      Path('artifacts/live-balance/asset-hashes.json').write_text(json.dumps(actual,indent=2))
+                      print('EXACT_LIVE_HASH_MATCH',actual);break
+                  print('Published assets not yet at tested version',actual,flush=True)
+              except Exception as e:print(type(e).__name__,str(e),flush=True)
+              time.sleep(10)
+          else:raise SystemExit('Tested assets not verifiably live')
+          PY
+      - name: Verify actual hierarchy and page startup in both engines
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium,webkit} from 'playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          import {assertRegionProjections,assertRegionVisualBalance} from './scripts/assert_region_projections.mjs';
+          const results=[];
+          for(const [engine,type] of Object.entries({chromium,webkit})){
+            const browser=await type.launch({headless:true});
+            try{for(const width of [320,390,1440])for(const theme of ['light','dark']){
+              const context=await browser.newContext({viewport:{width,height:1000},colorScheme:theme,timezoneId:'Asia/Shanghai',deviceScaleFactor:2});
+              const page=await context.newPage(),errors=[],renderErrors=[],privateRequests=[];
+              page.on('pageerror',e=>errors.push(e.message));
+              page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))renderErrors.push(m.text());});
+              page.on('request',r=>{if(/\/(?:jobs-index\.json|jobs-version\.json|auth\/preferences)(?:[?]|$)/.test(r.url()))privateRequests.push(r.url());});
+              try{for(let visit=0;visit<2;visit++){
+                const response=visit?await page.reload({waitUntil:'domcontentloaded'}):await page.goto('https://linkedin.claudecowork.workers.dev/',{waitUntil:'domcontentloaded'});
+                assert.equal(response.status(),200);
+                await page.waitForFunction(()=>document.querySelector('#jobs .job')||document.querySelector('#empty.show'),null,{timeout:45000});
+                const projections=await assertRegionProjections(page),visualBalance=await assertRegionVisualBalance(page);
+                const state=await page.evaluate(()=>({ready:typeof renderReady!=='undefined'&&renderReady,auth:document.documentElement.dataset.authState,rows:document.querySelectorAll('#jobs .job').length,empty:document.querySelector('#empty')?.classList.contains('show'),captions:document.querySelectorAll('.chart-date-range,.chart-date-zone').length,css:[...document.querySelectorAll('link[rel="stylesheet"]')].find(n=>n.href.includes('styles-refinement.css'))?.href,bars:document.querySelectorAll('#spark .rhythm-bar').length,scrollWidth:document.documentElement.scrollWidth,dates:[...document.querySelectorAll('#dist .region-spark-date,#spark .rhythm-axis-label')].map(n=>n.textContent),labels:[...document.querySelectorAll('#dist .region-end-label')].map(n=>({region:n.dataset.region,count:n.dataset.count,share:n.dataset.share}))}));
+                assert.equal(state.ready,true);assert.equal(state.auth,'guest');assert.equal(state.empty,false);assert.ok(state.rows>0&&state.rows<=12);assert.equal(state.bars,30);assert.equal(state.captions,0);assert.ok(state.css.includes('region-balance-20261113'));assert.ok(state.scrollWidth<=width+2);
+                assert.equal(projections.groups.length,3);assert.deepEqual(errors,[]);assert.deepEqual(renderErrors,[]);assert.deepEqual(privateRequests,[]);
+                results.push({engine,width,theme,visit,state,visualBalance,projections,pageErrors:errors.slice(),renderErrors:renderErrors.slice(),privateRequests:privateRequests.slice()});
+                writeFileSync('artifacts/live-balance/results.json',JSON.stringify(results,null,2));
+                if(!visit){
+                  await page.locator('.analytics-left').screenshot({path:`artifacts/live-balance/${engine}-${width}-${theme}.png`,animations:'disabled'});
+                  if(width===1440)await page.locator('.analytics').screenshot({path:`artifacts/live-balance/${engine}-desktop-context-${theme}.png`,animations:'disabled'});
+                }
+                console.log('LIVE_VISUAL_BALANCE_PASS',engine,width,theme,visit);
+              }}catch(error){
+                await page.screenshot({path:`artifacts/live-balance/FAIL-${engine}-${width}-${theme}.png`}).catch(()=>{});
+                writeFileSync('artifacts/live-balance/failure.json',JSON.stringify({engine,width,theme,error:String(error),errors,renderErrors,privateRequests},null,2));throw error;
+              }finally{await context.close();}
+            }}finally{await browser.close();}
+          }
+          assert.equal(results.length,24);
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-region-balance-evidence
+          path: artifacts/live-balance
+          if-no-files-found: ignore
+          retention-days: 7
