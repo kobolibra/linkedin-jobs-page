@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-13T10:03:28.662340+00:00",
+    "checkedAt": "2026-11-13T16:03:09.014401+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,12 +2705,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.53108010043469,
+        "deferred": true
       }
     ]
   },
@@ -3019,7 +3030,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-13T10:03:16.794901+00:00",
+    "checkedAt": "2026-11-13T16:02:57.151454+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3189,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-13T10:03:22.595477+00:00",
+    "checkedAt": "2026-11-13T16:03:02.957056+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5409,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-13T10:03:25.881782+00:00",
+    "checkedAt": "2026-11-13T16:03:06.029263+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11433,5 +11444,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFsRazxEAMVDA/company-logo_100_100/B56ZsMDlyJJAAU-/0/1765433826917/quality_healthcare_logo?e=2147483647&v=beta&t=YJug4kFc2ySme1xbxCidUcJuUzLAI2PDu8PwDEJEoPo",
     "companyUrl": "https://hk.linkedin.com/company/quality-healthcare",
     "sourceJobId": "4489534815"
+  },
+  "l&g – asset management": {
+    "name": "L&G – Asset Management",
+    "checkedAt": "2026-11-13T16:02:52.857901+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f4f1b883ccd2f2cc42838e98.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEkKGQL3xjxBQ/company-logo_100_100/B4EZVnTTaCHgAQ-/0/1741194868797/legal__general_investment_management_logo?e=2147483647&v=beta&t=Y6W_etEykkdP6lkSlIVJj7ISCadNG8wfnsV57xG3DjI",
+    "companyUrl": "https://uk.linkedin.com/company/legal-and-general-asset-management",
+    "sourceJobId": "4490589926"
+  },
+  "yahoo": {
+    "name": "Yahoo",
+    "checkedAt": "2026-11-13T16:02:54.216752+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6fe69a66f092f542f035f242.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFa4OtF75tQVQ/company-logo_100_100/B4EaHGG.W0G8AI-/0/1794325079754/yahoo_logo?e=2147483647&v=beta&t=PKFRV4FbI0W-cMFGk0b-NGS5Dy2l8deJkEmPggjvM6Y",
+    "companyUrl": "https://www.linkedin.com/company/yahoo",
+    "sourceJobId": "4489553941"
   }
 }
