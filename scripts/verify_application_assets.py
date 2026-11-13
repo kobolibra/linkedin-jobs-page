@@ -16,7 +16,7 @@ ORIGIN = 'https://linkedin.claudecowork.workers.dev'
 # The default Python-urllib User-Agent is blocked by workers.dev Browser
 # Integrity Check (Cloudflare 1010). Use a truthful, descriptive verifier UA.
 HEADERS = {'Cache-Control': 'no-cache', 'User-Agent': 'NextJourney-DeployVerifier/1.0'}
-LINKEDIN_JOB = re.compile(r'^https://(?:[a-z]{2,3}\\.)?linkedin\\.com/jobs/view/', re.I)
+LINKEDIN_JOB = re.compile(r'^https://(?:[a-z]{2,3}\.)?linkedin\.com/jobs/view/', re.I)
 
 
 def request(url):
