@@ -692,7 +692,8 @@ jobsDataPromise
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
-    const dayLabel=(date)=>regionTickFormat.format(date);
+    // Chart-only Date formatter must not shadow the ISO-safe job-list dayLabel.
+    const regionAxisDayLabel=(date)=>regionTickFormat.format(date);
     const yearLabel=date=>date.getUTCFullYear().toString().slice(-2);
     const axisCssWidth=distEl.getBoundingClientRect().width||TW;
     // Calendar anchors, not arbitrary 25%-interval timestamps. Select only
@@ -702,9 +703,9 @@ jobsDataPromise
     const longHistory=bins>120;
     const firstLabel=longHistory
       ?new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(firstDate)+" '"+yearLabel(firstDate)
-      :dayLabel(firstDate)+(firstDate.getUTCFullYear()!==lastDate.getUTCFullYear()?" '"+yearLabel(firstDate):'');
+      :regionAxisDayLabel(firstDate)+(firstDate.getUTCFullYear()!==lastDate.getUTCFullYear()?" '"+yearLabel(firstDate):'');
     const lastLabel=firstDate.getUTCFullYear()===lastDate.getUTCFullYear()
-      ?dayLabel(lastDate):dayLabel(lastDate)+" '"+yearLabel(lastDate);
+      ?regionAxisDayLabel(lastDate):regionAxisDayLabel(lastDate)+" '"+yearLabel(lastDate);
     const calendarCandidates=[];
     let monthCursor=new Date(Date.UTC(firstDate.getUTCFullYear(),firstDate.getUTCMonth()+1,1));
     while(monthCursor.getTime()<lastDate.getTime()){
