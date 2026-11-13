@@ -661,8 +661,11 @@ jobsDataPromise
     const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/4));
     const regionStep=Math.max(1,Math.round(
       [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/4)*regionMagnitude));
-    const regionMax=Math.max(regionStep,Math.ceil(endTotal/regionStep)*regionStep);
-    const regionTicks=Array.from({length:Math.round(regionMax/regionStep)+1},
+    // Keep a modest ~5% headroom instead of 20-25% unused upper space.
+    // Retain a linear zero-origin scale and conventional 1/2/5 tick steps.
+    const topIncrement=Math.max(.25,regionStep/4);
+    const regionMax=Math.max(regionStep,Math.ceil(endTotal*1.05/topIncrement)*topIncrement);
+    const regionTicks=Array.from({length:Math.floor(regionMax/regionStep)+1},
       (_,i)=>i*regionStep);
     // Keep the existing independent daily-new axis unchanged.
     const niceCountAxis=maxValue=>{
