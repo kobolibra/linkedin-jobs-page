@@ -1,0 +1,60 @@
+name: Prepare regional type correction
+on:
+  push:
+    branches: [fix/region-label-type-no-captions-20261113]
+    paths: [.github/workflows/prepare-region-type.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply scoped correction
+        run: |
+          python scripts/patches/region_label_typography_20261113.py
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('styles-refinement.css')
+          s=p.read_text()
+          old='  color:var(--viz-secondary);font:500 18px/1.1 var(--sans);\n  letter-spacing:-.02em;'
+          assert s.count(old)==1
+          s=s.replace(old,old+'\n  font-variant-numeric:lining-nums tabular-nums;')
+          old='  color:var(--viz-quiet);font:400 10.5px/1.2 var(--sans);\n  letter-spacing:0;'
+          assert s.count(old)==1
+          s=s.replace(old,old+'\n  font-variant-numeric:lining-nums tabular-nums;')
+          p.write_text(s)
+          PY
+          node --check app.js
+          node --check scripts/test_calendar_browser.mjs
+          node --test scripts/test_startup_date_scope.mjs scripts/test_calendar_axes.mjs scripts/test_frontend_resilience.mjs scripts/test_startup_loading.mjs
+      - name: Commit verified scoped files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app.js styles-refinement.css index.html scripts/test_calendar_axes.mjs scripts/test_calendar_browser.mjs scripts/test_startup_date_scope.mjs scripts/test_frontend_resilience.mjs scripts/test_market_width_browser.mjs
+          git diff --cached --check
+          git --no-pager diff --cached --stat
+          git commit -m 'Remove unsolicited range captions and set regional labels in two coordinated sans-serif lines'
+          git push origin HEAD:fix/region-label-type-no-captions-20261113
+      - name: Retain source for independent visual comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: region-type-source
+          path: |
+            *.js
+            *.mjs
+            *.css
+            *.html
+            jobs-index.json
+            jobs-version.json
+            scripts/*.mjs
+            .github/workflows/homepage-startup.yml
+            artifacts/region-type-before
+          include-hidden-files: true
+          retention-days: 3
