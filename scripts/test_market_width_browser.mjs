@@ -97,6 +97,8 @@ async function renderLeft(page,chartData,theme){
    weekdayBlue:weekdayBars.length?getComputedStyle(weekdayBars[0]).fill:null,
    labelTotal:statRows.reduce((n,node)=>n+Number(node.dataset.count),0),
    stageTotal:Number(stage.dataset.visibleTotal),
+   shortHistory:stage.classList.contains('is-short-history'),
+   shortLabelDisplays:statRows.map(node=>getComputedStyle(node).display),
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
    oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
    legendBounds:rect(stage),svgBounds:rect(svg),
@@ -182,6 +184,12 @@ async function renderLeft(page,chartData,theme){
  assert.equal(quality.labelTotal,quality.finalTotal,
   'sum of directly annotated regional counts equals the cumulative y-axis endpoint');
  assert.equal(quality.stageTotal,quality.finalTotal);
+ assert.equal(quality.shortHistory,quality.dayBins<100,
+  'only genuinely short observation windows use the tight two-line knockout layout');
+ if(quality.shortHistory)assert.ok(quality.shortLabelDisplays.every(v=>v==='grid'),
+  'short-history labels must not float over the same curve as long single-line text');
+ else assert.ok(quality.shortLabelDisplays.every(v=>v==='inline-flex'),
+  'full-year charts must retain the clean single-line annotations');
  const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
  assert.deepEqual(quality.legendItems.map(x=>x.region),visibleRegionNames);
  assert.deepEqual(quality.legendItems.map(x=>x.count),
