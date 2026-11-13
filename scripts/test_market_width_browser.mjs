@@ -188,8 +188,8 @@ async function renderLeft(page,chartData,theme){
   'only genuinely short observation windows use the tight two-line knockout layout');
  if(quality.shortHistory)assert.ok(quality.shortLabelDisplays.every(v=>v==='grid'),
   'short-history labels must not float over the same curve as long single-line text');
- else assert.ok(quality.shortLabelDisplays.every(v=>v==='inline-flex'),
-  'full-year charts must retain the clean single-line annotations');
+ else assert.ok(quality.shortLabelDisplays.every(v=>v==='flex'),
+  'full-year callouts remain single-line flex rows (absolute-positioned inline-flex computes to flex)');
  const visibleRegionNames=['HK','SG','CN'].filter(k=>quality.regionFinals[k.toLowerCase()]>0);
  assert.deepEqual(quality.legendItems.map(x=>x.region),visibleRegionNames);
  assert.deepEqual(quality.legendItems.map(x=>x.count),
