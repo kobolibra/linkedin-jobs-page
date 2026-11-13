@@ -129,19 +129,19 @@ test('guestbook prefetch waits for jobs and stays deferred while loading',async(
 
 
 
-test('C-style columns keep original blue and regional trend keeps the original area colors',()=>{
+test('New Postings keeps its blue while stacked regions follow the approved sand/sage/terracotta palette',()=>{
  const css=readFileSync(new URL('../styles-refinement.css',import.meta.url),'utf8');
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(css,/#spark\s*\{\s*--viz-blue:\s*#334EAC\s*;\s*\}/);
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-vertical-measure-14/);
+ assert.match(html,/styles-refinement\.css\?v=demo-mineral-palette-17/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
- assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:25%\}/);
- assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-band:31%\}/);
- assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-band:29%\}/);
+ assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
+ assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-fill:#ddc6a6\}/);
+ assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-fill:#c1d3ad\}/);
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
  assert.match(source,/const regionOrder=\["HK","SG","CN"\];/);
  assert.match(source,/const cumulativeSeries=bucketCounts\.map\(daily=>/);
@@ -151,18 +151,13 @@ test('C-style columns keep original blue and regional trend keeps the original a
   'percentages are computed rather than hardcoded');
  assert.match(source,/const endBoundaries=regionOrder\.map/,'final cumulative boundaries are summed by region');
  assert.match(source,/const bandMiddleY=regionOrder\.map/,'direct label position follows the final band midpoints');
- assert.match(source,/const measureValues=\[0,\.\.\.endBoundaries\]/,'the measured y-levels are baseline, HK, HK+SG and total');
- assert.match(source,/const dimensionSegments=regionOrder\.map/,'one vertical span per nonempty region');
- assert.match(source,/const dimensionCaps=\[\.\.\.new Set\(measureValues\)\]/,'only four true-height endpoint microcaps');
- assert.doesNotMatch(source,/endpointRules|region-end-guide|region-end-tick/,'no duplicate horizontal guides or right-edge extensions');
+ assert.doesNotMatch(source,/dimensionSegments|dimensionCaps|dimensionScale|measureValues|endpointRules|region-end-guide|region-end-tick/,
+  'approved terminal labels must not create a redundant ruler, axis or long guides');
  assert.match(source,/const directLabels='<div class="region-end-labels"/,'labels are overlaid inside the main plot, not in a header');
- assert.match(source,/const shortHistory=bins<100;/,'short dated history receives a collision-safe compact key');
- assert.match(css,/#dist \.region-plot-stage\.is-short-history \.region-end-label\{/);
- assert.match(css,/#dist \.region-dimension-span\{/);
- assert.match(css,/#dist \.region-dimension-cap\{/);
+ assert.match(source,/const shortHistory=bins<100;/);
  assert.match(css,/#dist \.region-end-meta\{/);
- assert.doesNotMatch(css,/#dist \.region-plot-stage\.is-short-history \.region-end-label\{[^}]*background:/);
- assert.doesNotMatch(css,/\.region-end-guide|\.region-end-tick/);
+ assert.match(css,/#dist \.region-end-dot\{/);
+ assert.doesNotMatch(css,/\.region-dimension-span|\.region-dimension-cap|\.region-end-guide|\.region-end-tick/);
  assert.match(css,/#dist \.region-end-label\{/);
  assert.doesNotMatch(source,/region-current-key|region-stat-|region-mix-|summaryCols=|const legend=|const composition=/);
  assert.match(css,/#spark \.rhythm-bar\.weekend\{opacity:\.63\}/);
@@ -178,20 +173,29 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/series\.map\(layer=>layer\.area\)\.join\(''\)/);
  assert.match(source,/series\.map\(layer=>layer\.outline\)\.join\(''\)/);
  assert.match(source,/const contour=active\?contourPath\(upper,upperSlope\):'';/);
- assert.match(source,/const regionSlopes=cumulativeSeries\.map\(/);
+ assert.match(source,/const knotDays=bins===1\?\[1\]:\[1,bins\]/);
+ assert.match(source,/const cubicAt=\(values,slopes,a,b,day\)=>/);
+ assert.match(source,/curveErrorPx=worstError/);
+ assert.match(source,/worstError<=\.58/);
+ assert.match(source,/regionSlopes=cumulativeSeries\.map\(values=>slopeAtKnots/);
  assert.match(source,/const area=active\?'<path class="region-stack-band"/);
  assert.match(source,/class="region-stack-band"/);
  assert.match(css,/#dist \.region-stack-band\{/);
- assert.match(css,/--region-band:29%/);
- assert.match(css,/#dist \.region-spark-line\{[^}]*stroke-width:1\.65/);
+ assert.match(css,/#dist \.region-stack-band\{fill:var\(--region-fill\)/);
+ assert.doesNotMatch(css,/--region-band/);
+ assert.match(css,/#dist \.region-spark-line\{[^}]*stroke-width:1\.6/);
  assert.match(css,/#spark \.rhythm-bar\{\s*fill:var\(--viz-blue\);opacity:1/);
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
  assert.match(source,/const bucketCounts=regionOrder\.map\(\(\)=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
  assert.match(source,/regionRecords\[k\]\.forEach\(x=>\{/);
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
- assert.match(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-vertical-measure-12/);
+ assert.match(source,/const calendarCandidates=\[\]/);
+ assert.match(source,/const regionalGap=66\*TW\/axisCssWidth/);
+ assert.match(source,/const rhythmMarks=\[0\]/);
+ assert.match(source,/days\[i\]\.date\.getDay\(\)!==1/);
+ assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
+ assert.match(html,/app\.js\?v=calendar-monotone-13/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });

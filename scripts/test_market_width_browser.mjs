@@ -87,8 +87,8 @@ async function renderLeft(page,chartData,theme){
   };};
   const weekendBars=bars.filter(node=>node.classList.contains('weekend'));
   const weekdayBars=bars.filter(node=>!node.classList.contains('weekend'));
-  const measuredSegments=[...svg.querySelectorAll('.region-dimension-span')];
-  const measuredCaps=[...svg.querySelectorAll('.region-dimension-cap')];
+  const regionDateNodes=[...svg.querySelectorAll('.region-spark-date')];
+  const postingDateNodes=[...document.querySelectorAll('#spark .rhythm-axis-label')];
   return {series,bars:bars.length,regions:lines.length,
    viewportWidth:window.innerWidth,
    weekendCount:weekendBars.length,
@@ -104,18 +104,16 @@ async function renderLeft(page,chartData,theme){
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
    oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
    legendBounds:rect(stage),svgBounds:rect(svg),
-   forbiddenGuideCount:svg.querySelectorAll('.region-end-guide,.region-end-tick').length,
-   measuredSegments:measuredSegments.map(node=>({
-     region:node.dataset.region,count:Number(node.dataset.count),
-     lower:Number(node.dataset.lower),upper:Number(node.dataset.upper),
-     x1:Number(node.getAttribute('x1')),x2:Number(node.getAttribute('x2')),
-     y1:Number(node.getAttribute('y1')),y2:Number(node.getAttribute('y2')),
-     ink:getComputedStyle(node).stroke
+   forbiddenGuideCount:svg.querySelectorAll('.region-end-guide,.region-end-tick,.region-dimension-span,.region-dimension-cap').length,
+   curveKnots:Number(svg.dataset.curveKnots),curveError:Number(svg.dataset.curveError),
+   regionDateMarks:regionDateNodes.map(node=>({
+     day:Number(node.dataset.day),label:node.textContent,bounds:rect(node)
    })),
-   measuredCaps:measuredCaps.map(node=>({
-     value:Number(node.dataset.level),x1:Number(node.getAttribute('x1')),
-     x2:Number(node.getAttribute('x2')),y:Number(node.getAttribute('y1'))
-   })),
+   postingDateMarks:postingDateNodes.map(node=>{
+     const day=Number(node.dataset.day);
+     const date=new Date();date.setHours(0,0,0,0);date.setDate(date.getDate()-29+day);
+     return {day,label:node.textContent,weekday:date.getDay(),bounds:rect(node)};
+   }),
    metaCount:stage.querySelectorAll('.region-end-meta').length,
    legendItems:statRows.map(node=>({
      region:node.dataset.region,count:Number(node.dataset.count),
@@ -162,15 +160,17 @@ async function renderLeft(page,chartData,theme){
     fill:getComputedStyle(dot).fill,
     expected:getComputedStyle(dot.parentElement.querySelector('.region-spark-line')).stroke
    })),
-   dateTicks:document.querySelectorAll('#dist .region-spark-date').length,
+   dateTicks:regionDateNodes.length,
+   postingDateTicks:postingDateNodes.length,
    filled:bars.filter(b=>Number(b.getAttribute('height'))>0).length,
    paths:lines.map(p=>p.getAttribute('d')),
    notePresent:!!document.querySelector('#distNote'),
    points:hits.map(p=>({x:Number(p.getAttribute('cx')),n:Number(p.dataset.count),bin:Number(p.dataset.bin)}))};
  });
- assert.deepEqual(quality.series,{
-  cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'
- },'CN/HK/SG colors must remain exactly the original site colors');
+ assert.deepEqual(quality.series,theme==='light'
+  ?{cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'}
+  :{cn:'rgb(238, 160, 154)',hk:'rgb(224, 179, 107)',sg:'rgb(173, 208, 132)'},
+  'region contours match the approved visual palette in both themes');
  assert.equal(quality.barColor,theme==='light'?'rgb(51, 78, 172)':'rgb(112, 150, 209)',
   '30-day columns must reuse the existing light/dark blue tokens');
  assert.equal(quality.regions,3);
@@ -210,11 +210,14 @@ async function renderLeft(page,chartData,theme){
    'latest-count labels use exact unrounded values');
   assert.equal(item.visibleShare,item.share,'shares are never stale or separately hardcoded');
   assert.equal(item.label,item.region,'label is directly associated with its region');
-  assert.equal(item.ink,quality.series[item.region.toLowerCase()],
-   'direct labels use the original region-specific ink');
-  assert.ok(item.bounds.x>=quality.svgBounds.x-1&&
-    item.bounds.right<=quality.svgBounds.x+quality.svgBounds.w*.54,
-   'data labels belong within the spare early-time region of the main plot');
+  const labelInks=theme==='light'
+   ?{hk:'rgb(148, 100, 28)',sg:'rgb(81, 110, 42)',cn:'rgb(161, 59, 56)'}
+   :quality.series;
+  assert.equal(item.ink,labelInks[item.region.toLowerCase()],
+   'small region labels use accessible darkened ink while contours retain the approved pigment');
+  assert.ok(item.bounds.x>=quality.svgBounds.x+quality.svgBounds.w*.76&&
+    item.bounds.right<=quality.svgBounds.right+4,
+   'terminal regional data labels fit beside the latest area, inside its dedicated gutter');
   assert.ok(item.bounds.y>=quality.svgBounds.y-1&&
     item.bounds.bottom<=quality.svgBounds.bottom+1,
    'data labels stay inside the plotting stage without a separate header');
@@ -230,45 +233,15 @@ async function renderLeft(page,chartData,theme){
    'the regional callouts must never overlap, even when cohort sizes differ');
  }
  assert.equal(quality.forbiddenGuideCount,0,
-  'remove all long cross-chart dashed rules and three outside-right terminal ticks');
- assert.equal(quality.measuredSegments.length,visibleRegionNames.length,
-  'a single segmented dimension axis has one vertical length per nonempty region');
- assert.equal(quality.measuredCaps.length,quality.finalTotal?visibleRegionNames.length+1:0,
-  'only populated regions have one baseline cap plus their real cumulative endpoints');
- const maxAxis=Math.max(...quality.regionTicks.map(t=>t.value));
- const axisTop=quality.regionTicks.find(t=>t.value===maxAxis).y-3;
- const axisZero=quality.regionTicks.find(t=>t.value===0).y-3;
- let cumulative=0;
- const capValues=[0];
- for(const k of ['HK','SG','CN']){
-  const count=quality.regionFinals[k.toLowerCase()];
-  const before=cumulative;
-  cumulative+=count;
-  if(!count)continue;
-  const span=quality.measuredSegments.find(m=>m.region===k);
-  assert.ok(span,'visible measured vertical segment is required for '+k);
-  assert.equal(span.count,count);
-  assert.equal(span.lower,before);
-  assert.equal(span.upper,cumulative);
-  const fromY=axisZero-(before/maxAxis)*(axisZero-axisTop);
-  const toY=axisZero-(cumulative/maxAxis)*(axisZero-axisTop);
-  assert.ok(Math.abs(span.y1-fromY)<.2&&Math.abs(span.y2-toY)<.2,
-   'vertical segment endpoints must coincide with exact cumulative-area boundaries');
-  assert.ok(Math.abs((span.y1-span.y2)-count/maxAxis*(axisZero-axisTop))<.2,
-   'actual on-screen vertical segment length must be linear in its OWN regional count');
-  assert.equal(span.x1,span.x2,'measure must be vertical, not a cross-plot guide');
-  assert.equal(span.x1,59,'all three intervals share one compact x-coordinate at the left');
-  assert.equal(span.ink,quality.series[k.toLowerCase()],
-   'measurement ink uses the original regional line color');
-  capValues.push(cumulative);
- }
- for(const cap of quality.measuredCaps){
-  assert.ok(cap.x2-cap.x1<=8.1,'end tick is a microcap, not another horizontal line');
-  assert.ok(cap.x1>=55&&cap.x2<=63,'all caps belong to the LEFT measured ruler');
-  assert.ok(capValues.includes(cap.value),'cap belongs to an actual observed cumulative boundary');
-  assert.ok(Math.abs(cap.y-(axisZero-cap.value/maxAxis*(axisZero-axisTop)))<.2,
-   'each cap is placed on an exact cumulative region boundary');
- }
+  'approved chart uses no second measuring ruler, vertical caps or long leader lines');
+ assert.ok(quality.curveKnots>=1&&quality.curveKnots<=quality.dayBins,
+  'adaptive spline cannot manufacture new dates or expand beyond daily observations');
+ assert.ok(quality.curveError<=.581,
+  'interpolated stacked boundaries must never move a real daily value by more than 0.58 SVG pixels');
+ assert.deepEqual(quality.bandFills,theme==='light'
+  ?{sg:'rgb(193, 211, 173)',hk:'rgb(221, 198, 166)',cn:'rgb(225, 179, 176)'}
+  :{sg:'rgb(69, 89, 65)',hk:'rgb(104, 83, 61)',cn:'rgb(113, 67, 68)'},
+  'stacked areas use the three exact approved mineral fills');
  assert.ok(quality.svgBounds.h>quality.svgBounds.w*.62,
   'main plot reclaims the former top-legend height');
  if(quality.viewportWidth<=720){
@@ -320,7 +293,10 @@ async function renderLeft(page,chartData,theme){
   'the three final regional layers must sum to the y-axis endpoint');
  assert.ok(Math.max(...quality.regionTicks.map(t=>t.value))>=quality.finalTotal,
   'the y-axis must fit the complete vertically stacked total, not a daily peak');
- assert.ok(quality.grid>=2&&quality.filled>0,'both charts plot genuine values');
+ assert.ok(quality.grid>=2&&quality.grid<=6,
+  'a restrained 1/2/5 geographic scale uses at most six lines, retaining original daily values');
+ // A valid historical cohort need not have new observations within the
+ // independent rolling 30-day New Postings window.
  assert.ok(quality.paths.every(p=>p?.startsWith('M')),
   'regional lines begin at actual observations, not baseline zeros');
  assert.equal(quality.matchingContours,true,
@@ -328,8 +304,26 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.linePaths.every(d=>d&&d.split('M').length===2),
   'one unbroken cumulative contour per region, including days without new postings');
  assert.equal(quality.captions,0,'do not add redundant chart subtitles');
- assert.ok(quality.dateTicks>=2&&quality.dateTicks<=5,
-  'short intervals do not duplicate date ticks');
+ assert.ok(quality.dateTicks>=1&&quality.dateTicks<=5,
+  'geographic dates use only readable calendar anchors');
+ assert.ok(quality.postingDateTicks>=2&&quality.postingDateTicks<=6,
+  'rolling 30-day axis uses a restrained set of week-aligned labels');
+ const checkDateSpacing=(marks,name)=>{
+  for(let i=1;i<marks.length;i++){
+   assert.ok(marks[i].day>marks[i-1].day,
+    name+' dates must advance chronologically without duplicate ticks');
+   assert.ok(marks[i].bounds.x>=marks[i-1].bounds.right-1.2,
+    name+' date texts must not collide: '+JSON.stringify(marks));
+  }
+ };
+ checkDateSpacing(quality.regionDateMarks,'Regional history');
+ checkDateSpacing(quality.postingDateMarks,'New Postings');
+ assert.equal(quality.regionDateMarks[0].day,0);
+ if(quality.dayBins>1)assert.equal(quality.regionDateMarks.at(-1).day,quality.dayBins-1);
+ assert.equal(quality.postingDateMarks[0].day,0);
+ assert.equal(quality.postingDateMarks.at(-1).day,29);
+ assert.ok(quality.postingDateMarks.slice(1,-1).every(m=>m.weekday===1),
+  'every intermediate New Postings date belongs to an actual Monday boundary');
  const checkScale=(ticks,name)=>{
   assert.ok(ticks.length>=2,name+' needs at least two integer ticks');
   assert.equal(ticks[0].value,0,name+' starts at zero');
@@ -660,6 +654,22 @@ try{
   animations:'disabled'
  });
  await gapPage.close();
+ // When all three cohorts grow linearly, the shared monotone
+ // presentation should collapse ~90 daily nodes into only two spline knots.
+ // All 270 true day/region readings must remain available in hover data.
+ const smoothPage=await make(960,'light');
+ const smoothRows=[];
+ for(let i=0;i<90;i++)for(const region of ['HK','SG','CN'])
+  smoothRows.push({location:region,firstSeen:new Date(Date.UTC(2026,3,1+i,9)).toISOString(),
+   company:'HSBC',jobStatus:'active'});
+ const smoothQuality=await renderLeft(smoothPage,smoothRows,'light');
+ assert.equal(smoothQuality.dayBins,90,'daily observations remain distinct after visual simplification');
+ assert.equal(smoothQuality.pointTotal,270,'no true daily observations were discarded');
+ assert.equal(smoothQuality.finalTotal,270,'the true cumulative total is unchanged');
+ assert.equal(smoothQuality.curveKnots,2,
+  'linear data needs only the two endpoints, not dozens of tiny daily kinks');
+ assert.ok(smoothQuality.curveError<.01,'linear fixture spline exactly matches all daily totals');
+ await smoothPage.close();
  // Actual Jan-Nov history still plots each UTC day separately: no weekly
  // summing, no collapsed zero weeks, and exact one-day hover intervals.
  const dailyPage=await make(960,'light');
@@ -721,10 +731,10 @@ try{
  assert.equal(focused.finalTotal,63,'the 2025 outlier is excluded from the 2026 cumulative total');
  assert.equal(focused.pointTotal,63,'all 2026 records remain exact');
  assert.ok(Math.min(...focused.points.map(p=>p.x))<100&&
-  Math.max(...focused.points.map(p=>p.x))>430,
-  'entire available 2026 range must occupy the plotting width');
+  Math.max(...focused.points.map(p=>p.x))>385,
+  'all valid 2026 days must use the full trend plot width, excluding the reserved terminal-label gutter');
  const dateLabels=await focusPage.locator('#dist .region-spark-date').allTextContents();
- assert.ok(dateLabels[0].includes('2026'),'first axis tick identifies the year');
+ assert.ok(dateLabels[0].includes('Nov'),'short observed history begins with its actual calendar month');
  const paths=focused.linePaths.filter(Boolean);
  assert.ok(paths.every(d=>/^M[\d.]+,[\d.]+ C/.test(d)),
   'continuous regional contours use monotone cubic segments across all daily observations');

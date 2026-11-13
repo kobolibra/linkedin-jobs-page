@@ -624,83 +624,54 @@ body.compact .job > .mono { margin-top:2px; }
   fill:var(--viz-quiet);font:500 9px var(--mono);
   font-variant-numeric:tabular-nums;
 }
-/* Three locally related, opaque mineral tints: warm ochre foundation,
-   restrained sage middle, burgundy cap. The stronger lower band provides
-   hierarchy without changing plotted counts or adding false separation. */
-#dist .region-series.hk{--region-ink:#b27a22;--region-band:31%}
-#dist .region-series.sg{--region-ink:#6e8f3b;--region-band:29%}
-#dist .region-series.cn{--region-ink:#b33a36;--region-band:25%}
+/* Demo-matched mineral pigments: these are the FINAL visible colors
+   after compositing the approved preview's 77/81/82%-opacity fills onto its
+   warm paper background. Solid opaque fills keep stacked ribbons seamless. */
+#dist .region-series.hk{--region-ink:#b27a22;--region-fill:#ddc6a6}
+#dist .region-series.sg{--region-ink:#6e8f3b;--region-fill:#c1d3ad}
+#dist .region-series.cn{--region-ink:#b33a36;--region-fill:#e1b3b0}
+[data-theme="dark"] #dist .region-series.hk{--region-ink:#e0b36b;--region-fill:#68533d}
+[data-theme="dark"] #dist .region-series.sg{--region-ink:#add084;--region-fill:#455941}
+[data-theme="dark"] #dist .region-series.cn{--region-ink:#eea09a;--region-fill:#714344}
 #dist .region-spark-line{
-  fill:none;stroke:var(--region-ink);stroke-width:1.65;
+  fill:none;stroke:var(--region-ink);stroke-width:1.6;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
-/* Direct end-state measurements belong to the original plot, not a new
-   chart or header. No extra trend-spanning horizontal guidelines. */
-#dist .region-plot-stage{
-  position:relative;width:100%;min-width:0;flex:none;
-}
+#dist .region-plot-stage{position:relative;width:100%;min-width:0;flex:none}
 #dist .region-plot-stage > .region-time-svg{
   display:block;width:100%;height:auto;overflow:visible;
 }
-/* A SINGLE measured vertical rule, not horizontal guide lines:
-   four precise end-state levels (0 / HK / HK+SG / total) define three
-   true-height, region-colored intervals. Four tiny caps are the only
-   horizontal measuring marks. No extra extensions past the chart edge. */
-#dist .region-dimension-span{
-  stroke:var(--region-ink);stroke-width:1.75;opacity:.82;
-  vector-effect:non-scaling-stroke;
-}
-#dist .region-dimension-cap{
-  stroke:var(--viz-secondary);stroke-width:1;opacity:.64;
-  vector-effect:non-scaling-stroke;
-}
-#dist .region-end-labels{
-  position:absolute;inset:0;pointer-events:none;
-}
+#dist .region-stack-band{fill:var(--region-fill);stroke:none}
+#dist .region-end-labels{position:absolute;inset:0;pointer-events:none}
 #dist .region-end-label{
-  position:absolute;left:calc(14.81% + 2px);
+  position:absolute;left:calc(76.154% + 11px);
   transform:translateY(-50%);display:flex;
-  flex-direction:column;align-items:flex-start;gap:2px;
+  flex-direction:column;align-items:flex-start;gap:3px;
   white-space:nowrap;font-variant-numeric:tabular-nums;
 }
-#dist .region-end-meta{
-  display:flex;align-items:baseline;gap:10px;
+#dist .region-end-meta{display:flex;align-items:center;gap:6px}
+#dist .region-end-dot{
+  display:inline-block;width:5px;height:5px;border-radius:50%;
+  background:var(--region-ink);flex:none;
 }
+#dist .region-end-label.hk{--region-label-ink:#94641c}
+#dist .region-end-label.sg{--region-label-ink:#516e2a}
+#dist .region-end-label.cn{--region-label-ink:#a13b38}
+[data-theme="dark"] #dist .region-end-label{--region-label-ink:var(--region-ink)}
 #dist .region-end-name{
-  color:var(--region-ink);font:700 10px/1.14 var(--mono);
-  letter-spacing:.055em;
+  color:var(--region-label-ink);font:700 11px/1.1 var(--mono);
+  letter-spacing:.025em;
 }
 #dist .region-end-share{
-  color:var(--viz-quiet);font:500 10.5px/1.14 var(--mono);
-  font-variant-numeric:tabular-nums;
+  color:var(--viz-quiet);font:500 10.5px/1.1 var(--mono);
 }
 #dist .region-end-count{
   display:block;color:var(--viz-secondary);
-  font:650 18px/1.05 var(--mono);
-  letter-spacing:-.028em;
+  font:650 20px/1.05 var(--mono);letter-spacing:-.035em;
 }
-/* Short observation windows may already fill the left plotting area.
-   Use a subtle glyph-only halo rather than white rectangular knockout cards:
-   the actual area remains visible behind every measurement. */
-#dist .region-plot-stage.is-short-history .region-end-label{
-  text-shadow:0 0 3px var(--surface),0 0 1px var(--surface);
-}
-/* Each band occupies the real space between two cumulative regional
-   boundaries, with a restrained SHADE of the original line color.
-   Opaque surface-mixed shades avoid accidental color blending between
-   stacked bands while preserving the site's porcelain backgrounds. */
-#dist .region-stack-band{
-  fill:color-mix(in srgb,var(--region-ink) var(--region-band),var(--surface));
-  stroke:none;
-}
-[data-theme="dark"] #dist .region-series.hk{--region-band:40%}
-[data-theme="dark"] #dist .region-series.sg{--region-band:39%}
-[data-theme="dark"] #dist .region-series.cn{--region-band:35%}
-#dist .region-spark-dot{
-  fill:var(--region-ink);stroke:var(--surface);stroke-width:1.1;
-  pointer-events:none;
-}
+/* In short date ranges the terminal callouts have a distinct outer gutter;
+   no background knockout, second axis, or measurement tick is required. */
 #dist .region-spark-hit{
   fill:transparent;stroke:transparent;cursor:crosshair;
 }
@@ -731,24 +702,25 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
-/* The measure scales with the SVG but its annotation typography
-   remains in legible CSS pixels across mobile widths and themes. */
+/* Geographic/date labels get larger SVG text on small viewports;
+   end-state labels stay in real CSS px in the reserved right gutter. */
 @media(max-width:720px){
   #dist .region-spark-value,
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
-  #spark .rhythm-axis-label{font-size:12.5px;letter-spacing:0}
-  #dist .region-end-meta{gap:7px}
+  #spark .rhythm-axis-label{font-size:14px;letter-spacing:0}
+  #dist .region-end-meta{gap:4px}
   #dist .region-end-name{font-size:10px}
-  #dist .region-end-count{font-size:15.5px}
-  #dist .region-end-share{font-size:10.5px}
+  #dist .region-end-count{font-size:16px}
+  #dist .region-end-share{font-size:10px}
+  #dist .region-end-label{gap:2px}
 }
 @media(max-width:360px){
-  #dist .region-end-meta{gap:5px}
   #dist .region-end-count{font-size:14.5px}
-  #dist .region-end-share{font-size:10px}
+  #dist .region-end-share{font-size:9.5px}
+  #dist .region-end-name{font-size:9.5px}
+  #dist .region-end-label{left:calc(76.154% + 7px)}
 }
-
 /* Masthead copy: disciplined editorial typography, no structural change. */
 .nj-market-statement{letter-spacing:-.025em;text-wrap:balance}
 .nj-market-statement span{display:block;line-height:1.16}

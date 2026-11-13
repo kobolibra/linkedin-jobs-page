@@ -638,9 +638,9 @@ jobsDataPromise
     const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
     const tMin=utcDay(earliestStamp),tMax=utcDay(latestStamp)+dayMs;
     const bins=Math.max(1,Math.round((tMax-tMin)/dayMs));
-    // Full-height cumulative area. Direct end-state labels occupy the
-    // largely empty early-year portion of the plot, never a separate header.
-    const TW=520,TH=360,left=43,right=14,top=18,base=326,plotW=TW-left-right;
+    // Preserve the full y-axis while allocating a slim, clearly separated
+    // right-side terminal label gutter, as in the approved design preview.
+    const TW=520,TH=360,left=43,right=124,top=18,base=326,plotW=TW-left-right;
     const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     // Exact UTC daily observations. No rolling windows and no weekly buckets.
     const bucketCounts=regionOrder.map(()=>Array.from({length:bins},()=>0));
@@ -656,9 +656,11 @@ jobsDataPromise
     const endTotal=cumulativeSeries.reduce((n,values)=>n+values[bins],0);
     // Region plot gets a close-fitting, conventional 1/2/5 scale while
     // preserving the zero origin and all cumulative totals.
-    const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/7));
+    // A quiet 1/2/5 axis with roughly four intervals rather than seven
+    // competing gridlines. The true zero and final summed count remain exact.
+    const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/4));
     const regionStep=Math.max(1,Math.round(
-      [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/7)*regionMagnitude));
+      [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/4)*regionMagnitude));
     const regionMax=Math.max(regionStep,Math.ceil(endTotal/regionStep)*regionStep);
     const regionTicks=Array.from({length:Math.round(regionMax/regionStep)+1},
       (_,i)=>i*regionStep);
@@ -683,17 +685,46 @@ jobsDataPromise
       '" text-anchor="end">'+v+'</text>'
     ).join('');
     const regionTickFormat=new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
-    const datePositions=[...new Set([0,.25,.5,.75,1].map(f=>Math.round((bins-1)*f)))];
-    const dateTicks=datePositions.map((day,i)=>{
-      const date=new Date(tMin+day*dayMs);
-      const x=left+(bins>1?day/(bins-1):0)*plotW;
+    const dayLabel=(date)=>regionTickFormat.format(date);
+    const yearLabel=date=>date.getUTCFullYear().toString().slice(-2);
+    const axisCssWidth=distEl.getBoundingClientRect().width||TW;
+    // Calendar anchors, not arbitrary 25%-interval timestamps. Select only
+    // ticks with sufficient physical distance for their text on this screen.
+    const regionalGap=66*TW/axisCssWidth;
+    const firstDate=new Date(tMin),lastDate=new Date(tMax-dayMs);
+    const longHistory=bins>120;
+    const firstLabel=longHistory
+      ?new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(firstDate)+" '"+yearLabel(firstDate)
+      :dayLabel(firstDate)+(firstDate.getUTCFullYear()!==lastDate.getUTCFullYear()?" '"+yearLabel(firstDate):'');
+    const lastLabel=firstDate.getUTCFullYear()===lastDate.getUTCFullYear()
+      ?dayLabel(lastDate):dayLabel(lastDate)+" '"+yearLabel(lastDate);
+    const calendarCandidates=[];
+    let monthCursor=new Date(Date.UTC(firstDate.getUTCFullYear(),firstDate.getUTCMonth()+1,1));
+    while(monthCursor.getTime()<lastDate.getTime()){
+      const m=monthCursor.getUTCMonth();
+      if(bins<=65||(bins<=160?m%2===0:m%3===0)){
+        const day=Math.round((monthCursor.getTime()-tMin)/dayMs);
+        calendarCandidates.push({day,label:m===0
+          ?new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(monthCursor)+" '"+yearLabel(monthCursor)
+          :new Intl.DateTimeFormat('en-US',{month:'short',timeZone:'UTC'}).format(monthCursor)});
+      }
+      monthCursor=new Date(Date.UTC(monthCursor.getUTCFullYear(),m+1,1));
+    }
+    const datePositions=[{day:0,label:firstLabel}];
+    let previousX=left;
+    calendarCandidates.forEach(item=>{
+      const x=trendX(item.day+1);
+      if(x-previousX>=regionalGap&&TW-right-x>=regionalGap){
+        datePositions.push(item);
+        previousX=x;
+      }
+    });
+    if(bins>1)datePositions.push({day:bins-1,label:lastLabel});
+    const dateTicks=datePositions.map((item,i)=>{
       const first=i===0,last=i===datePositions.length-1;
-      const label=first
-        ?new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(date)
-        :regionTickFormat.format(date);
-      return '<text class="region-spark-date" x="'+x.toFixed(2)+
-        '" y="351" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
-        escSvg(label)+'</text>';
+      return '<text class="region-spark-date" x="'+trendX(item.day+1).toFixed(2)+
+        '" y="351" data-day="'+item.day+'" text-anchor="'+(first?'start':last?'end':'middle')+'">'+
+        escSvg(item.label)+'</text>';
     }).join('');
     // Snapshot counts and share labels are generated from precisely the same
     // 2026 cumulative series and denominator as the stacked y-axis. Never
@@ -708,49 +739,24 @@ jobsDataPromise
     const shareRank=rawShareTenths.map((n,i)=>({i,fraction:n-Math.floor(n)}))
       .sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
     for(let i=0;i<leftover;i++)shareTenths[shareRank[i].i]++;
-    // A single cartographic dimension scale occupies the unused early-year
-    // portion of the plot. The four true y-levels are 0, HK, HK+SG, TOTAL.
-    // Each colored vertical interval is proportional to its own current
-    // active-role count. Short terminal caps define these four levels; no
-    // horizontal guides cross the trend, and nothing protrudes on the right.
+    // Direct end-of-area labels, not a second y-axis, ruler or legend.
+    // Each annotation belongs to the *difference* between adjacent
+    // cumulative boundaries at the actual latest observed date.
     const endBoundaries=regionOrder.map((_,i)=>
       snapshotCounts.slice(0,i+1).reduce((n,v)=>n+v,0));
-    const measureValues=[0,...endBoundaries];
-    const measureX=left+16;
-    const dimensionSegments=regionOrder.map((k,i)=>{
-      if(snapshotCounts[i]===0)return '';
-      const from=trendY(measureValues[i]),to=trendY(measureValues[i+1]);
-      return '<g class="region-series '+k.toLowerCase()+'">'+
-        '<line class="region-dimension-span" x1="'+measureX+'" x2="'+measureX+
-        '" y1="'+from.toFixed(2)+'" y2="'+to.toFixed(2)+
-        '" data-region="'+k+'" data-count="'+snapshotCounts[i]+
-        '" data-lower="'+measureValues[i]+'" data-upper="'+measureValues[i+1]+'"/></g>';
-    }).join('');
-    const dimensionCaps=[...new Set(measureValues)].map(value=>{
-      if(!endTotal)return '';
-      const y=trendY(value).toFixed(2);
-      return '<line class="region-dimension-cap" x1="'+(measureX-4)+
-        '" x2="'+(measureX+4)+'" y1="'+y+'" y2="'+y+
-        '" data-level="'+value+'"/>';
-    }).join('');
-    const dimensionScale='<g class="region-dimension" aria-hidden="true">'+
-      dimensionSegments+dimensionCaps+'</g>';
     const bandMiddleY=regionOrder.map((_,i)=>
-      trendY((measureValues[i]+measureValues[i+1])/2));
+      trendY(endBoundaries[i]-snapshotCounts[i]/2));
     const shortHistory=bins<100;
-    const spaced=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
+    const visibleRows=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
-    // HTML text is measured in CSS pixels, while SVG positions scale with
-    // width. Reserve enough *screen pixels* between the three readings even
-    // on a 320px handset, without changing the underlying measured heights.
-    const plotCssWidth=distEl.getBoundingClientRect().width||TW;
-    const minLabelY=top+23,maxLabelY=base-23;
-    const minGap=Math.max(shortHistory?48:37,(shortHistory?39:35)*TW/plotCssWidth);
+    const labelMargin=Math.max(22,19*TW/axisCssWidth);
+    const minLabelY=top+labelMargin,maxLabelY=base-labelMargin;
+    const minGap=Math.max(38,39*TW/axisCssWidth);
     let previous=minLabelY-minGap;
-    spaced.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
-    const overflow=spaced.length?Math.max(0,spaced.at(-1).y-maxLabelY):0;
-    spaced.forEach(row=>row.y-=overflow);
-    const labelY=Object.fromEntries(spaced.map(row=>[row.k,row.y]));
+    visibleRows.forEach(row=>{row.y=Math.max(minLabelY,row.target,previous+minGap);previous=row.y;});
+    const overflow=visibleRows.length?Math.max(0,visibleRows.at(-1).y-maxLabelY):0;
+    visibleRows.forEach(row=>row.y-=overflow);
+    const labelY=Object.fromEntries(visibleRows.map(row=>[row.k,row.y]));
     const directLabels='<div class="region-end-labels" aria-hidden="true">'+
       regionOrder.map((k,i)=>{
         if(!snapshotCounts[i])return '';
@@ -759,20 +765,59 @@ jobsDataPromise
           ' region-end-label" data-region="'+k+'" data-count="'+count+
           '" data-share="'+share+'" data-band-center="'+bandMiddleY[i].toFixed(2)+
           '" style="top:'+(labelY[k]/TH*100).toFixed(4)+'%">'+
-          '<div class="region-end-meta"><span class="region-end-name">'+k+'</span>'+
+          '<div class="region-end-meta"><span class="region-end-dot" aria-hidden="true"></span>'+
+          '<span class="region-end-name">'+k+'</span>'+
           '<span class="region-end-share">'+share+'</span></div>'+
           '<strong class="region-end-count">'+countFormat.format(count)+'</strong></div>';
       }).join('')+'</div>';
-    // Hermite slopes are monotone for every independently cumulative region.
-    // Adding each region's control-point values (not independently smoothing
-    // stacked boundaries) prevents ribbon overlaps or artificial separation.
-    const regionSlopes=cumulativeSeries.map(values=>values.map((n,i)=>{
-      const previous=i?values[i]-values[i-1]:values[1]-values[0];
-      const next=i<bins?values[i+1]-values[i]:values[bins]-values[bins-1];
-      return previous<=0||next<=0?0:2*previous*next/(previous+next);
-    }));
+    // Retain ALL daily counts and every exact date. Only the painted
+    // contours use shared adaptive knots: each cumulative boundary deviates
+    // by at most 0.58 SVG pixels from its real daily height.
+    // Monotone cubic slopes preserve the original vertical stack and cannot
+    // introduce an artificial dip in a cumulative series.
     const sumBoundary=(layers,arrays)=>Array.from({length:bins+1},(_,i)=>
       arrays.slice(0,layers).reduce((sum,values)=>sum+values[i],0));
+    const upperBoundaries=regionOrder.map((_,i)=>sumBoundary(i+1,cumulativeSeries));
+    const knotDays=bins===1?[1]:[1,bins];
+    const slopeAtKnots=(values,knots)=>{
+      const result=Array.from({length:bins+1},()=>0);
+      if(knots.length===1)return result;
+      const rates=knots.slice(1).map((day,j)=>
+        (values[day]-values[knots[j]])/(day-knots[j]));
+      result[knots[0]]=rates[0];
+      result[knots.at(-1)]=rates.at(-1);
+      for(let j=1;j<knots.length-1;j++){
+        const before=rates[j-1],after=rates[j];
+        result[knots[j]]=before<=0||after<=0?0:2*before*after/(before+after);
+      }
+      return result;
+    };
+    const cubicAt=(values,slopes,a,b,day)=>{
+      const t=(day-a)/(b-a),t2=t*t,t3=t2*t,span=b-a;
+      return (2*t3-3*t2+1)*values[a]+(t3-2*t2+t)*span*slopes[a]+
+        (-2*t3+3*t2)*values[b]+(t3-t2)*span*slopes[b];
+    };
+    let regionSlopes=[],curveErrorPx=0;
+    for(;;){
+      regionSlopes=cumulativeSeries.map(values=>slopeAtKnots(values,knotDays));
+      let worstDay=-1,worstError=0;
+      for(let seg=0;seg<knotDays.length-1;seg++){
+        const a=knotDays[seg],b=knotDays[seg+1];
+        for(let day=a+1;day<b;day++){
+          let interpolated=0;
+          for(let ri=0;ri<regionOrder.length;ri++){
+            interpolated+=cubicAt(cumulativeSeries[ri],regionSlopes[ri],a,b,day);
+            const error=Math.abs(interpolated-upperBoundaries[ri][day])*
+              (base-top)/regionMax;
+            if(error>worstError){worstError=error;worstDay=day;}
+          }
+        }
+      }
+      curveErrorPx=worstError;
+      if(worstDay<0||worstError<=.58||knotDays.length>=bins)break;
+      knotDays.push(worstDay);
+      knotDays.sort((x,y)=>x-y);
+    }
     const fmtPoint=(x,y)=>x.toFixed(2)+','+y.toFixed(2);
     const contourPath=(values,slopes,reverse=false)=>{
       if(bins===1){
@@ -781,16 +826,14 @@ jobsDataPromise
           ?'M'+fmtPoint(TW-right,y)+' L'+fmtPoint(left,y)
           :'M'+fmtPoint(left,y)+' L'+fmtPoint(TW-right,y);
       }
-      // There is no invisible zero-valued "day before" the earliest data.
-      // Draw actual end-of-day cumulative positions from day 1 through N.
-      let d='M'+fmtPoint(trendX(reverse?bins:1),trendY(values[reverse?bins:1]));
-      for(let j=1;j<bins;j++){
-        const a=reverse?bins-j+1:j,b=reverse?a-1:a+1;
-        const direction=reverse?-1:1,dx=Math.abs(trendX(b)-trendX(a));
-        d+=' C'+fmtPoint(trendX(a)+direction*dx/3,
-          trendY(values[a]+direction*slopes[a]/3))+
-          ' '+fmtPoint(trendX(b)-direction*dx/3,
-          trendY(values[b]-direction*slopes[b]/3))+
+      const indices=reverse?[...knotDays].reverse():knotDays;
+      let d='M'+fmtPoint(trendX(indices[0]),trendY(values[indices[0]]));
+      for(let j=1;j<indices.length;j++){
+        const a=indices[j-1],b=indices[j],dx=trendX(b)-trendX(a),days=b-a;
+        d+=' C'+fmtPoint(trendX(a)+dx/3,
+          trendY(values[a]+slopes[a]*days/3))+
+          ' '+fmtPoint(trendX(b)-dx/3,
+          trendY(values[b]-slopes[b]*days/3))+
           ' '+fmtPoint(trendX(b),trendY(values[b]));
       }
       return d;
@@ -832,13 +875,14 @@ jobsDataPromise
       '" data-visible-total="'+endTotal+'">'+
       '<svg class="region-time-svg" data-chart-kind="cumulative-stack"'+
       ' data-day-bins="'+bins+'" data-final-total="'+endTotal+
+      '" data-curve-knots="'+knotDays.length+'" data-curve-error="'+curveErrorPx.toFixed(3)+
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
-      gridTicks+series.map(layer=>layer.area).join('')+dimensionScale+
+      gridTicks+series.map(layer=>layer.area).join('')+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
       directLabels+'</div>';
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
@@ -875,9 +919,25 @@ jobsDataPromise
         '" width="'+(barWidth+4).toFixed(2)+'" height="'+(sBase-sTop)+'"/>'+
         '<title>'+d.label+' · '+d.total+' new postings</title></g>';
     }).join('');
-    const dateLabels=[0,7,14,21,29].map(i=>
+    // Monday-based, calendar-anchored marks. Endpoints retain the actual
+    // 30-day domain; only intermediate Monday labels are allowed, and the
+    // physical spacing budget prevents cramped dates on narrow viewports.
+    const rhythmCssWidth=document.getElementById('spark').getBoundingClientRect().width||SW;
+    const rhythmGap=65*SW/rhythmCssWidth;
+    const rhythmMarks=[0];
+    let lastMarkX=sx(0);
+    for(let i=1;i<days.length-1;i++){
+      if(days[i].date.getDay()!==1)continue;
+      const x=sx(i);
+      if(x-lastMarkX>=rhythmGap&&sx(days.length-1)-x>=rhythmGap){
+        rhythmMarks.push(i);
+        lastMarkX=x;
+      }
+    }
+    rhythmMarks.push(days.length-1);
+    const dateLabels=rhythmMarks.map((i,j)=>
       '<text class="rhythm-axis-label" x="'+sx(i).toFixed(1)+
-      '" y="145" text-anchor="'+(i===0?'start':i===29?'end':'middle')+'">'+
+      '" y="145" data-day="'+i+'" text-anchor="'+(j===0?'start':j===rhythmMarks.length-1?'end':'middle')+'">'+
       days[i].label+'</text>'
     ).join('');
     const sparkEl=document.getElementById("spark");
