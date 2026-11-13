@@ -210,8 +210,11 @@ async function renderLeft(page,chartData,theme){
    'latest-count labels use exact unrounded values');
   assert.equal(item.visibleShare,item.share,'shares are never stale or separately hardcoded');
   assert.equal(item.label,item.region,'label is directly associated with its region');
-  assert.equal(item.ink,quality.series[item.region.toLowerCase()],
-   'direct labels use the original region-specific ink');
+  const labelInks=theme==='light'
+   ?{hk:'rgb(148, 100, 28)',sg:'rgb(81, 110, 42)',cn:'rgb(161, 59, 56)'}
+   :quality.series;
+  assert.equal(item.ink,labelInks[item.region.toLowerCase()],
+   'small region labels use accessible darkened ink while contours retain the approved pigment');
   assert.ok(item.bounds.x>=quality.svgBounds.x+quality.svgBounds.w*.76&&
     item.bounds.right<=quality.svgBounds.right+4,
    'terminal regional data labels fit beside the latest area, inside its dedicated gutter');
@@ -229,8 +232,6 @@ async function renderLeft(page,chartData,theme){
   assert.ok(sortedLabels[i].bounds.y>=sortedLabels[i-1].bounds.bottom-.5,
    'the regional callouts must never overlap, even when cohort sizes differ');
  }
- assert.equal(quality.forbiddenGuideCount,0,
-  'remove all long cross-chart dashed rules and three outside-right terminal ticks');
  assert.equal(quality.forbiddenGuideCount,0,
   'approved chart uses no second measuring ruler, vertical caps or long leader lines');
  assert.ok(quality.curveKnots>=1&&quality.curveKnots<=quality.dayBins,
