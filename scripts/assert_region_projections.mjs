@@ -32,3 +32,23 @@ export async function assertRegionProjections(page){
  }
  return state;
 }
+
+// Check the complete weight hierarchy, not only line existence.
+export async function assertRegionVisualBalance(page){
+ const state=await page.evaluate(()=>{
+  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
+  return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),tips:all('.region-measure-arrow'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
+ });
+ for(const n of state.refs){assert.equal(n.width,.85);assert.equal(n.opacity,.42);}
+ for(const n of state.projections){assert.equal(n.width,.85);assert.equal(n.opacity,state.dark?.34:.36);}
+ for(const n of state.arrows){assert.equal(n.width,.85);assert.equal(n.opacity,.6);}
+ for(const n of state.tips){assert.equal(n.width,.85);assert.equal(n.opacity,.64);}
+ for(const n of state.contours)assert.equal(n.width,1.6,'data contours remain primary');
+ for(const [kind,weight] of [['names','500'],['counts','400'],['shares','400']])for(const n of state[kind]){
+  assert.equal(n.font,state.siteFont);assert.equal(n.weight,weight);assert.equal(n.opacity,1,'readable text is not faded');
+ }
+ for(const n of state.counts)assert.equal(n.size,state.viewport<=360?14.5:state.viewport<=720?15:16);
+ for(const n of state.names)assert.ok(n.size>=10&&n.size<=10.5);
+ for(const n of state.shares)assert.ok(n.size>=9.5&&n.size<=10.5);
+ return state;
+}
