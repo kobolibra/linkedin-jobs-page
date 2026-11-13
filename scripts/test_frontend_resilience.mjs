@@ -15,7 +15,7 @@ function indexHarness(fetch){
 test('offline index fallback is labeled and access-denied responses remain protected',()=>{
  assert.match(indexSource,/cacheState:'fresh'/);
  assert.match(indexSource,/this\.cacheState='stale'/);
- assert.match(indexSource,/status!==401&&status!==403/); // guarded status-0 fallback
+ assert.match(indexSource,/status===0/); // transport-only fallback
  assert.match(indexSource,/status>=500/);
  assert.match(source,/stage==='render'/);
  assert.match(source,/stage==='scripts'/);
