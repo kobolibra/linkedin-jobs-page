@@ -298,8 +298,24 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.linePaths.every(d=>d&&d.split('M').length===2),
   'one unbroken cumulative contour per region, including days without new postings');
  assert.equal(quality.captions,0,'do not add redundant chart subtitles');
- assert.ok(quality.dateTicks>=2&&quality.dateTicks<=5,
-  'short intervals do not duplicate date ticks');
+ assert.ok(quality.dateTicks>=1&&quality.dateTicks<=5,
+  'geographic dates use only readable calendar anchors');
+ assert.ok(quality.postingDateTicks>=2&&quality.postingDateTicks<=6,
+  'rolling 30-day axis uses a restrained set of week-aligned labels');
+ const checkDateSpacing=(marks,name)=>{
+  for(let i=1;i<marks.length;i++){
+   assert.ok(marks[i].day>marks[i-1].day,
+    name+' dates must advance chronologically without duplicate ticks');
+   assert.ok(marks[i].bounds.x>=marks[i-1].bounds.right-1.2,
+    name+' date texts must not collide: '+JSON.stringify(marks));
+  }
+ };
+ checkDateSpacing(quality.regionDateMarks,'Regional history');
+ checkDateSpacing(quality.postingDateMarks,'New Postings');
+ assert.equal(quality.regionDateMarks[0].day,0);
+ if(quality.dayBins>1)assert.equal(quality.regionDateMarks.at(-1).day,quality.dayBins-1);
+ assert.equal(quality.postingDateMarks[0].day,0);
+ assert.equal(quality.postingDateMarks.at(-1).day,29);
  const checkScale=(ticks,name)=>{
   assert.ok(ticks.length>=2,name+' needs at least two integer ticks');
   assert.equal(ticks[0].value,0,name+' starts at zero');
@@ -694,7 +710,7 @@ try{
   Math.max(...focused.points.map(p=>p.x))>430,
   'entire available 2026 range must occupy the plotting width');
  const dateLabels=await focusPage.locator('#dist .region-spark-date').allTextContents();
- assert.ok(dateLabels[0].includes('2026'),'first axis tick identifies the year');
+ assert.ok(dateLabels[0].includes('Nov'),'short observed history begins with its actual calendar month');
  const paths=focused.linePaths.filter(Boolean);
  assert.ok(paths.every(d=>/^M[\d.]+,[\d.]+ C/.test(d)),
   'continuous regional contours use monotone cubic segments across all daily observations');
