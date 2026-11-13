@@ -1,4 +1,4 @@
-import {assertRegionProjections} from './assert_region_projections.mjs';
+import {assertRegionProjections,assertRegionVisualBalance} from './assert_region_projections.mjs';
 /* Visual geometry for actual shipped left charts, paired with full homepage boot CI. */
 import assert from 'node:assert/strict';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
@@ -26,6 +26,7 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
    new Function('chartData','norm','seenAt','dayKey','keyOf','REGIONS','cityEl',draw)(rows,norm,seenAt,dayKey,keyOf,REGIONS,cityEl);
   },{draw,rows});
   const projections=await assertRegionProjections(page);
+  const visualBalance=await assertRegionVisualBalance(page);
   const state=await page.evaluate(()=>{
    const rect=n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width};};
    const svg=document.querySelector('#dist svg');
@@ -44,8 +45,8 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
    assert.ok(share.x>=count.right+5,'percentage must not crowd the count');
    assert.ok(share.y<count.bottom&&share.bottom>count.y,'count and share stay on the second line');
    for(const part of [name,count,share])assert.equal(part.font,siteFont,'reuse the site sans family');
-   assert.equal(name.weight,'600');assert.equal(count.weight,'500');assert.equal(share.weight,'400');
-   assert.ok(count.size>=16&&count.size<=18);assert.ok(count.size>name.size&&count.size>share.size);
+   assert.equal(name.weight,'500');assert.equal(count.weight,'400');assert.equal(share.weight,'400');
+   assert.equal(count.size,width<=360?14.5:width<=720?15:16);assert.ok(count.size>name.size&&count.size>share.size);
    assert.ok(count.numeric.includes('tabular-nums'),'keep aligned figures without monospaced letterforms');
   }
   for(const marks of [state.dates,state.weeks])for(let i=1;i<marks.length;i++)assert.ok(marks[i].box.x>=marks[i-1].box.right-1,'calendar text collision');
@@ -61,7 +62,7 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
   }
   assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.equal(state.ranges,0);assert.ok(state.scrollWidth<=width+2);assert.deepEqual(errors,[]);
   await page.locator('.analytics-left').screenshot({path:new URL(engine+'-'+width+'-'+theme+'.png',out).pathname,animations:'disabled'});
-  results.push({engine,width,theme,state,typography:type,projections,errors});
+  results.push({engine,width,theme,state,typography:type,projections,visualBalance,errors});
   // Text must stay unobstructed after rotation and a late change in font metrics.
   if(width===390){
    await page.setViewportSize({width:320,height:1000});await assertRegionProjections(page);

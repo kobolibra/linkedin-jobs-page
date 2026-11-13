@@ -618,21 +618,21 @@ body.compact .job > .mono { margin-top:2px; }
 /* The full-length horizontal grid was redundant with the local measuring
    references; leave the numeric y-axis labels but no long cross-plot lines. */
 #dist .region-measure-reference{
-  stroke:var(--viz-secondary);stroke-width:.9;stroke-dasharray:1.3 4;
-  opacity:.34;fill:none;vector-effect:non-scaling-stroke;
+  stroke:var(--viz-secondary);stroke-width:.85;stroke-dasharray:1.3 4;
+  opacity:.42;fill:none;vector-effect:non-scaling-stroke;
 }
 /* Far projections are subordinate to local measures, values and contours. */
 #dist .region-projection-line{
-  stroke:var(--viz-secondary);stroke-width:.75;stroke-dasharray:1.3 4;
-  opacity:.2;fill:none;vector-effect:non-scaling-stroke;pointer-events:none;
+  stroke:var(--viz-secondary);stroke-width:.85;stroke-dasharray:1.3 4;
+  opacity:.36;fill:none;vector-effect:non-scaling-stroke;pointer-events:none;
 }
-[data-theme="dark"] #dist .region-projection-line{opacity:.22}
+[data-theme="dark"] #dist .region-projection-line{opacity:.34}
 #dist .region-measure-height{
-  stroke:var(--region-ink);stroke-width:1.05;opacity:.8;
+  stroke:var(--region-ink);stroke-width:.85;opacity:.6;
   stroke-linecap:round;vector-effect:non-scaling-stroke;
 }
 #dist .region-measure-arrow{
-  stroke:var(--region-ink);stroke-width:1.1;opacity:.88;
+  stroke:var(--region-ink);stroke-width:.85;opacity:.64;
   stroke-linejoin:round;stroke-linecap:round;fill:none;
   vector-effect:non-scaling-stroke;
 }
@@ -682,11 +682,11 @@ body.compact .job > .mono { margin-top:2px; }
 [data-theme="dark"] #dist .region-end-label{--region-label-ink:var(--region-ink)}
 #dist .region-end-name{
   grid-column:1 / -1;
-  color:var(--region-label-ink);font:600 11px/1.2 var(--sans);
+  color:var(--region-label-ink);font:500 10.5px/1.2 var(--sans);
   letter-spacing:.04em;
 }
 #dist .region-end-count{
-  color:var(--viz-secondary);font:500 18px/1.1 var(--sans);
+  color:var(--viz-secondary);font:400 16px/1.1 var(--sans);
   letter-spacing:-.02em;
   font-variant-numeric:lining-nums tabular-nums;
 }
@@ -735,12 +735,12 @@ body.compact .job > .mono { margin-top:2px; }
   #spark .rhythm-scale-label,
   #spark .rhythm-axis-label{font-size:13px;letter-spacing:0}
   #dist .region-end-label{column-gap:6px}
-  #dist .region-end-name{font-size:10.5px}
-  #dist .region-end-count{font-size:17px}
+  #dist .region-end-name{font-size:10px}
+  #dist .region-end-count{font-size:15px}
   #dist .region-end-share{font-size:10px}
 }
 @media(max-width:360px){
-  #dist .region-end-count{font-size:16px}
+  #dist .region-end-count{font-size:14.5px}
   #dist .region-end-share{font-size:9.5px}
   #dist .region-end-name{font-size:10px}
 }
