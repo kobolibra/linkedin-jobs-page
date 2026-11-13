@@ -1,0 +1,86 @@
+name: Verify live region projections
+on:
+  push:
+    branches: [verify/region-projections-production-20261113]
+    paths: [.github/workflows/verify-region-projections.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned verification browsers
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify exact independently inspected asset bytes in production
+        run: |
+          mkdir -p artifacts/live-region-projections
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          import hashlib,json,time
+          expected={'app.js':'dee27a3069bbcc6c63628110e427e72e52a6afdfb18f29946f747bc5af898c1e','styles-refinement.css':'0c9d467f6ed9221b1409ea7c9feb9d67516ff67c5a5445d6a024e54a1854fe6a'}
+          for name,digest in expected.items():
+              assert hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest,name
+          for attempt in range(36):
+              try:
+                  actual={}
+                  for name in expected:
+                      request=Request('https://linkedin.claudecowork.workers.dev/'+name+'?v=region-projection-20261113',headers={'User-Agent':'NextJourney-Deployment-Verification/1.0','Cache-Control':'no-cache'})
+                      with urlopen(request,timeout=15) as response: actual[name]=hashlib.sha256(response.read()).hexdigest()
+                  if actual==expected:
+                      Path('artifacts/live-region-projections/asset-hashes.json').write_text(json.dumps(actual,indent=2))
+                      print('EXACT_LIVE_ASSET_MATCH',actual)
+                      break
+                  print('Awaiting tested assets',actual,flush=True)
+              except Exception as error: print(type(error).__name__,str(error),flush=True)
+              time.sleep(10)
+          else: raise SystemExit('Tested assets are not verifiably live')
+          PY
+      - name: Verify real production charts, text gaps and list startup without credentials
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium,webkit} from 'playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          import {assertRegionProjections} from './scripts/assert_region_projections.mjs';
+          const evidence=[];
+          for(const [engine,type] of Object.entries({chromium,webkit})){
+            const browser=await type.launch({headless:true});
+            try{for(const width of [390,1440])for(const theme of ['light','dark']){
+              const context=await browser.newContext({viewport:{width,height:900},colorScheme:theme,locale:'zh-CN',timezoneId:'Asia/Shanghai'});
+              const page=await context.newPage(),errors=[],renderErrors=[],optionalErrors=[],privateRequests=[];
+              page.on('pageerror',e=>{if(/guestbook-api\.claudecowork\.workers\.dev.*access control checks/.test(e.message))optionalErrors.push(e.message);else errors.push(e.message);});
+              page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))renderErrors.push(m.text());});
+              page.on('request',r=>{if(/\/(?:jobs-index\.json|jobs-version\.json|auth\/preferences)(?:[?]|$)/.test(r.url()))privateRequests.push(r.url());});
+              for(let visit=0;visit<2;visit++){
+                const response=visit?await page.reload({waitUntil:'domcontentloaded'}):await page.goto('https://linkedin.claudecowork.workers.dev/',{waitUntil:'domcontentloaded'});
+                assert.equal(response.status(),200);
+                await page.waitForFunction(()=>document.querySelector('#jobs .job')||document.querySelector('#empty.show'),null,{timeout:45000});
+                const projections=await assertRegionProjections(page);
+                const state=await page.evaluate(()=>({auth:document.documentElement.dataset.authState,ready:typeof renderReady!=='undefined'&&renderReady,rows:document.querySelectorAll('#jobs .job').length,empty:document.querySelector('#empty')?.classList.contains('show'),ranges:document.querySelectorAll('.chart-date-range,.chart-date-zone').length,bars:document.querySelectorAll('#spark .rhythm-bar').length,app:[...document.scripts].find(s=>s.src.includes('/app.js?'))?.src,labels:[...document.querySelectorAll('.region-end-label')].map(n=>({region:n.dataset.region,count:n.dataset.count,share:n.dataset.share,text:n.innerText})),dates:[...document.querySelectorAll('#dist .region-spark-date,#spark .rhythm-axis-label')].map(n=>n.textContent)}));
+                assert.equal(state.auth,'guest');assert.equal(state.ready,true);assert.equal(state.empty,false);assert.equal(state.rows,12);assert.equal(state.ranges,0);assert.equal(state.bars,30);
+                assert.ok(state.app.includes('region-projection-20261113'));assert.equal(projections.groups.length,3);
+                assert.deepEqual(errors,[]);assert.deepEqual(renderErrors,[]);assert.deepEqual(privateRequests,[]);
+                if(!visit)await page.locator('.analytics-left').screenshot({path:`artifacts/live-region-projections/${engine}-${width}-${theme}.png`,animations:'disabled'});
+                evidence.push({engine,width,theme,visit,state,projections,pageErrors:errors.slice(),renderErrors:renderErrors.slice(),optionalErrors:optionalErrors.slice(),privateRequests:privateRequests.slice()});
+                writeFileSync('artifacts/live-region-projections/results.json',JSON.stringify(evidence,null,2));
+                console.log('LIVE_PROJECTION_PASS',engine,width,theme,visit,'optionalErrors',optionalErrors.length);
+              }
+              await context.close();
+            }}finally{await browser.close();}
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: live-region-projection-evidence
+          path: artifacts/live-region-projections
+          retention-days: 7
+          if-no-files-found: ignore
