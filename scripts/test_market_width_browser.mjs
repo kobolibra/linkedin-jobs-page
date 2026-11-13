@@ -230,8 +230,8 @@ async function renderLeft(page,chartData,theme){
   'remove all long cross-chart dashed rules and three outside-right terminal ticks');
  assert.equal(quality.measuredSegments.length,visibleRegionNames.length,
   'a single segmented dimension axis has one vertical length per nonempty region');
- assert.equal(quality.measuredCaps.length,visibleRegionNames.length+1,
-  'four minimal end caps mark zero, HK, HK+SG, and total without extra lines');
+ assert.equal(quality.measuredCaps.length,quality.finalTotal?visibleRegionNames.length+1:0,
+  'only populated regions have one baseline cap plus their real cumulative endpoints');
  const maxAxis=Math.max(...quality.regionTicks.map(t=>t.value));
  const axisTop=quality.regionTicks.find(t=>t.value===maxAxis).y-3;
  const axisZero=quality.regionTicks.find(t=>t.value===0).y-3;
