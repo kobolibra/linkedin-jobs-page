@@ -624,12 +624,12 @@ body.compact .job > .mono { margin-top:2px; }
   fill:var(--viz-quiet);font:500 9px var(--mono);
   font-variant-numeric:tabular-nums;
 }
-/* Demo-matched mineral pigments: legible ochre, sage, terracotta.
-   Fill and stroke are independent, intentional colors in both themes,
-   never a translucent overlay that muddles adjacent stacked bands. */
-#dist .region-series.hk{--region-ink:#b27a22;--region-fill:#d4b78e}
-#dist .region-series.sg{--region-ink:#6e8f3b;--region-fill:#b4ca9c}
-#dist .region-series.cn{--region-ink:#b33a36;--region-fill:#dba3a0}
+/* Demo-matched mineral pigments: these are the FINAL visible colors
+   after compositing the approved preview's 77/81/82%-opacity fills onto its
+   warm paper background. Solid opaque fills keep stacked ribbons seamless. */
+#dist .region-series.hk{--region-ink:#b27a22;--region-fill:#ddc6a6}
+#dist .region-series.sg{--region-ink:#6e8f3b;--region-fill:#c1d3ad}
+#dist .region-series.cn{--region-ink:#b33a36;--region-fill:#e1b3b0}
 [data-theme="dark"] #dist .region-series.hk{--region-ink:#e0b36b;--region-fill:#68533d}
 [data-theme="dark"] #dist .region-series.sg{--region-ink:#add084;--region-fill:#455941}
 [data-theme="dark"] #dist .region-series.cn{--region-ink:#eea09a;--region-fill:#714344}
