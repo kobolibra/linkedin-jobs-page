@@ -239,7 +239,7 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.curveError<=.581,
   'interpolated stacked boundaries must never move a real daily value by more than 0.58 SVG pixels');
  assert.deepEqual(quality.bandFills,theme==='light'
-  ?{sg:'rgb(180, 202, 156)',hk:'rgb(212, 183, 142)',cn:'rgb(219, 163, 160)'}
+  ?{sg:'rgb(193, 211, 173)',hk:'rgb(221, 198, 166)',cn:'rgb(225, 179, 176)'}
   :{sg:'rgb(69, 89, 65)',hk:'rgb(104, 83, 61)',cn:'rgb(113, 67, 68)'},
   'stacked areas use the three exact approved mineral fills');
  assert.ok(quality.svgBounds.h>quality.svgBounds.w*.62,
