@@ -120,6 +120,8 @@ async function renderLeft(page,chartData,theme){
     ink:getComputedStyle(node).stroke
    })),
    arrowheads:svg.querySelectorAll('.region-measure-arrow').length,
+   regionDateTickCount:svg.querySelectorAll('.region-date-tick').length,
+   postingDateTickCount:document.querySelectorAll('#spark .rhythm-date-tick').length,
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
    oldLegendCount:document.querySelectorAll('#dist .region-mix,#dist .region-current-key,#dist .region-stat-item').length,
    legendBounds:rect(stage),svgBounds:rect(svg),
@@ -299,6 +301,10 @@ async function renderLeft(page,chartData,theme){
  }
  assert.ok(quality.arrowheads<=nonempty,
   'no excessive arrowhead ornaments on tiny or zero-count bands');
+ assert.equal(quality.regionDateTickCount,quality.regionDateMarks.length,
+  'each regional calendar label receives one restrained positional tick');
+ assert.equal(quality.postingDateTickCount,quality.postingDateMarks.length,
+  'daily columns and regional chart share the same date-axis grammar');
  assert.ok(quality.curveKnots>=1&&quality.curveKnots<=quality.dayBins,
   'adaptive spline cannot manufacture new dates or expand beyond daily observations');
  assert.ok(quality.curveError<=.581,

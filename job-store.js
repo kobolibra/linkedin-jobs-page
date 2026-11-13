@@ -49,14 +49,30 @@ function database(){return new Promise(resolve=>{let finished=false;const done=d
 async function read(){const db=await database();if(!db)return null;return new Promise(resolve=>{let finished=false;const done=doc=>{if(finished)return;finished=true;clearTimeout(timer);db.close();resolve(valid(doc)?doc:null);};const timer=setTimeout(()=>done(null),350);try{const req=db.transaction('snapshots').objectStore('snapshots').get('latest');req.onsuccess=()=>done(req.result);req.onerror=()=>done(null);}catch{done(null);}});}
 async function save(doc){if(!valid(doc))return;const db=await database();if(!db)return;try{const tx=db.transaction('snapshots','readwrite');tx.objectStore('snapshots').put(doc,'latest');tx.oncomplete=tx.onerror=tx.onabort=()=>db.close();}catch{db.close();}}
 async function version(){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),2000);try{const response=await fetch('jobs-version.json',{cache:'no-cache',signal:controller.signal});if(!response.ok)return null;const doc=await response.json();return /^[a-f0-9]{64}$/.test(doc?.dataVersion)?doc.dataVersion:null;}catch{return null;}finally{clearTimeout(timer);}}
-window.JobIndexStore={fetch:fetchJobsIndex,async load(fetcher=fetchJobsIndex){
+window.JobIndexStore={fetch:fetchJobsIndex,cacheState:'fresh',async load(fetcher=fetchJobsIndex){
  // Guest preview never reads or writes the authenticated index snapshot.
+ this.cacheState='fresh';
  if(document.documentElement.dataset.authState==='guest')return fetcher();
  // A tiny version check and local disk read are independent; overlap them.
  const current=version();
  const cached=await read();
  if(cached&&await current===cached.dataVersion)return cached;
- const doc=await fetcher();save(doc).catch(()=>{});return doc;
+ try{
+   const doc=await fetcher();
+   if(!doc||!Array.isArray(doc.jobs))throw new Error('jobs-index.json invalid payload');
+   save(doc).catch(()=>{});
+   return doc;
+ }catch(error){
+   // Only recover from transport failures. Never bypass explicit
+   // access denial or missing protected resources with a private snapshot.
+   const status=Number(error?.status||0);
+   if(cached&&(status===0)){
+     this.cacheState='stale';
+     console.warn('[jobs] Live index unavailable; displaying a labeled local snapshot',error);
+     return cached;
+   }
+   throw error;
+ }
 }};
 })();
 
