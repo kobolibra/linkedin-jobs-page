@@ -228,4 +228,13 @@
   .mw-tile-large .mw-tile-face {padding:8px 9px}
   .mw-detail {right:15px;bottom:16px}
 }
+/* On ultra-narrow phones, keep the region controls on the heading's
+   first line while the COMPLETE institution phrase uses the full next line.
+   Never let that phrase pass underneath the control group. */
+@media(max-width:340px){
+  .mw-topline{display:block;position:relative;min-height:47px}
+  .mw-topline h3{display:block;width:100%}
+  .mw-title-phrase{display:block;margin-top:18px;white-space:nowrap}
+  .mw-topline .mw-tabs{position:absolute;top:0;right:0}
+}
 @media(prefers-reduced-motion:reduce){.mw-tile-face{transition:none}}
