@@ -1,0 +1,44 @@
+name: Prepare region projections
+on:
+  push:
+    branches: [fix/region-projections-20261113]
+    paths: [.github/workflows/prepare-region-projections.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply hash-guarded projection-only refinement
+        run: |
+          python scripts/patches/region_projections_20261113.py
+          node --check app.js
+          node --check scripts/assert_region_projections.mjs
+          node --test scripts/test_startup_date_scope.mjs scripts/test_calendar_axes.mjs scripts/test_frontend_resilience.mjs scripts/test_startup_loading.mjs
+      - name: Commit scoped changes and remove preparation files
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/prepare-region-projections.yml scripts/patches/region_projections_20261113.py
+          git add app.js styles-refinement.css index.html scripts/test_frontend_resilience.mjs scripts/test_calendar_browser.mjs scripts/test_homepage_startup.mjs .github/workflows/homepage-startup.yml
+          git diff --cached --check
+          git --no-pager diff --cached --stat
+          git commit -m 'Project nonzero regional boundaries to true endpoints with measured text gaps'
+          git push origin HEAD:fix/region-projections-20261113
+      - name: Retain exact source for independent comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: region-projection-source
+          path: |
+            app.js
+            styles-refinement.css
+            index.html
+            scripts/assert_region_projections.mjs
+            scripts/test_calendar_browser.mjs
+            scripts/test_homepage_startup.mjs
+          retention-days: 3
