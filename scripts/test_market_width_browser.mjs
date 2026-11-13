@@ -731,8 +731,8 @@ try{
  assert.equal(focused.finalTotal,63,'the 2025 outlier is excluded from the 2026 cumulative total');
  assert.equal(focused.pointTotal,63,'all 2026 records remain exact');
  assert.ok(Math.min(...focused.points.map(p=>p.x))<100&&
-  Math.max(...focused.points.map(p=>p.x))>430,
-  'entire available 2026 range must occupy the plotting width');
+  Math.max(...focused.points.map(p=>p.x))>385,
+  'all valid 2026 days must use the full trend plot width, excluding the reserved terminal-label gutter');
  const dateLabels=await focusPage.locator('#dist .region-spark-date').allTextContents();
  assert.ok(dateLabels[0].includes('Nov'),'short observed history begins with its actual calendar month');
  const paths=focused.linePaths.filter(Boolean);
