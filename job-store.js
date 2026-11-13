@@ -63,17 +63,12 @@ window.JobIndexStore={fetch:fetchJobsIndex,cacheState:'fresh',async load(fetcher
    save(doc).catch(()=>{});
    return doc;
  }catch(error){
-   // Only recover from transport / 5xx failures. Never bypass explicit
+   // Only recover from transport failures. Never bypass explicit
    // access denial or missing protected resources with a private snapshot.
    const status=Number(error?.status||0);
    if(cached&&(status===0)){
      this.cacheState='stale';
      console.warn('[jobs] Live index unavailable; displaying a labeled local snapshot',error);
-     return cached;
-   }
-   if(cached&&status>=500){
-     this.cacheState='stale';
-     console.warn('[jobs] Remote index unavailable; displaying a labeled local snapshot',error);
      return cached;
    }
    throw error;
