@@ -615,8 +615,19 @@ body.compact .job > .mono { margin-top:2px; }
    Continuous HK / SG / CN bands are additive at every day on a zero-origin
    axis; the separate 30-day chart retains its original undiluted blue. */
 #dist .region-time-svg{shape-rendering:geometricPrecision}
-#dist .region-spark-grid{
-  stroke:var(--viz-rule);stroke-width:.75;opacity:.30;
+/* The full-length horizontal grid was redundant with the local measuring
+   references; leave the numeric y-axis labels but no long cross-plot lines. */
+#dist .region-measure-reference{
+  stroke:var(--viz-secondary);stroke-width:.85;stroke-dasharray:2 5;
+  opacity:.39;fill:none;vector-effect:non-scaling-stroke;
+}
+#dist .region-measure-height{
+  stroke:var(--region-ink);stroke-width:1.5;opacity:.84;
+  stroke-linecap:round;vector-effect:non-scaling-stroke;
+}
+#dist .region-measure-arrow{
+  stroke:var(--region-ink);stroke-width:1.25;opacity:.9;
+  stroke-linejoin:round;stroke-linecap:round;fill:none;
   vector-effect:non-scaling-stroke;
 }
 #dist .region-spark-value,
@@ -644,31 +655,29 @@ body.compact .job > .mono { margin-top:2px; }
 }
 #dist .region-stack-band{fill:var(--region-fill);stroke:none}
 #dist .region-end-labels{position:absolute;inset:0;pointer-events:none}
+/* Short, editorial readings stay in the early-year whitespace. Their
+   values describe actual heights between nearby short dashed boundaries;
+   none of this creates a second numeric axis or an external legend. */
 #dist .region-end-label{
-  position:absolute;left:calc(76.154% + 11px);
-  transform:translateY(-50%);display:flex;
-  flex-direction:column;align-items:flex-start;gap:3px;
+  position:absolute;left:27.7%;transform:translateY(-50%);
+  display:flex;flex-direction:row;align-items:baseline;gap:7px;
   white-space:nowrap;font-variant-numeric:tabular-nums;
-}
-#dist .region-end-meta{display:flex;align-items:center;gap:6px}
-#dist .region-end-dot{
-  display:inline-block;width:5px;height:5px;border-radius:50%;
-  background:var(--region-ink);flex:none;
+  text-shadow:0 0 3px var(--surface);
 }
 #dist .region-end-label.hk{--region-label-ink:#94641c}
 #dist .region-end-label.sg{--region-label-ink:#516e2a}
 #dist .region-end-label.cn{--region-label-ink:#a13b38}
 [data-theme="dark"] #dist .region-end-label{--region-label-ink:var(--region-ink)}
 #dist .region-end-name{
-  color:var(--region-label-ink);font:700 11px/1.1 var(--mono);
-  letter-spacing:.025em;
-}
-#dist .region-end-share{
-  color:var(--viz-quiet);font:500 10.5px/1.1 var(--mono);
+  color:var(--region-label-ink);font:700 10.5px/1.15 var(--mono);
+  letter-spacing:.045em;
 }
 #dist .region-end-count{
-  display:block;color:var(--viz-secondary);
-  font:650 20px/1.05 var(--mono);letter-spacing:-.035em;
+  color:var(--viz-secondary);font:650 15px/1.14 var(--mono);
+  letter-spacing:-.02em;
+}
+#dist .region-end-share{
+  color:var(--viz-quiet);font:500 10px/1.15 var(--mono);
 }
 /* In short date ranges the terminal callouts have a distinct outer gutter;
    no background knockout, second axis, or measurement tick is required. */
@@ -702,24 +711,23 @@ body.compact .job > .mono { margin-top:2px; }
 @media(prefers-reduced-motion:reduce){
   #spark .rhythm-bar{transition:none}
 }
-/* Geographic/date labels get larger SVG text on small viewports;
-   end-state labels stay in real CSS px in the reserved right gutter. */
+/* Real CSS-pixel labels remain readable on mobile while the plot
+   recovers the entire width previously reserved for right-edge statistics. */
 @media(max-width:720px){
   #dist .region-spark-value,
   #dist .region-spark-date,
   #spark .rhythm-scale-label,
-  #spark .rhythm-axis-label{font-size:14px;letter-spacing:0}
-  #dist .region-end-meta{gap:4px}
+  #spark .rhythm-axis-label{font-size:13px;letter-spacing:0}
+  #dist .region-end-label{gap:5px;left:27.0%}
   #dist .region-end-name{font-size:10px}
-  #dist .region-end-count{font-size:16px}
-  #dist .region-end-share{font-size:10px}
-  #dist .region-end-label{gap:2px}
-}
-@media(max-width:360px){
   #dist .region-end-count{font-size:14.5px}
   #dist .region-end-share{font-size:9.5px}
-  #dist .region-end-name{font-size:9.5px}
-  #dist .region-end-label{left:calc(76.154% + 7px)}
+}
+@media(max-width:360px){
+  #dist .region-end-label{gap:4px;left:27.0%}
+  #dist .region-end-count{font-size:13.5px}
+  #dist .region-end-share{font-size:9px}
+  #dist .region-end-name{font-size:9.3px}
 }
 /* Masthead copy: disciplined editorial typography, no structural change. */
 .nj-market-statement{letter-spacing:-.025em;text-wrap:balance}
