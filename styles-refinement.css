@@ -803,7 +803,7 @@ body.compact .job > .mono { margin-top:2px; }
 }
 
 /* Read-only color key: its own row directly below this chart title.
-   Right edge follows the plotted endpoint; colors share band tokens. */
+   Right edge follows the plotted endpoint; solid lines share contour ink. */
 #distTitle{margin-bottom:6px}
 .ac-col-density > .region-chart-legend{
   display:flex;flex:0 0 auto;justify-content:flex-end;align-items:center;
@@ -817,10 +817,13 @@ body.compact .job > .mono { margin-top:2px; }
   margin:0;padding:0;white-space:nowrap;
 }
 .region-chart-legend .region-legend-swatch{
-  display:block;flex:none;box-sizing:border-box;width:8px;height:8px;
-  border:1px solid var(--region-ink);border-radius:1.5px;
-  background:var(--region-fill);
+  display:block;flex:none;box-sizing:border-box;width:16px;height:3px;
+  border:0;border-radius:999px;
+  background:var(--region-ink);
 }
 @media(max-width:720px){
   .ac-col-density > .region-chart-legend{font-size:10px;column-gap:10px}
+}
+@media(max-width:360px){
+  .region-chart-legend .region-legend-swatch{width:12px}
 }
