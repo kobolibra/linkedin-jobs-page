@@ -656,9 +656,11 @@ jobsDataPromise
     const endTotal=cumulativeSeries.reduce((n,values)=>n+values[bins],0);
     // Region plot gets a close-fitting, conventional 1/2/5 scale while
     // preserving the zero origin and all cumulative totals.
-    const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/7));
+    // A quiet 1/2/5 axis with roughly four intervals rather than seven
+    // competing gridlines. The true zero and final summed count remain exact.
+    const regionMagnitude=10**Math.floor(Math.log10(Math.max(1,endTotal)/4));
     const regionStep=Math.max(1,Math.round(
-      [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/7)*regionMagnitude));
+      [1,2,5,10].find(n=>n*regionMagnitude>=Math.max(1,endTotal)/4)*regionMagnitude));
     const regionMax=Math.max(regionStep,Math.ceil(endTotal/regionStep)*regionStep);
     const regionTicks=Array.from({length:Math.round(regionMax/regionStep)+1},
       (_,i)=>i*regionStep);
