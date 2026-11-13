@@ -136,7 +136,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-share-inset-9/);
+ assert.match(html,/styles-refinement\.css\?v=region-mix-rail-10/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-band:25%\}/);
@@ -149,12 +149,14 @@ test('C-style columns keep original blue and regional trend keeps the original a
   'regional snapshot shares must derive from the same cumulative series as the chart');
  assert.match(source,/const shareTenths=rawShareTenths\.map\(n=>Math\.floor\(n\)\)/,
   'percentages are computed rather than hardcoded');
- assert.match(source,/const legend='<g class="region-current-key"/,
-  'the key is an integrated, restrained SVG inset');
- assert.match(source,/const summaryCols=\[154,278,402\]/);
- assert.doesNotMatch(source,/const legendStep=|region-legend-swatch|region-legend-label/);
- assert.match(css,/#dist \.region-stat-total,/);
- assert.match(css,/#dist \.region-stat-key\{stroke-width:3\.3\}/);
+ assert.match(source,/const composition='<div class="region-mix"/,
+  'region mix renders as a crisp HTML data key, not shrinking SVG text');
+ assert.match(source,/const compositionLabel=regionOrder\.map/);
+ assert.match(css,/#dist \.region-mix-rail\{/);
+ assert.match(css,/#dist \.region-mix-grid\{/);
+ assert.doesNotMatch(source,/region-current-key|region-stat-|summaryCols=|const legend=/);
+ assert.match(css,/#spark \.rhythm-bar\.weekend\{opacity:\.63\}/);
+ assert.match(css,/\[data-theme="dark"\] #spark \.rhythm-bar\.weekend\{opacity:\.71\}/);
  assert.match(source,/const bins=Math\.max\(1,Math\.round\(\(tMax-tMin\)\/dayMs\)\);/,'every UTC calendar day remains a distinct observation');
  assert.match(source,/const endTotal=cumulativeSeries\.reduce\(/,'region y-axis uses the final summed cumulative count');
  assert.match(source,/const upper=sumBoundary\(ri\+1,cumulativeSeries\);/,'each stacked boundary is a sum of regional cumulative data');
@@ -171,7 +173,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/class="region-stack-band"/);
  assert.match(css,/#dist \.region-stack-band\{/);
  assert.match(css,/--region-band:29%/);
- assert.match(css,/#dist \.region-spark-line,[\s\S]*?stroke-width:1\.65/);
+ assert.match(css,/#dist \.region-spark-line\{[^}]*stroke-width:1\.65/);
  assert.match(css,/#spark \.rhythm-bar\{\s*fill:var\(--viz-blue\);opacity:1/);
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
  assert.match(source,/const bucketCounts=regionOrder\.map\(\(\)=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
@@ -179,7 +181,7 @@ test('C-style columns keep original blue and regional trend keeps the original a
  assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
  assert.match(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-share-inset-8/);
+ assert.match(html,/app\.js\?v=region-mix-rail-9/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });

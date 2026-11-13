@@ -197,7 +197,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.ok(!html.includes('id="distNote"'),'unnecessary first-seen footnote is completely removed');
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
- assert.ok(html.includes('Market Width: 18 institutions we watch closely'));
+ assert.match(html,/Market Width: <span class="mw-title-phrase">18 institutions we watch closely<\/span>/);
+ assert.match(css,/\.mw-title-phrase\{white-space:nowrap\}/,'never split the institution count from its complete title phrase');
  assert.ok(html.includes('new postings across'));
  assert.ok(html.includes('Size and shade reflect new postings of the day, excluding reposts'));
  assert.ok(html.includes('id="marketWidthMap"'));
@@ -219,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=density-height-ratio-24'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-title-nowrap-26'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);

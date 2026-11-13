@@ -80,25 +80,40 @@ async function renderLeft(page,chartData,theme){
     stacked:Number(node.dataset.stacked),bin:Number(node.dataset.bin)}:null;
   };
   const svg=document.querySelector('#dist .region-time-svg');
-  const statRows=[...svg.querySelectorAll('.region-stat-item')];
-  const svgRect=node=>{const r=node?.getBBox();return r?{x:r.x,y:r.y,right:r.x+r.width,bottom:r.y+r.height}:null;};
-  const keyBounds=svgRect(svg.querySelector('.region-current-key'));
-  const gridTop=Math.min(...[...svg.querySelectorAll('.region-spark-grid')]
-   .map(line=>Number(line.getAttribute('y1'))));
+  const mix=document.querySelector('#dist .region-mix');
+  const statRows=[...mix.querySelectorAll('.region-mix-item')];
+  const rect=node=>{const r=node.getBoundingClientRect();return {
+   x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom
+  };};
+  const weekendBars=bars.filter(node=>node.classList.contains('weekend'));
+  const weekdayBars=bars.filter(node=>!node.classList.contains('weekend'));
   return {series,bars:bars.length,regions:lines.length,
-   legendTotal:Number((svg.querySelector('.region-stat-total')?.textContent||'0').replace(/,/g,'')),
-   legendTotalText:svg.querySelector('.region-stat-total')?.textContent||'',
-   legendLabel:svg.querySelector('.region-stat-label')?.textContent||'',
-   legendCount:svg.querySelectorAll('.region-current-key').length,
-   oldLegendCount:svg.querySelectorAll('.region-legend-swatch,.region-legend-label').length,
-   legendBounds:keyBounds,gridTop,
+   viewportWidth:window.innerWidth,
+   weekendCount:weekendBars.length,
+   weekendOpacity:weekendBars.length?getComputedStyle(weekendBars[0]).opacity:null,
+   weekdayOpacity:weekdayBars.length?getComputedStyle(weekdayBars[0]).opacity:null,
+   weekendBlue:weekendBars.length?getComputedStyle(weekendBars[0]).fill:null,
+   weekdayBlue:weekdayBars.length?getComputedStyle(weekdayBars[0]).fill:null,
+   legendTotal:Number((mix.querySelector('.region-mix-total')?.textContent||'0').replace(/[^\d]/g,'')),
+   legendTotalText:mix.querySelector('.region-mix-total')?.textContent||'',
+   legendLabel:mix.querySelector('.region-mix-kicker')?.textContent||'',
+   legendCount:document.querySelectorAll('#dist .region-mix').length,
+   oldLegendCount:svg.querySelectorAll('.region-current-key,.region-stat-item,.region-legend-swatch').length,
+   legendBounds:rect(mix),svgBounds:rect(svg),
+   railBounds:rect(mix.querySelector('.region-mix-rail')),
+   railSegments:[...mix.querySelectorAll('.region-mix-segment')].map(node=>({
+     region:[...node.classList].find(c=>['hk','sg','cn'].includes(c)),
+     width:node.getBoundingClientRect().width,
+     ink:getComputedStyle(node).backgroundColor
+   })),
    legendItems:statRows.map(node=>({
      region:node.dataset.region,count:Number(node.dataset.count),
-     share:node.dataset.share,label:node.querySelector('.region-stat-region')?.textContent,
-     visibleCount:node.querySelector('.region-stat-count')?.textContent,
-     visibleShare:node.querySelector('.region-stat-share')?.textContent,
-     ink:getComputedStyle(node.querySelector('.region-stat-key')).stroke,
-     bounds:svgRect(node)
+     share:node.dataset.share,label:node.querySelector('.region-mix-name')?.textContent,
+     visibleCount:node.querySelector('.region-mix-count')?.textContent,
+     visibleShare:node.querySelector('.region-mix-share')?.textContent,
+     ink:getComputedStyle(node.querySelector('.region-mix-swatch')).backgroundColor,
+     countFont:parseFloat(getComputedStyle(node.querySelector('.region-mix-count')).fontSize),
+     bounds:rect(node)
    })),
    stackOrder:regionGroups.map(g=>[...g.classList].find(c=>c!=='region-series')),
    bandCount:stackBands.length,
@@ -148,7 +163,14 @@ async function renderLeft(page,chartData,theme){
   '30-day columns must reuse the existing light/dark blue tokens');
  assert.equal(quality.regions,3);
  assert.equal(quality.bars,30);
- assert.equal(quality.barOpacity,'1','blue bars must use undiluted original 青瓷蓝');
+ assert.equal(quality.barOpacity,'1','weekday columns use the original undiluted blue');
+ assert.ok(quality.weekendCount>=8&&quality.weekendCount<=10,
+  'all Saturdays and Sundays remain visibly identifiable across 30 days');
+ assert.equal(quality.weekdayOpacity,'1','weekday columns are fully opaque');
+ assert.equal(quality.weekendOpacity,theme==='light'?'0.63':'0.71',
+  'weekend columns use a subdued opacity, with less attenuation in dark mode');
+ assert.equal(quality.weekendBlue,quality.weekdayBlue,
+  'weekends retain the same brand-blue hue, only visual emphasis changes');
  assert.deepEqual(quality.stackOrder,['hk','sg','cn'],
   'real production distribution anchors HK below SG and CN; OTHER is excluded');
  assert.equal(quality.otherSeries,0,'OTHER never belongs in this chart or legend');
@@ -156,8 +178,8 @@ async function renderLeft(page,chartData,theme){
  assert.equal(quality.legendCount,1,'exactly one integrated regional snapshot key');
  assert.equal(quality.oldLegendCount,0,'do not duplicate the obsolete minimalist legend');
  assert.equal(quality.legendTotal,quality.finalTotal,'inset total must equal the final cumulative y-axis total');
- assert.equal(quality.legendLabel,'ACTIVE ROLES');
- assert.equal(quality.legendTotalText,quality.finalTotal.toLocaleString('en-US'));
+ assert.equal(quality.legendLabel,'REGIONAL MIX');
+ assert.equal(quality.legendTotalText,quality.finalTotal.toLocaleString('en-US')+' ACTIVE ROLES');
  assert.deepEqual(quality.legendItems.map(x=>x.region),['HK','SG','CN']);
  assert.deepEqual(quality.legendItems.map(x=>x.count),['hk','sg','cn'].map(k=>quality.regionFinals[k]),
   'HK/SG/CN numbers are taken from the chart rather than another data source');
@@ -171,10 +193,27 @@ async function renderLeft(page,chartData,theme){
  }
  assert.equal(quality.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000,
   'three dynamic shares sum to 100.0%, including rounding allocation');
- assert.ok(quality.legendBounds&&quality.legendBounds.x>=38&&quality.legendBounds.right<=508,
-  'the complete four-column key fits within the plotting width');
- assert.ok(quality.legendBounds.bottom<quality.gridTop-5,
-  'summary key occupies the upper gutter rather than covering filled chart data');
+ assert.equal(quality.railSegments.length,3,'one continuous region-mix rule contains exactly three segments');
+ for(const [i,segment] of quality.railSegments.entries()){
+  const region=['HK','SG','CN'][i];
+  assert.equal(segment.region,region.toLowerCase());
+  assert.equal(segment.ink,quality.series[region.toLowerCase()],
+   'the mix rail and the trend contour must share an identical palette');
+  if(quality.finalTotal){
+   assert.ok(Math.abs(segment.width/quality.railBounds.w-
+     quality.legendItems[i].count/quality.finalTotal)<.015,
+    'the small composition rule depicts actual current region shares');
+  }
+ }
+ assert.ok(quality.legendBounds.x>=quality.svgBounds.x-1&&
+  quality.legendBounds.right<=quality.svgBounds.right+1,
+  'the regional summary fits the chart width, including on phones');
+ assert.ok(quality.legendBounds.bottom<=quality.svgBounds.y+1,
+  'text key sits above the SVG rather than covering any cumulative band');
+ if(quality.viewportWidth<=720){
+  assert.ok(quality.legendItems.every(item=>item.countFont>=15),
+   'regional count labels stay at real readable CSS sizes on phones');
+ }
  assert.match(quality.chartAria,/y-axis is the sum of (?:all|these) three regions/);
  assert.equal(quality.notePresent,false,'verbose first-observed footnote and its whitespace are removed');
  assert.ok(quality.bandCount>=3,'each active region has at least one tinted band');
@@ -401,6 +440,12 @@ try{
      dist:rect('.ac-col-density'),post:rect('.ac-col-postings'),top:rect('.ac-col-top50'),
      board:rect('#marketWidthMap'),footer:rect('.mw-footer'),
      heading:rect('#marketWidthTitle'),
+     titlePhrase:rect('.mw-title-phrase'),
+     titlePhraseLines:(()=>{
+       const range=document.createRange();
+       range.selectNodeContents(document.querySelector('.mw-title-phrase'));
+       return range.getClientRects().length;
+     })(),
      summary:rect('.mw-summary'),date:rect('.mw-date-nav'),
      tabs:rect('#marketWidthRegions'),encoding:rect('.mw-encoding'),
      pageWidth:document.documentElement.scrollWidth,
@@ -422,6 +467,10 @@ try{
    assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
    assert.ok(bounds.tabs.x>=bounds.heading.x+bounds.heading.w-2,
     'region tabs must align right of Market Width heading');
+   assert.equal(bounds.titlePhraseLines,1,
+    'the complete 18 institutions we watch closely phrase stays on one line');
+   assert.ok(bounds.titlePhrase.x+bounds.titlePhrase.w<=bounds.right.x+bounds.right.w+1,
+    'the unbroken Market Width subtitle must stay within its panel');
    assert.ok(Math.abs((bounds.tabs.y+bounds.tabs.h/2)-(bounds.heading.y+bounds.heading.h/2))<10,
     'region tabs and heading should share one centered baseline');
    if(bounds.topBg)assert.equal(bounds.regionBg,bounds.topBg,'Top30 and Market Width region controls share chrome');
@@ -476,6 +525,32 @@ try{
    console.log('18-company integrated mosaic PASS '+width+'px '+theme);
    await page.close();
   }
+ }
+ // Protect narrower 320/360px phones against a partial Market Width
+ // title wrap, even when the filter tabs share the title row.
+ for(const width of [360,320]){
+  const phone=await make(width,'light');
+  const title=await phone.evaluate(()=>{
+   const phrase=document.querySelector('.mw-title-phrase');
+   const range=document.createRange();range.selectNodeContents(phrase);
+   const p=phrase.getBoundingClientRect(),panel=document.querySelector('.ac-col-market').getBoundingClientRect();
+   const tabs=document.querySelector('#marketWidthRegions').getBoundingClientRect();
+   const intersection=Math.max(0,Math.min(p.right,tabs.right)-Math.max(p.left,tabs.left))*
+    Math.max(0,Math.min(p.bottom,tabs.bottom)-Math.max(p.top,tabs.top));
+   return {lines:range.getClientRects().length,right:p.right,panelRight:panel.right,
+    text:phrase.textContent,scroll:document.documentElement.scrollWidth,intersection};
+  });
+  assert.equal(title.text,'18 institutions we watch closely');
+  assert.equal(title.lines,1,'complete institution count and phrase occupy one line at '+width+'px');
+  assert.ok(title.right<=title.panelRight+1&&title.scroll<=width+2,
+   'the unbroken Market Width title fits a '+width+'px viewport: '+JSON.stringify(title));
+  assert.ok(title.intersection<1,
+   'the title phrase must never physically overlap the region tabs: '+JSON.stringify(title));
+  await phone.locator('.mw-topline').screenshot({
+   path:new URL('artifacts/market-width/header-'+width+'-light.png',source).pathname,
+   animations:'disabled'
+  });
+  await phone.close();
  }
  // Visual acceptance against ACTUAL published jobs, not just fixture bars.
  // This also protects the y-axis from silently regressing to one-day peaks.
