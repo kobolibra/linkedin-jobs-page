@@ -392,7 +392,7 @@ async function renderLeft(page,chartData,theme){
  };
  checkDateSpacing(quality.regionDateMarks,'Regional history');
  checkDateSpacing(quality.postingDateMarks,'New Postings');
- assert.equal(quality.ranges.length,2,'both exact date ranges are disclosed outside the regular axes');
+ assert.equal(quality.ranges.length,0,'unrequested range captions are absent from both charts');
  assert.ok(quality.postingDateMarks.every(m=>m.weekday===1),'every New Postings tick is Monday');
  for(let i=1;i<quality.postingDateMarks.length;i++)assert.equal(quality.postingDateMarks[i].day-quality.postingDateMarks[i-1].day,7,'no skipped or invented week');
  if(['quarter','month'].includes(quality.calendarMode)){
@@ -794,7 +794,7 @@ try{
  assert.equal(tomorrow.legendItems.reduce((total,item)=>total+Math.round(parseFloat(item.share)*10),0),1000);
  const tomorrowTicks=await tomorrowPage.locator('#dist .region-spark-date').allTextContents();
  assert.deepEqual(tomorrowTicks,['Apr','Jul','Oct'],'regular quarters do not change to arbitrary endpoints');
- assert.match(await tomorrowPage.locator('#dist .chart-date-range').textContent(),/13 Nov 2026/,'the exact range advances with the newly published data');
+ assert.equal(await tomorrowPage.locator('#dist .chart-date-range').count(),0,'new publications must not reintroduce rejected range captions');
  await tomorrowPage.locator('.ac-col-density').screenshot({
   path:new URL('artifacts/market-width/daily-rollover-nov13-390-light.png',source).pathname,
   animations:'disabled'
