@@ -213,7 +213,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-editorial-stagger-20261114/);
+ assert.match(html,/app\.js\?v=region-unbroken-guides-20261114/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
