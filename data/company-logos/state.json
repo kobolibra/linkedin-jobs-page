@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-14T04:02:59.692723+00:00",
+    "checkedAt": "2026-11-14T10:03:01.262279+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-14T04:02:49.451150+00:00",
+    "checkedAt": "2026-11-14T10:02:49.503220+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-14T04:02:53.606758+00:00",
+    "checkedAt": "2026-11-14T10:02:55.205000+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-14T04:02:56.739507+00:00",
+    "checkedAt": "2026-11-14T10:02:58.287295+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11469,5 +11469,53 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGTBykJrwnuWA/company-logo_100_100/company-logo_100_100/0/1672844373441/renaissance_harbour_view_hotel_logo?e=2147483647&v=beta&t=f68pOD-JJXFlSBCfA3eACH9fzRIuKrwUg-F1Ftwn_pk",
     "companyUrl": "https://hk.linkedin.com/company/renaissance-harbour-view-hotel",
     "sourceJobId": "4489585459"
+  },
+  "inico recruitment": {
+    "name": "Inico Recruitment",
+    "checkedAt": "2026-11-14T10:02:39.044002+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1a42f382356674f70d0e654b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQECTtmX3d8XCg/company-logo_100_100/company-logo_100_100/0/1718808197924/inico_recruit_logo?e=2147483647&v=beta&t=BpQGaVuzdwGhO1HDYTWVvOdIxMp8J-i3iKLLlpd6OxA",
+    "companyUrl": "https://uk.linkedin.com/company/inico-recruit",
+    "sourceJobId": "4488925651"
+  },
+  "jda wms": {
+    "name": "JDA WMS",
+    "checkedAt": "2026-11-14T10:02:40.515455+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "903375caa99e8e97fdc8b06c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFpByjA6PCChw/company-logo_100_100/company-logo_100_100/0/1697355061255?e=2147483647&v=beta&t=9YnkpIJeFWl9K7pwRQOopksSdPk3NdVBZVT06C5wPUY",
+    "companyUrl": "https://sg.linkedin.com/company/jda-wms",
+    "sourceJobId": "4489864687"
+  },
+  "uniplan": {
+    "name": "Uniplan",
+    "checkedAt": "2026-11-14T10:02:43.433347+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "806ee7c9fac6589cec293865.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGglYAi3zF-aQ/company-logo_100_100/company-logo_100_100/0/1656060519225/uniplan_logo?e=2147483647&v=beta&t=XRfFNkncAN0wWUgWxcU-xH5xz03MoqX0XSyxEp_aMBo",
+    "companyUrl": "https://de.linkedin.com/company/uniplan",
+    "sourceJobId": "4490714459"
+  },
+  "webbing": {
+    "name": "Webbing",
+    "checkedAt": "2026-11-14T10:02:46.432406+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c141b4706231a5930e6e7c85.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFuR0Y9xBIRbw/company-logo_100_100/B4DZfRzLZmHMAY-/0/1751571544412/webbing_inc__logo?e=2147483647&v=beta&t=uG0nDpRBLk_bA6MXJ2O8FzQWzZAOUQWVZpiqykzJyaw",
+    "companyUrl": "https://www.linkedin.com/company/webbing-inc-",
+    "sourceJobId": "4480043297"
   }
 }
