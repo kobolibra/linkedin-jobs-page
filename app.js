@@ -745,9 +745,10 @@ jobsDataPromise
     const bandMiddleY=regionOrder.map((_,i)=>
       trendY((cumulativeLevels[i]+cumulativeLevels[i+1])/2));
     const shortHistory=bins<100;
-    // Each arrow and its label advance together by 66 SVG units. Shared
-    // boundary references connect adjacent measures, creating a true staircase.
-    const measureX={HK:88,SG:154,CN:220};
+    // Uneven editorial spacing follows the ascending curves: a measured
+    // 80-unit step, then a more open 102-unit step. Keep every vertical
+    // dimension attached to the true cumulative boundaries.
+    const measureX={HK:84,SG:164,CN:266};
     const referenceLines=[...new Set(cumulativeLevels)].map(level=>{
       const adjacent=regionOrder.filter((k,i)=>snapshotCounts[i]>0&&
         (cumulativeLevels[i]===level||cumulativeLevels[i+1]===level)).map(k=>measureX[k]);
@@ -782,7 +783,15 @@ jobsDataPromise
     // sit between dashed levels, where the early-year chart is still empty.
     // The labels may shift to avoid collisions, but the dimension strokes
     // never move away from their actual cumulative y coordinates.
-    const visibleRows=regionOrder.map((k,i)=>({k,i,target:bandMiddleY[i]}))
+    // Nudge text optically by only a few real CSS pixels. Bound each nudge
+    // to 15% of its own band height, including narrow/uneven data histories.
+    const labelBiasPx={HK:-4,SG:3,CN:-3};
+    const visibleRows=regionOrder.map((k,i)=>{
+      const bandHeight=Math.abs(trendY(cumulativeLevels[i])-trendY(cumulativeLevels[i+1]));
+      const requested=labelBiasPx[k]*TW/axisCssWidth;
+      const opticalBias=Math.sign(requested)*Math.min(Math.abs(requested),bandHeight*.15);
+      return {k,i,target:bandMiddleY[i]+opticalBias};
+    })
       .filter(row=>snapshotCounts[row.i]>0).sort((a,b)=>a.target-b.target);
     const labelMargin=Math.max(22,22*TW/axisCssWidth);
     const minLabelY=top+labelMargin,maxLabelY=base-labelMargin;
