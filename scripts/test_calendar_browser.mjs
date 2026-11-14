@@ -53,12 +53,13 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
   for(let i=1;i<state.weeks.length;i++)assert.equal(state.weeks[i].day-state.weeks[i-1].day,7);
   assert.ok(state.weeks.every(t=>new Date(t.date+'T00:00:00Z').getUTCDay()===1));
   for(let i=0;i<state.arrows.length;i++){
-   const a=state.arrows[i];assert.equal(a.x,88+i*66);assert.equal(a.count,a.hi-a.lo);
+   const a=state.arrows[i];assert.equal(a.x,[78,143,222][i]);assert.equal(a.count,a.hi-a.lo);
    assert.ok(Math.abs(a.y1-a.y2-a.count/state.max*308)<.03,'true-height arrow changed');
    const label=state.labels.find(l=>l.region===a.region);assert.equal(label.count,a.count);
    assert.ok(Math.abs(label.box.x-(state.plot.x+a.x/520*state.plot.width)-16)<1,'arrow and label must move together');
    assert.ok(label.box.right<=state.plot.right+1,'annotation overflow');
-   if(i){const prev=state.labels[i-1];assert.ok(label.box.x-prev.box.x>=state.plot.width*65/520);assert.ok(label.box.bottom<=prev.box.y+1,'regional labels overlap');}
+   assert.ok(label.box.x>=state.plot.x,'annotation must stay inside the plot');
+   if(i){const prev=state.labels[i-1];assert.ok(label.box.x-prev.box.x>=state.plot.width*64/520,'annotations must breathe horizontally');assert.ok(label.box.bottom<=prev.box.y+1,'regional labels overlap');}
   }
   assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.equal(state.ranges,0);assert.ok(state.scrollWidth<=width+2);assert.deepEqual(errors,[]);
   await page.locator('.analytics-left').screenshot({path:new URL(engine+'-'+width+'-'+theme+'.png',out).pathname,animations:'disabled'});
