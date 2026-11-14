@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-14T10:03:01.262279+00:00",
+    "checkedAt": "2026-11-14T16:03:28.790991+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-14T10:02:49.503220+00:00",
+    "checkedAt": "2026-11-14T16:03:16.869318+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-14T10:02:55.205000+00:00",
+    "checkedAt": "2026-11-14T16:03:22.647632+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-14T10:02:58.287295+00:00",
+    "checkedAt": "2026-11-14T16:03:25.776729+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11517,5 +11517,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFuR0Y9xBIRbw/company-logo_100_100/B4DZfRzLZmHMAY-/0/1751571544412/webbing_inc__logo?e=2147483647&v=beta&t=uG0nDpRBLk_bA6MXJ2O8FzQWzZAOUQWVZpiqykzJyaw",
     "companyUrl": "https://www.linkedin.com/company/webbing-inc-",
     "sourceJobId": "4480043297"
+  },
+  "esri": {
+    "name": "Esri",
+    "checkedAt": "2026-11-14T16:03:09.532049+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d9b18355ffd5afadf5dcc3de.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQE7SEkY882aSg/company-logo_100_100/company-logo_100_100/0/1656114632675/esri_logo?e=2147483647&v=beta&t=mxJLKn0GsI92v_4SMoHtoQBUbPwvsEsARNqJD-rTgdw",
+    "companyUrl": "https://www.linkedin.com/company/esri",
+    "sourceJobId": "4491016131"
+  },
+  "scania singapore": {
+    "name": "Scania Singapore",
+    "checkedAt": "2026-11-14T16:03:10.929607+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1324f8859056ef25ae6d27d4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQEzuQRnLnifBQ/company-logo_100_100/company-logo_100_100/0/1631306379016?e=2147483647&v=beta&t=APU7U3N8nhSsVD7G2JYLVIgXBtIB06cPPUUoASOTMmw",
+    "companyUrl": "https://sg.linkedin.com/company/scaniasingapore",
+    "sourceJobId": "4482826871"
+  },
+  "中国信息通信研究院": {
+    "name": "中国信息通信研究院",
+    "checkedAt": "2026-11-14T16:03:13.872044+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1890b1738433a046bfdf0209.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHwcs_p-9P88A/company-logo_100_100/company-logo_100_100/0/1631333941391?e=2147483647&v=beta&t=G6GyHM9EYoXnlsspfMNT5w_wRKHgJk20F2ylNJt-DbQ",
+    "companyUrl": "https://cn.linkedin.com/company/%E4%B8%AD%E5%9B%BD%E4%BF%A1%E6%81%AF%E9%80%9A%E4%BF%A1%E7%A0%94%E7%A9%B6%E9%99%A2",
+    "sourceJobId": "4491065079"
   }
 }
