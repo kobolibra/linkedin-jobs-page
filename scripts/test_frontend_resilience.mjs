@@ -172,7 +172,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const cumulativeLevels=\[0,\.\.\.endBoundaries\]/);
  assert.match(source,/const referenceLines=\[\.\.\.new Set\(cumulativeLevels\)\]/);
  assert.match(source,/const verticalMeasures=regionOrder\.map/);
- assert.match(source,/const measureX=\{HK:88,SG:154,CN:220\}/,'region annotations use coordinated staggered inset alignment');
+ assert.match(source,/const measureX=\{HK:84,SG:164,CN:266\}/,'region annotations use coordinated staggered inset alignment');
  assert.match(source,/class="region-date-tick"/);
  assert.match(source,/class="rhythm-date-tick"/);
  assert.doesNotMatch(css,/\.region-dimension-span|\.region-dimension-cap|\.region-end-guide|\.region-end-tick/);
@@ -213,7 +213,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-projection-20261113/);
+ assert.match(html,/app\.js\?v=region-editorial-stagger-20261114/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
