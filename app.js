@@ -746,9 +746,9 @@ jobsDataPromise
       trendY((cumulativeLevels[i]+cumulativeLevels[i+1])/2));
     const shortHistory=bins<100;
     // Uneven editorial spacing follows the ascending curves: a measured
-    // 80-unit step, then a more open 102-unit step. Keep every vertical
+    // 66-unit step, then a more open 86-unit step. Keep every vertical
     // dimension attached to the true cumulative boundaries.
-    const measureX={HK:84,SG:164,CN:266};
+    const measureX={HK:70,SG:136,CN:222};
     const referenceLines=[...new Set(cumulativeLevels)].map(level=>{
       const adjacent=regionOrder.filter((k,i)=>snapshotCounts[i]>0&&
         (cumulativeLevels[i]===level||cumulativeLevels[i+1]===level)).map(k=>measureX[k]);
