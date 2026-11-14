@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-14T16:03:28.790991+00:00",
+    "checkedAt": "2026-11-14T22:05:38.306603+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-14T16:03:16.869318+00:00",
+    "checkedAt": "2026-11-14T22:05:26.529787+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-14T16:03:22.647632+00:00",
+    "checkedAt": "2026-11-14T22:05:32.240652+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-14T16:03:25.776729+00:00",
+    "checkedAt": "2026-11-14T22:05:35.333206+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11553,5 +11553,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHwcs_p-9P88A/company-logo_100_100/company-logo_100_100/0/1631333941391?e=2147483647&v=beta&t=G6GyHM9EYoXnlsspfMNT5w_wRKHgJk20F2ylNJt-DbQ",
     "companyUrl": "https://cn.linkedin.com/company/%E4%B8%AD%E5%9B%BD%E4%BF%A1%E6%81%AF%E9%80%9A%E4%BF%A1%E7%A0%94%E7%A9%B6%E9%99%A2",
     "sourceJobId": "4491065079"
+  },
+  "delta capita": {
+    "name": "Delta Capita",
+    "checkedAt": "2026-11-14T22:05:13.100790+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "711ddf522499c6f5999d54fd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFnsdilMylV7w/company-logo_100_100/B4EZfFI3gXGcAQ-/0/1751359126197/delta_capita_change_management_consulting_logo?e=2147483647&v=beta&t=lkLVi6nJpyfODTLLB1WP3GoFgqoyPv36_n4A13NGl6A",
+    "companyUrl": "https://uk.linkedin.com/company/delta-capita-change-management-consulting",
+    "sourceJobId": "4474456463"
+  },
+  "quanteam (rainbow partners group)": {
+    "name": "QUANTEAM (RAINBOW PARTNERS Group)",
+    "checkedAt": "2026-11-14T22:05:14.674148+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2d009ed995fc7dea3ba543b1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQE-mTMvPah7pA/company-logo_100_100/B4EaGbqgdlGkAI-/0/1793612974185/quanteam_logo?e=2147483647&v=beta&t=UKeidLeFJ_89_iCODNFBvxIBaJPpqjuOuU_IvmL-lLk",
+    "companyUrl": "https://fr.linkedin.com/company/quanteam",
+    "sourceJobId": "4491021521"
+  },
+  "richemont": {
+    "name": "Richemont",
+    "checkedAt": "2026-11-14T22:05:17.530262+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f76f6513b244d645312404f8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHTOkUTA0Urug/company-logo_100_100/company-logo_100_100/0/1631306711298?e=2147483647&v=beta&t=kiKgHUH8FHP_eF3bthYEAjQfUqP4delUB1d-ELRPf-Q",
+    "companyUrl": "https://ch.linkedin.com/company/richemont",
+    "sourceJobId": "4464527393"
+  },
+  "shield": {
+    "name": "Shield",
+    "checkedAt": "2026-11-14T22:05:20.527316+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1b273756b4e329f6a130db96.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGzUdrzUBQzRQ/company-logo_100_100/B56ZfHMjEoGoAc-/0/1751393645137/shield_ai_logo?e=2147483647&v=beta&t=pEPmVVtfz8Zm7uMomTJNG8ZYZsBi1hcWxVDeEW5rIEw",
+    "companyUrl": "https://www.linkedin.com/company/shield-ai",
+    "sourceJobId": "4491087539"
+  },
+  "star trust consultancy": {
+    "name": "Star Trust Consultancy",
+    "checkedAt": "2026-11-14T22:05:23.528293+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a030dd92f15c4acb3874ab57.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE3FJGb_0m4Rw/company-logo_100_100/B56Z_2h4vLGcAM-/0/1786547506416?e=2147483647&v=beta&t=hSoi4bxtF_Vvmt4cmezFNLCYg10448G7AEP9ZqddCoo",
+    "companyUrl": "https://www.linkedin.com/company/star-trust-consultancy",
+    "sourceJobId": "4490202176"
   }
 }
