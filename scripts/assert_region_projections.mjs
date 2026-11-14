@@ -6,28 +6,50 @@ export async function assertRegionProjections(page){
  const state=await page.evaluate(()=>{
   const svg=document.querySelector('#dist .region-time-svg'),box=svg.getBoundingClientRect();
   const sx=svg.viewBox.baseVal.width/box.width,sy=svg.viewBox.baseVal.height/box.height;
-  const labels=[...document.querySelectorAll('#dist .region-end-label')].map(n=>{const r=n.getBoundingClientRect();return {x1:(r.left-box.left-6)*sx,x2:(r.right-box.left+6)*sx,y1:(r.top-box.top-4)*sy,y2:(r.bottom-box.top+4)*sy};});
-  const refs=[...svg.querySelectorAll('.region-measure-reference')].map(n=>({level:+n.dataset.level,x:+n.getAttribute('x2'),y:+n.getAttribute('y1'),opacity:+getComputedStyle(n).opacity})).filter(r=>r.level>0);
-  const groups=[...svg.querySelectorAll('.region-projection')].map(n=>({level:+n.dataset.level,start:+n.dataset.start,end:+n.dataset.end,y:+n.dataset.y,segments:[...n.querySelectorAll('line')].map(l=>({a:+l.getAttribute('x1'),b:+l.getAttribute('x2'),y1:+l.getAttribute('y1'),y2:+l.getAttribute('y2'),opacity:+getComputedStyle(l).opacity,events:getComputedStyle(l).pointerEvents}))}));
-  return {labels,refs,groups,right:+svg.dataset.plotRight};
+  const labels=[...document.querySelectorAll('#dist .region-end-label')].map(node=>{
+   const rect=node.getBoundingClientRect();
+   return {region:node.dataset.region,shift:getComputedStyle(node).transform,
+    x1:(rect.left-box.left)*sx,x2:(rect.right-box.left)*sx,
+    y1:(rect.top-box.top)*sy,y2:(rect.bottom-box.top)*sy,
+    textRows:[...node.querySelectorAll('.region-end-name,.region-end-count,.region-end-share')].map(part=>{
+     const r=part.getBoundingClientRect();return {x1:(r.left-box.left)*sx,x2:(r.right-box.left)*sx,
+      y1:(r.top-box.top)*sy,y2:(r.bottom-box.top)*sy};
+    })};
+  });
+  const refs=[...svg.querySelectorAll('.region-measure-reference')].map(node=>({
+   level:+node.dataset.level,x:+node.getAttribute('x2'),y:+node.getAttribute('y1'),
+   opacity:+getComputedStyle(node).opacity
+  })).filter(r=>r.level>0);
+  const groups=[...svg.querySelectorAll('.region-projection')].map(node=>({
+   level:+node.dataset.level,start:+node.dataset.start,end:+node.dataset.end,y:+node.dataset.y,
+   segments:[...node.querySelectorAll('line')].map(l=>({
+    a:+l.getAttribute('x1'),b:+l.getAttribute('x2'),
+    y1:+l.getAttribute('y1'),y2:+l.getAttribute('y2'),
+    opacity:+getComputedStyle(l).opacity,events:getComputedStyle(l).pointerEvents
+   }))
+  }));
+  return {labels,refs,groups,right:+svg.dataset.plotRight,
+   labelLayerAboveSvg:svg.compareDocumentPosition(document.querySelector('#dist .region-end-labels'))&Node.DOCUMENT_POSITION_FOLLOWING};
  });
- assert.deepEqual(state.groups.map(g=>g.level),state.refs.map(r=>r.level),'only unique, nonzero cumulative boundaries are projected');
+ assert.ok(state.labelLayerAboveSvg,'foreground text must paint above the low-opacity guides');
+ assert.deepEqual(state.groups.map(g=>g.level),state.refs.map(r=>r.level),
+  'only unique, nonzero cumulative boundaries are projected');
  for(const [i,g] of state.groups.entries()){
-  const ref=state.refs[i];assert.equal(g.start,ref.x);assert.equal(g.end,state.right);assert.equal(g.y,ref.y);
-  let last=g.start;
-  for(const s of g.segments){
-   assert.ok(s.b>s.a&&s.a>=last-.002&&s.b<=g.end+.002,'segments are ordered and bounded');last=s.b;
-   assert.equal(s.y1,g.y);assert.equal(s.y2,g.y);
-   assert.ok(s.opacity>0&&s.opacity<ref.opacity,'far projections remain lighter than local measures');assert.equal(s.events,'none');
-   for(const r of state.labels)if(g.y>=r.y1&&g.y<=r.y2)assert.ok(s.b<=r.x1+.002||s.a>=r.x2-.002,'projection must not cross a padded label box');
-  }
-  // Independently sample the intended span: every unblocked point must have
-  // a projection, and every padded text interval must remain a real gap.
-  for(let k=0;k<=100;k++){
-   const x=g.start+(g.end-g.start)*k/100;
-   const blocked=state.labels.some(r=>g.y>=r.y1&&g.y<=r.y2&&x>r.x1+.003&&x<r.x2-.003);
-   const visible=g.segments.some(s=>x>=s.a-.002&&x<=s.b+.002);
-   if(blocked)assert.equal(visible,false);else if(!state.labels.some(r=>g.y>=r.y1&&g.y<=r.y2&&Math.min(Math.abs(x-r.x1),Math.abs(x-r.x2))<.004))assert.equal(visible,true,'unblocked span must reach the actual curve endpoint');
+  const ref=state.refs[i];
+  assert.equal(g.start,ref.x);assert.equal(g.end,state.right);assert.equal(g.y,ref.y);
+  assert.equal(g.segments.length,1,'no projection may be chopped into disconnected islands');
+  const line=g.segments[0];
+  assert.equal(line.a,g.start,'projection starts exactly at its measuring reference');
+  assert.equal(line.b,g.end,'projection reaches its genuine plotted endpoint');
+  assert.equal(line.y1,g.y);assert.equal(line.y2,g.y);
+  assert.ok(line.opacity>0&&line.opacity<ref.opacity,'far projections remain lighter than local measures');
+  assert.equal(line.events,'none');
+  // No "whole label rectangle" cutout: the guide may safely pass through
+  // whitespace between the two text rows, but never through their glyph rows.
+  for(const label of state.labels)for(const text of label.textRows){
+   const overlapsX=text.x2>g.start+.1&&text.x1<g.end-.1;
+   if(overlapsX)assert.ok(g.y<text.y1-.7||g.y>text.y2+.7,
+    'unbroken guide must clear visible text, including mobile fonts');
   }
  }
  return state;

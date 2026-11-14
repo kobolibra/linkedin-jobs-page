@@ -940,9 +940,11 @@ jobsDataPromise
       '<g class="region-projections" aria-hidden="true" pointer-events="none"></g>'+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
       directLabels+'</div>';
-    // Project only the nonzero final boundaries to their actual right endpoints.
-    // Read real HTML label boxes before writing SVG segments: no background
-    // knockouts, guessed text widths, moved labels, or changes to data geometry.
+    // Each regional boundary now has ONE uninterrupted, subordinate guide to
+    // its real plotted endpoint. The former bounding-box cutouts removed broad
+    // spans of the line when a nearby two-line label merely touched its padding.
+    // Align text in the open space between its actual rows instead; never carve
+    // a hole in a guide and never draw a guide through visible letterforms.
     distEl._regionProjectionCleanup?.();
     const projectionSvg=distEl.querySelector('.region-time-svg');
     const projectionLayer=projectionSvg.querySelector('.region-projections');
@@ -952,36 +954,63 @@ jobsDataPromise
       if(projectionDisposed||!projectionSvg.isConnected)return;
       const box=projectionSvg.getBoundingClientRect();
       if(!box.width||!box.height)return;
-      const scaleX=TW/box.width,scaleY=TH/box.height;
-      const exclusions=[...distEl.querySelectorAll('.region-end-label')].map(node=>{
-        const r=node.getBoundingClientRect();
-        return {x1:(r.left-box.left-6)*scaleX,x2:(r.right-box.left+6)*scaleX,
-          y1:(r.top-box.top-4)*scaleY,y2:(r.bottom-box.top+4)*scaleY};
-      });
-      const markup=[...projectionSvg.querySelectorAll('.region-measure-reference')]
-        .filter(node=>Number(node.dataset.level)>0).map(node=>{
-          const level=Number(node.dataset.level),y=Number(node.getAttribute('y1'));
-          const start=Number(node.getAttribute('x2')),end=TW-right;
-          let segments=[[start,end]];
-          for(const gap of exclusions){
-            if(y<gap.y1||y>gap.y2)continue;
-            segments=segments.flatMap(([a,b])=>gap.x2<=a||gap.x1>=b?[[a,b]]:
-              [[a,Math.min(b,gap.x1)],[Math.max(a,gap.x2),b]].filter(([x1,x2])=>x2>x1));
+      const references=[...projectionSvg.querySelectorAll('.region-measure-reference')]
+        .filter(node=>Number(node.dataset.level)>0).map(node=>({
+          level:Number(node.dataset.level),y:Number(node.getAttribute('y1')),
+          start:Number(node.getAttribute('x2')),end:TW-right
+        }));
+      const labels=[...distEl.querySelectorAll('.region-end-label')];
+      // Reset optical offsets before measuring after viewport/font changes.
+      labels.forEach(node=>{node.style.transform='translateY(-50%)';});
+      const cssY=y=>box.top+y*box.height/TH;
+      const cssX=x=>box.left+x*box.width/TW;
+      for(const label of labels){
+        const frame=label.getBoundingClientRect();
+        const textRows=[...label.querySelectorAll(
+          '.region-end-name,.region-end-count,.region-end-share'
+        )].map(node=>node.getBoundingClientRect());
+        const relevant=references.filter(ref=>textRows.some(rect=>
+          rect.right>cssX(ref.start)&&rect.left<cssX(ref.end)));
+        // Half-pixel search (max 24 CSS px) preserves the existing staircase
+        // while letting a dash pass through the 3px row gap on narrow phones.
+        const fits=delta=>{
+          if(frame.top+delta<box.top+5||frame.bottom+delta>box.bottom-5)return false;
+          for(const ref of relevant)for(const rect of textRows){
+            const y=cssY(ref.y);
+            if(y>=rect.top+delta-.9&&y<=rect.bottom+delta+.9)return false;
           }
-          return '<g class="region-projection" data-level="'+level+
-            '" data-start="'+start+'" data-end="'+end+'" data-y="'+y+'">'+
-            segments.filter(([a,b])=>b>a).map(([a,b])=>
-              '<line class="region-projection-line" x1="'+a.toFixed(3)+'" x2="'+b.toFixed(3)+
-              '" y1="'+y+'" y2="'+y+'"/>').join('')+'</g>';
-        }).join('');
+          for(const other of labels){
+            if(other===label)continue;
+            const rect=other.getBoundingClientRect();
+            if(frame.left<rect.right+2&&frame.right>rect.left-2&&
+               frame.top+delta<rect.bottom+2&&frame.bottom+delta>rect.top-2)return false;
+          }
+          return true;
+        };
+        let shift=null;
+        for(let step=0;step<=48;step++){
+          const candidates=step===0?[0]:[-step*.5,step*.5];
+          const selected=candidates.find(fits);
+          if(selected!==undefined){shift=selected;break;}
+        }
+        // In an exceptionally crowded/zero-height band, prefer an intact,
+        // low-opacity guide behind foreground text to a conspicuous hole.
+        if(shift!==null&&shift!==0)
+          label.style.transform='translateY(calc(-50% + '+shift.toFixed(1)+'px))';
+      }
+      const markup=references.map(ref=>
+        '<g class="region-projection" data-level="'+ref.level+
+        '" data-start="'+ref.start+'" data-end="'+ref.end+'" data-y="'+ref.y+'">'+
+        '<line class="region-projection-line" x1="'+ref.start+'" x2="'+ref.end+
+        '" y1="'+ref.y+'" y2="'+ref.y+'"/></g>'
+      ).join('');
       if(markup!==projectionMarkup){projectionLayer.innerHTML=markup;projectionMarkup=markup;}
       projectionLayer.dataset.ready='true';
     };
     const scheduleRegionProjections=()=>{
       if(!projectionDisposed&&!projectionFrame)projectionFrame=requestAnimationFrame(updateRegionProjections);
     };
-    // Recompute gaps for rotation, responsive layout and late font loading.
-    // A rerender disconnects the previous observer; lines never own interaction.
+    // Relayout is deterministic on rotation, responsive resize and font load.
     const projectionObserver=typeof ResizeObserver==='function'
       ?new ResizeObserver(scheduleRegionProjections):null;
     projectionObserver?.observe(projectionSvg);
