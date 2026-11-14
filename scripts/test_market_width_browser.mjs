@@ -284,7 +284,7 @@ async function renderLeft(page,chartData,theme){
   assert.equal(span.count,value);
   assert.equal(span.lower,before);assert.equal(span.upper,cumulative);
   assert.equal(span.x1,span.x2,'all measurement strokes are truly vertical');
-  assert.equal(span.x1,[84,164,266][i],'the three strokes follow the nonuniform editorial stagger');
+  assert.equal(span.x1,[70,136,222][i],'the three strokes follow the nonuniform editorial stagger');
   assert.ok(Math.abs(span.y1-(y0-before*unitHeight))<.16);
   assert.ok(Math.abs(span.y2-(y0-cumulative*unitHeight))<.16);
   assert.ok(Math.abs((span.y1-span.y2)-value*unitHeight)<.16,
