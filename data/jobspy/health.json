@@ -2,53 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:42910761689:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-10T22:03:20.953963+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 13,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 8,
-        "404": 4,
-        "429": 1
-      },
-      "outcomes": {
-        "response": 12,
-        "rate_limited": 1
-      },
-      "stages": {
-        "logos": 13
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1794348261.0736449,
-          "stopUntil": 1794348261.0736449,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 8,
-        "downloaded": 3,
-        "missing": 5,
-        "placeholders": 1,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 0,
-        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 60.2s",
-        "deferred": 0
-      }
-    },
-    {
       "runId": "jobs:42952050503:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -8434,6 +8387,43 @@
         "gone": 0
       },
       "liveness": {}
+    },
+    {
+      "runId": "logos:43766963123:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-15T22:02:49.287583+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 6,
+      "retries": 0,
+      "httpStatuses": {
+        "404": 4,
+        "200": 2
+      },
+      "outcomes": {
+        "response": 6
+      },
+      "stages": {
+        "logos": 6
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 4,
+        "downloaded": 0,
+        "missing": 4,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
     }
   ],
   "queryFailureStreaks": {
