@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-14T22:05:38.306603+00:00",
+    "checkedAt": "2026-11-15T04:03:05.386380+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-14T22:05:26.529787+00:00",
+    "checkedAt": "2026-11-15T04:02:53.606948+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-14T22:05:32.240652+00:00",
+    "checkedAt": "2026-11-15T04:02:59.295217+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-14T22:05:35.333206+00:00",
+    "checkedAt": "2026-11-15T04:03:02.403167+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11613,5 +11613,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE3FJGb_0m4Rw/company-logo_100_100/B56Z_2h4vLGcAM-/0/1786547506416?e=2147483647&v=beta&t=hSoi4bxtF_Vvmt4cmezFNLCYg10448G7AEP9ZqddCoo",
     "companyUrl": "https://www.linkedin.com/company/star-trust-consultancy",
     "sourceJobId": "4490202176"
+  },
+  "horizons asset holdings limited": {
+    "name": "Horizons Asset Holdings Limited",
+    "checkedAt": "2026-11-15T04:02:49.184811+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ddd6080b34901cdfa1aebc76.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQERLoR9sZZmtA/company-logo_100_100/B56aHcUkhrJUAI-/0/1794697742897?e=2147483647&v=beta&t=y1n-MkV9484eR7PS3qab6JasTWf--yUJtsFnM6oXatk",
+    "companyUrl": "https://hk.linkedin.com/company/horizons-asset-holdings-ltd",
+    "sourceJobId": "4490203667"
+  },
+  "上海思百吉仪器系统有限公司": {
+    "name": "上海思百吉仪器系统有限公司",
+    "checkedAt": "2026-11-15T04:02:50.612256+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E6%80%9D%E7%99%BE%E5%90%89%E4%BB%AA%E5%99%A8%E7%B3%BB%E7%BB%9F%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4489359624"
   }
 }
