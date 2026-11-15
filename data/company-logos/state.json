@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-15T10:02:40.683117+00:00",
+    "checkedAt": "2026-11-15T16:02:51.824246+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-15T10:02:28.979131+00:00",
+    "checkedAt": "2026-11-15T16:02:39.824484+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-15T10:02:34.604202+00:00",
+    "checkedAt": "2026-11-15T16:02:45.707887+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-15T10:02:37.719641+00:00",
+    "checkedAt": "2026-11-15T16:02:48.781329+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11697,5 +11697,41 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E4%B9%90%E4%B9%8E%E5%85%AC%E5%AF%93%E7%89%A9%E4%B8%9A%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4488997891"
+  },
+  "racore": {
+    "name": "Racore",
+    "checkedAt": "2026-11-15T16:02:32.501450+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f9fd31eb76ed0e027b2773a7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFgBAMTQW9PFw/company-logo_100_100/B56Zu2SFPHGsAQ-/0/1768289754287?e=2147483647&v=beta&t=IBtFaPCtanhh64yENZJU-WZF3lHpyQsxLlKirU3MKPg",
+    "companyUrl": "https://sg.linkedin.com/company/racore-cloud",
+    "sourceJobId": "4490211675"
+  },
+  "raduga pte ltd": {
+    "name": "RADUGA PTE LTD",
+    "checkedAt": "2026-11-15T16:02:33.896138+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2545441f37dd479a41b56717.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHRywUHrLEwjw/company-logo_100_100/company-logo_100_100/0/1630621448598/raduga_pte_ltd_logo?e=2147483647&v=beta&t=xIJUn9CACRxzbq0Vyi5et7etpraO3KlPxhrB2P9qxTo",
+    "companyUrl": "https://sg.linkedin.com/company/raduga-pte-ltd",
+    "sourceJobId": "4489362488"
+  },
+  "tcl.online services incorporated": {
+    "name": "TCL.Online Services Incorporated",
+    "checkedAt": "2026-11-15T16:02:36.825025+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0b4c437699b17e5534247313.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQE9yoOCWXRiuQ/company-logo_100_100/company-logo_100_100/0/1631433742992/tcl_online_services_incorporated_logo?e=2147483647&v=beta&t=yhgdCBkPeFaDOEqCc_Xj3Rj7EIYgghgE5myBr-0C5ww",
+    "companyUrl": "https://ph.linkedin.com/company/tcl-online-services-incorporated",
+    "sourceJobId": "4491235476"
   }
 }
