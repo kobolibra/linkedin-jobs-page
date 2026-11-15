@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-15T04:03:05.386380+00:00",
+    "checkedAt": "2026-11-15T10:02:40.683117+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-15T04:02:53.606948+00:00",
+    "checkedAt": "2026-11-15T10:02:28.979131+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-15T04:02:59.295217+00:00",
+    "checkedAt": "2026-11-15T10:02:34.604202+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-15T04:03:02.403167+00:00",
+    "checkedAt": "2026-11-15T10:02:37.719641+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11637,5 +11637,65 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E4%B8%8A%E6%B5%B7%E6%80%9D%E7%99%BE%E5%90%89%E4%BB%AA%E5%99%A8%E7%B3%BB%E7%BB%9F%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4489359624"
+  },
+  "hospitality capital partners co": {
+    "name": "Hospitality Capital Partners Co",
+    "checkedAt": "2026-11-15T10:02:15.491268+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f063be87d4761488caea56ee.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFuqrF9L8BJ2Q/company-logo_100_100/B4EaGGRAhxIYAI-/0/1793253968317?e=2147483647&v=beta&t=-4QT5maK2-3yV7spt0L3137HR_k2K2Hk8T7vyu50E90",
+    "companyUrl": "https://www.linkedin.com/company/hospitality-capital-partners-co",
+    "sourceJobId": "4490219290"
+  },
+  "secma solutions & services": {
+    "name": "Secma Solutions & Services",
+    "checkedAt": "2026-11-15T10:02:16.935480+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "db887e04014d88ab58ee87c0.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHSlBTBQYenHg/company-logo_100_100/B4DZsPDlY.J8AU-/0/1765484157503/secma_solutions_services_logo?e=2147483647&v=beta&t=5lR76AYUh-EDmukN-JvA9B8XsKJ7uOyGp7Ctcb_Wsyk",
+    "companyUrl": "https://sn.linkedin.com/company/secma-solutions-services",
+    "sourceJobId": "4491227108"
+  },
+  "simular": {
+    "name": "Simular",
+    "checkedAt": "2026-11-15T10:02:19.772226+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1493b5815328e20bfa7836f4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHsbT16UTVSJA/company-logo_100_100/company-logo_100_100/0/1729214192916/simular_ai_logo?e=2147483647&v=beta&t=xNed2_OHrWF8GEsu32yv4JJMDIQv-OEqzRsV1xkYgO8",
+    "companyUrl": "https://www.linkedin.com/company/simular-ai",
+    "sourceJobId": "4444154110"
+  },
+  "xp power": {
+    "name": "XP Power",
+    "checkedAt": "2026-11-15T10:02:22.773510+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "e0513bdf5b0aabc383dd853e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQG7-ukkWZ1Z8g/company-logo_100_100/company-logo_100_100/0/1695635663342/xp_power_logo?e=2147483647&v=beta&t=OeqqLGjoB8wKEOwTy9H6xe8ZG_bzkSVRrmCCtP28zos",
+    "companyUrl": "https://sg.linkedin.com/company/xp-power",
+    "sourceJobId": "4490206713"
+  },
+  "北京乐乎公寓物业管理有限公司": {
+    "name": "北京乐乎公寓物业管理有限公司",
+    "checkedAt": "2026-11-15T10:02:25.774697+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E4%B9%90%E4%B9%8E%E5%85%AC%E5%AF%93%E7%89%A9%E4%B8%9A%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4488997891"
   }
 }
