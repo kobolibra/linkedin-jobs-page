@@ -64,6 +64,12 @@ async function desktop(browser,engine,theme){
   assert.ok(toolbarTop<1700,'job-list controls stay within two screens on desktop: '+toolbarTop);
   assert.match(density.ageText,/^\d+$/,'median listing age is a whole number of days');
 
+  // The editorial masthead is also a direct route to the job-search tools.
+  assert.equal(await page.locator('.nj-browse-roles').getAttribute('href'),'#roles');
+  await page.locator('.nj-browse-roles').click();
+  assert.equal(await page.evaluate(()=>location.hash),'#roles','Browse all roles targets the full search toolbar without filtering');
+  assert.equal(await page.locator('#regions .seg[data-region="all"]').getAttribute('aria-selected'),'true');
+
   // Hero coverage rows filter the list by market.
   await page.locator('.nj-market-row[data-region="HK"]').click();
   await page.waitForFunction(()=>activeRegion==='HK');
@@ -100,14 +106,32 @@ async function desktop(browser,engine,theme){
   assert.equal(total,finalTotal,'the right-edge reading equals the plotted cumulative total');
   await page.mouse.move(0,0);
 
-  // Market Width: the default is the latest complete day; strip and arrows navigate.
+  // Market Width: open on the latest ended day, while 30-day manual history remains accessible.
   const mw=await page.evaluate(()=>({key:document.getElementById('marketWidthDate').getAttribute('aria-label'),partial:document.getElementById('marketWidthDate').dataset.partial,selected:[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected')),days:document.querySelectorAll('.mw-strip-day').length}));
-  assert.equal(mw.partial,'false','Market Width opens on a fully collected day');
+  assert.equal(mw.partial,'false','Market Width opens on the latest ended calendar date');
   assert.equal(mw.days,30);
   await page.locator('.mw-strip-day').nth(5).click();
   assert.equal(await page.evaluate(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))),5,'strip selects a day');
   await page.locator('#marketWidthNext').click();
   assert.equal(await page.evaluate(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))),6,'arrows and strip share one selection');
+
+  // Seven-day loop: starts at day 23, walks newest seven buckets and can be
+  // paused. It does not change the accessible 30-day manual date strip.
+  const play=page.locator('#marketWidthPlay');
+  assert.equal(await play.getAttribute('aria-pressed'),'false');
+  await play.click();
+  assert.equal(await play.getAttribute('aria-pressed'),'true');
+  const selectedDay=()=>page.evaluate(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected')));
+  assert.equal(await selectedDay(),23,'play starts exactly seven calendar buckets from the end');
+  if(engine==='chromium'&&theme==='light'){
+   await page.waitForFunction(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))===24,null,{timeout:7000});
+   assert.equal(await selectedDay(),24,'timer advances one real day without losing the selected bar');
+  }
+  await play.click();
+  assert.equal(await play.getAttribute('aria-pressed'),'false','pause is an accessible, persistent state');
+  await page.locator('.mw-strip-day').nth(5).click();
+  assert.equal(await selectedDay(),5,'historical day remains available after stopping playback');
+  assert.equal(await play.getAttribute('aria-pressed'),'false','manual date selection never reactivates playback');
 
   // Top 30: opening it is remembered across visits.
   await page.locator('#top50Toggle').click();
@@ -143,6 +167,14 @@ async function phone(browser,engine,theme){
   assert.equal(state.top30Open,false,'Top 30 starts folded on phones');
   assert.ok(state.stats.every(c=>!c),'metrics fit their cells on a phone');
   assert.ok(state.smallest>=11,'body copy on phones stays at least 11px');
+  assert.equal(await page.locator('.nj-browse-roles').getAttribute('href'),'#roles');
+  const play=page.locator('#marketWidthPlay');
+  await play.tap();
+  assert.equal(await play.getAttribute('aria-pressed'),'true');
+  assert.equal(await page.evaluate(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))),23);
+  await play.tap();
+  assert.equal(await play.getAttribute('aria-pressed'),'false','a second phone tap pauses the seven-day loop');
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth<=1),'playback controls cannot introduce sideways scrolling');
   // Touch: the first tap on a bubble reads it, the second opens its roles.
   await page.locator('#top50Toggle').tap();
   const bubble=page.locator('#top50 .bubble-row').first();
