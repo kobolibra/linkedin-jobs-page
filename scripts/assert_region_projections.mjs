@@ -69,23 +69,23 @@ export async function assertRegionProjections(page){
 // Check the complete weight hierarchy, not only line existence.
 export async function assertRegionVisualBalance(page){
  const state=await page.evaluate(()=>{
-  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {region:[...n.closest('.region-series')?.classList||[]].find(k=>['hk','sg','cn'].includes(k)),width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),ink:s.stroke,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
-  return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),tips:all('.region-measure-arrow'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
+  const all=selector=>[...document.querySelectorAll('#dist '+selector)].filter(n=>getComputedStyle(n).display!=='none').map(n=>{const s=getComputedStyle(n);return {region:[...n.closest('.region-series')?.classList||[]].find(k=>['hk','sg','cn'].includes(k)),width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),ink:s.stroke,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
+  return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),caps:all('.region-measure-cap'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
  });
  for(const n of state.refs){assert.equal(n.width,.85);assert.equal(n.opacity,.42);}
  for(const n of state.projections){assert.equal(n.width,.85);assert.equal(n.opacity,state.dark?.34:.36);}
  for(const n of state.arrows){
-  assert.equal(n.width,.9);assert.equal(n.opacity,state.dark?.51:.56);
+  assert.equal(n.width,.95);assert.equal(n.opacity,state.dark?.61:.69);
   const contour=state.contours.find(c=>c.region===n.region);
-  assert.ok(contour,'a dimension must have a matching live contour');
-  assert.notEqual(n.ink,contour.ink,'shaft must be quieter and more neutral than the contour');
+  assert.ok(contour,'each interval mark must follow a live contour');
+  assert.notEqual(n.ink,contour.ink,'measurement material must be softer than the data outline');
  }
- for(const n of state.tips){
-  assert.equal(n.width,.95);assert.equal(n.opacity,state.dark?.73:.78);
-  const contour=state.contours.find(c=>c.region===n.region);
-  assert.equal(n.ink,contour?.ink,'color accents must exactly match the regional contour');
+ for(const n of state.caps){
+  assert.equal(n.width,1.15);assert.equal(n.opacity,state.dark?.78:.89);
+  const stem=state.arrows.find(a=>a.region===n.region);
+  assert.equal(n.ink,stem?.ink,'horizontal end caps and shaft must share one ink');
  }
- assert.ok(state.tips.length<=state.arrows.length,'thin data bands may omit ornamental tips');
+ assert.ok(state.caps.length<=state.arrows.length*2,'thin data bands may omit both end caps');
  for(const n of state.contours)assert.equal(n.width,1.6,'data contours remain primary');
  for(const [kind,weight] of [['names','500'],['counts','400'],['shares','400']])for(const n of state[kind]){
   assert.equal(n.font,state.siteFont);assert.equal(n.weight,weight);assert.equal(n.opacity,1,'readable text is not faded');
@@ -93,6 +93,32 @@ export async function assertRegionVisualBalance(page){
  for(const n of state.counts)assert.equal(n.size,state.viewport<=360?14.5:state.viewport<=720?15:16);
  for(const n of state.names)assert.ok(n.size>=10&&n.size<=10.5);
  for(const n of state.shares)assert.ok(n.size>=9.5&&n.size<=10.5);
+ // Exact interval geometry: caps sit symmetrically at the real data limits,
+ // never protrude into an adjacent band and never remain as a lone tick.
+ const dimensions=await page.evaluate(()=>{
+  const svg=document.querySelector('#dist .region-time-svg'),box=svg.getBoundingClientRect();
+  const ratio=box.width/svg.viewBox.baseVal.width;
+  return [...svg.querySelectorAll('.region-measure-group')].map(group=>{
+   const stem=group.querySelector('.region-measure-height');
+   return {region:stem.dataset.region,low:+stem.getAttribute('y1'),high:+stem.getAttribute('y2'),
+    cssHeight:Math.abs(+stem.getAttribute('y1')-(+stem.getAttribute('y2')))*box.height/svg.viewBox.baseVal.height,
+    stemX:+stem.getAttribute('x1'),ratio,
+    caps:[...group.querySelectorAll('.region-measure-cap')].filter(cap=>getComputedStyle(cap).display!=='none').map(cap=>({
+     edge:cap.dataset.edge,x1:+cap.getAttribute('x1'),x2:+cap.getAttribute('x2'),
+     y1:+cap.getAttribute('y1'),y2:+cap.getAttribute('y2')
+    }))};
+  });
+ });
+ for(const d of dimensions){
+  assert.equal(d.caps.length,d.cssHeight>=10-.03?2:0,'caps must be paired and omitted for thin bands');
+  for(const c of d.caps){
+   assert.equal(c.y1,c.y2,'end cap must be precisely horizontal');
+   assert.ok(Math.abs(c.y1-(c.edge==='upper'?d.high:d.low))<.011,'end cap must touch the real boundary');
+   assert.ok(Math.abs((c.x1+c.x2)/2-d.stemX)<.011,'end cap must be centered on the stem');
+   assert.ok(Math.abs((c.x2-c.x1)*d.ratio-8.4)<.09,'end cap must measure 8.4 CSS pixels at every viewport: '+JSON.stringify({region:d.region,actual:(c.x2-c.x1)*d.ratio,svgRatio:d.ratio,intervalPx:d.cssHeight,cap:c}));
+  }
+ }
+ state.dimensions=dimensions;
  state.legend=await assertRegionLegend(page);
  return state;
 }

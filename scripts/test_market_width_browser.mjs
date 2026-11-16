@@ -121,11 +121,14 @@ async function renderLeft(page,chartData,theme){
     y1:Number(node.getAttribute('y1')),y2:Number(node.getAttribute('y2')),
     ink:getComputedStyle(node).stroke
    })),
-   arrowheads:svg.querySelectorAll('.region-measure-arrow').length,
-   arrowheadInks:[...svg.querySelectorAll('.region-measure-group')].map(g=>({
+   capGroups:[...svg.querySelectorAll('.region-measure-group')].map(g=>({
     region:g.querySelector('.region-measure-height')?.dataset.region,
-    ink:g.querySelector('.region-measure-arrow')?getComputedStyle(g.querySelector('.region-measure-arrow')).stroke:null
+    caps:[...g.querySelectorAll('.region-measure-cap')].filter(n=>getComputedStyle(n).display!=='none').map(n=>({
+     ink:getComputedStyle(n).stroke,edge:n.dataset.edge,
+     y:Number(n.getAttribute('y1')),x1:Number(n.getAttribute('x1')),x2:Number(n.getAttribute('x2'))
+    }))
    })),
+   obsoleteArrowheads:svg.querySelectorAll('.region-measure-arrow').length,
    regionDateTickCount:svg.querySelectorAll('.region-date-tick').length,
    postingDateTickCount:document.querySelectorAll('#spark .rhythm-date-tick').length,
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
@@ -296,9 +299,15 @@ async function renderLeft(page,chartData,theme){
    'each displayed vertical gap is exactly proportional to the regional role count');
   assert.notEqual(span.ink,quality.series[k.toLowerCase()],
    'region-colored contours must remain more chromatic than measurement stems');
-  const head=quality.arrowheadInks.find(v=>v.region===k);
-  if(head?.ink)assert.equal(head.ink,quality.series[k.toLowerCase()],
-   'rendered arrowheads retain the exact region color; thin bands may omit tips');
+  const group=quality.capGroups.find(v=>v.region===k);
+  assert.ok(group,'each region interval has its measurement group');
+  assert.ok(group.caps.length===0||group.caps.length===2,'terminal rules are paired or omitted');
+  for(const cap of group.caps){
+   assert.equal(cap.ink,span.ink,'the end cap and its stem are one material');
+   assert.ok(Math.abs(cap.y-(cap.edge==='upper'?span.y2:span.y1))<.011,
+    'terminal rule touches the exact measured boundary');
+   assert.ok(Math.abs((cap.x1+cap.x2)/2-span.x1)<.011,'terminal rule is optically centered');
+  }
  }
  assert.deepEqual(levels.map(x=>x.level).sort((a,b)=>a-b),
   [...new Set([0,visibleCounts[0],visibleCounts[0]+visibleCounts[1],
@@ -309,8 +318,9 @@ async function renderLeft(page,chartData,theme){
   assert.ok(Math.abs(level.y-(y0-level.level*unitHeight))<.16,
    'each short dotted level is tied to an exact cumulative boundary');
  }
- assert.ok(quality.arrowheads<=nonempty,
-  'no excessive arrowhead ornaments on tiny or zero-count bands');
+ assert.equal(quality.obsoleteArrowheads,0,'directional arrowheads are entirely removed');
+ assert.equal(quality.capGroups.reduce((n,g)=>n+g.caps.length,0)%2,0,
+  'measurement terminals always come in symmetric pairs');
  assert.equal(quality.regionDateTickCount,quality.regionDateMarks.length,
   'each regional calendar label receives one restrained positional tick');
  assert.equal(quality.postingDateTickCount,quality.postingDateMarks.length,

@@ -762,21 +762,22 @@ jobsDataPromise
       if(!count)return '';
       const x=measureX[k];
       const low=trendY(cumulativeLevels[i]),high=trendY(cumulativeLevels[i+1]);
-      // Compact open chevrons touch the true interval boundaries. Their
-      // shallow, balanced wings stay at consistent CSS-pixel dimensions on
-      // desktop and phone; omit tips on bands too thin to carry them.
-      const wing=2.15*TW/axisCssWidth,depth=3.25*TW/axisCssWidth;
-      const arrowheads=low-high>=depth*2+4
-        ?'<path class="region-measure-arrow" d="M'+(x-wing).toFixed(2)+','+(high+depth).toFixed(2)+
-          ' L'+x+','+high.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(high+depth).toFixed(2)+
-          ' M'+(x-wing).toFixed(2)+','+(low-depth).toFixed(2)+
-          ' L'+x+','+low.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(low-depth).toFixed(2)+'"/>':'';
+      // Editorial interval mark, not a directional arrow: two short terminal
+      // rules touch the REAL cumulative boundaries. Their final CSS-pixel
+      // width and paired visibility are resolved after SVG layout, and
+      // recomputed on resize to avoid stale pre-render width measurements.
+      const capHalf=4.2*TW/axisCssWidth;
+      const capLines=[["upper",high],["lower",low]].map(([edge,y])=>
+        '<line class="region-measure-cap" data-region="'+k+
+        '" data-edge="'+edge+'" x1="'+(x-capHalf).toFixed(2)+
+        '" x2="'+(x+capHalf).toFixed(2)+'" y1="'+y.toFixed(2)+
+        '" y2="'+y.toFixed(2)+'"/>').join('');
       return '<g class="region-series '+k.toLowerCase()+' region-measure-group">'+
         '<line class="region-measure-height" data-region="'+k+
         '" data-count="'+count+'" data-lower="'+cumulativeLevels[i]+
         '" data-upper="'+cumulativeLevels[i+1]+'" x1="'+x+'" x2="'+x+
         '" y1="'+low.toFixed(2)+'" y2="'+high.toFixed(2)+'"/>'+
-        arrowheads+'</g>';
+        capLines+'</g>';
     }).join('');
     const localMeasurements='<g class="region-measurements" aria-hidden="true">'+
       referenceLines+verticalMeasures+'</g>';
@@ -955,6 +956,21 @@ jobsDataPromise
       if(projectionDisposed||!projectionSvg.isConnected)return;
       const box=projectionSvg.getBoundingClientRect();
       if(!box.width||!box.height)return;
+      // Size end caps using the ACTUAL post-layout SVG pixel width, not
+      // the pre-render host width (which can change in flex/grid layouts).
+      // ResizeObserver maintains the 8.4px optical standard after rotation.
+      const finalHalf=4.2*TW/box.width;
+      for(const group of projectionSvg.querySelectorAll('.region-measure-group')){
+        const stem=group.querySelector('.region-measure-height');
+        const x=Number(stem.getAttribute('x1'));
+        const heightPx=Math.abs(Number(stem.getAttribute('y1'))-
+          Number(stem.getAttribute('y2')))*box.height/TH;
+        for(const cap of group.querySelectorAll('.region-measure-cap')){
+          cap.setAttribute('x1',(x-finalHalf).toFixed(3));
+          cap.setAttribute('x2',(x+finalHalf).toFixed(3));
+          cap.style.display=heightPx>=10?'':'none';
+        }
+      }
       const references=[...projectionSvg.querySelectorAll('.region-measure-reference')]
         .filter(node=>Number(node.dataset.level)>0).map(node=>({
           level:Number(node.dataset.level),y:Number(node.getAttribute('y1')),
