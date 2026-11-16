@@ -762,9 +762,10 @@ jobsDataPromise
       if(!count)return '';
       const x=measureX[k];
       const low=trendY(cumulativeLevels[i]),high=trendY(cumulativeLevels[i+1]);
-      // Open arrow tips touch the actual boundaries; no exaggerated lengths.
-      // Keep arrowheads legible in CSS pixels, and omit them for very thin bands.
-      const wing=2.4*TW/axisCssWidth,depth=3.8*TW/axisCssWidth;
+      // Compact open chevrons touch the true interval boundaries. Their
+      // shallow, balanced wings stay at consistent CSS-pixel dimensions on
+      // desktop and phone; omit tips on bands too thin to carry them.
+      const wing=2.15*TW/axisCssWidth,depth=3.25*TW/axisCssWidth;
       const arrowheads=low-high>=depth*2+4
         ?'<path class="region-measure-arrow" d="M'+(x-wing).toFixed(2)+','+(high+depth).toFixed(2)+
           ' L'+x+','+high.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(high+depth).toFixed(2)+
