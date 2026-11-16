@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-15T22:02:43.268964+00:00",
+    "checkedAt": "2026-11-16T04:02:59.999693+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-15T22:02:33.094939+00:00",
+    "checkedAt": "2026-11-16T04:02:48.172937+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-15T22:02:37.196540+00:00",
+    "checkedAt": "2026-11-16T04:02:53.910452+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-15T22:02:40.341327+00:00",
+    "checkedAt": "2026-11-16T04:02:57.015974+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11733,5 +11733,65 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQE9yoOCWXRiuQ/company-logo_100_100/company-logo_100_100/0/1631433742992/tcl_online_services_incorporated_logo?e=2147483647&v=beta&t=yhgdCBkPeFaDOEqCc_Xj3Rj7EIYgghgE5myBr-0C5ww",
     "companyUrl": "https://ph.linkedin.com/company/tcl-online-services-incorporated",
     "sourceJobId": "4491235476"
+  },
+  "2wa.io": {
+    "name": "2wa.io",
+    "checkedAt": "2026-11-16T04:02:34.744774+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "526fbbed89ceaa89905ff5ca.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQH1erOt6FjyfQ/company-logo_100_100/B4DaDHy9QFJsAI-/0/1790058419431/2wa_io_logo?e=2147483647&v=beta&t=s9ajM5zkJLzMOXw9KtGV4s345IGosDobuL-sY4FHEVU",
+    "companyUrl": "https://hk.linkedin.com/company/2wa-io",
+    "sourceJobId": "4490264138"
+  },
+  "ninjaone": {
+    "name": "NinjaOne",
+    "checkedAt": "2026-11-16T04:02:36.258280+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "372110b3abfb8d70cc818e01.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFL-ARcupk6sg/company-logo_100_100/company-logo_100_100/0/1728918875934/ninjaone_logo?e=2147483647&v=beta&t=FzRCoUA3llvsHoCjQXBRH-WhW9dgnMhVCIZ180-CnWA",
+    "companyUrl": "https://www.linkedin.com/company/ninjaone",
+    "sourceJobId": "4491275628"
+  },
+  "nova insurance consultants limited": {
+    "name": "Nova Insurance Consultants Limited",
+    "checkedAt": "2026-11-16T04:02:39.174563+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d23954872bf758d2cdaac7f7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHGME9e6Nsdow/company-logo_100_100/B56ZsBsuSHLwAQ-/0/1765260060276/nova_insurance_consultants_limited_logo?e=2147483647&v=beta&t=zAWYhE69Jyg3ynxEuTKFp3iEvWCG6x2zBklFosLucNs",
+    "companyUrl": "https://hk.linkedin.com/company/nova-insurance-consultants-limited",
+    "sourceJobId": "4491287232"
+  },
+  "pattern": {
+    "name": "Pattern",
+    "checkedAt": "2026-11-16T04:02:42.172165+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c00fb31511eaf08483a70aab.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFiB6EaB8DFaA/company-logo_100_100/B4EaF_ykhPKcAI-/0/1793145325922/pattern_hq_logo?e=2147483647&v=beta&t=00jGLEXIrQnHoCg0o1vmUeh0ZqzzBNtNw7oMtBAkr1Y",
+    "companyUrl": "https://www.linkedin.com/company/pattern-hq",
+    "sourceJobId": "4484833117"
+  },
+  "the hive": {
+    "name": "the Hive",
+    "checkedAt": "2026-11-16T04:02:45.173496+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "21f17cbd7b747861c8b54a89.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF7XsRDH3ZpAg/company-logo_100_100/B56aGBjXzKKIAI-/0/1793174896039/thehiveinternational_logo?e=2147483647&v=beta&t=0lJFVK116oTmjRuNi8zLBycFLmv6j3YMxp_BRb_pH3E",
+    "companyUrl": "https://hk.linkedin.com/company/thehiveinternational",
+    "sourceJobId": "4490238950"
   }
 }
