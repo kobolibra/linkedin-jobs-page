@@ -132,6 +132,11 @@ async function desktop(browser,engine,theme){
   }
   await play.click();
   assert.equal(await play.getAttribute('aria-pressed'),'false','pause is an accessible, persistent state');
+  const pausedDay=await selectedDay();
+  await play.click();
+  assert.equal(await selectedDay(),pausedDay,'resuming the loop must not jump back to the first day');
+  await play.click();
+  assert.equal(await play.getAttribute('aria-pressed'),'false');
   await page.locator('.mw-strip-day').nth(5).click();
   assert.equal(await selectedDay(),5,'historical day remains available after stopping playback');
   assert.equal(await play.getAttribute('aria-pressed'),'false','manual date selection never reactivates playback');
