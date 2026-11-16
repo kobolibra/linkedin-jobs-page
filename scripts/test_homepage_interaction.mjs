@@ -330,18 +330,37 @@ async function phone(browser,engine,theme){
 
   // Touch: the first tap on a bubble reads it, the second opens its roles.
   await page.locator('#top50Toggle').tap();
-  const bubble=page.locator('#top50 .bubble-row').first();
+  // Production bubbles can overlap as the company mix changes. A forced tap
+  // on the DOM's FIRST circle can physically land on a later-painted circle,
+  // falsely diagnosing a two-tap bug. Pick a genuinely visible circle whose
+  // center the browser hit-tests to that exact company; never force the tap.
   await page.evaluate(()=>document.querySelector('#top50').scrollLeft=0);
-  await bubble.scrollIntoViewIfNeeded();
-  const company=await bubble.getAttribute('data-company');
+  await page.locator('#top50 .bubble-svg').scrollIntoViewIfNeeded();
+  const hit=await page.evaluate(()=>{
+   const host=document.querySelector('#top50'),field=host.getBoundingClientRect();
+   const candidates=[...host.querySelectorAll('.bubble-row')].map((row,index)=>{
+    const circle=row.querySelector('.bubble-point'),r=circle.getBoundingClientRect();
+    const x=r.left+r.width/2,y=r.top+r.height/2;
+    const within=x>=field.left+2&&x<=field.right-2&&y>=field.top+2&&y<=field.bottom-2
+     &&x>=2&&x<=innerWidth-2&&y>=2&&y<=innerHeight-2;
+    return {index,company:row.dataset.company,diameter:r.width,within,
+     hit:within?document.elementFromPoint(x,y)?.closest('.bubble-row')?.dataset.company:null};
+   });
+   return candidates.filter(c=>c.within&&c.hit===c.company).sort((a,b)=>b.diameter-a.diameter)[0]
+    ||{error:'no directly tappable bubbles',candidates};
+  });
+  assert.ok(Number.isInteger(hit.index),'Top 30 must expose a visible real touch target: '+JSON.stringify(hit));
+  const bubble=page.locator('#top50 .bubble-row').nth(hit.index);
+  const company=hit.company;
   const before=await page.evaluate(()=>document.getElementById('company').value);
-  await bubble.locator('.bubble-point').tap({force:true});
+  await bubble.locator('.bubble-point').tap();
   const t=await tip(page);
-  assert.ok(t&&t.text.includes(company),'first tap shows the institution');
+  assert.ok(t&&t.text.includes(company),
+   'first tap must read the actually targeted institution '+company+': '+JSON.stringify(t));
   assert.ok(t.left>=0&&t.right<=width,'tooltip stays on screen on a phone');
   assert.equal(await page.evaluate(()=>document.getElementById('company').value),before,'first tap does not navigate');
-  await bubble.locator('.bubble-point').tap({force:true});
-  await page.waitForFunction(name=>document.getElementById('company').value===name,company);
+  await bubble.locator('.bubble-point').tap();
+  await page.waitForFunction(name=>document.getElementById('company').value===name,company,{timeout:5000});
   // Daily flow on touch: a tap reads the column and the reading stays after lift.
   await page.locator('#spark').scrollIntoViewIfNeeded();
   await page.locator('#spark .rhythm-point[data-day="20"] .rhythm-bar-hit').tap({force:true});
