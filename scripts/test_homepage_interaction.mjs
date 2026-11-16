@@ -123,6 +123,9 @@ async function desktop(browser,engine,theme){
   assert.equal(await play.getAttribute('aria-pressed'),'true');
   const selectedDay=()=>page.evaluate(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected')));
   assert.equal(await selectedDay(),23,'play starts exactly seven calendar buckets from the end');
+  if((engine==='chromium'&&theme==='light')||(engine==='webkit'&&theme==='dark')){
+   await page.locator('.ac-col-market').screenshot({path:resolve(out,`market-width-playing-${engine}-1280-${theme}.png`),animations:'disabled'});
+  }
   if(engine==='chromium'&&theme==='light'){
    await page.waitForFunction(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))===24,null,{timeout:7000});
    assert.equal(await selectedDay(),24,'timer advances one real day without losing the selected bar');
@@ -172,6 +175,7 @@ async function phone(browser,engine,theme){
   await play.tap();
   assert.equal(await play.getAttribute('aria-pressed'),'true');
   assert.equal(await page.evaluate(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))),23);
+  if(engine==='webkit'&&theme==='dark')await page.locator('.ac-col-market').screenshot({path:resolve(out,'market-width-playing-webkit-390-dark.png'),animations:'disabled'});
   await play.tap();
   assert.equal(await play.getAttribute('aria-pressed'),'false','a second phone tap pauses the seven-day loop');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth<=1),'playback controls cannot introduce sideways scrolling');
@@ -201,12 +205,37 @@ async function phone(browser,engine,theme){
  }finally{await context.close();}
 }
 
+// The newly added transport must also fit the smallest supported phone.
+async function narrowPlayback(browser,engine){
+ const {context,page,errors,timing}=await open(browser,{width:320,theme:'dark',touch:true});
+ try{
+  const play=page.locator('#marketWidthPlay');
+  await play.tap();
+  assert.equal(await play.getAttribute('aria-pressed'),'true');
+  const bounds=await page.evaluate(()=>{
+   const button=document.getElementById('marketWidthPlay').getBoundingClientRect();
+   const date=document.getElementById('marketWidthDate').getBoundingClientRect();
+   return {left:button.left,right:button.right,top:button.top,bottom:button.bottom,
+    dateRight:date.right,overflow:document.documentElement.scrollWidth-innerWidth,
+    selected:[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))};
+  });
+  assert.ok(bounds.left>=0&&bounds.right<=320,'seven-day play control must not clip at 320px: '+JSON.stringify(bounds));
+  assert.ok(bounds.overflow<=1,'no horizontal scroll at 320px: '+JSON.stringify(bounds));
+  assert.equal(bounds.selected,23,'the phone loop must still use only the newest seven days');
+  await page.locator('.ac-col-market').screenshot({path:resolve(out,`market-width-playing-${engine}-320-dark.png`),animations:'disabled'});
+  await play.tap();
+  assert.equal(await play.getAttribute('aria-pressed'),'false');
+  assert.deepEqual(errors,[],'320px browser must not emit application errors');
+  evidence.push({engine,width:320,theme:'dark',touch:true,timing,playbackBounds:bounds});
+ }finally{await context.close();}
+}
 const engines=(process.env.INTERACTION_BROWSERS||'chromium,webkit').split(',');
 for(const [engine,type] of Object.entries({chromium,webkit}).filter(([name])=>engines.includes(name))){
  const browser=await type.launch({headless:true});
  try{
   for(const theme of ['light','dark'])await desktop(browser,engine,theme);
   for(const theme of ['light','dark'])await phone(browser,engine,theme);
+  await narrowPlayback(browser,engine);
  }finally{await browser.close();}
 }
 // Generous ceiling for a cold local boot of the full 15k-row index; the logged
