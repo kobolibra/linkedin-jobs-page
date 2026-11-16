@@ -1026,8 +1026,8 @@ jobsDataPromise
     /* Daily flow. Every column is the exact first-seen count for one local
        calendar day, stacked by market in the same order and pigments as
        Figure 01 (HK at the base, then SG, then CN; OTHER on top, neutral).
-       The trailing 7-day average uses the same daily buckets, including the
-       six days before the window, and stops before today's partial day. */
+       Daily inspection retains exact date, count and a trailing 7-day
+       average in tooltips; no average line is drawn over the columns. */
     const SW=520,SH=158,sLeft=33,sRight=17,sTop=24,sBase=130,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
     const rhythmAxis=niceCountAxis(smax);
@@ -1073,11 +1073,6 @@ jobsDataPromise
         '<rect class="rhythm-bar-hit" x="'+(sx(i)-step/2).toFixed(2)+'" y="'+sTop+
         '" width="'+step.toFixed(2)+'" height="'+(sBase-sTop)+'"/></g>';
     }).join('');
-    const avgPoints=trailing.slice(0,lastIndex).map((v,i)=>sx(i).toFixed(2)+','+sy(Math.min(v,rhythmAxis.max)).toFixed(2));
-    const average=avgPoints.length>1?'<polyline class="rhythm-avg-halo" aria-hidden="true" points="'+avgPoints.join(' ')+'"/>'+ 
-      '<polyline class="rhythm-avg" points="'+avgPoints.join(' ')+'"/>'+
-      '<text class="rhythm-avg-label" x="'+(sx(lastIndex-1)+3).toFixed(2)+'" y="'+(sy(trailing[lastIndex-1])-5).toFixed(2)+
-      '" text-anchor="end">7-day avg '+Math.round(trailing[lastIndex-1])+'</text>':'';
     const peakLabel=peakIndex>=0?'<text class="rhythm-peak-label" x="'+sx(peakIndex).toFixed(2)+'" y="'+(sy(peak)-5).toFixed(2)+
       '" text-anchor="middle">'+peak+'</text>':'';
     // A 30-day window always uses real Mondays, seven days apart. Do not
@@ -1093,8 +1088,8 @@ jobsDataPromise
     }).join('');
     const sparkEl=document.getElementById("spark");
     sparkEl.innerHTML='<svg class="rhythm-svg" data-chart-kind="stacked-daily" viewBox="0 0 '+SW+' '+SH+
-      '" role="img" aria-label="30-day new postings, one column per day stacked by market, with a trailing 7-day average. Each column provides the exact date and count.">'+
-      weekendBands+guides+bars+average+peakLabel+dateLabels+'</svg>';
+      '" role="img" aria-label="30-day new postings, one column per day stacked by market. Each column provides the exact date and count.">'+
+      weekendBands+guides+bars+peakLabel+dateLabels+'</svg>';
     if(window.VizTip){
       const tipFormat=new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short'});
       const inspectDay=(node,x,y,target=null)=>{
