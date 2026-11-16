@@ -144,7 +144,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=editorial-endcaps-20261116/);
+ assert.match(html,/styles-refinement\.css\?v=contour-right-edge-20261116/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn,\.region-chart-legend \.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
@@ -166,6 +166,9 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/#dist \.region-measure-reference\{/);
  assert.match(css,/#dist \.region-measure-height\{/);
  assert.match(css,/#dist \.region-measure-cap\{/);
+ assert.match(css,/#dist \.region-spark-line\{[^}]*stroke-linecap:butt/,'right-hand outline paint ends flush with the fill');
+ assert.match(source,/clip-path="url\(#dist-region-contour-edge\)"/,'only colored contours use the right-edge clip');
+ assert.match(source,/clipPath id="dist-region-contour-edge" clipPathUnits="userSpaceOnUse"/);
  assert.doesNotMatch(css,/#dist \.region-end-meta|#dist \.region-end-dot|#dist \.region-spark-grid/);
  assert.doesNotMatch(source,/class="region-spark-grid"/,'full-width gridlines must be removed');
  assert.match(source,/const TW=520,TH=360,left=43,right=17,top=18,base=326/);
@@ -215,7 +218,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=editorial-endcaps-20261116/);
+ assert.match(html,/app\.js\?v=contour-right-edge-20261116/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
