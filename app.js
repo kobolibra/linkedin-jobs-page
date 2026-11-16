@@ -1100,10 +1100,24 @@ jobsDataPromise
           window.VizTip.row('Total',d.total)+(i<lastIndex?window.VizTip.row('7-day average',Math.round(trailing[i])):''),x,y,target);
       };
       const clear=()=>{sparkEl.querySelectorAll('.rhythm-point.is-hover').forEach(n=>n.classList.remove('is-hover'));window.VizTip.hide();};
-      sparkEl.addEventListener('pointermove',e=>{const node=e.target.closest('.rhythm-point');if(node)inspectDay(node,e.clientX,e.clientY);else clear();});
-      sparkEl.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch')clear();});
-      sparkEl.addEventListener('focusin',e=>{const node=e.target.closest('.rhythm-point');if(!node)return;inspectDay(node,0,0,node.querySelector('.rhythm-bar-hit')||node);});
-      sparkEl.addEventListener('focusout',clear);
+      // Keyboard inspection owns the tooltip until focus genuinely leaves the
+      // figure. Pointerleave or empty-plot moves must not erase that reading.
+      const keyboardInspecting=()=>sparkEl.contains(document.activeElement);
+      sparkEl.addEventListener('pointermove',e=>{
+        const node=e.target.closest('.rhythm-point');
+        if(node&&!keyboardInspecting())inspectDay(node,e.clientX,e.clientY);
+        else if(!node&&!keyboardInspecting())clear();
+      });
+      sparkEl.addEventListener('pointerleave',e=>{
+        if(e.pointerType!=='touch'&&!keyboardInspecting())clear();
+      });
+      sparkEl.addEventListener('focusin',e=>{
+        const node=e.target.closest('.rhythm-point');if(!node)return;
+        inspectDay(node,0,0,node.querySelector('.rhythm-bar-hit')||node);
+      });
+      sparkEl.addEventListener('focusout',e=>{
+        if(!sparkEl.contains(e.relatedTarget))clear();
+      });
     }
     // One tab stop for all thirty columns; arrow keys, Home and End move by day.
     sparkEl.addEventListener('keydown',e=>{
