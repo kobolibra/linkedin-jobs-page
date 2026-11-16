@@ -44,6 +44,18 @@ async function open(browser,{width,theme='light',touch=false,reducedMotion='no-p
 }
 // Let scroll events from scrollIntoView fire before pointer input.
 const settle=page=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+// WebKit can keep the CSS smooth-scroll animation running after a hash click.
+// Do not dispatch a click against a moving target and call it a product bug.
+async function waitScrollRest(page){
+ await page.evaluate(()=>new Promise(resolve=>{
+  let y=scrollY,stable=0;
+  const tick=()=>{
+   const current=scrollY;
+   stable=Math.abs(current-y)<0.35?stable+1:0;y=current;
+   if(stable>=10)resolve();else requestAnimationFrame(tick);
+  };requestAnimationFrame(tick);
+ }));
+}
 const tip=page=>page.evaluate(()=>{const t=document.querySelector('.viz-tip');if(!t||t.hidden)return null;const r=t.getBoundingClientRect();return {text:t.innerText,left:r.left,right:r.right,top:r.top,bottom:r.bottom};});
 const inViewport=(box,width)=>box&&box.left>=0&&box.right<=width&&box.top>=0&&box.bottom<=900;
 
@@ -69,9 +81,14 @@ async function desktop(browser,engine,theme){
   await page.locator('.nj-browse-roles').click();
   assert.equal(await page.evaluate(()=>location.hash),'#roles','Browse all roles targets the full search toolbar without filtering');
   assert.equal(await page.locator('#regions .seg[data-region="all"]').getAttribute('aria-selected'),'true');
+  await waitScrollRest(page);
 
-  // Hero coverage rows filter the list by market.
-  await page.locator('.nj-market-row[data-region="HK"]').click();
+  // Hero coverage rows filter the list by market. Wait for the return
+  // scroll as well: the CSS animation must finish before pointerdown/up.
+  const hkRow=page.locator('.nj-market-row[data-region="HK"]');
+  await hkRow.scrollIntoViewIfNeeded();
+  await waitScrollRest(page);
+  await hkRow.click();
   try{
    await page.waitForFunction(()=>activeRegion==='HK',null,{timeout:4000});
   }catch(error){
