@@ -69,7 +69,7 @@ export async function assertRegionProjections(page){
 // Check the complete weight hierarchy, not only line existence.
 export async function assertRegionVisualBalance(page){
  const state=await page.evaluate(()=>{
-  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {region:[...n.closest('.region-series')?.classList||[]].find(k=>['hk','sg','cn'].includes(k)),width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),ink:s.stroke,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
+  const all=selector=>[...document.querySelectorAll('#dist '+selector)].filter(n=>getComputedStyle(n).display!=='none').map(n=>{const s=getComputedStyle(n);return {region:[...n.closest('.region-series')?.classList||[]].find(k=>['hk','sg','cn'].includes(k)),width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),ink:s.stroke,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
   return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),caps:all('.region-measure-cap'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
  });
  for(const n of state.refs){assert.equal(n.width,.85);assert.equal(n.opacity,.42);}
@@ -101,9 +101,9 @@ export async function assertRegionVisualBalance(page){
   return [...svg.querySelectorAll('.region-measure-group')].map(group=>{
    const stem=group.querySelector('.region-measure-height');
    return {region:stem.dataset.region,low:+stem.getAttribute('y1'),high:+stem.getAttribute('y2'),
-    cssHeight:Math.abs(+stem.getAttribute('y1')-(+stem.getAttribute('y2')))*ratio,
+    cssHeight:Math.abs(+stem.getAttribute('y1')-(+stem.getAttribute('y2')))*box.height/svg.viewBox.baseVal.height,
     stemX:+stem.getAttribute('x1'),ratio,
-    caps:[...group.querySelectorAll('.region-measure-cap')].map(cap=>({
+    caps:[...group.querySelectorAll('.region-measure-cap')].filter(cap=>getComputedStyle(cap).display!=='none').map(cap=>({
      edge:cap.dataset.edge,x1:+cap.getAttribute('x1'),x2:+cap.getAttribute('x2'),
      y1:+cap.getAttribute('y1'),y2:+cap.getAttribute('y2')
     }))};
