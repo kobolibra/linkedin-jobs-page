@@ -1,4 +1,4 @@
-import {assertRegionProjections,assertRegionVisualBalance} from './assert_region_projections.mjs';
+import {assertRegionProjections,assertRegionVisualBalance,assertRegionContourEdge} from './assert_region_projections.mjs';
 /* Visual geometry for actual shipped left charts, paired with full homepage boot CI. */
 import assert from 'node:assert/strict';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
@@ -27,6 +27,7 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
   },{draw,rows});
   const projections=await assertRegionProjections(page);
   const visualBalance=await assertRegionVisualBalance(page);
+  const rightEdge=await assertRegionContourEdge(page);
   const state=await page.evaluate(()=>{
    const rect=n=>{const r=n.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width};};
    const svg=document.querySelector('#dist svg');
@@ -63,10 +64,10 @@ for(const [engine,type] of Object.entries({chromium,webkit})){
   }
   assert.equal(state.labels.reduce((s,l)=>s+l.count,0),state.total);assert.equal(state.ranges,0);assert.ok(state.scrollWidth<=width+2);assert.deepEqual(errors,[]);
   await page.locator('.analytics-left').screenshot({path:new URL(engine+'-'+width+'-'+theme+'.png',out).pathname,animations:'disabled'});
-  results.push({engine,width,theme,state,typography:type,projections,visualBalance,errors});
+  results.push({engine,width,theme,state,typography:type,projections,visualBalance,rightEdge,errors});
   // Text must stay unobstructed after rotation and a late change in font metrics.
   if(width===390){
-   await page.setViewportSize({width:320,height:1000});await assertRegionProjections(page);
+   await page.setViewportSize({width:320,height:1000});await assertRegionProjections(page);await assertRegionContourEdge(page);
    await page.addStyleTag({content:'#dist .region-end-label{letter-spacing:.15em} #dist .region-end-count{font-size:20px}'});
    await assertRegionProjections(page);
   }

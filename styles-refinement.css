@@ -663,9 +663,12 @@ body.compact .job > .mono { margin-top:2px; }
 [data-theme="dark"] #dist .region-series.hk,[data-theme="dark"] .region-chart-legend .hk{--region-ink:#e0b36b;--region-fill:#68533d}
 [data-theme="dark"] #dist .region-series.sg,[data-theme="dark"] .region-chart-legend .sg{--region-ink:#add084;--region-fill:#455941}
 [data-theme="dark"] #dist .region-series.cn,[data-theme="dark"] .region-chart-legend .cn{--region-ink:#eea09a;--region-fill:#714344}
+/* The ink, the actual cumulative boundary, and its fill share one terminal
+   x coordinate. Butt caps prevent round-end protrusion; the SVG contour-only
+   clip supplies a hard guarantee even for a steep final tangent. */
 #dist .region-spark-line{
   fill:none;stroke:var(--region-ink);stroke-width:1.6;
-  stroke-linecap:round;stroke-linejoin:round;
+  stroke-linecap:butt;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
 }
 #dist .region-plot-stage{position:relative;width:100%;min-width:0;flex:none}
