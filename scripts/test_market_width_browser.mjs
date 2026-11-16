@@ -580,8 +580,8 @@ try{
    });
    assert.ok(trend.line?.startsWith('M ')&&((trend.line.match(/ C /g)||[]).length===29),
     '30 daily readings form a smooth cubic trend, not a histogram');
-   assert.equal(trend.stroke,theme==='light'?'rgb(99, 187, 200)':'rgb(142, 212, 220)',
-    'Market Breadth 30-day line is the intended celadon blue in '+theme+' theme');
+   assert.equal(trend.stroke,theme==='light'?'rgb(51, 78, 172)':'rgb(186, 214, 235)',
+    'Market Breadth 30-day line uses the HISTORICAL Porcelain blue DATA / dark chart pigment in '+theme+' theme');
    assert.equal(trend.strokeWidth,2.2,'Market Breadth line remains crisp and visually distinct');
    assert.equal(trend.pointInk,trend.stroke,'selected dot matches the SAME celadon blue as the line');
    assert.equal(trend.hitTargets,30,'line chart preserves full 30-day manual inspection');

@@ -18,7 +18,7 @@
   --h-panel-edge:rgba(20,33,43,.075);
   --h-panel-shadow:0 1px 2px rgba(20,33,43,.035),0 12px 32px -18px rgba(20,33,43,.16);
   --h-accent:#3f6b84;
-  --h-market-celadon:#63bbc8;
+  --h-market-porcelain-data:#334eac;
   --h-control:rgba(20,33,43,.045);
   --h-control-active:#ffffff;
   --h-control-shadow:0 1px 2px rgba(20,33,43,.12),0 0 0 .5px rgba(20,33,43,.06);
@@ -42,7 +42,7 @@
   --h-panel-edge:rgba(255,255,255,.06);
   --h-panel-shadow:0 1px 2px rgba(0,0,0,.25),0 18px 40px -22px rgba(0,0,0,.6);
   --h-accent:#a4c5d6;
-  --h-market-celadon:#8ed4dc;
+  --h-market-porcelain-data:#bad6eb;
   --h-control:rgba(255,255,255,.055);
   --h-control-active:rgba(255,255,255,.13);
   --h-control-shadow:0 1px 2px rgba(0,0,0,.3);
@@ -222,16 +222,17 @@
 .mw-topline{margin-bottom:12px}
 .mw-map-board{border-radius:8px}
 .mw-footer{gap:10px;padding-top:10px}
-/* Market Breadth / observed 30-day trend. The line and its selected
-   point share true day coordinates; invisible daily hit zones remain usable. */
+/* Market Breadth / 30-day trend: restore this project's historical
+   Porcelain (青瓷蓝) DATA #334EAC / dark --chart #BAD6EB, as archived in
+   PORCELAIN_DESIGN_AUDIT.md and commit 6f1649e. Keep actual day geometry. */
 .mw-strip{
   position:relative;display:flex;align-items:stretch;gap:0;height:48px;
   padding:0 0 3px;border-bottom:1px solid var(--h-rule-soft);
 }
 .mw-trend-svg{position:absolute;inset:0 0 3px;display:block;width:100%;height:44px;overflow:visible;pointer-events:none}
-.mw-trend-line{fill:none;stroke:var(--h-market-celadon);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.mw-trend-line{fill:none;stroke:var(--h-market-porcelain-data);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 .mw-trend-halo{fill:var(--h-panel);stroke:var(--h-panel);stroke-width:3.5;vector-effect:non-scaling-stroke}
-.mw-trend-point{fill:var(--h-market-celadon);stroke:var(--h-panel);stroke-width:1.4;vector-effect:non-scaling-stroke}
+.mw-trend-point{fill:var(--h-market-porcelain-data);stroke:var(--h-panel);stroke-width:1.4;vector-effect:non-scaling-stroke}
 .mw-strip-day{
   appearance:none;position:relative;z-index:1;flex:1 1 0;min-width:0;height:100%;
   margin:0;padding:0;border:0;background:transparent;cursor:crosshair;

@@ -142,7 +142,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  const home=readFileSync(new URL('../home.css',import.meta.url),'utf8');
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/styles-refinement\.css\?v=editorial-ledger-1/);
- assert.match(html,/home\.css\?v=market-celadon-7/);
+ assert.match(html,/home\.css\?v=canonical-porcelain-blue-8/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(source,/const STACK=\["HK","SG","CN","OTHER"\];/,'daily columns stack in the regional chart order');
  assert.match(source,/class="rhythm-seg '\+r\.toLowerCase\(\)/);
@@ -157,7 +157,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
  assert.doesNotMatch(html,/class="region-chart-legend"/,'the regional chart now uses direct labels only');
  assert.doesNotMatch(home,/rhythm-avg|rhythm-avg-halo|rhythm-avg-label/,'retired average chart presentation is removed');
- assert.match(home,/\.mw-trend-line\{[^}]*stroke:var\(--h-market-celadon\)/);
+ assert.match(home,/\.mw-trend-line\{[^}]*stroke:var\(--h-market-porcelain-data\)/);
  assert.match(source,/const regionOrder=\["HK","SG","CN"\];/);
  assert.match(source,/const cumulativeSeries=bucketCounts\.map\(daily=>/);
  assert.match(source,/const snapshotCounts=cumulativeSeries\.map\(values=>values\[bins\]\)/,

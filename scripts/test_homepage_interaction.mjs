@@ -91,7 +91,7 @@ async function desktop(browser,engine,theme){
   assert.match(editorial.top30Dek,/The dashed diagonal marks parity/);
   assert.match(editorial.top30Dek,/dominant hiring market or a diversified mix/);
   assert.equal(editorial.sparkMeanOverlayCount,0,'New Postings no longer renders a 7-day mean overlay');
-  assert.equal(editorial.marketTrendInk,theme==='light'?'rgb(99, 187, 200)':'rgb(142, 212, 220)');
+  assert.equal(editorial.marketTrendInk,theme==='light'?'rgb(51, 78, 172)':'rgb(186, 214, 235)');
   assert.equal(editorial.marketPointInk,editorial.marketTrendInk,'Market Breadth marker matches its celadon-blue line');
   assert.ok(density.stats.every(s=>!s.clipped),'no metric is clipped: '+JSON.stringify(density.stats));
   assert.equal(density.top30Open,false,'Top 30 starts folded so the job list stays close to the fold');
