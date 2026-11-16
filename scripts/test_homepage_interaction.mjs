@@ -87,10 +87,21 @@ async function desktop(browser,engine,theme){
   await page.locator('#spark .rhythm-point[tabindex="0"]').focus();
   // Require the real keyboard-focused latest-day reading after the SVG focus
   // and pointerleave handlers settle; never weaken the content assertion.
-  await page.waitForFunction(()=>{
-   const node=document.querySelector('.viz-tip'),day=document.activeElement;
-   return day?.dataset.day==='29'&&node&&!node.hidden&&/so far/.test(node.textContent);
-  },null,{timeout:3000});
+  try{
+   await page.waitForFunction(()=>{
+    const node=document.querySelector('.viz-tip'),day=document.activeElement;
+    return day?.dataset.day==='29'&&node&&!node.hidden&&/so far/.test(node.textContent);
+   },null,{timeout:3000});
+  }catch(error){
+   const state=await page.evaluate(()=>({
+    focus:document.activeElement?.outerHTML?.slice(0,300),
+    tip:document.querySelector('.viz-tip')?.textContent,
+    hidden:document.querySelector('.viz-tip')?.hidden,
+    selected:[...document.querySelectorAll('#spark .rhythm-point[tabindex="0"]')].map(n=>n.dataset.day),
+    live:!!window.VizTip,hash:location.hash
+   }));
+   throw new Error('Latest-day keyboard tooltip failed: '+JSON.stringify(state),{cause:error});
+  }
   let t=await tip(page);assert.ok(t&&/so far/.test(t.text),'latest column reads as still collecting');
   await page.keyboard.press('ArrowLeft');
   const focused=await page.evaluate(()=>document.activeElement?.dataset.day);
