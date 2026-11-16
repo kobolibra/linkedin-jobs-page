@@ -242,7 +242,7 @@
 @media(max-width:340px){
   .mw-topline{display:block;position:relative;min-height:47px}
   .mw-topline h3{display:block;width:100%}
-  .mw-title-phrase{display:block;margin-top:18px;white-space:nowrap}
+  .mw-title-phrase{display:block;margin-top:36px;white-space:nowrap}
   .mw-topline .mw-tabs{position:absolute;top:0;right:0}
 }
 @media(prefers-reduced-motion:reduce){.mw-tile-face{transition:none}}
