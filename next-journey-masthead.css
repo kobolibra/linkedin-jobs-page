@@ -28,7 +28,7 @@
 .nj-market-statement span+span{margin-top:0}
 .nj-market-statement span:last-child{margin-top:3px;color:var(--nj-ink);font-style:italic;font-weight:500;letter-spacing:-.015em}
 @media(min-width:761px) and (max-width:900px){.nj-market-statement{font-size:14.5px}}
-.nj-masthead-folio{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px 22px;border-top:1px solid var(--nj-rule);padding:14px 0 9px;color:var(--nj-secondary);font:600 10px/1.6 var(--sans);letter-spacing:.035em}
+.nj-masthead-folio{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px 22px;border:0;padding:14px 0 9px;color:var(--nj-secondary);font:600 10px/1.6 var(--sans);letter-spacing:.035em}
 .nj-source{white-space:nowrap}
 .nj-source span{margin:0 6px;color:var(--nj-accent)}
 .nj-data-intro{display:inline-flex;align-items:center;gap:8px;text-align:right}
@@ -84,7 +84,7 @@
 /* Approved layout boundary: folio belongs to the editorial masthead.
    The four pre-existing metrics that follow are NOT part of this redesign. */
 .nj-masthead-folio {
-  border-top:1px solid var(--nj-rule);
+  border-top:0;
   border-radius:0;
   background:transparent;
   padding:15px 0 3px;
