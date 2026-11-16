@@ -436,10 +436,15 @@ test('editorial cleanup: masthead folio has no top rule and Fig. 1 has no duplic
  assert.match(masthead,/\.nj-masthead-folio\s*\{\s*border-top:0;/);
  assert.doesNotMatch(home,/rhythm-avg|rhythm-avg-label|rhythm-avg-halo/,
   'New Postings mean line, halo and label styling are completely removed');
- assert.match(home,/--h-market-celadon:#63bbc8/,'light-theme Market Breadth is porcelain blue');
- assert.match(home,/--h-market-celadon:#8ed4dc/,'dark-theme Market Breadth is porcelain blue');
- assert.match(home,/\.mw-trend-line\{[^}]*stroke:var\(--h-market-celadon\)/);
- assert.match(home,/\.mw-trend-point\{[^}]*fill:var\(--h-market-celadon\)/);
+ const porcelain=read('PORCELAIN_DESIGN_AUDIT.md');
+ assert.match(porcelain,/DATA #334EAC/,'historical Porcelain design explicitly defines its blue data color');
+ assert.match(porcelain,/FAINTDATA #BAD6EB/,'historical Porcelain design explicitly defines the pale blue');
+ assert.match(home,/--h-market-porcelain-data:#334eac/,'light mode restores the original Porcelain DATA pigment');
+ assert.match(home,/--h-market-porcelain-data:#bad6eb/,'dark mode restores the original Porcelain --chart pigment');
+ assert.match(home,/\.mw-trend-line\{[^}]*stroke:var\(--h-market-porcelain-data\)/);
+ assert.match(home,/\.mw-trend-point\{[^}]*fill:var\(--h-market-porcelain-data\)/);
+ assert.doesNotMatch(home,/#63bbc8|#8ed4dc|--h-market-celadon/,
+  'eliminate the invented teal color names and values');
  assert.doesNotMatch(read('app.js'),/rhythm-avg|rhythm-avg-halo|rhythm-avg-label|\+average\+/,
   'New Postings SVG must never emit an average overlay or annotation');
  assert.doesNotMatch(home,/mw-date-nav output\[data-partial="true"\]::after/,'do not print so far beside a date');
