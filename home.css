@@ -284,7 +284,7 @@
 .bubble-svg .bubble-diagonal{stroke:var(--h-muted);stroke-dasharray:3 4;opacity:.5}
 .bubble-row{transition:opacity .16s ease}
 /* Dim children, not the row: the row's entrance animation holds its opacity. */
-.top50-chart.is-inspecting .bubble-row:not(.is-focus) > *{opacity:.56;transition:opacity .18s ease}
+/* Background bubbles remain steady on hover; only the inspected bubble gains a quiet outline. */
 .bubble-row.is-focus .bubble-point{opacity:1;stroke:var(--h-ink);stroke-width:1.4px}
 .bubble-row.is-focus .bubble-company{fill:var(--h-ink)}
 

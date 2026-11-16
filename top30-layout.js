@@ -309,6 +309,7 @@
     host.dataset.scopeRegion=mode;
     const svg = buildSvg(computeLayout(top));
     host.classList.remove('is-ready', 'is-inspecting');
+    g.VizTip?.hide(); // Never leave a stale tooltip over a newly filtered chart.
     wire(host);
     host.innerHTML = svg;
     host.dataset.layout = MARK;
