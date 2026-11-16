@@ -393,6 +393,8 @@ test('seven-day Market Width loop is exactly the newest seven calendar days, inc
  assert.doesNotMatch(html,/id="marketWidthPlay"/,'no redundant Play button');
  assert.match(js,/PLAY_INTERVAL_MS=7600/,'daily frames need readable dwell time');
  assert.match(js,/DISSOLVE_MS=1300/,'slow dissolve avoids a distracting flicker');
+ assert.match(js,/if\(!started\)started=true/,'first visible frame must not jump to the oldest loop day');
+ assert.match(js,/dissolveDay\(loopDays\[0\]\)/,'returning from manual history must dissolve, never flash');
  assert.match(js,/previous\.inert=true/,'the crossfade ghost cannot capture keyboard focus');
  assert.match(js,/board\.after\(previous\)/,'old and new snapshots have independent frame geometry');
  const css=read('market-width.css'),home=read('home.css');
