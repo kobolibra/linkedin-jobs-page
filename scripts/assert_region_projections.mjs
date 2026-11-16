@@ -115,7 +115,7 @@ export async function assertRegionVisualBalance(page){
    assert.equal(c.y1,c.y2,'end cap must be precisely horizontal');
    assert.ok(Math.abs(c.y1-(c.edge==='upper'?d.high:d.low))<.011,'end cap must touch the real boundary');
    assert.ok(Math.abs((c.x1+c.x2)/2-d.stemX)<.011,'end cap must be centered on the stem');
-   assert.ok(Math.abs((c.x2-c.x1)*d.ratio-8.4)<.09,'end cap must measure 8.4 CSS pixels at every viewport');
+   assert.ok(Math.abs((c.x2-c.x1)*d.ratio-8.4)<.09,'end cap must measure 8.4 CSS pixels at every viewport: '+JSON.stringify({region:d.region,actual:(c.x2-c.x1)*d.ratio,svgRatio:d.ratio,intervalPx:d.cssHeight,cap:c}));
   }
  }
  state.dimensions=dimensions;
