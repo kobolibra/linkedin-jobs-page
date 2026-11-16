@@ -221,7 +221,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=focused-home-4/);
+ assert.match(html,/app\.js\?v=porcelain-blue-5/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
