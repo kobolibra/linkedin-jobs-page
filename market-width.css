@@ -123,13 +123,13 @@
   cursor:crosshair;min-width:0;min-height:0;text-align:left;
   outline:none;touch-action:manipulation;
 }
-.mw-map-board.mw-geometry-ready .mw-tile{
+.mw-map-board.mw-geometry-ready.is-playing .mw-tile{
  transition:left .68s cubic-bezier(.22,1,.36,1),top .68s cubic-bezier(.22,1,.36,1),
  width .68s cubic-bezier(.22,1,.36,1),height .68s cubic-bezier(.22,1,.36,1);
 }
 .mw-map-layout,.mw-footer{overflow-anchor:none}
 @media(prefers-reduced-motion:reduce){
- .mw-map-board.mw-geometry-ready .mw-tile{transition:none}
+ .mw-map-board.mw-geometry-ready.is-playing .mw-tile{transition:none}
 }
 .mw-tile-face {
   display:grid;place-items:center;
