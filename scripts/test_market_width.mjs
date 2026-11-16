@@ -445,7 +445,7 @@ test('the trend marker is synchronized with the selected calendar day',()=>{
  assert.match(js,/class','mw-trend-line'/);
  assert.match(js,/class','mw-trend-indicator'/);
  assert.match(js,/const eased=t\*t\*\(3-2\*t\)/);
- assert.match(js,/trendPointAt\(geometry,oldDay\+\(day-oldDay\)\*eased\)/);
+ assert.match(js,/paint\(oldDay\+\(day-oldDay\)\*eased\)/,'animated point is painted on the true cubic');
  assert.match(js,/if\(t<\.5\)paint\(oldDay,1-2\*t\)/,'wraps dissolve instead of racing across six dates');
  assert.doesNotMatch(css,/mw-strip-day::before/,'daily bars must be fully replaced by the trend');
  assert.match(css,/\.mw-strip\{/);
