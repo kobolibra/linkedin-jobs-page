@@ -92,7 +92,7 @@
 .stats{
   display:grid;grid-template-columns:1.18fr 1fr 1fr 1fr 1.05fr;gap:0;
   margin:6px 0 0;padding:0;overflow:visible;
-  border:0;border-top:1px solid var(--h-ink);border-bottom:1px solid var(--h-rule);border-radius:0;
+  border:0;border-top:1px solid var(--h-rule);border-bottom:1px solid var(--h-rule);border-radius:0;
   background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;
 }
 .stats .stat,[data-theme="dark"] .stats .stat{
@@ -134,7 +134,6 @@
 .analytics-card > .ac-col-top50,
 .analytics-card > .ac-col-cn-map{padding:22px 24px 18px!important;border-top:1px solid var(--h-rule-soft)!important}
 
-.mw-eyebrow{margin:0 0 7px;color:var(--h-muted);font:600 10.5px/1.3 var(--sans);letter-spacing:.11em;text-transform:uppercase}
 .analytics-card .ac-col h3,
 .analytics-card > .ac-col:not(.ac-col-top50) h3,
 .analytics-left > .ac-col h3,
@@ -247,12 +246,6 @@
 .mw-encoding{color:var(--h-faint);font:400 11px/1.45 var(--sans)}
 .mw-nav{border-radius:7px}
 .mw-nav:focus-visible{outline:2px solid var(--h-accent)}
-/* The time-lapse has only a brief ink fade: no scale or positional morphing
-   that could imply false continuity between two separate daily treemaps. */
-@keyframes mw-day-reveal{from{opacity:.62}to{opacity:1}}
-.mw-map-board.is-playing .mw-tile-face{animation:mw-day-reveal .23s ease-out both}
-@media(prefers-reduced-motion:reduce){.mw-map-board.is-playing .mw-tile-face{animation:none!important}}
-
 @media(max-width:400px){.mw-date-nav output{width:110px;min-width:110px;max-width:110px}}
 @media(max-width:560px){.nj-data-intro{display:none}}
 
@@ -311,10 +304,9 @@
   .stats .stat .v{font-size:38px}
   .stats .stat-primary .v{font-size:44px}
 }
-/* Tablet: the half-width Market Width panel needs compact tabs and a
-   smaller headline so the complete institution phrase never meets the tabs. */
+/* Tablet headings retain the same editorial hierarchy as other figures. */
 @media (min-width:721px) and (max-width:1100px){
-  .analytics-card > .ac-col-market .mw-topline h3{font-size:13px!important}
+  .analytics-card > .ac-col-market .mw-topline h3{font-size:17px!important}
   .mw-tabs{height:31px;padding:2px;gap:0}
   .mw-tab{min-width:28px;height:27px;min-height:27px;padding:0 6px}
 }
@@ -337,8 +329,8 @@
   .analytics-card > .ac-col-market{border-left:0!important;border-top:1px solid var(--h-rule-soft)!important}
   .analytics-card > .ac-col-top50,.analytics-card > .ac-col-cn-map{padding:20px 15px 18px!important}
   .analytics-card .ac-col h3,#top50Title,.analytics-card > .ac-col-cn-map .cn-map-head h3{font-size:16.5px!important}
-  .analytics-card > .ac-col-market .mw-topline h3{font-size:11px!important;line-height:1.35!important}
-  /* Compact region tabs leave the complete Market Width phrase room on one line. */
+  .analytics-card > .ac-col-market .mw-topline h3{font-size:16.5px!important;line-height:1.3!important}
+  /* Region filters occupy their own right-aligned row on small panels. */
   .mw-tabs{height:31px;padding:2px;gap:0}
   .mw-tab{min-width:28px;height:27px;min-height:27px;padding:0 6px;font-size:9.5px!important}
   /* The 30-institution field keeps a legible label size and pans sideways. */
@@ -355,7 +347,7 @@
 @media (max-width:400px){
   /* Three legend entries share one row down to 320px with room for wider fonts. */
   .ac-col-density > .region-chart-legend{column-gap:7px}
-  .analytics-card > .ac-col-market .mw-topline h3{font-size:10.5px!important}
+  .analytics-card > .ac-col-market .mw-topline h3{font-size:16.5px!important}
   .mw-tabs{height:29px}
   .mw-tab{min-width:27px;height:25px;min-height:25px;padding:0 5px}
   .stats .stat .v{font-size:30px}
