@@ -167,6 +167,29 @@ async function desktop(browser,engine,theme){
   assert.ok(await page.evaluate(()=>document.querySelector('#top50').classList.contains('is-inspecting')));
   await page.keyboard.press('Enter');
   await page.waitForFunction(name=>document.getElementById('company').value===name,company);
+  // CN tab: bubble position/size reflect CN roles, but composition and
+  // dominant-market color must reflect the institution across all markets.
+  await page.locator('#top50Tabs [data-top-region="CN"]').click();
+  await page.waitForFunction(()=>document.getElementById('top50').dataset.scopeRegion==='CN');
+  const mix=await page.evaluate(()=>{
+   const row=[...document.querySelectorAll('#top50 .bubble-row')]
+    .find(n=>Number(n.dataset.hk)+Number(n.dataset.sg)>0);
+   if(!row)return null;
+   const cn=Number(row.dataset.cn),hk=Number(row.dataset.hk),sg=Number(row.dataset.sg);
+   return {company:row.dataset.company,scoped:Number(row.dataset.total),
+    all:Number(row.dataset.mixTotal),cn,hk,sg,region:row.dataset.region};
+  });
+  assert.ok(mix,'CN top-30 includes an institution with real HK/SG activity');
+  assert.equal(mix.cn+mix.hk+mix.sg,mix.all,'market mix counts sum to all-market roles');
+  assert.ok(mix.all>mix.scoped,'CN tab must not imply CN holds all jobs');
+  const rowIndex=await page.evaluate(name=>[...document.querySelectorAll('#top50 .bubble-row')].findIndex(n=>n.dataset.company===name),mix.company);
+  assert.ok(rowIndex>=0);
+  await page.locator('#top50 .bubble-row').nth(rowIndex).focus();
+  const cnTip=await tip(page);
+  assert.ok(cnTip&&cnTip.text.includes('All-market roles'),'CN tooltip identifies the all-market denominator');
+  assert.ok(cnTip.text.includes('Mainland China')&&(mix.hk>0?cnTip.text.includes('Hong Kong'):true),
+   'CN tooltip preserves actual cross-region breakdown');
+
   await page.screenshot({path:resolve(out,`${engine}-${width}-${theme}.png`)});
   assert.equal(errors.length,0,errors.join('\n'));
   evidence.push({engine,width,theme,timing,marketWidthDefault:mw.key});
