@@ -6,13 +6,15 @@ import {chromium,webkit} from 'playwright';
 const root=new URL('../',import.meta.url),read=name=>readFileSync(new URL(name,root),'utf8');
 const html=read('index.html'),app=read('app.js');
 const analytics=html.match(/<div class="analytics reveal"[\s\S]*?(?=<\/header>)/)?.[0];assert.ok(analytics);
-const styles=['styles.css','styles-list.css','layout-fixes.css','styles-company.css','styles-refinement.css','cn-city-map.css','market-width.css','next-journey-masthead.css'].map(read).join('\n');
+const styles=['styles.css','styles-list.css','layout-fixes.css','styles-company.css','styles-refinement.css','cn-city-map.css','market-width.css','next-journey-masthead.css','home.css'].map(read).join('\n');
 const start=app.indexOf('    const rc={CN:0,HK:0,SG:0,OTHER:0};'),tag="    requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));",end=app.indexOf(tag,start)+tag.length;
 assert.ok(start>=0&&end>start);const draw=app.slice(start,end);
 const rows=JSON.parse(read('jobs-index.json')).jobs.filter(j=>j.jobStatus!=='expired');
 const out=new URL('artifacts/calendar-axes/',root);mkdirSync(out,{recursive:true});
 const results=[];
-for(const [engine,type] of Object.entries({chromium,webkit})){
+// CALENDAR_BROWSERS=chromium lets hosts without WebKit libraries run the Chromium half.
+const engines=(process.env.CALENDAR_BROWSERS||'chromium,webkit').split(',');
+for(const [engine,type] of Object.entries({chromium,webkit}).filter(([name])=>engines.includes(name))){
  const browser=await type.launch({headless:true});
  try{for(const width of [320,390,1440])for(const theme of ['light','dark']){
   const page=await browser.newPage({viewport:{width,height:1000},colorScheme:theme,timezoneId:'Asia/Shanghai'}),errors=[];

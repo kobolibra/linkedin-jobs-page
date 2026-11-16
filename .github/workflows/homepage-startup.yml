@@ -12,6 +12,7 @@ on:
       - 'scripts/test_calendar_axes.mjs'
       - 'scripts/test_calendar_browser.mjs'
       - 'scripts/assert_region_projections.mjs'
+      - 'scripts/test_homepage_interaction.mjs'
       - '.github/workflows/homepage-startup.yml'
   push:
     branches: [main]
@@ -38,7 +39,7 @@ jobs:
     # Playwright 1.56.1 browser builds do not support ubuntu26.04-x64.
     # Pin a supported runner instead of relying on ubuntu-latest rollover.
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 18
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,12 +59,22 @@ jobs:
         run: node scripts/test_homepage_startup.mjs
       - name: Verify calendar labels and true-height staircase geometry in both engines
         run: node scripts/test_calendar_browser.mjs
+      - name: Verify keyboard, touch, navigation and mobile density in both engines
+        run: node scripts/test_homepage_interaction.mjs
       - name: Retain homepage startup evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: homepage-startup-browser-evidence
           path: artifacts/homepage-startup
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Retain homepage interaction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: homepage-interaction-browser-evidence
+          path: artifacts/homepage-interaction
           if-no-files-found: ignore
           retention-days: 7
       - name: Retain calendar and regional annotation evidence

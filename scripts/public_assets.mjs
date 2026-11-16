@@ -13,7 +13,7 @@ export const PUBLIC_FILES = [
   'app.js', 'company-insight.js', 'company-logos.js', 'editorial-mapping.js',
   'guestbook.js', 'row-fixes.js', 'row-hover.js', 'salary-display.js', 'top30-layout.js',
   'ui-refinement.js', 'visitor-count.js', 'layout-fixes.css', 'styles-company.css',
-  'styles-cursor.css', 'styles-list.css', 'styles-refinement.css', 'styles.css', 'next-journey-masthead.css',
+  'styles-cursor.css', 'styles-list.css', 'styles-refinement.css', 'styles.css', 'next-journey-masthead.css', 'home.css',
 ];
 const optional = new Set(['CNAME', 'robots.txt', 'sitemap.xml', '.nojekyll']);
 const roots = new Set(PUBLIC_FILES);

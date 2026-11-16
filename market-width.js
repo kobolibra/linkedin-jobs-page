@@ -252,19 +252,82 @@ const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
 const prettyDate=key=>{
  const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
  if(!m)return String(key||'');
- return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+ return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 };
+/* A date is considered ended once the latest index update is beyond its
+   local midnight. This is NOT proof every collector finished successfully.
+   The default is the latest ended day, regardless of daily posting volume. */
+const dayEnd=key=>{
+ const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ return m?new Date(+m[1],+m[2]-1,+m[3]+1).getTime():NaN;
+};
+function latestUpdate(rows){
+ let latest=0;
+ for(const job of rows||[]){
+  if(!job||job.jobStatus==='expired')continue;
+  const t=Date.parse(job.pushTime||job.firstSeen||'');
+  if(Number.isFinite(t)&&t>latest)latest=t;
+ }
+ return latest||null;
+}
+function initialDay(series,updatedAt){
+ const last=series.keys.length-1;
+ if(!Number.isFinite(updatedAt))return last;
+ for(let day=last;day>=0;day--)if(dayEnd(series.keys[day])<=updatedAt)return day;
+ return last;
+}
+const isComplete=(key,updatedAt)=>Number.isFinite(updatedAt)&&dayEnd(key)<=updatedAt;
+// Playback uses precisely the newest seven calendar-day buckets (including
+// today's still-collecting bucket). The 30-day manual history is unchanged.
+function playbackIndices(length){
+ const n=Math.max(0,Math.floor(Number(length)||0)),size=Math.min(n,7);
+ return Array.from({length:size},(_,i)=>n-size+i);
+}
+const nextPlaybackDay=(current,days)=>days.length?days[(days.indexOf(current)+1)%days.length]:current;
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
  const detail=el('marketWidthDetail');
  const prev=el('marketWidthPrev'),next=el('marketWidthNext'),date=el('marketWidthDate');
+ const play=el('marketWidthPlay'),playLabel=play?.querySelector('.mw-play-label');
  const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
- if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
+ if(!rootEl||!board||!detail||!prev||!next||!date||!play||!playLabel||!count||!firms||!tabs)return;
+ // Authentication/data refreshes must not retain stale timers or handlers.
+ rootEl._mwPlaybackCleanup?.();
+ const events=new AbortController();
+ const listen=(node,type,handler)=>node?.addEventListener(type,handler,{signal:events.signal});
  const series=aggregate(rows,days),last=series.keys.length-1;
- let day=series.counts.all.findLastIndex(line=>line.some(Boolean));
- if(day<0)day=last;
+ const strip=el('marketWidthStrip');
+ const updatedAt=latestUpdate(rows);
+ let day=initialDay(series,updatedAt);
  let region='all',selectedFirm=null,lastSize='';
+ const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=3600;
+ let playing=false,playTimer=null,inView=true,boardHover=false,lastPausedDay=null;
+ let sizeObserver=null,visibilityObserver=null;
+ const clearPlayTimer=()=>{if(playTimer!==null){clearTimeout(playTimer);playTimer=null;}};
+ const syncPlayControl=()=>{
+  play.setAttribute('aria-pressed',String(playing));
+  play.dataset.playing=String(playing);
+  board.classList.toggle('is-playing',playing);
+  playLabel.textContent=playing?'Pause':'Play';
+  play.setAttribute('aria-label',playing?'Pause seven-day playback':'Play the most recent 7 calendar days');
+  play.title=playing?'Pause seven-day playback':'Loop the latest 7 days, including today so far';
+ };
+ const canAdvance=()=>playing&&inView&&!document.hidden&&!boardHover&&!board.contains(document.activeElement);
+ const schedulePlay=()=>{
+  clearPlayTimer();
+  if(!canAdvance()||loopDays.length<2)return;
+  playTimer=setTimeout(()=>{
+   playTimer=null;
+   if(!canAdvance())return;
+   day=nextPlaybackDay(day,loopDays);
+   draw();schedulePlay();
+  },PLAY_INTERVAL_MS);
+ };
+ const stopPlay=()=>{
+  clearPlayTimer();
+  if(playing){lastPausedDay=day;playing=false;syncPlayControl();}
+ };
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
   const n=datum(i),what=n>0?fmt(n)+' new '+(n===1?'posting':'postings'):'No new postings';
@@ -316,6 +379,8 @@ function render(rows,days){
   }
   count.textContent=fmt(data.total);firms.textContent=data.firms+'/18';
   date.textContent=prettyDate(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
+  date.dataset.partial=String(!isComplete(series.keys[day],updatedAt));
+  if(strip)drawStrip();
   prev.disabled=day===0;next.disabled=day===last;
   tabs.querySelectorAll('[data-market-region]').forEach(tab=>{
    const on=tab.dataset.marketRegion===region;
@@ -325,44 +390,82 @@ function render(rows,days){
   selectedFirm=null;detail.hidden=true;detail.textContent='';
   lastSize=width+'x'+height;
  }
+ /* 30-day scrubber: one column per day for the selected region, on the
+    same first-seen buckets as the board. It is a pointer shortcut; the
+    labelled previous/next buttons remain the keyboard path. */
+ function drawStrip(){
+  const totals=series.counts[region].map(line=>line.reduce((sum,n)=>sum+n,0));
+  const max=Math.max(1,...totals);
+  const fragment=document.createDocumentFragment();
+  totals.forEach((n,i)=>{
+   const b=document.createElement('button');
+   b.type='button';b.tabIndex=-1;b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(isComplete(series.keys[i],updatedAt)?'':' is-partial');
+   b.dataset.day=String(i);
+   b.style.setProperty('--level',(n/max).toFixed(4));
+   b.title=prettyDate(series.keys[i])+(isComplete(series.keys[i],updatedAt)?'':' (so far)')+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
+   fragment.append(b);
+  });
+  strip.replaceChildren(fragment);
+ }
+ strip?.setAttribute('aria-hidden','true');
+ listen(strip,'click',e=>{
+  const target=e.target.closest('.mw-strip-day');if(target)chooseDay(Number(target.dataset.day));
+ });
  function chooseDay(next){
+  // Manual navigation pauses the loop without constraining the full 30 days.
+  stopPlay();
   const to=Math.max(0,Math.min(last,next));if(to===day)return;day=to;draw();
  }
  function chooseRegion(value){
-  if(!REGIONS.includes(value)||value===region)return;region=value;draw();
+  if(!REGIONS.includes(value)||value===region)return;
+  stopPlay();region=value;draw();
  }
- prev.addEventListener('click',()=>chooseDay(day-1));
- next.addEventListener('click',()=>chooseDay(day+1));
- tabs.addEventListener('click',e=>{
+ listen(play,'click',()=>{
+  if(playing){stopPlay();return;}
+  const resume=lastPausedDay===day&&loopDays.includes(day);
+  playing=true;
+  if(!resume)day=loopDays[0]; // Fresh playback starts at oldest of seven.
+  lastPausedDay=null;
+  draw();syncPlayControl();schedulePlay();
+ });
+ listen(board,'pointerenter',()=>{boardHover=true;clearPlayTimer();});
+ listen(board,'pointerleave',()=>{boardHover=false;schedulePlay();});
+ listen(document,'visibilitychange',schedulePlay);
+ listen(prev,'click',()=>chooseDay(day-1));
+ listen(next,'click',()=>chooseDay(day+1));
+ listen(tabs,'click',e=>{
   const target=e.target.closest('[data-market-region]');
   if(target)chooseRegion(target.dataset.marketRegion);
  });
- tabs.addEventListener('keydown',e=>{
+ listen(tabs,'keydown',e=>{
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
   const index=REGIONS.indexOf(region);
   chooseRegion(REGIONS[e.key==='Home'?0:e.key==='End'?3:(index+(e.key==='ArrowRight'?1:3))%4]);
   tabs.querySelector('[data-market-region="'+region+'"]')?.focus();e.preventDefault();
  });
- board.addEventListener('pointerover',e=>{
+ listen(board,'pointerover',e=>{
   const tile=e.target.closest('.mw-tile');if(tile)explain(Number(tile.dataset.firm));
  });
- board.addEventListener('pointerout',e=>{
+ listen(board,'pointerout',e=>{
   if(e.target.closest('.mw-tile')&&!board.querySelector('.mw-tile:hover'))quietDetail();
  });
- board.addEventListener('focusin',e=>{
+ listen(board,'focusin',e=>{
   const tile=e.target.closest('.mw-tile');if(tile)explain(Number(tile.dataset.firm));
+  clearPlayTimer();
  });
- board.addEventListener('focusout',e=>{
+ listen(board,'focusout',e=>{
   if(e.target.closest('.mw-tile'))quietDetail();
+  requestAnimationFrame(schedulePlay);
  });
- board.addEventListener('click',e=>{
+ listen(board,'click',e=>{
+  stopPlay(); // Inspecting a firm must never be interrupted by a loop tick.
   const tile=e.target.closest('.mw-tile');if(!tile)return;
   const chosen=Number(tile.dataset.firm);
   selectedFirm=selectedFirm===chosen?null:chosen;
   board.querySelectorAll('.mw-tile').forEach(item=>item.setAttribute('aria-pressed',String(Number(item.dataset.firm)===selectedFirm)));
   if(selectedFirm===null)quietDetail();else explain(selectedFirm);
  });
- board.addEventListener('keydown',e=>{
+ listen(board,'keydown',e=>{
   if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Escape'].includes(e.key))return;
   if(e.key==='Escape'){
    selectedFirm=null;quietDetail();
@@ -374,18 +477,31 @@ function render(rows,days){
   const step=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;
   available[(idx+step+available.length)%available.length].focus();e.preventDefault();
  });
+ syncPlayControl();
  draw();
+ if(typeof IntersectionObserver==='function'){
+  visibilityObserver=new IntersectionObserver(entries=>{
+   inView=entries.some(entry=>entry.isIntersecting);
+   schedulePlay();
+  },{threshold:0.01});
+  visibilityObserver.observe(rootEl.closest('.ac-col-market')||rootEl);
+ }
  if(typeof ResizeObserver==='function'){
-  new ResizeObserver(()=>{
+  sizeObserver=new ResizeObserver(()=>{
    const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
    if(size!==lastSize)draw();
-  }).observe(board);
- }else if(root?.addEventListener)root.addEventListener('resize',()=>{
+  });
+  sizeObserver.observe(board);
+ }else if(root?.addEventListener)listen(root,'resize',()=>{
   const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
   if(size!==lastSize)draw();
  });
+ rootEl._mwPlaybackCleanup=()=>{
+  clearPlayTimer();events.abort();
+  visibilityObserver?.disconnect();sizeObserver?.disconnect();
+ };
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,latestUpdate,playbackIndices,nextPlaybackDay,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);

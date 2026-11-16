@@ -137,16 +137,20 @@ test('guestbook prefetch waits for jobs and stays deferred while loading',async(
 
 
 
-test('New Postings keeps its blue while stacked regions follow the approved sand/sage/terracotta palette',()=>{
+test('New Postings stacks each day by market in the same sand/sage/terracotta palette as the regional stack',()=>{
  const css=readFileSync(new URL('../styles-refinement.css',import.meta.url),'utf8');
+ const home=readFileSync(new URL('../home.css',import.meta.url),'utf8');
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
- assert.match(css,/#spark\s*\{\s*--viz-blue:\s*#334EAC\s*;\s*\}/);
- assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
- assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=contour-right-edge-20261116/);
+ assert.match(html,/styles-refinement\.css\?v=editorial-ledger-1/);
+ assert.match(html,/home\.css\?v=editorial-loop-3/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
- assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
+ assert.match(source,/const STACK=\["HK","SG","CN","OTHER"\];/,'daily columns stack in the regional chart order');
+ assert.match(source,/class="rhythm-seg '\+r\.toLowerCase\(\)/);
+ assert.match(source,/class="rhythm-avg"/,'a trailing 7-day average accompanies the daily columns');
+ assert.match(source,/trailing\.slice\(0,lastIndex\)/,'the average stops before today’s partial day');
+ for(const r of ['hk','sg','cn','other'])assert.match(home,new RegExp('#spark \\.rhythm-seg\\.'+r+'\\{fill:var\\(--r-'+r+'-bar\\)\\}'));
+ assert.match(home,/#spark \.rhythm-point\.is-partial \.rhythm-seg\{opacity:\.42\}/);
+ assert.doesNotMatch(css,/#spark\s*\{\s*--viz-blue/,'the former single-blue daily series is retired');
  assert.match(css,/#dist \.region-series\.cn,\.region-chart-legend \.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
  assert.match(css,/#dist \.region-series\.hk,\.region-chart-legend \.hk\{--region-ink:#b27a22;--region-fill:#ddc6a6\}/);
  assert.match(css,/#dist \.region-series\.sg,\.region-chart-legend \.sg\{--region-ink:#6e8f3b;--region-fill:#c1d3ad\}/);
@@ -183,8 +187,6 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.doesNotMatch(css,/\.region-dimension-span|\.region-dimension-cap|\.region-end-guide|\.region-end-tick/);
  assert.match(css,/#dist \.region-end-label\{/);
  assert.doesNotMatch(source,/region-current-key|region-stat-|region-mix-|summaryCols=|const legend=|const composition=/);
- assert.match(css,/#spark \.rhythm-bar\.weekend\{opacity:\.63\}/);
- assert.match(css,/\[data-theme="dark"\] #spark \.rhythm-bar\.weekend\{opacity:\.71\}/);
  assert.match(source,/const bins=Math\.max\(1,Math\.round\(\(tMax-tMin\)\/dayMs\)\);/,'every UTC calendar day remains a distinct observation');
  assert.match(source,/const endTotal=cumulativeSeries\.reduce\(/,'region y-axis uses the final summed cumulative count');
  assert.match(source,/const upper=sumBoundary\(ri\+1,cumulativeSeries\);/,'each stacked boundary is a sum of regional cumulative data');
@@ -207,7 +209,6 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/#dist \.region-stack-band\{fill:var\(--region-fill\)/);
  assert.doesNotMatch(css,/--region-band/);
  assert.match(css,/#dist \.region-spark-line\{[^}]*stroke-width:1\.6/);
- assert.match(css,/#spark \.rhythm-bar\{\s*fill:var\(--viz-blue\);opacity:1/);
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
  assert.match(source,/const bucketCounts=regionOrder\.map\(\(\)=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
  assert.match(source,/regionRecords\[k\]\.forEach\(x=>\{/);
@@ -218,7 +219,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=contour-right-edge-20261116/);
+ assert.match(html,/app\.js\?v=editorial-ledger-3/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,playbackIndices,nextPlaybackDay}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -220,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-title-nowrap-26'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-7day-loop-22','market-width.css?v=market-loop-focus-27'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -348,3 +348,45 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
 
 
 
+
+test('Market Width opens on the latest ended calendar day, independent of its volume',()=>{
+ const {initialDay,latestUpdate}=require('../market-width.js');
+ const keys=['2026-11-12','2026-11-13','2026-11-14','2026-11-15','2026-11-16'];
+ const series=totals=>({keys,counts:{all:totals.map(n=>Array.from({length:18},(_,i)=>i===0?n:0))}});
+ const at=s=>new Date(s).getTime();
+ // Data last updated during 16 Nov: 16 Nov is still being collected, 15 Nov is complete.
+ assert.equal(initialDay(series([40,213,3,2,2]),at('2026-11-16T12:02:00')),3,
+  'a complete but quiet Sunday is shown as it is; volume never moves the default');
+ assert.equal(initialDay(series([40,213,3,0,2]),at('2026-11-16T12:02:00')),3,
+  'a complete day with zero postings is still the latest complete day');
+ assert.equal(initialDay(series([40,213,3,2,2]),at('2026-11-17T00:05:00')),4,
+  'once an update lands after midnight, the previous day becomes the default');
+ assert.equal(initialDay(series([0,0,0,0,9]),at('2026-11-12T08:00:00')),4,
+  'with no complete day in the window, fall back to the latest day');
+ assert.equal(initialDay(series([1,1,1,1,1]),null),4,'unknown update time falls back to the latest day');
+ assert.equal(latestUpdate([{pushTime:'2026-11-16T04:02:00Z'},{firstSeen:'2026-11-15T01:00:00Z'},{pushTime:'2026-11-17T00:00:00Z',jobStatus:'expired'},{firstSeen:'bad'}]),
+  Date.parse('2026-11-16T04:02:00Z'),'latest update reads active rows only and ignores invalid dates');
+ assert.doesNotMatch(read('market-width.js'),/mid\*\.5|median of the active days/,'no volume threshold decides the default day');
+});
+
+
+test('seven-day Market Width loop is exactly the newest seven calendar days, including the last partial day',()=>{
+ const window=playbackIndices(30);
+ assert.deepEqual(window,[23,24,25,26,27,28,29]);
+ assert.deepEqual(playbackIndices(7),[0,1,2,3,4,5,6]);
+ assert.deepEqual(playbackIndices(3),[0,1,2]);
+ assert.deepEqual(playbackIndices(0),[]);
+ assert.deepEqual(playbackIndices(-3),[]);
+ let selected=window[0],seen=[selected];
+ for(let i=0;i<7;i++){selected=nextPlaybackDay(selected,window);seen.push(selected);}
+ assert.deepEqual(seen,[23,24,25,26,27,28,29,23],
+  'the latest day wraps to the first of the same seven, never to day zero of the 30-day history');
+ assert.equal(nextPlaybackDay(3,window),23,'starting outside the seven-day range jumps to its oldest day');
+ assert.equal(nextPlaybackDay(1,[]),1,'empty input never changes the selection');
+ const js=read('market-width.js'),html=read('index.html');
+ assert.match(js,/const loopDays=playbackIndices\(series.keys.length\)/);
+ assert.match(js,/listen\(document,'visibilitychange',schedulePlay\)/);
+ assert.match(js,/listen\(board,'pointerenter'/);
+ assert.match(js,/stopPlay\(\);\s*const to=Math.max/,'manual day navigation stops playback');
+ assert.match(html,/id="marketWidthPlay".*aria-pressed="false"/);
+});

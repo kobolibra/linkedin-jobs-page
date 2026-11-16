@@ -100,7 +100,7 @@
 }
 .mw-chevron-prev {transform:rotate(-135deg);margin-left:3px}
 .mw-chevron-next {transform:rotate(45deg);margin-right:3px}
-.mw-tab:focus-visible,.mw-nav:focus-visible,.mw-tile:focus-visible {
+.mw-tab:focus-visible,.mw-nav:focus-visible,.mw-play:focus-visible,.mw-tile:focus-visible {
   outline:2px solid var(--gold);outline-offset:2px;
 }
 .mw-footer {display:flex;flex-direction:column;gap:10px;min-width:0;padding-top:13px}

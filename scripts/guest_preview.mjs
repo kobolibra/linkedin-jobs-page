@@ -5,6 +5,22 @@ const clean=(v,n=240)=>String(v??'').replace(/[\u0000-\u001f]/g,' ').trim().slic
 const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=v=>Number.isFinite(Date.parse(v))?Date.parse(v):0;
 const number=v=>Number(v).toLocaleString('en-US');
+// New-role flow, shared definition with app.js weeklyFlow(): CN/HK/SG roles
+// first seen in the 7 days ending at the latest data update, including roles
+// that have since closed; prior = the 7 days before that. The guest payload
+// cannot carry closed roles, so the counts are computed here from the index.
+export function weeklyFlow(jobs){
+ const week=7*864e5,seen=new Set();let end=0,current=0,prior=0;
+ for(const j of jobs)if(j&&j.jobStatus!=='expired'&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen));
+ if(!end)return null;
+ for(const j of jobs){
+  if(!j||!regions.includes(j.location))continue;
+  const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
+  const t=date(j.firstSeen||j.pushTime);if(!t||t>end)continue;
+  const age=end-t;if(age<week)current++;else if(age<2*week)prior++;
+ }
+ return {current,prior,end:new Date(end).toISOString()};
+}
 export function previewData(index,details={},now=Date.now()){
  if(!Array.isArray(index.jobs))throw Error('Preview requires a valid index');
  const active=index.jobs.filter(j=>j&&j.jobStatus!=='expired'&&regions.includes(j.location)&&j.title&&j.company&&/^https:\/\/(?:[a-z]{2,3}\.)?linkedin\.com\/jobs\/view\//i.test(j.link||''));
@@ -30,7 +46,7 @@ export function previewData(index,details={},now=Date.now()){
  const days=Array.from({length:14},(_,i)=>{const start=new Date(now);start.setUTCHours(0,0,0,0);start.setUTCDate(start.getUTCDate()-(13-i));return {day:start.toISOString().slice(0,10),count:0};});
  for(const j of active){const time=date(j.firstSeen||j.pushTime);if(!time||time>now)continue;const day=new Date(time).toISOString().slice(0,10),bin=days.find(d=>d.day===day);if(bin)bin.count++;}
  const updated=Math.max(0,...active.map(j=>date(j.pushTime||j.firstSeen)));
- return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null};
+ return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null,weekly:weeklyFlow(index.jobs)};
 }
 export function publicPreviewPayload(data,index){
  const selected=new Map(data.jobs.map(j=>[j.id,j]));
@@ -45,7 +61,7 @@ export function publicPreviewPayload(data,index){
  const buckets=new Map();
  for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(job.firstSeen||job.pushTime||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
  const chartBuckets=[...buckets].map(([key,count])=>[...JSON.parse(key).slice(0,5),count,JSON.parse(key)[5]]);
- return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,chartBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
+ return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
 export function buildGuestPreview(root='.'){
  const index=JSON.parse(readFileSync(resolve(root,'jobs-index.json'),'utf8'));
