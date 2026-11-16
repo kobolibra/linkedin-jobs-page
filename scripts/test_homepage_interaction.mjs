@@ -72,7 +72,18 @@ async function desktop(browser,engine,theme){
 
   // Hero coverage rows filter the list by market.
   await page.locator('.nj-market-row[data-region="HK"]').click();
-  await page.waitForFunction(()=>activeRegion==='HK');
+  try{
+   await page.waitForFunction(()=>activeRegion==='HK',null,{timeout:4000});
+  }catch(error){
+   const state=await page.evaluate(()=>({
+    active:typeof activeRegion==='undefined'?'undefined':activeRegion,
+    selected:[...document.querySelectorAll('#regions .seg')].filter(x=>x.getAttribute('aria-selected')==='true').map(x=>x.dataset.region),
+    row:document.querySelector('.nj-market-row[data-region="HK"]')?.outerHTML?.slice(0,350),
+    ready:typeof renderReady==='undefined'?null:renderReady,
+    pending:document.getElementById('regions')?.dataset.pendingRegion
+   }));
+   throw new Error('Hero HK filter failed for '+engine+'/'+theme+': '+JSON.stringify(state)+' pageErrors='+errors.join(' | '),{cause:error});
+  }
   assert.ok(await page.evaluate(()=>listRuntime.view.rows.every(i=>listRuntime.meta[i].region==='HK')),'hero row applies the HK filter');
   await page.locator('#regions .seg[data-region="all"]').click();
 
