@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-16T04:02:59.999693+00:00",
+    "checkedAt": "2026-11-16T10:03:40.474328+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-16T04:02:48.172937+00:00",
+    "checkedAt": "2026-11-16T10:03:28.511957+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-16T04:02:53.910452+00:00",
+    "checkedAt": "2026-11-16T10:03:34.364811+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-16T04:02:57.015974+00:00",
+    "checkedAt": "2026-11-16T10:03:37.415942+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11793,5 +11793,77 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQF7XsRDH3ZpAg/company-logo_100_100/B56aGBjXzKKIAI-/0/1793174896039/thehiveinternational_logo?e=2147483647&v=beta&t=0lJFVK116oTmjRuNi8zLBycFLmv6j3YMxp_BRb_pH3E",
     "companyUrl": "https://hk.linkedin.com/company/thehiveinternational",
     "sourceJobId": "4490238950"
+  },
+  "gammon construction limited": {
+    "name": "Gammon Construction Limited",
+    "checkedAt": "2026-11-16T10:03:12.211842+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8bb686d8def35916bc147eed.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEltVIoOQo2Sg/company-logo_100_100/B56aGAXcj0J8AI-/0/1793154992607/gammon_construction_limited_logo?e=2147483647&v=beta&t=5bmLlzU9FF5z7bn9ipHKVX3Y7WRrpiyS410hyVhWldc",
+    "companyUrl": "https://hk.linkedin.com/company/gammon-construction-limited",
+    "sourceJobId": "4490257355"
+  },
+  "iaso biotechnology(驯鹿生物)": {
+    "name": "IASO Biotechnology（驯鹿生物）",
+    "checkedAt": "2026-11-16T10:03:13.566745+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fec96083216d01785cd6c513.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFGdGOJ4-264Q/company-logo_100_100/B56Z74pVdtG4AI-/0/1782288046342/iasobiotechnology_logo?e=2147483647&v=beta&t=mXr2CNMtEywRQgwIoGeyCZngQtmvmw0-_MOraZVwEZQ",
+    "companyUrl": "https://cn.linkedin.com/company/iasobiotechnology",
+    "sourceJobId": "4490288183"
+  },
+  "lancesoft, inc.": {
+    "name": "LanceSoft, Inc.",
+    "checkedAt": "2026-11-16T10:03:16.521756+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7ab81f0b029b19431e79069f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFnyz20nuY3ug/company-logo_100_100/company-logo_100_100/0/1713215908322/lancesoft_logo?e=2147483647&v=beta&t=C__097mYNA4q8HOpl8U_jmFTs0Gw_vnoGp01sizsTBw",
+    "companyUrl": "https://www.linkedin.com/company/lancesoft",
+    "sourceJobId": "4490284374"
+  },
+  "many wells property agent limited": {
+    "name": "Many Wells Property Agent Limited",
+    "checkedAt": "2026-11-16T10:03:19.514080+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8c43b39eb9a1da59c4c08798.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE177zdzF6eZA/company-logo_100_100/B56aHjF42_GUAI-/0/1794811334937?e=2147483647&v=beta&t=hOtw60u-TEDvmmIcxIpR8Wf8fwAnC6QrmOjrEeEcyi4",
+    "companyUrl": "https://hk.linkedin.com/company/many-wells-property-agent-limited",
+    "sourceJobId": "4490270598"
+  },
+  "olea": {
+    "name": "Olea",
+    "checkedAt": "2026-11-16T10:03:22.612839+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "71a04cf847b3b809be5326da.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHgPumWJxPL4w/company-logo_100_100/company-logo_100_100/0/1636425058531/olea_global_logo?e=2147483647&v=beta&t=AbwWkQFznStfAmrfjAYVt9ysSmn2yD6fSfLGfElzUzo",
+    "companyUrl": "https://sg.linkedin.com/company/olea-global",
+    "sourceJobId": "4490260667"
+  },
+  "onthelist": {
+    "name": "OnTheList",
+    "checkedAt": "2026-11-16T10:03:25.512431+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3d27e58771b25c122d676b52.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFbnadt4ubG0g/company-logo_100_100/company-logo_100_100/0/1646053736840/onthelist_logo?e=2147483647&v=beta&t=US6REt6GAf4MIEFrOMNLN0xWRDC81fIyKc46y6lSf8k",
+    "companyUrl": "https://hk.linkedin.com/company/onthelist",
+    "sourceJobId": "4490288194"
   }
 }
