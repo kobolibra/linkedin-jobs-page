@@ -314,9 +314,9 @@
   .stats .stat-meta-group{grid-column:1 / -1;flex-direction:column;gap:6px;padding:12px 0}
   .analytics{margin-top:20px}
   .analytics-card,[data-theme="dark"] .analytics-card{border-radius:14px}
-  .analytics-left > .ac-col,.analytics-card > .ac-col-market{padding:20px 16px 18px}
+  .analytics-left > .ac-col,.analytics-card > .ac-col-market{padding:20px 15px 18px}
   .analytics-card > .ac-col-market{border-left:0!important;border-top:1px solid var(--h-rule-soft)!important}
-  .analytics-card > .ac-col-top50,.analytics-card > .ac-col-cn-map{padding:20px 16px 18px!important}
+  .analytics-card > .ac-col-top50,.analytics-card > .ac-col-cn-map{padding:20px 15px 18px!important}
   .analytics-card .ac-col h3,#top50Title,.analytics-card > .ac-col-cn-map .cn-map-head h3{font-size:16.5px!important}
   .analytics-card > .ac-col-market .mw-topline h3{font-size:11px!important;line-height:1.35!important}
   /* Compact region tabs leave the complete Market Width phrase room on one line. */
@@ -334,6 +334,8 @@
   .top50-legend .top50-legend-size{margin-left:0}
 }
 @media (max-width:400px){
+  /* Three legend entries share one row down to 320px with room for wider fonts. */
+  .ac-col-density > .region-chart-legend{column-gap:7px}
   .analytics-card > .ac-col-market .mw-topline h3{font-size:10.5px!important}
   .mw-tabs{height:29px}
   .mw-tab{min-width:27px;height:25px;min-height:25px;padding:0 5px}
