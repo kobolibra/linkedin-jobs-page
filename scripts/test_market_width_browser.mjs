@@ -40,7 +40,7 @@ for(let day=0;day<29;day++){
 mkdirSync(new URL('artifacts/market-width/',source),{recursive:true});
 const browser=await chromium.launch({headless:true});
 const make=async(width,theme)=>{
- const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1});
+ const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1,reducedMotion:'reduce'});
  await page.setContent('<!doctype html><html data-theme="'+theme+'"><head><style>'+styles+'</style></head><body><div class="shell">'+analytics+'</div></body></html>');
  await page.addScriptTag({content:script});
  return page;
@@ -557,7 +557,7 @@ try{
    const page=await make(width,theme);
    await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
    await renderLeft(page,regular,theme);
-   assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Width: 18 institutions we watch closely');
+   assert.equal(await page.locator('#marketWidthTitle').textContent(),'18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect new postings of the day, excluding reposts');
    const initial=await inspectMosaic(page,4);

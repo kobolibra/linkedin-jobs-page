@@ -197,7 +197,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.ok(!html.includes('id="distNote"'),'unnecessary first-seen footnote is completely removed');
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
- assert.match(html,/Market Width: <span class="mw-title-phrase">18 institutions we watch closely<\/span>/);
+ assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
  assert.match(css,/\.mw-title-phrase\{white-space:nowrap\}/,'never split the institution count from its complete title phrase');
  assert.ok(html.includes('new postings across'));
  assert.ok(html.includes('Size and shade reflect new postings of the day, excluding reposts'));
@@ -220,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-7day-loop-22','market-width.css?v=market-loop-focus-27'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-breadth-autoloop-23','market-width.css?v=market-breadth-smooth-28'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -387,6 +387,7 @@ test('seven-day Market Width loop is exactly the newest seven calendar days, inc
  assert.match(js,/const loopDays=playbackIndices\(series.keys.length\)/);
  assert.match(js,/listen\(document,'visibilitychange',schedulePlay\)/);
  assert.match(js,/listen\(board,'pointerenter'/);
- assert.match(js,/stopPlay\(\);\s*const to=Math.max/,'manual day navigation stops playback');
- assert.match(html,/id="marketWidthPlay".*aria-pressed="false"/);
+ assert.match(js,/pauseForInspection\(\);\s*const to=Math.max/,'manual navigation holds playback');
+ assert.match(js,/playing=!motion.matches/,'autoplay defaults to running unless reduced motion is requested');
+ assert.doesNotMatch(html,/id="marketWidthPlay"/,'no redundant Play button');
 });
