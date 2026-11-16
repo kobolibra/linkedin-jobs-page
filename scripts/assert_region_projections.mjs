@@ -49,7 +49,7 @@ export async function assertRegionProjections(page){
   for(const label of state.labels)for(const text of label.textRows){
    const overlapsX=text.x2>g.start+.1&&text.x1<g.end-.1;
    if(overlapsX)assert.ok(g.y<text.y1-.7||g.y>text.y2+.7,
-    'unbroken guide must clear visible text, including mobile fonts');
+    'unbroken guide must clear visible text, including mobile fonts: '+JSON.stringify({region:label.region,level:g.level,lineY:g.y,textY:[text.y1,text.y2],textX:[text.x1,text.x2],lineX:[g.start,g.end],labelY:[label.y1,label.y2],transform:label.shift}));
   }
  }
  return state;
