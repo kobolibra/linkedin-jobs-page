@@ -126,7 +126,18 @@ async function desktop(browser,engine,theme){
   if((engine==='chromium'&&theme==='light')||(engine==='webkit'&&theme==='dark')){
    await page.locator('.ac-col-market').screenshot({path:resolve(out,`market-width-playing-${engine}-1280-${theme}.png`),animations:'disabled'});
   }
+  // A screenshot can scroll the page under the stationary pointer. Leave the
+  // treemap so the intentionally hover-paused transport may resume.
+  await page.mouse.move(0,0);
   if(engine==='chromium'&&theme==='light'){
+   const diagnostic=await page.evaluate(()=>{
+    const panel=document.querySelector('.ac-col-market').getBoundingClientRect();
+    return {hover:document.getElementById('marketWidthMap').matches(':hover'),
+      focused:document.activeElement?.id,hidden:document.hidden,
+      panelVisible:panel.bottom>0&&panel.top<innerHeight};
+   });
+   assert.equal(diagnostic.hover,false,'timer should advance only after pointer leaves the treemap: '+JSON.stringify(diagnostic));
+   assert.equal(diagnostic.panelVisible,true,'the displayed chart must be in view for playback: '+JSON.stringify(diagnostic));
    await page.waitForFunction(()=>[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'))===24,null,{timeout:7000});
    assert.equal(await selectedDay(),24,'timer advances one real day without losing the selected bar');
   }
