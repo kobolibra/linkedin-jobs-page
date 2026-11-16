@@ -43,7 +43,7 @@
   <link rel="stylesheet" href="/next-journey-masthead.css?v=9" />
   <link rel="stylesheet" href="/account-identity.css?v=3" />
   <!-- Homepage design system: tokens, masthead, metrics and figure chrome. Loaded last so it owns the homepage surface. -->
-  <link rel="stylesheet" href="/home.css?v=editorial-1" />
+  <link rel="stylesheet" href="/home.css?v=editorial-2" />
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/next-journey-favicon-32.png?v=1" />
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/next-journey-favicon-48.png?v=1" />
   <link rel="icon" type="image/svg+xml" sizes="any" href="/assets/next-journey-mark.svg?v=2" />
@@ -57,14 +57,14 @@
   <link rel="preload" as="script" href="list-query.js?v=windowed-1" />
   <link rel="preload" as="script" href="list-view.js?v=role-history-4" />
   <link rel="preload" as="script" href="job-store.js?v=stale-recovery-20261113" />
-  <link rel="preload" as="script" href="app.js?v=editorial-ledger-1" />
+  <link rel="preload" as="script" href="app.js?v=editorial-ledger-2" />
   <link rel="preload" as="script" href="job-applications.js?v=17" />
   <link rel="preload" as="script" href="row-fixes.js?v=reader-actions-2" />
   <link rel="preload" as="script" href="row-hover.js?v=reader-hover-2" />
-  <link rel="preload" as="script" href="top30-layout.js?v=top30-region-colour-v18" />
-  <link rel="preload" as="script" href="ui-refinement.js?v=top30-open-1" />
+  <link rel="preload" as="script" href="top30-layout.js?v=top30-region-colour-v19" />
+  <link rel="preload" as="script" href="ui-refinement.js?v=top30-open-2" />
   <link rel="preload" as="script" href="cn-city-map.js?v=shared-preview-1" />
-  <link rel="preload" as="script" href="market-width.js?v=market-width-20" />
+  <link rel="preload" as="script" href="market-width.js?v=market-width-21" />
   <link rel="preload" as="script" href="salary-display.js?v=salary-history-2" />
   <link rel="preload" as="script" href="company-insight.js?v=job-status-terms-1" />
   <link rel="preload" as="script" href="guestbook.js?v=deferred-prefetch-160" />
@@ -101,7 +101,7 @@
       <div class="stats reveal" style="animation-delay:.2s" aria-label="核心数据">
         <div class="stat stat-primary stat-postings"><p class="k">Active Roles</p><p class="v" id="stat-total">—</p><p class="stat-note" id="stat-total-note">open across three markets</p></div>
         <div class="stat stat-orgs"><p class="k">Institutions</p><p class="v" id="stat-comp">—</p><p class="stat-note" id="stat-comp-note">with at least one open role</p></div>
-        <div class="stat stat-week"><p class="k">New This Week</p><p class="v" id="stat-week">—</p><p class="stat-note" id="stat-week-note">first seen in the last 7 days</p></div>
+        <div class="stat stat-week"><p class="k">New This Week</p><p class="v" id="stat-week">—</p><p class="stat-note" id="stat-week-note">first seen in the 7 days to the last update</p></div>
         <div class="stat stat-age"><p class="k">Median Listing Age</p><p class="v" id="stat-age">—</p><p class="stat-note">days since first seen</p></div>
         <div class="stat stat-meta-group">
           <div class="stat-status"><p class="k"><span class="status-label"><span class="live"></span>Last Updated</span></p><p class="v" id="stat-updated">—</p></div>
@@ -110,7 +110,7 @@
       </div>
       <div class="analytics reveal" style="animation-delay:.25s"><div class="analytics-card"><div class="analytics-left">
         <section class="ac-col ac-col-density" aria-labelledby="distTitle"><p class="fig-kicker"><span class="fig-no">01</span>Active inventory</p><h3 id="distTitle">Where the open roles are, by first-seen date</h3><p class="fig-dek" id="distDek">Each band stacks one market’s currently open roles by the day they first appeared.</p><ul class="region-chart-legend" role="list" aria-label="Region colors"><li class="hk" data-region="HK"><span class="region-legend-swatch" aria-hidden="true"></span>Hong Kong</li><li class="sg" data-region="SG"><span class="region-legend-swatch" aria-hidden="true"></span>Singapore</li><li class="cn" data-region="CN"><span class="region-legend-swatch" aria-hidden="true"></span>Mainland China</li></ul><div id="dist"></div></section>
-        <section class="ac-col ac-col-postings" aria-labelledby="postingsTitle"><p class="fig-kicker"><span class="fig-no">02</span>Daily flow</p><h3 id="postingsTitle">New Postings: A Rolling 30-Day Snapshot</h3><p class="fig-dek" id="sparkDek">Columns stack each day’s newly observed roles by market; the line is the 7-day average.</p><div class="spark" id="spark"></div></section>
+        <section class="ac-col ac-col-postings" aria-labelledby="postingsTitle"><p class="fig-kicker"><span class="fig-no">02</span>Daily flow</p><h3 id="postingsTitle">New Postings: A Rolling 30-Day Snapshot</h3><p class="fig-dek" id="sparkDek">Open roles first seen each day, stacked by market; the line is the 7-day average.</p><div class="spark" id="spark"></div></section>
       </div>
       <section class="ac-col ac-col-market" aria-labelledby="marketWidthTitle">
         <p class="fig-kicker"><span class="fig-no">03</span>Market breadth</p>
@@ -146,7 +146,7 @@
     <div class="content-row"><main id="jobs"></main><aside class="co-panel" id="coPanel" aria-labelledby="coName" aria-live="polite"><div class="co-card"><div class="co-head"><p class="co-eyebrow">Company Insight</p><button class="co-close" id="coClose" aria-label="清除机构筛选" title="清除机构筛选"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button><div class="co-id"><span class="co-mono" id="coMono">—</span><h2 class="co-name" id="coName">—</h2></div><div class="co-meta" id="coRegions"></div><div class="co-status" id="coStatus"></div></div><div class="co-kpis"><div class="co-kpi"><p class="co-k">有效职位</p><p class="co-v tnum" id="coCount">—</p></div><div class="co-kpi co-kpi-fresh"><p class="co-k" title="近7×24小时首次记录的职位，包含其后关闭的职位">7日新增</p><p class="co-v tnum" id="coFresh">—</p></div><div class="co-kpi"><p class="co-k" title="有效职位从首次记录到现在的时长中位数">有效中位</p><p class="co-v tnum" id="coMed">—</p></div><div class="co-kpi"><p class="co-k" title="有效职位从首次记录到现在的平均时长">有效平均</p><p class="co-v tnum" id="coMean">—</p></div></div><section class="co-sec" id="coHistSec"><h3 class="co-h">有效职位挂出天数<span class="co-hint">点击筛选</span></h3><div class="co-hist" id="coHist"></div></section><section class="co-sec" id="coAxisSec"><h3 class="co-h">有效职位分布轴<span class="co-hint"><i class="co-sw co-sw-med"></i>中位<i class="co-sw co-sw-mean"></i>平均</span></h3><div class="co-axis"><div class="co-plot" id="coPlot"></div><div class="co-scale" id="coScale"></div></div><p class="co-range" id="coOpenRange"></p></section><section class="co-sec" id="coCloseSec"><h3 class="co-h" title="标记关闭日期减首次记录日期；重新发布不重置起点。这是观测到的职位存续时长">关闭用时<span class="co-hint" id="coCloseSample" title="可计算时长的关闭职位数 / 关闭职位总数"></span></h3><dl class="co-close-metrics"><div><dt>中位数</dt><dd id="coCloseMed">—</dd></div><div><dt>平均数</dt><dd id="coCloseMean">—</dd></div></dl><p class="co-range" id="coCloseRange"></p></section><section class="co-foot"><h3 class="co-h">招聘分析</h3><div id="coFoot"></div><details class="co-history"><summary>近4周明细</summary><table class="co-table" id="coRhythm" aria-label="最近四个等长7天窗口的新增与关闭职位"></table></details><p class="co-quality" id="coQuality"></p></section></div></aside></div>
     <div class="empty" id="empty" role="status" aria-live="polite"><div class="big">未找到匹配的职位</div><div>试试调整筛选条件或清空搜索关键词。</div></div><footer class="footer"><span>数据来源：LinkedIn · 每 6 小时自动同步</span><a href="https://linkedin.claudecowork.workers.dev/">linkedin.claudecowork.workers.dev</a></footer>
   </div><button class="totop" id="totop" aria-label="回到顶部"></button>
-<script type="application/json" id="appScripts">["visitor-count.js?v=counter-live-4","company-logos.js?v=first-paint-1","list-query.js?v=windowed-1","list-view.js?v=role-history-4","job-store.js?v=stale-recovery-20261113","app.js?v=editorial-ledger-1","job-applications.js?v=17","row-fixes.js?v=reader-actions-2","row-hover.js?v=reader-hover-2","top30-layout.js?v=top30-region-colour-v18","ui-refinement.js?v=top30-open-1","cn-city-map.js?v=shared-preview-1","market-width.js?v=market-width-20","salary-display.js?v=salary-history-2","company-insight.js?v=job-status-terms-1","guestbook.js?v=deferred-prefetch-160"]</script>
+<script type="application/json" id="appScripts">["visitor-count.js?v=counter-live-4","company-logos.js?v=first-paint-1","list-query.js?v=windowed-1","list-view.js?v=role-history-4","job-store.js?v=stale-recovery-20261113","app.js?v=editorial-ledger-2","job-applications.js?v=17","row-fixes.js?v=reader-actions-2","row-hover.js?v=reader-hover-2","top30-layout.js?v=top30-region-colour-v19","ui-refinement.js?v=top30-open-2","cn-city-map.js?v=shared-preview-1","market-width.js?v=market-width-21","salary-display.js?v=salary-history-2","company-insight.js?v=job-status-terms-1","guestbook.js?v=deferred-prefetch-160"]</script>
 <script src="/guest-resume.js?v=1" defer></script>
 </body>
 </html>

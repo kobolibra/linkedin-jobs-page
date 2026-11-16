@@ -252,21 +252,33 @@ const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
 const prettyDate=key=>{
  const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
  if(!m)return String(key||'');
- return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+ return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 };
-/* Open on the most recent representative day. A day still being collected,
-   or a quiet weekend, can hold one or two postings and would show a single
-   giant tile; walk back at most six days to the latest day with at least half
-   the median of the active days in the window. Every day stays selectable. */
-function initialDay(series){
- const totals=series.counts.all.map(line=>line.reduce((sum,n)=>sum+n,0));
- const latest=totals.findLastIndex(n=>n>0);
- if(latest<0)return totals.length-1;
- const active=totals.filter(n=>n>0).sort((a,b)=>a-b);
- const mid=active.length%2?active[active.length>>1]:(active[active.length/2-1]+active[active.length/2])/2;
- for(let day=latest;day>=Math.max(0,latest-6);day--)if(totals[day]>=mid*.5)return day;
- return latest;
+/* A day is complete once the latest data update falls after its local
+   midnight; later postings cannot be first seen on it. Market Width opens on
+   the latest complete day, whatever its volume: a quiet but complete weekend
+   is shown as it is. Only when no day is complete yet does it fall back to
+   the latest day. The volume of a day never decides which day is shown. */
+const dayEnd=key=>{
+ const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+ return m?new Date(+m[1],+m[2]-1,+m[3]+1).getTime():NaN;
+};
+function latestUpdate(rows){
+ let latest=0;
+ for(const job of rows||[]){
+  if(!job||job.jobStatus==='expired')continue;
+  const t=Date.parse(job.pushTime||job.firstSeen||'');
+  if(Number.isFinite(t)&&t>latest)latest=t;
+ }
+ return latest||null;
 }
+function initialDay(series,updatedAt){
+ const last=series.keys.length-1;
+ if(!Number.isFinite(updatedAt))return last;
+ for(let day=last;day>=0;day--)if(dayEnd(series.keys[day])<=updatedAt)return day;
+ return last;
+}
+const isComplete=(key,updatedAt)=>Number.isFinite(updatedAt)&&dayEnd(key)<=updatedAt;
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
@@ -276,7 +288,8 @@ function render(rows,days){
  if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
  const series=aggregate(rows,days),last=series.keys.length-1;
  const strip=el('marketWidthStrip');
- let day=initialDay(series);
+ const updatedAt=latestUpdate(rows);
+ let day=initialDay(series,updatedAt);
  let region='all',selectedFirm=null,lastSize='';
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
@@ -329,7 +342,7 @@ function render(rows,days){
   }
   count.textContent=fmt(data.total);firms.textContent=data.firms+'/18';
   date.textContent=prettyDate(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
-  date.dataset.partial=String(day===last);
+  date.dataset.partial=String(!isComplete(series.keys[day],updatedAt));
   if(strip)drawStrip();
   prev.disabled=day===0;next.disabled=day===last;
   tabs.querySelectorAll('[data-market-region]').forEach(tab=>{
@@ -349,10 +362,10 @@ function render(rows,days){
   const fragment=document.createDocumentFragment();
   totals.forEach((n,i)=>{
    const b=document.createElement('button');
-   b.type='button';b.tabIndex=-1;b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(i===last?' is-partial':'');
+   b.type='button';b.tabIndex=-1;b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(isComplete(series.keys[i],updatedAt)?'':' is-partial');
    b.dataset.day=String(i);
    b.style.setProperty('--level',(n/max).toFixed(4));
-   b.title=prettyDate(series.keys[i])+(i===last?' (so far)':'')+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
+   b.title=prettyDate(series.keys[i])+(isComplete(series.keys[i],updatedAt)?'':' (so far)')+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
    fragment.append(b);
   });
   strip.replaceChildren(fragment);
@@ -421,7 +434,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,latestUpdate,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);

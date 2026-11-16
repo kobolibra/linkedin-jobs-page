@@ -308,7 +308,7 @@
     if (host.dataset.wired) return;
     host.dataset.wired = 'true';
     const tip = () => g.VizTip;
-    const focus = (row, x, y) => {
+    const focus = (row, x, y, anchor = null) => {
       host.querySelectorAll('.bubble-row.is-focus').forEach((n) => n.classList.remove('is-focus'));
       if (!row) { host.classList.remove('is-inspecting'); tip()?.hide(); return; }
       row.classList.add('is-focus');
@@ -320,17 +320,32 @@
         .map((r) => t.row(regionLabel[r], d[r.toLowerCase()] + ' · ' + share(d[r.toLowerCase()]), r)).join('');
       t.show('<span class="viz-tip-title">' + escSvg(d.company) + '</span>' + t.row('Active roles', total) + lines
         + t.row('Average age', Number(d.mean).toFixed(1) + ' days') + t.row('Median age', Number(d.median).toFixed(1) + ' days')
-        + '<span class="viz-tip-hint">Click to show these roles</span>', x, y);
+        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>', x, y, anchor);
     };
     host.addEventListener('pointermove', (e) => {
+      if (e.pointerType === 'touch') return; // touch readings are driven by taps below
       const row = e.target.closest('.bubble-row');
       focus(row && host.contains(row) ? row : null, e.clientX, e.clientY);
     });
-    host.addEventListener('pointerleave', () => focus(null));
-    host.addEventListener('focusin', (e) => {
-      const row = e.target.closest('.bubble-row'); if (!row) return;
+    host.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') focus(null); });
+    // Touch: the first tap on a bubble shows its numbers; a second tap on the
+    // same bubble opens its roles. Mouse and keyboard keep one-step drill-down.
+    // A tap also focuses the bubble, so read the state before the tap began.
+    let touch = false, wasFocused = false;
+    host.addEventListener('pointerdown', (e) => {
+      touch = e.pointerType === 'touch';
+      wasFocused = !!e.target.closest('.bubble-row')?.classList.contains('is-focus');
+    }, true);
+    host.addEventListener('click', (e) => {
+      const row = e.target.closest('.bubble-row');
+      if (!touch || !row || wasFocused) return;
+      e.preventDefault(); e.stopImmediatePropagation();
       const r = row.querySelector('.bubble-point').getBoundingClientRect();
       focus(row, r.right, r.top);
+    }, true);
+    host.addEventListener('focusin', (e) => {
+      const row = e.target.closest('.bubble-row'); if (!row) return;
+      focus(row, 0, 0, row.querySelector('.bubble-point'));
     });
     host.addEventListener('focusout', () => focus(null));
   };

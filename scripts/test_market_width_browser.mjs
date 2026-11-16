@@ -665,6 +665,13 @@ try{
    assert.equal(await summary(page),'4 new postings across 1/18 institutions');
    await page.locator('[data-market-region="all"]').click();
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
+   // The fixture's last update is 09:00 on day 28, so day 27 is the latest
+   // complete day and the default; day 28 is labelled as still collecting.
+   assert.equal(await page.locator('#marketWidthDate').getAttribute('aria-label'),days[27].key);
+   assert.equal(await page.locator('#marketWidthDate').getAttribute('data-partial'),'false');
+   await page.locator('#marketWidthNext').click();
+   assert.equal(await page.locator('#marketWidthDate').getAttribute('data-partial'),'true');
+   assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    await page.locator('#marketWidthNext').click();
    assert.equal(await summary(page),'0 new postings across 0/18 institutions');
    const allZero=await inspectMosaic(page,0);

@@ -445,21 +445,46 @@ window.VizTip=(()=>{
     document.body.append(tip);return tip;
   };
   const row=(label,value,region)=>'<span class="viz-tip-row"'+(region?' data-region="'+region+'"':'')+'><span class="viz-tip-key">'+(region?'<i aria-hidden="true"></i>':'')+label+'</span><b>'+value+'</b></span>';
-  function show(html,x,y){
-    const t=ensure();t.innerHTML=html;t.hidden=false;
-    const r=t.getBoundingClientRect();
+  // Keyboard readings pass their focused element as an anchor: on scroll the
+  // tooltip follows it instead of vanishing. Pointer readings hide on scroll.
+  let anchor=null;
+  const place=(x,y)=>{
+    const t=tip,r=t.getBoundingClientRect();
     let left=x+16,top=y-r.height-14;
     if(left+r.width>innerWidth-10)left=x-r.width-16;
     if(left<10)left=10;
     if(top<10)top=y+18;
     t.style.transform='translate('+Math.round(left)+'px,'+Math.round(top)+'px)';
+  };
+  function show(html,x,y,target=null){
+    const t=ensure();t.innerHTML=html;t.hidden=false;anchor=target;
+    if(anchor){const a=anchor.getBoundingClientRect();place(a.right,a.top);}else place(x,y);
   }
-  function hide(){if(tip)tip.hidden=true;}
-  addEventListener('scroll',hide,{passive:true});
+  function hide(){anchor=null;if(tip)tip.hidden=true;}
+  addEventListener('scroll',()=>{
+    if(!tip||tip.hidden)return;
+    if(anchor?.isConnected){const a=anchor.getBoundingClientRect();place(a.right,a.top);}else hide();
+  },{passive:true});
+  // Touch readings stay up after the finger lifts; a tap elsewhere dismisses.
+  document.addEventListener('pointerdown',e=>{if(!e.target.closest?.('#dist,#spark,#top50'))hide();},true);
   return {show,hide,row};
 })();
 const fmtInt=n=>Number(n||0).toLocaleString("en-US");
 const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);if(!a.length)return null;const m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2;};
+// Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
+function weeklyFlow(jobs){
+  const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=Date.parse(v);return Number.isFinite(t)?t:0;};
+  let end=0,current=0,prior=0;
+  for(const j of jobs)if(j&&j.jobStatus!=="expired"&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen));
+  if(!end)return null;
+  for(const j of jobs){
+    if(!j||!regions.includes(j.location))continue;
+    const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
+    const t=date(j.firstSeen||j.pushTime);if(!t||t>end)continue;
+    const age=end-t;if(age<week)current++;else if(age<2*week)prior++;
+  }
+  return {current,prior,end:new Date(end).toISOString()};
+}
 /* Masthead and metric band: every figure is derived from the same
    deduplicated rows as the charts below; nothing here is a static claim. */
 function renderHeadline(allRows,chartRows){
@@ -483,18 +508,20 @@ function renderHeadline(allRows,chartRows){
     if(shareEl)shareEl.textContent=(share*100).toFixed(1)+'%';
     if(bar)bar.style.setProperty('--share',share.toFixed(4));
   }
-  // Weekly flow counts every role first seen in a window, including roles
-  // that have since closed, so this week and last week are comparable.
-  const flowRows=overview?chartRows:allRows;
-  let week=0,prior=0;
-  for(const job of flowRows){
-    const t=Date.parse(seenAt(job));if(!Number.isFinite(t))continue;
-    const age=(now-t)/day;if(age<7)week++;else if(age<14)prior++;
-  }
+  // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
+  // CN/HK/SG roles first seen in the 7 days ending at the latest data update,
+  // including roles that have since closed. Guests receive the counts from the
+  // server because their preview payload carries open roles only.
+  const flow=overview?overview.weekly:weeklyFlow(allRows);
   const weekEl=document.getElementById("stat-week"),weekNote=document.getElementById("stat-week-note");
-  if(weekEl)animNum(weekEl,week);
-  if(weekNote&&!overview&&prior>0){
-    const change=(week-prior)/prior*100,flat=Math.abs(change)<0.5;
+  if(weekEl){
+    if(flow)animNum(weekEl,flow.current);else weekEl.textContent='—';
+    const end=flow?.end?new Date(flow.end):null;
+    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore first seen in the 7 days to '+
+      end.toLocaleString('en-GB',{timeZone:'Asia/Singapore',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' SGT, including roles that have since closed';
+  }
+  if(weekNote&&flow&&flow.prior>0){
+    const change=(flow.current-flow.prior)/flow.prior*100,flat=Math.abs(change)<0.5;
     weekNote.textContent=flat?'level with the prior 7 days':(change>0?'▲ ':'▼ ')+Math.abs(change).toFixed(0)+'% vs the prior 7 days';
     weekNote.dataset.trend=flat?'flat':change>0?'up':'down';
   }
@@ -1008,7 +1035,7 @@ jobsDataPromise
           lines+window.VizTip.row('Total',countFormat.format(sum)),e.clientX,e.clientY);
       };
       capture.addEventListener('pointermove',inspect);
-      capture.addEventListener('pointerleave',()=>{guide.style.display='none';window.VizTip.hide();});
+      capture.addEventListener('pointerleave',e=>{if(e.pointerType==='touch')return;guide.style.display='none';window.VizTip.hide();});
     }
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
@@ -1058,7 +1085,7 @@ jobsDataPromise
       }).join('');
       const label=d.label+': '+d.total+' new postings'+(partial?' so far':'')+
         STACK.filter(r=>d.rc[r]).map(r=>', '+r+' '+d.rc[r]).join('');
-      return '<g class="rhythm-point'+(partial?' is-partial':'')+'" tabindex="0" role="img" data-day="'+i+
+      return '<g class="rhythm-point'+(partial?' is-partial':'')+'" tabindex="'+(i===lastIndex?'0':'-1')+'" role="img" data-day="'+i+
         '" data-total="'+d.total+'" aria-label="'+label+'">'+segments+
         '<rect class="rhythm-bar'+(d.weekend?' weekend':'')+(isPeak?' peak':'')+
         '" x="'+x.toFixed(2)+'" y="'+y.toFixed(2)+'" width="'+barWidth.toFixed(2)+
@@ -1096,20 +1123,28 @@ jobsDataPromise
     }
     if(window.VizTip){
       const tipFormat=new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short'});
-      const inspectDay=(node,x,y)=>{
+      const inspectDay=(node,x,y,target=null)=>{
         const i=Number(node.dataset.day),d=days[i];if(!d)return;
         sparkEl.querySelectorAll('.rhythm-point.is-hover').forEach(n=>n.classList.remove('is-hover'));
         node.classList.add('is-hover');
         const lines=[...STACK].reverse().filter(r=>d.rc[r]).map(r=>window.VizTip.row(regionName[r],d.rc[r],r)).join('');
         window.VizTip.show('<span class="viz-tip-title">'+tipFormat.format(d.date)+(i===lastIndex?' · so far':'')+'</span>'+lines+
-          window.VizTip.row('Total',d.total)+(i<lastIndex?window.VizTip.row('7-day average',Math.round(trailing[i])):''),x,y);
+          window.VizTip.row('Total',d.total)+(i<lastIndex?window.VizTip.row('7-day average',Math.round(trailing[i])):''),x,y,target);
       };
       const clear=()=>{sparkEl.querySelectorAll('.rhythm-point.is-hover').forEach(n=>n.classList.remove('is-hover'));window.VizTip.hide();};
       sparkEl.addEventListener('pointermove',e=>{const node=e.target.closest('.rhythm-point');if(node)inspectDay(node,e.clientX,e.clientY);else clear();});
-      sparkEl.addEventListener('pointerleave',clear);
-      sparkEl.addEventListener('focusin',e=>{const node=e.target.closest('.rhythm-point');if(!node)return;const r=node.getBoundingClientRect();inspectDay(node,r.right,r.top);});
+      sparkEl.addEventListener('pointerleave',e=>{if(e.pointerType!=='touch')clear();});
+      sparkEl.addEventListener('focusin',e=>{const node=e.target.closest('.rhythm-point');if(!node)return;inspectDay(node,0,0,node.querySelector('.rhythm-bar-hit')||node);});
       sparkEl.addEventListener('focusout',clear);
     }
+    // One tab stop for all thirty columns; arrow keys, Home and End move by day.
+    sparkEl.addEventListener('keydown',e=>{
+      const node=e.target.closest?.('.rhythm-point');if(!node)return;
+      const points=[...sparkEl.querySelectorAll('.rhythm-point')],at=points.indexOf(node);
+      const to=e.key==='ArrowLeft'?at-1:e.key==='ArrowRight'?at+1:e.key==='Home'?0:e.key==='End'?points.length-1:null;
+      if(to===null||to<0||to>=points.length)return;
+      e.preventDefault();node.tabIndex=-1;points[to].tabIndex=0;points[to].focus();
+    });
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
     // as New Postings, with the radar exposing a separate region selector.

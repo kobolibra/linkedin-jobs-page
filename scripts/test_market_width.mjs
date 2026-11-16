@@ -220,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-20','market-width.css?v=market-title-nowrap-26'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-21','market-width.css?v=market-title-nowrap-26'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -349,13 +349,22 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
 
 
 
-test('Market Width opens on the latest representative day, never a sparse partial one',()=>{
- const {initialDay}=require('../market-width.js');
- const series=totals=>({counts:{all:totals.map(n=>Array.from({length:18},(_,i)=>i===0?n:0))}});
- assert.equal(initialDay(series([10,12,0,11,14,9])),5,'a normal latest day is shown as is');
- assert.equal(initialDay(series([10,12,11,14,9,2])),4,'a still-collecting latest day with two postings yields to yesterday');
- assert.equal(initialDay(series([10,12,11,14,1,2])),3,'a quiet weekend is skipped back to the last full weekday');
- assert.equal(initialDay(series([10,12,11,14,9,0])),4,'a day with no postings yet is skipped');
- assert.equal(initialDay(series([0,0,0])),2,'all-zero windows still open on the latest day');
- assert.equal(initialDay(series([1,1,1,1,1,1,1,1,1,40])),9);
+test('Market Width opens on the latest fully collected day, independent of its volume',()=>{
+ const {initialDay,latestUpdate}=require('../market-width.js');
+ const keys=['2026-11-12','2026-11-13','2026-11-14','2026-11-15','2026-11-16'];
+ const series=totals=>({keys,counts:{all:totals.map(n=>Array.from({length:18},(_,i)=>i===0?n:0))}});
+ const at=s=>new Date(s).getTime();
+ // Data last updated during 16 Nov: 16 Nov is still being collected, 15 Nov is complete.
+ assert.equal(initialDay(series([40,213,3,2,2]),at('2026-11-16T12:02:00')),3,
+  'a complete but quiet Sunday is shown as it is; volume never moves the default');
+ assert.equal(initialDay(series([40,213,3,0,2]),at('2026-11-16T12:02:00')),3,
+  'a complete day with zero postings is still the latest complete day');
+ assert.equal(initialDay(series([40,213,3,2,2]),at('2026-11-17T00:05:00')),4,
+  'once an update lands after midnight, the previous day becomes the default');
+ assert.equal(initialDay(series([0,0,0,0,9]),at('2026-11-12T08:00:00')),4,
+  'with no complete day in the window, fall back to the latest day');
+ assert.equal(initialDay(series([1,1,1,1,1]),null),4,'unknown update time falls back to the latest day');
+ assert.equal(latestUpdate([{pushTime:'2026-11-16T04:02:00Z'},{firstSeen:'2026-11-15T01:00:00Z'},{pushTime:'2026-11-17T00:00:00Z',jobStatus:'expired'},{firstSeen:'bad'}]),
+  Date.parse('2026-11-16T04:02:00Z'),'latest update reads active rows only and ignores invalid dates');
+ assert.doesNotMatch(read('market-width.js'),/mid\*\.5|median of the active days/,'no volume threshold decides the default day');
 });

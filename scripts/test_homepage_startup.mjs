@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync,mkdirSync,writeFileSync} from 'node:fs';
 import {resolve,extname} from 'node:path';
 import {chromium,webkit} from 'playwright';
-import {previewData,publicPreviewPayload} from './guest_preview.mjs';
+import {previewData,publicPreviewPayload,weeklyFlow} from './guest_preview.mjs';
 const root=resolve(new URL('..',import.meta.url).pathname);
 const base='http://127.0.0.1:47651';
 const index=JSON.parse(readFileSync(resolve(root,'jobs-index.json'),'utf8'));
@@ -61,6 +61,11 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
   }else{
    await assertRegionProjections(page);
    await assertRegionVisualBalance(page);
+   // New This Week has one definition for guests and signed-in readers:
+   // roles first seen in the 7 days to the latest update, including closed ones.
+   const flow=weeklyFlow(document.jobs);
+   await page.waitForFunction(n=>Number(document.getElementById('stat-week')?.textContent.replace(/\D/g,''))===n,flow?.current??-1,{timeout:5000});
+   if(flow?.prior)assert.match(await page.locator('#stat-week-note').textContent(),/% vs the prior 7 days|level with the prior 7 days/);
    assert.equal(state.ready,true);assert.equal(state.empty,false);assert.ok(state.rows>0);assert.ok(state.days>0);
    assert.ok(state.firstHeading?.includes('\u5e74'),'job-list keeps its original Chinese date labels');
    assert.equal(consoleErrors.length,0,consoleErrors.join('\n'));assert.equal(errors.length,0,errors.join('\n'));

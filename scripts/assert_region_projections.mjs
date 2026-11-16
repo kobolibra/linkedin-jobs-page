@@ -188,7 +188,11 @@ export async function assertRegionLegend(page){
     weight:text.fontWeight,size:parseFloat(text.fontSize),swatchWidth:r.width,swatchHeight:r.height};
   });
   return {count:document.querySelectorAll('.region-chart-legend').length,
-   followsTitle:legend.previousElementSibling?.id==='distTitle',precedesPlot:legend.nextElementSibling?.id==='dist',
+   // Figure heading block: kicker, title, then an optional data-driven dek.
+   // The legend follows that block directly and sits immediately above the plot.
+   followsTitle:(()=>{const prev=legend.previousElementSibling;return prev?.id==='distTitle'||
+    (prev?.id==='distDek'&&prev.previousElementSibling?.id==='distTitle');})(),
+   precedesPlot:legend.nextElementSibling?.id==='dist',
    title:rect(document.querySelector('#distTitle')),box:rect(legend),plot,
    endpoint:plot.left+(plot.right-plot.left)*Number(svg.dataset.plotRight)/svg.viewBox.baseVal.width,
    items,controls:legend.querySelectorAll('button,a,input,[role="button"],[tabindex]').length,
