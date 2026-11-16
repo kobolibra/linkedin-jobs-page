@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
-const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,playbackIndices,nextPlaybackDay}=require('../market-width.js');
+const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,playbackIndices,nextPlaybackDay,trendGeometry,trendPointAt}=require('../market-width.js');
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
@@ -220,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-breadth-dissolve-24','market-width.css?v=market-breadth-dissolve-29'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-trend-line-25','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -403,4 +403,50 @@ test('seven-day Market Width loop is exactly the newest seven calendar days, inc
  assert.doesNotMatch(css,/transition:left/,'no arbitrary tile motion implying continuity between dates');
  assert.match(home,/border-top:1px solid var\(--h-rule\);border-bottom:1px solid var\(--h-rule\)/,
   'the top metric rule belongs to the same fine-line system as the rest of the page');
+});
+
+test('Market Breadth uses a shape-preserving 30-day smooth trend, not daily columns',()=>{
+ const vals=[0,0,6,12,12,5,0,4,18,2,0,0,9,17,20,3,1,7,11,11,6,2,15,9,2,0,5,13,8,1];
+ const geom=trendGeometry(vals,600,44);
+ assert.equal(geom.points.length,30);
+ assert.equal(geom.slopes.length,30);
+ assert.equal((geom.path.match(/ C /g)||[]).length,29,'each pair of observed daily totals has a cubic segment');
+ assert.ok(!/NaN|Infinity/.test(geom.path),'missing days or flat sections never break the SVG');
+ vals.forEach((_,i)=>{
+  const p=trendPointAt(geom,i);
+  assert.ok(Math.abs(p.y-geom.points[i].y)<.0001,'observed day lands exactly on the line');
+  assert.ok(Math.abs(p.x-geom.points[i].x)<.0001,'point x matches the actual day');
+ });
+ for(let i=0;i<vals.length-1;i++)for(let j=0;j<=20;j++){
+  const y=trendPointAt(geom,i+j/20).y;
+  const lo=Math.min(geom.points[i].y,geom.points[i+1].y);
+  const hi=Math.max(geom.points[i].y,geom.points[i+1].y);
+  assert.ok(y>=lo-.00001&&y<=hi+.00001,'monotone line must not invent a new peak between actual days');
+ }
+ const flat=trendGeometry([0,0,0,0],320),single=trendGeometry([1],320);
+ assert.ok(!/NaN|Infinity/.test(flat.path+single.path));
+ assert.equal(single.points.length,1);
+});
+
+test('editorial cleanup: masthead folio has no top rule and Fig. 1 has no duplicate legend',()=>{
+ const html=read('index.html'),masthead=read('next-journey-masthead.css');
+ const home=read('home.css'),legacy=read('styles-refinement.css');
+ assert.doesNotMatch(html,/class="region-chart-legend"/,'direct plot labels replace the redundant region legend');
+ assert.doesNotMatch(legacy,/\.region-chart-legend/,'remove retired legend styling');
+ assert.match(masthead,/\.nj-masthead-folio\s*\{\s*border-top:0;/);
+ assert.match(home,/#spark \.rhythm-avg\{[^}]*stroke:var\(--h-celadon\)/);
+ assert.match(home,/#spark \.rhythm-avg-label\{fill:var\(--h-celadon-ink\)\}/);
+ assert.doesNotMatch(home,/mw-date-nav output\[data-partial="true"\]::after/,'do not print so far beside a date');
+ assert.match(html,/Mean and median listing age define the horizontal and vertical axes/);
+});
+
+test('the trend marker is synchronized with the selected calendar day',()=>{
+ const js=read('market-width.js'),css=read('home.css');
+ assert.match(js,/class','mw-trend-line'/);
+ assert.match(js,/class','mw-trend-indicator'/);
+ assert.match(js,/const eased=t\*t\*\(3-2\*t\)/);
+ assert.match(js,/trendPointAt\(geometry,oldDay\+\(day-oldDay\)\*eased\)/);
+ assert.match(js,/if\(t<\.5\)paint\(oldDay,1-2\*t\)/,'wraps dissolve instead of racing across six dates');
+ assert.doesNotMatch(css,/mw-strip-day::before/,'daily bars must be fully replaced by the trend');
+ assert.match(css,/\.mw-strip\{/);
 });
