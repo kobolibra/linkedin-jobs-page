@@ -287,6 +287,15 @@
 /* Background bubbles remain steady on hover; only the inspected bubble gains a quiet outline. */
 .bubble-row.is-focus .bubble-point{opacity:1;stroke:var(--h-ink);stroke-width:1.4px}
 .bubble-row.is-focus .bubble-company{fill:var(--h-ink)}
+/* Keep radius and label geometry stationary while moving between firms.
+   Legacy base styles scale every hovered bubble by 1.14, introducing
+   distracting expansion/shrinkage and hit-target oscillation. */
+.top50-chart .bubble-point:hover,
+.top50-chart .bubble-drill:hover .bubble-point,
+.top50-chart .bubble-drill:focus-visible .bubble-point{
+ transform:none;
+ transition:stroke-color .16s ease,opacity .16s ease;
+}
 
 /* ---------- Fig. 05 · cities ---------- */
 .cn-map-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
