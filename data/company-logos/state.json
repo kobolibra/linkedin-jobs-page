@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-16T10:03:40.474328+00:00",
+    "checkedAt": "2026-11-16T16:02:40.475281+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-16T10:03:28.511957+00:00",
+    "checkedAt": "2026-11-16T16:02:28.542924+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-16T10:03:34.364811+00:00",
+    "checkedAt": "2026-11-16T16:02:34.391715+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-16T10:03:37.415942+00:00",
+    "checkedAt": "2026-11-16T16:02:37.447099+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11865,5 +11865,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFbnadt4ubG0g/company-logo_100_100/company-logo_100_100/0/1646053736840/onthelist_logo?e=2147483647&v=beta&t=US6REt6GAf4MIEFrOMNLN0xWRDC81fIyKc46y6lSf8k",
     "companyUrl": "https://hk.linkedin.com/company/onthelist",
     "sourceJobId": "4490288194"
+  },
+  "ginkgo tree asset management": {
+    "name": "Ginkgo Tree Asset Management",
+    "checkedAt": "2026-11-16T16:02:21.257537+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "80cc3d44f2164debb9ddd122.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFbuOwF82TbOw/company-logo_100_100/company-logo_100_100/0/1727865882506?e=2147483647&v=beta&t=FnMgq6sQw6B3oXVCrC89Yw3mSTwFYqEuz6FFeAM4D20",
+    "companyUrl": "https://www.linkedin.com/company/ginkgo-tree-asset-management",
+    "sourceJobId": "4490294312"
+  },
+  "hpe aruba networking": {
+    "name": "HPE Aruba Networking",
+    "checkedAt": "2026-11-16T16:02:22.623474+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "59ab8dbc118de5e6fc1a2876.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGDnmjOQlmgtg/company-logo_100_100/B4EZdk_QyCHsAU-/0/1749745995186/aruba_a_hewlett_packard_enterprise_company_logo?e=2147483647&v=beta&t=Jew_bDgyEZD6bjlkWumu32nNXI8BFKNx7cbTlFGQPKE",
+    "companyUrl": "https://www.linkedin.com/company/aruba-a-hewlett-packard-enterprise-company",
+    "sourceJobId": "4490603490"
+  },
+  "ministry of law, singapore": {
+    "name": "Ministry of Law, Singapore",
+    "checkedAt": "2026-11-16T16:02:25.567714+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1402e665db5dc85884bac58d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQG8AmPPCt3jPg/company-logo_100_100/company-logo_100_100/0/1630613138766?e=2147483647&v=beta&t=sSFiliJPN_z15W5SYaBoZBQuFYwCfC9d_eqHvBWFUWc",
+    "companyUrl": "https://sg.linkedin.com/company/minlawsg",
+    "sourceJobId": "4489744963"
   }
 }
