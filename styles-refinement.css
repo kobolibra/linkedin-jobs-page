@@ -627,15 +627,21 @@ body.compact .job > .mono { margin-top:2px; }
   opacity:.36;fill:none;vector-effect:non-scaling-stroke;pointer-events:none;
 }
 [data-theme="dark"] #dist .region-projection-line{opacity:.34}
+/* Quiet mineral-tinted dimension stems; saturated color belongs to the
+   actual contour and the two small open chevron tips. The hierarchy is:
+   contour first, readable count second, measurement third, guides last. */
 #dist .region-measure-height{
-  stroke:var(--region-ink);stroke-width:.85;opacity:.6;
+  stroke:color-mix(in srgb,var(--region-ink) 30%,var(--viz-secondary));
+  stroke-width:.9;opacity:.56;
   stroke-linecap:round;vector-effect:non-scaling-stroke;
 }
+[data-theme="dark"] #dist .region-measure-height{opacity:.51}
 #dist .region-measure-arrow{
-  stroke:var(--region-ink);stroke-width:.85;opacity:.64;
+  stroke:var(--region-ink);stroke-width:.95;opacity:.78;
   stroke-linejoin:round;stroke-linecap:round;fill:none;
   vector-effect:non-scaling-stroke;
 }
+[data-theme="dark"] #dist .region-measure-arrow{opacity:.73}
 #dist .region-date-tick,
 #spark .rhythm-date-tick{
   stroke:var(--viz-quiet);stroke-width:.85;opacity:.5;
