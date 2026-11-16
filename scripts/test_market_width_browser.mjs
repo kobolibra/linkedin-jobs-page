@@ -122,6 +122,10 @@ async function renderLeft(page,chartData,theme){
     ink:getComputedStyle(node).stroke
    })),
    arrowheads:svg.querySelectorAll('.region-measure-arrow').length,
+   arrowheadInks:[...svg.querySelectorAll('.region-measure-group')].map(g=>({
+    region:g.querySelector('.region-measure-height')?.dataset.region,
+    ink:g.querySelector('.region-measure-arrow')?getComputedStyle(g.querySelector('.region-measure-arrow')).stroke:null
+   })),
    regionDateTickCount:svg.querySelectorAll('.region-date-tick').length,
    postingDateTickCount:document.querySelectorAll('#spark .rhythm-date-tick').length,
    legendCount:document.querySelectorAll('#dist .region-end-labels').length,
@@ -289,7 +293,11 @@ async function renderLeft(page,chartData,theme){
   assert.ok(Math.abs(span.y2-(y0-cumulative*unitHeight))<.16);
   assert.ok(Math.abs((span.y1-span.y2)-value*unitHeight)<.16,
    'each displayed vertical gap is exactly proportional to the regional role count');
-  assert.equal(span.ink,quality.series[k.toLowerCase()]);
+  assert.notEqual(span.ink,quality.series[k.toLowerCase()],
+   'region-colored contours must remain more chromatic than measurement stems');
+  const head=quality.arrowheadInks.find(v=>v.region===k);
+  assert.equal(head?.ink,quality.series[k.toLowerCase()],
+   'each arrowhead retains the exact region color');
  }
  assert.deepEqual(levels.map(x=>x.level).sort((a,b)=>a-b),
   [...new Set([0,visibleCounts[0],visibleCounts[0]+visibleCounts[1],
