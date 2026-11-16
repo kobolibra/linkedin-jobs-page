@@ -407,47 +407,61 @@ function render(rows,days){
   strip.replaceChildren(fragment);
  }
  strip?.setAttribute('aria-hidden','true');
- strip?.addEventListener('click',e=>{
+ listen(strip,'click',e=>{
   const target=e.target.closest('.mw-strip-day');if(target)chooseDay(Number(target.dataset.day));
  });
  function chooseDay(next){
+  // Manual navigation pauses the loop without constraining the full 30 days.
+  stopPlay();
   const to=Math.max(0,Math.min(last,next));if(to===day)return;day=to;draw();
  }
  function chooseRegion(value){
-  if(!REGIONS.includes(value)||value===region)return;region=value;draw();
+  if(!REGIONS.includes(value)||value===region)return;
+  stopPlay();region=value;draw();
  }
- prev.addEventListener('click',()=>chooseDay(day-1));
- next.addEventListener('click',()=>chooseDay(day+1));
- tabs.addEventListener('click',e=>{
+ listen(play,'click',()=>{
+  if(playing){stopPlay();return;}
+  playing=true;day=loopDays[0]; // Chronological playback from oldest of seven.
+  draw();syncPlayControl();schedulePlay();
+ });
+ listen(board,'pointerenter',()=>{boardHover=true;clearPlayTimer();});
+ listen(board,'pointerleave',()=>{boardHover=false;schedulePlay();});
+ listen(document,'visibilitychange',schedulePlay);
+ listen(prev,'click',()=>chooseDay(day-1));
+ listen(next,'click',()=>chooseDay(day+1));
+ listen(tabs,'click',e=>{
   const target=e.target.closest('[data-market-region]');
   if(target)chooseRegion(target.dataset.marketRegion);
  });
- tabs.addEventListener('keydown',e=>{
+ listen(tabs,'keydown',e=>{
   if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
   const index=REGIONS.indexOf(region);
   chooseRegion(REGIONS[e.key==='Home'?0:e.key==='End'?3:(index+(e.key==='ArrowRight'?1:3))%4]);
   tabs.querySelector('[data-market-region="'+region+'"]')?.focus();e.preventDefault();
  });
- board.addEventListener('pointerover',e=>{
+ listen(board,'pointerover',e=>{
   const tile=e.target.closest('.mw-tile');if(tile)explain(Number(tile.dataset.firm));
  });
- board.addEventListener('pointerout',e=>{
+ listen(board,'pointerout',e=>{
   if(e.target.closest('.mw-tile')&&!board.querySelector('.mw-tile:hover'))quietDetail();
  });
- board.addEventListener('focusin',e=>{
+ listen(board,'focusin',e=>{
   const tile=e.target.closest('.mw-tile');if(tile)explain(Number(tile.dataset.firm));
+  clearPlayTimer();
  });
- board.addEventListener('focusout',e=>{
+ listen(board,'focusout',e=>{
   if(e.target.closest('.mw-tile'))quietDetail();
+  requestAnimationFrame(schedulePlay);
  });
- board.addEventListener('click',e=>{
+ listen(board,'click',e=>{
+  stopPlay(); // Inspecting a firm must never be interrupted by a loop tick.
   const tile=e.target.closest('.mw-tile');if(!tile)return;
   const chosen=Number(tile.dataset.firm);
   selectedFirm=selectedFirm===chosen?null:chosen;
   board.querySelectorAll('.mw-tile').forEach(item=>item.setAttribute('aria-pressed',String(Number(item.dataset.firm)===selectedFirm)));
   if(selectedFirm===null)quietDetail();else explain(selectedFirm);
  });
- board.addEventListener('keydown',e=>{
+ listen(board,'keydown',e=>{
   if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Escape'].includes(e.key))return;
   if(e.key==='Escape'){
    selectedFirm=null;quietDetail();
@@ -459,18 +473,31 @@ function render(rows,days){
   const step=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;
   available[(idx+step+available.length)%available.length].focus();e.preventDefault();
  });
+ syncPlayControl();
  draw();
+ if(typeof IntersectionObserver==='function'){
+  visibilityObserver=new IntersectionObserver(entries=>{
+   inView=entries.some(entry=>entry.isIntersecting);
+   schedulePlay();
+  },{threshold:0.01});
+  visibilityObserver.observe(rootEl);
+ }
  if(typeof ResizeObserver==='function'){
-  new ResizeObserver(()=>{
+  sizeObserver=new ResizeObserver(()=>{
    const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
    if(size!==lastSize)draw();
-  }).observe(board);
- }else if(root?.addEventListener)root.addEventListener('resize',()=>{
+  });
+  sizeObserver.observe(board);
+ }else if(root?.addEventListener)listen(root,'resize',()=>{
   const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
   if(size!==lastSize)draw();
  });
+ rootEl._mwPlaybackCleanup=()=>{
+  clearPlayTimer();events.abort();
+  visibilityObserver?.disconnect();sizeObserver?.disconnect();
+ };
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,latestUpdate,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,latestUpdate,playbackIndices,nextPlaybackDay,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
