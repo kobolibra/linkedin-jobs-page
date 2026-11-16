@@ -31,8 +31,15 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
  await context.route('**/*',async route=>{
   const request=route.request(),url=new URL(request.url()),path=url.pathname;
   if(url.origin!==base){
+   // Real cross-origin API responses require CORS headers. Fulfil requests
+   // locally with the correct response contract; never contact the service.
    const callback=url.searchParams.get('jsonpCallback');
-   return route.fulfill({status:200,contentType:callback?'application/javascript':path.includes('css')?'text/css':'application/json',body:callback?`${callback}({site_pv:1})`:path.includes('css')?'':JSON.stringify({messages:[],data:[],total:0})});
+   const guestbook=url.hostname==='guestbook-api.claudecowork.workers.dev';
+   return route.fulfill({
+    status:200,headers:{'access-control-allow-origin':'*','access-control-allow-methods':'GET,POST,OPTIONS','access-control-allow-headers':'Content-Type,X-Admin-Key'},
+    contentType:callback?'application/javascript':path.includes('css')?'text/css':'application/json',
+    body:callback?`${callback}({site_pv:1})`:path.includes('css')?'':guestbook&&request.method()==='GET'?'[]':JSON.stringify({messages:[],data:[],total:0})
+   });
   }
   requests.push(path);
   const json=(body,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(body)});

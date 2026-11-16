@@ -21,7 +21,15 @@ async function open(browser,{width,theme='light',touch=false,reducedMotion='no-p
  page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))errors.push(m.text());});
  await context.route('**/*',route=>{
   const url=new URL(route.request().url()),path=url.pathname;
-  if(url.origin!==base){const cb=url.searchParams.get('jsonpCallback');return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',body:cb?`${cb}({site_pv:1})`:'{}'});}
+  if(url.origin!==base){
+   const cb=url.searchParams.get('jsonpCallback');
+   const guestbook=url.hostname==='guestbook-api.claudecowork.workers.dev';
+   return route.fulfill({
+    status:200,headers:{'access-control-allow-origin':'*','access-control-allow-methods':'GET,POST,OPTIONS','access-control-allow-headers':'Content-Type,X-Admin-Key'},
+    contentType:cb?'application/javascript':'application/json',
+    body:cb?`${cb}({site_pv:1})`:guestbook&&route.request().method()==='GET'?'[]':'{}'
+   });
+  }
   const json=body=>route.fulfill({contentType:'application/json',body:JSON.stringify(body)});
   if(path==='/auth/session')return json({enabled:true,user:{id:'interaction-test',name:'Regression'},csrf:'test-only'});
   if(path==='/auth/preferences')return json({userId:'interaction-test',entries:[],cursor:0,more:false,acknowledged:[]});
