@@ -255,6 +255,12 @@
 .mw-encoding{color:var(--h-faint);font:400 11px/1.45 var(--sans)}
 .mw-nav{border-radius:7px}
 .mw-nav:focus-visible{outline:2px solid var(--h-accent)}
+/* The time-lapse has only a brief ink fade: no scale or positional morphing
+   that could imply false continuity between two separate daily treemaps. */
+@keyframes mw-day-reveal{from{opacity:.62}to{opacity:1}}
+.mw-map-board.is-playing .mw-tile-face{animation:mw-day-reveal .23s ease-out both}
+@media(prefers-reduced-motion:reduce){.mw-map-board.is-playing .mw-tile-face{animation:none!important}}
+
 /* Fig. 03 · deliberately opt-in seven-day loop. A small editorial transport
    control in the EXISTING date row, not a second toolbar. */
 .mw-play{
