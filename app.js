@@ -1074,7 +1074,8 @@ jobsDataPromise
         '" width="'+step.toFixed(2)+'" height="'+(sBase-sTop)+'"/></g>';
     }).join('');
     const avgPoints=trailing.slice(0,lastIndex).map((v,i)=>sx(i).toFixed(2)+','+sy(Math.min(v,rhythmAxis.max)).toFixed(2));
-    const average=avgPoints.length>1?'<polyline class="rhythm-avg" points="'+avgPoints.join(' ')+'"/>'+
+    const average=avgPoints.length>1?'<polyline class="rhythm-avg-halo" aria-hidden="true" points="'+avgPoints.join(' ')+'"/>'+ 
+      '<polyline class="rhythm-avg" points="'+avgPoints.join(' ')+'"/>'+
       '<text class="rhythm-avg-label" x="'+(sx(lastIndex-1)+3).toFixed(2)+'" y="'+(sy(trailing[lastIndex-1])-5).toFixed(2)+
       '" text-anchor="end">7-day avg '+Math.round(trailing[lastIndex-1])+'</text>':'';
     const peakLabel=peakIndex>=0?'<text class="rhythm-peak-label" x="'+sx(peakIndex).toFixed(2)+'" y="'+(sy(peak)-5).toFixed(2)+

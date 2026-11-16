@@ -142,7 +142,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  const home=readFileSync(new URL('../home.css',import.meta.url),'utf8');
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/styles-refinement\.css\?v=editorial-ledger-1/);
- assert.match(html,/home\.css\?v=celadon-trend-5/);
+ assert.match(html,/home\.css\?v=porcelain-blue-6/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(source,/const STACK=\["HK","SG","CN","OTHER"\];/,'daily columns stack in the regional chart order');
  assert.match(source,/class="rhythm-seg '\+r\.toLowerCase\(\)/);
@@ -221,7 +221,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=focused-home-4/);
+ assert.match(html,/app\.js\?v=porcelain-blue-5/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });

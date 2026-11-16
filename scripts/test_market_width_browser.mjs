@@ -103,7 +103,13 @@ async function renderLeft(page,chartData,theme){
     stacked:[...g.querySelectorAll('.rhythm-seg')].reduce((n,seg)=>n+Number(seg.dataset.count),0),
     order:[...g.querySelectorAll('.rhythm-seg')].map(seg=>seg.dataset.region)})),
    averageLine:document.querySelectorAll('#spark .rhythm-avg').length,
+   averageHaloCount:document.querySelectorAll('#spark .rhythm-avg-halo').length,
    averageInk:getComputedStyle(document.querySelector('#spark .rhythm-avg')).stroke,
+   averageWidth:parseFloat(getComputedStyle(document.querySelector('#spark .rhythm-avg')).strokeWidth),
+   averageHaloInk:getComputedStyle(document.querySelector('#spark .rhythm-avg-halo')).stroke,
+   averageHaloWidth:parseFloat(getComputedStyle(document.querySelector('#spark .rhythm-avg-halo')).strokeWidth),
+   averagePoints:document.querySelector('#spark .rhythm-avg').getAttribute('points'),
+   averageHaloPoints:document.querySelector('#spark .rhythm-avg-halo').getAttribute('points'),
    averageLabelInk:getComputedStyle(document.querySelector('#spark .rhythm-avg-label')).fill,
    labelTotal:statRows.reduce((n,node)=>n+Number(node.dataset.count),0),
    stageTotal:Number(stage.dataset.visibleTotal),
@@ -222,10 +228,17 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.columnSums.every(c=>c.order.every((r,i,a)=>!i||stackRank[a[i-1]]<stackRank[r])),
   'every column stacks HK, SG, CN, OTHER from the baseline, matching Figure 01');
  assert.equal(quality.averageLine,1,'one trailing 7-day average line');
- assert.equal(quality.averageInk,theme==='light'?'rgb(107, 158, 169)':'rgb(153, 200, 209)',
-  'seven-day mean line uses the celadon-blue editorial pigment');
- assert.equal(quality.averageLabelInk,theme==='light'?'rgb(70, 119, 132)':'rgb(168, 208, 216)',
-  'average reading uses its own accessible celadon-blue ink');
+ assert.equal(quality.averageHaloCount,1,'a single quiet panel-colored halo preserves legibility over stacked bars');
+ assert.equal(quality.averageInk,theme==='light'?'rgb(63, 143, 163)':'rgb(140, 201, 213)',
+  'seven-day mean line uses true porcelain-blue, not the previous muted gray-blue');
+ assert.equal(quality.averageWidth,2.2,'porcelain-blue mean line is legible without dominating the bars');
+ assert.equal(quality.averageHaloWidth,4.5,'thin halo separates the line cleanly from the regional stacks');
+ assert.equal(quality.averageHaloInk,theme==='light'?'rgb(251, 252, 251)':'rgb(26, 43, 58)',
+  'halo uses the actual chart panel, not an opaque white stripe in dark mode');
+ assert.equal(quality.averageHaloPoints,quality.averagePoints,
+  'underlay traces the EXACT 7-day average geometry, not another series');
+ assert.equal(quality.averageLabelInk,theme==='light'?'rgb(43, 111, 128)':'rgb(173, 220, 228)',
+  'the average label has a readable matching porcelain-blue ink');
  assert.ok(quality.weekendCount>=8&&quality.weekendCount<=10,
   'weekend days are identified from the actual calendar, not hard-coded');
  assert.equal(quality.weekendBands,quality.weekendCount,'each weekend day has one quiet background band');

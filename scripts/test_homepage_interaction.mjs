@@ -88,7 +88,7 @@ async function desktop(browser,engine,theme){
   assert.equal(editorial.redundantLegend,0,'region colors are identified inside Fig. 01, not repeated above it');
   assert.match(editorial.top30Dek,/The dashed diagonal marks parity/);
   assert.match(editorial.top30Dek,/dominant hiring market or a diversified mix/);
-  assert.equal(editorial.averageInk,theme==='light'?'rgb(107, 158, 169)':'rgb(153, 200, 209)');
+  assert.equal(editorial.averageInk,theme==='light'?'rgb(63, 143, 163)':'rgb(140, 201, 213)');
   assert.ok(density.stats.every(s=>!s.clipped),'no metric is clipped: '+JSON.stringify(density.stats));
   assert.equal(density.top30Open,false,'Top 30 starts folded so the job list stays close to the fold');
   const toolbarTop=await page.evaluate(()=>Math.round(document.querySelector('.toolbar').getBoundingClientRect().top+scrollY));

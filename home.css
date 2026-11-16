@@ -18,8 +18,8 @@
   --h-panel-edge:rgba(20,33,43,.075);
   --h-panel-shadow:0 1px 2px rgba(20,33,43,.035),0 12px 32px -18px rgba(20,33,43,.16);
   --h-accent:#3f6b84;
-  --h-celadon:#6b9ea9;
-  --h-celadon-ink:#467784;
+  --h-celadon:#3f8fa3;
+  --h-celadon-ink:#2b6f80;
   --h-control:rgba(20,33,43,.045);
   --h-control-active:#ffffff;
   --h-control-shadow:0 1px 2px rgba(20,33,43,.12),0 0 0 .5px rgba(20,33,43,.06);
@@ -43,8 +43,8 @@
   --h-panel-edge:rgba(255,255,255,.06);
   --h-panel-shadow:0 1px 2px rgba(0,0,0,.25),0 18px 40px -22px rgba(0,0,0,.6);
   --h-accent:#a4c5d6;
-  --h-celadon:#99c8d1;
-  --h-celadon-ink:#a8d0d8;
+  --h-celadon:#8cc9d5;
+  --h-celadon-ink:#addce4;
   --h-control:rgba(255,255,255,.055);
   --h-control-active:rgba(255,255,255,.13);
   --h-control-shadow:0 1px 2px rgba(0,0,0,.3);
@@ -216,7 +216,10 @@
 #spark .rhythm-point.is-hover .rhythm-seg,#spark .rhythm-point:focus-visible .rhythm-seg{opacity:1}
 #spark .rhythm-point:focus-visible .rhythm-bar{stroke:var(--h-ink);stroke-width:1.4}
 #spark .rhythm-bar-hit{fill:transparent;cursor:crosshair}
-#spark .rhythm-avg{fill:none;stroke:var(--h-celadon);stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round;opacity:1;vector-effect:non-scaling-stroke;pointer-events:none}
+/* A porcelain-blue 7-day mean, visually separated from the stacked region bars.
+   The muted ink of the former thin line blended into the terracotta/sage bars. */
+#spark .rhythm-avg-halo{fill:none;stroke:var(--h-panel);stroke-width:4.5;stroke-linejoin:round;stroke-linecap:round;opacity:.94;vector-effect:non-scaling-stroke;pointer-events:none}
+#spark .rhythm-avg{fill:none;stroke:var(--h-celadon);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round;opacity:1;vector-effect:non-scaling-stroke;pointer-events:none}
 #spark .rhythm-avg-label,#spark .rhythm-peak-label{fill:var(--h-body);font:600 9px var(--sans);font-variant-numeric:tabular-nums;paint-order:stroke;stroke:var(--h-panel);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
 #spark .rhythm-avg-label{fill:var(--h-celadon-ink)}
 #spark .rhythm-peak-label{fill:var(--h-muted);font:500 9px var(--mono)}
