@@ -199,16 +199,15 @@ function colorPosition(count){
  const level=colorLevel(count);
  return level===null?null:(level*100).toFixed(4)+'%';
 }
-/* One visual grammar regardless of box size:
-   a centred vertical lockup, name above count (zero: name only).
-   Typography is determined by each rectangle, not the number of firms
-   active on that date, and then fitted against actual rendered text. */
+/* Shared typographic scale: generous and large rectangles use the SAME
+   18/26px hierarchy. Only genuinely constrained cells step down; approved
+   compact names are tried before squeezing letterforms to micro type. */
 function tileTypography(w,h){
  const area=w*h;
- if(w>=210&&h>=95&&area>=24500)return {tier:'feature',name:21,count:30,gap:9};
- if(w>=145&&h>=76&&area>=11500)return {tier:'large',name:16,count:23,gap:6};
- if(w>=78&&h>=56&&area>=6000)return {tier:'medium',name:12.5,count:17,gap:4};
- return {tier:'small',name:10,count:12,gap:2};
+ if(w>=210&&h>=95&&area>=24500)return {tier:'feature',name:18,count:26,gap:6};
+ if(w>=145&&h>=76&&area>=11500)return {tier:'large',name:18,count:26,gap:6};
+ if(w>=78&&h>=56&&area>=6000)return {tier:'medium',name:15,count:21,gap:3};
+ return {tier:'small',name:11,count:15,gap:2};
 }
 function fitTileContent(button,rect,zero){
  const face=button.querySelector('.mw-tile-face');
@@ -300,13 +299,41 @@ function render(rows,days){
  const updatedAt=latestUpdate(rows);
  let day=initialDay(series,updatedAt);
  let region='all',selectedFirm=null,lastSize='';
- const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=3600,INSPECTION_HOLD_MS=12000;
+ const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=7600,INSPECTION_HOLD_MS=12000,DISSOLVE_MS=1300;
  const motion=matchMedia('(prefers-reduced-motion: reduce)');
  let playing=!motion.matches,started=false,playTimer=null,manualTimer=null;
  let inView=typeof IntersectionObserver!=='function',boardHover=false;
- let sizeObserver=null,visibilityObserver=null;
+ let sizeObserver=null,visibilityObserver=null,previousFrame=null,dissolveTimer=null;
  const clearPlayTimer=()=>{if(playTimer!==null){clearTimeout(playTimer);playTimer=null;}};
  const clearManualTimer=()=>{if(manualTimer!==null){clearTimeout(manualTimer);manualTimer=null;}};
+ const finishDissolve=()=>{
+  if(dissolveTimer!==null){clearTimeout(dissolveTimer);dissolveTimer=null;}
+  previousFrame?.remove();previousFrame=null;
+  board.classList.remove('mw-new-frame','is-revealed');
+ };
+ function dissolveDay(next){
+  if(next===day)return;
+  finishDissolve();
+  if(motion.matches){day=next;draw();return;}
+  // Keep the previous complete treemap painted in an inert overlay while
+  // the next complete snapshot slowly emerges underneath. No sliding tiles,
+  // intermediate false shapes, label reflow or changes to the data model.
+  const previous=board.cloneNode(true);
+  previous.removeAttribute('id');
+  previous.className='mw-previous-frame';
+  previous.setAttribute('aria-hidden','true');
+  previous.inert=true;
+  previous.querySelectorAll('button').forEach(button=>{button.tabIndex=-1;});
+  board.after(previous);previousFrame=previous;
+  board.classList.add('mw-new-frame');
+  day=next;draw();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(previousFrame!==previous)return;
+   previous.classList.add('is-fading');
+   board.classList.add('is-revealed');
+  }));
+  dissolveTimer=setTimeout(finishDissolve,DISSOLVE_MS+80);
+ }
  const canAdvance=()=>playing&&inView&&!document.hidden&&!boardHover&&!board.contains(document.activeElement);
  const schedulePlay=()=>{
   clearPlayTimer();
@@ -314,7 +341,7 @@ function render(rows,days){
   playTimer=setTimeout(()=>{
    playTimer=null;
    if(!canAdvance())return;
-   day=nextPlaybackDay(day,loopDays);draw();schedulePlay();
+   dissolveDay(nextPlaybackDay(day,loopDays));schedulePlay();
   },PLAY_INTERVAL_MS);
  };
  const startIfVisible=()=>{
@@ -325,7 +352,7 @@ function render(rows,days){
  // Manual inspection takes precedence. Restart the seven-day sequence after
  // an idle window, preserving the complete 30-day strip for exploration.
  const pauseForInspection=()=>{
-  clearPlayTimer();clearManualTimer();playing=false;
+  clearPlayTimer();clearManualTimer();finishDissolve();playing=false;
   board.classList.remove('is-playing');
   if(motion.matches)return;
   manualTimer=setTimeout(()=>{
@@ -335,7 +362,7 @@ function render(rows,days){
   },INSPECTION_HOLD_MS);
  };
  listen(motion,'change',()=>{
-  clearPlayTimer();clearManualTimer();playing=!motion.matches;
+  clearPlayTimer();clearManualTimer();finishDissolve();playing=!motion.matches;
   board.classList.toggle('is-playing',playing);
   if(playing)startIfVisible();
  });
@@ -352,8 +379,8 @@ function render(rows,days){
   const width=Math.max(1,Math.round(board.getBoundingClientRect().width||540));
   const height=Math.max(1,Math.round(board.getBoundingClientRect().height||320));
   const tiles=marketTiles(values,width,height);
-  // Keep all 18 tile DOM nodes across dates: positional interpolation avoids
-  // the abrupt page flash caused by replacing the entire tree on every tick.
+  // Keep the 18 live tile nodes stable. During autoplay, an inert overlay
+  // retains the old frame while the new, complete geometry dissolves in.
   for(const tile of tiles){
    let button=board.querySelector('.mw-tile[data-firm="'+tile.i+'"]');
    if(!button){
@@ -384,9 +411,6 @@ function render(rows,days){
     if(!amount){amount=document.createElement('strong');amount.className='mw-tile-count';lockup.append(amount);}
     amount.textContent=fmt(tile.count);
    }else amount?.remove();
-  }
-  if(!board.classList.contains('mw-geometry-ready')){
-   requestAnimationFrame(()=>board.classList.add('mw-geometry-ready'));
   }
   // Measure and fit against actual DOM dimensions once per date, region or
   // board resize, never during hover. Every positive tile remains stacked.
@@ -443,7 +467,7 @@ function render(rows,days){
  }
  function chooseRegion(value){
   if(!REGIONS.includes(value)||value===region)return;
-  region=value;draw();schedulePlay();
+  finishDissolve();region=value;draw();schedulePlay();
  }
  listen(board,'pointerenter',()=>{boardHover=true;clearPlayTimer();});
  listen(board,'pointerleave',()=>{boardHover=false;schedulePlay();});
@@ -506,15 +530,15 @@ function render(rows,days){
  if(typeof ResizeObserver==='function'){
   sizeObserver=new ResizeObserver(()=>{
    const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
-   if(size!==lastSize)draw();
+   if(size!==lastSize){finishDissolve();draw();}
   });
   sizeObserver.observe(board);
  }else if(root?.addEventListener)listen(root,'resize',()=>{
   const size=Math.round(board.getBoundingClientRect().width)+'x'+Math.round(board.getBoundingClientRect().height);
-  if(size!==lastSize)draw();
+  if(size!==lastSize){finishDissolve();draw();}
  });
  rootEl._mwPlaybackCleanup=()=>{
-  clearPlayTimer();clearManualTimer();events.abort();
+  clearPlayTimer();clearManualTimer();finishDissolve();events.abort();
   visibilityObserver?.disconnect();sizeObserver?.disconnect();
  };
 }
