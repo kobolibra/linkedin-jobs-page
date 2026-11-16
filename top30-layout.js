@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v18-region-colour';
+  const MARK = 'accurate-v21-global-market-mix';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -100,8 +100,8 @@
     // an institution takes a market colour when at least 60% of its active
     // roles are there, otherwise it is drawn as multi-market.
     const dominantRegion = (item) => {
-      const total = Math.max(1, item.total);
-      const best = ['CN', 'HK', 'SG'].map((r) => [r, Number(item[r]) || 0]).sort((a, b) => b[1] - a[1])[0];
+      const total = Math.max(1, item.mixTotal ?? item.total);
+      const best = ['CN', 'HK', 'SG'].map((r) => [r, Number(item.mix?.[r] ?? item[r]) || 0]).sort((a, b) => b[1] - a[1])[0];
       return best[1] / total >= DOMINANT_SHARE ? best[0] : 'MIX';
     };
     const maxTotal = Math.max(1, ...entries.map(([, d]) => d.total));
@@ -118,7 +118,8 @@
         name, total: item.total, i, mean: s.mean, median: s.median, desiredR,
         rawX, rawY, px: rawX, py: rawY,
         region: dominantRegion(item),
-        mix: { CN: item.CN || 0, HK: item.HK || 0, SG: item.SG || 0 },
+        mix: item.mix || { CN: item.CN || 0, HK: item.HK || 0, SG: item.SG || 0 },
+        mixTotal: item.mixTotal ?? item.total,
         label: companyLabel(name), labelBox: null
       };
     });
@@ -225,7 +226,7 @@
       const overlapClass = p.overlap ? ' bubble-point-overlap' : '';
       return '<g class="bubble-row bubble-drill' + regionClass + '" data-company="' + escSvg(p.name) + '" data-region="' + escSvg(p.region)
         + '" data-total="' + p.total + '" data-mean="' + p.mean.toFixed(2) + '" data-median="' + p.median.toFixed(2)
-        + '" data-cn="' + p.mix.CN + '" data-hk="' + p.mix.HK + '" data-sg="' + p.mix.SG + '" style="--i:' + p.i
+        + '" data-mix-total="' + p.mixTotal + '" data-cn="' + p.mix.CN + '" data-hk="' + p.mix.HK + '" data-sg="' + p.mix.SG + '" style="--i:' + p.i
         + '" role="button" tabindex="0" aria-label="' + title + '. Show these roles">' + positionLeader + labelMarkup
         + '<circle class="bubble-point' + overlapClass + '" cx="' + p.px.toFixed(1) + '" cy="' + p.py.toFixed(1) + '" r="' + p.r.toFixed(1)
         + '"></circle>'
@@ -275,7 +276,15 @@
     const host = document.getElementById('top50');
     if (!host || !Array.isArray(rows)) return;
     const now = Date.now();
-    const scoped = (mode === 'all' ? rows : rows.filter((j) => fnNorm(j.location) === mode)).filter(fnActive);
+    // Per-tab rankings and listing ages are scoped; market percentages are global.
+    const active=rows.filter(fnActive),fullMix=new Map();
+    active.forEach(job=>{
+      const region=fnNorm(job.location),name=fnCompany(job.company||'');
+      if(!name||!['CN','HK','SG'].includes(region))return;
+      if(!fullMix.has(name))fullMix.set(name,{CN:0,HK:0,SG:0});
+      fullMix.get(name)[region]++;
+    });
+    const scoped=mode==='all'?active:active.filter(j=>fnNorm(j.location)===mode);
     const counts = new Map();
     scoped.forEach((job) => {
       const name = fnCompany(job.company || '\u672a\u77e5\u673a\u6784') || '\u672a\u77e5\u673a\u6784';
@@ -293,6 +302,11 @@
       .sort((a, b) => b[1].total - a[1].total || a[0].localeCompare(b[0], 'zh-Hans-CN'))
       .slice(0, 30);
     if (!top.length) return;
+    for(const [name,item] of top){
+      const mix=fullMix.get(name)||{CN:0,HK:0,SG:0};
+      item.mix=mix;item.mixTotal=mix.CN+mix.HK+mix.SG;
+    }
+    host.dataset.scopeRegion=mode;
     const svg = buildSvg(computeLayout(top));
     host.classList.remove('is-ready', 'is-inspecting');
     wire(host);
@@ -308,19 +322,27 @@
     if (host.dataset.wired) return;
     host.dataset.wired = 'true';
     const tip = () => g.VizTip;
+    let activeRow=null;
     const focus = (row, x, y, anchor = null) => {
-      host.querySelectorAll('.bubble-row.is-focus').forEach((n) => n.classList.remove('is-focus'));
-      if (!row) { host.classList.remove('is-inspecting'); tip()?.hide(); return; }
+      if(row===activeRow)return; // Avoid 60fps tooltip reconstruction and reflow.
+      if(activeRow)activeRow.classList.remove('is-focus');
+      activeRow=row;
+      if(!row){host.classList.remove('is-inspecting');tip()?.hide();return;}
       row.classList.add('is-focus');
       host.classList.add('is-inspecting');
       const t = tip(); if (!t) return;
       const d = row.dataset, total = Number(d.total) || 0;
-      const share = (n) => (total ? Math.round(Number(n) / total * 100) : 0) + '%';
+      const globalTotal=Number(d.mixTotal)||total;
+      const share=n=>(globalTotal?(Number(n)/globalTotal*100).toFixed(1):'0.0')+'%';
       const lines = ['CN', 'HK', 'SG'].filter((r) => Number(d[r.toLowerCase()]) > 0)
         .map((r) => t.row(regionLabel[r], d[r.toLowerCase()] + ' · ' + share(d[r.toLowerCase()]), r)).join('');
-      t.show('<span class="viz-tip-title">' + escSvg(d.company) + '</span>' + t.row('Active roles', total) + lines
+      const scope=host.dataset.scopeRegion||'all';
+      const counts=scope==='all'?t.row('Active roles',total)
+        :t.row(scope+' active roles',total)+t.row('All-market roles',globalTotal);
+      const fixed=row.querySelector('.bubble-point').getBoundingClientRect();
+      t.show('<span class="viz-tip-title">' + escSvg(d.company) + '</span>' + counts + lines
         + t.row('Average age', Number(d.mean).toFixed(1) + ' days') + t.row('Median age', Number(d.median).toFixed(1) + ' days')
-        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>', x, y, anchor);
+        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>', fixed.right, fixed.top, anchor);
     };
     host.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch') return; // touch readings are driven by taps below
