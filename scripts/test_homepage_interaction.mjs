@@ -188,11 +188,27 @@ async function desktop(browser,engine,theme){
   await page.mouse.move(0,0);
   if(engine==='chromium'&&theme==='light'){
    const before=await selectedDay();
+   await page.waitForFunction(()=>!!document.querySelector('.mw-previous-frame'),null,{timeout:13000});
+   const dissolve=await page.evaluate(()=>{
+    const ghost=document.querySelector('.mw-previous-frame');
+    return {inert:ghost.inert,hidden:ghost.getAttribute('aria-hidden'),
+     duration:parseFloat(getComputedStyle(ghost).transitionDuration),
+     nodes:ghost.querySelectorAll('.mw-tile').length,
+     live:document.querySelectorAll('#marketWidthMap > .mw-tile').length,
+     boardHeight:document.getElementById('marketWidthMap').getBoundingClientRect().height};
+   });
+   assert.ok(dissolve.inert&&dissolve.hidden==='true',
+    'previous frame must never intercept mouse or keyboard input');
+   assert.ok(dissolve.duration>=1.2,'frames should dissolve slowly, not flash');
+   assert.equal(dissolve.nodes,18,'the old mosaic stays fully intact during the transition');
+   assert.equal(dissolve.live,18,'the next mosaic also keeps all 18 live institutions');
+   assert.ok(dissolve.boardHeight>=280,'autoplay must not resize the board');
    await page.waitForFunction(previous=>{
     const day=[...document.querySelectorAll('.mw-strip-day')].findIndex(b=>b.classList.contains('is-selected'));
     return day!==previous&&day>=23&&day<=29;
-   },before,{timeout:8500});
+   },before,{timeout:13000});
    assert.equal(await selectedDay(),before===29?23:before+1,'automatic day switch follows seven-day sequence');
+   await page.waitForFunction(()=>!document.querySelector('.mw-previous-frame'),null,{timeout:4000});
   }
   await page.locator('.mw-strip-day').nth(5).click();
   assert.equal(await selectedDay(),5,'manual strip accesses older dates');
