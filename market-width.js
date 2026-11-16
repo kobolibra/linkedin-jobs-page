@@ -368,6 +368,7 @@ function render(rows,days){
    button.className='mw-tile '+(zero?'mw-is-zero':'mw-is-active')+
     ' mw-tile-'+type.tier+(!zero&&tile.visualFloor?' mw-display-floor':'');
    if(!zero)button.style.setProperty('--mw-tone',colorPosition(tile.count));
+   else button.style.removeProperty('--mw-tone');
    button.dataset.layout=type.tier;button.dataset.zero=String(zero);
    button.setAttribute('aria-label',label(tile.i));
    button.setAttribute('aria-pressed',String(selectedFirm===tile.i));
