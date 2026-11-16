@@ -142,7 +142,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  const home=readFileSync(new URL('../home.css',import.meta.url),'utf8');
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/styles-refinement\.css\?v=editorial-ledger-1/);
- assert.match(html,/home\.css\?v=focused-home-4/);
+ assert.match(html,/home\.css\?v=celadon-trend-5/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(source,/const STACK=\["HK","SG","CN","OTHER"\];/,'daily columns stack in the regional chart order');
  assert.match(source,/class="rhythm-seg '\+r\.toLowerCase\(\)/);
@@ -151,10 +151,12 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  for(const r of ['hk','sg','cn','other'])assert.match(home,new RegExp('#spark \\.rhythm-seg\\.'+r+'\\{fill:var\\(--r-'+r+'-bar\\)\\}'));
  assert.match(home,/#spark \.rhythm-point\.is-partial \.rhythm-seg\{opacity:\.42\}/);
  assert.doesNotMatch(css,/#spark\s*\{\s*--viz-blue/,'the former single-blue daily series is retired');
- assert.match(css,/#dist \.region-series\.cn,\.region-chart-legend \.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
- assert.match(css,/#dist \.region-series\.hk,\.region-chart-legend \.hk\{--region-ink:#b27a22;--region-fill:#ddc6a6\}/);
- assert.match(css,/#dist \.region-series\.sg,\.region-chart-legend \.sg\{--region-ink:#6e8f3b;--region-fill:#c1d3ad\}/);
+ assert.match(css,/#dist \.region-series\.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
+ assert.match(css,/#dist \.region-series\.hk\{--region-ink:#b27a22;--region-fill:#ddc6a6\}/);
+ assert.match(css,/#dist \.region-series\.sg\{--region-ink:#6e8f3b;--region-fill:#c1d3ad\}/);
  assert.doesNotMatch(css,/#dist \.region-series\.other/);
+ assert.doesNotMatch(html,/class="region-chart-legend"/,'the regional chart now uses direct labels only');
+ assert.match(home,/#spark \.rhythm-avg\{[^}]*stroke:var\(--h-celadon\)/);
  assert.match(source,/const regionOrder=\["HK","SG","CN"\];/);
  assert.match(source,/const cumulativeSeries=bucketCounts\.map\(daily=>/);
  assert.match(source,/const snapshotCounts=cumulativeSeries\.map\(values=>values\[bins\]\)/,

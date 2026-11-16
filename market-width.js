@@ -283,6 +283,49 @@ function playbackIndices(length){
  return Array.from({length:size},(_,i)=>n-size+i);
 }
 const nextPlaybackDay=(current,days)=>days.length?days[(days.indexOf(current)+1)%days.length]:current;
+
+/* Shape-preserving monotone cubic interpolation. Values at each observed
+   calendar day are exact; the curve cannot overshoot between adjacent days. */
+function trendGeometry(values,width=600,height=44){
+ const totals=(values||[]).map(v=>Math.max(0,Number(v)||0));
+ if(!totals.length)return {path:'',points:[],slopes:[]};
+ const w=Math.max(1,Number(width)||600),h=Math.max(20,Number(height)||44);
+ const pad=Math.min(10,w/Math.max(2,totals.length*2)),top=6,bottom=h-7;
+ const max=Math.max(1,...totals);
+ const step=totals.length>1?(w-2*pad)/(totals.length-1):0;
+ const points=totals.map((v,i)=>({x:pad+i*step,y:bottom-v/max*(bottom-top)}));
+ const delta=points.slice(1).map((p,i)=>(p.y-points[i].y)/(p.x-points[i].x));
+ const slopes=points.map((_,i)=>{
+  if(!delta.length)return 0;
+  if(i===0)return delta[0];
+  if(i===points.length-1)return delta[delta.length-1];
+  const a=delta[i-1],b=delta[i];
+  return a*b<=0?0:2*a*b/(a+b);
+ });
+ const fmt=v=>v.toFixed(3);
+ let path='M '+fmt(points[0].x)+' '+fmt(points[0].y);
+ for(let i=0;i<points.length-1;i++){
+  const p=points[i],q=points[i+1],dx=q.x-p.x;
+  path+=' C '+fmt(p.x+dx/3)+' '+fmt(p.y+slopes[i]*dx/3)+' '+
+   fmt(q.x-dx/3)+' '+fmt(q.y-slopes[i+1]*dx/3)+' '+
+   fmt(q.x)+' '+fmt(q.y);
+ }
+ return {path,points,slopes};
+}
+/* Evaluate the same cubic, not a straight chord: the moving point
+   follows the visible line throughout a daily transition. */
+function trendPointAt(geometry,index){
+ const pts=geometry.points;
+ if(!pts.length)return {x:0,y:0};
+ const pos=Math.max(0,Math.min(pts.length-1,Number(index)||0));
+ const i=Math.min(pts.length-2,Math.floor(pos));
+ if(i<0)return pts[0];
+ const p=pts[i],q=pts[i+1],t=pos-i,dx=q.x-p.x;
+ const t2=t*t,t3=t2*t;
+ return {x:p.x+dx*t,
+  y:(2*t3-3*t2+1)*p.y+(t3-2*t2+t)*dx*geometry.slopes[i]+
+   (-2*t3+3*t2)*q.y+(t3-t2)*dx*geometry.slopes[i+1]};
+}
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
@@ -304,6 +347,7 @@ function render(rows,days){
  let playing=!motion.matches,started=false,playTimer=null,manualTimer=null;
  let inView=typeof IntersectionObserver!=='function',boardHover=false;
  let sizeObserver=null,visibilityObserver=null,previousFrame=null,dissolveTimer=null;
+ let markerRaf=null,trendDay=null,trendRegion=null;
  const clearPlayTimer=()=>{if(playTimer!==null){clearTimeout(playTimer);playTimer=null;}};
  const clearManualTimer=()=>{if(manualTimer!==null){clearTimeout(manualTimer);manualTimer=null;}};
  const finishDissolve=()=>{
@@ -434,30 +478,83 @@ function render(rows,days){
   selectedFirm=null;detail.hidden=true;detail.textContent='';
   lastSize=width+'x'+height;
  }
- /* 30-day scrubber: one column per day for the selected region, on the
-    same first-seen buckets as the board. It is a pointer shortcut; the
-    labelled previous/next buttons remain the keyboard path. */
+ /* The 30 real calendar-day totals form one continuous, shape-preserving
+    sparkline. Transparent day hit targets keep 30-day inspection available;
+    a single dot moves ON the interpolated path as playback selects a day. */
+ const svgNS='http://www.w3.org/2000/svg';
+ const stopMarker=()=>{if(markerRaf!==null){cancelAnimationFrame(markerRaf);markerRaf=null;}};
  function drawStrip(){
   const totals=series.counts[region].map(line=>line.reduce((sum,n)=>sum+n,0));
-  const max=Math.max(1,...totals);
-  const fragment=document.createDocumentFragment();
-  totals.forEach((n,i)=>{
-   const b=document.createElement('button');
-   b.type='button';b.tabIndex=-1;b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(isComplete(series.keys[i],updatedAt)?'':' is-partial');
-   b.dataset.day=String(i);
-   b.style.setProperty('--level',(n/max).toFixed(4));
-   b.title=prettyDate(series.keys[i])+(isComplete(series.keys[i],updatedAt)?'':' (so far)')+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
-   fragment.append(b);
-  });
-  // Keep day markers stable so the browser does not re-anchor the scroll.
-  if(strip.children.length===totals.length){
-   [...strip.children].forEach((b,i)=>{
-    const n=totals[i];
-    b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(isComplete(series.keys[i],updatedAt)?'':' is-partial');
-    b.style.setProperty('--level',(n/max).toFixed(4));
-    b.title=prettyDate(series.keys[i])+(isComplete(series.keys[i],updatedAt)?'':' (so far)')+' · '+fmt(n)+' new '+(n===1?' posting':' postings');
+  let svg=strip.querySelector('.mw-trend-svg');
+  if(!svg){
+   svg=document.createElementNS(svgNS,'svg');
+   svg.setAttribute('class','mw-trend-svg');
+   svg.setAttribute('aria-hidden','true');
+   svg.setAttribute('focusable','false');
+   svg.setAttribute('preserveAspectRatio','none');
+   const path=document.createElementNS(svgNS,'path');
+   path.setAttribute('class','mw-trend-line');
+   const point=document.createElementNS(svgNS,'g');
+   point.setAttribute('class','mw-trend-indicator');
+   for(const klass of ['mw-trend-halo','mw-trend-point']){
+    const circle=document.createElementNS(svgNS,'circle');
+    circle.setAttribute('class',klass);
+    circle.setAttribute('r',klass==='mw-trend-halo'?'5.6':'3.5');
+    point.append(circle);
+   }
+   svg.append(path,point);strip.prepend(svg);
+  }
+  const buttons=[...strip.querySelectorAll('.mw-strip-day')];
+  if(buttons.length!==totals.length){
+   buttons.forEach(button=>button.remove());
+   const fragment=document.createDocumentFragment();
+   totals.forEach((_,i)=>{
+    const button=document.createElement('button');button.type='button';button.tabIndex=-1;
+    button.className='mw-strip-day';button.dataset.day=String(i);
+    fragment.append(button);
    });
-  }else strip.replaceChildren(fragment);
+   strip.append(fragment);
+  }
+  [...strip.querySelectorAll('.mw-strip-day')].forEach((button,i)=>{
+   const n=totals[i],complete=isComplete(series.keys[i],updatedAt);
+   button.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(complete?'':' is-partial');
+   button.title=prettyDate(series.keys[i])+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
+  });
+  const width=Math.max(1,Math.round(strip.getBoundingClientRect().width||board.getBoundingClientRect().width||600));
+  const geometry=trendGeometry(totals,width);
+  svg.setAttribute('viewBox','0 0 '+width+' 44');
+  svg.querySelector('.mw-trend-line').setAttribute('d',geometry.path);
+  const marker=svg.querySelector('.mw-trend-indicator');
+  const oldDay=trendDay,oldRegion=trendRegion;
+  trendDay=day;trendRegion=region;
+  marker.dataset.day=String(day);
+  stopMarker();
+  const paint=(position,opacity=1)=>{
+   const p=trendPointAt(geometry,position);
+   marker.setAttribute('transform','translate('+p.x.toFixed(3)+' '+p.y.toFixed(3)+')');
+   marker.style.opacity=String(opacity);
+  };
+  if(oldRegion!==region||oldDay===null||oldDay===day||motion.matches){
+   paint(day);return;
+  }
+  const wrap=Math.abs(day-oldDay)>1;
+  let start=null;
+  const tick=now=>{
+   if(start===null)start=now;
+   const t=Math.min(1,(now-start)/DISSOLVE_MS);
+   if(wrap){
+    // 29 -> 23 closes the seven-day loop: dissolve the dot rather than
+    // racing backwards through six unrelated dates.
+    if(t<.5)paint(oldDay,1-2*t);
+    else paint(day,2*t-1);
+   }else{
+    const eased=t*t*(3-2*t);
+    paint(oldDay+(day-oldDay)*eased);
+   }
+   if(t<1)markerRaf=requestAnimationFrame(tick);
+   else{markerRaf=null;paint(day);}
+  };
+  markerRaf=requestAnimationFrame(tick);
  }
  strip?.setAttribute('aria-hidden','true');
  listen(strip,'click',e=>{
@@ -541,11 +638,11 @@ function render(rows,days){
   if(size!==lastSize){finishDissolve();draw();}
  });
  rootEl._mwPlaybackCleanup=()=>{
-  clearPlayTimer();clearManualTimer();finishDissolve();events.abort();
+  clearPlayTimer();clearManualTimer();finishDissolve();stopMarker();events.abort();
   visibilityObserver?.disconnect();sizeObserver?.disconnect();
  };
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,latestUpdate,playbackIndices,nextPlaybackDay,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,latestUpdate,playbackIndices,nextPlaybackDay,trendGeometry,trendPointAt,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);

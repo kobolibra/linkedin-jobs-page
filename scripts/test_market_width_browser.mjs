@@ -103,6 +103,8 @@ async function renderLeft(page,chartData,theme){
     stacked:[...g.querySelectorAll('.rhythm-seg')].reduce((n,seg)=>n+Number(seg.dataset.count),0),
     order:[...g.querySelectorAll('.rhythm-seg')].map(seg=>seg.dataset.region)})),
    averageLine:document.querySelectorAll('#spark .rhythm-avg').length,
+   averageInk:getComputedStyle(document.querySelector('#spark .rhythm-avg')).stroke,
+   averageLabelInk:getComputedStyle(document.querySelector('#spark .rhythm-avg-label')).fill,
    labelTotal:statRows.reduce((n,node)=>n+Number(node.dataset.count),0),
    stageTotal:Number(stage.dataset.visibleTotal),
    shortHistory:stage.classList.contains('is-short-history'),
@@ -220,6 +222,10 @@ async function renderLeft(page,chartData,theme){
  assert.ok(quality.columnSums.every(c=>c.order.every((r,i,a)=>!i||stackRank[a[i-1]]<stackRank[r])),
   'every column stacks HK, SG, CN, OTHER from the baseline, matching Figure 01');
  assert.equal(quality.averageLine,1,'one trailing 7-day average line');
+ assert.equal(quality.averageInk,theme==='light'?'rgb(107, 158, 169)':'rgb(153, 200, 209)',
+  'seven-day mean line uses the celadon-blue editorial pigment');
+ assert.equal(quality.averageLabelInk,theme==='light'?'rgb(70, 119, 132)':'rgb(168, 208, 216)',
+  'average reading uses its own accessible celadon-blue ink');
  assert.ok(quality.weekendCount>=8&&quality.weekendCount<=10,
   'weekend days are identified from the actual calendar, not hard-coded');
  assert.equal(quality.weekendBands,quality.weekendCount,'each weekend day has one quiet background band');
@@ -560,6 +566,27 @@ try{
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Breadth: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect new postings of the day, excluding reposts');
+   const trend=await page.evaluate(()=>{
+    const chart=document.querySelector('#marketWidthStrip .mw-trend-svg');
+    const line=chart?.querySelector('.mw-trend-line');
+    const point=chart?.querySelector('.mw-trend-indicator');
+    const bounds=node=>{const r=node.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,b:r.bottom};};
+    return {line:line?.getAttribute('d'),stroke:getComputedStyle(line).stroke,
+     markerDay:Number(point?.dataset.day),markerTransform:point?.getAttribute('transform'),
+     hitTargets:document.querySelectorAll('#marketWidthStrip .mw-strip-day').length,
+     chart:bounds(chart),summary:bounds(document.querySelector('.mw-summary')),
+     date:bounds(document.querySelector('.mw-date-nav')),
+     footer:bounds(document.querySelector('.mw-subline'))};
+   });
+   assert.ok(trend.line?.startsWith('M ')&&((trend.line.match(/ C /g)||[]).length===29),
+    '30 daily readings form a smooth cubic trend, not a histogram');
+   assert.equal(trend.hitTargets,30,'line chart preserves full 30-day manual inspection');
+   assert.equal(trend.markerDay,27,'point starts on the displayed latest complete day');
+   assert.match(trend.markerTransform,/translate\([\d.]+ [\d.]+\)/);
+   assert.ok(trend.date.x>=trend.summary.x+trend.summary.w-1,
+    'date controls stay right aligned without overlapping the summary: '+JSON.stringify(trend));
+   assert.ok(trend.date.y<trend.summary.b&&trend.summary.y<trend.date.b,
+    'summary and dates occupy the SAME row at '+width+'px: '+JSON.stringify(trend));
    const initial=await inspectMosaic(page,4);
    assert.ok(await page.locator('.mw-tile:not(.mw-is-zero)').count()===4);
    const zeros=initial.rects.filter(t=>t.zero),positives=initial.rects.filter(t=>!t.zero);
@@ -673,6 +700,10 @@ try{
    assert.equal(await page.locator('#marketWidthDate').getAttribute('data-partial'),'false');
    await page.locator('#marketWidthNext').click();
    assert.equal(await page.locator('#marketWidthDate').getAttribute('data-partial'),'true');
+   assert.doesNotMatch(await page.locator('#marketWidthDate').evaluate(node=>getComputedStyle(node,'::after').content),/so far/i,
+    'the selected date never appends a partial-day footnote');
+   assert.equal(await page.locator('.mw-trend-indicator').getAttribute('data-day'),'28',
+    'selected marker follows previous/next day navigation');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    await page.locator('#marketWidthNext').click();
    assert.equal(await summary(page),'0 new postings across 0/18 institutions');

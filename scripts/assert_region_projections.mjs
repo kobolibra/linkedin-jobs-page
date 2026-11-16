@@ -167,58 +167,38 @@ export async function assertRegionVisualBalance(page){
  return state;
 }
 
-// The visible legend matches actual contour colors without becoming a control.
+/* The stacked chart now carries direct CN/HK/SG annotations. Its former
+   separate legend was redundant, so acceptance must protect its absence
+   AND the information still available within the actual plot. */
 export async function assertRegionLegend(page){
  const state=await page.evaluate(()=>{
-  const legend=document.querySelector('.region-chart-legend');
-  if(!legend)return null;
-  const rect=n=>{const r=n.getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom};};
-  const svg=document.querySelector('#dist .region-time-svg'),plot=rect(svg);
-  const rgb=hex=>{const match=/^#([0-9a-f]{6})$/i.exec(hex.trim());return match?'rgb('+[0,2,4].map(i=>parseInt(match[1].slice(i,i+2),16)).join(', ')+')':hex.trim();};
-  const items=[...legend.children].map(n=>{
-   const k=n.dataset.region.toLowerCase(),swatch=n.querySelector('.region-legend-swatch');
-   const fill=document.querySelector('#dist .region-series.'+k+' .region-stack-band');
-   const outline=document.querySelector('#dist .region-series.'+k+' .region-spark-line');
-   const palette=getComputedStyle(document.querySelector('#dist .region-series.'+k+'.region-fill'));
-   const style=getComputedStyle(swatch),text=getComputedStyle(n),r=swatch.getBoundingClientRect();
-   return {region:n.dataset.region,text:n.textContent.trim(),box:rect(n),color:style.backgroundColor,
-    count:Number(svg.getAttribute('data-region-'+k)),hasBand:!!fill,hasOutline:!!outline,
-    borders:['Top','Right','Bottom','Left'].map(side=>parseFloat(style['border'+side+'Width'])),opacity:Number(style.opacity),
-    expectedInk:outline?getComputedStyle(outline).stroke:rgb(palette.getPropertyValue('--region-ink')),font:text.fontFamily,
-    weight:text.fontWeight,size:parseFloat(text.fontSize),swatchWidth:r.width,swatchHeight:r.height};
-  });
-  return {count:document.querySelectorAll('.region-chart-legend').length,
-   // Figure heading block: kicker, title, then an optional data-driven dek.
-   // The legend follows that block directly and sits immediately above the plot.
-   followsTitle:(()=>{const prev=legend.previousElementSibling;return prev?.id==='distTitle'||
-    (prev?.id==='distDek'&&prev.previousElementSibling?.id==='distTitle');})(),
-   precedesPlot:legend.nextElementSibling?.id==='dist',
-   title:rect(document.querySelector('#distTitle')),box:rect(legend),plot,
-   endpoint:plot.left+(plot.right-plot.left)*Number(svg.dataset.plotRight)/svg.viewBox.baseVal.width,
-   items,controls:legend.querySelectorAll('button,a,input,[role="button"],[tabindex]').length,
-   listRole:legend.getAttribute('role'),siteFont:getComputedStyle(document.body).fontFamily,
+  const svg=document.querySelector('#dist .region-time-svg');
+  const title=document.getElementById('distTitle');
+  const plot=document.getElementById('dist');
+  const labels=[...plot.querySelectorAll('.region-end-label')].map(n=>({
+   region:n.dataset.region,
+   name:n.querySelector('.region-end-name')?.textContent?.trim(),
+   count:Number(n.dataset.count),
+   share:n.querySelector('.region-end-share')?.textContent?.trim(),
+   actual:Number(svg.getAttribute('data-region-'+n.dataset.region.toLowerCase()))
+  }));
+  const rect=n=>{const r=n.getBoundingClientRect();return {top:r.top,bottom:r.bottom};};
+  return {obsolete:document.querySelectorAll('.region-chart-legend').length,
+   titleBeforePlot:title.nextElementSibling===plot,
+   title:rect(title),plot:rect(plot),labels,
+   nonzero:['HK','SG','CN'].filter(k=>Number(svg.getAttribute('data-region-'+k.toLowerCase()))>0),
    scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
  });
- assert.ok(state,'region legend is present');assert.equal(state.count,1);
- assert.equal(state.followsTitle,true);assert.equal(state.precedesPlot,true);
- assert.equal(state.listRole,'list');assert.equal(state.controls,0);
- assert.deepEqual(state.items.map(n=>n.region),['HK','SG','CN']);
- assert.deepEqual(state.items.map(n=>n.text),['Hong Kong','Singapore','Mainland China']);
- assert.ok(state.box.top>=state.title.bottom+5,'legend sits on the next row below title');
- assert.ok(state.plot.top>=state.box.bottom+7,'legend does not overlap the plot');
- assert.ok(Math.abs(state.items.at(-1).box.right-state.endpoint)<1,'legend is right-aligned to plot endpoint');
- for(const item of state.items){
-  assert.equal(item.hasBand,item.count>0,'only nonzero regions have an actual band');
-  assert.equal(item.hasOutline,item.count>0,'only nonzero regions have an outline');
-  assert.equal(item.color,item.expectedInk,'legend line must match its actual region contour in this theme');
-  assert.ok(item.borders.every(width=>width===0),'legend lines have no border');
-  assert.equal(item.opacity,1,'legend lines preserve the full contour color');
-  assert.equal(item.font,state.siteFont);assert.equal(item.weight,'400');
-  assert.ok(item.size>=10&&item.size<=10.5);
-  assert.ok(item.swatchWidth>=12&&item.swatchWidth<=20&&item.swatchHeight>=3&&item.swatchHeight<=4&&item.swatchWidth>=item.swatchHeight*4,'legend marks are short, thick horizontal lines');
-  assert.ok(Math.abs(item.box.top-state.items[0].box.top)<1,'all regions fit on one line');
-  assert.ok(item.box.left>=state.plot.left&&item.box.right<=state.plot.right+1);
+ assert.equal(state.obsolete,0,'no redundant legend should appear above Fig. 01');
+ assert.equal(state.titleBeforePlot,true,'the plotted data follows the title directly');
+ assert.ok(state.plot.top>=state.title.bottom-1,'the plot should not obscure its title');
+ assert.deepEqual(state.labels.map(x=>x.region),state.nonzero,
+  'direct annotations retain every observed region');
+ for(const label of state.labels){
+  assert.equal(label.name,label.region);
+  assert.equal(label.count,label.actual,'direct annotation remains grounded in the plotted region count');
+  assert.ok(label.share&&label.share.includes('%'),'region shares remain readable in the figure');
  }
- assert.ok(state.scrollWidth<=state.viewport+2,'legend does not cause horizontal overflow');
+ assert.ok(state.scrollWidth<=state.viewport+2,'removing the legend must not cause horizontal overflow');
  return state;
 }
