@@ -197,8 +197,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.ok(!html.includes('id="distNote"'),'unnecessary first-seen footnote is completely removed');
  assert.match(css,/\.analytics-card > \.ac-col-market[\s\S]*?grid-column:2/);
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
- assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
- assert.match(css,/\.mw-title-phrase\{white-space:nowrap\}/,'never split the institution count from its complete title phrase');
+ assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-heading-label">Market Breadth:<\/span> <span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
+ assert.match(css,/\.mw-heading-label,\.mw-title-phrase\{white-space:nowrap\}/,'never split the figure label or institution phrase');
  assert.ok(html.includes('new postings across'));
  assert.ok(html.includes('Size and shade reflect new postings of the day, excluding reposts'));
  assert.ok(html.includes('id="marketWidthMap"'));
@@ -220,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-breadth-autoloop-23','market-width.css?v=market-breadth-smooth-28'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-breadth-dissolve-24','market-width.css?v=market-breadth-dissolve-29'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -301,14 +301,15 @@ test('all 18 firms use one centered name-over-count lockup, never side-by-side m
  assert.doesNotMatch(css,/\.mw-tile-tiny|\.mw-tile-dense|flex-direction:row;align-items:center/);
 });
 
-test('typography tiers grow with each tile geometry, never the count of active firms',()=>{
+test('large and spacious tiles share a restrained 18/26px type scale',()=>{
  const small=tileTypography(55,34),medium=tileTypography(120,80);
  const large=tileTypography(175,110),feature=tileTypography(480,260);
  assert.deepEqual([small.tier,medium.tier,large.tier,feature.tier],['small','medium','large','feature']);
  assert.equal(tileTypography(85,92).tier,'medium','tall mobile positive tiles should not use tiny labels');
- assert.ok(feature.name>=20&&feature.count>=28);
- assert.ok(feature.name>large.name&&large.name>medium.name&&medium.name>small.name);
- assert.ok(feature.count>large.count&&large.count>medium.count&&medium.count>small.count);
+ assert.deepEqual([feature.name,feature.count],[18,26]);
+ assert.deepEqual([large.name,large.count],[18,26],'ample rectangles must not jump up or down in size');
+ assert.ok(large.name>medium.name&&medium.name>small.name);
+ assert.ok(large.count>medium.count&&medium.count>small.count);
 });
 
 
@@ -390,4 +391,14 @@ test('seven-day Market Width loop is exactly the newest seven calendar days, inc
  assert.match(js,/pauseForInspection\(\);\s*const to=Math.max/,'manual navigation holds playback');
  assert.match(js,/playing=!motion.matches/,'autoplay defaults to running unless reduced motion is requested');
  assert.doesNotMatch(html,/id="marketWidthPlay"/,'no redundant Play button');
+ assert.match(js,/PLAY_INTERVAL_MS=7600/,'daily frames need readable dwell time');
+ assert.match(js,/DISSOLVE_MS=1300/,'slow dissolve avoids a distracting flicker');
+ assert.match(js,/previous\.inert=true/,'the crossfade ghost cannot capture keyboard focus');
+ assert.match(js,/board\.after\(previous\)/,'old and new snapshots have independent frame geometry');
+ const css=read('market-width.css'),home=read('home.css');
+ assert.match(css,/\.mw-previous-frame\.is-fading\{opacity:0\}/);
+ assert.match(css,/\.mw-map-board\.mw-new-frame\.is-revealed\{/);
+ assert.doesNotMatch(css,/transition:left/,'no arbitrary tile motion implying continuity between dates');
+ assert.match(home,/border-top:1px solid var\(--h-rule\);border-bottom:1px solid var\(--h-rule\)/,
+  'the top metric rule belongs to the same fine-line system as the rest of the page');
 });
