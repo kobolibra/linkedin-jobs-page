@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-16T16:02:40.475281+00:00",
+    "checkedAt": "2026-11-16T22:03:03.919016+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-16T16:02:28.542924+00:00",
+    "checkedAt": "2026-11-16T22:02:52.014886+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-16T16:02:34.391715+00:00",
+    "checkedAt": "2026-11-16T22:02:57.857197+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-16T16:02:37.447099+00:00",
+    "checkedAt": "2026-11-16T22:03:00.907715+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11901,5 +11901,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQG8AmPPCt3jPg/company-logo_100_100/company-logo_100_100/0/1630613138766?e=2147483647&v=beta&t=sSFiliJPN_z15W5SYaBoZBQuFYwCfC9d_eqHvBWFUWc",
     "companyUrl": "https://sg.linkedin.com/company/minlawsg",
     "sourceJobId": "4489744963"
+  },
+  "teledyne technologies incorporated": {
+    "name": "Teledyne Technologies Incorporated",
+    "checkedAt": "2026-11-16T22:02:47.769942+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b1d953dc6a5aaf5642f47c56.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGl9teTFIIzug/company-logo_100_100/B56Z_t5srcG0AM-/0/1786402753463/teledyne_technologies_incorporated_logo?e=2147483647&v=beta&t=FxsV8dM-4TERY4yW_L0D9kDhxpoH9Bu6egOQQRJBlHE",
+    "companyUrl": "https://www.linkedin.com/company/teledyne-technologies-incorporated",
+    "sourceJobId": "4490118807"
+  },
+  "平方和投资 alpha2fund": {
+    "name": "平方和投资 Alpha2Fund",
+    "checkedAt": "2026-11-16T22:02:49.075137+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "cc8f882d79d4fce1fc071450.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFclG6PQg6oNA/company-logo_100_100/B56aCpfPXaHUAI-/0/1789549934597/alpha_two_fund_logo?e=2147483647&v=beta&t=S_4yGCPrhdHI9dumuOL0HTUyXoqT4YvrT1dihj59-mY",
+    "companyUrl": "https://www.linkedin.com/company/alpha-squared",
+    "sourceJobId": "4490095135"
   }
 }
