@@ -302,7 +302,7 @@ function render(rows,days){
  let day=initialDay(series,updatedAt);
  let region='all',selectedFirm=null,lastSize='';
  const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=3600;
- let playing=false,playTimer=null,inView=true,boardHover=false;
+ let playing=false,playTimer=null,inView=true,boardHover=false,lastPausedDay=null;
  let sizeObserver=null,visibilityObserver=null;
  const clearPlayTimer=()=>{if(playTimer!==null){clearTimeout(playTimer);playTimer=null;}};
  const syncPlayControl=()=>{
@@ -326,7 +326,7 @@ function render(rows,days){
  };
  const stopPlay=()=>{
   clearPlayTimer();
-  if(playing){playing=false;syncPlayControl();}
+  if(playing){lastPausedDay=day;playing=false;syncPlayControl();}
  };
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
@@ -422,7 +422,10 @@ function render(rows,days){
  }
  listen(play,'click',()=>{
   if(playing){stopPlay();return;}
-  playing=true;day=loopDays[0]; // Chronological playback from oldest of seven.
+  const resume=lastPausedDay===day&&loopDays.includes(day);
+  playing=true;
+  if(!resume)day=loopDays[0]; // Fresh playback starts at oldest of seven.
+  lastPausedDay=null;
   draw();syncPlayControl();schedulePlay();
  });
  listen(board,'pointerenter',()=>{boardHover=true;clearPlayTimer();});
