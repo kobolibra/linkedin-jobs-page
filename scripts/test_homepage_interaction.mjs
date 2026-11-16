@@ -78,6 +78,17 @@ async function desktop(browser,engine,theme){
    ageText:document.getElementById('stat-age').textContent
   }));
   assert.ok(density.overflow<=1,'no horizontal overflow at '+width);
+  const editorial=await page.evaluate(()=>({
+   folioBorder:getComputedStyle(document.querySelector('.nj-masthead-folio')).borderTopWidth,
+   redundantLegend:document.querySelectorAll('.ac-col-density .region-chart-legend').length,
+   top30Dek:document.getElementById('top50Dek').textContent,
+   averageInk:getComputedStyle(document.querySelector('#spark .rhythm-avg')).stroke
+  }));
+  assert.equal(editorial.folioBorder,'0px','source/landscape folio must have no top separator');
+  assert.equal(editorial.redundantLegend,0,'region colors are identified inside Fig. 01, not repeated above it');
+  assert.match(editorial.top30Dek,/The dashed diagonal marks parity/);
+  assert.match(editorial.top30Dek,/dominant hiring market or a diversified mix/);
+  assert.equal(editorial.averageInk,theme==='light'?'rgb(107, 158, 169)':'rgb(153, 200, 209)');
   assert.ok(density.stats.every(s=>!s.clipped),'no metric is clipped: '+JSON.stringify(density.stats));
   assert.equal(density.top30Open,false,'Top 30 starts folded so the job list stays close to the fold');
   const toolbarTop=await page.evaluate(()=>Math.round(document.querySelector('.toolbar').getBoundingClientRect().top+scrollY));
@@ -208,6 +219,8 @@ async function desktop(browser,engine,theme){
     return day!==previous&&day>=23&&day<=29;
    },before,{timeout:13000});
    assert.equal(await selectedDay(),before===29?23:before+1,'automatic day switch follows seven-day sequence');
+   assert.equal(Number(await page.locator('.mw-trend-indicator').getAttribute('data-day')),await selectedDay(),
+    'moving point and current date are synchronized in auto playback');
    await page.waitForFunction(()=>!document.querySelector('.mw-previous-frame'),null,{timeout:4000});
   }
   await page.locator('.mw-strip-day').nth(5).click();
@@ -281,6 +294,22 @@ async function phone(browser,engine,theme){
    smallest:Math.min(...[...document.querySelectorAll('.fig-dek,.stat-note,.mw-summary,.nj-market-row')].map(n=>parseFloat(getComputedStyle(n).fontSize)))
   }));
   assert.ok(state.overflow<=1,'no horizontal page overflow on a phone');
+  const mwRow=await page.evaluate(()=>{
+   const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();
+    return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:r.width};};
+   return {summary:rect('.mw-summary'),date:rect('.mw-date-nav'),
+    full:rect('.mw-subline'),line:document.querySelector('.mw-trend-line')?.getAttribute('d'),
+    day:document.querySelector('.mw-trend-indicator')?.dataset.day,
+    redundantLegend:document.querySelectorAll('.region-chart-legend').length,
+    folioBorder:getComputedStyle(document.querySelector('.nj-masthead-folio')).borderTopWidth};
+  });
+  assert.equal(mwRow.redundantLegend,0);
+  assert.equal(mwRow.folioBorder,'0px');
+  assert.ok(mwRow.line?.includes(' C '),'mobile must show the same smooth line as desktop');
+  assert.ok(mwRow.summary.top<mwRow.date.bottom&&mwRow.date.top<mwRow.summary.bottom,
+   '390px summary and date controls must share the same row: '+JSON.stringify(mwRow));
+  assert.ok(mwRow.date.left>=mwRow.summary.right-1&&mwRow.date.right<=mwRow.full.right+1,
+   '390px date must align right without overlapping summary: '+JSON.stringify(mwRow));
   assert.equal(state.top30Open,false,'Top 30 starts folded on phones');
   assert.ok(state.stats.every(c=>!c),'metrics fit their cells on a phone');
   assert.ok(state.smallest>=11,'body copy on phones stays at least 11px');
@@ -337,6 +366,17 @@ async function narrowPlayback(browser,engine){
     autoplay:document.getElementById('marketWidthMap').classList.contains('is-playing')};
   });
   assert.ok(bounds.left>=0&&bounds.right<=320,'date controls fit 320px: '+JSON.stringify(bounds));
+  const row=await page.evaluate(()=>{
+   const s=document.querySelector('.mw-summary').getBoundingClientRect();
+   const d=document.querySelector('.mw-date-nav').getBoundingClientRect();
+   const f=document.querySelector('.mw-subline').getBoundingClientRect();
+   return {summary:{right:s.right,top:s.top,bottom:s.bottom},
+    date:{left:d.left,right:d.right,top:d.top,bottom:d.bottom},footerRight:f.right};
+  });
+  assert.ok(row.summary.top<row.date.bottom&&row.date.top<row.summary.bottom,
+   '320px summary and date retain one flex row: '+JSON.stringify(row));
+  assert.ok(row.summary.right<=row.date.left+1&&row.date.right<=row.footerRight+1,
+   '320px mobile date stays right aligned without intersecting copy: '+JSON.stringify(row));
   assert.ok(bounds.overflow<=1,'no horizontal scroll at 320px: '+JSON.stringify(bounds));
   assert.equal(bounds.autoplay,false,'prefers-reduced-motion disables auto playback');
   await page.locator('.mw-strip-day').nth(5).tap();
