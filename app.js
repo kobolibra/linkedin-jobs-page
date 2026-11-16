@@ -449,11 +449,14 @@ window.VizTip=(()=>{
   // tooltip follows it instead of vanishing. Pointer readings hide on scroll.
   let anchor=null;
   const place=(x,y)=>{
-    const t=tip,r=t.getBoundingClientRect();
+    const t=tip,r=t.getBoundingClientRect(),margin=10;
+    const maxLeft=Math.max(margin,innerWidth-r.width-margin);
+    const maxTop=Math.max(margin,innerHeight-r.height-margin);
     let left=x+16,top=y-r.height-14;
-    if(left+r.width>innerWidth-10)left=x-r.width-16;
-    if(left<10)left=10;
-    if(top<10)top=y+18;
+    if(left+r.width>innerWidth-margin)left=x-r.width-16;
+    if(top<margin)top=y+18;
+    left=Math.min(maxLeft,Math.max(margin,left));
+    top=Math.min(maxTop,Math.max(margin,top));
     t.style.transform='translate('+Math.round(left)+'px,'+Math.round(top)+'px)';
   };
   function show(html,x,y,target=null){

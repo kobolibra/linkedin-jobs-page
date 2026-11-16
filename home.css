@@ -180,11 +180,12 @@
 
 /* ---------- Shared tooltip ---------- */
 .viz-tip{
-  position:fixed;z-index:1000;top:0;left:0;min-width:176px;max-width:280px;padding:10px 12px 9px;
+  position:fixed;z-index:1000;top:0;left:0;min-width:176px;max-width:min(280px,calc(100vw - 20px));box-sizing:border-box;padding:10px 12px 9px;
   border-radius:9px;background:var(--tip-bg);color:var(--tip-ink);
   box-shadow:0 10px 30px -8px rgba(10,20,28,.38),0 2px 6px rgba(10,20,28,.14);
   font:500 12px/1.45 var(--sans);font-variant-numeric:tabular-nums;pointer-events:none;
-  will-change:transform;transition:transform .11s ease-out;
+  /* Instant constrained placement: no tween from stale offscreen coordinates. */
+  will-change:transform;
 }
 .viz-tip[hidden]{display:none}
 .viz-tip-title{display:block;margin:0 0 6px;padding-bottom:6px;border-bottom:1px solid var(--tip-rule);font-weight:650;letter-spacing:-.005em}
