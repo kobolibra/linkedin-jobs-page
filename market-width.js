@@ -480,7 +480,7 @@ function render(rows,days){
    inView=entries.some(entry=>entry.isIntersecting);
    schedulePlay();
   },{threshold:0.01});
-  visibilityObserver.observe(rootEl);
+  visibilityObserver.observe(rootEl.closest('.ac-col-market')||rootEl);
  }
  if(typeof ResizeObserver==='function'){
   sizeObserver=new ResizeObserver(()=>{
