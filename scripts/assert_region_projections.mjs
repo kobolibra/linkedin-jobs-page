@@ -1,5 +1,49 @@
 /* Shared assertions for real browser projection geometry; no request stubs. */
 import assert from 'node:assert/strict';
+
+/* The actual ink boundary must match the fill geometry, not merely the SVG
+   path centerline. Check in Chromium AND WebKit at every viewport/theme. */
+export async function assertRegionContourEdge(page){
+ const state=await page.evaluate(()=>{
+  const svg=document.querySelector('#dist .region-time-svg');
+  const plotRight=Number(svg.dataset.plotRight);
+  const clip=svg.querySelector('#dist-region-contour-edge');
+  const rect=clip?.querySelector('rect');
+  const contours=['hk','sg','cn'].map(region=>{
+   const path=svg.querySelector('.region-series.'+region+'.region-boundary .region-spark-line');
+   const band=svg.querySelector('.region-series.'+region+'.region-fill .region-stack-band');
+   if(!path)return {region,hasBand:!!band};
+   const style=getComputedStyle(path);
+   const end=path.getPointAtLength(path.getTotalLength());
+   const hit=[...svg.querySelectorAll('.region-series.'+region+'.region-boundary .region-spark-hit')];
+   return {region,hasBand:!!band,sharedUpperBoundary:
+     !!band&&band.getAttribute('d').startsWith(path.getAttribute('d')+' L'),
+    endX:end.x,strokeLinecap:style.strokeLinecap,strokeWidth:parseFloat(style.strokeWidth),
+    pathClip:path.getAttribute('clip-path'),
+    hitsUnclipped:hit.every(circle=>!circle.hasAttribute('clip-path'))};
+  });
+  return {plotRight,clipRect:rect?{x:+rect.getAttribute('x'),width:+rect.getAttribute('width'),
+   y:+rect.getAttribute('y'),height:+rect.getAttribute('height')}:null,
+   clipUnits:clip?.getAttribute('clipPathUnits'),svgHeight:svg.viewBox.baseVal.height,contours};
+ });
+ assert.ok(state.clipRect,'contour-only SVG clipping boundary must exist');
+ assert.equal(state.clipUnits,'userSpaceOnUse','right edge is shared SVG data space');
+ assert.equal(state.clipRect.x,0);
+ assert.equal(state.clipRect.x+state.clipRect.width,state.plotRight,
+  'paint must be clipped exactly at the shared band right edge');
+ assert.equal(state.clipRect.y,0);assert.equal(state.clipRect.height,state.svgHeight);
+ for(const item of state.contours){
+  if(!item.hasBand){assert.equal(item.endX,undefined,'zero-region contour should be absent');continue;}
+  assert.equal(item.sharedUpperBoundary,true,'area fill must trace the identical cumulative contour');
+  assert.ok(Math.abs(item.endX-state.plotRight)<.06,
+   'line path must end at its actual final data coordinate: '+JSON.stringify(item));
+  assert.equal(item.strokeLinecap,'butt','no right-side round-cap protrusion');
+  assert.equal(item.strokeWidth,1.6,'do not mask a geometry mismatch by thinning the line');
+  assert.equal(item.pathClip,'url(#dist-region-contour-edge)','clip ONLY contour paint at fill edge');
+  assert.equal(item.hitsUnclipped,true,'the clipping must not cut off data hover targets');
+ }
+ return state;
+}
 export async function assertRegionProjections(page){
  await page.waitForFunction(()=>document.querySelector('#dist .region-projections')?.dataset.ready==='true');
  await page.evaluate(async()=>{await document.fonts.ready;for(let i=0;i<3;i++)await new Promise(requestAnimationFrame);});
