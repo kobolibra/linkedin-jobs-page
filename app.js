@@ -762,21 +762,23 @@ jobsDataPromise
       if(!count)return '';
       const x=measureX[k];
       const low=trendY(cumulativeLevels[i]),high=trendY(cumulativeLevels[i+1]);
-      // Compact open chevrons touch the true interval boundaries. Their
-      // shallow, balanced wings stay at consistent CSS-pixel dimensions on
-      // desktop and phone; omit tips on bands too thin to carry them.
-      const wing=2.15*TW/axisCssWidth,depth=3.25*TW/axisCssWidth;
-      const arrowheads=low-high>=depth*2+4
-        ?'<path class="region-measure-arrow" d="M'+(x-wing).toFixed(2)+','+(high+depth).toFixed(2)+
-          ' L'+x+','+high.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(high+depth).toFixed(2)+
-          ' M'+(x-wing).toFixed(2)+','+(low-depth).toFixed(2)+
-          ' L'+x+','+low.toFixed(2)+' L'+(x+wing).toFixed(2)+','+(low-depth).toFixed(2)+'"/>':'';
+      // Editorial interval mark, not a directional arrow: each short cap
+      // sits exactly on a true cumulative boundary. Its 8.4 CSS-pixel width
+      // is independent of the SVG's responsive scaling; omit BOTH caps when
+      // the real interval is under 10 CSS pixels to prevent touching marks.
+      const capHalf=4.2*TW/axisCssWidth,capMinHeight=10*TW/axisCssWidth;
+      const capLines=low-high>=capMinHeight
+        ?[["upper",high],["lower",low]].map(([edge,y])=>
+          '<line class="region-measure-cap" data-region="'+k+
+          '" data-edge="'+edge+'" x1="'+(x-capHalf).toFixed(2)+
+          '" x2="'+(x+capHalf).toFixed(2)+'" y1="'+y.toFixed(2)+
+          '" y2="'+y.toFixed(2)+'"/>').join(''):'';
       return '<g class="region-series '+k.toLowerCase()+' region-measure-group">'+
         '<line class="region-measure-height" data-region="'+k+
         '" data-count="'+count+'" data-lower="'+cumulativeLevels[i]+
         '" data-upper="'+cumulativeLevels[i+1]+'" x1="'+x+'" x2="'+x+
         '" y1="'+low.toFixed(2)+'" y2="'+high.toFixed(2)+'"/>'+
-        arrowheads+'</g>';
+        capLines+'</g>';
     }).join('');
     const localMeasurements='<g class="region-measurements" aria-hidden="true">'+
       referenceLines+verticalMeasures+'</g>';
