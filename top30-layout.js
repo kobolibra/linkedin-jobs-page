@@ -351,26 +351,40 @@
       focus(row && host.contains(row) ? row : null, e.clientX, e.clientY);
     });
     host.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') focus(null); });
-    // Touch: the first tap on a bubble shows its numbers; a second tap on the
-    // same bubble opens its roles. Mouse and keyboard keep one-step drill-down.
-    // A tap also focuses the bubble, so read the state before the tap began.
-    let touch = false, wasFocused = false;
+    // Touch: one tap reveals a bubble's values; a second on the SAME bubble
+    // opens its roles. Native touch focus/blur may fire between pointerdown
+    // and click, so never infer the second tap from transient :focus styling.
+    // Mouse clicks and keyboard Enter continue to drill in one action.
+    let touch = false, secondTap = false, armedRow = null;
     host.addEventListener('pointerdown', (e) => {
       touch = e.pointerType === 'touch';
-      wasFocused = !!e.target.closest('.bubble-row')?.classList.contains('is-focus');
+      const row = e.target.closest('.bubble-row');
+      secondTap = touch && !!row && row === armedRow;
+      armedRow = touch && row && host.contains(row) ? row : null;
     }, true);
     host.addEventListener('click', (e) => {
       const row = e.target.closest('.bubble-row');
-      if (!touch || !row || wasFocused) return;
+      if (!touch || !row || secondTap) return;
       e.preventDefault(); e.stopImmediatePropagation();
       const r = row.querySelector('.bubble-point').getBoundingClientRect();
       focus(row, r.right, r.top);
+    }, true);
+    // Dismiss touch inspection only on a genuine outside touch or a keyboard
+    // Tab transition. An incidental synthetic touch blur must not erase the
+    // first reading or force a third tap to open the intended institution.
+    document.addEventListener('pointerdown', (e) => {
+      if (!armedRow || host.contains(e.target)) return;
+      armedRow = null; touch = false; focus(null);
+    }, true);
+    document.addEventListener('keydown', (e) => {
+      if (!armedRow || e.key !== 'Tab') return;
+      armedRow = null; touch = false; focus(null);
     }, true);
     host.addEventListener('focusin', (e) => {
       const row = e.target.closest('.bubble-row'); if (!row) return;
       focus(row, 0, 0, row.querySelector('.bubble-point'));
     });
-    host.addEventListener('focusout', () => focus(null));
+    host.addEventListener('focusout', () => { if (!armedRow) focus(null); });
   };
 
   const safeRender = (rows, mode) => {
