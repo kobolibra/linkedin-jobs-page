@@ -91,7 +91,9 @@ async function desktop(browser,engine,theme){
   // Fig. 01 crosshair reading matches the plotted right-edge total.
   const capture=page.locator('#dist .region-hover-capture');await capture.scrollIntoViewIfNeeded();await settle(page);
   const box=await capture.boundingBox();
-  await page.mouse.move(box.x+box.width-.2,box.y+box.height/2);
+  // The final day owns a full slot at the right edge, not a sub-pixel sliver.
+  const slotPx=await page.evaluate(()=>{const svg=document.querySelector('#dist svg');return Number(document.querySelector('#dist .region-hover-capture').getAttribute('width'))/Number(svg.dataset.dayBins)*svg.getBoundingClientRect().width/svg.viewBox.baseVal.width;});
+  await page.mouse.move(box.x+box.width-slotPx*.45,box.y+box.height/2);
   t=await tip(page);
   const finalTotal=await page.evaluate(()=>Number(document.querySelector('#dist svg').dataset.finalTotal));
   const total=Number((t?.text.match(/Total\s+([\d,]+)/)||[])[1]?.replace(/,/g,''));

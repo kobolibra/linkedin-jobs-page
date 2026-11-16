@@ -1018,8 +1018,11 @@ jobsDataPromise
       guide.style.display='none';
       const capture=document.createElementNS(ns,'rect');
       capture.setAttribute('class','region-hover-capture');
-      capture.setAttribute('x',String(left));capture.setAttribute('y',String(top));
-      capture.setAttribute('width',String(plotW));capture.setAttribute('height',String(base-top));
+      // Every day owns an equal slot centred on its x, so the first and last
+      // days (including the final total) are as easy to reach as any other.
+      const slot=plotW/(bins-1);
+      capture.setAttribute('x',(left-slot/2).toFixed(2));capture.setAttribute('y',String(top));
+      capture.setAttribute('width',(plotW+slot).toFixed(2));capture.setAttribute('height',String(base-top));
       projectionSvg.append(guide,capture);
       const tipDate=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
       const inspect=e=>{
