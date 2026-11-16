@@ -983,6 +983,8 @@ jobsDataPromise
     updateRegionProjections();
     // Figure 01 headline and inspection: both read the same cumulative series
     // as the painted bands, so the tooltip can never disagree with the chart.
+    // Shared labels for both figure tooltips, independent of editorial copy.
+    const regionName={HK:'Hong Kong',SG:'Singapore',CN:'Mainland China',OTHER:'Other'};
     if(window.VizTip&&bins>1){
       const ns='http://www.w3.org/2000/svg';
       const guide=document.createElementNS(ns,'line');
