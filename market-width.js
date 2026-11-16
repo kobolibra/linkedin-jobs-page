@@ -346,7 +346,9 @@ function render(rows,days){
  };
  const startIfVisible=()=>{
   if(!inView||!playing||loopDays.length<2)return;
-  if(!started){started=true;day=loopDays[0];draw();}
+  // The initial frame already shows the latest complete day. Do not flash
+  // backward to day one when the chart first enters the viewport.
+  if(!started)started=true;
   board.classList.add('is-playing');schedulePlay();
  };
  // Manual inspection takes precedence. Restart the seven-day sequence after
@@ -357,8 +359,9 @@ function render(rows,days){
   if(motion.matches)return;
   manualTimer=setTimeout(()=>{
    manualTimer=null;if(motion.matches)return;
-   playing=true;started=true;day=loopDays[0];
-   board.classList.add('is-playing');draw();schedulePlay();
+   playing=true;started=true;
+   board.classList.add('is-playing');
+   dissolveDay(loopDays[0]);schedulePlay();
   },INSPECTION_HOLD_MS);
  };
  listen(motion,'change',()=>{
