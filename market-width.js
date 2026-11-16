@@ -254,6 +254,19 @@ const prettyDate=key=>{
  if(!m)return String(key||'');
  return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 };
+/* Open on the most recent representative day. A day still being collected,
+   or a quiet weekend, can hold one or two postings and would show a single
+   giant tile; walk back at most six days to the latest day with at least half
+   the median of the active days in the window. Every day stays selectable. */
+function initialDay(series){
+ const totals=series.counts.all.map(line=>line.reduce((sum,n)=>sum+n,0));
+ const latest=totals.findLastIndex(n=>n>0);
+ if(latest<0)return totals.length-1;
+ const active=totals.filter(n=>n>0).sort((a,b)=>a-b);
+ const mid=active.length%2?active[active.length>>1]:(active[active.length/2-1]+active[active.length/2])/2;
+ for(let day=latest;day>=Math.max(0,latest-6);day--)if(totals[day]>=mid*.5)return day;
+ return latest;
+}
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
@@ -262,8 +275,8 @@ function render(rows,days){
  const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
  if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
  const series=aggregate(rows,days),last=series.keys.length-1;
- let day=series.counts.all.findLastIndex(line=>line.some(Boolean));
- if(day<0)day=last;
+ const strip=el('marketWidthStrip');
+ let day=initialDay(series);
  let region='all',selectedFirm=null,lastSize='';
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
@@ -316,6 +329,8 @@ function render(rows,days){
   }
   count.textContent=fmt(data.total);firms.textContent=data.firms+'/18';
   date.textContent=prettyDate(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
+  date.dataset.partial=String(day===last);
+  if(strip)drawStrip();
   prev.disabled=day===0;next.disabled=day===last;
   tabs.querySelectorAll('[data-market-region]').forEach(tab=>{
    const on=tab.dataset.marketRegion===region;
@@ -325,6 +340,27 @@ function render(rows,days){
   selectedFirm=null;detail.hidden=true;detail.textContent='';
   lastSize=width+'x'+height;
  }
+ /* 30-day scrubber: one column per day for the selected region, on the
+    same first-seen buckets as the board. It is a pointer shortcut; the
+    labelled previous/next buttons remain the keyboard path. */
+ function drawStrip(){
+  const totals=series.counts[region].map(line=>line.reduce((sum,n)=>sum+n,0));
+  const max=Math.max(1,...totals);
+  const fragment=document.createDocumentFragment();
+  totals.forEach((n,i)=>{
+   const b=document.createElement('button');
+   b.type='button';b.tabIndex=-1;b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(i===last?' is-partial':'');
+   b.dataset.day=String(i);
+   b.style.setProperty('--level',(n/max).toFixed(4));
+   b.title=prettyDate(series.keys[i])+(i===last?' (so far)':'')+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
+   fragment.append(b);
+  });
+  strip.replaceChildren(fragment);
+ }
+ strip?.setAttribute('aria-hidden','true');
+ strip?.addEventListener('click',e=>{
+  const target=e.target.closest('.mw-strip-day');if(target)chooseDay(Number(target.dataset.day));
+ });
  function chooseDay(next){
   const to=Math.max(0,Math.min(last,next));if(to===day)return;day=to;draw();
  }
@@ -385,7 +421,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
 }
-const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,render};
+const api={FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treemap,marketTiles,colorLevel,colorPosition,tileTypography,initialDay,render};
 if(typeof module!=='undefined'&&module.exports)module.exports=api;
 if(root)root.MarketWidth=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);

@@ -220,7 +220,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-width-19','market-width.css?v=market-title-nowrap-26'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=market-width-20','market-width.css?v=market-title-nowrap-26'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
@@ -348,3 +348,14 @@ test('numerical ramp remains light-first and accessible at both extremes, in bot
 
 
 
+
+test('Market Width opens on the latest representative day, never a sparse partial one',()=>{
+ const {initialDay}=require('../market-width.js');
+ const series=totals=>({counts:{all:totals.map(n=>Array.from({length:18},(_,i)=>i===0?n:0))}});
+ assert.equal(initialDay(series([10,12,0,11,14,9])),5,'a normal latest day is shown as is');
+ assert.equal(initialDay(series([10,12,11,14,9,2])),4,'a still-collecting latest day with two postings yields to yesterday');
+ assert.equal(initialDay(series([10,12,11,14,1,2])),3,'a quiet weekend is skipped back to the last full weekday');
+ assert.equal(initialDay(series([10,12,11,14,9,0])),4,'a day with no postings yet is skipped');
+ assert.equal(initialDay(series([0,0,0])),2,'all-zero windows still open on the latest day');
+ assert.equal(initialDay(series([1,1,1,1,1,1,1,1,1,40])),9);
+});

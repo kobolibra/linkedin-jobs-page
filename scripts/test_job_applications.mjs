@@ -223,8 +223,14 @@ test('My Journey matches the existing site regional, Porcelain and Top 30 colors
  assert.match(site,/--sg:#6e8a46/);
  assert.match(site,/--other:#357585/);
  assert.match(site,/--navy:#16395a/);
- assert.match(refinement,/#spark \{ --viz-blue:#334EAC; \}/);
- assert.match(top30,/palette = \['#F5572F', '#D4A017', '#ACAD79', '#7096D1', '#334EAC', '#081F5C'\]/);
+ // Homepage figures share one region system; dark-mode HK is amber, as in My Journey.
+ const home=readFileSync(new URL('../home.css',import.meta.url),'utf8');
+ assert.match(home,/--r-hk-ink:#e5bd68/);
+ assert.match(site,/\[data-theme="dark"\][\s\S]*?--hk:#e5bd68/);
+ assert.ok(refinement.length>0);
+ // Top 30 bubbles are coloured by dominant market, using the same region classes as every other figure.
+ assert.match(top30,/const DOMINANT_SHARE = 0\.6;/);
+ assert.match(top30,/' region-' \+ String\(p\.region \|\| 'MIX'\)\.toLowerCase\(\)/);
  assert.match(sheet,/\.ap-node-region \.ap-region-code\s*\{\s*fill:currentColor/);
  assert.match(sheet,/\.ap-key-interviews::before\s*\{\s*background:linear-gradient/);
 });

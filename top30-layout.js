@@ -8,7 +8,7 @@
       tooltip still identify it), because stacked unreadable text is worse than none.
    Exported for Node so the layout can be regression-tested headlessly. */
 (() => {
-  const MARK = 'accurate-v17-monotonic-area-scale';
+  const MARK = 'accurate-v18-region-colour';
   const g = typeof window !== 'undefined' ? window : globalThis;
 
   const escSvg = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (m) => ({
@@ -20,6 +20,7 @@
   };
   const labelWidth = (s) => [...String(s || '')].reduce((w, ch) => w + (ch.charCodeAt(0) > 255 ? 7.2 : 4.3), 0);
   const LABEL_H = 10;
+  const DOMINANT_SHARE = 0.6;
 
   const rectsOverlap = (a, b, pad = 3) =>
     a.x < b.x + b.w + pad && a.x + a.w + pad > b.x && a.y < b.y + b.h + pad && a.y + a.h + pad > b.y;
@@ -95,7 +96,14 @@
     if (ticks[ticks.length - 1] !== tickTop) ticks.push(tickTop);
     if (broken) ticks.push(domainMax);
 
-    const palette = ['#F5572F', '#D4A017', '#ACAD79', '#7096D1', '#334EAC', '#081F5C'];
+    // Colour carries market, the one dimension position and size do not:
+    // an institution takes a market colour when at least 60% of its active
+    // roles are there, otherwise it is drawn as multi-market.
+    const dominantRegion = (item) => {
+      const total = Math.max(1, item.total);
+      const best = ['CN', 'HK', 'SG'].map((r) => [r, Number(item[r]) || 0]).sort((a, b) => b[1] - a[1])[0];
+      return best[1] / total >= DOMINANT_SHARE ? best[0] : 'MIX';
+    };
     const maxTotal = Math.max(1, ...entries.map(([, d]) => d.total));
     const points = entries.map(([name, item], i) => {
       const s = stats[i];
@@ -109,7 +117,8 @@
       return {
         name, total: item.total, i, mean: s.mean, median: s.median, desiredR,
         rawX, rawY, px: rawX, py: rawY,
-        color: palette[Math.min(5, Math.floor(i / 5))],
+        region: dominantRegion(item),
+        mix: { CN: item.CN || 0, HK: item.HK || 0, SG: item.SG || 0 },
         label: companyLabel(name), labelBox: null
       };
     });
@@ -193,7 +202,7 @@
     // Paint smaller bubbles first so larger, higher-volume bubbles remain
     // visually dominant when their true data circles overlap.
     const pointMarkup = [...points].sort((a, b) => a.total - b.total || a.i - b.i).map((p) => {
-      const deep = p.i >= 20, ink = deep ? '#F0EFEB' : '#1C1C1A';
+      const regionClass = ' region-' + String(p.region || 'MIX').toLowerCase();
       const displaced = Math.hypot(p.px - p.rawX, p.py - p.rawY) > 3;
       const positionLeader = displaced
         ? '<line class="bubble-position-leader" x1="' + p.rawX.toFixed(1) + '" y1="' + p.rawY.toFixed(1)
@@ -214,11 +223,13 @@
           + '" text-anchor="' + b.anchor + '">' + escSvg(p.label) + '</text>';
       }
       const overlapClass = p.overlap ? ' bubble-point-overlap' : '';
-      return '<g class="bubble-row bubble-drill" data-company="' + escSvg(p.name) + '" style="--i:' + p.i
-        + '" role="button" tabindex="0">' + positionLeader + labelMarkup
+      return '<g class="bubble-row bubble-drill' + regionClass + '" data-company="' + escSvg(p.name) + '" data-region="' + escSvg(p.region)
+        + '" data-total="' + p.total + '" data-mean="' + p.mean.toFixed(2) + '" data-median="' + p.median.toFixed(2)
+        + '" data-cn="' + p.mix.CN + '" data-hk="' + p.mix.HK + '" data-sg="' + p.mix.SG + '" style="--i:' + p.i
+        + '" role="button" tabindex="0" aria-label="' + title + '. Show these roles">' + positionLeader + labelMarkup
         + '<circle class="bubble-point' + overlapClass + '" cx="' + p.px.toFixed(1) + '" cy="' + p.py.toFixed(1) + '" r="' + p.r.toFixed(1)
-        + '" fill="' + p.color + '"><title>' + title + '</title></circle>'
-        + '<text class="bubble-total' + (deep ? ' bubble-total-deep' : '') + '" fill="' + ink + '" x="' + p.px.toFixed(1)
+        + '"></circle>'
+        + '<text class="bubble-total" x="' + p.px.toFixed(1)
         + '" y="' + (p.py + 2.5).toFixed(1) + '" text-anchor="middle">' + p.total + '</text></g>';
     }).join('');
 
@@ -226,14 +237,14 @@
       + '\u673a\u6784\u5e73\u5747\u9996\u6b21\u53d1\u73b0\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
       + grid + axisBreaks + diagonal
       + '<text class="bubble-x-title" x="' + ((left + plotRight) / 2) + '" y="' + (plotBottom + 38)
-      + '" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text>'
+      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE FIRST SEEN  → LONGER-LISTED</text>'
       + '<text class="bubble-y-title" x="16" y="' + ((plotTop + plotBottom) / 2)
-      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS</text>'
+      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE FIRST SEEN →</text>'
       + pointMarkup + '</svg>';
   };
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { computeLayout, buildSvg, labelWidth, LABEL_H };
+    module.exports = { computeLayout, buildSvg, labelWidth, LABEL_H, DOMINANT_SHARE };
   }
   if (typeof document === 'undefined') return;
 
@@ -269,9 +280,11 @@
     scoped.forEach((job) => {
       const name = fnCompany(job.company || '\u672a\u77e5\u673a\u6784') || '\u672a\u77e5\u673a\u6784';
       if (!name) return;
-      if (!counts.has(name)) counts.set(name, { total: 0, ages: [] });
+      if (!counts.has(name)) counts.set(name, { total: 0, CN: 0, HK: 0, SG: 0, ages: [] });
       const item = counts.get(name);
       item.total += 1;
+      const region = fnNorm(job.location);
+      if (item[region] != null) item[region] += 1;
       const seen = Date.parse(job.firstSeen || '');
       if (Number.isFinite(seen)) item.ages.push(Math.max(0, (now - seen) / 86400000));
     });
@@ -281,10 +294,45 @@
       .slice(0, 30);
     if (!top.length) return;
     const svg = buildSvg(computeLayout(top));
-    host.classList.remove('is-ready');
+    host.classList.remove('is-ready', 'is-inspecting');
+    wire(host);
     host.innerHTML = svg;
     host.dataset.layout = MARK;
     requestAnimationFrame(() => host.classList.add('is-ready'));
+  };
+
+  // Hover and focus: dim the field, lift one institution, and show its exact
+  // numbers. Wired once on the stable host; SVG content is replaced on render.
+  const regionLabel = { CN: 'Mainland China', HK: 'Hong Kong', SG: 'Singapore' };
+  const wire = (host) => {
+    if (host.dataset.wired) return;
+    host.dataset.wired = 'true';
+    const tip = () => g.VizTip;
+    const focus = (row, x, y) => {
+      host.querySelectorAll('.bubble-row.is-focus').forEach((n) => n.classList.remove('is-focus'));
+      if (!row) { host.classList.remove('is-inspecting'); tip()?.hide(); return; }
+      row.classList.add('is-focus');
+      host.classList.add('is-inspecting');
+      const t = tip(); if (!t) return;
+      const d = row.dataset, total = Number(d.total) || 0;
+      const share = (n) => (total ? Math.round(Number(n) / total * 100) : 0) + '%';
+      const lines = ['CN', 'HK', 'SG'].filter((r) => Number(d[r.toLowerCase()]) > 0)
+        .map((r) => t.row(regionLabel[r], d[r.toLowerCase()] + ' · ' + share(d[r.toLowerCase()]), r)).join('');
+      t.show('<span class="viz-tip-title">' + escSvg(d.company) + '</span>' + t.row('Active roles', total) + lines
+        + t.row('Average age', Number(d.mean).toFixed(1) + ' days') + t.row('Median age', Number(d.median).toFixed(1) + ' days')
+        + '<span class="viz-tip-hint">Click to show these roles</span>', x, y);
+    };
+    host.addEventListener('pointermove', (e) => {
+      const row = e.target.closest('.bubble-row');
+      focus(row && host.contains(row) ? row : null, e.clientX, e.clientY);
+    });
+    host.addEventListener('pointerleave', () => focus(null));
+    host.addEventListener('focusin', (e) => {
+      const row = e.target.closest('.bubble-row'); if (!row) return;
+      const r = row.querySelector('.bubble-point').getBoundingClientRect();
+      focus(row, r.right, r.top);
+    });
+    host.addEventListener('focusout', () => focus(null));
   };
 
   const safeRender = (rows, mode) => {
@@ -292,6 +340,7 @@
   };
   try { renderTop50 = safeRender; } catch (e) {}
   g.renderTop50 = safeRender;
+  g.Top30Layout = { render: safeRender, computeLayout, buildSvg };
 
   let healing = false;
   const heal = () => {

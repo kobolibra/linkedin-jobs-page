@@ -25,57 +25,6 @@ function setTheme(t){
 }
 setTheme(storageGet('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'));
 tbtn.addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
-(function(){
-  const stack=document.getElementById('mastStack');
-  if(!stack)return;
-  const front=document.getElementById('mastAvatar');
-  if(front){front.addEventListener('load',()=>stack.classList.add('show'));front.addEventListener('error',()=>{stack.style.display='none';});}
-  stack.querySelectorAll('.mast-avatar').forEach(im=>{im.src='avatars/1.jpg';});
-})();
-(()=>{
-  const bg=document.getElementById('mastBg');
-  if(!bg||matchMedia('(max-width:1100px)').matches)return;
-  const start=()=>{
-  const numbered=(prefix,count)=>Array.from({length:count},(_,index)=>'assets/mast-backgrounds/'+prefix+'-'+String(index+1).padStart(2,'0')+'.webp');
-  const cats=['assets/mast-backgrounds/2.webp','assets/mast-backgrounds/3.webp'];
-  const portraits=[
-    ...numbered('mast-bg-cobalt-botanical',8),
-    ...numbered('mast-bg-blue-ink-gold',6),
-    ...numbered('mast-bg-sunrise-canopy',3),
-    ...numbered('mast-bg-cobalt-canopy',6)
-  ];
-  const storageKey='mast-background-last';
-  const previous=(storageGet(storageKey,true)||'').split('|').filter(Boolean);
-  const choose=(pool,avoid)=>{const choices=pool.filter(path=>!avoid.includes(path));return choices[Math.floor(Math.random()*choices.length)]||pool[0];};
-  const showCats=Math.random()<cats.length/(cats.length+portraits.length/3);
-  const selected=showCats?[choose(cats,previous)]:[];
-  if(!showCats)for(let index=0;index<3;index++)selected.push(choose(portraits,[...previous,...selected]));
-  const preload=path=>new Promise((resolve,reject)=>{const image=new Image();image.decoding='async';image.fetchPriority='low';image.onload=()=>resolve(image);image.onerror=reject;image.src=path;});
-  const fitGallery=()=>{
-    const masthead=bg.closest('.masthead'),eyebrow=masthead?.querySelector('.eyebrow'),stats=masthead?.querySelector('.stats'),stack=masthead?.querySelector('#mastStack');
-    if(!masthead||!eyebrow||!stats||!stack)return;
-    const textEnd=selector=>{const node=masthead.querySelector(selector);if(!node)return 0;const range=document.createRange();range.selectNodeContents(node);return Math.max(...[...range.getClientRects()].map(rect=>rect.right));};
-    const safeTextEnd=Math.max(textEnd('h1'),textEnd('.lede'),textEnd('.tagline'));
-    const top=Math.ceil(eyebrow.offsetTop+eyebrow.offsetHeight/2+2),bottom=Math.floor(stats.offsetTop-3),availableHeight=Math.max(1,bottom-top),triptych=bg.classList.contains('triptych'),height=triptych?Math.min(availableHeight,124):availableHeight;
-    const stackLeft=stack.getBoundingClientRect().left,mastLeft=masthead.getBoundingClientRect().left,expandedLeft=stackLeft-86,creditReserve=triptych?13:9;
-    bg.style.removeProperty('display');bg.style.setProperty('--mast-bg-top',top+'px');bg.style.setProperty('--mast-bg-height',height+'px');
-    bg.querySelectorAll('.mast-bg-frame').forEach(frame=>{const image=frame.querySelector('img');if(!image)return;const width=2+(height-2)*(image.naturalWidth/image.naturalHeight);frame.style.width=width.toFixed(3)+'px';});
-    bg.style.setProperty('--mast-bg-right',(mastLeft+masthead.clientWidth-(expandedLeft-creditReserve))+'px');
-    if(!triptych&&bg.getBoundingClientRect().left<safeTextEnd+5)bg.style.display='none';
-  };
-  Promise.allSettled(selected.map(preload)).then(results=>{
-    const images=results.filter(result=>result.status==='fulfilled').map(result=>result.value);
-    if(!images.length){bg.style.display='none';return;}
-    const frames=images.map(image=>{image.className='mast-bg-image';image.alt='';image.decoding='async';const frame=document.createElement('span');frame.className='mast-bg-frame';frame.append(image);return frame;});
-    if(images.length===3){const credit=document.createElement('span');credit.className='mast-bg-credit';credit.textContent='photo by 小红书@岚岚';bg.replaceChildren(...frames,credit);}else bg.replaceChildren(...frames);
-    bg.classList.toggle('triptych',images.length===3);bg.classList.toggle('cat',images.length===1);bg.dataset.background=selected.join('|');fitGallery();bg.classList.add('show');storageSet(storageKey,selected.join('|'),true);
-    document.fonts?.ready.then(fitGallery);setTimeout(fitGallery,760);addEventListener('resize',fitGallery,{passive:true});
-  }).catch(()=>{bg.style.display='none';});
-  };
-  // These images are decorative only. Start them after the first data paint so
-  // the 4–6 MB gallery cannot compete with jobs-index.json and list rendering.
-  document.addEventListener('jobsfilterchange',()=>{requestAnimationFrame(()=>{if('requestIdleCallback' in window)requestIdleCallback(start,{timeout:1800});else setTimeout(start,0);});},{once:true});
-})();
 document.getElementById('totop').innerHTML=IC.up;
 document.getElementById('favToggle').innerHTML=IC.star+'<span>收藏</span>';
 const dbtn=document.getElementById('densityToggle');
@@ -482,107 +431,84 @@ const keepLatestSameCityTitle=data=>{
   });
   return [...others,...[...selected.values()].map(entry=>entry.job)];
 };
-function renderTop50(rows,mode="all"){
-  const host=document.getElementById('top50');
-  if(!host)return;
-  const now=Date.now();
-  const scoped=(mode==="all"?rows:rows.filter(j=>norm(j.location)===mode)).filter(isActiveJob);
-  const counts=new Map();
-  scoped.forEach(j=>{
-    const name=canonicalCompany(j.company||'未知机构')||'未知机构';
-    if(!name)return;
-    if(!counts.has(name))counts.set(name,{total:0,CN:0,HK:0,SG:0,ages:[]});
-    const item=counts.get(name);
-    item.total++;
-    const region=norm(j.location);
-    if(item[region]!=null)item[region]++;
-    const seen=Date.parse(j.firstSeen||'');
-    if(Number.isFinite(seen))item.ages.push(Math.max(0,(now-seen)/86400000));
-  });
-  const top=[...counts.entries()].filter(([,d])=>d.ages.length).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'zh-Hans-CN')).slice(0,30);
-  const escSvg=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const companyLabel=name=>{const short=String(name||'').trim().split(/\s+/).slice(0,6).join(' ');return short.length>30?short.slice(0,29)+'…':short;};
-  const W=720,H=570,left=54,plotRight=666,plotTop=32,plotBottom=528;
-  const labelWidth=s=>[...String(s||'')].reduce((w,ch)=>w+(ch.charCodeAt(0)>255?7.5:4.45),0);
-  const means=top.map(([,d])=>d.ages.reduce((a,b)=>a+b,0)/d.ages.length);
-  const medians=top.map(([,d])=>{const a=[...d.ages].sort((x,y)=>x-y);return a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;});
-  const maxValue=Math.max(0,...means,...medians);
-  const domainMax=Math.max(50,Math.ceil(maxValue/10)*10);
-  const x=v=>left+(plotRight-left)*((Number(v)||0)/domainMax);
-  const y=v=>plotBottom-(plotBottom-plotTop)*((Number(v)||0)/domainMax);
-  const xTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
-  const yTicks=Array.from({length:domainMax/10+1},(_,i)=>i*10);
-  const grid=xTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+x(v).toFixed(1)+'" y1="'+plotTop+'" x2="'+x(v).toFixed(1)+'" y2="'+plotBottom+'"/>')+'<text class="bubble-axis" x="'+x(v).toFixed(1)+'" y="'+(plotBottom+17)+'" text-anchor="middle">'+v+'</text>').join('')+
-    yTicks.map(v=>(v===domainMax?'':'<line class="bubble-grid" x1="'+left+'" y1="'+y(v).toFixed(1)+'" x2="'+plotRight+'" y2="'+y(v).toFixed(1)+'"/>')+'<text class="bubble-axis" x="'+(left-10)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end">'+v+'</text>').join('');
-  const pointData=top.map(([name,item],i)=>{
-    const ages=[...item.ages].sort((a,b)=>a-b),n=ages.length;
-    const mean=ages.reduce((a,b)=>a+b,0)/n;
-    const median=n%2?ages[(n-1)/2]:(ages[n/2-1]+ages[n/2])/2;
-    const tier=Math.min(5,Math.floor(i/5));
-    const palette=['#F5572F','#D4A017','#ACAD79','#7096D1','#334EAC','#081F5C'];
-    const gray=palette[tier],labelInk=tier>=4?'#1C1C1A':'#F0EFEB',deepTone=tier>=4;
-    const r=3+Math.sqrt(item.total/Math.max(1,top[0][1].total))*8.2,label=companyLabel(name);
-    return {name,item,i,mean,median,gray,labelInk,deepTone,r,px:x(mean),py:y(median),label,labelW:labelWidth(label)};
-  });
-  const occupied=[];
-  const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
-  const bubbleDistance=(box,q)=>{const nearX=Math.max(box.x,Math.min(q.px,box.x+box.w)),nearY=Math.max(box.y,Math.min(q.py,box.y+box.h));return Math.hypot(q.px-nearX,q.py-nearY);};
-  const boxDistance=(a,b)=>{const dx=Math.max(b.x-a.x-a.w,a.x-b.x-b.w,0),dy=Math.max(b.y-a.y-a.h,a.y-b.y-b.h,0);return Math.hypot(dx,dy);};
-  const segmentDistance=(point,a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,scale=dx*dx+dy*dy;if(!scale)return Math.hypot(point.x-a.x,point.y-a.y);const t=Math.max(0,Math.min(1,((point.x-a.x)*dx+(point.y-a.y)*dy)/scale));return Math.hypot(point.x-(a.x+t*dx),point.y-(a.y+t*dy));};
-  const hitsBubble=(box,p)=>pointData.some(q=>q!==p&&bubbleDistance(box,q)<q.r+2);
-  // Larger bubbles reserve space first; every company then evaluates left, right, above and below on exactly the same terms.
-  [...pointData].sort((a,b)=>b.r-a.r||a.py-b.py).forEach(p=>{
-    const shifts=[0,-9,9,-18,18,-28,28,-40,40,-54,54,-70,70,-88,88,-108,108];
-    const candidates=[];
-    const addCandidate=(placement,offset,index,nudge=0,bias=0)=>{
-      const local=placement==='right'||placement==='left';
-      // Text boxes start 6 viewBox units from the bubble on every cardinal side before any collision-avoidance shift.
-      const baseline=Math.max(plotTop+8,Math.min(plotBottom-5,local?p.py+offset:(placement==='below'?p.py+p.r+13+offset:p.py-p.r-10-offset)));
-      const anchor=local?'start':'middle';
-      const lx=placement==='right'?p.px+p.r+6:placement==='left'?p.px-p.r-6-p.labelW:p.px+nudge;
-      const box={x:anchor==='middle'?lx-p.labelW/2:lx,y:baseline-7,w:p.labelW,h:11};
-      if(box.x<left+4||box.x+box.w>plotRight-4)return;
-      const ownBubbleCollision=bubbleDistance(box,p)<p.r+2;
-      const collision=occupied.filter(other=>overlaps(box,other)).length+(hitsBubble(box,p)?1:0)+(ownBubbleCollision?1:0);
-      const edgeDistance=Math.max(0,bubbleDistance(box,p)-p.r);
-      const nearestBubbleClearance=Math.min(...pointData.filter(q=>q!==p).map(q=>bubbleDistance(box,q)-q.r));
-      const nearestLabelClearance=occupied.length?Math.min(...occupied.map(other=>boxDistance(box,other))):Infinity;
-      const localClearance=Math.min(nearestBubbleClearance,nearestLabelClearance);
-      // Leaders only clarify genuine separation; a close left-side label is equally valid.
-      const leader=collision>0||edgeDistance>9;
-      const labelLeft=anchor==='middle'?lx-p.labelW/2:lx;
-      const lineX=placement==='right'?labelLeft-2:placement==='left'?labelLeft+p.labelW+2:lx;
-      const start={x:p.px,y:p.py},end={x:lineX,y:baseline};
-      const routeLength=route=>route.slice(1).reduce((sum,point,idx)=>sum+Math.hypot(point.x-route[idx].x,point.y-route[idx].y),0);
-      const routeClear=route=>!pointData.some(q=>q!==p&&route.slice(1).some((point,idx)=>segmentDistance({x:q.px,y:q.py},route[idx],point)<q.r+1.5));
-      // A leader may be direct or make one quiet 90° turn; diagram-spanning detours are visually worse than choosing another label position.
-      const routes=[[start,end],[start,{x:start.x,y:end.y},end],[start,{x:end.x,y:start.y},end]];
-      const route=leader?routes.filter(routeClear).sort((a,b)=>routeLength(a)-routeLength(b))[0]||null:[];
-      const routeLengthPenalty=route?routeLength(route)*1.25:0;
-      const crossedBubble=leader&&!route;
-      // Keep labels beside their own bubble first. Association clearance only resolves nearby candidates, never justifies a much longer label displacement.
-      const associationDeficit=Math.max(0,edgeDistance+1.5-nearestBubbleClearance);
-      const crowdingPenalty=Math.max(0,18-localClearance)*.35;
-      const remotePenalty=Math.max(0,edgeDistance-9)*18;
-      candidates.push({x:lx,y:baseline,w:p.labelW,h:8,anchor,placement,collision,leader,route,edgeDistance,cost:collision*1000000+crossedBubble*100000+remotePenalty+routeLengthPenalty+edgeDistance+associationDeficit*1.2+crowdingPenalty+bias});
-    };
-    // Rotate only exact ties by company name, so candidate enumeration never introduces a global right-side preference.
-    const directions=['right','below','left','above'],rotation=[...p.name].reduce((sum,ch)=>sum+ch.codePointAt(0),0)%directions.length;
-    directions.map((_,index)=>directions[(index+rotation)%directions.length]).forEach(placement=>shifts.forEach((shift,index)=>addCandidate(placement,shift,index)));
-    const best=candidates.sort((a,b)=>a.cost-b.cost)[0]||{x:Math.max(left+4,Math.min(plotRight-p.labelW-4,p.px+7)),y:Math.max(plotTop+8,Math.min(plotBottom-5,p.py)),w:p.labelW,h:8,anchor:'start',placement:'right',leader:true};
-    p.labelBox=best;occupied.push({x:(best.anchor==='middle'?best.x-best.w/2:best.x)-2,y:best.y-7.5,w:best.w+4,h:12.5});
-  });
-  const points=pointData.map((p)=>{
-    const {name,item,i,mean,median,gray,labelInk,deepTone,r,px,py,label,labelBox}=p;
-    const labelLeft=labelBox.anchor==='middle'?labelBox.x-labelBox.w/2:labelBox.x;
-    const title=escSvg(name)+' · '+item.total+' 个职位 · 平均 '+mean.toFixed(1)+' 天 · 中位 '+median.toFixed(1)+' 天';
-    const leader=labelBox.leader&&labelBox.route?'<polyline class="bubble-label-leader" fill="none" points="'+labelBox.route.map(point=>point.x.toFixed(1)+','+point.y.toFixed(1)).join(' ')+'"/>':'';
-    return '<g class="bubble-row bubble-drill" data-company="'+escSvg(name)+'" data-total="'+item.total+'" data-mean="'+mean.toFixed(2)+'" data-median="'+median.toFixed(2)+'" style="--i:'+i+'" role="button" tabindex="0" aria-label="查看 '+escSvg(name)+' 的职位">'+leader+'<rect class="bubble-hit" x="'+(labelLeft-2).toFixed(1)+'" y="'+(labelBox.y-7).toFixed(1)+'" width="'+(labelBox.w+4).toFixed(1)+'" height="10" rx="2"/><circle class="bubble-point" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+r.toFixed(1)+'" fill="'+gray+'"><title>'+title+'</title></circle><text class="bubble-company" x="'+labelBox.x.toFixed(1)+'" y="'+labelBox.y.toFixed(1)+'" text-anchor="'+labelBox.anchor+'">'+escSvg(label)+'</text><text class="bubble-total'+(deepTone?' bubble-total-deep':'')+'" fill="'+labelInk+'" x="'+px.toFixed(1)+'" y="'+(py+2.5).toFixed(1)+'" text-anchor="middle">'+item.total+'</text></g>';
-  }).join('');
-  const diagonal='<line class="bubble-diagonal" x1="'+x(0)+'" y1="'+y(0)+'" x2="'+x(domainMax)+'" y2="'+y(domainMax)+'"/><text class="bubble-relation bubble-relation-above" x="'+x(7)+'" y="'+y(11)+'" text-anchor="middle">MEDIAN &gt; AVERAGE</text><text class="bubble-relation bubble-relation-below" x="'+x(7)+'" y="'+y(4)+'" text-anchor="middle">AVERAGE &gt; MEDIAN</text>';
-  host.innerHTML='<svg class="top20-svg bubble-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Top 30 机构平均 first seen 天数、中位数与职位数量彩色气泡图">'+grid+diagonal+'<text class="bubble-x-title" x="'+((left+plotRight)/2)+'" y="'+(H-1)+'" text-anchor="middle">AVG DAYS SINCE FIRST SEEN</text><text class="bubble-y-title" x="31" y="'+((plotTop+plotBottom)/2)+'" text-anchor="middle" transform="rotate(-90 31 '+((plotTop+plotBottom)/2)+')">MEDIAN DAYS</text>'+points+'</svg>';
-  requestAnimationFrame(()=>host.classList.add('is-ready'));
+// Top 30 drawing lives in top30-layout.js, which replaces this binding once
+// loaded. Until then this placeholder intentionally renders nothing.
+function renderTop50(rows,mode="all"){window.Top30Layout?.render(rows,mode);}
+/* One shared chart tooltip for every homepage figure. It is a single fixed
+   element (never inside an SVG), so it cannot be clipped by a chart frame and
+   never changes chart layout. Content is built from numbers and fixed labels. */
+window.VizTip=(()=>{
+  let tip=null;
+  const ensure=()=>{
+    if(tip)return tip;
+    tip=document.createElement('div');tip.className='viz-tip';tip.setAttribute('aria-hidden','true');tip.hidden=true;
+    document.body.append(tip);return tip;
+  };
+  const row=(label,value,region)=>'<span class="viz-tip-row"'+(region?' data-region="'+region+'"':'')+'><span class="viz-tip-key">'+(region?'<i aria-hidden="true"></i>':'')+label+'</span><b>'+value+'</b></span>';
+  function show(html,x,y){
+    const t=ensure();t.innerHTML=html;t.hidden=false;
+    const r=t.getBoundingClientRect();
+    let left=x+16,top=y-r.height-14;
+    if(left+r.width>innerWidth-10)left=x-r.width-16;
+    if(left<10)left=10;
+    if(top<10)top=y+18;
+    t.style.transform='translate('+Math.round(left)+'px,'+Math.round(top)+'px)';
+  }
+  function hide(){if(tip)tip.hidden=true;}
+  addEventListener('scroll',hide,{passive:true});
+  return {show,hide,row};
+})();
+const fmtInt=n=>Number(n||0).toLocaleString("en-US");
+const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);if(!a.length)return null;const m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2;};
+/* Masthead and metric band: every figure is derived from the same
+   deduplicated rows as the charts below; nothing here is a static claim. */
+function renderHeadline(allRows,chartRows){
+  const overview=window.AuthGuest?.overview,now=Date.now(),day=864e5;
+  const counts={CN:0,HK:0,SG:0};
+  const ages=[];
+  for(const job of chartRows){
+    const region=norm(job.location);if(counts[region]!=null)counts[region]++;
+    const t=Date.parse(seenAt(job));if(Number.isFinite(t))ages.push(Math.max(0,(now-t)/day));
+  }
+  const total=overview?.total??chartRows.length;
+  const covered=counts.CN+counts.HK+counts.SG;
+  // Shares use the three covered markets as their denominator, so the three
+  // printed shares always add up to 100%.
+  for(const region of ["CN","HK","SG"]){
+    const share=covered?counts[region]/covered:0;
+    const value=document.querySelector('[data-market-value="'+region+'"]');
+    const shareEl=document.querySelector('[data-market-share="'+region+'"]');
+    const bar=document.querySelector('[data-market-bar="'+region+'"]');
+    if(value)value.textContent=fmtInt(counts[region]);
+    if(shareEl)shareEl.textContent=(share*100).toFixed(1)+'%';
+    if(bar)bar.style.setProperty('--share',share.toFixed(4));
+  }
+  // Weekly flow counts every role first seen in a window, including roles
+  // that have since closed, so this week and last week are comparable.
+  const flowRows=overview?chartRows:allRows;
+  let week=0,prior=0;
+  for(const job of flowRows){
+    const t=Date.parse(seenAt(job));if(!Number.isFinite(t))continue;
+    const age=(now-t)/day;if(age<7)week++;else if(age<14)prior++;
+  }
+  const weekEl=document.getElementById("stat-week"),weekNote=document.getElementById("stat-week-note");
+  if(weekEl)animNum(weekEl,week);
+  if(weekNote&&!overview&&prior>0){
+    const change=(week-prior)/prior*100,flat=Math.abs(change)<0.5;
+    weekNote.textContent=flat?'level with the prior 7 days':(change>0?'▲ ':'▼ ')+Math.abs(change).toFixed(0)+'% vs the prior 7 days';
+    weekNote.dataset.trend=flat?'flat':change>0?'up':'down';
+  }
+  const age=medianOf(ages),ageEl=document.getElementById("stat-age");
+  if(ageEl)ageEl.textContent=age==null?'—':String(Math.round(age));
+  const dek=document.getElementById("heroDek"),companies=overview?.companies??new Set(chartRows.map(j=>canonicalCompany(j.company)).filter(Boolean)).size;
+  if(dek&&total)dek.textContent=fmtInt(total)+' open finance roles at '+fmtInt(companies)+' institutions across Mainland China, Hong Kong and Singapore, tracked from LinkedIn and refreshed every six hours.';
 }
+// The coverage rows double as shortcuts into the filtered list.
+document.querySelectorAll('.nj-market-row[data-region]').forEach(row=>row.addEventListener('click',()=>{
+  setRegion(row.dataset.region);
+  const toolbar=document.querySelector('.toolbar');
+  requestAnimationFrame(()=>toolbar?.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}));
+}));
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
@@ -618,6 +544,7 @@ jobsDataPromise
     const lastUpdDate=new Date(window.AuthGuest?.overview?.updated||lastUpd);
     const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
     document.getElementById("stat-updated").textContent=lastUpdText;
+    renderHeadline(data,chartData);
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
     activeData.forEach(j=>{const region=norm(j.location);if(regionActiveTotals[region]!=null)regionActiveTotals[region]++;});
     const cities=[...new Set(activeData.filter(j=>norm(j.location)==="CN").map(cityOf).filter(Boolean))].sort((a,b)=>{if(a==="N/A")return 1;if(b==="N/A")return -1;return a.localeCompare(b,"zh-Hans-CN");});
@@ -1047,55 +974,142 @@ jobsDataPromise
       window.removeEventListener('resize',scheduleRegionProjections);
     };
     updateRegionProjections();
+    // Figure 01 headline and inspection: both read the same cumulative series
+    // as the painted bands, so the tooltip can never disagree with the chart.
+    const regionName={HK:'Hong Kong',SG:'Singapore',CN:'Mainland China',OTHER:'Other'};
+    const distDek=document.getElementById("distDek");
+    if(distDek&&endTotal){
+      const lead=regionOrder.map((k,i)=>({k,i})).sort((a,b)=>snapshotCounts[b.i]-snapshotCounts[a.i])[0];
+      const since=new Intl.DateTimeFormat('en-GB',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(tMin));
+      distDek.textContent=regionName[lead.k]+' holds '+(shareTenths[lead.i]/10).toFixed(1)+'% of the '+countFormat.format(endTotal)+
+        ' open roles first seen since '+since+'. Each band stacks one market’s open roles by the day they first appeared.';
+    }
+    if(window.VizTip&&bins>1){
+      const ns='http://www.w3.org/2000/svg';
+      const guide=document.createElementNS(ns,'line');
+      guide.setAttribute('class','region-crosshair');guide.setAttribute('y1',String(top));guide.setAttribute('y2',String(base));
+      guide.style.display='none';
+      const capture=document.createElementNS(ns,'rect');
+      capture.setAttribute('class','region-hover-capture');
+      capture.setAttribute('x',String(left));capture.setAttribute('y',String(top));
+      capture.setAttribute('width',String(plotW));capture.setAttribute('height',String(base-top));
+      projectionSvg.append(guide,capture);
+      const tipDate=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+      const inspect=e=>{
+        const box=projectionSvg.getBoundingClientRect();if(!box.width)return;
+        const vx=(e.clientX-box.left)/box.width*TW;
+        const i=Math.max(1,Math.min(bins,Math.round((vx-left)/plotW*(bins-1))+1));
+        const x=trendX(i).toFixed(2);guide.setAttribute('x1',x);guide.setAttribute('x2',x);guide.style.display='';
+        const values=regionOrder.map((_,ri)=>cumulativeSeries[ri][i]);
+        const sum=values.reduce((a,b)=>a+b,0);
+        const lines=regionOrder.map((k,ri)=>({k,ri})).reverse()
+          .map(({k,ri})=>window.VizTip.row(regionName[k],countFormat.format(values[ri]),k)).join('');
+        window.VizTip.show('<span class="viz-tip-title">Open roles first seen by '+tipDate.format(new Date(tMin+(i-1)*dayMs))+'</span>'+
+          lines+window.VizTip.row('Total',countFormat.format(sum)),e.clientX,e.clientY);
+      };
+      capture.addEventListener('pointermove',inspect);
+      capture.addEventListener('pointerleave',()=>{guide.style.display='none';window.VizTip.hide();});
+    }
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=new Date(),days=[];
     for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
-    /* 30-day column presentation / C preview. The original days, totals,
-       date-window, active-job filtering and point tooltips are unchanged.
-       All thirty exact data points now draw simple columns rather than an
-       ornamental line/stem/node combination. */
-    const SW=520,SH=150,sLeft=33,sRight=17,sTop=18,sBase=124,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
+    /* Daily flow. Every column is the exact first-seen count for one local
+       calendar day, stacked by market in the same order and pigments as
+       Figure 01 (HK at the base, then SG, then CN; OTHER on top, neutral).
+       The trailing 7-day average uses the same daily buckets, including the
+       six days before the window, and stops before today's partial day. */
+    const SW=520,SH=158,sLeft=33,sRight=17,sTop=24,sBase=130,sPlotW=SW-sLeft-sRight,sPlotH=sBase-sTop;
     const sx=i=>sLeft+(i/(days.length-1))*sPlotW;
     const rhythmAxis=niceCountAxis(smax);
     const sy=v=>sBase-(v/rhythmAxis.max)*sPlotH;
     const barWidth=Math.min(11.3,sPlotW/days.length*.72);
     const scaleValues=rhythmAxis.ticks;
+    const STACK=["HK","SG","CN","OTHER"];
+    const dayTotal=date=>{const rc=rcounts[keyOf(date)]||{};return RKEYS.reduce((sum,r)=>sum+(rc[r]||0),0);};
+    const trailing=days.map(d=>{
+      let sum=0;
+      for(let back=0;back<7;back++){const t=new Date(d.date);t.setDate(t.getDate()-back);sum+=dayTotal(t);}
+      return sum/7;
+    });
+    const lastIndex=days.length-1;
     const guides=scaleValues.map(v=>
       '<line class="rhythm-grid" x1="'+sLeft+'" y1="'+sy(v).toFixed(2)+
       '" x2="'+(SW-sRight)+'" y2="'+sy(v).toFixed(2)+'"/>'+
       '<text class="rhythm-scale-label" x="'+(sLeft-10)+'" y="'+(sy(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
+    const step=sPlotW/(days.length-1);
+    const weekendBands=days.map((d,i)=>d.weekend?'<rect class="rhythm-weekend" x="'+(sx(i)-step/2).toFixed(2)+
+      '" y="'+sTop+'" width="'+step.toFixed(2)+'" height="'+sPlotH+'"/>':'').join('');
+    const peakIndex=peak>0?days.findIndex(d=>d.total===peak):-1;
     const bars=days.map((d,i)=>{
       const x=sx(i)-barWidth/2,y=sy(d.total),h=Math.max(0,sBase-y);
-      const isPeak=d.total===peak&&peak>0;
-      return '<g class="rhythm-point" tabindex="0" role="img" data-day="'+i+
-        '" aria-label="'+d.label+': '+d.total+' new postings">'+
+      const isPeak=i===peakIndex,partial=i===lastIndex;
+      let running=0;
+      const segments=STACK.map(r=>{
+        const n=d.rc[r]||0;if(!n)return '';
+        const y1=sy(running+n),y0=sy(running);running+=n;
+        return '<rect class="rhythm-seg '+r.toLowerCase()+'" data-region="'+r+'" data-count="'+n+
+          '" x="'+x.toFixed(2)+'" y="'+y1.toFixed(2)+'" width="'+barWidth.toFixed(2)+
+          '" height="'+Math.max(0,y0-y1).toFixed(2)+'"/>';
+      }).join('');
+      const label=d.label+': '+d.total+' new postings'+(partial?' so far':'')+
+        STACK.filter(r=>d.rc[r]).map(r=>', '+r+' '+d.rc[r]).join('');
+      return '<g class="rhythm-point'+(partial?' is-partial':'')+'" tabindex="0" role="img" data-day="'+i+
+        '" data-total="'+d.total+'" aria-label="'+label+'">'+segments+
         '<rect class="rhythm-bar'+(d.weekend?' weekend':'')+(isPeak?' peak':'')+
         '" x="'+x.toFixed(2)+'" y="'+y.toFixed(2)+'" width="'+barWidth.toFixed(2)+
         '" height="'+h.toFixed(2)+'" rx="0.8"/>'+
-        '<rect class="rhythm-bar-hit" x="'+(x-2).toFixed(2)+'" y="'+sTop+
-        '" width="'+(barWidth+4).toFixed(2)+'" height="'+(sBase-sTop)+'"/>'+
-        '<title>'+d.label+' · '+d.total+' new postings</title></g>';
+        '<rect class="rhythm-bar-hit" x="'+(sx(i)-step/2).toFixed(2)+'" y="'+sTop+
+        '" width="'+step.toFixed(2)+'" height="'+(sBase-sTop)+'"/></g>';
     }).join('');
+    const avgPoints=trailing.slice(0,lastIndex).map((v,i)=>sx(i).toFixed(2)+','+sy(Math.min(v,rhythmAxis.max)).toFixed(2));
+    const average=avgPoints.length>1?'<polyline class="rhythm-avg" points="'+avgPoints.join(' ')+'"/>'+
+      '<text class="rhythm-avg-label" x="'+(sx(lastIndex-1)+3).toFixed(2)+'" y="'+(sy(trailing[lastIndex-1])-5).toFixed(2)+
+      '" text-anchor="end">7-day avg '+Math.round(trailing[lastIndex-1])+'</text>':'';
+    const peakLabel=peakIndex>=0?'<text class="rhythm-peak-label" x="'+sx(peakIndex).toFixed(2)+'" y="'+(sy(peak)-5).toFixed(2)+
+      '" text-anchor="middle">'+peak+'</text>':'';
     // A 30-day window always uses real Mondays, seven days apart. Do not
     // inject arbitrary endpoints or silently drop weeks to fit endpoint text.
     const rhythmTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short'});
     const rhythmMarks=days.map((d,i)=>d.date.getDay()===1?i:-1).filter(i=>i>=0);
     const dateLabels=rhythmMarks.map(i=>{
       const x=sx(i),anchor=x-sLeft<24?'start':SW-sRight-x<24?'end':'middle';
-      return '<line class="rhythm-date-tick" x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="130" y2="134"/>'+
+      return '<line class="rhythm-date-tick" x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="136" y2="140"/>'+
         '<text class="rhythm-axis-label" x="'+x.toFixed(1)+
-        '" y="145" data-day="'+i+'" data-date="'+keyOf(days[i].date)+'" text-anchor="'+anchor+'">'+
+        '" y="153" data-day="'+i+'" data-date="'+keyOf(days[i].date)+'" text-anchor="'+anchor+'">'+
         rhythmTickFormat.format(days[i].date)+'</text>';
     }).join('');
     const sparkEl=document.getElementById("spark");
-    sparkEl.innerHTML='<svg class="rhythm-svg" viewBox="0 0 '+SW+' '+SH+
-      '" role="img" aria-label="30-day new postings, one bar per day. Each column provides the exact date and count.">'+
-      guides+bars+dateLabels+'</svg>';
+    sparkEl.innerHTML='<svg class="rhythm-svg" data-chart-kind="stacked-daily" viewBox="0 0 '+SW+' '+SH+
+      '" role="img" aria-label="30-day new postings, one column per day stacked by market, with a trailing 7-day average. Each column provides the exact date and count.">'+
+      weekendBands+guides+bars+average+peakLabel+dateLabels+'</svg>';
+    const windowTotal=days.reduce((sum,d)=>sum+d.total,0);
+    const sparkDek=document.getElementById("sparkDek");
+    if(sparkDek&&windowTotal){
+      const peakDay=days[peakIndex];
+      sparkDek.textContent=windowTotal.toLocaleString('en-US')+' still-open roles first appeared in the last 30 days. The busiest day was '+
+        rhythmTickFormat.format(peakDay.date)+', with '+peak+'.';
+    }
+    if(window.VizTip){
+      const tipFormat=new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short'});
+      const inspectDay=(node,x,y)=>{
+        const i=Number(node.dataset.day),d=days[i];if(!d)return;
+        sparkEl.querySelectorAll('.rhythm-point.is-hover').forEach(n=>n.classList.remove('is-hover'));
+        node.classList.add('is-hover');
+        const lines=[...STACK].reverse().filter(r=>d.rc[r]).map(r=>window.VizTip.row(regionName[r],d.rc[r],r)).join('');
+        window.VizTip.show('<span class="viz-tip-title">'+tipFormat.format(d.date)+(i===lastIndex?' · so far':'')+'</span>'+lines+
+          window.VizTip.row('Total',d.total)+(i<lastIndex?window.VizTip.row('7-day average',Math.round(trailing[i])):''),x,y);
+      };
+      const clear=()=>{sparkEl.querySelectorAll('.rhythm-point.is-hover').forEach(n=>n.classList.remove('is-hover'));window.VizTip.hide();};
+      sparkEl.addEventListener('pointermove',e=>{const node=e.target.closest('.rhythm-point');if(node)inspectDay(node,e.clientX,e.clientY);else clear();});
+      sparkEl.addEventListener('pointerleave',clear);
+      sparkEl.addEventListener('focusin',e=>{const node=e.target.closest('.rhythm-point');if(!node)return;const r=node.getBoundingClientRect();inspectDay(node,r.right,r.top);});
+      sparkEl.addEventListener('focusout',clear);
+    }
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Use the same first-seen daily buckets and deduplicated active chart data
     // as New Postings, with the radar exposing a separate region selector.

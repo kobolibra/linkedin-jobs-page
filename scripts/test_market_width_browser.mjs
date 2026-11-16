@@ -6,7 +6,7 @@ import {readFileSync,mkdirSync} from 'node:fs';
 import {chromium} from 'playwright';
 const source=new URL('../',import.meta.url);
 const html=readFileSync(new URL('index.html',source),'utf8');
-const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css']
+const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css','home.css']
  .map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
 const script=readFileSync(new URL('market-width.js',source),'utf8');
 const appSource=readFileSync(new URL('app.js',source),'utf8');
@@ -86,7 +86,8 @@ async function renderLeft(page,chartData,theme){
    x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom
   };};
   const weekendBars=bars.filter(node=>node.classList.contains('weekend'));
-  const weekdayBars=bars.filter(node=>!node.classList.contains('weekend'));
+  const columns=[...document.querySelectorAll('#spark .rhythm-point')];
+  const segFill=r=>{const node=document.querySelector('#spark .rhythm-seg.'+r);return node?getComputedStyle(node).fill:null;};
   const regionDateNodes=[...svg.querySelectorAll('.region-spark-date')];
   const referenceNodes=[...svg.querySelectorAll('.region-measure-reference')];
   const heightNodes=[...svg.querySelectorAll('.region-measure-height')];
@@ -96,10 +97,12 @@ async function renderLeft(page,chartData,theme){
   return {series,bars:bars.length,regions:lines.length,
    viewportWidth:window.innerWidth,
    weekendCount:weekendBars.length,
-   weekendOpacity:weekendBars.length?getComputedStyle(weekendBars[0]).opacity:null,
-   weekdayOpacity:weekdayBars.length?getComputedStyle(weekdayBars[0]).opacity:null,
-   weekendBlue:weekendBars.length?getComputedStyle(weekendBars[0]).fill:null,
-   weekdayBlue:weekdayBars.length?getComputedStyle(weekdayBars[0]).fill:null,
+   weekendBands:document.querySelectorAll('#spark .rhythm-weekend').length,
+   segmentFills:{hk:segFill('hk'),sg:segFill('sg'),cn:segFill('cn')},
+   columnSums:columns.map(g=>({total:Number(g.dataset.total),
+    stacked:[...g.querySelectorAll('.rhythm-seg')].reduce((n,seg)=>n+Number(seg.dataset.count),0),
+    order:[...g.querySelectorAll('.rhythm-seg')].map(seg=>seg.dataset.region)})),
+   averageLine:document.querySelectorAll('#spark .rhythm-avg').length,
    labelTotal:statRows.reduce((n,node)=>n+Number(node.dataset.count),0),
    stageTotal:Number(stage.dataset.visibleTotal),
    shortHistory:stage.classList.contains('is-short-history'),
@@ -174,9 +177,6 @@ async function renderLeft(page,chartData,theme){
    chartAria:svg?.getAttribute('aria-label')||'',
    otherSeries:document.querySelectorAll('#dist .region-series.other').length,
    grid:document.querySelectorAll('#dist .region-spark-grid').length,
-   barColor:bars.length?getComputedStyle(bars[0]).fill:null,
-   // The rolling window can start on Saturday/Sunday; inspect a real weekday.
-   barOpacity:weekdayBars.length?getComputedStyle(weekdayBars[0]).opacity:null,
    captions:document.querySelectorAll('#dist .region-chart-caption,#spark .rhythm-caption').length,
    regionTicks:scale('#dist .region-spark-value'),
    postingTicks:scale('#spark .rhythm-scale-label'),
@@ -207,18 +207,22 @@ async function renderLeft(page,chartData,theme){
   ?{cn:'rgb(179, 58, 54)',hk:'rgb(178, 122, 34)',sg:'rgb(110, 143, 59)'}
   :{cn:'rgb(238, 160, 154)',hk:'rgb(224, 179, 107)',sg:'rgb(173, 208, 132)'},
   'region contours match the approved visual palette in both themes');
- assert.equal(quality.barColor,theme==='light'?'rgb(51, 78, 172)':'rgb(112, 150, 209)',
-  '30-day columns must reuse the existing light/dark blue tokens');
+ const expectedFills=theme==='light'
+  ?{hk:'rgb(195, 154, 90)',sg:'rgb(143, 174, 110)',cn:'rgb(201, 114, 108)'}
+  :{hk:'rgb(201, 154, 84)',sg:'rgb(141, 170, 109)',cn:'rgb(199, 122, 114)'};
+ // Sparse fixtures may have no column for a region inside the 30-day window.
+ for(const [k,fill] of Object.entries(quality.segmentFills))if(fill!==null)assert.equal(fill,expectedFills[k],
+  'daily '+k+' columns use the regional sand/sage/terracotta family in both themes');
  assert.equal(quality.regions,3);
  assert.equal(quality.bars,30);
- assert.equal(quality.barOpacity,'1','weekday columns use the original undiluted blue');
+ assert.ok(quality.columnSums.every(c=>c.stacked===c.total),'stacked market segments always sum to the exact daily count');
+ const stackRank={HK:0,SG:1,CN:2,OTHER:3};
+ assert.ok(quality.columnSums.every(c=>c.order.every((r,i,a)=>!i||stackRank[a[i-1]]<stackRank[r])),
+  'every column stacks HK, SG, CN, OTHER from the baseline, matching Figure 01');
+ assert.equal(quality.averageLine,1,'one trailing 7-day average line');
  assert.ok(quality.weekendCount>=8&&quality.weekendCount<=10,
-  'all Saturdays and Sundays remain visibly identifiable across 30 days');
- assert.equal(quality.weekdayOpacity,'1','weekday columns are fully opaque');
- assert.equal(quality.weekendOpacity,theme==='light'?'0.63':'0.71',
-  'weekend columns use a subdued opacity, with less attenuation in dark mode');
- assert.equal(quality.weekendBlue,quality.weekdayBlue,
-  'weekends retain the same brand-blue hue, only visual emphasis changes');
+  'weekend days are identified from the actual calendar, not hard-coded');
+ assert.equal(quality.weekendBands,quality.weekendCount,'each weekend day has one quiet background band');
  assert.deepEqual(quality.stackOrder,['hk','sg','cn'],
   'real production distribution anchors HK below SG and CN; OTHER is excluded');
  assert.equal(quality.otherSeries,0,'OTHER never belongs in this chart or legend');

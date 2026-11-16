@@ -21,23 +21,7 @@
   --ui-glass-shadow:0 10px 28px rgba(0,0,0,.15);
   --closed-ink:#91a0aa; --closed-wash:rgba(145,160,170,.035);
 }
-.stats {
-  gap:0; margin-top:20px; padding:4px 0; overflow:hidden;
-  background:var(--glass-soft); border:0; border-radius:14px;
-  box-shadow:none; backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur);
-}
-.stats .stat,
-[data-theme="dark"] .stats .stat {
-  height:76px; min-height:76px; max-height:76px; padding:14px 24px; gap:6px;
-  align-items:flex-start; justify-content:center;
-  border:0; border-radius:0; background:transparent;
-  box-shadow:none; transform:none; color:var(--ink); transition:none;
-}
-.stats .stat .k { position:static; order:0; color:var(--ink-soft); font-size:11px; line-height:16px; font-weight:500; letter-spacing:.035em; }
-.stats .stat + .stat::before { content:""; position:absolute; left:0; top:20px; bottom:20px; width:1px; background:var(--ui-divider); }
-.stats .stat .v { order:1; color:var(--navy); font-family:var(--sans); font-size:22px; font-weight:500; line-height:26px; height:26px; letter-spacing:-.02em; }
-[data-theme="dark"] .stats .stat:hover .v { color:var(--navy); }
-.stats .stat .live { box-shadow:none; }
+/* Metric band styling lives in home.css. */
 .analytics { margin-top:16px; }
 .analytics-card {
   gap:0; overflow:hidden; background:var(--glass-soft); border:0; border-radius:16px;
@@ -124,11 +108,6 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
   .co-kpis, body.compact .co-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 12px; }
 }
 @media (max-width:720px) {
-  .stats { gap:0; padding:0; }
-  .stats .stat, [data-theme="dark"] .stats .stat { padding:14px 18px; }
-  .stats .stat .v { font-size:18px; }
-  .stats .stat:nth-child(odd)::before { display:none; }
-  .stats .stat:nth-child(n+3) { border-top:1px solid var(--ui-divider); }
   .analytics-card { border-radius:14px; }
   .analytics-card > .ac-col:not(.ac-col-top50) { padding:16px 14px 12px; }
   .analytics-card > .ac-col:nth-child(2) { border-left:0; border-top:1px solid var(--ui-divider); }
@@ -145,9 +124,6 @@ body.compact .job .mono { width:28px; height:22px; border:0; border-radius:0; fo
   body.compact .job-title { font-size:13.5px; }
   .job-heading { gap:6px; }
   .job-state-closed { height:18px; font-size:10px; margin-top:1px; padding:0 5px; }
-}
-@media (max-width:420px) {
-  .stats .stat, [data-theme="dark"] .stats .stat { padding-left:14px; padding-right:14px; }
 }
 @media print {
   #top50[hidden] { display:block !important; }
@@ -465,58 +441,22 @@ body.compact .job > .mono { margin-top:2px; }
 .analytics-card > .ac-col:nth-child(2){border-left-color:var(--viz-rule)}
 .analytics-card > .ac-col-top50,
 .analytics-card > .ac-col-cn-map{border-top-color:var(--viz-rule) !important}
-#dist .region-time-name{
-  fill:var(--viz-quiet);
-  font:600 10.5px var(--sans);
-}
-#dist .region-time-count{
-  fill:var(--viz-secondary);
-  font:700 10.5px var(--mono);
-  font-variant-numeric:tabular-nums;
-}
-#dist .region-time-pct{
-  fill:var(--viz-quiet);
-  font:500 9px var(--mono);
-}
-#dist .region-month-label,
-#dist .region-month-label.region-month-current{
-  fill:var(--viz-quiet);
-  font:500 9px var(--mono);
-  letter-spacing:.035em;
-}
-#dist .region-month-boundary{
-  stroke:var(--viz-rule);
-  opacity:1;
-  stroke-width:.8;
-}
-#dist .region-density{
-  transition:opacity .16s ease;
-}
-#dist .region-density:hover{
-  opacity:1;
-  stroke:color-mix(in srgb,var(--ink) 30%,transparent);
-  stroke-width:1;
-}
-.rhythm-baseline{stroke:var(--viz-rule);stroke-width:1}
-.rhythm-stick{stroke:var(--viz-blue);stroke-width:1.1;opacity:.38}
-.rhythm-stick.weekend{opacity:.2}
-.rhythm-tick{stroke:var(--viz-rule);opacity:.7}
-.rhythm-line{
-  stroke:var(--viz-blue);
-  stroke-width:2.15;
-  vector-effect:non-scaling-stroke;
-}
-.rhythm-node{fill:var(--surface);stroke:var(--viz-blue);stroke-width:1.6}
-.rhythm-node.weekend{fill:var(--surface);stroke:var(--viz-blue);opacity:.76}
-.rhythm-node.focus,
-[data-theme="dark"] .rhythm-node.focus{
-  fill:var(--viz-blue);stroke:var(--surface);stroke-width:1.75;
-}
-.rhythm-value,
-[data-theme="dark"] .rhythm-value{
-  fill:var(--viz-secondary);
-  font:700 10px var(--mono);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .rhythm-axis-label,
 [data-theme="dark"] .rhythm-axis-label{
   fill:var(--viz-quiet);
@@ -586,28 +526,14 @@ body.compact .job > .mono { margin-top:2px; }
   .bubble-row{animation:none}
 }
 
-/* 30-DAY POSTINGS / clean editorial trend, with accessible full detail */
-/* Porcelain (青瓷蓝): scope the canonical data blue to this chart only.
-   The line, linked data markers and latest annotation share one series color.
-   All other charts retain their existing --viz-blue. */
-#spark { --viz-blue:#334EAC; }
-[data-theme="dark"] #spark { --viz-blue:#7096D1; }
+/* 30-DAY POSTINGS: frame and grid only. Region-stacked columns, the 7-day
+   average and hover states are painted by home.css. */
 .analytics-card .spark{height:auto;min-height:0;overflow:visible}
 .analytics-card .spark .rhythm-svg{width:100%;height:auto;min-width:0;max-height:none;margin:0;display:block;overflow:visible}
-.spark-shell{min-width:0}
 .rhythm-grid,[data-theme="dark"] .rhythm-grid{stroke:var(--viz-rule);stroke-width:.75;opacity:.45;stroke-dasharray:2 4;vector-effect:non-scaling-stroke}
 .rhythm-grid:first-child{opacity:.7;stroke-dasharray:none}
-.rhythm-stick,[data-theme="dark"] .rhythm-stick{stroke:var(--viz-blue);stroke-width:1;opacity:.13;vector-effect:non-scaling-stroke}
-.rhythm-stick.weekend,[data-theme="dark"] .rhythm-stick.weekend{opacity:.075}
-.rhythm-line,[data-theme="dark"] .rhythm-line{fill:none;stroke:var(--viz-blue);stroke-width:2.05;stroke-linecap:round;stroke-linejoin:round}
 .rhythm-point{cursor:pointer;outline:none}
-.rhythm-point-hit{fill:transparent;stroke:none;pointer-events:all}
-.rhythm-node,[data-theme="dark"] .rhythm-node{fill:var(--surface);stroke:var(--viz-blue);stroke-width:1.45;opacity:.85;pointer-events:none}
-.rhythm-node.focus,[data-theme="dark"] .rhythm-node.focus{fill:var(--viz-blue);stroke:var(--surface);stroke-width:1.8;opacity:1}
-.rhythm-point:hover .rhythm-node,.rhythm-point:focus-visible .rhythm-node{stroke:var(--ink);stroke-width:2.5;opacity:1}
 .rhythm-axis-label,[data-theme="dark"] .rhythm-axis-label{fill:var(--viz-quiet);font:500 9px var(--mono);letter-spacing:.02em}
-.rhythm-key-label,[data-theme="dark"] .rhythm-key-label{fill:var(--viz-secondary);font:700 9px var(--mono);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
-.rhythm-key-latest,[data-theme="dark"] .rhythm-key-latest{fill:var(--viz-blue)}
 @media(prefers-reduced-motion:reduce){.rhythm-svg{transition:none;transform:none}}
 
 
@@ -718,26 +644,7 @@ body.compact .job > .mono { margin-top:2px; }
   fill:var(--viz-quiet);font:500 9px var(--mono);
   font-variant-numeric:tabular-nums;
 }
-#spark .rhythm-bar{
-  fill:var(--viz-blue);opacity:1;
-  transition:opacity .16s ease;
-}
-/* Same blue hue and exactly the same quantities; weekend activity is
-   differentiated only by a measured reduction in visual prominence. */
-#spark .rhythm-bar.weekend{opacity:.63}
-[data-theme="dark"] #spark .rhythm-bar.weekend{opacity:.71}
-#spark .rhythm-bar-hit{fill:transparent;cursor:crosshair}
-#spark .rhythm-point:hover .rhythm-bar,
-#spark .rhythm-point:focus-visible .rhythm-bar{opacity:1}
-#spark .rhythm-point:focus-visible{
-  outline:none;
-}
-#spark .rhythm-point:focus-visible .rhythm-bar{
-  stroke:var(--ink);stroke-width:1.8;
-}
-@media(prefers-reduced-motion:reduce){
-  #spark .rhythm-bar{transition:none}
-}
+
 /* Real CSS-pixel labels remain readable on mobile while the plot
    recovers the entire width previously reserved for right-edge statistics. */
 @media(max-width:720px){
@@ -763,7 +670,7 @@ body.compact .job > .mono { margin-top:2px; }
 .nj-market-row{font-variant-numeric:tabular-nums}
 .nj-title{letter-spacing:-.045em;text-wrap:balance}
 .nj-masthead-folio{letter-spacing:.08em}
-.rhythm-key-low,[data-theme="dark"] .rhythm-key-low{fill:var(--viz-secondary)}
+
 
 /* Exact-title history lives under the logo; company and JD controls keep their positions. */
 .job-history-toggle,.job-history-panel{display:none}
