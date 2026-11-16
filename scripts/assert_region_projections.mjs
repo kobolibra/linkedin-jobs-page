@@ -48,8 +48,19 @@ export async function assertRegionProjections(page){
   // whitespace between the two text rows, but never through their glyph rows.
   for(const label of state.labels)for(const text of label.textRows){
    const overlapsX=text.x2>g.start+.1&&text.x1<g.end-.1;
-   if(overlapsX)assert.ok(g.y<text.y1-.7||g.y>text.y2+.7,
-    'unbroken guide must clear visible text, including mobile fonts: '+JSON.stringify({region:label.region,level:g.level,lineY:g.y,textY:[text.y1,text.y2],textX:[text.x1,text.x2],lineX:[g.start,g.end],labelY:[label.y1,label.y2],transform:label.shift}));
+   if(!overlapsX||g.y<text.y1-.7||g.y>text.y2+.7)continue;
+   // A short regional band can be physically lower than the two-line
+   // text block on a phone. The production fallback deliberately keeps
+   // its dashed guide continuous *behind foreground text* instead of
+   // carving a conspicuous hole. Require independent proof that this
+   // exceptional collision is unavoidable between the real boundaries.
+   const levels=[18,...state.groups.map(p=>p.y),326].sort((a,b)=>a-b);
+   const mid=(label.y1+label.y2)/2;
+   const upper=levels.filter(y=>y<mid).at(-1),lower=levels.find(y=>y>mid);
+   const rows=label.textRows;
+   const textHeight=Math.max(...rows.map(r=>r.y2))-Math.min(...rows.map(r=>r.y1));
+   assert.ok(upper!==undefined&&lower!==undefined&&textHeight>lower-upper-1,
+    'avoidable projection/text collision: '+JSON.stringify({region:label.region,level:g.level,lineY:g.y,textY:[text.y1,text.y2],band:[upper,lower],textHeight,transform:label.shift}));
   }
  }
  return state;
