@@ -922,7 +922,7 @@ jobsDataPromise
       return {
         area:'<g class="'+className+' region-fill">'+area+'</g>',
         outline:'<g class="'+className+' region-boundary">'+
-          (contour?'<path class="region-spark-line" d="'+contour+'"/>':'')+hits+'</g>'
+          (contour?'<path class="region-spark-line" clip-path="url(#dist-region-contour-edge)" d="'+contour+'"/>':'')+hits+'</g>'
       };
     });
     distEl.innerHTML='<div class="region-plot-stage'+(shortHistory?' is-short-history':'')+
@@ -938,6 +938,13 @@ jobsDataPromise
       '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
+      // The filled band and its contour end at the exact same x. A painted
+      // stroke otherwise extends beyond its own path endpoint (especially
+      // when round line caps are enabled and SVG overflow is visible).
+      // Clip ONLY contour paint at the shared right boundary, retaining
+      // interaction targets and all fill geometry.
+      '<defs><clipPath id="dist-region-contour-edge" clipPathUnits="userSpaceOnUse">'+
+      '<rect x="0" y="0" width="'+(TW-right)+'" height="'+TH+'"/></clipPath></defs>'+
       gridTicks+series.map(layer=>layer.area).join('')+localMeasurements+
       '<g class="region-projections" aria-hidden="true" pointer-events="none"></g>'+
       series.map(layer=>layer.outline).join('')+dateTicks+'</svg>'+
