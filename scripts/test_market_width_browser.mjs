@@ -172,7 +172,8 @@ async function renderLeft(page,chartData,theme){
    otherSeries:document.querySelectorAll('#dist .region-series.other').length,
    grid:document.querySelectorAll('#dist .region-spark-grid').length,
    barColor:bars.length?getComputedStyle(bars[0]).fill:null,
-   barOpacity:bars.length?getComputedStyle(bars[0]).opacity:null,
+   // The rolling window can start on Saturday/Sunday; inspect a real weekday.
+   barOpacity:weekdayBars.length?getComputedStyle(weekdayBars[0]).opacity:null,
    captions:document.querySelectorAll('#dist .region-chart-caption,#spark .rhythm-caption').length,
    regionTicks:scale('#dist .region-spark-value'),
    postingTicks:scale('#spark .rhythm-scale-label'),
