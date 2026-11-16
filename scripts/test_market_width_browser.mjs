@@ -123,7 +123,7 @@ async function renderLeft(page,chartData,theme){
    })),
    capGroups:[...svg.querySelectorAll('.region-measure-group')].map(g=>({
     region:g.querySelector('.region-measure-height')?.dataset.region,
-    caps:[...g.querySelectorAll('.region-measure-cap')].map(n=>({
+    caps:[...g.querySelectorAll('.region-measure-cap')].filter(n=>getComputedStyle(n).display!=='none').map(n=>({
      ink:getComputedStyle(n).stroke,edge:n.dataset.edge,
      y:Number(n.getAttribute('y1')),x1:Number(n.getAttribute('x1')),x2:Number(n.getAttribute('x2'))
     }))
