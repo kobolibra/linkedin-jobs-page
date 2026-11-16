@@ -85,6 +85,12 @@ async function desktop(browser,engine,theme){
   const stops=await page.evaluate(()=>[...document.querySelectorAll('#spark .rhythm-point')].filter(n=>n.tabIndex===0).length);
   assert.equal(stops,1,'thirty columns share one tab stop');
   await page.locator('#spark .rhythm-point[tabindex="0"]').focus();
+  // Require the real keyboard-focused latest-day reading after the SVG focus
+  // and pointerleave handlers settle; never weaken the content assertion.
+  await page.waitForFunction(()=>{
+   const node=document.querySelector('.viz-tip'),day=document.activeElement;
+   return day?.dataset.day==='29'&&node&&!node.hidden&&/so far/.test(node.textContent);
+  },null,{timeout:3000});
   let t=await tip(page);assert.ok(t&&/so far/.test(t.text),'latest column reads as still collecting');
   await page.keyboard.press('ArrowLeft');
   const focused=await page.evaluate(()=>document.activeElement?.dataset.day);
