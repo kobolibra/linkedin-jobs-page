@@ -82,13 +82,17 @@ async function desktop(browser,engine,theme){
    folioBorder:getComputedStyle(document.querySelector('.nj-masthead-folio')).borderTopWidth,
    redundantLegend:document.querySelectorAll('.ac-col-density .region-chart-legend').length,
    top30Dek:document.getElementById('top50Dek').textContent,
-   averageInk:getComputedStyle(document.querySelector('#spark .rhythm-avg')).stroke
+   sparkMeanOverlayCount:document.querySelectorAll('#spark .rhythm-avg,#spark .rhythm-avg-halo,#spark .rhythm-avg-label').length,
+   marketTrendInk:getComputedStyle(document.querySelector('.mw-trend-line')).stroke,
+   marketPointInk:getComputedStyle(document.querySelector('.mw-trend-point')).fill
   }));
   assert.equal(editorial.folioBorder,'0px','source/landscape folio must have no top separator');
   assert.equal(editorial.redundantLegend,0,'region colors are identified inside Fig. 01, not repeated above it');
   assert.match(editorial.top30Dek,/The dashed diagonal marks parity/);
   assert.match(editorial.top30Dek,/dominant hiring market or a diversified mix/);
-  assert.equal(editorial.averageInk,theme==='light'?'rgb(63, 143, 163)':'rgb(140, 201, 213)');
+  assert.equal(editorial.sparkMeanOverlayCount,0,'New Postings no longer renders a 7-day mean overlay');
+  assert.equal(editorial.marketTrendInk,theme==='light'?'rgb(99, 187, 200)':'rgb(142, 212, 220)');
+  assert.equal(editorial.marketPointInk,editorial.marketTrendInk,'Market Breadth marker matches its celadon-blue line');
   assert.ok(density.stats.every(s=>!s.clipped),'no metric is clipped: '+JSON.stringify(density.stats));
   assert.equal(density.top30Open,false,'Top 30 starts folded so the job list stays close to the fold');
   const toolbarTop=await page.evaluate(()=>Math.round(document.querySelector('.toolbar').getBoundingClientRect().top+scrollY));
