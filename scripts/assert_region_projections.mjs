@@ -48,8 +48,19 @@ export async function assertRegionProjections(page){
   // whitespace between the two text rows, but never through their glyph rows.
   for(const label of state.labels)for(const text of label.textRows){
    const overlapsX=text.x2>g.start+.1&&text.x1<g.end-.1;
-   if(overlapsX)assert.ok(g.y<text.y1-.7||g.y>text.y2+.7,
-    'unbroken guide must clear visible text, including mobile fonts');
+   if(!overlapsX||g.y<text.y1-.7||g.y>text.y2+.7)continue;
+   // A short regional band can be physically lower than the two-line
+   // text block on a phone. The production fallback deliberately keeps
+   // its dashed guide continuous *behind foreground text* instead of
+   // carving a conspicuous hole. Require independent proof that this
+   // exceptional collision is unavoidable between the real boundaries.
+   const levels=[18,...state.groups.map(p=>p.y),326].sort((a,b)=>a-b);
+   const mid=(label.y1+label.y2)/2;
+   const upper=levels.filter(y=>y<mid).at(-1),lower=levels.find(y=>y>mid);
+   const rows=label.textRows;
+   const textHeight=Math.max(...rows.map(r=>r.y2))-Math.min(...rows.map(r=>r.y1));
+   assert.ok(upper!==undefined&&lower!==undefined&&textHeight>lower-upper-1,
+    'avoidable projection/text collision: '+JSON.stringify({region:label.region,level:g.level,lineY:g.y,textY:[text.y1,text.y2],band:[upper,lower],textHeight,transform:label.shift}));
   }
  }
  return state;
@@ -58,13 +69,23 @@ export async function assertRegionProjections(page){
 // Check the complete weight hierarchy, not only line existence.
 export async function assertRegionVisualBalance(page){
  const state=await page.evaluate(()=>{
-  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
+  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {region:[...n.closest('.region-series')?.classList||[]].find(k=>['hk','sg','cn'].includes(k)),width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),ink:s.stroke,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
   return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),tips:all('.region-measure-arrow'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
  });
  for(const n of state.refs){assert.equal(n.width,.85);assert.equal(n.opacity,.42);}
  for(const n of state.projections){assert.equal(n.width,.85);assert.equal(n.opacity,state.dark?.34:.36);}
- for(const n of state.arrows){assert.equal(n.width,.85);assert.equal(n.opacity,.6);}
- for(const n of state.tips){assert.equal(n.width,.85);assert.equal(n.opacity,.64);}
+ for(const n of state.arrows){
+  assert.equal(n.width,.9);assert.equal(n.opacity,state.dark?.51:.56);
+  const contour=state.contours.find(c=>c.region===n.region);
+  assert.ok(contour,'a dimension must have a matching live contour');
+  assert.notEqual(n.ink,contour.ink,'shaft must be quieter and more neutral than the contour');
+ }
+ for(const n of state.tips){
+  assert.equal(n.width,.95);assert.equal(n.opacity,state.dark?.73:.78);
+  const contour=state.contours.find(c=>c.region===n.region);
+  assert.equal(n.ink,contour?.ink,'color accents must exactly match the regional contour');
+ }
+ assert.ok(state.tips.length<=state.arrows.length,'thin data bands may omit ornamental tips');
  for(const n of state.contours)assert.equal(n.width,1.6,'data contours remain primary');
  for(const [kind,weight] of [['names','500'],['counts','400'],['shares','400']])for(const n of state[kind]){
   assert.equal(n.font,state.siteFont);assert.equal(n.weight,weight);assert.equal(n.opacity,1,'readable text is not faded');

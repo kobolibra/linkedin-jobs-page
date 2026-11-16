@@ -144,7 +144,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(css,/\[data-theme="dark"\]\s+#spark\s*\{\s*--viz-blue:\s*#7096D1\s*;\s*\}/);
  assert.match(css,/\.rhythm-line,\[data-theme="dark"\] \.rhythm-line\s*\{[^}]*stroke:var\(--viz-blue\)/s);
  assert.match(css,/\.rhythm-node,\[data-theme="dark"\] \.rhythm-node\s*\{[^}]*stroke:var\(--viz-blue\)/s);
- assert.match(html,/styles-refinement\.css\?v=region-legend-lines-20261113/);
+ assert.match(html,/styles-refinement\.css\?v=region-measure-finish-20261116/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
  assert.match(css,/#spark \.rhythm-bar\s*\{[^}]*fill:var\(--viz-blue\)/s);
  assert.match(css,/#dist \.region-series\.cn,\.region-chart-legend \.cn\{--region-ink:#b33a36;--region-fill:#e1b3b0\}/);
@@ -172,6 +172,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const cumulativeLevels=\[0,\.\.\.endBoundaries\]/);
  assert.match(source,/const referenceLines=\[\.\.\.new Set\(cumulativeLevels\)\]/);
  assert.match(source,/const verticalMeasures=regionOrder\.map/);
+ assert.match(source,/const wing=2\.15\*TW\/axisCssWidth,depth=3\.25\*TW\/axisCssWidth/,'arrow tips stay deliberately compact on phones and desktop');
  assert.match(source,/const measureX=\{HK:78,SG:143,CN:222\}/,'region annotations use coordinated staggered inset alignment');
  assert.match(source,/class="region-date-tick"/);
  assert.match(source,/class="rhythm-date-tick"/);
@@ -213,7 +214,7 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/d\.date\.getDay\(\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=region-unbroken-guides-20261114/);
+ assert.match(html,/app\.js\?v=region-measure-finish-20261116/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
