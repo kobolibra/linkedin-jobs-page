@@ -254,11 +254,9 @@ const prettyDate=key=>{
  if(!m)return String(key||'');
  return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 };
-/* A day is complete once the latest data update falls after its local
-   midnight; later postings cannot be first seen on it. Market Width opens on
-   the latest complete day, whatever its volume: a quiet but complete weekend
-   is shown as it is. Only when no day is complete yet does it fall back to
-   the latest day. The volume of a day never decides which day is shown. */
+/* A date is considered ended once the latest index update is beyond its
+   local midnight. This is NOT proof every collector finished successfully.
+   The default is the latest ended day, regardless of daily posting volume. */
 const dayEnd=key=>{
  const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
  return m?new Date(+m[1],+m[2]-1,+m[3]+1).getTime():NaN;
@@ -279,18 +277,56 @@ function initialDay(series,updatedAt){
  return last;
 }
 const isComplete=(key,updatedAt)=>Number.isFinite(updatedAt)&&dayEnd(key)<=updatedAt;
+// Playback uses precisely the newest seven calendar-day buckets (including
+// today's still-collecting bucket). The 30-day manual history is unchanged.
+function playbackIndices(length){
+ const n=Math.max(0,Math.floor(Number(length)||0)),size=Math.min(n,7);
+ return Array.from({length:size},(_,i)=>n-size+i);
+}
+const nextPlaybackDay=(current,days)=>days.length?days[(days.indexOf(current)+1)%days.length]:current;
 function render(rows,days){
  if(typeof document==='undefined'||!Array.isArray(days)||days.length===0)return;
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
  const detail=el('marketWidthDetail');
  const prev=el('marketWidthPrev'),next=el('marketWidthNext'),date=el('marketWidthDate');
+ const play=el('marketWidthPlay'),playLabel=play?.querySelector('.mw-play-label');
  const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
- if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
+ if(!rootEl||!board||!detail||!prev||!next||!date||!play||!playLabel||!count||!firms||!tabs)return;
+ // Authentication/data refreshes must not retain stale timers or handlers.
+ rootEl._mwPlaybackCleanup?.();
+ const events=new AbortController();
+ const listen=(node,type,handler)=>node?.addEventListener(type,handler,{signal:events.signal});
  const series=aggregate(rows,days),last=series.keys.length-1;
  const strip=el('marketWidthStrip');
  const updatedAt=latestUpdate(rows);
  let day=initialDay(series,updatedAt);
  let region='all',selectedFirm=null,lastSize='';
+ const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=3600;
+ let playing=false,playTimer=null,inView=true,boardHover=false;
+ let sizeObserver=null,visibilityObserver=null;
+ const clearPlayTimer=()=>{if(playTimer!==null){clearTimeout(playTimer);playTimer=null;}};
+ const syncPlayControl=()=>{
+  play.setAttribute('aria-pressed',String(playing));
+  play.dataset.playing=String(playing);
+  playLabel.textContent=playing?'Pause':'Play';
+  play.setAttribute('aria-label',playing?'Pause seven-day playback':'Play the most recent 7 calendar days');
+  play.title=playing?'Pause seven-day playback':'Loop the latest 7 days, including today so far';
+ };
+ const canAdvance=()=>playing&&inView&&!document.hidden&&!boardHover&&!board.contains(document.activeElement);
+ const schedulePlay=()=>{
+  clearPlayTimer();
+  if(!canAdvance()||loopDays.length<2)return;
+  playTimer=setTimeout(()=>{
+   playTimer=null;
+   if(!canAdvance())return;
+   day=nextPlaybackDay(day,loopDays);
+   draw();schedulePlay();
+  },PLAY_INTERVAL_MS);
+ };
+ const stopPlay=()=>{
+  clearPlayTimer();
+  if(playing){playing=false;syncPlayControl();}
+ };
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
   const n=datum(i),what=n>0?fmt(n)+' new '+(n===1?'posting':'postings'):'No new postings';
