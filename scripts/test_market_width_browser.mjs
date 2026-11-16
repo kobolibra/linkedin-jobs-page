@@ -102,15 +102,8 @@ async function renderLeft(page,chartData,theme){
    columnSums:columns.map(g=>({total:Number(g.dataset.total),
     stacked:[...g.querySelectorAll('.rhythm-seg')].reduce((n,seg)=>n+Number(seg.dataset.count),0),
     order:[...g.querySelectorAll('.rhythm-seg')].map(seg=>seg.dataset.region)})),
-   averageLine:document.querySelectorAll('#spark .rhythm-avg').length,
-   averageHaloCount:document.querySelectorAll('#spark .rhythm-avg-halo').length,
-   averageInk:getComputedStyle(document.querySelector('#spark .rhythm-avg')).stroke,
-   averageWidth:parseFloat(getComputedStyle(document.querySelector('#spark .rhythm-avg')).strokeWidth),
-   averageHaloInk:getComputedStyle(document.querySelector('#spark .rhythm-avg-halo')).stroke,
-   averageHaloWidth:parseFloat(getComputedStyle(document.querySelector('#spark .rhythm-avg-halo')).strokeWidth),
-   averagePoints:document.querySelector('#spark .rhythm-avg').getAttribute('points'),
-   averageHaloPoints:document.querySelector('#spark .rhythm-avg-halo').getAttribute('points'),
-   averageLabelInk:getComputedStyle(document.querySelector('#spark .rhythm-avg-label')).fill,
+   averageOverlayCount:document.querySelectorAll('#spark .rhythm-avg,#spark .rhythm-avg-halo,#spark .rhythm-avg-label').length,
+   sparkAria:document.querySelector('#spark .rhythm-svg').getAttribute('aria-label'),
    labelTotal:statRows.reduce((n,node)=>n+Number(node.dataset.count),0),
    stageTotal:Number(stage.dataset.visibleTotal),
    shortHistory:stage.classList.contains('is-short-history'),
@@ -227,18 +220,10 @@ async function renderLeft(page,chartData,theme){
  const stackRank={HK:0,SG:1,CN:2,OTHER:3};
  assert.ok(quality.columnSums.every(c=>c.order.every((r,i,a)=>!i||stackRank[a[i-1]]<stackRank[r])),
   'every column stacks HK, SG, CN, OTHER from the baseline, matching Figure 01');
- assert.equal(quality.averageLine,1,'one trailing 7-day average line');
- assert.equal(quality.averageHaloCount,1,'a single quiet panel-colored halo preserves legibility over stacked bars');
- assert.equal(quality.averageInk,theme==='light'?'rgb(63, 143, 163)':'rgb(140, 201, 213)',
-  'seven-day mean line uses true porcelain-blue, not the previous muted gray-blue');
- assert.equal(quality.averageWidth,2.2,'porcelain-blue mean line is legible without dominating the bars');
- assert.equal(quality.averageHaloWidth,4.5,'thin halo separates the line cleanly from the regional stacks');
- assert.equal(quality.averageHaloInk,theme==='light'?'rgb(251, 252, 251)':'rgb(26, 43, 58)',
-  'halo uses the actual chart panel, not an opaque white stripe in dark mode');
- assert.equal(quality.averageHaloPoints,quality.averagePoints,
-  'underlay traces the EXACT 7-day average geometry, not another series');
- assert.equal(quality.averageLabelInk,theme==='light'?'rgb(43, 111, 128)':'rgb(173, 220, 228)',
-  'the average label has a readable matching porcelain-blue ink');
+ assert.equal(quality.averageOverlayCount,0,
+  'New Postings has no 7-day average line, halo or label in either theme');
+ assert.doesNotMatch(quality.sparkAria,/7-day average/,
+  'the visual aria label must not describe an absent average line');
  assert.ok(quality.weekendCount>=8&&quality.weekendCount<=10,
   'weekend days are identified from the actual calendar, not hard-coded');
  assert.equal(quality.weekendBands,quality.weekendCount,'each weekend day has one quiet background band');
@@ -585,6 +570,8 @@ try{
     const point=chart?.querySelector('.mw-trend-indicator');
     const bounds=node=>{const r=node.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,b:r.bottom};};
     return {line:line?.getAttribute('d'),stroke:getComputedStyle(line).stroke,
+     strokeWidth:parseFloat(getComputedStyle(line).strokeWidth),
+     pointInk:getComputedStyle(point.querySelector('.mw-trend-point')).fill,
      markerDay:Number(point?.dataset.day),markerTransform:point?.getAttribute('transform'),
      hitTargets:document.querySelectorAll('#marketWidthStrip .mw-strip-day').length,
      chart:bounds(chart),summary:bounds(document.querySelector('.mw-summary')),
@@ -593,6 +580,10 @@ try{
    });
    assert.ok(trend.line?.startsWith('M ')&&((trend.line.match(/ C /g)||[]).length===29),
     '30 daily readings form a smooth cubic trend, not a histogram');
+   assert.equal(trend.stroke,theme==='light'?'rgb(99, 187, 200)':'rgb(142, 212, 220)',
+    'Market Breadth 30-day line is the intended celadon blue in '+theme+' theme');
+   assert.equal(trend.strokeWidth,2.2,'Market Breadth line remains crisp and visually distinct');
+   assert.equal(trend.pointInk,trend.stroke,'selected dot matches the SAME celadon blue as the line');
    assert.equal(trend.hitTargets,30,'line chart preserves full 30-day manual inspection');
    assert.equal(trend.markerDay,27,'point starts on the displayed latest complete day');
    assert.match(trend.markerTransform,/translate\([\d.]+ [\d.]+\)/);

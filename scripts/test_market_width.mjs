@@ -434,8 +434,14 @@ test('editorial cleanup: masthead folio has no top rule and Fig. 1 has no duplic
  assert.doesNotMatch(html,/class="region-chart-legend"/,'direct plot labels replace the redundant region legend');
  assert.doesNotMatch(legacy,/\.region-chart-legend/,'remove retired legend styling');
  assert.match(masthead,/\.nj-masthead-folio\s*\{\s*border-top:0;/);
- assert.match(home,/#spark \.rhythm-avg\{[^}]*stroke:var\(--h-celadon\)/);
- assert.match(home,/#spark \.rhythm-avg-label\{fill:var\(--h-celadon-ink\)\}/);
+ assert.doesNotMatch(home,/rhythm-avg|rhythm-avg-label|rhythm-avg-halo/,
+  'New Postings mean line, halo and label styling are completely removed');
+ assert.match(home,/--h-market-celadon:#63bbc8/,'light-theme Market Breadth is porcelain blue');
+ assert.match(home,/--h-market-celadon:#8ed4dc/,'dark-theme Market Breadth is porcelain blue');
+ assert.match(home,/\.mw-trend-line\{[^}]*stroke:var\(--h-market-celadon\)/);
+ assert.match(home,/\.mw-trend-point\{[^}]*fill:var\(--h-market-celadon\)/);
+ assert.doesNotMatch(read('app.js'),/rhythm-avg|rhythm-avg-halo|rhythm-avg-label|\+average\+/,
+  'New Postings SVG must never emit an average overlay or annotation');
  assert.doesNotMatch(home,/mw-date-nav output\[data-partial="true"\]::after/,'do not print so far beside a date');
  assert.match(html,/Mean and median listing age define the horizontal and vertical axes/);
 });
