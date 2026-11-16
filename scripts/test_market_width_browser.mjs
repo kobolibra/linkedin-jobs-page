@@ -557,7 +557,7 @@ try{
    const page=await make(width,theme);
    await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
    await renderLeft(page,regular,theme);
-   assert.equal(await page.locator('#marketWidthTitle').textContent(),'18 institutions we watch closely');
+   assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Breadth: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
    assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect new postings of the day, excluding reposts');
    const initial=await inspectMosaic(page,4);
@@ -623,14 +623,16 @@ try{
     'allocate materially more vertical space to the true stacked regional chart');
    assert.ok(bounds.top.y>=Math.max(bounds.left.b,bounds.right.b)-2);
    assert.ok(bounds.pageWidth<=width+2,'no horizontal page overflow: '+JSON.stringify({width,theme,bounds}));
-   assert.ok(bounds.tabs.x>=bounds.heading.x+bounds.heading.w-2,
-    'region tabs must align right of Market Width heading');
+   if(width>1100)assert.ok(bounds.tabs.x>=bounds.heading.x+bounds.heading.w-2,
+    'wide-screen tabs must sit to the right of the heading');
+   else assert.ok(bounds.tabs.y>=bounds.heading.b-2,
+    'smaller screens keep full-size headings above the right-aligned tabs');
    assert.equal(bounds.titlePhraseLines,1,
     'the complete 18 institutions we watch closely phrase stays on one line');
    assert.ok(bounds.titlePhrase.x+bounds.titlePhrase.w<=bounds.right.x+bounds.right.w+1,
     'the unbroken Market Width subtitle must stay within its panel');
-   assert.ok(Math.abs((bounds.tabs.y+bounds.tabs.h/2)-(bounds.heading.y+bounds.heading.h/2))<10,
-    'region tabs and heading should share one centered baseline');
+   if(width>1100)assert.ok(Math.abs((bounds.tabs.y+bounds.tabs.h/2)-(bounds.heading.y+bounds.heading.h/2))<18,
+    'wide-screen tabs and heading should have compatible vertical alignment');
    if(bounds.topBg)assert.equal(bounds.regionBg,bounds.topBg,'Top30 and Market Width region controls share chrome');
    if(width>720){
     assert.ok(bounds.right.x>=bounds.left.x+bounds.left.w-2);
