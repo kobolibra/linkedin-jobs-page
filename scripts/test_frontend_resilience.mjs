@@ -172,7 +172,8 @@ test('New Postings keeps its blue while stacked regions follow the approved sand
  assert.match(source,/const cumulativeLevels=\[0,\.\.\.endBoundaries\]/);
  assert.match(source,/const referenceLines=\[\.\.\.new Set\(cumulativeLevels\)\]/);
  assert.match(source,/const verticalMeasures=regionOrder\.map/);
- assert.match(source,/const capHalf=4\.2\*TW\/axisCssWidth,capMinHeight=10\*TW\/axisCssWidth/,'terminal measurement caps stay in real CSS pixels');
+ assert.match(source,/const finalHalf=4\.2\*TW\/box\.width/,'terminal measurement caps are sized after actual SVG layout');
+ assert.match(source,/cap\.style\.display=heightPx>=10/,'thin intervals hide both caps after resize');
  assert.match(source,/const measureX=\{HK:78,SG:143,CN:222\}/,'region annotations use coordinated staggered inset alignment');
  assert.match(source,/class="region-date-tick"/);
  assert.match(source,/class="rhythm-date-tick"/);
