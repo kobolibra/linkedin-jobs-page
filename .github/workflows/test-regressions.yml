@@ -100,7 +100,9 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # Playwright 1.56.1 browser builds do not support ubuntu26.04-x64.
+    # Pin a supported runner instead of relying on ubuntu-latest rollover.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
