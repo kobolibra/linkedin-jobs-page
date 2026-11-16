@@ -308,6 +308,7 @@ function render(rows,days){
  const syncPlayControl=()=>{
   play.setAttribute('aria-pressed',String(playing));
   play.dataset.playing=String(playing);
+  board.classList.toggle('is-playing',playing);
   playLabel.textContent=playing?'Pause':'Play';
   play.setAttribute('aria-label',playing?'Pause seven-day playback':'Play the most recent 7 calendar days');
   play.title=playing?'Pause seven-day playback':'Loop the latest 7 days, including today so far';
