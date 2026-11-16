@@ -58,13 +58,23 @@ export async function assertRegionProjections(page){
 // Check the complete weight hierarchy, not only line existence.
 export async function assertRegionVisualBalance(page){
  const state=await page.evaluate(()=>{
-  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
+  const all=selector=>[...document.querySelectorAll('#dist '+selector)].map(n=>{const s=getComputedStyle(n);return {region:[...n.closest('.region-series')?.classList||[]].find(k=>['hk','sg','cn'].includes(k)),width:parseFloat(s.strokeWidth),opacity:Number(s.opacity),ink:s.stroke,font:s.fontFamily,size:parseFloat(s.fontSize),weight:s.fontWeight,color:s.color};});
   return {viewport:innerWidth,dark:document.documentElement.dataset.theme==='dark',siteFont:getComputedStyle(document.body).fontFamily,refs:all('.region-measure-reference'),projections:all('.region-projection-line'),arrows:all('.region-measure-height'),tips:all('.region-measure-arrow'),contours:all('.region-spark-line'),names:all('.region-end-name'),counts:all('.region-end-count'),shares:all('.region-end-share')};
  });
  for(const n of state.refs){assert.equal(n.width,.85);assert.equal(n.opacity,.42);}
  for(const n of state.projections){assert.equal(n.width,.85);assert.equal(n.opacity,state.dark?.34:.36);}
- for(const n of state.arrows){assert.equal(n.width,.85);assert.equal(n.opacity,.6);}
- for(const n of state.tips){assert.equal(n.width,.85);assert.equal(n.opacity,.64);}
+ for(const n of state.arrows){
+  assert.equal(n.width,.9);assert.equal(n.opacity,state.dark?.51:.56);
+  const contour=state.contours.find(c=>c.region===n.region);
+  assert.ok(contour,'a dimension must have a matching live contour');
+  assert.notEqual(n.ink,contour.ink,'shaft must be quieter and more neutral than the contour');
+ }
+ for(const n of state.tips){
+  assert.equal(n.width,.95);assert.equal(n.opacity,state.dark?.73:.78);
+  const contour=state.contours.find(c=>c.region===n.region);
+  assert.equal(n.ink,contour?.ink,'color accents must exactly match the regional contour');
+ }
+ assert.equal(state.arrows.length,state.tips.length,'each live dimension keeps one pair of arrowheads');
  for(const n of state.contours)assert.equal(n.width,1.6,'data contours remain primary');
  for(const [kind,weight] of [['names','500'],['counts','400'],['shares','400']])for(const n of state[kind]){
   assert.equal(n.font,state.siteFont);assert.equal(n.weight,weight);assert.equal(n.opacity,1,'readable text is not faded');
