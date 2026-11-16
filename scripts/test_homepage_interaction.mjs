@@ -212,10 +212,16 @@ async function desktop(browser,engine,theme){
   assert.ok(await page.evaluate(()=>document.querySelector('#top50').classList.contains('is-inspecting')));
   await page.keyboard.press('Enter');
   await page.waitForFunction(name=>document.getElementById('company').value===name,company);
+  // Drill-down intentionally scrolls to the job toolbar; its CSS animation
+  // must finish before WebKit can reliably click a tab back on the chart.
+  await waitScrollRest(page);
   // CN tab: bubble position/size reflect CN roles, but composition and
   // dominant-market color must reflect the institution across all markets.
-  await page.locator('#top50Tabs [data-top-region="CN"]').click();
-  await page.waitForFunction(()=>document.getElementById('top50').dataset.scopeRegion==='CN');
+  const cnTab=page.locator('#top50Tabs [data-top-region="CN"]');
+  await cnTab.scrollIntoViewIfNeeded();
+  await waitScrollRest(page);
+  await cnTab.click();
+  await page.waitForFunction(()=>document.getElementById('top50').dataset.scopeRegion==='CN',null,{timeout:5000});
   const mix=await page.evaluate(()=>{
    const row=[...document.querySelectorAll('#top50 .bubble-row')]
     .find(n=>Number(n.dataset.hk)+Number(n.dataset.sg)>0);
