@@ -18,6 +18,8 @@
   --h-panel-edge:rgba(20,33,43,.075);
   --h-panel-shadow:0 1px 2px rgba(20,33,43,.035),0 12px 32px -18px rgba(20,33,43,.16);
   --h-accent:#3f6b84;
+  --h-celadon:#6b9ea9;
+  --h-celadon-ink:#467784;
   --h-control:rgba(20,33,43,.045);
   --h-control-active:#ffffff;
   --h-control-shadow:0 1px 2px rgba(20,33,43,.12),0 0 0 .5px rgba(20,33,43,.06);
@@ -41,6 +43,8 @@
   --h-panel-edge:rgba(255,255,255,.06);
   --h-panel-shadow:0 1px 2px rgba(0,0,0,.25),0 18px 40px -22px rgba(0,0,0,.6);
   --h-accent:#a4c5d6;
+  --h-celadon:#99c8d1;
+  --h-celadon-ink:#a8d0d8;
   --h-control:rgba(255,255,255,.055);
   --h-control-active:rgba(255,255,255,.13);
   --h-control-shadow:0 1px 2px rgba(0,0,0,.3);
@@ -145,7 +149,6 @@
   text-transform:none;text-wrap:balance;
 }
 .fig-dek{max-width:62ch;margin:5px 0 0;color:var(--h-muted);font:400 13px/1.55 var(--sans);text-wrap:pretty}
-.ac-col-density > .region-chart-legend{margin:9px 0 10px;padding-top:0;color:var(--h-body)}
 .analytics-left #dist{flex:0 0 auto}
 
 /* Shared segmented control: Market Breadth and Top 30 use the same chrome. */
@@ -213,8 +216,9 @@
 #spark .rhythm-point.is-hover .rhythm-seg,#spark .rhythm-point:focus-visible .rhythm-seg{opacity:1}
 #spark .rhythm-point:focus-visible .rhythm-bar{stroke:var(--h-ink);stroke-width:1.4}
 #spark .rhythm-bar-hit{fill:transparent;cursor:crosshair}
-#spark .rhythm-avg{fill:none;stroke:var(--h-ink);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round;opacity:.82;vector-effect:non-scaling-stroke;pointer-events:none}
+#spark .rhythm-avg{fill:none;stroke:var(--h-celadon);stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round;opacity:1;vector-effect:non-scaling-stroke;pointer-events:none}
 #spark .rhythm-avg-label,#spark .rhythm-peak-label{fill:var(--h-body);font:600 9px var(--sans);font-variant-numeric:tabular-nums;paint-order:stroke;stroke:var(--h-panel);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+#spark .rhythm-avg-label{fill:var(--h-celadon-ink)}
 #spark .rhythm-peak-label{fill:var(--h-muted);font:500 9px var(--mono)}
 #spark .rhythm-grid{opacity:.7}
 
@@ -222,31 +226,47 @@
 .mw-topline{margin-bottom:12px}
 .mw-map-board{border-radius:8px}
 .mw-footer{gap:10px;padding-top:10px}
-.mw-strip{display:flex;align-items:flex-end;gap:2px;height:24px;padding:0 0 4px;border-bottom:1px solid var(--h-rule-soft)}
+/* Market Breadth / observed 30-day trend. The line and its selected
+   point share true day coordinates; invisible daily hit zones remain usable. */
+.mw-strip{
+  position:relative;display:flex;align-items:stretch;gap:0;height:48px;
+  padding:0 0 3px;border-bottom:1px solid var(--h-rule-soft);
+}
+.mw-trend-svg{position:absolute;inset:0 0 3px;display:block;width:100%;height:44px;overflow:visible;pointer-events:none}
+.mw-trend-line{fill:none;stroke:#8297be;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.mw-trend-halo{fill:var(--h-panel);stroke:var(--h-panel);stroke-width:3.5;vector-effect:non-scaling-stroke}
+.mw-trend-point{fill:var(--h-ink);stroke:var(--h-panel);stroke-width:1.4;vector-effect:non-scaling-stroke}
+[data-theme="dark"] .mw-trend-line{stroke:#9baed0}
 .mw-strip-day{
-  appearance:none;position:relative;flex:1 1 0;min-width:0;height:100%;padding:0;margin:0;border:0;border-radius:0;
-  background:transparent;cursor:pointer;
+  appearance:none;position:relative;z-index:1;flex:1 1 0;min-width:0;height:100%;
+  margin:0;padding:0;border:0;background:transparent;cursor:crosshair;
 }
-.mw-strip-day::before{
-  content:"";position:absolute;left:12%;right:12%;bottom:0;height:max(2px,calc(var(--level,0) * 100%));
-  border-radius:1.5px 1.5px 0 0;background:color-mix(in oklab,#9badd7 82%,var(--h-panel));transition:background-color .14s ease;
+.mw-strip-day:hover{background:color-mix(in srgb,var(--h-ink) 4%,transparent)}
+.mw-date-nav output{
+  box-sizing:border-box;width:100px;min-width:100px;max-width:100px;
+  white-space:nowrap;text-align:center;color:var(--h-ink);font:600 11.5px/1.4 var(--sans);
 }
-[data-theme="dark"] .mw-strip-day::before{background:#58688b}
-.mw-strip-day.is-empty::before{height:1px;background:var(--h-rule)}
-.mw-strip-day.is-partial::before{opacity:.55}
-.mw-strip-day:hover::before{background:var(--h-muted)}
-.mw-strip-day.is-selected::before{background:var(--h-ink)}
-.mw-strip-day.is-selected::after{content:"";position:absolute;left:50%;bottom:-5px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--h-ink)}
-.mw-date-nav output{box-sizing:border-box;width:132px;min-width:132px;max-width:132px;white-space:nowrap;text-align:center;color:var(--h-ink);font:600 12px/1.4 var(--sans)}
-.mw-date-nav output[data-partial="true"]::after{content:" · so far";color:var(--h-muted);font-weight:500}
-.mw-subline{flex-wrap:wrap;row-gap:4px}
-.mw-summary{white-space:normal}
-.mw-summary{color:var(--h-muted);font:500 12px/1.4 var(--sans)}
-.mw-summary strong{color:var(--h-ink);font:650 12.5px/1.2 var(--sans)}
+.mw-subline{flex-wrap:nowrap;gap:8px;min-width:0}
+.mw-summary{flex:1 1 auto;min-width:0;white-space:nowrap;color:var(--h-muted);font:500 11px/1.4 var(--sans)}
+.mw-summary strong{color:var(--h-ink);font:650 11.5px/1.2 var(--sans)}
 .mw-encoding{color:var(--h-faint);font:400 11px/1.45 var(--sans)}
 .mw-nav{border-radius:7px}
 .mw-nav:focus-visible{outline:2px solid var(--h-accent)}
-@media(max-width:400px){.mw-date-nav output{width:110px;min-width:110px;max-width:110px}}
+@media(max-width:720px){
+  .mw-subline{flex-wrap:nowrap;align-items:center;gap:6px}
+  .mw-date-nav{margin-left:auto;gap:0;flex:none}
+  .mw-nav{width:23px;height:27px}
+  .mw-date-nav output{width:82px;min-width:82px;max-width:82px;font-size:10.25px}
+  .mw-summary{white-space:normal;font-size:10.5px;line-height:1.3}
+  .mw-summary strong{font-size:11px}
+}
+@media(min-width:380px) and (max-width:720px){
+  .mw-summary{white-space:nowrap}
+}
+@media(max-width:360px){
+  .mw-date-nav output{width:76px;min-width:76px;max-width:76px;font-size:9.5px}
+  .mw-nav{width:21px}
+}
 @media(max-width:560px){.nj-data-intro{display:none}}
 
 /* ---------- Fig. 04 · institutions ---------- */
@@ -345,8 +365,6 @@
   .top50-legend .top50-legend-size{margin-left:0}
 }
 @media (max-width:400px){
-  /* Three legend entries share one row down to 320px with room for wider fonts. */
-  .ac-col-density > .region-chart-legend{column-gap:7px}
   .analytics-card > .ac-col-market .mw-topline h3{font-size:16.5px!important}
   .mw-tabs{height:29px}
   .mw-tab{min-width:27px;height:25px;min-height:25px;padding:0 5px}
@@ -354,7 +372,7 @@
   .stats .stat-primary .v{font-size:34px}
 }
 @media (prefers-reduced-motion:reduce){
-  #spark .rhythm-seg,.bubble-row,.mw-strip-day::before{transition:none}
+  #spark .rhythm-seg,.bubble-row{transition:none}
 }
 @media print{
   .viz-tip,.mw-strip,.top50-toggle{display:none!important}
@@ -375,7 +393,6 @@
 @media (max-width:720px){
     .nj-hero-grid{gap:22px;padding:28px 0 22px}
   .nj-market-statement{margin-top:12px;font-size:16px}
-  .ac-col-density > .region-chart-legend{margin-top:10px;padding-top:0}
   .stats .stat,[data-theme="dark"] .stats .stat{padding:12px 12px 13px}
   .stats .stat .v{font-size:30px;margin-top:6px}
   .stats .stat-primary .v{font-size:32px}
