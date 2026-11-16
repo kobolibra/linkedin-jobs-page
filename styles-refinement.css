@@ -583,12 +583,12 @@ body.compact .job > .mono { margin-top:2px; }
 /* Demo-matched mineral pigments: these are the FINAL visible colors
    after compositing the approved preview's 77/81/82%-opacity fills onto its
    warm paper background. Solid opaque fills keep stacked ribbons seamless. */
-#dist .region-series.hk,.region-chart-legend .hk{--region-ink:#b27a22;--region-fill:#ddc6a6}
-#dist .region-series.sg,.region-chart-legend .sg{--region-ink:#6e8f3b;--region-fill:#c1d3ad}
-#dist .region-series.cn,.region-chart-legend .cn{--region-ink:#b33a36;--region-fill:#e1b3b0}
-[data-theme="dark"] #dist .region-series.hk,[data-theme="dark"] .region-chart-legend .hk{--region-ink:#e0b36b;--region-fill:#68533d}
-[data-theme="dark"] #dist .region-series.sg,[data-theme="dark"] .region-chart-legend .sg{--region-ink:#add084;--region-fill:#455941}
-[data-theme="dark"] #dist .region-series.cn,[data-theme="dark"] .region-chart-legend .cn{--region-ink:#eea09a;--region-fill:#714344}
+#dist .region-series.hk{--region-ink:#b27a22;--region-fill:#ddc6a6}
+#dist .region-series.sg{--region-ink:#6e8f3b;--region-fill:#c1d3ad}
+#dist .region-series.cn{--region-ink:#b33a36;--region-fill:#e1b3b0}
+[data-theme="dark"] #dist .region-series.hk{--region-ink:#e0b36b;--region-fill:#68533d}
+[data-theme="dark"] #dist .region-series.sg{--region-ink:#add084;--region-fill:#455941}
+[data-theme="dark"] #dist .region-series.cn{--region-ink:#eea09a;--region-fill:#714344}
 /* The ink, the actual cumulative boundary, and its fill share one terminal
    x coordinate. Butt caps prevent round-end protrusion; the SVG contour-only
    clip supplies a hard guarantee even for a steep final tangent. */
@@ -720,28 +720,6 @@ body.compact .job > .mono { margin-top:2px; }
   [data-theme="dark"] #spark .rhythm-axis-label{font-size:16px}
 }
 
-/* Read-only color key: its own row directly below this chart title.
-   Right edge follows the plotted endpoint; solid lines share contour ink. */
+/* The geographic distribution uses its direct CN/HK/SG plot annotations;
+   the duplicate color legend above the graph has been removed. */
 #distTitle{margin-bottom:6px}
-.ac-col-density > .region-chart-legend{
-  display:flex;flex:0 0 auto;justify-content:flex-end;align-items:center;
-  flex-wrap:wrap;gap:4px 12px;list-style:none;
-  margin:0 0 8px;padding:0 3.2692308% 0 0;
-  color:var(--viz-secondary);font:400 10.5px/1.4 var(--sans);
-  letter-spacing:0;
-}
-.region-chart-legend > li{
-  display:inline-flex;align-items:center;gap:5px;
-  margin:0;padding:0;white-space:nowrap;
-}
-.region-chart-legend .region-legend-swatch{
-  display:block;flex:none;box-sizing:border-box;width:16px;height:3px;
-  border:0;border-radius:999px;
-  background:var(--region-ink);
-}
-@media(max-width:720px){
-  .ac-col-density > .region-chart-legend{font-size:10px;column-gap:10px}
-}
-@media(max-width:360px){
-  .region-chart-legend .region-legend-swatch{width:12px}
-}
