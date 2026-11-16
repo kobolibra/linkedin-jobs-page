@@ -469,7 +469,6 @@ window.VizTip=(()=>{
   document.addEventListener('pointerdown',e=>{if(!e.target.closest?.('#dist,#spark,#top50'))hide();},true);
   return {show,hide,row};
 })();
-const fmtInt=n=>Number(n||0).toLocaleString("en-US");
 const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);if(!a.length)return null;const m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2;};
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
 function weeklyFlow(jobs){
@@ -489,25 +488,8 @@ function weeklyFlow(jobs){
    deduplicated rows as the charts below; nothing here is a static claim. */
 function renderHeadline(allRows,chartRows){
   const overview=window.AuthGuest?.overview,now=Date.now(),day=864e5;
-  const counts={CN:0,HK:0,SG:0};
   const ages=[];
-  for(const job of chartRows){
-    const region=norm(job.location);if(counts[region]!=null)counts[region]++;
-    const t=Date.parse(seenAt(job));if(Number.isFinite(t))ages.push(Math.max(0,(now-t)/day));
-  }
-  const total=overview?.total??chartRows.length;
-  const covered=counts.CN+counts.HK+counts.SG;
-  // Shares use the three covered markets as their denominator, so the three
-  // printed shares always add up to 100%.
-  for(const region of ["CN","HK","SG"]){
-    const share=covered?counts[region]/covered:0;
-    const value=document.querySelector('[data-market-value="'+region+'"]');
-    const shareEl=document.querySelector('[data-market-share="'+region+'"]');
-    const bar=document.querySelector('[data-market-bar="'+region+'"]');
-    if(value)value.textContent=fmtInt(counts[region]);
-    if(shareEl)shareEl.textContent=(share*100).toFixed(1)+'%';
-    if(bar)bar.style.setProperty('--share',share.toFixed(4));
-  }
+  for(const job of chartRows){const t=Date.parse(seenAt(job));if(Number.isFinite(t))ages.push(Math.max(0,(now-t)/day));}
   // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
   // CN/HK/SG roles first seen in the 7 days ending at the latest data update,
   // including roles that have since closed. Guests receive the counts from the
@@ -527,8 +509,6 @@ function renderHeadline(allRows,chartRows){
   }
   const age=medianOf(ages),ageEl=document.getElementById("stat-age");
   if(ageEl)ageEl.textContent=age==null?'—':String(Math.round(age));
-  const dek=document.getElementById("heroDek"),companies=overview?.companies??new Set(chartRows.map(j=>canonicalCompany(j.company)).filter(Boolean)).size;
-  if(dek&&total)dek.textContent=fmtInt(total)+' open finance roles at '+fmtInt(companies)+' institutions across Mainland China, Hong Kong and Singapore, tracked from LinkedIn and refreshed every six hours.';
 }
 // The coverage rows double as shortcuts into the filtered list.
 document.querySelectorAll('.nj-market-row[data-region]').forEach(row=>row.addEventListener('click',()=>{
@@ -1003,14 +983,6 @@ jobsDataPromise
     updateRegionProjections();
     // Figure 01 headline and inspection: both read the same cumulative series
     // as the painted bands, so the tooltip can never disagree with the chart.
-    const regionName={HK:'Hong Kong',SG:'Singapore',CN:'Mainland China',OTHER:'Other'};
-    const distDek=document.getElementById("distDek");
-    if(distDek&&endTotal){
-      const lead=regionOrder.map((k,i)=>({k,i})).sort((a,b)=>snapshotCounts[b.i]-snapshotCounts[a.i])[0];
-      const since=new Intl.DateTimeFormat('en-GB',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(tMin));
-      distDek.textContent=regionName[lead.k]+' holds '+(shareTenths[lead.i]/10).toFixed(1)+'% of the '+countFormat.format(endTotal)+
-        ' open roles first seen since '+since+'. Each band stacks one market’s open roles by the day they first appeared.';
-    }
     if(window.VizTip&&bins>1){
       const ns='http://www.w3.org/2000/svg';
       const guide=document.createElementNS(ns,'line');
@@ -1117,13 +1089,6 @@ jobsDataPromise
     sparkEl.innerHTML='<svg class="rhythm-svg" data-chart-kind="stacked-daily" viewBox="0 0 '+SW+' '+SH+
       '" role="img" aria-label="30-day new postings, one column per day stacked by market, with a trailing 7-day average. Each column provides the exact date and count.">'+
       weekendBands+guides+bars+average+peakLabel+dateLabels+'</svg>';
-    const windowTotal=days.reduce((sum,d)=>sum+d.total,0);
-    const sparkDek=document.getElementById("sparkDek");
-    if(sparkDek&&windowTotal){
-      const peakDay=days[peakIndex];
-      sparkDek.textContent=windowTotal.toLocaleString('en-US')+' still-open roles first appeared in the last 30 days. The busiest day was '+
-        rhythmTickFormat.format(peakDay.date)+', with '+peak+'.';
-    }
     if(window.VizTip){
       const tipFormat=new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short'});
       const inspectDay=(node,x,y,target=null)=>{
