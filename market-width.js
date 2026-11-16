@@ -289,9 +289,8 @@ function render(rows,days){
  const el=id=>document.getElementById(id),rootEl=el('marketWidth'),board=el('marketWidthMap');
  const detail=el('marketWidthDetail');
  const prev=el('marketWidthPrev'),next=el('marketWidthNext'),date=el('marketWidthDate');
- const play=el('marketWidthPlay'),playLabel=play?.querySelector('.mw-play-label');
  const count=el('marketWidthCount'),firms=el('marketWidthFirms'),tabs=el('marketWidthRegions');
- if(!rootEl||!board||!detail||!prev||!next||!date||!play||!playLabel||!count||!firms||!tabs)return;
+ if(!rootEl||!board||!detail||!prev||!next||!date||!count||!firms||!tabs)return;
  // Authentication/data refreshes must not retain stale timers or handlers.
  rootEl._mwPlaybackCleanup?.();
  const events=new AbortController();
@@ -301,18 +300,13 @@ function render(rows,days){
  const updatedAt=latestUpdate(rows);
  let day=initialDay(series,updatedAt);
  let region='all',selectedFirm=null,lastSize='';
- const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=3600;
- let playing=false,playTimer=null,inView=true,boardHover=false,lastPausedDay=null;
+ const loopDays=playbackIndices(series.keys.length),PLAY_INTERVAL_MS=3600,INSPECTION_HOLD_MS=12000;
+ const motion=matchMedia('(prefers-reduced-motion: reduce)');
+ let playing=!motion.matches,started=false,playTimer=null,manualTimer=null;
+ let inView=typeof IntersectionObserver!=='function',boardHover=false;
  let sizeObserver=null,visibilityObserver=null;
  const clearPlayTimer=()=>{if(playTimer!==null){clearTimeout(playTimer);playTimer=null;}};
- const syncPlayControl=()=>{
-  play.setAttribute('aria-pressed',String(playing));
-  play.dataset.playing=String(playing);
-  board.classList.toggle('is-playing',playing);
-  playLabel.textContent=playing?'Pause':'Play';
-  play.setAttribute('aria-label',playing?'Pause seven-day playback':'Play the most recent 7 calendar days');
-  play.title=playing?'Pause seven-day playback':'Loop the latest 7 days, including today so far';
- };
+ const clearManualTimer=()=>{if(manualTimer!==null){clearTimeout(manualTimer);manualTimer=null;}};
  const canAdvance=()=>playing&&inView&&!document.hidden&&!boardHover&&!board.contains(document.activeElement);
  const schedulePlay=()=>{
   clearPlayTimer();
@@ -320,14 +314,31 @@ function render(rows,days){
   playTimer=setTimeout(()=>{
    playTimer=null;
    if(!canAdvance())return;
-   day=nextPlaybackDay(day,loopDays);
-   draw();schedulePlay();
+   day=nextPlaybackDay(day,loopDays);draw();schedulePlay();
   },PLAY_INTERVAL_MS);
  };
- const stopPlay=()=>{
-  clearPlayTimer();
-  if(playing){lastPausedDay=day;playing=false;syncPlayControl();}
+ const startIfVisible=()=>{
+  if(!inView||!playing||loopDays.length<2)return;
+  if(!started){started=true;day=loopDays[0];draw();}
+  board.classList.add('is-playing');schedulePlay();
  };
+ // Manual inspection takes precedence. Restart the seven-day sequence after
+ // an idle window, preserving the complete 30-day strip for exploration.
+ const pauseForInspection=()=>{
+  clearPlayTimer();clearManualTimer();playing=false;
+  board.classList.remove('is-playing');
+  if(motion.matches)return;
+  manualTimer=setTimeout(()=>{
+   manualTimer=null;if(motion.matches)return;
+   playing=true;started=true;day=loopDays[0];
+   board.classList.add('is-playing');draw();schedulePlay();
+  },INSPECTION_HOLD_MS);
+ };
+ listen(motion,'change',()=>{
+  clearPlayTimer();clearManualTimer();playing=!motion.matches;
+  board.classList.toggle('is-playing',playing);
+  if(playing)startIfVisible();
+ });
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
   const n=datum(i),what=n>0?fmt(n)+' new '+(n===1?'posting':'postings'):'No new postings';
@@ -341,17 +352,23 @@ function render(rows,days){
   const width=Math.max(1,Math.round(board.getBoundingClientRect().width||540));
   const height=Math.max(1,Math.round(board.getBoundingClientRect().height||320));
   const tiles=marketTiles(values,width,height);
-  const fragment=document.createDocumentFragment();
+  // Keep all 18 tile DOM nodes across dates: positional interpolation avoids
+  // the abrupt page flash caused by replacing the entire tree on every tick.
   for(const tile of tiles){
-   const button=document.createElement('button');
+   let button=board.querySelector('.mw-tile[data-firm="'+tile.i+'"]');
+   if(!button){
+    button=document.createElement('button');button.type='button';
+    const face=document.createElement('span');face.className='mw-tile-face';
+    const lockup=document.createElement('span');lockup.className='mw-tile-lockup';
+    const name=document.createElement('span');name.className='mw-tile-name';
+    lockup.append(name);face.append(lockup);button.append(face);
+    button.dataset.firm=String(tile.i);board.append(button);
+   }
    const zero=tile.zero,type=tileTypography(tile.w,tile.h);
-   button.type='button';
    button.className='mw-tile '+(zero?'mw-is-zero':'mw-is-active')+
     ' mw-tile-'+type.tier+(!zero&&tile.visualFloor?' mw-display-floor':'');
    if(!zero)button.style.setProperty('--mw-tone',colorPosition(tile.count));
-   button.dataset.layout=type.tier;
-   button.dataset.firm=String(tile.i);
-   button.dataset.zero=String(zero);
+   button.dataset.layout=type.tier;button.dataset.zero=String(zero);
    button.setAttribute('aria-label',label(tile.i));
    button.setAttribute('aria-pressed',String(selectedFirm===tile.i));
    button.title=label(tile.i);
@@ -359,18 +376,17 @@ function render(rows,days){
    button.style.top=(tile.y/height*100).toFixed(5)+'%';
    button.style.width=(tile.w/width*100).toFixed(5)+'%';
    button.style.height=(tile.h/height*100).toFixed(5)+'%';
-   const face=document.createElement('span');face.className='mw-tile-face';
-   const lockup=document.createElement('span');lockup.className='mw-tile-lockup';
-   const name=document.createElement('span');name.className='mw-tile-name';
-   name.textContent=DISPLAY[tile.i];
-   lockup.append(name);
+   const lockup=button.querySelector('.mw-tile-lockup');
+   lockup.querySelector('.mw-tile-name').textContent=DISPLAY[tile.i];
+   let amount=lockup.querySelector('.mw-tile-count');
    if(!zero){
-    const amount=document.createElement('strong');amount.className='mw-tile-count';
-    amount.textContent=fmt(tile.count);lockup.append(amount);
-   }
-   face.append(lockup);button.append(face);fragment.append(button);
+    if(!amount){amount=document.createElement('strong');amount.className='mw-tile-count';lockup.append(amount);}
+    amount.textContent=fmt(tile.count);
+   }else amount?.remove();
   }
-  board.replaceChildren(fragment);
+  if(!board.classList.contains('mw-geometry-ready')){
+   requestAnimationFrame(()=>board.classList.add('mw-geometry-ready'));
+  }
   // Measure and fit against actual DOM dimensions once per date, region or
   // board resize, never during hover. Every positive tile remains stacked.
   for(const tile of tiles){
@@ -405,29 +421,29 @@ function render(rows,days){
    b.title=prettyDate(series.keys[i])+(isComplete(series.keys[i],updatedAt)?'':' (so far)')+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
    fragment.append(b);
   });
-  strip.replaceChildren(fragment);
+  // Keep day markers stable so the browser does not re-anchor the scroll.
+  if(strip.children.length===totals.length){
+   [...strip.children].forEach((b,i)=>{
+    const n=totals[i];
+    b.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(isComplete(series.keys[i],updatedAt)?'':' is-partial');
+    b.style.setProperty('--level',(n/max).toFixed(4));
+    b.title=prettyDate(series.keys[i])+(isComplete(series.keys[i],updatedAt)?'':' (so far)')+' · '+fmt(n)+' new '+(n===1?' posting':' postings');
+   });
+  }else strip.replaceChildren(fragment);
  }
  strip?.setAttribute('aria-hidden','true');
  listen(strip,'click',e=>{
   const target=e.target.closest('.mw-strip-day');if(target)chooseDay(Number(target.dataset.day));
  });
  function chooseDay(next){
-  // Manual navigation pauses the loop without constraining the full 30 days.
-  stopPlay();
+  // Navigation always allows all 30 days, even while autoplay is enabled.
+  pauseForInspection();
   const to=Math.max(0,Math.min(last,next));if(to===day)return;day=to;draw();
  }
  function chooseRegion(value){
   if(!REGIONS.includes(value)||value===region)return;
-  stopPlay();region=value;draw();
+  region=value;draw();schedulePlay();
  }
- listen(play,'click',()=>{
-  if(playing){stopPlay();return;}
-  const resume=lastPausedDay===day&&loopDays.includes(day);
-  playing=true;
-  if(!resume)day=loopDays[0]; // Fresh playback starts at oldest of seven.
-  lastPausedDay=null;
-  draw();syncPlayControl();schedulePlay();
- });
  listen(board,'pointerenter',()=>{boardHover=true;clearPlayTimer();});
  listen(board,'pointerleave',()=>{boardHover=false;schedulePlay();});
  listen(document,'visibilitychange',schedulePlay);
@@ -458,7 +474,7 @@ function render(rows,days){
   requestAnimationFrame(schedulePlay);
  });
  listen(board,'click',e=>{
-  stopPlay(); // Inspecting a firm must never be interrupted by a loop tick.
+  pauseForInspection(); // Inspecting a firm must never be interrupted by a loop tick.
   const tile=e.target.closest('.mw-tile');if(!tile)return;
   const chosen=Number(tile.dataset.firm);
   selectedFirm=selectedFirm===chosen?null:chosen;
@@ -477,12 +493,12 @@ function render(rows,days){
   const step=e.key==='ArrowLeft'||e.key==='ArrowUp'?-1:1;
   available[(idx+step+available.length)%available.length].focus();e.preventDefault();
  });
- syncPlayControl();
  draw();
+ if(inView)startIfVisible();
  if(typeof IntersectionObserver==='function'){
   visibilityObserver=new IntersectionObserver(entries=>{
    inView=entries.some(entry=>entry.isIntersecting);
-   schedulePlay();
+   startIfVisible();
   },{threshold:0.01});
   visibilityObserver.observe(rootEl.closest('.ac-col-market')||rootEl);
  }
@@ -497,7 +513,7 @@ function render(rows,days){
   if(size!==lastSize)draw();
  });
  rootEl._mwPlaybackCleanup=()=>{
-  clearPlayTimer();events.abort();
+  clearPlayTimer();clearManualTimer();events.abort();
   visibilityObserver?.disconnect();sizeObserver?.disconnect();
  };
 }
