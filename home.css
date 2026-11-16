@@ -80,6 +80,17 @@
 .nj-market-row:hover .nj-market-name::after,.nj-market-row:focus-visible .nj-market-name::after{content:" →";color:var(--r-ink)}
 .nj-market-row:focus-visible{outline:2px solid var(--h-accent);outline-offset:3px;border-radius:2px}
 .nj-market-statement{margin-top:16px}
+/* A direct route to the working job list, on the existing folio baseline.
+   Avoid adding another hero row and another screen of scrolling on phones. */
+.nj-browse-roles{
+  flex:none;margin-left:auto;color:var(--h-ink);font:600 12px/1.4 var(--sans);
+  text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;
+  text-underline-offset:4px;transition:color .16s var(--ease);
+}
+.nj-browse-roles:hover{color:var(--h-accent)}
+.nj-browse-roles:focus-visible{outline:2px solid var(--h-accent);outline-offset:4px;border-radius:2px}
+#roles{scroll-margin-top:12px}
+#roles:focus{outline:none}
 
 /* ---------- Metric band ---------- */
 .masthead:has(> .nj-masthead-top) > .stats,
@@ -244,6 +255,29 @@
 .mw-encoding{color:var(--h-faint);font:400 11px/1.45 var(--sans)}
 .mw-nav{border-radius:7px}
 .mw-nav:focus-visible{outline:2px solid var(--h-accent)}
+/* Fig. 03 · deliberately opt-in seven-day loop. A small editorial transport
+   control in the EXISTING date row, not a second toolbar. */
+.mw-play{
+  appearance:none;display:inline-flex;align-items:center;justify-content:center;
+  gap:6px;flex:none;height:28px;padding:0 8px;margin-left:7px;
+  border:1px solid var(--h-rule);border-radius:6px;background:transparent;
+  color:var(--h-body);font:600 10.5px/1 var(--sans);white-space:nowrap;cursor:pointer;
+}
+.mw-play:hover,.mw-play[aria-pressed="true"]{color:var(--h-ink);background:var(--h-control)}
+.mw-play:focus-visible{outline:2px solid var(--h-accent);outline-offset:2px}
+.mw-play-icon{
+  display:block;flex:none;width:0;height:0;
+  border-top:4px solid transparent;border-bottom:4px solid transparent;
+  border-left:6px solid currentColor;
+}
+.mw-play[aria-pressed="true"] .mw-play-icon{
+  width:8px;height:9px;border:0;
+  background:linear-gradient(to right,currentColor 0 2px,transparent 2px 6px,currentColor 6px 8px);
+}
+.mw-play-range{color:var(--h-muted);font:500 9px/1 var(--mono);letter-spacing:.035em}
+@media(max-width:400px){.mw-play{margin-left:4px;gap:4px;padding:0 6px;height:27px}}
+@media(max-width:560px){.nj-data-intro{display:none}}
+@media print{.mw-play{display:none!important}}
 
 /* ---------- Fig. 04 · institutions ---------- */
 .top50-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px 24px;margin:0;flex-wrap:nowrap}
