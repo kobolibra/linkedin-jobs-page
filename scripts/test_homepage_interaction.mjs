@@ -78,6 +78,10 @@ async function desktop(browser,engine,theme){
 
   // Daily flow: one tab stop, arrow keys move by day, the tooltip follows focus.
   const spark=page.locator('#spark');await spark.scrollIntoViewIfNeeded();
+  // Keyboard acceptance must not have an unrelated stationary mouse pointer
+  // hovering over the SVG after earlier click-to-filter and scroll actions.
+  // Park it outside the chart before focusing a day explicitly.
+  await page.mouse.move(0,0);await settle(page);
   const stops=await page.evaluate(()=>[...document.querySelectorAll('#spark .rhythm-point')].filter(n=>n.tabIndex===0).length);
   assert.equal(stops,1,'thirty columns share one tab stop');
   await page.locator('#spark .rhythm-point[tabindex="0"]').focus();
@@ -85,7 +89,16 @@ async function desktop(browser,engine,theme){
   await page.keyboard.press('ArrowLeft');
   const focused=await page.evaluate(()=>document.activeElement?.dataset.day);
   assert.equal(focused,'28','ArrowLeft moves to the previous day');
-  t=await tip(page);assert.ok(t&&/Total/.test(t.text)&&/7-day average/.test(t.text),'keyboard focus shows the daily breakdown');
+  // Tooltip positioning and pointerleave/focusout can settle on the next
+  // paint in a headless browser. Wait for the ACTUAL focused-day content,
+  // not an arbitrary delay or a weakened assertion.
+  await page.waitForFunction(()=>{
+   const node=document.querySelector('.viz-tip'),day=document.activeElement;
+   return day?.dataset.day==='28'&&node&&!node.hidden&&
+    /Total/.test(node.textContent)&&/7-day average/.test(node.textContent);
+  },null,{timeout:3000});
+  t=await tip(page);assert.ok(t&&/Total/.test(t.text)&&/7-day average/.test(t.text),
+   'keyboard focus shows the exact previous-day daily breakdown');
   assert.ok(inViewport(t,width),'tooltip stays inside the viewport');
   await page.keyboard.press('Home');
   assert.equal(await page.evaluate(()=>document.activeElement?.dataset.day),'0');
