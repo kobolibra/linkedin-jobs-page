@@ -19,7 +19,7 @@ export function weeklyFlow(jobs){
  for(const j of jobs){
   if(!j||!regions.includes(j.location))continue;
   const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
-  const t=date(j.firstSeen||j.pushTime);if(!t||t>end)continue;
+  const t=date(postedAt(j));if(!t||t>end)continue;
   const age=end-t;if(age<week)current++;else if(age<2*week)prior++;
  }
  return {current,prior,end:new Date(end).toISOString()};
@@ -48,7 +48,7 @@ export function previewData(index,details={},now=Date.now()){
  });
  const totals=Object.fromEntries(regions.map(r=>[r,active.filter(j=>j.location===r).length]));
  const today=dates.key(now),days=Array.from({length:14},(_,i)=>({day:dates.addDays(today,i-13),count:0}));
- for(const j of active){const stamp=j.firstSeen||j.pushTime,time=date(stamp);if(!time||time>now)continue;const day=dates.key(stamp),bin=days.find(d=>d.day===day);if(bin)bin.count++;}
+ for(const j of active){const stamp=postedAt(j),time=date(stamp);if(!time||time>now)continue;const day=dates.key(stamp),bin=days.find(d=>d.day===day);if(bin)bin.count++;}
  const updated=Math.max(0,...active.map(j=>date(j.pushTime||j.firstSeen)));
  return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null,weekly:weeklyFlow(index.jobs)};
 }
@@ -64,7 +64,7 @@ export function publicPreviewPayload(data,index){
   const key=preview.company.toLowerCase(),asset=index.companyLogos?.[key];if(/^assets\/company-logos\/[a-f0-9]{24}\.(svg|webp)$/.test(asset||''))companyLogos[key]=asset;
  }
  const buckets=new Map();
- for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(job.firstSeen||job.pushTime||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
+ for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(postedAt(job)||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
  const chartBuckets=[...buckets].map(([key,count])=>[...JSON.parse(key).slice(0,5),count,JSON.parse(key)[5]]);
  return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
