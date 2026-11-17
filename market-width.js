@@ -511,7 +511,7 @@ function render(rows,days){
   [...strip.querySelectorAll('.mw-strip-day')].forEach((button,i)=>{
    const n=totals[i],complete=isComplete(series.keys[i],updatedAt);
    button.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(complete?'':' is-partial');
-   button.title=prettyDate(series.keys[i])+' · '+fmt(n)+' new '+(n===1?'posting':'postings');
+   button.title=prettyDate(series.keys[i])+' · '+fmt(n)+' first-recorded '+(n===1?'role':'roles');
   });
   const width=Math.max(1,Math.round(strip.getBoundingClientRect().width||board.getBoundingClientRect().width||600));
   const geometry=trendGeometry(totals,width);
