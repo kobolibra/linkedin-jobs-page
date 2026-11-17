@@ -91,7 +91,7 @@ test('visible age metric labels describe firstSeen, not repost dates',()=>{
  assert.match(home,/Average Listing Age/);
  assert.match(home,/days since first recorded/);
  assert.match(home,/posted or reposted in the 7 days/);
- assert.match(home,/including reposts/);
+ assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/,'publishing events retain their separate repost-aware date');
  assert.match(home,/距首次记录的天数/);
  assert.doesNotMatch(home,/days since latest posting|距最近发布的天数/);
  assert.match(about,/first-recorded date/);
