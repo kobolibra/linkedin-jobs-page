@@ -58,7 +58,7 @@
     if(validKey(value))return fullDay(value);
     const t=timestamp(value);
     if(!Number.isFinite(t))return '—';
-    return (compact?compactStampFormatter:stampFormatter).format(new Date(t)).replace(/,\s*/g,' · ')+' UTC+8';
+    return (compact?compactStampFormatter:stampFormatter).format(new Date(t)).replace(/,\s*/g,' ');
   }
   const api=Object.freeze({key,dayStart,dayEnd,addDays,weekday,shortDay,fullDay,formatStamp,timestamp});
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
