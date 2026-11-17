@@ -66,8 +66,10 @@ export function publicPreviewPayload(data,index){
   const key=preview.company.toLowerCase(),asset=index.companyLogos?.[key];if(/^assets\/company-logos\/[a-f0-9]{24}\.(svg|webp)$/.test(asset||''))companyLogos[key]=asset;
  }
  const buckets=new Map();
- for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(postedAt(job)||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
- const chartBuckets=[...buckets].map(([key,count])=>[...JSON.parse(key).slice(0,5),count,JSON.parse(key)[5]]);
+ for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(postedAt(job)||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||''),String(job.firstSeen||job.pushTime||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
+ // Carry original firstSeen separately from latest posting day. Guests need both clocks:
+  // lifetime charts/list age from firstSeen; publication flow from latest posting.
+  const chartBuckets=[...buckets].map(([key,count])=>{const fields=JSON.parse(key);return [...fields.slice(0,5),count,fields[5],fields[6]];});
  return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
 export function buildGuestPreview(root='.'){
