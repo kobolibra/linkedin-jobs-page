@@ -327,7 +327,10 @@
     const tip = () => g.VizTip;
     let activeRow=null;
     const focus = (row, x, y, anchor = null) => {
-      if(row===activeRow)return; // Avoid 60fps tooltip reconstruction and reflow.
+      // The shared tooltip can be dismissed by scroll or another chart while
+      // this row remains focused. Never suppress the next real tap just
+      // because the same row is still cached as active.
+      if(row===activeRow && (!row || (host.classList.contains('is-inspecting') && !document.querySelector('.viz-tip')?.hidden)))return;
       if(activeRow)activeRow.classList.remove('is-focus');
       activeRow=row;
       if(!row){host.classList.remove('is-inspecting');tip()?.hide();return;}
