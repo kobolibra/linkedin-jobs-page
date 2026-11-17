@@ -355,7 +355,9 @@
       const row = e.target.closest('.bubble-row');
       focus(row && host.contains(row) ? row : null, e.clientX, e.clientY);
     });
-    host.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') focus(null); });
+    // A touch may synthesize mouse pointerleave after focus scrolls into view.
+    // Keep the first-tap reading until a real outside pointerdown or drill-down.
+    host.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch' && !armedRow) focus(null); });
     // Touch: one tap reveals a bubble's values; a second on the SAME bubble
     // opens its roles. Native touch focus/blur may fire between pointerdown
     // and click, so never infer the second tap from transient :focus styling.
