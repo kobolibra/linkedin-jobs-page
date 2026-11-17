@@ -217,9 +217,9 @@ const jobId=link=>{
   const id=slugMatches?.at(-1)||query?.[1];
   return id?("ln:"+id):path.replace(/\/+$/i,"");
 };
-const keyOf=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-const dayKey=iso=>{const d=new Date(iso);return isNaN(d)?"—":keyOf(d);};
-const dayLabel=iso=>{const d=new Date(iso);return isNaN(d)?"未知日期":d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric",weekday:"long"});};
+const keyOf=d=>window.JobDates.key(d);
+const dayKey=iso=>window.JobDates.key(iso)||"—";
+const dayLabel=iso=>window.JobDates.fullDay(iso,{weekday:true});
 const isActiveJob=job=>job?.jobStatus!=="expired";
 const seenAt=j=>j.firstSeen||j.pushTime;
 const validDays=(start,end)=>{const a=Date.parse(start),b=Date.parse(end);if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.max(0,Math.floor((b-a)/864e5));};
@@ -552,7 +552,7 @@ jobsDataPromise
     animNum(document.getElementById("stat-comp"),window.AuthGuest?.overview?.companies??activeCompanies.size);
     const lastUpd=activeData.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
     const lastUpdDate=new Date(window.AuthGuest?.overview?.updated||lastUpd);
-    const lastUpdText=Number.isNaN(lastUpdDate.getTime())?"—":lastUpdDate.toLocaleString("en-GB",{timeZone:"Asia/Singapore",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).replace(", "," ");
+    const lastUpdText=window.JobDates.formatStamp(window.AuthGuest?.overview?.updated||lastUpd,{compact:true});
     document.getElementById("stat-updated").textContent=lastUpdText;
     renderHeadline(data,chartData);
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
@@ -575,7 +575,7 @@ jobsDataPromise
     const timelineTimes=observedTimes.length?observedTimes:allTimes;
     const latestStamp=timelineTimes.length?Math.max(...timelineTimes):Date.now();
     const earliestStamp=timelineTimes.length?Math.min(...timelineTimes):latestStamp;
-    const utcDay=stamp=>Math.floor(stamp/dayMs)*dayMs;
+    const utcDay=stamp=>window.JobDates.dayStart(window.JobDates.key(stamp));
     const tMin=utcDay(earliestStamp),tMax=utcDay(latestStamp)+dayMs;
     const bins=Math.max(1,Math.round((tMax-tMin)/dayMs));
     // Both analytics plots reach the same right margin (17/520). Keep the
@@ -628,7 +628,7 @@ jobsDataPromise
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
-    const regionTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',timeZone:'UTC'});
+    const regionTickFormat={format:date=>window.JobDates.shortDay(date)};
     // This Date-only chart helper must NEVER shadow the ISO-safe list dayLabel.
     const regionAxisDayLabel=(date)=>regionTickFormat.format(date);
     const axisCssWidth=distEl.getBoundingClientRect().width||TW;
@@ -1001,7 +1001,7 @@ jobsDataPromise
       capture.setAttribute('x',(left-slot/2).toFixed(2));capture.setAttribute('y',String(top));
       capture.setAttribute('width',(plotW+slot).toFixed(2));capture.setAttribute('height',String(base-top));
       projectionSvg.append(guide,capture);
-      const tipDate=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+      const tipDate={format:date=>window.JobDates.fullDay(date)};
       const inspect=e=>{
         const box=projectionSvg.getBoundingClientRect();if(!box.width)return;
         const vx=(e.clientX-box.left)/box.width*TW;
@@ -1020,8 +1020,8 @@ jobsDataPromise
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
-    const today=new Date(),days=[];
-    for(let i=29;i>=0;i--){const d=new Date(today);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const key=keyOf(d),rc=rcounts[key]||{};days.push({date:d,label:d.toLocaleDateString("en-US",{month:"short",day:"numeric"}).toUpperCase(),weekend:d.getDay()===0||d.getDay()===6,rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
+    const today=window.JobDates.key(Date.now()),days=[];
+    for(let i=29;i>=0;i--){const key=window.JobDates.addDays(today,-i),d=new Date(key+"T00:00:00Z"),rc=rcounts[key]||{};days.push({key,date:d,label:window.JobDates.shortDay(key).toUpperCase(),weekend:[0,6].includes(window.JobDates.weekday(key)),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
     /* Daily flow. Every column is the exact first-seen count for one local
        calendar day, stacked by market in the same order and pigments as
@@ -1038,7 +1038,7 @@ jobsDataPromise
     const dayTotal=date=>{const rc=rcounts[keyOf(date)]||{};return RKEYS.reduce((sum,r)=>sum+(rc[r]||0),0);};
     const trailing=days.map(d=>{
       let sum=0;
-      for(let back=0;back<7;back++){const t=new Date(d.date);t.setDate(t.getDate()-back);sum+=dayTotal(t);}
+      for(let back=0;back<7;back++){sum+=dayTotal(window.JobDates.addDays(d.key,-back));}
       return sum/7;
     });
     const lastIndex=days.length-1;
@@ -1077,8 +1077,8 @@ jobsDataPromise
       '" text-anchor="middle">'+peak+'</text>':'';
     // A 30-day window always uses real Mondays, seven days apart. Do not
     // inject arbitrary endpoints or silently drop weeks to fit endpoint text.
-    const rhythmTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short'});
-    const rhythmMarks=days.map((d,i)=>d.date.getDay()===1?i:-1).filter(i=>i>=0);
+    const rhythmTickFormat={format:d=>window.JobDates.shortDay(d)};
+    const rhythmMarks=days.map((d,i)=>window.JobDates.weekday(d.key)===1?i:-1).filter(i=>i>=0);
     const dateLabels=rhythmMarks.map(i=>{
       const x=sx(i),anchor=x-sLeft<24?'start':SW-sRight-x<24?'end':'middle';
       return '<line class="rhythm-date-tick" x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="136" y2="140"/>'+
@@ -1091,7 +1091,7 @@ jobsDataPromise
       '" role="img" aria-label="30-day new postings, one column per day stacked by market. Each column provides the exact date and count.">'+
       weekendBands+guides+bars+peakLabel+dateLabels+'</svg>';
     if(window.VizTip){
-      const tipFormat=new Intl.DateTimeFormat('en-GB',{weekday:'short',day:'numeric',month:'short'});
+      const tipFormat={format:d=>window.JobDates.fullDay(d,{weekday:true})};
       const inspectDay=(node,x,y,target=null)=>{
         const i=Number(node.dataset.day),d=days[i];if(!d)return;
         sparkEl.querySelectorAll('.rhythm-point.is-hover').forEach(n=>n.classList.remove('is-hover'));
