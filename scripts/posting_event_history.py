@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
-"""Append-only job posting events, independent of current listing status.
+"""Retained-job firstSeen cohorts: reposts add nothing; expiration keeps counts.
 
-A canonical firstSeen contributes one initial event. Each confirmed JobSpy
-repost contributes one event for its new local calendar day. A closed or
-physically removed job never removes previously recorded events.
-
-The first migration can recover original firstSeen and the latest explicitly
-confirmed repost, but cannot reconstruct unrecorded intermediate reposts.
+Reconcile against the complete canonical jobs collection, including expired
+rows. Physical deletion removes the original firstSeen contribution. Legacy
+repost events are intentionally removed when migrating to pure new counts.
 """
 from __future__ import annotations
 
@@ -60,32 +57,18 @@ def read_ledger(path):
 
 
 def reconcile(ledger, jobs):
-    events = [dict(e) for e in ledger["events"]]
-    keys = {(e["jobId"], e["day"], e["kind"]) for e in events}
-    first_ids = {e["jobId"] for e in events if e["kind"] == "first"}
+    events = []
+    seen = set()
     for job in jobs:
         if not isinstance(job, dict):
             continue
         job_id = identity(job)
-        if not job_id:
-            continue
-        region = region_of(job)
         first = day(job.get("firstSeen"))
-        if first and job_id not in first_ids:
-            key = (job_id, first, "first")
-            events.append({"jobId": job_id, "day": first, "region": region, "kind": "first"})
-            keys.add(key)
-            first_ids.add(job_id)
-        # Only confirmed source-date advances count as reposts. A bare newer
-        # postingLastDate can be a timezone migration and is NOT proof.
-        explicit = day(job.get("lastRepostedAt"))
-        if not explicit and job.get("jobspyRepost") is True:
-            explicit = day(job.get("postingLastDate"))
-        if explicit and (not first or explicit >= first):
-            key = (job_id, explicit, "repost")
-            if key not in keys:
-                events.append({"jobId": job_id, "day": explicit, "region": region, "kind": "repost"})
-                keys.add(key)
+        if not job_id or not first or job_id in seen:
+            continue
+        seen.add(job_id)
+        events.append({"jobId": job_id, "day": first,
+                       "region": region_of(job), "kind": "first"})
     events.sort(key=lambda e: (e["day"], e["jobId"], e["kind"]))
     return {"schemaVersion": SCHEMA, "events": events}
 
