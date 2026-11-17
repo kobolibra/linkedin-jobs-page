@@ -80,7 +80,8 @@ test('legacy JPM stays unchanged while future posting-day cohorts align across c
  assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3,'both labels and both filter paths use the displayed posting day');
  assert.doesNotMatch(app,/ageDays\(seenAt\(job\)\)/);
  assert.match(app,/Cumulative stack of currently active roles by source posting date/);
- assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime/,'lifecycle insight keeps immutable first-observation age');
+ assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\)/,'fallback Company Insight record keeps original firstSeen and posting day');
+ assert.match(app,/coData:\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\)/,'virtualized Company Insight record keeps both fields');
  assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen\|\|job\.pushTime,job\.expiredAt\)/,'expiration duration must use original lifecycle entry, never repost day');
  assert.doesNotMatch(app,/expiredValidDays=expired\?validDays\(seenAt\(job\),/);
 });

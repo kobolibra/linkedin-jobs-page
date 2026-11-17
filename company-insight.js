@@ -23,18 +23,29 @@
   function summarize(records,now=Date.now()){
     const s={total:0,active:0,expired:0,regions:{},missingStart:0,missingEnd:0,invalidOrder:0,
       reasons:{confirmed:0,snapshot:0,other:0},weeks:Array.from({length:4},()=>({added:0,closed:0,durations:[]}))};
-    const active=[],closed=[];
+    // Posting age and original listing lifetime are distinct measures.
+    // A repost advances postingDate, but NEVER resets the original firstSeen.
+    const active=[],activeLifetimes=[],closed=[];
     for(const r of records||[]){
       if(!r)continue;
       const expired=r.status==='expired',region=['CN','HK','SG'].includes(r.region)?r.region:'OTHER';
       s.total++;s[expired?'expired':'active']++;s.regions[region]=(s.regions[region]||0)+1;
       const start=time(r.date),end=time(r.expiredAt),validStart=Number.isFinite(start)&&start<=now,validEnd=Number.isFinite(end)&&end<=now;
-      if(validStart){
-        const age=(now-start)/DAY,w=Math.floor(age/7);
+      const cal=window.JobDates;
+      const posted=cal?.dayStart&&cal?.key&&r.postingDate?cal.dayStart(cal.key(r.postingDate)):NaN;
+      const today=cal?.dayStart&&cal?.key?cal.dayStart(cal.key(now)):NaN;
+      // A legacy caller without postingDate retains its old elapsed-time policy.
+      const age=Number.isFinite(posted)&&Number.isFinite(today)?(today-posted)/DAY:(now-time(r.postingDate||r.date))/DAY;
+      if(Number.isFinite(age)&&age>=0){
+        const w=Math.floor(age/7);
         if(w<4)s.weeks[w].added++;
         if(!expired)active.push(age);
-      }else s.missingStart++;
-      if(!expired)continue;
+      }
+      if(!validStart)s.missingStart++;
+      if(!expired){
+        if(validStart)activeLifetimes.push((now-start)/DAY);
+        continue;
+      }
       s.reasons[/^linkedin_(closed|removed)$/.test(r.expiredReason)?'confirmed':r.expiredReason==='missing_from_full_company_snapshot'?'snapshot':'other']++;
       if(!validEnd){s.missingEnd++;continue;}
       if(validStart&&end<start){s.invalidOrder++;continue;}
@@ -49,7 +60,7 @@
     s.open.buckets=BINS.map(b=>({...b,count:active.filter(n=>n>=b.min&&n<b.max).length}));
     s.weeks=s.weeks.map(w=>({...w,balance:w.added-w.closed,close:stats(w.durations)}));
     s.oldActive=active.filter(d=>d>=30).length;
-    s.beyondQ3=s.close.n?active.filter(d=>d>s.close.q3).length:0;
+    s.beyondQ3=s.close.n?activeLifetimes.filter(d=>d>s.close.q3).length:0;
     return s;
   }
   function change(current,previous){
@@ -65,7 +76,7 @@
       notes.push('近14天未记录到新增或关闭，近期没有可见的职位流转。');
     }else{
       const flow=a.balance>0?'新增多于关闭 '+a.balance+' 个':a.balance<0?'关闭多于新增 '+(-a.balance)+' 个':'新增与关闭数量相当';
-      notes.push('发布节奏：近7天新增 '+a.added+' 个，'+change(a.added,b.added)+'；关闭 '+a.closed+' 个，'+change(a.closed,b.closed)+'。'+flow+'。');
+      notes.push('发布节奏：近7天发布或重发 '+a.added+' 个，'+change(a.added,b.added)+'；关闭 '+a.closed+' 个，'+change(a.closed,b.closed)+'。'+flow+'。');
     }
     if(a.close.n>=5&&b.close.n>=5){
       const d=a.close.median-b.close.median;
@@ -77,7 +88,7 @@
       notes.push('长周期职位拉高了平均数：比中位数高 '+num(s.close.mean-s.close.median)+' 天；典型关闭用时更宜参考中位数。');
     }
     if(s.open.n){
-      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）已挂出至少30天。';
+      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）距最近发布至少30天。';
       if(s.close.n>=10)note+=s.beyondQ3+' 个有效职位已超过历史关闭用时的75%分位（'+num(s.close.q3)+' 天）。';
       notes.push(note);
     }
@@ -110,7 +121,7 @@
       const span=Math.max(s.open.values[s.open.n-1],1),pos=d=>d/span*100,groups=new Map();
       for(const d of s.open.values){const age=Math.floor(d);groups.set(age,(groups.get(age)||0)+1);}
       $('coPlot').innerHTML='<span class="co-band" style="left:'+pos(s.open.q1)+'%;width:'+(pos(s.open.q3)-pos(s.open.q1))+'%"></span>'
-        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="已挂出 '+age+' 天：'+n+' 个有效职位"></span>').join('')
+        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="距最近发布 '+age+' 天：'+n+' 个有效职位"></span>').join('')
         +'<span class="co-mk co-mean" style="left:'+pos(s.open.mean)+'%"></span><span class="co-mk co-med" style="left:'+pos(s.open.median)+'%"></span>';
       $('coScale').innerHTML='<span>0 天</span><span>'+num(span)+' 天</span>';
     }
@@ -120,7 +131,7 @@
     $('coCloseMed').textContent=days(s.close.median);
     $('coCloseMean').textContent=days(s.close.mean);
     $('coCloseRange').textContent=s.close.n?'中间50%：'+num(s.close.q1)+'–'+num(s.close.q3)+' 天':'';
-    $('coRhythm').innerHTML='<thead><tr><th scope="col">时间窗口</th><th scope="col">新增</th><th scope="col">关闭</th><th scope="col" title="当前保留记录中的新增数减关闭数；不是有效职位库存的实际变化，重开及已清理历史不在事件统计内">差额</th></tr></thead><tbody>'
+    $('coRhythm').innerHTML='<thead><tr><th scope="col">时间窗口</th><th scope="col">发布</th><th scope="col">关闭</th><th scope="col" title="当前保留记录中的新增数减关闭数；不是有效职位库存的实际变化，重开及已清理历史不在事件统计内">差额</th></tr></thead><tbody>'
       +s.weeks.map((w,i)=>'<tr><th scope="row">'+['近7天','前7天','14–21天前','21–28天前'][i]+'</th><td>'+w.added+'</td><td>'+w.closed+'</td><td>'+signed(w.balance)+'</td></tr>').join('')+'</tbody>';
     $('coFoot').innerHTML=insights(s).map(note=>'<p class="co-note">'+note+'</p>').join('');
     const gaps=[];

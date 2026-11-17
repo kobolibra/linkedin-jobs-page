@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),JobDates=require('../calendar-date.js');
 const source=readFileSync(new URL('../company-insight.js',import.meta.url),'utf8');
 const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const NOW=Date.parse('2026-10-07T12:00:00Z'),DAY=864e5;
@@ -16,6 +18,28 @@ function ui(){
   return {context,get,...context.window.CompanyInsight,render:context.window.renderCo};
 }
 const {summarize,insights}=ui();
+
+test('posting-age histogram matches the list while closure lifetime ignores a repost',()=>{
+  const u=ui();
+  u.context.window.JobDates=JobDates;
+  const records=[
+    {date:'2026-09-01T03:00:00Z',postingDate:'2026-10-07',status:'active',region:'HK'},
+    {date:'2026-09-01T03:00:00Z',postingDate:'2026-10-07',
+     expiredAt:'2026-10-07T10:00:00Z',status:'expired',region:'HK'}
+  ];
+  const s=u.summarize(records,NOW);
+  assert.equal(s.weeks[0].added,2,'including reposted roles closed since');
+  assert.equal(s.open.buckets[0].count,1,'today posting sits in the Today filter');
+  assert.equal(s.open.buckets[4].count,0,'recently reposted role is not listed as 30 days old');
+  assert.ok(s.close.median>30,'closure duration still uses the immutable firstSeen');
+  u.render('ACME',records,'0');
+  assert.match(u.get('coHist').innerHTML,/data-age="0" aria-pressed="true"/);
+  assert.equal(u.get('coFresh').textContent,2);
+});
+test('both virtual and fallback card paths provide original and latest posting dates',()=>{
+  assert.match(app,/coData:\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\),expiredAt:/);
+  assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\),expiredAt:/);
+});
 test('expired lifetime stops at expiry while active exposure continues',()=>{
   const rows=[record(10),record(30,'expired','CN',ago(20))];
   const a=summarize(rows,NOW),b=summarize(rows,NOW+15*DAY);
