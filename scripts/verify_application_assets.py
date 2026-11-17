@@ -62,7 +62,7 @@ def _verify():
         if response.status != 200:
             raise RuntimeError('Production homepage is unavailable')
         for name in tracked_assets:
-            reference = re.search(re.escape(name) + r'\\?v=[A-Za-z0-9._-]+', local_page)
+            reference = re.search(re.escape(name) + r'\?v=[A-Za-z0-9._-]+', local_page)
             if not reference or reference.group(0) not in page:
                 raise RuntimeError(f'Production homepage asset reference mismatch: {name}')
 
