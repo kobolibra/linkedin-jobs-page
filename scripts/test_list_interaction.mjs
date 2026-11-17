@@ -34,7 +34,7 @@ function harness(sections=[]) {
     blocked:new Set(),blockedKw:new Set(),favs:new Set(),daySections:sections,filteredCards:new Set(),
     activeRegion:'all',activeCity:'all',activeOnly:false,favOnly:false,simpleFilterActive:true,renderReady:true,loadedJobs:null,
     REGIONS:{CN:{},HK:{},SG:{},OTHER:{}},esc:s=>s,canonicalCompany:s=>s,norm:s=>s,cityOf:j=>j.city||'Shanghai',
-    isActiveJob:j=>j.jobStatus!=='expired',seenAt:j=>j.firstSeen,jobId:s=>s,ageDays:()=>1,ageMatch:(sel,d)=>sel==='all'||sel==='0'&&d===0||sel==='1-7'&&d>=1&&d<=7,
+    isActiveJob:j=>j.jobStatus!=='expired',seenAt:j=>j.firstSeen,placeAt:j=>j.pushTime||j.firstSeen,jobId:s=>s,ageDays:()=>1,ageMatch:(sel,d)=>sel==='all'||sel==='0'&&d===0||sel==='1-7'&&d>=1&&d<=7,
     clearTimeout(){},cancelAnimationFrame(){},setTimeout(){},requestAnimationFrame(){},coRecords:[],
     saveFavs(){},renderCo(name,records){c.coRecords=records;}};
   vm.createContext(c);
