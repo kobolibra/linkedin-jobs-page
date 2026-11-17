@@ -8,7 +8,7 @@ import re
 from fetch_linkedin_requests import COMPANIES, canonical
 from reconcile_full_snapshots import jid, location_key, company_key
 from linkedin_ids import linkedin_job_id
-from posting_dates import apply_posting_date
+from posting_dates import apply_posting_date, liveness_timezone_only_candidate
 
 LIVENESS_EXPIRED_REASONS = {
     "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
@@ -143,7 +143,7 @@ def select_regional_candidates(rows, locations, **options):
     return picked
 
 
-def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date_posted=None, date_source=None, delete_after_days=NON_TARGET_RETENTION_DAYS):
+def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date_posted=None, date_source=None, delete_after_days=NON_TARGET_RETENTION_DAYS, date_raw=None):
     """Mutate and return one row; stale observations are ignored."""
     observed_at = iso(observed_at)
     when = parse_time(observed_at)
@@ -159,8 +159,8 @@ def apply_observation(row, result, observed_at=None, gone_confirm_hours=12, date
     if result == "unknown":
         return row
     if result == "open":
-        if date_posted:
-            apply_posting_date(row, date_posted, observed_at, date_source or "linkedin-liveness")
+        if date_posted and not (date_source and liveness_timezone_only_candidate(row, date_posted, date_raw)):
+            apply_posting_date(row, date_posted, observed_at, date_source or "linkedin-liveness", source_raw=date_raw)
         was_liveness_expired = row.get("expiredReason") in LIVENESS_EXPIRED_REASONS
         row["liveStatus"] = "open"
         row["liveVerifiedAt"] = observed_at
