@@ -226,8 +226,8 @@ const seenAt=j=>j.firstSeen;
 // Posting/reposting event charts have a separate, deliberate source-date clock.
 const postingAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
 const validDays=(start,end)=>{const cal=window.JobDates;const a=cal.dayStart(cal.key(start)),b=cal.dayStart(cal.key(end));if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.round((b-a)/864e5);};
-// Keep listing date headings on original firstSeen. A confirmed repost never moves a saved listing.
-const placeAt=seenAt;
+// List headings use pushTime; pure-new counts and every age use firstSeen.
+const placeAt=j=>j.pushTime||j.firstSeen;
 // Within a posted calendar day, retain captured update order and region ties.
 const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
 const displayRegionOf=j=>norm(j?.location);
@@ -474,20 +474,20 @@ window.VizTip=(()=>{
 })();
 const meanOf=values=>{const valid=values.filter(Number.isFinite);return valid.length?valid.reduce((sum,age)=>sum+age,0)/valid.length:null;};
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
-function weeklyFlow(jobs){
-  const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=window.JobDates.timestamp(v);return Number.isFinite(t)?t:0;};
+function weeklyFlow(jobs,now=Date.now()){
+  const regions=["CN","HK","SG"],seen=new Set();
   const day=v=>window.JobDates.dayStart(window.JobDates.key(v));
-  let end=0,current=0,prior=0;
-  for(const j of jobs)if(j&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen),date(j.expiredAt));
-  if(!end)return null;
-  const endDay=day(end);
+  const end=window.JobDates.timestamp(now),endDay=day(now),week=7*864e5;
+  if(!Number.isFinite(end)||!Number.isFinite(endDay))return null;
+  let current=0,prior=0,valid=0;
   for(const j of jobs){
     if(!j||!regions.includes(j.location))continue;
     const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
-    const t=day(j.postingLastDate||j.firstSeen||j.pushTime);if(!Number.isFinite(t)||t>endDay)continue;
-    const age=endDay-t;if(age<week)current++;else if(age<2*week)prior++;
+    const t=day(j.firstSeen);if(!Number.isFinite(t))continue;valid++;
+    const age=endDay-t;if(age<0)continue;
+    if(age<week)current++;else if(age<2*week)prior++;
   }
-  return {current,prior,end:new Date(end).toISOString()};
+  return valid?{current,prior,end:new Date(end).toISOString()}:null;
 }
 /* Masthead and metric band: every figure is derived from the same
    deduplicated rows as the charts below; nothing here is a static claim. */
@@ -496,7 +496,7 @@ function renderHeadline(allRows,chartRows){
   const ages=[];
   for(const job of chartRows){const age=window.JobDates.calendarAge(seenAt(job),now);if(age!=null)ages.push(age);}
   // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
-  // CN/HK/SG roles posted in the 7 Beijing calendar days ending at the latest data update,
+  // CN/HK/SG roles first recorded in the 7 Beijing calendar days ending today,
   // including roles that have since closed. Guests receive the counts from the
   // server because their preview payload carries open roles only.
   const flow=overview?overview.weekly:weeklyFlow(allRows);
@@ -504,7 +504,7 @@ function renderHeadline(allRows,chartRows){
   if(weekEl){
     if(flow)animNum(weekEl,flow.current);else weekEl.textContent='—';
     const end=flow?.end?new Date(flow.end):null;
-    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore posted in the 7 calendar days to '+
+    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore first recorded in the 7 calendar days to '+
       end.toLocaleString('en-GB',{timeZone:'Asia/Singapore',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' SGT, including roles that have since closed';
   }
   if(weekNote&&flow&&flow.prior>0){
@@ -1030,8 +1030,8 @@ jobsDataPromise
       }
     }else{
       // One-time compatibility while the ledger is first published. This
-      // snapshot fallback is not a complete immutable publishing history.
-      chartData.forEach(j=>{const k=dayKey(postingAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
+      // fallback counts retained firstSeen cohorts, including expired roles.
+      (typeof data!=="undefined"?data:chartData).forEach(j=>{const k=dayKey(j.firstSeen);const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     }
     const today=window.JobDates.key(Date.now()),days=[];
     for(let i=29;i>=0;i--){const key=window.JobDates.addDays(today,-i),d=new Date(key+"T00:00:00Z"),rc=rcounts[key]||{};days.push({key,date:d,label:window.JobDates.shortDay(key).toUpperCase(),weekend:[0,6].includes(window.JobDates.weekday(key)),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
@@ -1167,7 +1167,7 @@ jobsDataPromise
     };
     const roleHistoryUi=window.JobRoleHistory?.bind(jobsEl,{get:id=>roleHistoryIndex?.get(id),id:j=>jobId(j.link),link:safeJobLink,onVisit:id=>{reads.add(id);saveReads();for(const card of jobCards)if(card.dataset.id===id)card.classList.add('read');}});
     function renderJobRow(job,idx,first){
-        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(placeAt(job)),expired=job.jobStatus==="expired",expiredText=expired?window.JobDates.shortDay(job.expiredAt):"",expiredValidDays=expired?validDays(job.firstSeen,job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} ${expiredValidDays===1?"day":"days"}`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
+        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?window.JobDates.shortDay(job.expiredAt):"",expiredValidDays=expired?validDays(job.firstSeen,job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} ${expiredValidDays===1?"day":"days"}`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
         const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count"><span class="co-separator" aria-hidden="true"></span>'+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
@@ -1181,7 +1181,7 @@ jobsDataPromise
     if(window.JobListView&&window.JobListQuery){
       const rowDays=new WeakMap();orderedGroups.forEach(([day,group])=>group.items.forEach(job=>rowDays.set(job,{day,label:group.label})));
       const rows=orderedGroups.flatMap(([,group])=>group.items);
-      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(placeAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:job.firstSeen,postingDate:postingAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
+      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(seenAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:job.firstSeen,postingDate:postingAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
       const byId=new Map(meta.map(r=>[r.id,r]));
       const view=new JobListView({host:jobsEl,render:(index,i)=>renderJobRow(rows[index],i,index<120),onMount:()=>{daySections=view.blocks.map(b=>b.el);jobCards=daySections.flatMap(sec=>sec._jobCards);jobCards.forEach(card=>card._coData=byId.get(card.dataset.id)?.coData);roleHistoryUi?.restore();}});
       listRuntime={meta,view,lastKey:null};renderReady=true;delete regionsEl.dataset.pendingRegion;apply();return;
@@ -1258,7 +1258,7 @@ function countLoadedActiveJobs(){
     const company=canonicalCompany(job.company),title=(job.title||'').toLowerCase(),region=norm(job.location);
     const city=region==='OTHER'?'OTHER':cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
     const id=jobId(job.link)||(job.title+'|'+job.company);
-    if(!blocked.has(company)&&!kwArr.some(k=>title.includes(k))&&(activeRegion==='all'||region===activeRegion)&&(activeCity==='all'||city===activeCity)&&(comp==='all'||company===comp)&&(!favOnly||favs.has(id))&&(!q||(title+' '+company+' '+cityLabel).toLowerCase().includes(q))&&ageMatch(ageSel,ageDays(placeAt(job))))count++;
+    if(!blocked.has(company)&&!kwArr.some(k=>title.includes(k))&&(activeRegion==='all'||region===activeRegion)&&(activeCity==='all'||city===activeCity)&&(comp==='all'||company===comp)&&(!favOnly||favs.has(id))&&(!q||(title+' '+company+' '+cityLabel).toLowerCase().includes(q))&&ageMatch(ageSel,ageDays(seenAt(job))))count++;
   }
   return count;
 }
@@ -1454,6 +1454,3 @@ totop.addEventListener("click",()=>{if(jobsEl._jobView)jobsEl._jobView.jump++;sc
   jobsEl.addEventListener('keydown',event=>{if(mobile()&&event.shiftKey&&event.key==='F10'){const card=event.target.closest('.job');if(card){event.preventDefault();open(card);}}});
   window.addEventListener('resize',()=>{if(!mobile()&&sheet?.open)sheet.close();},{passive:true});
 })();
-
-
-

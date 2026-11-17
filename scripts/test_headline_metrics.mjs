@@ -6,15 +6,17 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),dates=require('../calendar-date.js');
-import {weeklyFlow as serverFlow,previewData,publicPreviewPayload} from './guest_preview.mjs';
+import {weeklyFlow as rawServerFlow,previewData,publicPreviewPayload} from './guest_preview.mjs';
 
 const read=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
 const app=read('app.js');
-const start=app.indexOf('function weeklyFlow(jobs){');
+const start=app.indexOf('function weeklyFlow(');
 const end=app.indexOf('/* Masthead and metric band',start);
 assert.ok(start>=0&&end>start,'app.js defines weeklyFlow before the headline renderer');
 const context={window:{JobDates:dates}};vm.runInNewContext(app.slice(start,end)+';globalThis.weeklyFlow=weeklyFlow;',context);
-const browserFlow=context.weeklyFlow;
+const FIXED_NOW=Date.parse('2026-11-17T04:00:00Z');
+const browserFlow=(jobs,now=FIXED_NOW)=>context.weeklyFlow(jobs,now);
+const serverFlow=(jobs,now=FIXED_NOW)=>rawServerFlow(jobs,now);
 const plain=value=>JSON.parse(JSON.stringify(value));
 
 test('browser and guest payload compute the same weekly flow on the real index',()=>{
@@ -22,11 +24,11 @@ test('browser and guest payload compute the same weekly flow on the real index',
  const browser=plain(browserFlow(index.jobs)),server=serverFlow(index.jobs);
  assert.deepEqual(browser,server);
  assert.ok(server.current>0&&server.prior>0,'the real index has two comparable weeks');
- const payload=publicPreviewPayload(previewData(index),index);
+ const payload=publicPreviewPayload(previewData(index,{},FIXED_NOW),index);
  assert.deepEqual(payload.previewOverview.weekly,server,'guests receive the same counts');
 });
 
-test('weekly flow counts since-closed roles, excludes other regions and anchors on the latest update',()=>{
+test('weekly flow counts since-closed roles, excludes other regions and anchors on today independently of record updates',()=>{
  const rows=[
   {link:'a',location:'HK',firstSeen:'2026-11-15T10:00:00Z',pushTime:'2026-11-16T04:00:00Z'},
   {link:'b',location:'SG',firstSeen:'2026-11-14T10:00:00Z',jobStatus:'expired'},
@@ -36,7 +38,7 @@ test('weekly flow counts since-closed roles, excludes other regions and anchors 
   {link:'a',location:'HK',firstSeen:'2026-11-15T10:00:00Z'},
   {link:'f',location:'HK',firstSeen:'2026-10-20T10:00:00Z'}
  ];
- const expected={current:2,prior:1,end:'2026-11-16T04:00:00.000Z'};
+ const expected={current:2,prior:1,end:'2026-11-17T04:00:00.000Z'};
  assert.deepEqual(plain(browserFlow(rows)),expected);
  assert.deepEqual(serverFlow(rows),expected);
  assert.equal(browserFlow([]),null);
@@ -61,7 +63,7 @@ test('homepage arithmetic mean uses firstSeen ages, independent of repost date',
  assert.match(app,/const age=meanOf\(ages\),ageEl=/);
  assert.match(app,/Object\.entries\(postingHistoryDaily\)/);
 });
-test('recently closed roles define the weekly window even if active records are stale',()=>{
+test('recently closed additions count in the fixed weekly window',()=>{
  const rows=[
   {link:'active-old',location:'HK',firstSeen:'2026-11-01T03:00:00Z',pushTime:'2026-11-02T03:00:00Z'},
   {link:'closed-new',location:'CN',firstSeen:'2026-11-16',postingLastDate:'2026-11-16',jobStatus:'expired',expiredAt:'2026-11-17T03:00:00Z'}
@@ -78,6 +80,27 @@ test('week boundaries are exact Beijing calendar days, including midnight',()=>{
   {link:'today',location:'CN',firstSeen:'2026-11-18',postingLastDate:'2026-11-18',pushTime:'2026-11-17T16:01:00Z'}
  ];
  const output={current:1,prior:1,end:'2026-11-17T16:01:00.000Z'};
- assert.deepEqual(plain(browserFlow(rows)),output);
- assert.deepEqual(serverFlow(rows),output);
+ assert.deepEqual(plain(browserFlow(rows,Date.parse(output.end))),output);
+ assert.deepEqual(serverFlow(rows,Date.parse(output.end)),output);
+});
+
+test('pure weekly additions ignore old reposts, retain expired additions, and subtract deletions',()=>{
+ const old={link:'old',location:'CN',firstSeen:'2026-10-01',postingLastDate:'2026-11-17',pushTime:'2026-11-17',lastRepostedAt:'2026-11-17'};
+ const recent={link:'recent',location:'HK',firstSeen:'2026-11-16',postingLastDate:'2026-11-17',jobStatus:'expired'};
+ const first=[old,recent];
+ assert.equal(browserFlow(first).current,1);
+ assert.deepEqual(plain(browserFlow(first)),serverFlow(first));
+ assert.equal(browserFlow([old]).current,0);
+ assert.equal(serverFlow([old]).current,0);
+ assert.equal(browserFlow([old,{...recent,jobStatus:'active'}]).current,1);
+});
+
+test('deleting or reposting the newest record cannot move the weekly window',()=>{
+ const old={link:'old',location:'CN',firstSeen:'2026-11-09',pushTime:'2026-11-09'};
+ const recent={link:'recent',location:'CN',firstSeen:'2026-11-17',pushTime:'2026-11-17'};
+ const before=browserFlow([old,recent]),after=browserFlow([old]);
+ assert.equal(before.current,1);assert.equal(after.current,0);
+ assert.equal(before.prior,1);assert.equal(after.prior,1);
+ assert.equal(before.end,after.end);
+ assert.deepEqual(plain(after),serverFlow([old]));
 });

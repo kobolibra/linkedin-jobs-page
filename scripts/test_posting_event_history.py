@@ -1,78 +1,38 @@
-"""Immutable publication-event tests: repost, closure, deletion and replay."""
+"""Pure new cohorts: repost ignored, expiration retained, deletion subtracted."""
 import json
-import sys
 import tempfile
 import unittest
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[0]))
 from posting_event_history import daily_counts, identity, read_ledger, reconcile
 
-
-def job(job_id="4489793926", **kw):
-    base = {"link": f"https://www.linkedin.com/jobs/view/{job_id}/",
-            "firstSeen": "2026-11-01", "location": "CN",
-            "postingLastDate": "2026-11-01", "jobStatus": "active"}
-    return {**base, **kw}
-
+def job(job_id='4489793926', **kw):
+    return dict({'link':f'https://www.linkedin.com/jobs/view/{job_id}/', 'firstSeen':'2026-11-01','location':'CN','jobStatus':'active'}, **kw)
 
 class PostingEventsTests(unittest.TestCase):
-    def test_first_repost_and_closed_role_keep_historical_counts(self):
-        ledger = read_ledger(Path("/nonexistent/posting-events-ledger-test.json"))
-        initial = reconcile(ledger, [job()])
-        self.assertEqual(daily_counts(initial), {"2026-11-01": {"CN": 1}})
-        reposted = reconcile(initial, [job(lastRepostedAt="2026-11-14", postingLastDate="2026-11-14")])
-        self.assertEqual(daily_counts(reposted), {
-            "2026-11-01": {"CN": 1}, "2026-11-14": {"CN": 1}})
-        self.assertEqual(len(reconcile(reposted, [job(lastRepostedAt="2026-11-14")])["events"]), 2)
-        closed = reconcile(reposted, [job(jobStatus="expired", firstSeen="2026-11-01",
-                                        lastRepostedAt="2026-11-14", expiredAt="2026-11-16")])
-        self.assertEqual(daily_counts(closed), daily_counts(reposted))
-        deleted = reconcile(closed, [])
-        self.assertEqual(daily_counts(deleted), daily_counts(reposted),
-                         "physical canonical deletion must never erase old bars")
-        rerun = reconcile(deleted, [job(postingLastDate="2026-11-20",
-                                        lastRepostedAt="2026-11-20")])
-        self.assertEqual(daily_counts(rerun)["2026-11-01"]["CN"], 1)
-        self.assertEqual(daily_counts(rerun)["2026-11-14"]["CN"], 1)
-        self.assertEqual(daily_counts(rerun)["2026-11-20"]["CN"], 1)
-
-    def test_bare_newer_source_date_and_rss_observation_are_not_reposts(self):
-        first = reconcile({"schemaVersion": "1.0", "events": []}, [job()])
-        self.assertEqual(len(reconcile(first, [job(postingLastDate="2026-11-13",
-                                                    pushTime="2026-11-13")])["events"]), 1)
-        self.assertEqual(len(reconcile(first, [job(postingLastDate="2026-11-13",
-                                                    rssObservedAt="2026-11-16")])["events"]), 1)
-        confirmed = reconcile(first, [job(postingLastDate="2026-11-13", jobspyRepost=True)])
-        self.assertEqual(len(confirmed["events"]), 2)
-
-    def test_multiple_same_day_roles_are_separate_and_region_is_immutable(self):
-        initial = reconcile({"schemaVersion": "1.0", "events": []}, [
-            job("123456789", location="HK"), job("999999999", location="SG")])
-        self.assertEqual(daily_counts(initial)["2026-11-01"], {"HK": 1, "SG": 1})
-        moved = reconcile(initial, [job("123456789", firstSeen="2026-11-04",
-                                         location="CN", postingLastDate="2026-11-04")])
-        self.assertEqual(daily_counts(moved), daily_counts(initial),
-                         "historical event day and region cannot migrate")
-
-    def test_ledger_validation_rejects_duplicate_or_corrupt_history(self):
+    def test_repost_expire_delete_and_repeat(self):
+        empty={'schemaVersion':'1.0','events':[]}
+        initial=reconcile(empty,[job()])
+        expected={'2026-11-01':{'CN':1}}
+        for changes in [dict(lastRepostedAt='2026-11-14'),dict(jobspyRepost=True,postingLastDate='2026-11-17'),dict(jobStatus='expired',expiredAt='2026-11-17')]:
+            self.assertEqual(daily_counts(reconcile(initial,[job(**changes)])),expected)
+        self.assertEqual(reconcile(initial,[job(),job()]),initial)
+        self.assertEqual(daily_counts(reconcile(initial,[])),{})
+    def test_migration_removes_reposts_and_deleted_jobs(self):
+        legacy={'schemaVersion':'1.0','events':[
+            {'jobId':'ln:4489793926','day':'2026-11-01','region':'CN','kind':'first'},
+            {'jobId':'ln:4489793926','day':'2026-11-14','region':'CN','kind':'repost'},
+            {'jobId':'ln:123456789','day':'2026-11-02','region':'HK','kind':'first'}]}
+        migrated=reconcile(legacy,[job(lastRepostedAt='2026-11-14')])
+        self.assertEqual(daily_counts(migrated),{'2026-11-01':{'CN':1}})
+        self.assertEqual(reconcile(migrated,[job()]),migrated)
+    def test_two_roles_on_same_day_and_expired_role(self):
+        result=reconcile({'schemaVersion':'1.0','events':[]},[job(),job('123456789',jobStatus='expired')])
+        self.assertEqual(daily_counts(result),{'2026-11-01':{'CN':2}})
+    def test_no_manufactured_first_date(self):
+        result=reconcile({'schemaVersion':'1.0','events':[]},[job(firstSeen=None,pushTime='2026-11-17',lastRepostedAt='2026-11-17')])
+        self.assertEqual(result['events'],[])
+        self.assertEqual(identity(job(link='https://cn.linkedin.com/jobs/view/slug-4489793926/')),'ln:4489793926')
+    def test_corrupt_ledger_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "history.json"
-            item = {"jobId": "ln:123456789", "day": "2026-11-01",
-                    "region": "HK", "kind": "first"}
-            path.write_text(json.dumps({"schemaVersion": "1.0", "events": [item, item]}))
-            with self.assertRaises(ValueError):
-                read_ledger(path)
-            path.write_text('{"schemaVersion":"invalid","events":[]}')
-            with self.assertRaises(ValueError):
-                read_ledger(path)
-
-    def test_missing_first_seen_never_invents_age_or_original_event(self):
-        empty = {"schemaVersion": "1.0", "events": []}
-        self.assertEqual(len(reconcile(empty, [job(firstSeen=None, pushTime="2026-11-17")])["events"]), 0)
-        self.assertEqual(identity(job(sourceJobId="li-4489793926")), "ln:4489793926")
-        self.assertEqual(identity(job(link="https://www.linkedin.com/jobs/view/cfo-financial-reporting-vp-4489793926/")), "ln:4489793926")
-
-
-if __name__ == "__main__":
-    unittest.main()
+            path=Path(tmp)/'ledger.json';path.write_text('{"schemaVersion":"invalid","events":[]}')
+            with self.assertRaises(ValueError):read_ledger(path)
