@@ -70,7 +70,7 @@ test('repost keeps the original listing age and Market Breadth first-day cohort'
  assert.match(app,/const postingAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
  assert.equal(app.includes("const placeAt=j=>j.pushTime||j.firstSeen;"),true);
  assert.match(read('scripts/jobspy/build_frontend_payload.py'),/"postingLastDate"/);
- assert.equal(app.split("ageDays(placeAt(job))").length-1,3);
+ assert.equal(app.split("ageDays(seenAt(job))").length-1,3);
  assert.match(app,/Object\.entries\(postingHistoryDaily\)/);
  assert.match(app,/postingDate:postingAt\(job\)/);
  assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen,job\.expiredAt\)/);
