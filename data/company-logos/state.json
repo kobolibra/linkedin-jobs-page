@@ -11972,5 +11972,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF13B2MnqBu8Q/company-logo_100_100/B4EaE5ZRo.JsAI-/0/1791964289825/valentino_logo?e=2147483647&v=beta&t=2Y62ru2AZN6pq8x1udHdzX9937boMaTnvrgaPt-cWDs",
     "companyUrl": "https://it.linkedin.com/company/valentino",
     "sourceJobId": "4490175558"
+  },
+  "cofco capital (hong kong) co., limited": {
+    "name": "COFCO Capital (Hong Kong) Co., Limited",
+    "checkedAt": "2026-11-17T10:02:29.604291+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4491139016",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.69236798353635,
+        "deferred": true
+      }
+    ]
   }
 }
