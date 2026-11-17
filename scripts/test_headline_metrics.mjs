@@ -81,3 +81,14 @@ test('week boundaries are exact Beijing calendar days, including midnight',()=>{
  assert.deepEqual(plain(browserFlow(rows)),output);
  assert.deepEqual(serverFlow(rows),output);
 });
+
+test('pure weekly additions ignore old reposts, retain expired additions, and subtract deletions',()=>{
+ const old={link:'old',location:'CN',firstSeen:'2026-10-01',postingLastDate:'2026-11-17',pushTime:'2026-11-17',lastRepostedAt:'2026-11-17'};
+ const recent={link:'recent',location:'HK',firstSeen:'2026-11-16',postingLastDate:'2026-11-17',jobStatus:'expired'};
+ const first=[old,recent];
+ assert.equal(browserFlow(first).current,1);
+ assert.deepEqual(plain(browserFlow(first)),serverFlow(first));
+ assert.equal(browserFlow([old]).current,0);
+ assert.equal(serverFlow([old]).current,0);
+ assert.equal(browserFlow([old,{...recent,jobStatus:'active'}]).current,1);
+});
