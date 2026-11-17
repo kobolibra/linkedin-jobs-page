@@ -64,17 +64,30 @@ def raw_source_day(value):
         return None
 
 
-def source_date_unchanged(previous, raw_datetime):
-    """A source day unchanged after normalization cannot prove a repost.
+def _zoned_instant(value):
+    try:
+        stamp = datetime.fromisoformat(str(value or "").strip().replace("Z", "+00:00"))
+        return stamp.astimezone(timezone.utc) if stamp.tzinfo else None
+    except ValueError:
+        return None
 
-    Legacy rows have no linkedinPostedRaw; their existing datePosted is used
-    as the comparison baseline without rewriting their historical values.
+
+def source_date_unchanged(previous, raw_datetime):
+    """Ignore timezone-only day changes, not an actual newer exact timestamp.
+
+    Legacy rows have no linkedinPostedRaw; use their known source calendar
+    dates before falling back to firstSeen. Never rewrite legacy posting days.
     """
+    previous_raw = previous.get("linkedinPostedRaw")
+    current_time, previous_time = _zoned_instant(raw_datetime), _zoned_instant(previous_raw)
+    if current_time and previous_time:
+        return current_time <= previous_time
     incoming = raw_source_day(raw_datetime)
-    prior = (raw_source_day(previous.get("linkedinPostedRaw"))
+    prior = (raw_source_day(previous_raw)
              or raw_source_day(previous.get("datePosted"))
              or raw_source_day(previous.get("jobspyLastPosted"))
-             or raw_source_day(previous.get("postingLastDate")))
+             or raw_source_day(previous.get("postingLastDate"))
+             or raw_source_day(previous.get("firstSeen")))
     return bool(incoming and prior and incoming <= prior)
 
 
