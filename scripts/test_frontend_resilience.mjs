@@ -220,9 +220,9 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.match(source,/const calendarCandidates=\[\]/);
  assert.match(source,/const calendarMode=bins>180/);
  assert.match(source,/const rhythmMarks=days\.map/);
- assert.match(source,/d\.date\.getDay\(\)===1/);
+ assert.match(source,/window\.JobDates\.weekday\(d\.key\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=daily-only-6/);
+ assert.match(html,/app\.js\?v=market-calendar-1/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
