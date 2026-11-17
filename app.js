@@ -475,14 +475,16 @@ const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
 function weeklyFlow(jobs){
   const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=Date.parse(v);return Number.isFinite(t)?t:0;};
+  const day=v=>window.JobDates.dayStart(window.JobDates.key(v));
   let end=0,current=0,prior=0;
   for(const j of jobs)if(j&&j.jobStatus!=="expired"&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen));
   if(!end)return null;
+  const endDay=day(end);
   for(const j of jobs){
     if(!j||!regions.includes(j.location))continue;
     const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
-    const t=date(j.postingLastDate||j.firstSeen||j.pushTime);if(!t||t>end)continue;
-    const age=end-t;if(age<week)current++;else if(age<2*week)prior++;
+    const t=day(j.postingLastDate||j.firstSeen||j.pushTime);if(!Number.isFinite(t)||t>endDay)continue;
+    const age=endDay-t;if(age<week)current++;else if(age<2*week)prior++;
   }
   return {current,prior,end:new Date(end).toISOString()};
 }
@@ -493,7 +495,7 @@ function renderHeadline(allRows,chartRows){
   const ages=[];
   for(const job of chartRows){const stamp=seenAt(job),start=window.JobDates.dayStart(window.JobDates.key(stamp));if(Number.isFinite(start))ages.push(Math.max(0,(now-start)/day));}
   // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
-  // CN/HK/SG roles first seen in the 7 days ending at the latest data update,
+  // CN/HK/SG roles posted in the 7 Beijing calendar days ending at the latest data update,
   // including roles that have since closed. Guests receive the counts from the
   // server because their preview payload carries open roles only.
   const flow=overview?overview.weekly:weeklyFlow(allRows);
@@ -501,7 +503,7 @@ function renderHeadline(allRows,chartRows){
   if(weekEl){
     if(flow)animNum(weekEl,flow.current);else weekEl.textContent='—';
     const end=flow?.end?new Date(flow.end):null;
-    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore first seen in the 7 days to '+
+    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore posted in the 7 calendar days to '+
       end.toLocaleString('en-GB',{timeZone:'Asia/Singapore',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' SGT, including roles that have since closed';
   }
   if(weekNote&&flow&&flow.prior>0){
