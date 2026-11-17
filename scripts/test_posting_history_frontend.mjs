@@ -8,7 +8,7 @@ const begin=app.indexOf('    const rcounts={};');
 const end=app.indexOf('    const today=window.JobDates.key(Date.now())',begin);
 assert.ok(begin>=0&&end>begin,'production New Postings daily-count block exists');
 const logic=new Function('postingHistoryDaily','chartData','postingAt','norm','dayKey','RKEYS',app.slice(begin,end)+'\nreturn rcounts;');
-const run=(history,active=[])=>logic(history,active,j=>j.postingLastDate||j.firstSeen||j.pushTime,j=>j.location,j=>j.slice(0,10),['OTHER','SG','HK','CN']);
+const run=(history,active=[])=>logic(history,active,j=>j.postingLastDate||j.firstSeen||j.pushTime,location=>location,j=>j.slice(0,10),['OTHER','SG','HK','CN']);
 
 test('New Postings reads immutable event history, never the current active snapshot',()=>{
  const recorded={'2026-11-01':{CN:1},'2026-11-14':{CN:1}};
