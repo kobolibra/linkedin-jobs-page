@@ -187,7 +187,7 @@ test('early count precedes card rendering and respects existing filters',async()
     {title:'Risk Analyst',company:'ACME',location:'CN',city:'Shanghai',link:'c',age:9},
     {title:'Fund Manager',company:'OTHER',location:'SG',city:'Singapore',link:'d',age:2}
   ];
-  const events=[],c={loadedJobs:rows,searchEl:{value:''},companyEl:{value:'all'},ageEl:{value:'all'},blocked:new Set(),blockedKw:new Set(),favs:new Set(['a']),favOnly:false,activeRegion:'all',activeCity:'all',isActiveJob:j=>j.jobStatus!=='expired',canonicalCompany:x=>x,norm:x=>x,cityOf:j=>j.city,jobId:x=>x,seenAt:j=>j.age,ageDays:x=>x,ageMatch:(sel,age)=>sel==='all'||age>=1&&age<=7};
+  const events=[],c={loadedJobs:rows,searchEl:{value:''},companyEl:{value:'all'},ageEl:{value:'all'},blocked:new Set(),blockedKw:new Set(),favs:new Set(['a']),favOnly:false,activeRegion:'all',activeCity:'all',isActiveJob:j=>j.jobStatus!=='expired',canonicalCompany:x=>x,norm:x=>x,cityOf:j=>j.city,jobId:x=>x,seenAt:j=>j.age,placeAt:j=>j.age,ageDays:x=>x,ageMatch:(sel,age)=>sel==='all'||age>=1&&age<=7};
   const context=vm.createContext(c);
   vm.runInContext(app.slice(app.indexOf('function countLoadedActiveJobs(){'),app.indexOf('function updateJobCount(count){')),context);
   assert.equal(context.countLoadedActiveJobs(),3);

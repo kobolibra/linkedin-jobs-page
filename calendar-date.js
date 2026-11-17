@@ -34,6 +34,11 @@
     return k?Date.parse(k+'T00:00:00Z')-OFFSET:NaN;
   }
   function dayEnd(value){const t=dayStart(value);return Number.isFinite(t)?t+DAY:NaN;}
+  // Calendar-day age, not elapsed 24-hour periods; dates follow the market UTC+8 day.
+  function calendarAge(value,asOf=Date.now()){
+    const start=dayStart(key(value)),today=dayStart(key(asOf));
+    return Number.isFinite(start)&&Number.isFinite(today)?Math.max(0,Math.floor((today-start)/DAY)):null;
+  }
   function addDays(value,n){
     const k=validKey(value);
     if(!k||!Number.isInteger(n))return '';
@@ -60,7 +65,7 @@
     if(!Number.isFinite(t))return '—';
     return (compact?compactStampFormatter:stampFormatter).format(new Date(t)).replace(/,\s*/g,' ');
   }
-  const api=Object.freeze({key,dayStart,dayEnd,addDays,weekday,shortDay,fullDay,formatStamp,timestamp});
+  const api=Object.freeze({key,dayStart,dayEnd,calendarAge,addDays,weekday,shortDay,fullDay,formatStamp,timestamp});
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   if(root)root.JobDates=api;
 })(typeof window!=='undefined'?window:typeof globalThis!=='undefined'?globalThis:null);
