@@ -45,7 +45,10 @@ def _verify():
     if version_doc.get('dataVersion') != version or expected_total <= 0:
         raise RuntimeError('Local index/version mismatch or empty jobs dataset')
 
-    for name in ('job-applications.js', 'job-applications.css'):
+    # Keep SHA checks and HTML references aligned with the checked-in release.
+    # A pinned literal asset version caused a false failure after the date fix.
+    tracked_assets = ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js')
+    for name in tracked_assets:
         expected = (root / name).read_bytes()
         digest = hashlib.sha256(expected).hexdigest()
         with urlopen(request(f'{ORIGIN}/{name}?verify={digest}'), timeout=20) as response:
@@ -53,10 +56,15 @@ def _verify():
             if response.status != 200 or hashlib.sha256(actual).hexdigest() != digest:
                 raise RuntimeError(f'Production asset mismatch: {name}')
 
+    local_page = (root / 'index.html').read_text('utf-8')
     with urlopen(request(ORIGIN + '/'), timeout=20) as response:
         page = response.read().decode('utf-8')
-        if response.status != 200 or 'job-applications.js?v=17' not in page or 'job-applications.css?v=19' not in page:
-            raise RuntimeError('Production homepage is missing application tracking assets')
+        if response.status != 200:
+            raise RuntimeError('Production homepage is unavailable')
+        for name in tracked_assets:
+            reference = re.search(re.escape(name) + r'\\?v=[A-Za-z0-9._-]+', local_page)
+            if not reference or reference.group(0) not in page:
+                raise RuntimeError(f'Production homepage asset reference mismatch: {name}')
 
     # This endpoint is expressly public and exposes no protected job index.
     # Exact version and eligible-role count prove the deployment contains the
