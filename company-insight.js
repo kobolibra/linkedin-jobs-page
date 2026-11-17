@@ -11,7 +11,6 @@
     {v:'15-21',label:'15–21 天',min:15,max:22,tier:'stale'},
     {v:'22+',label:'22 天+',min:22,max:Infinity,tier:'stale'}
   ];
-  const time=value=>typeof value==='string'&&value.trim()?Date.parse(value):NaN;
   const quant=(a,p)=>{if(!a.length)return null;const i=(a.length-1)*p,lo=Math.floor(i);return a[lo]+(a[Math.ceil(i)]-a[lo])*(i-lo);};
   const num=n=>n==null?'—':String(Math.round(n*10)/10);
   const pct=(n,d)=>d?Math.round(n/d*100)+'%':'—';
@@ -93,7 +92,7 @@
       notes.push('长周期职位拉高了平均数：比中位数高 '+num(s.close.mean-s.close.median)+' 天；典型关闭用时更宜参考中位数。');
     }
     if(s.open.n){
-      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）距最近发布至少30天。';
+      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）自首次记录起至少30天。';
       if(s.close.n>=10)note+=s.beyondQ3+' 个有效职位已超过历史关闭用时的75%分位（'+num(s.close.q3)+' 天）。';
       notes.push(note);
     }
@@ -117,7 +116,7 @@
     const max=Math.max(1,...s.open.buckets.map(b=>b.count));
     $('coHist').innerHTML=s.open.buckets.map(b=>{
       const selected=ageSel===b.v;
-      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="有效 '+b.count+' 个；按此发布时间筛选职位列表">'
+      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="有效 '+b.count+' 个；按首次记录日期筛选职位列表">'
         +'<span class="co-bar-l">'+b.label+'</span><span class="co-bar-t"><span class="co-bar-f" data-w="'+b.count/max*100+'"></span></span>'
         +'<span class="co-bar-v tnum">'+b.count+'</span><span class="co-bar-p tnum">'+pct(b.count,s.open.n)+'</span></button>';
     }).join('');
@@ -126,7 +125,7 @@
       const span=Math.max(s.open.values[s.open.n-1],1),pos=d=>d/span*100,groups=new Map();
       for(const d of s.open.values){const age=d;groups.set(age,(groups.get(age)||0)+1);}
       $('coPlot').innerHTML='<span class="co-band" style="left:'+pos(s.open.q1)+'%;width:'+(pos(s.open.q3)-pos(s.open.q1))+'%"></span>'
-        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="距最近发布 '+age+' 天：'+n+' 个有效职位"></span>').join('')
+        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="距首次记录 '+age+' 天：'+n+' 个有效职位"></span>').join('')
         +'<span class="co-mk co-mean" style="left:'+pos(s.open.mean)+'%"></span><span class="co-mk co-med" style="left:'+pos(s.open.median)+'%"></span>';
       $('coScale').innerHTML='<span>0 天</span><span>'+num(span)+' 天</span>';
     }
