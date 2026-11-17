@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-17T04:09:14.987778+00:00",
+    "checkedAt": "2026-11-17T16:03:48.582527+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,23 +2705,12 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.63492959533249,
-        "deferred": true
       }
     ]
   },
@@ -3030,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-17T04:09:02.946691+00:00",
+    "checkedAt": "2026-11-17T16:03:38.320200+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3189,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-17T04:09:08.762370+00:00",
+    "checkedAt": "2026-11-17T16:03:42.473253+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5409,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-17T04:09:11.857362+00:00",
+    "checkedAt": "2026-11-17T16:03:45.529084+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11975,31 +11964,122 @@
   },
   "cofco capital (hong kong) co., limited": {
     "name": "COFCO Capital (Hong Kong) Co., Limited",
-    "checkedAt": "2026-11-17T10:02:29.604291+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-17T16:03:54.497059+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4491139016",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491139016",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.69236798353635,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "d69362f624d4dc4ba0e6bc65.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFkmaEnUTwcrw/company-logo_100_100/company-logo_100_100/0/1630635944824?e=2147483647&v=beta&t=-Lchljgc3R_YtNDxymiaPwkufbd5FCdh7nxkGVg4E28",
+    "companyUrl": "https://hk.linkedin.com/company/cofco-capital-hong-kong-co-limited",
+    "sourceJobId": "4491139016"
+  },
+  "contego - global talent solutions": {
+    "name": "Contego - Global Talent Solutions",
+    "checkedAt": "2026-11-17T16:03:13.250784+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d042bcc0b8929d8edf472790.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQH-9P6yv3krww/company-logo_100_100/company-logo_100_100/0/1631339499732?e=2147483647&v=beta&t=o-tsDEgeQFJJ7nTJNthxoE_MWk2b7fwPRZZ8GsexYf0",
+    "companyUrl": "https://uk.linkedin.com/company/contegotalentsolutions",
+    "sourceJobId": "4490423201"
+  },
+  "deutsche asset management": {
+    "name": "Deutsche Asset Management",
+    "checkedAt": "2026-11-17T16:03:14.371272+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "bed70a7da1447b15cfb8f55a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFfwuoZLDt2Mg/company-logo_100_100/B4EaGlQZRiHUAI-/0/1793773901158/deutsche_am_logo?e=2147483647&v=beta&t=Jiy7KNBhnSRGOqP5UQYT1n0jzQvvB6cJrPcKPUSOA90",
+    "companyUrl": "https://de.linkedin.com/company/deutsche-am",
+    "sourceJobId": "4490410652"
+  },
+  "g mass consulting": {
+    "name": "G MASS Consulting",
+    "checkedAt": "2026-11-17T16:03:17.279569+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "12e9601b134fb4fb736ec690.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFGIMLb6002KQ/company-logo_100_100/company-logo_100_100/0/1720442664248/g_mass_consulting_logo?e=2147483647&v=beta&t=t3uIJuj_mdg3DO6WGkQW7PP6BMf6uG8c4OaZE2wbFGM",
+    "companyUrl": "https://uk.linkedin.com/company/g-mass-consulting",
+    "sourceJobId": "4491170675"
+  },
+  "hermeneutic research": {
+    "name": "hermeneutic research",
+    "checkedAt": "2026-11-17T16:03:20.284136+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7df8375603fd35f0ad192075.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHodOtdfobjsA/company-logo_100_100/B56aHN_EU8JUAM-/0/1794457225952/hermeneutic_investments_logo?e=2147483647&v=beta&t=O5855EHNQiaRilNoRs7Q5hjK51bUPMl7KMoGHf8_R90",
+    "companyUrl": "https://www.linkedin.com/company/hermeneutic-investments",
+    "sourceJobId": "4490407379"
+  },
+  "mace": {
+    "name": "Mace",
+    "checkedAt": "2026-11-17T16:03:23.283834+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fefba9c8500fc5f3a7e93fbd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQGFnN_oi_vlNQ/company-logo_100_100/B4EZy_DThMKkAQ-/0/1772731841172/mace_group_logo?e=2147483647&v=beta&t=ABLB9s1PbpzmKLAJm1fqJa-U8jl8uVDJu9lRtKcP1HA",
+    "companyUrl": "https://uk.linkedin.com/company/mace-group",
+    "sourceJobId": "4490433828"
+  },
+  "marks": {
+    "name": "Marks",
+    "checkedAt": "2026-11-17T16:03:26.278793+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2bf11b92dba0d89059b90cff.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEwkJtzfQyWfQ/company-logo_100_100/B56Zma_8_RJ4AQ-/0/1759242081147/marksglobal_logo?e=2147483647&v=beta&t=LpIM6L9kAUIF3A2Ke0K8woUIv5DiqNgJZkAsJC2VDxo",
+    "companyUrl": "https://www.linkedin.com/company/marksglobal",
+    "sourceJobId": "4491127192"
+  },
+  "meraki talent": {
+    "name": "Meraki Talent",
+    "checkedAt": "2026-11-17T16:03:29.282940+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "98685bf4e4574c4acde15134.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHTSHnzD_eijQ/company-logo_100_100/B4EZ6IbGogHkAU-/0/1780405267288/meraki_talent_ltd_logo?e=2147483647&v=beta&t=UiL4JktL0JQM-lekz8HNkB2Rst-Ku0XD0QrzfUe04zw",
+    "companyUrl": "https://uk.linkedin.com/company/meraki-talent-ltd",
+    "sourceJobId": "4491154693"
+  },
+  "psm international": {
+    "name": "PSM International",
+    "checkedAt": "2026-11-17T16:03:32.279744+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2af0d8eed4819e201ffd0adb.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEA5xkdMfKCDA/company-logo_100_100/B56Z_5XR4cLAAI-/0/1786595057381/psm_international_logo?e=2147483647&v=beta&t=YiVXmLJYzRRALYu6ul-9sUhUiOR9lkkzNaURjyXRvBo",
+    "companyUrl": "https://se.linkedin.com/company/psm-international",
+    "sourceJobId": "4491137159"
+  },
+  "starshine future": {
+    "name": "Starshine Future",
+    "checkedAt": "2026-11-17T16:03:35.320541+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "5ad4f7f9bbc952b3097bec9b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHmWnl1bCObEA/company-logo_100_100/B56Z5Jh.CLKwAI-/0/1779350102345?e=2147483647&v=beta&t=SE2vQ7FTahjfQlcUkVnGnd4HclNqbj0qudsDn2H8ib0",
+    "companyUrl": "https://hk.linkedin.com/company/starshine-future",
+    "sourceJobId": "4490414734"
   }
 }
