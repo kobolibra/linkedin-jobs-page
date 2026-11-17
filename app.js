@@ -524,9 +524,11 @@ document.querySelectorAll('.nj-market-row[data-region]').forEach(row=>row.addEve
 }));
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
+// Keep immutable publication-event totals separate from mutable job records.
+let postingHistoryDaily=null;
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
 const jobsDataPromise=(window.__jobsIndexDocument||window.JobIndexStore.load())
-  .then(data=>{window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
+  .then(data=>{postingHistoryDaily=data?.postingHistoryDaily||data?.previewOverview?.postingHistoryDaily||null;window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
 let jobsDataReceived=false,jobsCoreReady=false;
 jobsDataPromise
@@ -1021,7 +1023,17 @@ jobsDataPromise
     }
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
-    const rcounts={};chartData.forEach(j=>{const k=dayKey(postingAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
+    const rcounts={};
+    if(postingHistoryDaily){
+      for(const [date,values] of Object.entries(postingHistoryDaily)){
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!values||typeof values!=="object")continue;
+        rcounts[date]=Object.fromEntries(RKEYS.map(region=>[region,Math.max(0,Number(values[region])||0)]));
+      }
+    }else{
+      // One-time compatibility while the ledger is first published. This
+      // snapshot fallback is not a complete immutable publishing history.
+      chartData.forEach(j=>{const k=dayKey(postingAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
+    }
     const today=window.JobDates.key(Date.now()),days=[];
     for(let i=29;i>=0;i--){const key=window.JobDates.addDays(today,-i),d=new Date(key+"T00:00:00Z"),rc=rcounts[key]||{};days.push({key,date:d,label:window.JobDates.shortDay(key).toUpperCase(),weekend:[0,6].includes(window.JobDates.weekday(key)),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
