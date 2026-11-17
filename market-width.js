@@ -408,7 +408,7 @@ function render(rows,days){
  });
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
-  const n=datum(i),what=n>0?fmt(n)+' new '+(n===1?'posting':'postings'):'No new postings';
+  const n=datum(i),what=n>0?fmt(n)+' first-recorded '+(n===1?'role':'roles'):'No first-recorded roles';
   return DISPLAY[i]+' · '+what+' · '+series.keys[day]+' · '+(region==='all'?'all regions':region);
  };
  const quietDetail=()=>{if(selectedFirm===null){detail.textContent='';detail.hidden=true;}};

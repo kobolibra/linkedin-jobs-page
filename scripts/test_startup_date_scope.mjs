@@ -25,5 +25,5 @@ for(const [name,rows] of [
  ['empty list',[]]
 ])test(`real startup grouping handles ${name}`,()=>{const labels=group(rows);assert.equal(labels.length>0,rows.length>0);for(const label of labels)assert.equal(typeof label,'string');});
 test('negative control reproduces the pre-fix RangeError with one normal role',()=>{
- assert.throws(()=>group([{pushTime:'2026-11-13T04:03:15Z'}],true),error=>error.name==='RangeError');
+ assert.throws(()=>group([{firstSeen:'2026-11-13T04:03:15Z'}],true),error=>error.name==='RangeError');
 });

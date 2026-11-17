@@ -227,8 +227,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-heading-label">Market Breadth:<\/span> <span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
  assert.match(css,/\.mw-heading-label,\.mw-title-phrase\{white-space:nowrap\}/,'never split the figure label or institution phrase');
- assert.ok(html.includes('new postings across'));
- assert.ok(html.includes('Size and shade reflect postings of the day, including reposts'));
+ assert.ok(html.includes('first-recorded roles across'));
+ assert.ok(html.includes('Size and shade reflect roles first recorded on the day; reposts excluded'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
  assert.ok(pos('id="marketWidthTitle"')<pos('id="marketWidthRegions"')&&
@@ -248,8 +248,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-calendar-1','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
- assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
+ for(const ver of ['market-width.js?v=firstseen-age-1','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
+ assert.match(read('app.js'),/window\.MarketWidth\?\.render\(window\.AuthGuest\?\.marketBreadthRows\|\|data,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
  assert.ok(read('scripts/public_assets.mjs').includes("'market-width.js', 'market-width.css'"));
