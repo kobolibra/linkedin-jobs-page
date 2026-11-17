@@ -114,7 +114,7 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             if not isinstance(event, dict) or event.get("kind") not in ("first", "repost"):
                 raise ValueError("Invalid canonical posting event")
             key, region = event.get("day"), event.get("region")
-            if not isinstance(key, str) or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", key) or region not in ("CN", "HK", "SG", "OTHER"):
+            if not isinstance(key, str) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", key) or region not in ("CN", "HK", "SG", "OTHER"):
                 raise ValueError("Invalid canonical posting event date or region")
             counts = daily.setdefault(key, {})
             counts[region] = counts.get(region, 0) + 1
