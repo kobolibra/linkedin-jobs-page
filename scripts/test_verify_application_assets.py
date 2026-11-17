@@ -24,10 +24,10 @@ class VerificationTests(unittest.TestCase):
                 'dataVersion': 'preview-' + index['dataVersion'],
                 'previewOverview': {'total': subject._expected_public_total(index)},
             }).encode())
-        for name in ('job-applications.js', 'job-applications.css'):
+        for name in ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js'):
             if '/' + name in url:
                 return Response((Path(subject.__file__).parents[1] / name).read_bytes())
-        return Response(b'job-applications.js?v=17 job-applications.css?v=19')
+        return Response((Path(subject.__file__).parents[1] / 'index.html').read_bytes())
 
     def test_exact_assets_and_private_boundary(self):
         with patch.object(subject, 'urlopen', side_effect=self.fetch):
@@ -66,6 +66,17 @@ class VerificationTests(unittest.TestCase):
             return self.fetch(request, **kwargs)
         with patch.object(subject, 'urlopen', side_effect=fetch):
             with self.assertRaisesRegex(RuntimeError, 'preview is empty'):
+                subject.verify()
+
+    def test_stale_homepage_script_reference_fails(self):
+        def fetch(request, **kwargs):
+            url = request.full_url
+            if url == subject.ORIGIN + '/':
+                page = (Path(subject.__file__).parents[1] / 'index.html').read_text('utf-8')
+                return Response(page.replace('calendar-date.js?v=market-calendar-3', 'calendar-date.js?v=stale').encode())
+            return self.fetch(request, **kwargs)
+        with patch.object(subject, 'urlopen', side_effect=fetch):
+            with self.assertRaisesRegex(RuntimeError, 'asset reference mismatch'):
                 subject.verify()
 
     def test_wrong_asset_bytes_fail(self):
