@@ -222,7 +222,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/window\.JobDates\.weekday\(d\.key\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=market-calendar-3/);
+ assert.match(html,/app\.js\?v=posting-calendar-audit-1/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
