@@ -2,6 +2,7 @@ import {readFileSync,existsSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),dates=require('../calendar-date.js');
+const {FIRMS,firmIndex}=require('../market-width.js');
 const regions=['CN','HK','SG'];
 const clean=(v,n=240)=>String(v??'').replace(/[\u0000-\u001f]/g,' ').trim().slice(0,n);
 const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -70,7 +71,19 @@ export function publicPreviewPayload(data,index){
  // Carry original firstSeen separately from latest posting day. Guests need both clocks:
   // lifetime charts/list age from firstSeen; publication flow from latest posting.
   const chartBuckets=[...buckets].map(([key,count])=>{const fields=JSON.parse(key);return [...fields.slice(0,5),count,fields[5],fields[6]];});
- return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
+ // Only aggregate, public 18-firm first-recorded dates; include retained closed roles.
+ const breadth=new Map();
+ for(const job of index.jobs){
+  if(!job||!regions.includes(job.location))continue;
+  const firm=firmIndex(job.company),day=dates.key(job.firstSeen);
+  if(firm<0||!day)continue;
+  const key=JSON.stringify([job.location,FIRMS[firm],day]),entry=breadth.get(key)||{count:0,pushTime:''};
+  entry.count++;
+  if(date(job.pushTime)>date(entry.pushTime))entry.pushTime=job.pushTime;
+  breadth.set(key,entry);
+ }
+ const marketBreadthBuckets=[...breadth].map(([key,entry])=>[...JSON.parse(key),entry.count,entry.pushTime]);
+ return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets,marketBreadthBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
 export function buildGuestPreview(root='.'){
  const index=JSON.parse(readFileSync(resolve(root,'jobs-index.json'),'utf8'));

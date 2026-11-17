@@ -1,6 +1,6 @@
 /* Authentication boundary for the existing homepage; no second page or row renderer. */
 (()=>{
- let payload,chartRows,loginDialog,loginLoading;
+ let payload,chartRows,marketBreadthRows,loginDialog,loginLoading;
  const loginUrl='/login?next=%2F';
  const intentKey='finance-preview-intent',stateKey='finance-preview-state';
  function remember(){try{sessionStorage.setItem(stateKey,JSON.stringify({scroll:scrollY,region:document.querySelector('#regions .seg.active')?.dataset.region||'all',at:Date.now()}));}catch{}}
@@ -26,5 +26,5 @@
   document.addEventListener('click',e=>{const target=e.target.closest('.star,.ban,.job-title,.job-jd summary,.job-jd-analytics,.job-sub-link,#favToggle,#kwToggle,#search');if(!target)return;e.preventDefault();e.stopImmediatePropagation();const kind=target.matches('.star,#favToggle')?'save':target.matches('.ban,#kwToggle')?'block':target.matches('.job-sub-link,#search')?'search':'details';open(kind,target.closest('.job'));},true);
   const root=document.getElementById('jobs');if(root){const observer=new MutationObserver(refresh);observer.observe(root,{childList:true,subtree:true});}
  }
- window.AuthGuest={install,count,get overview(){return payload?.previewOverview;},get chartRows(){return chartRows;},setOverview(data){payload=data;chartRows=(data.previewOverview?.chartBuckets||[]).flatMap(([location,company,postingLastDate,city,locationRaw,count,pushTime,firstSeen])=>Array.from({length:Math.max(0,Math.min(20000,Number(count)||0))},()=>({location,company,firstSeen:firstSeen||'',postingLastDate,city,locationRaw,pushTime,jobStatus:'active'})));refresh();}};
+ window.AuthGuest={install,count,get overview(){return payload?.previewOverview;},get chartRows(){return chartRows;},get marketBreadthRows(){return marketBreadthRows;},setOverview(data){payload=data;chartRows=(data.previewOverview?.chartBuckets||[]).flatMap(([location,company,postingLastDate,city,locationRaw,count,pushTime,firstSeen])=>Array.from({length:Math.max(0,Math.min(20000,Number(count)||0))},()=>({location,company,firstSeen:firstSeen||'',postingLastDate,city,locationRaw,pushTime,jobStatus:'active'})));marketBreadthRows=(data.previewOverview?.marketBreadthBuckets||[]).flatMap(([location,company,firstSeen,count,pushTime])=>Array.from({length:Math.max(0,Math.min(20000,Number(count)||0))},()=>({location,company,firstSeen,pushTime,jobStatus:'active'})));refresh();}};
 })();

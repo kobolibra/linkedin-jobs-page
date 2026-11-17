@@ -1133,7 +1133,7 @@ jobsDataPromise
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
     // Market Breadth uses first-recorded cohorts, unlike New Postings' latest
     // publishing-event cohorts. Reposts cannot reset original listing dates.
-    window.MarketWidth?.render(chartData,days);
+    window.MarketWidth?.render(window.AuthGuest?.marketBreadthRows||data,days);
     top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);
     // Let the browser paint the stats and all three charts before the large
