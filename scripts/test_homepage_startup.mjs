@@ -102,6 +102,15 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
      assert.equal(role.day,'2026-10-29','verified repost moves headings to pushTime');
      assert.equal(role.age,role.expectedAge,'repost never resets age');
      assert.match(role.label,/29 Oct 2026/);
+     await page.locator('#search').fill('Asset Management - AI Product Manager');
+     await page.waitForFunction(()=>listRuntime.view.rows.length===1);
+     const ai=await page.evaluate(()=>{
+      const m=listRuntime.meta[listRuntime.view.rows[0]];
+      return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-11-16')};
+     });
+     assert.equal(ai.day,'2026-11-17','UTC pushTime on November 16 is November 17 in Beijing');
+     assert.equal(ai.age,ai.expectedAge,'AI role age stays on November 16');
+
      await page.locator('#search').fill('');
      await page.waitForFunction(()=>listRuntime.view.rows.length===listRuntime.meta.length);
     }
