@@ -473,7 +473,7 @@ window.VizTip=(()=>{
   document.addEventListener('pointerdown',e=>{if(!e.target.closest?.('#dist,#spark,#top50'))hide();},true);
   return {show,hide,row};
 })();
-const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);if(!a.length)return null;const m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2;};
+const meanOf=values=>{const valid=values.filter(Number.isFinite);return valid.length?valid.reduce((sum,age)=>sum+age,0)/valid.length:null;};
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
 function weeklyFlow(jobs){
   const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=window.JobDates.timestamp(v);return Number.isFinite(t)?t:0;};
@@ -513,8 +513,8 @@ function renderHeadline(allRows,chartRows){
     weekNote.textContent=flat?'level with the prior 7 days':(change>0?'▲ ':'▼ ')+Math.abs(change).toFixed(0)+'% vs the prior 7 days';
     weekNote.dataset.trend=flat?'flat':change>0?'up':'down';
   }
-  const age=medianOf(ages),ageEl=document.getElementById("stat-age");
-  if(ageEl)ageEl.textContent=age==null?'—':String(Math.round(age));
+  const age=meanOf(ages),ageEl=document.getElementById("stat-age");
+  if(ageEl)ageEl.textContent=age==null?'—':String(Math.round(age*10)/10);
 }
 // The coverage rows double as shortcuts into the filtered list.
 document.querySelectorAll('.nj-market-row[data-region]').forEach(row=>row.addEventListener('click',()=>{
@@ -1170,7 +1170,7 @@ jobsDataPromise
     if(window.JobListView&&window.JobListQuery){
       const rowDays=new WeakMap();orderedGroups.forEach(([day,group])=>group.items.forEach(job=>rowDays.set(job,{day,label:group.label})));
       const rows=orderedGroups.flatMap(([,group])=>group.items);
-      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(placeAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:job.firstSeen||job.pushTime,postingDate:placeAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
+      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(placeAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:job.firstSeen||job.pushTime,postingDate:postingAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
       const byId=new Map(meta.map(r=>[r.id,r]));
       const view=new JobListView({host:jobsEl,render:(index,i)=>renderJobRow(rows[index],i,index<120),onMount:()=>{daySections=view.blocks.map(b=>b.el);jobCards=daySections.flatMap(sec=>sec._jobCards);jobCards.forEach(card=>card._coData=byId.get(card.dataset.id)?.coData);roleHistoryUi?.restore();}});
       listRuntime={meta,view,lastKey:null};renderReady=true;delete regionsEl.dataset.pendingRegion;apply();return;
@@ -1185,7 +1185,7 @@ jobsDataPromise
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
       sec._favoriteCards=new Set(sec._jobCards.filter(card=>favs.has(card.dataset.id)));
-      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:job.firstSeen||job.pushTime,postingDate:placeAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
+      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:job.firstSeen||job.pushTime,postingDate:postingAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       if(first&&window.CompanyLogos)await window.CompanyLogos.prepare(sec);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;
