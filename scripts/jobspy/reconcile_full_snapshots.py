@@ -15,7 +15,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from linkedin_ids import linkedin_job_id
-from posting_dates import apply_posting_date, is_repost, posting_day, last_posted
+from posting_dates import apply_posting_date, is_repost, posting_day, last_posted, source_date_unchanged
 
 
 BEIJING_TZ = ZoneInfo("Asia/Shanghai")
@@ -187,7 +187,10 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
         merged["sourceJobId"] = item.get("sourceJobId") or old.get("sourceJobId") or f"li-{key}"
         # CN/HK/SG share the same source-date advancement test. A delayed
         # observation still proves a repost; repeated dates do not reset time.
-        repost = bool(old) and is_repost(old, item.get("datePosted"), observed_at)
+        raw_posted = item.get("linkedinPostedRaw")
+        # Never treat a date-only UTC/source calendar reinterpreted as local as a repost.
+        source_unchanged = bool(old and raw_posted and source_date_unchanged(old, raw_posted))
+        repost = bool(old) and not source_unchanged and is_repost(old, item.get("datePosted"), observed_at)
         if not old.get("pushTime"):
             merged["pushTime"] = observed_at
         previous = last_posted(old)
@@ -195,9 +198,18 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
             merged["postingLastDate"] = previous.isoformat()
         elif old:
             merged.pop("datePosted", None)
-        apply_posting_date(merged, item.get("datePosted"), observed_at, "linkedin-search")
-        if posting_day(item.get("datePosted")) and posting_day(item["datePosted"]) <= posting_day(observed_at):
+        if not source_unchanged:
+            apply_posting_date(merged, item.get("datePosted"), observed_at, "linkedin-search")
+        if not source_unchanged and posting_day(item.get("datePosted")) and posting_day(item["datePosted"]) <= posting_day(observed_at):
             merged["datePosted"] = item["datePosted"]
+        # Persist evidence only for newly seen rows or genuine source-date advances.
+        # Never rewrite a legacy canonical posting day during the transition.
+        if not old or not source_unchanged:
+            for field in ("linkedinPostedRaw", "linkedinPostedRelative", "linkedinPostedDateSource"):
+                if item.get(field) not in (None, ""):
+                    merged[field] = item[field]
+        elif raw_posted and not old.get("linkedinPostedRaw"):
+            merged["linkedinPostedRaw"] = raw_posted
         if item.get("datePosted"):
             merged["jobspyRepost"] = repost
         watermark = last_posted(merged)
