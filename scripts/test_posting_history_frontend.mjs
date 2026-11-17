@@ -10,26 +10,16 @@ assert.ok(begin>=0&&end>begin,'production New Postings daily-count block exists'
 const logic=new Function('postingHistoryDaily','chartData','postingAt','norm','dayKey','RKEYS',app.slice(begin,end)+'\nreturn rcounts;');
 const run=(history,active=[])=>logic(history,active,j=>j.postingLastDate||j.firstSeen||j.pushTime,location=>location,j=>j.slice(0,10),['OTHER','SG','HK','CN']);
 
-test('New Postings reads immutable event history, never the current active snapshot',()=>{
- const recorded={'2026-11-01':{CN:1},'2026-11-14':{CN:1}};
- const before=run(recorded,[{location:'CN',firstSeen:'2026-11-01',postingLastDate:'2026-11-14'}]);
- const after=run(recorded,[]);
- assert.deepEqual(after,before,'closed or physically deleted roles must not alter historical bars');
- assert.equal(after['2026-11-01'].CN,1);
- assert.equal(after['2026-11-14'].CN,1);
- const repostAgain=run({...recorded,'2026-11-17':{CN:1}},[]);
- assert.equal(repostAgain['2026-11-17'].CN,1);
- assert.equal(repostAgain['2026-11-14'].CN,1);
+test('New Postings renders reconciled pure-new cohorts, including expired and excluding deleted',()=>{
+ const retained={'2026-11-01':{CN:1}};
+ assert.equal(run(retained,[])['2026-11-01'].CN,1);
+ assert.equal(run(retained,[])['2026-11-14'],undefined);
+ assert.deepEqual(run({},[]),{});
 });
-
-test('source-date fallback is used only before the durable event ledger exists',()=>{
- const snapshot=[{location:'CN',firstSeen:'2026-11-01',postingLastDate:'2026-11-14'}];
- const legacy=run(null,snapshot);
- assert.equal(legacy['2026-11-14'].CN,1);
- assert.equal(legacy['2026-11-01'],undefined);
- const immutable=run({'2026-11-01':{CN:1}},snapshot);
- assert.equal(immutable['2026-11-01'].CN,1);
- assert.equal(immutable['2026-11-14'],undefined);
+test('fallback also uses firstSeen rather than repost dates',()=>{
+ const rows=[{location:'CN',firstSeen:'2026-11-01',postingLastDate:'2026-11-14',jobStatus:'expired'}];
+ assert.equal(run(null,rows)['2026-11-01'].CN,1);
+ assert.equal(run(null,rows)['2026-11-14'],undefined);
 });
 
 test('guest payload carries the same safe event aggregates without leaking the private ledger',()=>{
