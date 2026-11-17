@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-16T22:03:03.919016+00:00",
+    "checkedAt": "2026-11-17T04:09:14.987778+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,12 +2705,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.63492959533249,
+        "deferred": true
       }
     ]
   },
@@ -3019,7 +3030,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-16T22:02:52.014886+00:00",
+    "checkedAt": "2026-11-17T04:09:02.946691+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3189,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-16T22:02:57.857197+00:00",
+    "checkedAt": "2026-11-17T04:09:08.762370+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5409,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-16T22:03:00.907715+00:00",
+    "checkedAt": "2026-11-17T04:09:11.857362+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -11925,5 +11936,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFclG6PQg6oNA/company-logo_100_100/B56aCpfPXaHUAI-/0/1789549934597/alpha_two_fund_logo?e=2147483647&v=beta&t=S_4yGCPrhdHI9dumuOL0HTUyXoqT4YvrT1dihj59-mY",
     "companyUrl": "https://www.linkedin.com/company/alpha-squared",
     "sourceJobId": "4490095135"
+  },
+  "ib vogt gmbh": {
+    "name": "ib vogt GmbH",
+    "checkedAt": "2026-11-17T04:08:55.668477+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fdecc3b226e8ece896367464.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFkNgz1YbVz-A/company-logo_100_100/B4DZ8Sfcd1JwAI-/0/1782721661018/ib_vogt_gmbh_logo?e=2147483647&v=beta&t=y9Yow4j5NgtShuboTVSGJNd6SrGImAeQYlIY3JpvriM",
+    "companyUrl": "https://de.linkedin.com/company/ib-vogt-gmbh",
+    "sourceJobId": "4485347175"
+  },
+  "iqvia asia pacific": {
+    "name": "IQVIA Asia Pacific",
+    "checkedAt": "2026-11-17T04:08:57.053113+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ab8df60463a687b5ddde76b9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHjdqpiFyBXag/company-logo_100_100/company-logo_100_100/0/1678845306474/iqvia_asia_pacific_logo?e=2147483647&v=beta&t=yc57M2MKDltbZfHmbn1o5jmaLvZSktyxXjuq3Yf6Apo",
+    "companyUrl": "https://sg.linkedin.com/company/iqvia-asia-pacific",
+    "sourceJobId": "4486032152"
+  },
+  "valentino": {
+    "name": "Valentino",
+    "checkedAt": "2026-11-17T04:08:59.996150+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "a1e5fed624ee5f1371e1c0f5.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQF13B2MnqBu8Q/company-logo_100_100/B4EaE5ZRo.JsAI-/0/1791964289825/valentino_logo?e=2147483647&v=beta&t=2Y62ru2AZN6pq8x1udHdzX9937boMaTnvrgaPt-cWDs",
+    "companyUrl": "https://it.linkedin.com/company/valentino",
+    "sourceJobId": "4490175558"
   }
 }
