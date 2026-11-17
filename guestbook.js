@@ -168,7 +168,7 @@
     if (diff < 60) return "刚刚";
     if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
     if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
-    return d.toLocaleString("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+    return window.JobDates.formatStamp(iso,{compact:true});
   }
   let toastTimer;
   function toast(msg) {
@@ -543,10 +543,10 @@
     function buildPreview(data) {
       if (!desktopNav.matches || targets.length || !Array.isArray(data)) return;
       const keys = [...new Set(data.map(j => j && (j.pushTime || j.firstSeen)).filter(Boolean).map(v => {
-        const d = new Date(v); return Number.isNaN(d.getTime()) ? "" : d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+        return window.JobDates.key(v);
       }).filter(Boolean))].sort().reverse();
       if (!keys.length) return;
-      targets = [{ el: null, label: "顶部·总览" }].concat(keys.map(key => ({ el: null, label: key })));
+      targets = [{ el: null, label: "顶部·总览" }].concat(keys.map(key => ({ el: null, label: window.JobDates.fullDay(key,{weekday:true}) })));
       fitHeight(targets.length);
       const n = targets.length;
       nav.innerHTML = targets.map((t, i) => {
