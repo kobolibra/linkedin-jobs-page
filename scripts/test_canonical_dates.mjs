@@ -66,14 +66,14 @@ test('repost keeps the original listing age and Market Breadth first-day cohort'
  assert.equal(shifted.counts.CN[0][3],1,'first-recorded cohort is stable through repost and closure while retained');
  assert.equal(shifted.counts.CN[1][3],0);
  const app=read('app.js');
- assert.match(app,/const seenAt=j=>j\.firstSeen\|\|j\.pushTime/);
+ assert.match(app,/const seenAt=j=>j\.firstSeen;/);
  assert.match(app,/const postingAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
  assert.match(app,/const placeAt=seenAt/);
  assert.match(read('scripts/jobspy/build_frontend_payload.py'),/"postingLastDate"/);
  assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3);
  assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/);
  assert.match(app,/postingDate:postingAt\(job\)/);
- assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen\|\|job\.pushTime,job\.expiredAt\)/);
+ assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen,job\.expiredAt\)/);
  assert.match(app,/Cumulative stack of currently active roles by first recorded date/);
 });
 test('expired-role valid-day badge counts Beijing calendar boundaries, not UTC elapsed hours',()=>{

@@ -11,7 +11,7 @@ test('guest overview retains initial-day and repost-day separately for all chart
  assert.equal(row[2],'2026-10-21','posting-event chart keeps latest publication day');
  assert.equal(row[7],'2026-10-02','all age/lifetime charts keep original firstSeen');
  const guestScript=readFileSync(new URL('../auth-guest.js',import.meta.url),'utf8');
- assert.match(guestScript,/firstSeen:firstSeen\|\|pushTime/);
+ assert.match(guestScript,/firstSeen:firstSeen\|\|''/);
  assert.match(guestScript,/ageDays\(j\.firstSeen\|\|j\.pushTime\)/);
 });
 test('refresh and query changes cannot rotate the public selection',()=>{const index=fixture();assert.deepEqual(previewData(index,{},now).jobs,previewData(index,{},now+86400000).jobs);});

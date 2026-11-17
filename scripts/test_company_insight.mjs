@@ -64,8 +64,8 @@ test('posted and closed weekly cohorts share Beijing midnight boundaries',()=>{
   assert.equal(s.close.n,2,'actual lifetime durations remain measured from firstSeen');
 });
 test('both virtual and fallback card paths provide original and latest posting dates',()=>{
-  assert.match(app,/coData:\{date:job\.firstSeen\|\|job\.pushTime,postingDate:postingAt\(job\),expiredAt:/);
-  assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime,postingDate:postingAt\(job\),expiredAt:/);
+  assert.match(app,/coData:\{date:job\.firstSeen,postingDate:postingAt\(job\),expiredAt:/);
+  assert.match(app,/card\._coData=\{date:job\.firstSeen,postingDate:postingAt\(job\),expiredAt:/);
 });
 test('expired lifetime stops at expiry while active exposure continues',()=>{
   const rows=[record(10),record(30,'expired','CN',ago(20))];
