@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+"""Append-only job posting events, independent of current listing status.
+
+A canonical firstSeen contributes one initial event. Each confirmed JobSpy
+repost contributes one event for its new local calendar day. A closed or
+physically removed job never removes previously recorded events.
+
+The first migration can recover original firstSeen and the latest explicitly
+confirmed repost, but cannot reconstruct unrecorded intermediate reposts.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import tempfile
+from datetime import date
+from pathlib import Path
+
+from jobspy.posting_dates import posting_day
+
+REGIONS = frozenset({"CN", "HK", "SG", "OTHER"})
+SCHEMA = "1.0"
+LINKEDIN_ID = re.compile(r"(?:linkedin\.com/jobs/view/|(?:^|[^\d])li-)(\d{6,})", re.I)
+
+
+def identity(job):
+    for raw in (job.get("sourceJobId"), job.get("link")):
+        match = LINKEDIN_ID.search(str(raw or ""))
+        if match:
+            return "ln:" + match.group(1)
+    return ""
+
+
+def day(value):
+    return posting_day(value).isoformat() if posting_day(value) else ""
+
+
+def region_of(job):
+    value = str(job.get("location") or "").upper()
+    return value if value in REGIONS else "OTHER"
+
+
+def read_ledger(path):
+    if not path.exists():
+        return {"schemaVersion": SCHEMA, "events": []}
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(doc, dict) or doc.get("schemaVersion") != SCHEMA or not isinstance(doc.get("events"), list):
+        raise ValueError("Invalid posting event ledger; refusing to reset history")
+    keys = set()
+    for row in doc["events"]:
+        if not isinstance(row, dict) or not all(isinstance(row.get(k), str) for k in ("jobId", "day", "region", "kind")):
+            raise ValueError("Malformed posting event in historical ledger")
+        key = (row["jobId"], row["day"], row["kind"])
+        if key in keys or row["region"] not in REGIONS or row["kind"] not in ("first", "repost") or day(row["day"]) != row["day"]:
+            raise ValueError("Duplicate or invalid historical posting event")
+        keys.add(key)
+    return doc
+
+
+def reconcile(ledger, jobs):
+    events = [dict(e) for e in ledger["events"]]
+    keys = {(e["jobId"], e["day"], e["kind"]) for e in events}
+    first_ids = {e["jobId"] for e in events if e["kind"] == "first"}
+    for job in jobs:
+        if not isinstance(job, dict):
+            continue
+        job_id = identity(job)
+        if not job_id:
+            continue
+        region = region_of(job)
+        first = day(job.get("firstSeen"))
+        if first and job_id not in first_ids:
+            key = (job_id, first, "first")
+            events.append({"jobId": job_id, "day": first, "region": region, "kind": "first"})
+            keys.add(key)
+            first_ids.add(job_id)
+        # Only confirmed source-date advances count as reposts. A bare newer
+        # postingLastDate can be a timezone migration and is NOT proof.
+        explicit = day(job.get("lastRepostedAt"))
+        if not explicit and job.get("jobspyRepost") is True:
+            explicit = day(job.get("postingLastDate"))
+        if explicit and (not first or explicit >= first):
+            key = (job_id, explicit, "repost")
+            if key not in keys:
+                events.append({"jobId": job_id, "day": explicit, "region": region, "kind": "repost"})
+                keys.add(key)
+    events.sort(key=lambda e: (e["day"], e["jobId"], e["kind"]))
+    return {"schemaVersion": SCHEMA, "events": events}
+
+
+def daily_counts(ledger):
+    counts = {}
+    for event in ledger["events"]:
+        row = counts.setdefault(event["day"], {})
+        region = event["region"]
+        row[region] = row.get(region, 0) + 1
+    return {key: counts[key] for key in sorted(counts)}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--jobs", type=Path, default=Path("jobs.json"))
+    parser.add_argument("--ledger", type=Path, default=Path("data/posting-events-ledger.json"))
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    raw = json.loads(args.jobs.read_text(encoding="utf-8"))
+    jobs = raw if isinstance(raw, list) else raw.get("jobs", [])
+    if not isinstance(jobs, list):
+        raise ValueError("Invalid canonical jobs")
+    previous = read_ledger(args.ledger)
+    updated = reconcile(previous, jobs)
+    changed = updated["events"] != previous["events"]
+    if args.check:
+        if changed:
+            raise SystemExit("Posting events ledger requires publication update")
+    elif changed or not args.ledger.exists():
+        args.ledger.parent.mkdir(parents=True, exist_ok=True)
+        fd, temporary = tempfile.mkstemp(prefix=".posting-events-", dir=args.ledger.parent)
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as output:
+                json.dump(updated, output, ensure_ascii=False, separators=(",", ":"))
+                output.write("\n")
+            os.replace(temporary, args.ledger)
+        finally:
+            if os.path.exists(temporary):
+                os.unlink(temporary)
+    print("posting_events", len(updated["events"]), "new", len(updated["events"]) - len(previous["events"]))
+
+
+if __name__ == "__main__":
+    main()
