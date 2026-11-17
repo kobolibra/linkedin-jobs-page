@@ -301,7 +301,7 @@ let daySections=[],jobCards=[],filteredCards=new Set(),loadedJobs=null;
 let listRuntime=null;
 const regionActiveTotals={CN:0,HK:0,SG:0,OTHER:0};
 // Bind controls before fetching/rendering the list; keep choices made during loading.
-favEl.addEventListener("click",()=>{favOnly=!favOnly;favEl.classList.toggle("active",favOnly);refreshFavoriteFilterView();});
+favEl.addEventListener("click",()=>{favOnly=!favOnly;if(favOnly)ageEl.value="all";favEl.classList.toggle("active",favOnly);refreshFavoriteFilterView();});
 let _searchTimer=null, _searchFrame=0, _composing=false;
 searchEl.addEventListener("compositionstart",()=>{_composing=true;clearTimeout(_searchTimer);cancelAnimationFrame(_searchFrame);});
 searchEl.addEventListener("compositionend",()=>{_composing=false;searchEl.dispatchEvent(new Event("input"));});
