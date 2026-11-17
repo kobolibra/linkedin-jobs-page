@@ -9,6 +9,7 @@ const html=readFileSync(new URL('index.html',source),'utf8');
 const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css','home.css']
  .map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
 const script=readFileSync(new URL('market-width.js',source),'utf8');
+const calendarScript=readFileSync(new URL('calendar-date.js',source),'utf8');
 const appSource=readFileSync(new URL('app.js',source),'utf8');
 const leftStart=appSource.indexOf('    const rc={CN:0,HK:0,SG:0,OTHER:0};');
 const leftEndTag="    requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));";
@@ -42,6 +43,7 @@ const browser=await chromium.launch({headless:true});
 const make=async(width,theme)=>{
  const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1,reducedMotion:'reduce'});
  await page.setContent('<!doctype html><html data-theme="'+theme+'"><head><style>'+styles+'</style></head><body><div class="shell">'+analytics+'</div></body></html>');
+ await page.addScriptTag({content:calendarScript});
  await page.addScriptTag({content:script});
  return page;
 };
@@ -52,7 +54,7 @@ async function renderLeft(page,chartData,theme){
  await page.evaluate(([draw,rows])=>{
   const norm=location=>location;
   const seenAt=job=>job.firstSeen;
-  const dayKey=date=>new Date(date).toISOString().slice(0,10);
+  const dayKey=date=>window.JobDates.key(date);
   const keyOf=dayKey;
   const REGIONS={CN:{label:'Mainland China'},HK:{label:'Hong Kong'},
    SG:{label:'Singapore'},OTHER:{label:'Other'}};
