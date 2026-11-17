@@ -537,7 +537,7 @@ async function inspectMosaic(page,nonzero){
    'mixed treemap must permit active firms on the outer edge again');
  }
 
- assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new postings')),
+ assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No first-recorded roles')),
   'zero labels are contextual rather than a numeric 0');
  assert.ok(details.rects.every(t=>t.w>0&&t.h>0&&t.x>=details.board.x-1&&t.y>=details.board.y-1));
  const totalArea=details.rects.reduce((sum,t)=>sum+t.area,0);
