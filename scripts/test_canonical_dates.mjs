@@ -79,6 +79,8 @@ test('legacy JPM stays unchanged while future posting-day cohorts align across c
  assert.match(app,/const ageDays=iso=>window\.JobDates\.calendarAge\(iso\)/);
  assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3,'both labels and both filter paths use the displayed posting day');
  assert.doesNotMatch(app,/ageDays\(seenAt\(job\)\)/);
+ assert.match(app,/Cumulative stack of currently active roles by source posting date/);
+ assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime/,'lifecycle insight keeps immutable first-observation age');
 });
 test('site loads one shared calendar and all known user-facing dates use it',()=>{
  const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');

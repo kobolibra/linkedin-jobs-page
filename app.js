@@ -872,7 +872,7 @@ jobsDataPromise
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
+      '" role="img" aria-label="Cumulative stack of currently active roles by source posting date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       // The filled band and its contour end at the exact same x. A painted
@@ -1183,7 +1183,7 @@ jobsDataPromise
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
       sec._favoriteCards=new Set(sec._jobCards.filter(card=>favs.has(card.dataset.id)));
-      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:placeAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
+      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:job.firstSeen||job.pushTime,expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       if(first&&window.CompanyLogos)await window.CompanyLogos.prepare(sec);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;

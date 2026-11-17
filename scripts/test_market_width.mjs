@@ -83,6 +83,8 @@ test('shipped 30-day Market Breadth equals the 18-firm projection of posting-day
  assert.match(read('app.js'),/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(seenAt\(j\)\)/);
  assert.match(read('app.js'),/const seenAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
+ assert.match(read('top30-layout.js'),/const stamp = job\.postingLastDate \|\| job\.firstSeen \|\| job\.pushTime/);
+ assert.match(read('guestbook.js'),/j\.postingLastDate \|\| j\.firstSeen \|\| j\.pushTime/);
 });
 
 test('7-day average and firm breadth describe daily additions, never all active inventory',()=>{
