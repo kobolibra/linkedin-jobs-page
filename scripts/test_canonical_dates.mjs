@@ -50,6 +50,21 @@ test('Market Breadth groups exact UTC+8 first-seen calendar days, not visitor lo
  assert.equal(initialDay(series,Date.parse('2026-11-17T15:59:59Z')),0);
  assert.equal(initialDay(series,Date.parse('2026-11-17T16:00:00Z')),1);
 });
+test('JPMorganChase 4489793926 uses the same UTC+8 posting day for list, badge and filter',()=>{
+ const job={firstSeen:'2026-11-16',pushTime:'2026-11-16T21:59:16Z'};
+ const observed=Date.parse('2026-11-17T03:28:26Z'); // 11:28 Beijing time
+ assert.equal(dates.key(job.pushTime),'2026-11-17');
+ assert.equal(dates.calendarAge(job.pushTime,observed),0); // Today, not 1 week
+ assert.equal(dates.calendarAge(job.firstSeen,observed),1); // Reproduces old mismatch
+ assert.equal(dates.calendarAge('2026-11-16T15:59:59Z',Date.parse('2026-11-16T16:00:00Z')),1);
+ assert.equal(dates.calendarAge('2026-11-16T16:00:00Z',Date.parse('2026-11-16T16:00:00Z')),0);
+ assert.equal(dates.calendarAge('2026-11-17',observed),0);
+ assert.equal(dates.calendarAge('invalid',observed),null);
+ const app=read('app.js');
+ assert.match(app,/const ageDays=iso=>window\.JobDates\.calendarAge\(iso\)/);
+ assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3,'both labels and both filter paths use the displayed posting day');
+ assert.doesNotMatch(app,/ageDays\(seenAt\(job\)\)/);
+});
 test('site loads one shared calendar and all known user-facing dates use it',()=>{
  const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');
  const expected=['calendar-date.js','app.js','list-view.js','market-width.js','job-applications.js','guestbook.js','visitor-count.js'];
