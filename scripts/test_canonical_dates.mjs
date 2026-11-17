@@ -50,40 +50,31 @@ test('Market Breadth groups exact UTC+8 posting days, not visitor local days',()
  assert.equal(initialDay(series,Date.parse('2026-11-17T15:59:59Z')),0);
  assert.equal(initialDay(series,Date.parse('2026-11-17T16:00:00Z')),1);
 });
-test('legacy JPM stays unchanged while future posting-day cohorts align across charts',()=>{
+test('repost keeps the original listing age and Market Breadth first-day cohort',()=>{
  const job={firstSeen:'2026-11-16',postingLastDate:'2026-11-16',pushTime:'2026-11-16T21:59:16Z'};
  const observed=Date.parse('2026-11-17T03:28:26Z');
- const postedAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
- assert.equal(dates.key(job.pushTime),'2026-11-17'); // Observation, not publication
- assert.equal(dates.key(postedAt(job)),'2026-11-16');
- assert.equal(dates.calendarAge(postedAt(job),observed),1); // Correct source day
- assert.equal(dates.calendarAge(job.pushTime,observed),0); // Reproduces false Today
+ const initialAt=j=>j.firstSeen||j.pushTime,postingAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
+ assert.equal(dates.key(job.pushTime),'2026-11-17');
+ assert.equal(dates.calendarAge(initialAt(job),observed),1);
  const repost={...job,postingLastDate:'2026-11-17'};
- assert.equal(dates.key(postedAt(repost)),'2026-11-17');
- assert.equal(dates.calendarAge(postedAt(repost),observed),0);
- const series=aggregate([{...job,company:'JPMorgan Chase',location:'CN',jobStatus:'active'}],['2026-11-16','2026-11-17']);
- assert.equal(series.counts.CN[0][3],1);
- assert.equal(series.counts.CN[1][3],0);
- const future={...job,firstSeen:'2026-11-16',postingLastDate:'2026-11-17'};
- const shifted=aggregate([{...future,company:'JPMorgan Chase',location:'CN',jobStatus:'active'}],['2026-11-16','2026-11-17']);
- assert.equal(shifted.counts.CN[0][3],0);
- assert.equal(shifted.counts.CN[1][3],1);
- assert.equal(dates.calendarAge('2026-11-16T15:59:59Z',Date.parse('2026-11-16T16:00:00Z')),1);
- assert.equal(dates.calendarAge('2026-11-16T16:00:00Z',Date.parse('2026-11-16T16:00:00Z')),0);
- assert.equal(dates.calendarAge('2026-11-17',observed),0);
- assert.equal(dates.calendarAge('invalid',observed),null);
+ assert.equal(dates.calendarAge(initialAt(repost),observed),1,'repost cannot reset listing age');
+ assert.equal(dates.key(postingAt(repost)),'2026-11-17','posting-event clock remains independent');
+ const days=['2026-11-16','2026-11-17'];
+ const original=aggregate([{...job,company:'JPMorgan Chase',location:'CN',jobStatus:'active'}],days);
+ const shifted=aggregate([{...repost,company:'JPMorgan Chase',location:'CN',jobStatus:'expired'}],days);
+ assert.equal(original.counts.CN[0][3],1);
+ assert.equal(shifted.counts.CN[0][3],1,'first-recorded cohort is stable through repost and closure while retained');
+ assert.equal(shifted.counts.CN[1][3],0);
  const app=read('app.js');
- assert.match(app,/const seenAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
+ assert.match(app,/const seenAt=j=>j\.firstSeen\|\|j\.pushTime/);
+ assert.match(app,/const postingAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
  assert.match(app,/const placeAt=seenAt/);
  assert.match(read('scripts/jobspy/build_frontend_payload.py'),/"postingLastDate"/);
- assert.match(app,/const ageDays=iso=>window\.JobDates\.calendarAge\(iso\)/);
- assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3,'both labels and both filter paths use the displayed posting day');
- assert.doesNotMatch(app,/ageDays\(seenAt\(job\)\)/);
- assert.match(app,/Cumulative stack of currently active roles by source posting date/);
- assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\)/,'fallback Company Insight record keeps original firstSeen and posting day');
- assert.match(app,/coData:\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\)/,'virtualized Company Insight record keeps both fields');
- assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen\|\|job\.pushTime,job\.expiredAt\)/,'expiration duration must use original lifecycle entry, never repost day');
- assert.doesNotMatch(app,/expiredValidDays=expired\?validDays\(seenAt\(job\),/);
+ assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3);
+ assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/);
+ assert.match(app,/postingDate:postingAt\(job\)/);
+ assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen\|\|job\.pushTime,job\.expiredAt\)/);
+ assert.match(app,/Cumulative stack of currently active roles by first recorded date/);
 });
 test('expired-role valid-day badge counts Beijing calendar boundaries, not UTC elapsed hours',()=>{
  const source=read('app.js');
@@ -95,17 +86,18 @@ test('expired-role valid-day badge counts Beijing calendar boundaries, not UTC e
  assert.equal(validDays('2026-11-17','2026-11-16T15:59:59Z'),null);
  assert.equal(validDays('invalid','2026-11-17'),null);
 });
-test('visible metric labels and canonical consumer semantics agree on posting dates',()=>{
+test('visible age metric labels describe firstSeen, not repost dates',()=>{
  const home=read('index.html'),about=read('about.html'),top=read('top30-layout.js'),app=read('app.js');
+ assert.match(home,/Average Listing Age/);
+ assert.match(home,/days since first recorded/);
  assert.match(home,/posted or reposted in the 7 days/);
- assert.match(home,/days since latest posting/);
  assert.match(home,/including reposts/);
- assert.doesNotMatch(home,/excluding reposts|days since first seen|first seen in the 7 days/);
- assert.match(about,/posted or reposted on each day/);
- assert.match(top,/AVERAGE DAYS SINCE POSTING/);
- assert.match(top,/MEDIAN DAYS SINCE POSTING/);
- assert.match(app,/currently active roles posted by/);
- assert.doesNotMatch(app,/currently active roles first seen by/);
+ assert.match(home,/距首次记录的天数/);
+ assert.doesNotMatch(home,/days since latest posting|距最近发布的天数/);
+ assert.match(about,/first-recorded date/);
+ assert.match(top,/AVERAGE DAYS SINCE FIRST RECORDED/);
+ assert.match(top,/MEDIAN DAYS SINCE FIRST RECORDED/);
+ assert.match(app,/currently active roles by first recorded date/);
 });
 test('site loads one shared calendar and all known user-facing dates use it',()=>{
  const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');
