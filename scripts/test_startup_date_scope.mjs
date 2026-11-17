@@ -7,10 +7,11 @@ const require=createRequire(import.meta.url),JobDates=require('../calendar-date.
 const source=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function between(start,end){const a=source.indexOf(start),b=source.indexOf(end,a);assert.ok(a>=0&&b>a,`Missing startup contract: ${start}`);return source.slice(a,b);}
 const helpers=between('const keyOf=','const isActiveJob=');
+const selection=source.match(/^const seenAt=.*$/m)?.[0];assert.ok(selection);
 const placement=source.match(/^const placeAt=.*$/m)?.[0];assert.ok(placement);
 const axis=between('    const regionTickFormat=','    const axisCssWidth=');
 const grouping=between('    const groups=new Map();','    const orderedGroups=');
-function group(rows,broken=false){const context={rows,window:{JobDates}};vm.createContext(context);const local=broken?axis.replaceAll('regionAxisDayLabel','dayLabel'):axis;return vm.runInContext(`${helpers}\n${placement}\n(()=>{const data=rows;${local}\n${grouping}\nreturn [...groups.values()].map(g=>g.label);})()`,context);}
+function group(rows,broken=false){const context={rows,window:{JobDates}};vm.createContext(context);const local=broken?axis.replaceAll('regionAxisDayLabel','dayLabel'):axis;return vm.runInContext(`${helpers}\n${selection}\n${placement}\n(()=>{const data=rows;${local}\n${grouping}\nreturn [...groups.values()].map(g=>g.label);})()`,context);}
 test('chart formatting cannot shadow the ISO-safe list formatter',()=>{
  assert.equal((source.match(/\bconst dayLabel\s*=/g)||[]).length,1);
  assert.match(axis,/const regionAxisDayLabel=/);

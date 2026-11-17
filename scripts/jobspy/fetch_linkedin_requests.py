@@ -17,6 +17,7 @@ from logo_sources import source_hint
 from linkedin_http import LinkedInSession, RequestStopped, block_page
 from linkedin_detail import fetch_detail
 from linkedin_ids import linkedin_job_id
+from posting_dates import linkedin_card_date
 
 LOG = logging.getLogger("linkedin-requests")
 BASE = "https://www.linkedin.com"
@@ -154,6 +155,9 @@ def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN")
         time_tag = card.select_one("time.job-search-card__listdate, time.job-search-card__listdate--new")
         if not title_tag or not title_tag.get_text(" ", strip=True):
             continue
+        raw_posted = clean(time_tag.get("datetime", "")) if time_tag else ""
+        relative_posted = time_tag.get_text(" ", strip=True) if time_tag else ""
+        local_posted, date_source = linkedin_card_date(raw_posted, relative_posted, fetched_at)
         jobs.append({
             "source": "jobspy-requests",
             "sourceSite": "linkedin",
@@ -167,7 +171,10 @@ def parse_search(html: str, requested: str, fetched_at: str, region: str = "CN")
             "locationRaw": location_tag.get_text(" ", strip=True) if location_tag else "",
             # HK/SG rows are lifecycle observations only; JD and city remain CN-only.
             "city": city_from_location(location_tag.get_text(" ", strip=True) if location_tag else "") if region == "CN" else "",
-            "datePosted": date_only(time_tag.get("datetime", "") if time_tag else ""),
+            "datePosted": local_posted,
+            "linkedinPostedRaw": raw_posted,
+            "linkedinPostedRelative": relative_posted,
+            "linkedinPostedDateSource": date_source,
             "descriptionText": "",
             "descriptionHtml": "",
             "fetchedAt": fetched_at,

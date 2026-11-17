@@ -294,7 +294,9 @@
       item.total += 1;
       const region = fnNorm(job.location);
       if (item[region] != null) item[region] += 1;
-      const seen = Date.parse(job.firstSeen || '');
+      const stamp = job.postingLastDate || job.firstSeen || job.pushTime || '';
+      const localStart = g.JobDates?.dayStart(g.JobDates.key(stamp));
+      const seen = Number.isFinite(localStart) ? localStart : Date.parse(stamp);
       if (Number.isFinite(seen)) item.ages.push(Math.max(0, (now - seen) / 86400000));
     });
     const top = [...counts.entries()]

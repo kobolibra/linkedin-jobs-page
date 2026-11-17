@@ -221,11 +221,12 @@ const keyOf=d=>window.JobDates.key(d);
 const dayKey=iso=>window.JobDates.key(iso)||"—";
 const dayLabel=iso=>window.JobDates.fullDay(iso,{weekday:true});
 const isActiveJob=job=>job?.jobStatus!=="expired";
-const seenAt=j=>j.firstSeen||j.pushTime;
+// Source posting-day cohorts are shared by the list, metrics and charts.
+const seenAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
 const validDays=(start,end)=>{const a=Date.parse(start),b=Date.parse(end);if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.max(0,Math.floor((b-a)/864e5));};
 // Source posting dates outrank crawler observation timestamps. Verified
 // reposts advance postingLastDate; original firstSeen never moves.
-const placeAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
+const placeAt=seenAt;
 // Within a posted calendar day, retain captured update order and region ties.
 const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
 const displayRegionOf=j=>norm(j?.location);
@@ -474,14 +475,16 @@ const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
 function weeklyFlow(jobs){
   const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=Date.parse(v);return Number.isFinite(t)?t:0;};
+  const day=v=>window.JobDates.dayStart(window.JobDates.key(v));
   let end=0,current=0,prior=0;
   for(const j of jobs)if(j&&j.jobStatus!=="expired"&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen));
   if(!end)return null;
+  const endDay=day(end);
   for(const j of jobs){
     if(!j||!regions.includes(j.location))continue;
     const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
-    const t=date(j.firstSeen||j.pushTime);if(!t||t>end)continue;
-    const age=end-t;if(age<week)current++;else if(age<2*week)prior++;
+    const t=day(j.postingLastDate||j.firstSeen||j.pushTime);if(!Number.isFinite(t)||t>endDay)continue;
+    const age=endDay-t;if(age<week)current++;else if(age<2*week)prior++;
   }
   return {current,prior,end:new Date(end).toISOString()};
 }
@@ -490,9 +493,9 @@ function weeklyFlow(jobs){
 function renderHeadline(allRows,chartRows){
   const overview=window.AuthGuest?.overview,now=Date.now(),day=864e5;
   const ages=[];
-  for(const job of chartRows){const t=Date.parse(seenAt(job));if(Number.isFinite(t))ages.push(Math.max(0,(now-t)/day));}
+  for(const job of chartRows){const stamp=seenAt(job),start=window.JobDates.dayStart(window.JobDates.key(stamp));if(Number.isFinite(start))ages.push(Math.max(0,(now-start)/day));}
   // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
-  // CN/HK/SG roles first seen in the 7 days ending at the latest data update,
+  // CN/HK/SG roles posted in the 7 Beijing calendar days ending at the latest data update,
   // including roles that have since closed. Guests receive the counts from the
   // server because their preview payload carries open roles only.
   const flow=overview?overview.weekly:weeklyFlow(allRows);
@@ -500,7 +503,7 @@ function renderHeadline(allRows,chartRows){
   if(weekEl){
     if(flow)animNum(weekEl,flow.current);else weekEl.textContent='—';
     const end=flow?.end?new Date(flow.end):null;
-    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore first seen in the 7 days to '+
+    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore posted in the 7 calendar days to '+
       end.toLocaleString('en-GB',{timeZone:'Asia/Singapore',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' SGT, including roles that have since closed';
   }
   if(weekNote&&flow&&flow.prior>0){
@@ -561,8 +564,7 @@ jobsDataPromise
     if(rc.OTHER>0){const o=document.createElement("option");o.value="OTHER";o.textContent="其他地区";cityEl.appendChild(o);}
     const rmax=Math.max(...Object.values(rc),1);
     const distEl=document.getElementById("dist");
-    // One true cumulative regional stack: every vertical boundary is the sum
-    // of currently active roles first observed on or before that calendar day.
+    // One true cumulative regional stack: active roles by the same posting-day cohort as the list.
     // The daily 30-day chart below retains the separate daily-new metric.
     const regionOrder=["HK","SG","CN"];
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k)
@@ -870,7 +872,7 @@ jobsDataPromise
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Cumulative stack of currently active roles by first observed date: HK, then SG, then CN. '+countFormat.format(endTotal)+
+      '" role="img" aria-label="Cumulative stack of currently active roles by source posting date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       // The filled band and its contour end at the exact same x. A painted
@@ -1009,7 +1011,7 @@ jobsDataPromise
         const sum=values.reduce((a,b)=>a+b,0);
         const lines=regionOrder.map((k,ri)=>({k,ri})).reverse()
           .map(({k,ri})=>window.VizTip.row(regionName[k],countFormat.format(values[ri]),k)).join('');
-        window.VizTip.show('<span class="viz-tip-title">Open roles first seen by '+tipDate.format(new Date(tMin+(i-1)*dayMs))+'</span>'+
+        window.VizTip.show('<span class="viz-tip-title">Open roles posted by '+tipDate.format(new Date(tMin+(i-1)*dayMs))+'</span>'+
           lines+window.VizTip.row('Total',countFormat.format(sum)),e.clientX,e.clientY);
       };
       capture.addEventListener('pointermove',inspect);
@@ -1021,7 +1023,7 @@ jobsDataPromise
     const today=window.JobDates.key(Date.now()),days=[];
     for(let i=29;i>=0;i--){const key=window.JobDates.addDays(today,-i),d=new Date(key+"T00:00:00Z"),rc=rcounts[key]||{};days.push({key,date:d,label:window.JobDates.shortDay(key).toUpperCase(),weekend:[0,6].includes(window.JobDates.weekday(key)),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
-    /* Daily flow. Every column is the exact first-seen count for one local
+    /* Daily flow. Every column is the exact posting-day count for one local
        calendar day, stacked by market in the same order and pigments as
        Figure 01 (HK at the base, then SG, then CN; OTHER on top, neutral).
        Daily inspection retains exact date, count and a trailing 7-day
@@ -1127,7 +1129,7 @@ jobsDataPromise
       e.preventDefault();node.tabIndex=-1;points[to].tabIndex=0;points[to].focus();
     });
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
-    // Use the same first-seen daily buckets and deduplicated active chart data
+    // Use the same source posting-day buckets and deduplicated active chart data
     // as New Postings, with the radar exposing a separate region selector.
     window.MarketWidth?.render(chartData,days);
     top50Rows=chartData;
@@ -1181,7 +1183,7 @@ jobsDataPromise
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
       sec._favoriteCards=new Set(sec._jobCards.filter(card=>favs.has(card.dataset.id)));
-      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:seenAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
+      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:job.firstSeen||job.pushTime,expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       if(first&&window.CompanyLogos)await window.CompanyLogos.prepare(sec);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;

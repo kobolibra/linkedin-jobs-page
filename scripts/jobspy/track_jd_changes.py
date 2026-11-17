@@ -131,7 +131,7 @@ def annotate(existing_doc, snapshot_doc, observed_at=None):
         old = existing.get(jid(item))
         # Only a repost with a newly fetched JD is eligible. New jobs and missing-JD
         # backfills are intentionally excluded from change tracking.
-        if not old or not (is_repost(old, item.get("datePosted"), observed_at) if item.get("datePosted") else item.get("jobspyRepost") is True):
+        if not old or not (is_repost(old, item.get("datePosted"), observed_at, source_raw=item.get("linkedinPostedRaw")) if item.get("datePosted") else item.get("jobspyRepost") is True):
             out_rows.append(item)
             continue
         if item.get("detailStatus") in {"failed", "blocked", "gone"} or not str(item.get("descriptionHtml") or item.get("descriptionText") or "").strip():

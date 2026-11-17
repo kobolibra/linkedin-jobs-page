@@ -38,7 +38,7 @@ test('date-only, leap year, New Year, and bad date handling are stable',()=>{
  assert.doesNotMatch(dates.formatStamp('2026-11-16T16:01:00Z',{compact:true}),/UTC\+8|·/);
  assert.equal(dates.formatStamp('invalid'),'—');
 });
-test('Market Breadth groups exact UTC+8 first-seen calendar days, not visitor local days',()=>{
+test('Market Breadth groups exact UTC+8 posting days, not visitor local days',()=>{
  const series=aggregate([
   {company:'HSBC',location:'CN',firstSeen:'2026-11-16T15:59:59Z'},
   {company:'HSBC',location:'HK',firstSeen:'2026-11-16T16:00:00Z'},
@@ -50,7 +50,7 @@ test('Market Breadth groups exact UTC+8 first-seen calendar days, not visitor lo
  assert.equal(initialDay(series,Date.parse('2026-11-17T15:59:59Z')),0);
  assert.equal(initialDay(series,Date.parse('2026-11-17T16:00:00Z')),1);
 });
-test('JPM 4489793926 stays on LinkedIn 16 Nov despite its 17 Nov crawl',()=>{
+test('legacy JPM stays unchanged while future posting-day cohorts align across charts',()=>{
  const job={firstSeen:'2026-11-16',postingLastDate:'2026-11-16',pushTime:'2026-11-16T21:59:16Z'};
  const observed=Date.parse('2026-11-17T03:28:26Z');
  const postedAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
@@ -64,16 +64,23 @@ test('JPM 4489793926 stays on LinkedIn 16 Nov despite its 17 Nov crawl',()=>{
  const series=aggregate([{...job,company:'JPMorgan Chase',location:'CN',jobStatus:'active'}],['2026-11-16','2026-11-17']);
  assert.equal(series.counts.CN[0][3],1);
  assert.equal(series.counts.CN[1][3],0);
+ const future={...job,firstSeen:'2026-11-16',postingLastDate:'2026-11-17'};
+ const shifted=aggregate([{...future,company:'JPMorgan Chase',location:'CN',jobStatus:'active'}],['2026-11-16','2026-11-17']);
+ assert.equal(shifted.counts.CN[0][3],0);
+ assert.equal(shifted.counts.CN[1][3],1);
  assert.equal(dates.calendarAge('2026-11-16T15:59:59Z',Date.parse('2026-11-16T16:00:00Z')),1);
  assert.equal(dates.calendarAge('2026-11-16T16:00:00Z',Date.parse('2026-11-16T16:00:00Z')),0);
  assert.equal(dates.calendarAge('2026-11-17',observed),0);
  assert.equal(dates.calendarAge('invalid',observed),null);
  const app=read('app.js');
- assert.match(app,/const placeAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
+ assert.match(app,/const seenAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
+ assert.match(app,/const placeAt=seenAt/);
  assert.match(read('scripts/jobspy/build_frontend_payload.py'),/"postingLastDate"/);
  assert.match(app,/const ageDays=iso=>window\.JobDates\.calendarAge\(iso\)/);
  assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3,'both labels and both filter paths use the displayed posting day');
  assert.doesNotMatch(app,/ageDays\(seenAt\(job\)\)/);
+ assert.match(app,/Cumulative stack of currently active roles by source posting date/);
+ assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime/,'lifecycle insight keeps immutable first-observation age');
 });
 test('site loads one shared calendar and all known user-facing dates use it',()=>{
  const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');

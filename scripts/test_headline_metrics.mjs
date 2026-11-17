@@ -4,6 +4,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),dates=require('../calendar-date.js');
 import {weeklyFlow as serverFlow,previewData,publicPreviewPayload} from './guest_preview.mjs';
 
 const read=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
@@ -11,7 +13,7 @@ const app=read('app.js');
 const start=app.indexOf('function weeklyFlow(jobs){');
 const end=app.indexOf('/* Masthead and metric band',start);
 assert.ok(start>=0&&end>start,'app.js defines weeklyFlow before the headline renderer');
-const context={};vm.runInNewContext(app.slice(start,end)+';globalThis.weeklyFlow=weeklyFlow;',context);
+const context={window:{JobDates:dates}};vm.runInNewContext(app.slice(start,end)+';globalThis.weeklyFlow=weeklyFlow;',context);
 const browserFlow=context.weeklyFlow;
 const plain=value=>JSON.parse(JSON.stringify(value));
 
@@ -39,4 +41,14 @@ test('weekly flow counts since-closed roles, excludes other regions and anchors 
  assert.deepEqual(serverFlow(rows),expected);
  assert.equal(browserFlow([]),null);
  assert.equal(serverFlow([{location:'HK',firstSeen:'bad'}]),null);
+});
+
+test('week boundaries are exact Beijing calendar days, including midnight',()=>{
+ const rows=[
+  {link:'boundary',location:'CN',firstSeen:'2026-11-11',postingLastDate:'2026-11-11'},
+  {link:'today',location:'CN',firstSeen:'2026-11-18',postingLastDate:'2026-11-18',pushTime:'2026-11-17T16:01:00Z'}
+ ];
+ const output={current:1,prior:1,end:'2026-11-17T16:01:00.000Z'};
+ assert.deepEqual(plain(browserFlow(rows)),output);
+ assert.deepEqual(serverFlow(rows),output);
 });
