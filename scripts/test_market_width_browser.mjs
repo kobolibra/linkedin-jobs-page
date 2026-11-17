@@ -565,7 +565,7 @@ try{
    await renderLeft(page,regular,theme);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Breadth: 18 institutions we watch closely');
    assert.equal(await summary(page),'14 new postings across 4/18 institutions');
-   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect new postings of the day, excluding reposts');
+   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect postings of the day, including reposts');
    const trend=await page.evaluate(()=>{
     const chart=document.querySelector('#marketWidthStrip .mw-trend-svg');
     const line=chart?.querySelector('.mw-trend-line');

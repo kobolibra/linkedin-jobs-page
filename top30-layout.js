@@ -235,12 +235,12 @@
     }).join('');
 
     return '<svg class="top20-svg bubble-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Top 30 '
-      + '\u673a\u6784\u5e73\u5747\u9996\u6b21\u53d1\u73b0\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
+      + '\u673a\u6784\u5e73\u5747\u6700\u8fd1\u53d1\u5e03\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
       + grid + axisBreaks + diagonal
       + '<text class="bubble-x-title" x="' + ((left + plotRight) / 2) + '" y="' + (plotBottom + 38)
-      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE FIRST SEEN  → LONGER-LISTED</text>'
+      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE POSTING  → LONGER-LISTED</text>'
       + '<text class="bubble-y-title" x="16" y="' + ((plotTop + plotBottom) / 2)
-      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE FIRST SEEN →</text>'
+      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE POSTING →</text>'
       + pointMarkup + '</svg>';
   };
 
@@ -327,7 +327,10 @@
     const tip = () => g.VizTip;
     let activeRow=null;
     const focus = (row, x, y, anchor = null) => {
-      if(row===activeRow)return; // Avoid 60fps tooltip reconstruction and reflow.
+      // The shared tooltip can be dismissed by scroll or another chart while
+      // this row remains focused. Never suppress the next real tap just
+      // because the same row is still cached as active.
+      if(row===activeRow && (!row || (host.classList.contains('is-inspecting') && !document.querySelector('.viz-tip')?.hidden)))return;
       if(activeRow)activeRow.classList.remove('is-focus');
       activeRow=row;
       if(!row){host.classList.remove('is-inspecting');tip()?.hide();return;}
@@ -345,7 +348,8 @@
       const fixed=row.querySelector('.bubble-point').getBoundingClientRect();
       t.show('<span class="viz-tip-title">' + escSvg(d.company) + '</span>' + counts + lines
         + t.row('Average age', Number(d.mean).toFixed(1) + ' days') + t.row('Median age', Number(d.median).toFixed(1) + ' days')
-        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>', fixed.right, fixed.top, anchor);
+        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>',
+        fixed.right, fixed.top, anchor || row.querySelector('.bubble-point'));
     };
     host.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch') return; // touch readings are driven by taps below

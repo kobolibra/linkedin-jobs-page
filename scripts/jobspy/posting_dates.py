@@ -91,6 +91,26 @@ def source_date_unchanged(previous, raw_datetime):
     return bool(incoming and prior and incoming <= prior)
 
 
+def liveness_timezone_only_candidate(row, value, raw_datetime=None):
+    """A local-day +1 shift alone is not independent evidence of a repost.
+
+    Search snapshots preserve the old source calendar day. Liveness can use
+    new same-ID raw evidence to confirm a genuine source advance; rounded
+    relative ages without raw dates cannot distinguish UTC +8 conversion.
+    """
+    posted = posting_day(value)
+    prior = last_posted(row)
+    if not posted or not prior or posted <= prior:
+        return False
+    if raw_datetime and raw_source_day(raw_datetime):
+        return source_date_unchanged(row, raw_datetime)
+    source = (raw_source_day(row.get("linkedinPostedRaw"))
+              or raw_source_day(row.get("datePosted"))
+              or raw_source_day(row.get("postingLastDate"))
+              or raw_source_day(row.get("firstSeen")))
+    return bool(source and 0 < (posted - source).days <= 1)
+
+
 def last_posted(row):
     # Dedicated source watermarks win over dates refreshed by an RSS batch.
     dates = [posting_day(row.get(k)) for k in ("postingLastDate", "jobspyLastPosted")]

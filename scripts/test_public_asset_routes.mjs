@@ -97,11 +97,11 @@ test('About states source, update limitations and unsupported work explicitly',(
  assert.match(hero,/We don't tailor your CV or cover letter to individual job descriptions/);
  assert.equal((about.match(/Every 6 hours/g)||[]).length,1,'only one refresh-frequency disclosure');
 });
-test('About accurately describes analytics, first-seen times and manually tracked Sankey',()=>{
+test('About accurately describes posting-day analytics, historical dates and manually tracked Sankey',()=>{
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const jobs=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
- assert.match(about,/Horizontal and vertical positions represent the mean and median days since first recorded/);
+ assert.match(about,/Horizontal and vertical positions represent the mean and median days since the latest known posting/);
  assert.match(about,/full text of job descriptions is not searchable/);
  assert.match(about,/Record each stage yourself/);
  assert.match(about,/Your history is preserved/);

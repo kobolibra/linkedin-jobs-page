@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 from job_liveness import classify, jid, select_regional_candidates, NON_TARGET_RETENTION_DAYS
 from reconcile_full_snapshots import location_key
-from posting_evidence import detail_posting_date, relative_posting_bounds, search_posting_dates
+from posting_evidence import detail_posting_date, detail_posting_raw, relative_posting_bounds, search_posting_dates
 from posting_dates import posting_day
 from logo_sources import source_hint
 from linkedin_http import Coordinator, LinkedInSession, RequestStopped, RequestDeadlineExceeded
@@ -128,7 +128,7 @@ def main():
                 with wall_clock_limit(args.max_seconds-(time.monotonic()-started)):
                     for i,row in enumerate(candidates):
                         key=jid(row); url=f"https://www.linkedin.com/jobs/view/{key}"
-                        posted=source=hint=None; blocked=False; shared_stop=False
+                        posted=source=hint=raw_posted=None; blocked=False; shared_stop=False
                         result='unknown'; checked_at=datetime.now(timezone.utc).isoformat()
                         session.context={"stage":"liveness","jobId":key,"endpoint":"view"}
                         try:
@@ -145,6 +145,7 @@ def main():
                                 blocked=response.status_code in {403,999} or response.status_code >= 500
                                 if result == 'open':
                                     posted,source=lookup_posting_date(row,soup,checked_at,cache=cache,stats=out['stats'])
+                                    if posted: raw_posted=detail_posting_raw(soup,key,source)
                                     if not posted: date_contexts[i]=(row,soup,checked_at)
                             finally:
                                 response.close()
@@ -159,7 +160,9 @@ def main():
                             print('probe_error','view',key,type(exc).__name__,str(exc),flush=True)
                         observation={"sourceJobId":row.get("sourceJobId") or f"li-{key}","jobId":key,"location":location_key(row),"result":result,"checkedAt":checked_at}
                         if hint: observation['companyLogoSource']=hint
-                        if posted: observation.update(datePosted=posted,dateSource=source)
+                        if posted:
+                            observation.update(datePosted=posted,dateSource=source)
+                            if raw_posted: observation['datePostedRaw']=raw_posted
                         out['observations'].append(observation)
                         out['stats']['probed']=len(out['observations'])
                         save()
@@ -173,7 +176,10 @@ def main():
                     for i,(row,soup,checked_at) in date_contexts.items():
                         if i >= len(out['observations']): continue
                         posted,source=lookup_posting_date(row,soup,checked_at,cache=cache,stats=out['stats'])
-                        if posted: out['observations'][i].update(datePosted=posted,dateSource=source)
+                        if posted:
+                            out['observations'][i].update(datePosted=posted,dateSource=source)
+                            raw_posted=detail_posting_raw(soup,jid(row),source)
+                            if raw_posted: out['observations'][i]['datePostedRaw']=raw_posted
             except LivenessBudgetExpired:
                 out['stats'].update(budgetExhausted=True,skippedBudget=len(candidates)-len(out['observations']))
                 print('liveness_budget_exhausted',len(out['observations']),len(candidates),'completed observations retained; continue JobSpy',flush=True)
@@ -182,6 +188,7 @@ def main():
                 if observation.get('dateSource') == 'linkedin-cached-card' and observation['jobId'] in conflicts:
                     observation.pop('datePosted',None)
                     observation.pop('dateSource',None)
+                    observation.pop('datePostedRaw',None)
         finally:
             session.close()
         classified=[x['result'] for x in out['observations']]

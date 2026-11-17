@@ -25,7 +25,7 @@ def main():
         row=by.get(str(obs.get("jobId") or "")) or by.get(jid(obs)); result=obs.get("result")
         if not row or not eligible_scope(row): stats["skipped_out_of_scope"]+=1; continue
         before=row.get("jobStatus"); old_push=row.get("pushTime"); old_check=row.get("liveCheckedAt")
-        apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours,obs.get("datePosted"),obs.get("dateSource"),args.delete_after_days)
+        apply_observation(row,result,obs.get("checkedAt"),args.gone_confirm_hours,obs.get("datePosted"),obs.get("dateSource"),args.delete_after_days,date_raw=obs.get("datePostedRaw"))
         if row.get("liveCheckedAt") == old_check:
             stats["stale_observations"] += 1
             continue

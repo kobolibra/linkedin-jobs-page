@@ -223,7 +223,7 @@ const dayLabel=iso=>window.JobDates.fullDay(iso,{weekday:true});
 const isActiveJob=job=>job?.jobStatus!=="expired";
 // Source posting-day cohorts are shared by the list, metrics and charts.
 const seenAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
-const validDays=(start,end)=>{const a=Date.parse(start),b=Date.parse(end);if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.max(0,Math.floor((b-a)/864e5));};
+const validDays=(start,end)=>{const cal=window.JobDates;const a=cal.dayStart(cal.key(start)),b=cal.dayStart(cal.key(end));if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.round((b-a)/864e5);};
 // Source posting dates outrank crawler observation timestamps. Verified
 // reposts advance postingLastDate; original firstSeen never moves.
 const placeAt=seenAt;
@@ -617,7 +617,7 @@ jobsDataPromise
       const upper=Math.ceil(observed/step)*step;
       return {max:upper,step,ticks:Array.from({length:Math.round(upper/step)+1},(_,i)=>i*step)};
     };
-    // First observed day sits exactly at the left edge, final day at the
+    // First posting day sits exactly at the left edge, final day at the
     // right edge. Do not reserve an empty full-day margin before the data.
     const trendX=i=>left+(bins===1?0:Math.max(0,i-1)/(bins-1))*plotW;
     const trendY=value=>base-value/regionMax*(base-top);
@@ -845,8 +845,8 @@ jobsDataPromise
       const hits=daily.map((n,i)=>{
         if(!n)return '';
         const current=new Date(tMin+i*dayMs);
-        const label=REGIONS[k].label+' · '+regional[i+1]+' currently active roles first seen by '+
-          regionTickFormat.format(current)+' · +'+n+' first seen that day';
+        const label=REGIONS[k].label+' · '+regional[i+1]+' currently active roles posted by '+
+          regionTickFormat.format(current)+' · +'+n+' posted that day';
         return '<circle class="region-spark-hit" cx="'+trendX(i+1).toFixed(2)+
           '" cy="'+trendY((lower[i+1]+upper[i+1])/2).toFixed(2)+
           '" r="5" data-bin="'+i+'" data-count="'+n+
@@ -1154,7 +1154,7 @@ jobsDataPromise
     };
     const roleHistoryUi=window.JobRoleHistory?.bind(jobsEl,{get:id=>roleHistoryIndex?.get(id),id:j=>jobId(j.link),link:safeJobLink,onVisit:id=>{reads.add(id);saveReads();for(const card of jobCards)if(card.dataset.id===id)card.classList.add('read');}});
     function renderJobRow(job,idx,first){
-        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(placeAt(job)),expired=job.jobStatus==="expired",expiredText=expired?window.JobDates.shortDay(job.expiredAt):"",expiredValidDays=expired?validDays(seenAt(job),job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} ${expiredValidDays===1?"day":"days"}`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
+        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(placeAt(job)),expired=job.jobStatus==="expired",expiredText=expired?window.JobDates.shortDay(job.expiredAt):"",expiredValidDays=expired?validDays(job.firstSeen||job.pushTime,job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} ${expiredValidDays===1?"day":"days"}`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
         const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count"><span class="co-separator" aria-hidden="true"></span>'+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
@@ -1168,7 +1168,7 @@ jobsDataPromise
     if(window.JobListView&&window.JobListQuery){
       const rowDays=new WeakMap();orderedGroups.forEach(([day,group])=>group.items.forEach(job=>rowDays.set(job,{day,label:group.label})));
       const rows=orderedGroups.flatMap(([,group])=>group.items);
-      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(placeAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:seenAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
+      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(placeAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:job.firstSeen||job.pushTime,postingDate:placeAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
       const byId=new Map(meta.map(r=>[r.id,r]));
       const view=new JobListView({host:jobsEl,render:(index,i)=>renderJobRow(rows[index],i,index<120),onMount:()=>{daySections=view.blocks.map(b=>b.el);jobCards=daySections.flatMap(sec=>sec._jobCards);jobCards.forEach(card=>card._coData=byId.get(card.dataset.id)?.coData);roleHistoryUi?.restore();}});
       listRuntime={meta,view,lastKey:null};renderReady=true;delete regionsEl.dataset.pendingRegion;apply();return;
@@ -1183,7 +1183,7 @@ jobsDataPromise
       sec.innerHTML=head+rows.join('');
       sec._jobCards=[...sec.querySelectorAll('.job')];
       sec._favoriteCards=new Set(sec._jobCards.filter(card=>favs.has(card.dataset.id)));
-      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:job.firstSeen||job.pushTime,expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
+      sec._jobCards.forEach((card,i)=>{const job=g.items[i];card._coData={date:job.firstSeen||job.pushTime,postingDate:placeAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:card.dataset.status,region:card.dataset.region};});
       jobCards.push(...sec._jobCards);
       if(first&&window.CompanyLogos)await window.CompanyLogos.prepare(sec);
       batch.appendChild(sec);batchJobs+=g.items.length;first=false;

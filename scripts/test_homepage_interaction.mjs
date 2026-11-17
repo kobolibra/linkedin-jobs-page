@@ -353,8 +353,20 @@ async function phone(browser,engine,theme){
   const bubble=page.locator('#top50 .bubble-row').nth(hit.index);
   const company=hit.company;
   const before=await page.evaluate(()=>document.getElementById('company').value);
+  // Capture real mobile pointer/focus/scroll event ordering on failure.
+  await page.evaluate(()=>{
+   window.__bubbleTapAudit=[];
+   const host=document.querySelector('#top50');
+   for(const type of ['pointerdown','pointerup','click','focusin','focusout','pointerleave'])
+    host.addEventListener(type,e=>window.__bubbleTapAudit.push({type,pointerType:e.pointerType||'',target:e.target.closest?.('.bubble-row')?.dataset.company||null,tooltipHidden:document.querySelector('.viz-tip')?.hidden??null,focus:document.activeElement?.closest?.('.bubble-row')?.dataset.company||null,scrollY}),true);
+   document.addEventListener('scroll',()=>window.__bubbleTapAudit.push({type:'scroll',scrollY,tooltipHidden:document.querySelector('.viz-tip')?.hidden??null}),true);
+  });
   await bubble.locator('.bubble-point').tap();
   const t=await tip(page);
+  if(!t||!t.text.includes(company)){
+   const detail=await page.evaluate(()=>({trace:window.__bubbleTapAudit,companyFilter:document.getElementById('company').value,focused:document.activeElement?.closest?.('.bubble-row')?.dataset.company||null,hostClass:document.getElementById('top50').className,tooltip:document.querySelector('.viz-tip')?.outerHTML.slice(0,300),lastHit:document.elementFromPoint(innerWidth/2,innerHeight/2)?.getAttribute('class')}));
+   console.error('BUBBLE_FIRST_TAP_TRACE '+JSON.stringify({company,hit,detail}));
+  }
   assert.ok(t&&t.text.includes(company),
    'first tap must read the actually targeted institution '+company+': '+JSON.stringify(t));
   assert.ok(t.left>=0&&t.right<=width,'tooltip stays on screen on a phone');

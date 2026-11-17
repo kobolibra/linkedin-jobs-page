@@ -9,7 +9,7 @@ const date=v=>Number.isFinite(dates.timestamp(v))?dates.timestamp(v):0;
 const postedAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
 const number=v=>Number(v).toLocaleString('en-US');
 // New-role flow, shared definition with app.js weeklyFlow(): CN/HK/SG roles
-// first seen in the 7 days ending at the latest data update, including roles
+// posted or reposted in the 7 local calendar days to the latest update, including roles
 // that have since closed; prior = the 7 days before that. The guest payload
 // cannot carry closed roles, so the counts are computed here from the index.
 export function weeklyFlow(jobs){

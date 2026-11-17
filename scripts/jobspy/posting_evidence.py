@@ -68,6 +68,60 @@ def search_posting_date(html, job_id):
     return search_posting_dates(html).get(str(job_id))
 
 
+def detail_posting_raw(html, job_id, source):
+    """Raw date evidence for this exact LinkedIn job, never a suggested role.
+
+    Reads the already fetched liveness page; makes no further HTTP requests.
+    Relative text and cached cards have no independently verified raw stamp.
+    """
+    soup = markup(html)
+    if not matches_job(soup, job_id):
+        return None
+    if source == "linkedin-detail-datetime":
+        header = soup.select_one(".posted-time-ago__text")
+        own_time = header if header and header.name == "time" else header.select_one("time[datetime]") if header else None
+        return str(own_time.get("datetime") or "").strip() or None if own_time else None
+    if source == "linkedin-detail-matching-card":
+        stamps = set()
+        for card in soup.select(".base-search-card, .main-job-card, .aside-job-card"):
+            link = card.select_one('a[href*="/jobs/view/"]')
+            if not link:
+                continue
+            raw_url = link.get("href", "")
+            host = (urlsplit(raw_url).hostname or "").lower()
+            if host and host != "linkedin.com" and not host.endswith(".linkedin.com"):
+                continue
+            if linkedin_job_id(raw_url) != str(job_id):
+                continue
+            time = card.select_one("time[datetime]")
+            if time and time.get("datetime"):
+                stamps.add(str(time.get("datetime")).strip())
+        return next(iter(stamps)) if len(stamps) == 1 else None
+    if source == "linkedin-detail-structured":
+        stamps = set()
+        def visit(node):
+            if isinstance(node, list):
+                for entry in node:
+                    visit(entry)
+            elif isinstance(node, dict):
+                types = node.get("@type", [])
+                types = [types] if isinstance(types, str) else types
+                ident = node.get("identifier", {})
+                ident = ident.get("value") if isinstance(ident, dict) else ident
+                matches = linkedin_job_id(node.get("url")) == str(job_id) or str(ident) == str(job_id)
+                if "JobPosting" in types and matches and node.get("datePosted"):
+                    stamps.add(str(node["datePosted"]).strip())
+                if "@graph" in node:
+                    visit(node["@graph"])
+        for script in soup.select('script[type="application/ld+json"]'):
+            try:
+                visit(json.loads(script.string or script.get_text()))
+            except (ValueError, TypeError):
+                pass
+        return next(iter(stamps)) if len(stamps) == 1 else None
+    return None
+
+
 def detail_posting_date(html, job_id, checked_at):
     soup = markup(html)
     if not matches_job(soup, job_id):

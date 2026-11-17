@@ -317,7 +317,11 @@ def main() -> int:
                     status_summary[status_key] = f"failed@start={start}: HTTP 200 block/login page"
                     blocked = True
                     break
-                page_jobs = parse_search(response.text, company, page_started_at, region)
+                # The relative posting label reflects the returned HTML, not the
+                # instant before the HTTP request; preserve queryStartedAt as the
+                # separate absence/reconciliation boundary.
+                page_received_at = datetime.now(timezone.utc).isoformat()
+                page_jobs = parse_search(response.text, company, page_received_at, region)
                 markup = BeautifulSoup(response.text, "html.parser")
                 cards = markup.select("div.base-search-card")
                 if ((not cards and not is_empty_search_page(response.text)) or
