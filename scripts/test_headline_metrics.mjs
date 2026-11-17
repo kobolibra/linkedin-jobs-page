@@ -43,6 +43,24 @@ test('weekly flow counts since-closed roles, excludes other regions and anchors 
  assert.equal(serverFlow([{location:'HK',firstSeen:'bad'}]),null);
 });
 
+test('homepage arithmetic mean uses firstSeen ages, independent of repost date',()=>{
+ const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
+ const dates=require('../calendar-date.js');
+ const declaration=app.match(/^const meanOf=.*;$/m)?.[0];
+ assert.ok(declaration);
+ const meanOf=new Function(declaration+';return meanOf;')();
+ const jobs=[
+  {firstSeen:'2026-11-01',postingLastDate:'2026-11-16'},
+  {firstSeen:'2026-11-11',postingLastDate:'2026-11-16'}
+ ];
+ const now=Date.parse('2026-11-17T15:00:00+08:00');
+ const ages=jobs.map(job=>dates.calendarAge(job.firstSeen,now));
+ assert.deepEqual(ages,[16,6]);
+ assert.equal(meanOf(ages),11);
+ assert.match(app,/const seenAt=j=>j\.firstSeen;/);
+ assert.match(app,/const age=meanOf\(ages\),ageEl=/);
+ assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/);
+});
 test('recently closed roles define the weekly window even if active records are stale',()=>{
  const rows=[
   {link:'active-old',location:'HK',firstSeen:'2026-11-01T03:00:00Z',pushTime:'2026-11-02T03:00:00Z'},

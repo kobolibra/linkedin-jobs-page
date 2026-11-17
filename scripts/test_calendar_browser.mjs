@@ -23,10 +23,10 @@ for(const [engine,type] of Object.entries({chromium,webkit}).filter(([name])=>en
   await page.addScriptTag({content:read('calendar-date.js')});
    await page.addScriptTag({content:read('market-width.js')});
   await page.evaluate(({draw,rows})=>{
-   const norm=loc=>['HK','SG','CN'].includes(loc)?loc:'OTHER',seenAt=j=>j.firstSeen||j.pushTime;
+   const norm=loc=>['HK','SG','CN'].includes(loc)?loc:'OTHER',seenAt=j=>j.firstSeen,postingAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
    const keyOf=d=>window.JobDates.key(d);
    const dayKey=d=>keyOf(new Date(d)),REGIONS={HK:{label:'Hong Kong'},SG:{label:'Singapore'},CN:{label:'Mainland China'},OTHER:{label:'Other'}},cityEl=document.createElement('select');
-   new Function('chartData','norm','seenAt','dayKey','keyOf','REGIONS','cityEl',draw)(rows,norm,seenAt,dayKey,keyOf,REGIONS,cityEl);
+   new Function('chartData','norm','seenAt','postingAt','dayKey','keyOf','REGIONS','cityEl',draw)(rows,norm,seenAt,postingAt,dayKey,keyOf,REGIONS,cityEl);
   },{draw,rows});
   const projections=await assertRegionProjections(page);
   const visualBalance=await assertRegionVisualBalance(page);

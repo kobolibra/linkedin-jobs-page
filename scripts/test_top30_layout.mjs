@@ -10,6 +10,8 @@ const entry=(name,CN,HK,SG,age)=>[name,{total:CN+HK+SG,CN,HK,SG,ages:Array.from(
 
 test('Top 30 uses whole Beijing calendar-day ages',()=>{
  const source=readFileSync(new URL('../top30-layout.js',import.meta.url),'utf8');
+ assert.match(source,/const stamp = job\.firstSeen \|\| ''/);
+ assert.doesNotMatch(source,/const stamp = job\.postingLastDate/);
  assert.match(source,/JobDates\?\.calendarAge\(stamp, now\)/);
  assert.equal(dates.calendarAge('2026-11-17',Date.parse('2026-11-17T15:55:00+08:00')),0);
  assert.equal(dates.calendarAge('2026-11-16',Date.parse('2026-11-17T15:55:00+08:00')),1);

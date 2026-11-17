@@ -13,7 +13,7 @@ function classList(){const set=new Set();return {add:(...a)=>a.forEach(x=>set.ad
 function element(){return {textContent:'',innerHTML:'',title:'',style:{},dataset:{},classList:classList(),events:{},addEventListener(name,fn){this.events[name]=fn;},querySelectorAll:()=>[]};}
 function ui(){
   const elements=new Map(),get=id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);};
-  const context=vm.createContext({window:{},document:{getElementById:get,body:element()},Date:{now:()=>NOW,parse:Date.parse},monogram:n=>n[0],requestAnimationFrame:fn=>fn(),companyEl:{value:'ACME'},ageEl:{value:'all'},apply:()=>{}});
+  const context=vm.createContext({window:{JobDates},document:{getElementById:get,body:element()},Date:{now:()=>NOW,parse:Date.parse},monogram:n=>n[0],requestAnimationFrame:fn=>fn(),companyEl:{value:'ACME'},ageEl:{value:'all'},apply:()=>{}});
   vm.runInContext(source,context);
   return {context,get,...context.window.CompanyInsight,render:context.window.renderCo};
 }
@@ -31,7 +31,7 @@ test('date-only start and closure use whole Beijing calendar-day lifetimes',()=>
  assert.deepEqual(Array.from(s.close.values),[1]);
  assert.equal(s.weeks[0].closed,1);
 });
-test('posting-age histogram matches the list while closure lifetime ignores a repost',()=>{
+test('repost never resets active age, while weekly publishing events remain distinct',()=>{
   const u=ui();
   u.context.window.JobDates=JobDates;
   const records=[
@@ -41,11 +41,11 @@ test('posting-age histogram matches the list while closure lifetime ignores a re
   ];
   const s=u.summarize(records,NOW);
   assert.equal(s.weeks[0].added,2,'including reposted roles closed since');
-  assert.equal(s.open.buckets[0].count,1,'today posting sits in the Today filter');
-  assert.equal(s.open.buckets[4].count,0,'recently reposted role is not listed as 30 days old');
+  assert.equal(s.open.buckets[0].count,0,'repost does not put a mature role into Today');
+  assert.equal(s.open.buckets[4].count,1,'firstSeen keeps a mature repost in 22+ days');
   assert.ok(s.close.median>30,'closure duration still uses the immutable firstSeen');
-  u.render('ACME',records,'0');
-  assert.match(u.get('coHist').innerHTML,/data-age="0" aria-pressed="true"/);
+  u.render('ACME',records,'22+');
+  assert.match(u.get('coHist').innerHTML,/data-age="22\+" aria-pressed="true"/);
   assert.equal(u.get('coFresh').textContent,2);
 });
 
@@ -64,8 +64,8 @@ test('posted and closed weekly cohorts share Beijing midnight boundaries',()=>{
   assert.equal(s.close.n,2,'actual lifetime durations remain measured from firstSeen');
 });
 test('both virtual and fallback card paths provide original and latest posting dates',()=>{
-  assert.match(app,/coData:\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\),expiredAt:/);
-  assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\),expiredAt:/);
+  assert.match(app,/coData:\{date:job\.firstSeen,postingDate:postingAt\(job\),expiredAt:/);
+  assert.match(app,/card\._coData=\{date:job\.firstSeen,postingDate:postingAt\(job\),expiredAt:/);
 });
 test('expired lifetime stops at expiry while active exposure continues',()=>{
   const rows=[record(10),record(30,'expired','CN',ago(20))];
@@ -78,9 +78,9 @@ test('unfinished active roles never enter closure statistics',()=>{
   const s=summarize([record(1000),record(10,'expired','HK',ago(2))],NOW);
   assert.equal(s.close.n,1);assert.equal(s.close.median,8);assert.equal(s.open.median,1000);
 });
-test('duration keeps sub-day precision before averaging and includes same-instant closure',()=>{
+test('lifetime durations ignore sub-day precision even when UTC instants differ',()=>{
   const s=summarize([record(1.75,'expired','HK',ago(1)),record(2,'expired','HK',ago(2))],NOW);
-  assert.equal(s.close.mean,.375);assert.equal(s.close.n,2);
+  assert.equal(s.close.mean,0);assert.equal(s.close.n,2);
 });
 test('reposting or push timestamps cannot reset the original lifetime',()=>{
   const s=summarize([{...record(30,'expired','HK',ago(1)),datePosted:ago(2),pushTime:ago(2)}],NOW);
@@ -94,12 +94,12 @@ test('means and interpolated quartiles are computed separately with weighted dup
 });
 test('original active age buckets retain exact list-filter boundaries and exclude expired roles',()=>{
   const s=summarize([0,.99,1,7.99,8,14.99,15,21.99,22].map(d=>record(d)).concat([record(40,'expired','HK',ago(1))]),NOW);
-  assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[2,2,2,2,1]);
+  assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[1,2,2,2,2]);
   assert.equal(s.close.median,39);assert.equal(s.close.buckets,undefined);
 });
 test('rolling weekly windows are equal and boundary events are not double counted',()=>{
   const s=summarize([0,6.999,7,13.999,14,21,28].map(d=>record(d)),NOW);
-  assert.deepEqual(Array.from(s.weeks,w=>w.added),[2,2,1,1]);
+  assert.deepEqual(Array.from(s.weeks,w=>w.added),[1,2,2,1]);
 });
 test('closure rhythm follows end date independently from the start date',()=>{
   const s=summarize([record(80,'expired','HK',ago(2)),record(20,'expired','HK',ago(7)),record(3)],NOW);
@@ -151,7 +151,7 @@ test('only active histogram renders; closed duration remains a compact summary',
   assert.match(u.get('coHist').innerHTML,/aria-pressed="true"/);
   assert.equal(u.get('coCloseMed').textContent,'2 天');assert.equal(u.get('coCloseSample').textContent,'1 / 1 个');
 });
-test('original histogram click toggles the matching posting-age filter',()=>{
+test('original histogram click toggles the matching first-recorded-age filter',()=>{
   const u=ui();let calls=0;u.context.apply=()=>{calls++;};
   const button={dataset:{age:'1-7'},classList:classList()};
   const click=()=>u.get('coHist').events.click({target:{closest:()=>button}});

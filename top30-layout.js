@@ -238,9 +238,9 @@
       + '\u673a\u6784\u5e73\u5747\u6700\u8fd1\u53d1\u5e03\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
       + grid + axisBreaks + diagonal
       + '<text class="bubble-x-title" x="' + ((left + plotRight) / 2) + '" y="' + (plotBottom + 38)
-      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE POSTING  → LONGER-LISTED</text>'
+      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE FIRST RECORDED  → OLDER</text>'
       + '<text class="bubble-y-title" x="16" y="' + ((plotTop + plotBottom) / 2)
-      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE POSTING →</text>'
+      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE FIRST RECORDED →</text>'
       + pointMarkup + '</svg>';
   };
 
@@ -294,7 +294,7 @@
       item.total += 1;
       const region = fnNorm(job.location);
       if (item[region] != null) item[region] += 1;
-      const stamp = job.postingLastDate || job.firstSeen || job.pushTime || '';
+      const stamp = job.firstSeen || '';
       const age = g.JobDates?.calendarAge(stamp, now);
       if (age != null) item.ages.push(age);
     });

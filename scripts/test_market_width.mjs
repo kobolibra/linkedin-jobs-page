@@ -33,7 +33,7 @@ test('recognized aliases count exactly once per firm and never accept unrelated 
  assert.equal(firmIndex('Unknown Firm'),-1);
 });
 
-test('daily first-seen roles exclude legacy inventory, expired roles, non-roster firms and repost push times',()=>{
+test('Market Breadth counts retained first-recorded roles, including subsequently closed, but excludes repost events',()=>{
  const days=['2026-11-09','2026-11-10','2026-11-11'];
  const job=(company,location,firstSeen,pushTime='2026-11-11T09:00:00Z',jobStatus='active')=>({company,location,firstSeen,pushTime,jobStatus});
  const rows=[
@@ -51,42 +51,40 @@ test('daily first-seen roles exclude legacy inventory, expired roles, non-roster
  assert.equal(series.counts.HK[1][0],1);
  assert.equal(series.counts.SG[1][17],1);
  assert.equal(series.counts.all[0][16],1);
- assert.equal(series.counts.all[2].reduce((a,b)=>a+b,0),0);
+ assert.equal(series.counts.all[2].reduce((a,b)=>a+b,0),1,'closed roles retain their first-day cohort');
  const sum=region=>series.counts[region].flat().reduce((a,b)=>a+b,0);
  assert.equal(sum('all'),sum('CN')+sum('HK')+sum('SG'));
- assert.equal(sum('all'),4);
+ assert.equal(sum('all'),5);
 });
 
-test('shipped 30-day Market Breadth equals the 18-firm projection of posting-day New Postings',()=>{
+test('Market Breadth is an independent firstSeen 18-firm projection, unlike repost-inclusive New Postings',()=>{
  const {jobs}=JSON.parse(read('jobs-index.json'));
  const dates=require('../calendar-date.js');
- const active=jobs.filter(j=>j&&j.jobStatus!=='expired'&&['CN','HK','SG'].includes(j.location));
- const latest=Math.max(...active.map(j=>Date.parse(j.pushTime||j.firstSeen||'')).filter(Number.isFinite));
+ const retained=jobs.filter(j=>j&&['CN','HK','SG'].includes(j.location));
+ const latest=Math.max(...retained.map(j=>dates.timestamp(j.pushTime||j.firstSeen||'')).filter(Number.isFinite));
  const end=dates.key(latest),days=Array.from({length:30},(_,i)=>dates.addDays(end,i-29));
- const series=aggregate(active,days);
- // Validate each actual business day, region and institution against the same
- // underlying source posting-day cohorts as New Postings; pushTime is only fallback.
+ const series=aggregate(retained,days);
  for(let i=0;i<days.length;i++){
   const expected=Object.fromEntries(['CN','HK','SG'].map(region=>[region,Array(FIRMS.length).fill(0)]));
-  for(const job of active){
-   if(dates.key(job.postingLastDate||job.firstSeen||job.pushTime)!==days[i])continue;
+  for(const job of retained){
+   if(dates.key(job.firstSeen)!==days[i])continue;
    const firm=firmIndex(job.company);
    if(firm>=0)expected[job.location][firm]++;
   }
   for(const region of ['CN','HK','SG'])
-   assert.deepEqual(series.counts[region][i],expected[region],days[i]+' '+region+' posting-day counts');
+   assert.deepEqual(series.counts[region][i],expected[region],days[i]+' '+region+' original-day counts');
   const total=FIRMS.map((_,firm)=>expected.CN[firm]+expected.HK[firm]+expected.SG[firm]);
   assert.deepEqual(series.counts.all[i],total,days[i]+' sum across regions');
  }
- // Each role occupies only its most recent known posting day regardless of later
- // captures; the list can sort within that source posting day separately.
- assert.match(read('app.js'),/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(seenAt\(j\)\)/);
- assert.match(read('app.js'),/const seenAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
- assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
- assert.match(read('top30-layout.js'),/const stamp = job\.postingLastDate \|\| job\.firstSeen \|\| job\.pushTime/);
- assert.match(read('guestbook.js'),/j\.postingLastDate \|\| j\.firstSeen \|\| j\.pushTime/);
+ const app=read('app.js'),market=read('market-width.js'),top=read('top30-layout.js');
+ assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/,
+  'New Postings still uses separate posting/reposting events');
+ assert.match(app,/const seenAt=j=>j\.firstSeen;/,'lifetime day stays firstSeen');
+ assert.match(app,/window\.MarketWidth\?\.render\(window\.AuthGuest\?\.marketBreadthRows\|\|data,days\)/);
+ assert.match(market,/return dates\.key\(j\.firstSeen\|\|''\)/);
+ assert.doesNotMatch(market,/dates\.key\(j\.postingLastDate/);
+ assert.match(top,/const stamp = job\.firstSeen \|\| ''/);
 });
-
 test('7-day average and firm breadth describe daily additions, never all active inventory',()=>{
  const series=aggregate([
   {company:'HSBC',location:'CN',firstSeen:'2026-11-09',jobStatus:'active'},
@@ -229,8 +227,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-heading-label">Market Breadth:<\/span> <span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
  assert.match(css,/\.mw-heading-label,\.mw-title-phrase\{white-space:nowrap\}/,'never split the figure label or institution phrase');
- assert.ok(html.includes('new postings across'));
- assert.ok(html.includes('Size and shade reflect postings of the day, including reposts'));
+ assert.ok(html.includes('first-recorded roles across'));
+ assert.ok(html.includes('Size and shade reflect roles first recorded on the day; reposts excluded'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
  assert.ok(pos('id="marketWidthTitle"')<pos('id="marketWidthRegions"')&&
@@ -250,8 +248,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=market-calendar-1','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
- assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
+ for(const ver of ['market-width.js?v=firstseen-age-1','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
+ assert.match(read('app.js'),/window\.MarketWidth\?\.render\(window\.AuthGuest\?\.marketBreadthRows\|\|data,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
  assert.ok(read('scripts/public_assets.mjs').includes("'market-width.js', 'market-width.css'"));

@@ -542,7 +542,7 @@
 
     function buildPreview(data) {
       if (!desktopNav.matches || targets.length || !Array.isArray(data)) return;
-      const keys = [...new Set(data.map(j => j && (j.postingLastDate || j.firstSeen || j.pushTime)).filter(Boolean).map(v => {
+      const keys = [...new Set(data.map(j => j && (j.firstSeen)).filter(Boolean).map(v => {
         return window.JobDates.key(v);
       }).filter(Boolean))].sort().reverse();
       if (!keys.length) return;

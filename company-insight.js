@@ -11,7 +11,6 @@
     {v:'15-21',label:'15–21 天',min:15,max:22,tier:'stale'},
     {v:'22+',label:'22 天+',min:22,max:Infinity,tier:'stale'}
   ];
-  const time=value=>typeof value==='string'&&value.trim()?Date.parse(value):NaN;
   const quant=(a,p)=>{if(!a.length)return null;const i=(a.length-1)*p,lo=Math.floor(i);return a[lo]+(a[Math.ceil(i)]-a[lo])*(i-lo);};
   const num=n=>n==null?'—':String(Math.round(n*10)/10);
   const pct=(n,d)=>d?Math.round(n/d*100)+'%':'—';
@@ -23,38 +22,37 @@
   function summarize(records,now=Date.now()){
     const s={total:0,active:0,expired:0,regions:{},missingStart:0,missingEnd:0,invalidOrder:0,
       reasons:{confirmed:0,snapshot:0,other:0},weeks:Array.from({length:4},()=>({added:0,closed:0,durations:[]}))};
-    // Posting age and original listing lifetime are distinct measures.
-    // A repost advances postingDate, but NEVER resets the original firstSeen.
+    // Every listing-age/lifetime metric begins on immutable firstSeen.
+    // Only the separate weekly publishing-flow counts use latest posting evidence.
     const active=[],activeLifetimes=[],closed=[];
     for(const r of records||[]){
       if(!r)continue;
       const expired=r.status==='expired',region=['CN','HK','SG'].includes(r.region)?r.region:'OTHER';
       s.total++;s[expired?'expired':'active']++;s.regions[region]=(s.regions[region]||0)+1;
       const cal=window.JobDates;
-      const today=cal?.dayStart&&cal?.key?cal.dayStart(cal.key(now)):NaN;
-      const startDay=Number.isFinite(today)?cal.dayStart(cal.key(r.date)):NaN;
-      const endDay=Number.isFinite(today)?cal.dayStart(cal.key(r.expiredAt)):NaN;
-      const start=Number.isFinite(today)?startDay:time(r.date),end=Number.isFinite(today)?endDay:time(r.expiredAt);
-      const reference=Number.isFinite(today)?today:now;
-      const validStart=Number.isFinite(start)&&start<=reference,validEnd=Number.isFinite(end)&&end<=reference;
-      const posted=cal?.dayStart&&cal?.key&&r.postingDate?cal.dayStart(cal.key(r.postingDate)):NaN;
-      // Posting age always uses Beijing calendar days when JobDates is available.
-      const age=Number.isFinite(today)?(today-(Number.isFinite(posted)?posted:startDay))/DAY:(now-time(r.postingDate||r.date))/DAY;
-      if(Number.isFinite(age)&&age>=0){
-        const w=Math.floor(age/7);
+      const today=cal.dayStart(cal.key(now));
+      const start=cal.dayStart(cal.key(r.date));
+      const end=cal.dayStart(cal.key(r.expiredAt));
+      const validStart=Number.isFinite(start)&&start<=today,validEnd=Number.isFinite(end)&&end<=today;
+      const age=validStart?(today-start)/DAY:NaN;
+      // The weekly publishing flow is an event count, NOT a listing-age metric.
+      const posted=cal.dayStart(cal.key(r.postingDate||r.date));
+      const postingAge=Number.isFinite(posted)?(today-posted)/DAY:NaN;
+      if(Number.isFinite(postingAge)&&postingAge>=0){
+        const w=Math.floor(postingAge/7);
         if(w<4)s.weeks[w].added++;
-        if(!expired)active.push(age);
       }
+      if(!expired&&Number.isFinite(age))active.push(age);
       if(!validStart)s.missingStart++;
       if(!expired){
-        if(validStart)activeLifetimes.push((reference-start)/DAY);
+        if(validStart)activeLifetimes.push(age);
         continue;
       }
       s.reasons[/^linkedin_(closed|removed)$/.test(r.expiredReason)?'confirmed':r.expiredReason==='missing_from_full_company_snapshot'?'snapshot':'other']++;
       if(!validEnd){s.missingEnd++;continue;}
       if(validStart&&end<start){s.invalidOrder++;continue;}
       // Compare published and closed events using identical local-day windows.
-      const closeAge=Number.isFinite(today)?(today-endDay)/DAY:(now-end)/DAY;
+      const closeAge=(today-end)/DAY;
       const w=Math.floor(closeAge/7);
       if(w<4)s.weeks[w].closed++;
       if(validStart){
@@ -94,7 +92,7 @@
       notes.push('长周期职位拉高了平均数：比中位数高 '+num(s.close.mean-s.close.median)+' 天；典型关闭用时更宜参考中位数。');
     }
     if(s.open.n){
-      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）距最近发布至少30天。';
+      let note='有效存量：'+s.oldActive+' / '+s.open.n+' 个（'+pct(s.oldActive,s.open.n)+'）自首次记录起至少30天。';
       if(s.close.n>=10)note+=s.beyondQ3+' 个有效职位已超过历史关闭用时的75%分位（'+num(s.close.q3)+' 天）。';
       notes.push(note);
     }
@@ -118,16 +116,16 @@
     const max=Math.max(1,...s.open.buckets.map(b=>b.count));
     $('coHist').innerHTML=s.open.buckets.map(b=>{
       const selected=ageSel===b.v;
-      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="有效 '+b.count+' 个；按此发布时间筛选职位列表">'
+      return '<button type="button" class="co-bar '+b.tier+(!b.count?' empty':'')+(selected?' active':'')+'" data-age="'+b.v+'" aria-pressed="'+selected+'"'+(!b.count?' disabled':'')+' title="有效 '+b.count+' 个；按首次记录日期筛选职位列表">'
         +'<span class="co-bar-l">'+b.label+'</span><span class="co-bar-t"><span class="co-bar-f" data-w="'+b.count/max*100+'"></span></span>'
         +'<span class="co-bar-v tnum">'+b.count+'</span><span class="co-bar-p tnum">'+pct(b.count,s.open.n)+'</span></button>';
     }).join('');
     $('coAxisSec').hidden=s.open.n<3;
     if(s.open.n>=3){
       const span=Math.max(s.open.values[s.open.n-1],1),pos=d=>d/span*100,groups=new Map();
-      for(const d of s.open.values){const age=Math.floor(d);groups.set(age,(groups.get(age)||0)+1);}
+      for(const d of s.open.values){const age=d;groups.set(age,(groups.get(age)||0)+1);}
       $('coPlot').innerHTML='<span class="co-band" style="left:'+pos(s.open.q1)+'%;width:'+(pos(s.open.q3)-pos(s.open.q1))+'%"></span>'
-        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="距最近发布 '+age+' 天：'+n+' 个有效职位"></span>').join('')
+        +[...groups].map(([age,n])=>'<span class="co-tick" style="left:'+pos(age)+'%;width:'+Math.min(4,1+Math.log2(n))+'px" title="距首次记录 '+age+' 天：'+n+' 个有效职位"></span>').join('')
         +'<span class="co-mk co-mean" style="left:'+pos(s.open.mean)+'%"></span><span class="co-mk co-med" style="left:'+pos(s.open.median)+'%"></span>';
       $('coScale').innerHTML='<span>0 天</span><span>'+num(span)+' 天</span>';
     }

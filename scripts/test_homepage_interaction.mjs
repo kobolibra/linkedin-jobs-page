@@ -97,7 +97,7 @@ async function desktop(browser,engine,theme){
   assert.equal(density.top30Open,false,'Top 30 starts folded so the job list stays close to the fold');
   const toolbarTop=await page.evaluate(()=>Math.round(document.querySelector('.toolbar').getBoundingClientRect().top+scrollY));
   assert.ok(toolbarTop<1700,'job-list controls stay within two screens on desktop: '+toolbarTop);
-  assert.match(density.ageText,/^\d+$/,'median listing age is a whole number of days');
+  assert.match(density.ageText,/^\d+(?:\.\d)?$/,'active arithmetic mean is derived from whole calendar-day ages and may have one decimal place');
 
   // The editorial masthead is also a direct route to the job-search tools.
   assert.equal(await page.locator('.nj-browse-roles').getAttribute('href'),'#roles');

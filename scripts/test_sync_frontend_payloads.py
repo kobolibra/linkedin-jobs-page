@@ -45,6 +45,8 @@ class FrontendPayloadSyncTests(unittest.TestCase):
                 shutil.copy2(ROOT / "scripts" / name, target)
             # The guest preview's shared business calendar is a real package dependency.
             shutil.copy2(ROOT / "calendar-date.js", checkout / "calendar-date.js")
+            # The 18-firm public-preview aggregator shares the production Market Breadth registry.
+            shutil.copy2(ROOT / "market-width.js", checkout / "market-width.js")
             for name in ("build_frontend_payload.py", "jev_preprocess.py", "linkedin_ids.py", "logo_sources.py", "track_jd_changes.py", "posting_dates.py"):
                 target = checkout / "scripts" / "jobspy" / name
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -57,7 +59,7 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             # This fixture exercises the real public pack as well as payload sync.
             public_files = json.loads(subprocess.check_output(("node", "--input-type=module", "-e", "import {PUBLIC_FILES} from './scripts/public_assets.mjs'; console.log(JSON.stringify(PUBLIC_FILES))"), cwd=checkout))
             for name in public_files:
-                if name in ("jobs-index.json", "company-logos.json", "calendar-date.js"):
+                if name in ("jobs-index.json", "company-logos.json", "calendar-date.js", "market-width.js"):
                     continue
                 target = checkout / name
                 target.parent.mkdir(parents=True, exist_ok=True)
