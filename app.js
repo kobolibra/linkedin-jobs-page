@@ -1024,7 +1024,7 @@ jobsDataPromise
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
     const rcounts={};
-    if(postingHistoryDaily){
+    if(typeof postingHistoryDaily!=="undefined"&&postingHistoryDaily){
       for(const [date,values] of Object.entries(postingHistoryDaily)){
         if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!values||typeof values!=="object")continue;
         rcounts[date]=Object.fromEntries(RKEYS.map(region=>[region,Math.max(0,Number(values[region])||0)]));
