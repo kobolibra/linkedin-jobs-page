@@ -9,7 +9,7 @@
   }catch{}
   function fallback(){
     el.textContent=last?last.value.toLocaleString('en-US'):'—';
-    const note=last?'上次成功更新：'+new Date(last.at).toLocaleString('zh-CN')+'；统计服务暂不可用':'统计服务暂不可用，尚未取得访问总数';
+    const note=last?'上次成功更新：'+window.JobDates.formatStamp(last.at)+'；统计服务暂不可用':'统计服务暂不可用，尚未取得访问总数';
     el.title=note;
     el.setAttribute('aria-label',last?'访问数 '+last.value.toLocaleString('zh-CN')+'；'+note:note);
     el.setAttribute('aria-busy','false');
