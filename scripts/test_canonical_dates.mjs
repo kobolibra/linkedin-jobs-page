@@ -85,6 +85,16 @@ test('legacy JPM stays unchanged while future posting-day cohorts align across c
  assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen\|\|job\.pushTime,job\.expiredAt\)/,'expiration duration must use original lifecycle entry, never repost day');
  assert.doesNotMatch(app,/expiredValidDays=expired\?validDays\(seenAt\(job\),/);
 });
+test('expired-role valid-day badge counts Beijing calendar boundaries, not UTC elapsed hours',()=>{
+ const source=read('app.js');
+ const definition=source.match(/^const validDays=.*;$/m)?.[0];
+ assert.ok(definition,'closed-role validity calculation is available');
+ const validDays=new Function('window',definition+';return validDays;')({JobDates:dates});
+ assert.equal(validDays('2026-11-16','2026-11-16T15:59:59Z'),0);
+ assert.equal(validDays('2026-11-16','2026-11-16T16:00:01Z'),1);
+ assert.equal(validDays('2026-11-17','2026-11-16T15:59:59Z'),null);
+ assert.equal(validDays('invalid','2026-11-17'),null);
+});
 test('visible metric labels and canonical consumer semantics agree on posting dates',()=>{
  const home=read('index.html'),about=read('about.html'),top=read('top30-layout.js'),app=read('app.js');
  assert.match(home,/posted or reposted in the 7 days/);
