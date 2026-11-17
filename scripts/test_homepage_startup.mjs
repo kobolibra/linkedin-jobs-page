@@ -103,7 +103,7 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
      assert.equal(role.age,role.expectedAge,'repost never resets age');
      assert.match(role.label,/29 Oct 2026/);
      await page.locator('#search').fill('Asset Management - AI Product Manager');
-     await page.waitForFunction(()=>listRuntime.view.rows.length===1);
+     await page.waitForFunction(()=>listRuntime.view.rows.length===1&&listRuntime.meta[listRuntime.view.rows[0]].search.includes('asset management - ai product manager'));
      const ai=await page.evaluate(()=>{
       const m=listRuntime.meta[listRuntime.view.rows[0]];
       return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-11-16')};
