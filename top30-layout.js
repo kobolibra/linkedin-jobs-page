@@ -235,12 +235,12 @@
     }).join('');
 
     return '<svg class="top20-svg bubble-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Top 30 '
-      + '\u673a\u6784\u5e73\u5747\u9996\u6b21\u53d1\u73b0\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
+      + '\u673a\u6784\u5e73\u5747\u6700\u8fd1\u53d1\u5e03\u5929\u6570\u3001\u4e2d\u4f4d\u6570\u4e0e\u804c\u4f4d\u6570\u91cf\u6c14\u6ce1\u56fe">'
       + grid + axisBreaks + diagonal
       + '<text class="bubble-x-title" x="' + ((left + plotRight) / 2) + '" y="' + (plotBottom + 38)
-      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE FIRST SEEN  → LONGER-LISTED</text>'
+      + '" text-anchor="middle">NEWER ←  AVERAGE DAYS SINCE POSTING  → LONGER-LISTED</text>'
       + '<text class="bubble-y-title" x="16" y="' + ((plotTop + plotBottom) / 2)
-      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE FIRST SEEN →</text>'
+      + '" text-anchor="middle" transform="rotate(-90 16 ' + ((plotTop + plotBottom) / 2) + ')">MEDIAN DAYS SINCE POSTING →</text>'
       + pointMarkup + '</svg>';
   };
 

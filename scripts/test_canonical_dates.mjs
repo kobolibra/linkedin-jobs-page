@@ -85,6 +85,18 @@ test('legacy JPM stays unchanged while future posting-day cohorts align across c
  assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen\|\|job\.pushTime,job\.expiredAt\)/,'expiration duration must use original lifecycle entry, never repost day');
  assert.doesNotMatch(app,/expiredValidDays=expired\?validDays\(seenAt\(job\),/);
 });
+test('visible metric labels and canonical consumer semantics agree on posting dates',()=>{
+ const home=read('index.html'),about=read('about.html'),top=read('top30-layout.js'),app=read('app.js');
+ assert.match(home,/posted or reposted in the 7 days/);
+ assert.match(home,/days since latest posting/);
+ assert.match(home,/including reposts/);
+ assert.doesNotMatch(home,/excluding reposts|days since first seen|first seen in the 7 days/);
+ assert.match(about,/posted or reposted on each day/);
+ assert.match(top,/AVERAGE DAYS SINCE POSTING/);
+ assert.match(top,/MEDIAN DAYS SINCE POSTING/);
+ assert.match(app,/currently active roles posted by/);
+ assert.doesNotMatch(app,/currently active roles first seen by/);
+});
 test('site loads one shared calendar and all known user-facing dates use it',()=>{
  const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');
  const expected=['calendar-date.js','app.js','list-view.js','market-width.js','job-applications.js','guestbook.js','visitor-count.js'];

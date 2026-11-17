@@ -74,11 +74,11 @@ test('shipped 30-day Market Breadth equals the 18-firm projection of posting-day
    if(firm>=0)expected[job.location][firm]++;
   }
   for(const region of ['CN','HK','SG'])
-   assert.deepEqual(series.counts[region][i],expected[region],days[i]+' '+region+' first-seen counts');
+   assert.deepEqual(series.counts[region][i],expected[region],days[i]+' '+region+' posting-day counts');
   const total=FIRMS.map((_,firm)=>expected.CN[firm]+expected.HK[firm]+expected.SG[firm]);
   assert.deepEqual(series.counts.all[i],total,days[i]+' sum across regions');
  }
- // Each firm can occupy at most one first-seen date regardless of later
+ // Each role occupies only its most recent known posting day regardless of later
  // captures; the list can sort within that source posting day separately.
  assert.match(read('app.js'),/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(seenAt\(j\)\)/);
  assert.match(read('app.js'),/const seenAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
@@ -230,7 +230,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-heading-label">Market Breadth:<\/span> <span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
  assert.match(css,/\.mw-heading-label,\.mw-title-phrase\{white-space:nowrap\}/,'never split the figure label or institution phrase');
  assert.ok(html.includes('new postings across'));
- assert.ok(html.includes('Size and shade reflect new postings of the day, excluding reposts'));
+ assert.ok(html.includes('Size and shade reflect postings of the day, including reposts'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
  assert.ok(pos('id="marketWidthTitle"')<pos('id="marketWidthRegions"')&&
