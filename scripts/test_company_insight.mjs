@@ -19,6 +19,18 @@ function ui(){
 }
 const {summarize,insights}=ui();
 
+test('date-only start and closure use whole Beijing calendar-day lifetimes',()=>{
+ const u=ui();u.context.window.JobDates=JobDates;
+ const now=Date.parse('2026-11-17T00:05:00+08:00');
+ const s=u.summarize([
+  {date:'2026-11-17',postingDate:'2026-11-17',status:'active',region:'CN'},
+  {date:'2026-11-16',postingDate:'2026-11-16',expiredAt:'2026-11-17T00:01:00+08:00',status:'expired',region:'HK'}
+ ],now);
+ assert.equal(s.missingStart,0);
+ assert.deepEqual(Array.from(s.open.values),[0]);
+ assert.deepEqual(Array.from(s.close.values),[1]);
+ assert.equal(s.weeks[0].closed,1);
+});
 test('posting-age histogram matches the list while closure lifetime ignores a repost',()=>{
   const u=ui();
   u.context.window.JobDates=JobDates;

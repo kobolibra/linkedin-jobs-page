@@ -43,6 +43,17 @@ test('weekly flow counts since-closed roles, excludes other regions and anchors 
  assert.equal(serverFlow([{location:'HK',firstSeen:'bad'}]),null);
 });
 
+test('recently closed roles define the weekly window even if active records are stale',()=>{
+ const rows=[
+  {link:'active-old',location:'HK',firstSeen:'2026-11-01T03:00:00Z',pushTime:'2026-11-02T03:00:00Z'},
+  {link:'closed-new',location:'CN',firstSeen:'2026-11-16',postingLastDate:'2026-11-16',jobStatus:'expired',expiredAt:'2026-11-17T03:00:00Z'}
+ ];
+ const actual=plain(browserFlow(rows));
+ assert.equal(actual.current,1);
+ assert.equal(actual.prior,0);
+ assert.deepEqual(actual,serverFlow(rows));
+ assert.equal(serverFlow(rows.filter(j=>j.jobStatus==='expired')).current,1);
+});
 test('week boundaries are exact Beijing calendar days, including midnight',()=>{
  const rows=[
   {link:'boundary',location:'CN',firstSeen:'2026-11-11',postingLastDate:'2026-11-11'},

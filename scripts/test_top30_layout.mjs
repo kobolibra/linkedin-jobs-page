@@ -3,9 +3,17 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
 const {computeLayout,buildSvg,DOMINANT_SHARE}=require('../top30-layout.js');
+const {readFileSync}=require('node:fs');
+const dates=require('../calendar-date.js');
 
 const entry=(name,CN,HK,SG,age)=>[name,{total:CN+HK+SG,CN,HK,SG,ages:Array.from({length:CN+HK+SG},(_,i)=>age+i%5)}];
 
+test('Top 30 uses whole Beijing calendar-day ages',()=>{
+ const source=readFileSync(new URL('../top30-layout.js',import.meta.url),'utf8');
+ assert.match(source,/JobDates\?\.calendarAge\(stamp, now\)/);
+ assert.equal(dates.calendarAge('2026-11-17',Date.parse('2026-11-17T15:55:00+08:00')),0);
+ assert.equal(dates.calendarAge('2026-11-16',Date.parse('2026-11-17T15:55:00+08:00')),1);
+});
 test('Top 30 colour encodes the market holding at least 60% of an institution’s active roles',()=>{
  assert.equal(DOMINANT_SHARE,.6);
  const layout=computeLayout([

@@ -72,6 +72,16 @@ class PostingTests(unittest.TestCase):
         self.assertEqual(detail_posting_date(html,KEY,"2026-10-09T07:30:00+08:00"),(None,None))
         self.assertEqual(detail_posting_date(html.replace(KEY,"999999999"),KEY,"2026-10-09T14:00:00Z"),(None,None))
 
+    def test_search_and_detail_share_day_policy_for_naive_and_zoned_evidence(self):
+        raw = '2026-11-16T23:30:00'
+        html = PAGE + '<span class="posted-time-ago__text"><time datetime="' + raw + '">Posted</time></span>'
+        self.assertEqual(detail_posting_date(html, KEY, '2026-11-17T06:00:00Z')[0], '2026-11-16')
+        self.assertEqual(search_posting_date(card(posted=raw), KEY), '2026-11-16')
+        zoned = '2026-11-16T16:30:00Z'
+        html_zoned = PAGE + '<span class="posted-time-ago__text"><time datetime="' + zoned + '">Posted</time></span>'
+        self.assertEqual(detail_posting_date(html_zoned, KEY, '2026-11-17T06:00:00Z')[0], '2026-11-17')
+        self.assertEqual(search_posting_date(card(posted=zoned), KEY), '2026-11-17')
+
     def test_search_requires_exact_id_and_rejects_conflicting_dates(self):
         self.assertIsNone(search_posting_date(card("2123456789"),KEY))
         self.assertEqual(search_posting_date(card(),KEY),"2026-10-09")
