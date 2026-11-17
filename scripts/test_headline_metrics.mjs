@@ -59,7 +59,7 @@ test('homepage arithmetic mean uses firstSeen ages, independent of repost date',
  assert.equal(meanOf(ages),11);
  assert.match(app,/const seenAt=j=>j\.firstSeen;/);
  assert.match(app,/const age=meanOf\(ages\),ageEl=/);
- assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/);
+ assert.match(app,/Object\.entries\(postingHistoryDaily\)/);
 });
 test('recently closed roles define the weekly window even if active records are stale',()=>{
  const rows=[

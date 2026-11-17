@@ -77,7 +77,7 @@ test('Market Breadth is an independent firstSeen 18-firm projection, unlike repo
   assert.deepEqual(series.counts.all[i],total,days[i]+' sum across regions');
  }
  const app=read('app.js'),market=read('market-width.js'),top=read('top30-layout.js');
- assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/,
+ assert.match(app,/Object\.entries\(postingHistoryDaily\)/,
   'New Postings still uses separate posting/reposting events');
  assert.match(app,/const seenAt=j=>j\.firstSeen;/,'lifetime day stays firstSeen');
  assert.match(app,/window\.MarketWidth\?\.render\(window\.AuthGuest\?\.marketBreadthRows\|\|data,days\)/);
