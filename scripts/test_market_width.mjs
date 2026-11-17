@@ -57,6 +57,33 @@ test('daily first-seen roles exclude legacy inventory, expired roles, non-roster
  assert.equal(sum('all'),4);
 });
 
+test('shipped 30-day Market Breadth equals the 18-firm projection of first-seen New Postings',()=>{
+ const {jobs}=JSON.parse(read('jobs-index.json'));
+ const dates=require('../calendar-date.js');
+ const active=jobs.filter(j=>j&&j.jobStatus!=='expired'&&['CN','HK','SG'].includes(j.location));
+ const latest=Math.max(...active.map(j=>Date.parse(j.pushTime||j.firstSeen||'')).filter(Number.isFinite));
+ const end=dates.key(latest),days=Array.from({length:30},(_,i)=>dates.addDays(end,i-29));
+ const series=aggregate(active,days);
+ // Validate each actual business day, region and institution against the same
+ // underlying firstSeen cohorts as New Postings; pushTime never creates a new.
+ for(let i=0;i<days.length;i++){
+  const expected=Object.fromEntries(['CN','HK','SG'].map(region=>[region,Array(FIRMS.length).fill(0)]));
+  for(const job of active){
+   if(dates.key(job.firstSeen||job.pushTime)!==days[i])continue;
+   const firm=firmIndex(job.company);
+   if(firm>=0)expected[job.location][firm]++;
+  }
+  for(const region of ['CN','HK','SG'])
+   assert.deepEqual(series.counts[region][i],expected[region],days[i]+' '+region+' first-seen counts');
+  const total=FIRMS.map((_,firm)=>expected.CN[firm]+expected.HK[firm]+expected.SG[firm]);
+  assert.deepEqual(series.counts.all[i],total,days[i]+' sum across regions');
+ }
+ // Each firm can occupy at most one first-seen date regardless of later
+ // captures; the list can sort within that source posting day separately.
+ assert.match(read('app.js'),/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(seenAt\(j\)\)/);
+ assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
+});
+
 test('7-day average and firm breadth describe daily additions, never all active inventory',()=>{
  const series=aggregate([
   {company:'HSBC',location:'CN',firstSeen:'2026-11-09',jobStatus:'active'},
