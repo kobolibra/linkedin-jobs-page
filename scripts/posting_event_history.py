@@ -13,28 +13,28 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import re
 import tempfile
 from datetime import date
 from pathlib import Path
 
 from jobspy.posting_dates import posting_day
+from jobspy.linkedin_ids import linkedin_job_id
 
 REGIONS = frozenset({"CN", "HK", "SG", "OTHER"})
 SCHEMA = "1.0"
-LINKEDIN_ID = re.compile(r"(?:linkedin\.com/jobs/view/|(?:^|[^\d])li-)(\d{6,})", re.I)
-
-
 def identity(job):
+    # Same canonical ID parser as the JobSpy merge and the homepage. Handles
+    # slugged URLs such as /jobs/view/cfo-financial...-4489793926/.
     for raw in (job.get("sourceJobId"), job.get("link")):
-        match = LINKEDIN_ID.search(str(raw or ""))
-        if match:
-            return "ln:" + match.group(1)
+        key = linkedin_job_id(raw)
+        if key:
+            return "ln:" + key
     return ""
 
 
 def day(value):
-    return posting_day(value).isoformat() if posting_day(value) else ""
+    parsed = posting_day(value)
+    return parsed.isoformat() if parsed else ""
 
 
 def region_of(job):
