@@ -49,7 +49,10 @@
       s.reasons[/^linkedin_(closed|removed)$/.test(r.expiredReason)?'confirmed':r.expiredReason==='missing_from_full_company_snapshot'?'snapshot':'other']++;
       if(!validEnd){s.missingEnd++;continue;}
       if(validStart&&end<start){s.invalidOrder++;continue;}
-      const w=Math.floor((now-end)/DAY/7);
+      // Compare published and closed events using identical local-day windows.
+      const closeDay=cal?.dayStart&&cal?.key&&r.postingDate?cal.dayStart(cal.key(r.expiredAt)):NaN;
+      const closeAge=Number.isFinite(closeDay)&&Number.isFinite(today)?(today-closeDay)/DAY:(now-end)/DAY;
+      const w=Math.floor(closeAge/7);
       if(w<4)s.weeks[w].closed++;
       if(validStart){
         const duration=(end-start)/DAY;closed.push(duration);

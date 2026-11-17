@@ -36,6 +36,21 @@ test('posting-age histogram matches the list while closure lifetime ignores a re
   assert.match(u.get('coHist').innerHTML,/data-age="0" aria-pressed="true"/);
   assert.equal(u.get('coFresh').textContent,2);
 });
+
+test('posted and closed weekly cohorts share Beijing midnight boundaries',()=>{
+  const u=ui();
+  u.context.window.JobDates=JobDates;
+  const old='2026-09-01T00:00:00Z';
+  const s=u.summarize([
+    {date:old,postingDate:'2026-09-30',status:'expired',
+     expiredAt:'2026-09-30T15:59:00Z',region:'HK'},
+    {date:old,postingDate:'2026-10-01',status:'expired',
+     expiredAt:'2026-09-30T16:01:00Z',region:'HK'}
+  ],NOW);
+  assert.deepEqual(Array.from(s.weeks,w=>w.closed),[1,1,0,0],
+    'Beijing Sep 30 closure belongs to prior week, Oct 1 closure belongs to current week');
+  assert.equal(s.close.n,2,'actual lifetime durations remain measured from firstSeen');
+});
 test('both virtual and fallback card paths provide original and latest posting dates',()=>{
   assert.match(app,/coData:\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\),expiredAt:/);
   assert.match(app,/card\._coData=\{date:job\.firstSeen\|\|job\.pushTime,postingDate:placeAt\(job\),expiredAt:/);
