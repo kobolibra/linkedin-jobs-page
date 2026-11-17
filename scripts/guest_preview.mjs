@@ -58,7 +58,7 @@ export function publicPreviewPayload(data,index){
  const selected=new Map(data.jobs.map(j=>[j.id,j]));
  const jobs=[];const companyLogos={};
  for(const original of index.jobs){const match=String(original.link||'').match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const preview=selected.get(id);if(!preview)continue;
-  const job={title:preview.title,company:preview.company,link:original.link,location:preview.region,firstSeen:original.firstSeen||original.pushTime||preview.date,city:preview.city,locationRaw:String(original.locationRaw||''),hasJd:original.hasJd===true,jobStatus:'active',previewSnippet:preview.snippet};
+  const job={title:preview.title,company:preview.company,link:original.link,location:preview.region,firstSeen:original.firstSeen||null,city:preview.city,locationRaw:String(original.locationRaw||''),hasJd:original.hasJd===true,jobStatus:'active',previewSnippet:preview.snippet};
   if(original.pushTime)job.pushTime=original.pushTime;
   if(original.postingLastDate)job.postingLastDate=original.postingLastDate;
   if(original.salary!=null)job.salary=original.salary;
@@ -66,7 +66,7 @@ export function publicPreviewPayload(data,index){
   const key=preview.company.toLowerCase(),asset=index.companyLogos?.[key];if(/^assets\/company-logos\/[a-f0-9]{24}\.(svg|webp)$/.test(asset||''))companyLogos[key]=asset;
  }
  const buckets=new Map();
- for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(postedAt(job)||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||''),String(job.firstSeen||job.pushTime||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
+ for(const job of index.jobs){if(job.jobStatus==='expired'||!['CN','HK','SG'].includes(job.location))continue;const key=JSON.stringify([job.location,String(job.company||''),String(postedAt(job)||''),String(job.city||''),String(job.locationRaw||''),String(job.pushTime||job.firstSeen||''),String(job.firstSeen||'')]);buckets.set(key,(buckets.get(key)||0)+1);}
  // Carry original firstSeen separately from latest posting day. Guests need both clocks:
   // lifetime charts/list age from firstSeen; publication flow from latest posting.
   const chartBuckets=[...buckets].map(([key,count])=>{const fields=JSON.parse(key);return [...fields.slice(0,5),count,fields[5],fields[6]];});

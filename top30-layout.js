@@ -294,7 +294,7 @@
       item.total += 1;
       const region = fnNorm(job.location);
       if (item[region] != null) item[region] += 1;
-      const stamp = job.firstSeen || job.pushTime || '';
+      const stamp = job.firstSeen || '';
       const age = g.JobDates?.calendarAge(stamp, now);
       if (age != null) item.ages.push(age);
     });
