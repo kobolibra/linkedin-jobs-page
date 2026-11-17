@@ -57,7 +57,7 @@ const firmIndex=name=>names.get(norm(name))??-1;
 const REGIONS=['all','CN','HK','SG'];
 const dateKey=d=>dates.key(d);
 const firstSeenKey=j=>{
- return dates.key(j.firstSeen||j.pushTime||'');
+ return dates.key(j.postingLastDate||j.firstSeen||j.pushTime||'');
 };
 function aggregate(rows,days,keyOf=firstSeenKey){
  const keys=days.map(d=>typeof d==='string'?d:d.key||dateKey(d.date));
