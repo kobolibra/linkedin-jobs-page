@@ -83,6 +83,22 @@ class LinkedInPostingDayTests(unittest.TestCase):
         self.assertEqual(row['pushTime'], '2026-11-17T05:10:00Z')
         self.assertNotIn('lastRepostedAt', row)
 
+    def test_precise_source_timestamp_advancement_is_not_suppressed(self):
+        old = {'postingLastDate': '2026-11-16',
+               'linkedinPostedRaw': '2026-11-16T15:59:00Z'}
+        self.assertTrue(is_repost(old, '2026-11-17',
+                                  '2026-11-17T05:00:00Z',
+                                  source_raw='2026-11-16T16:20:00Z'))
+        self.assertFalse(is_repost(old, '2026-11-17',
+                                   '2026-11-17T05:00:00Z',
+                                   source_raw='2026-11-16T15:59:00Z'))
+
+    def test_legacy_rss_only_first_seen_is_not_a_false_repost(self):
+        old = {'firstSeen': '2026-11-16', 'pushTime': '2026-11-16T21:59:16Z'}
+        self.assertFalse(is_repost(old, '2026-11-17',
+                                   '2026-11-17T05:00:00Z',
+                                   source_raw='2026-11-16'))
+
     def test_new_raw_source_day_can_advance_real_repost_once(self):
         old = {'sourceJobId': 'li-4489793926', 'company': 'JPMorganChase',
                'location': 'CN', 'title': 'AI Product Manager',
