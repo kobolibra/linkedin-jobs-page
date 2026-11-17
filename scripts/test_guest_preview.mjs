@@ -12,7 +12,20 @@ test('guest overview retains initial-day and repost-day separately for all chart
  assert.equal(row[7],'2026-10-02','all age/lifetime charts keep original firstSeen');
  const guestScript=readFileSync(new URL('../auth-guest.js',import.meta.url),'utf8');
  assert.match(guestScript,/firstSeen:firstSeen\|\|''/);
- assert.match(guestScript,/ageDays\(j\.firstSeen\|\|j\.pushTime\)/);
+ assert.match(guestScript,/ageDays\(j\.firstSeen\)/);
+});
+test('Market Breadth preview counts retained closed roles only on firstSeen date',()=>{
+ const index=fixture();
+ index.jobs[0].company='HSBC';index.jobs[0].firstSeen='2026-10-02';
+ index.jobs[0].postingLastDate='2026-10-21';
+ index.jobs.push({...index.jobs[0],link:'https://www.linkedin.com/jobs/view/9999999',jobStatus:'expired',postingLastDate:'2026-10-20'});
+ const payload=publicPreviewPayload(previewData(index,{},now),index);
+ const buckets=payload.previewOverview.marketBreadthBuckets;
+ const original=buckets.find(row=>row[0]==='CN'&&row[1]==='HSBC'&&row[2]==='2026-10-02');
+ assert.equal(original?.[3],2,'closing or reposting does not change initial-day count');
+ assert.equal(buckets.filter(row=>row[1]==='HSBC'&&row[2]==='2026-10-21').length,0);
+ assert.ok(!JSON.stringify(payload).includes('MUST_NOT_PUBLISH'));
+ assert.equal(payload.previewOverview.chartBuckets.reduce((n,row)=>n+row[5],0),24,'public posting cohorts remain active-only');
 });
 test('refresh and query changes cannot rotate the public selection',()=>{const index=fixture();assert.deepEqual(previewData(index,{},now).jobs,previewData(index,{},now+86400000).jobs);});
 test('same index schema feeds the existing renderer but excludes full descriptions and private metadata',()=>{const index=fixture(),details={details:{'ln:1000000':{descriptionHtml:'<script>SECRET()</script><p>'+('Useful work. '.repeat(80))+'</p>',jevInput:{secret:'PRIVATE_JEV'}}}};const payload=publicPreviewPayload(previewData(index,details,now),index),json=JSON.stringify(payload);assert.equal(payload.jobs.length,12);assert.equal(payload.previewOverview.total,24);assert.equal(payload.previewOverview.chartBuckets.reduce((n,b)=>n+b[5],0),24);assert.ok(payload.previewOverview.chartBuckets.every(b=>b.length===8));assert.ok(payload.dataVersion.startsWith('preview-'));assert.ok(!['MUST_NOT_PUBLISH','TOP_SECRET','SECRET()','PRIVATE_JEV','Useful work. '.repeat(30)].some(x=>json.includes(x)));assert.ok(payload.jobs.every(j=>!('descriptionHtml' in j)&&!('description' in j)));assert.ok(payload.jobs.every(j=>j.previewSnippet.length<=241));});

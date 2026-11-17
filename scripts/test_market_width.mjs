@@ -80,7 +80,7 @@ test('Market Breadth is an independent firstSeen 18-firm projection, unlike repo
  assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/,
   'New Postings still uses separate posting/reposting events');
  assert.match(app,/const seenAt=j=>j\.firstSeen;/,'lifetime day stays firstSeen');
- assert.match(app,/window\.MarketWidth\?\.render\(chartData,days\)/);
+ assert.match(app,/window\.MarketWidth\?\.render\(window\.AuthGuest\?\.marketBreadthRows\|\|data,days\)/);
  assert.match(market,/return dates\.key\(j\.firstSeen\|\|''\)/);
  assert.doesNotMatch(market,/dates\.key\(j\.postingLastDate/);
  assert.match(top,/const stamp = job\.firstSeen \|\| ''/);

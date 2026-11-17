@@ -53,7 +53,7 @@ test('Market Breadth groups exact UTC+8 posting days, not visitor local days',()
 test('repost keeps the original listing age and Market Breadth first-day cohort',()=>{
  const job={firstSeen:'2026-11-16',postingLastDate:'2026-11-16',pushTime:'2026-11-16T21:59:16Z'};
  const observed=Date.parse('2026-11-17T03:28:26Z');
- const initialAt=j=>j.firstSeen||j.pushTime,postingAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
+ const initialAt=j=>j.firstSeen,postingAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
  assert.equal(dates.key(job.pushTime),'2026-11-17');
  assert.equal(dates.calendarAge(initialAt(job),observed),1);
  const repost={...job,postingLastDate:'2026-11-17'};
