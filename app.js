@@ -474,20 +474,20 @@ window.VizTip=(()=>{
 })();
 const meanOf=values=>{const valid=values.filter(Number.isFinite);return valid.length?valid.reduce((sum,age)=>sum+age,0)/valid.length:null;};
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
-function weeklyFlow(jobs){
-  const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=window.JobDates.timestamp(v);return Number.isFinite(t)?t:0;};
+function weeklyFlow(jobs,now=Date.now()){
+  const regions=["CN","HK","SG"],seen=new Set();
   const day=v=>window.JobDates.dayStart(window.JobDates.key(v));
-  let end=0,current=0,prior=0;
-  for(const j of jobs)if(j&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen),date(j.expiredAt));
-  if(!end)return null;
-  const endDay=day(end);
+  const end=window.JobDates.timestamp(now),endDay=day(now),week=7*864e5;
+  if(!Number.isFinite(end)||!Number.isFinite(endDay))return null;
+  let current=0,prior=0,valid=0;
   for(const j of jobs){
     if(!j||!regions.includes(j.location))continue;
     const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
-    const t=day(j.firstSeen);if(!Number.isFinite(t)||t>endDay)continue;
-    const age=endDay-t;if(age<week)current++;else if(age<2*week)prior++;
+    const t=day(j.firstSeen);if(!Number.isFinite(t))continue;valid++;
+    const age=endDay-t;if(age<0)continue;
+    if(age<week)current++;else if(age<2*week)prior++;
   }
-  return {current,prior,end:new Date(end).toISOString()};
+  return valid?{current,prior,end:new Date(end).toISOString()}:null;
 }
 /* Masthead and metric band: every figure is derived from the same
    deduplicated rows as the charts below; nothing here is a static claim. */
@@ -496,7 +496,7 @@ function renderHeadline(allRows,chartRows){
   const ages=[];
   for(const job of chartRows){const age=window.JobDates.calendarAge(seenAt(job),now);if(age!=null)ages.push(age);}
   // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
-  // CN/HK/SG roles first recorded in the 7 Beijing calendar days ending at the latest data update,
+  // CN/HK/SG roles first recorded in the 7 Beijing calendar days ending today,
   // including roles that have since closed. Guests receive the counts from the
   // server because their preview payload carries open roles only.
   const flow=overview?overview.weekly:weeklyFlow(allRows);
