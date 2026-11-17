@@ -30,11 +30,11 @@ export function weeklyFlow(jobs){
 export function previewData(index,details={},now=Date.now()){
  if(!Array.isArray(index.jobs))throw Error('Preview requires a valid index');
  const active=index.jobs.filter(j=>j&&j.jobStatus!=='expired'&&regions.includes(j.location)&&j.title&&j.company&&/^https:\/\/(?:[a-z]{2,3}\.)?linkedin\.com\/jobs\/view\//i.test(j.link||''));
- // Follow the homepage's source posting-day order; observation time breaks
+ // Follow the homepage's original first-recorded day order; observation breaks
  // same-day ties. Never invent regional sample quotas.
  const rank={CN:0,HK:1,SG:2};
  const ordered=active.map((job,index)=>({job,index})).sort((a,b)=>{
-  const time=date(postedAt(b.job))-date(postedAt(a.job));
+  const time=date(b.job.firstSeen)-date(a.job.firstSeen);
   if(time)return time;
   const capture=date(b.job.pushTime||b.job.firstSeen)-date(a.job.pushTime||a.job.firstSeen);
   if(capture)return capture;
@@ -46,7 +46,7 @@ export function previewData(index,details={},now=Date.now()){
  const source=details.details||details;
  const jobs=selected.map(j=>{const match=j.link.match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const entry=id?source[id]:null;
   const raw=String(entry?.descriptionHtml||entry?.description||'').replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&[a-z0-9#]+;/gi,' ').replace(/\s+/g,' ').trim();
-  const stamp=postedAt(j);
+  const stamp=j.firstSeen;
   return {id,title:clean(j.title,240),company:clean(j.company,160),region:j.location,city:clean(j.city||'',100),date:dates.key(stamp),snippet:raw?clean(raw,240)+(raw.length>240?'…':''):''};
  });
  const totals=Object.fromEntries(regions.map(r=>[r,active.filter(j=>j.location===r).length]));
