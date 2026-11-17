@@ -10,22 +10,23 @@ const date=v=>Number.isFinite(dates.timestamp(v))?dates.timestamp(v):0;
 const postedAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
 const number=v=>Number(v).toLocaleString('en-US');
 // New-role flow, shared definition with app.js weeklyFlow(): CN/HK/SG roles
-// first recorded in the 7 local calendar days to the latest update, including roles
+// first recorded in the 7 local calendar days through today, including roles
 // that have since closed; prior = the 7 days before that. The guest payload
 // cannot carry closed roles, so the counts are computed here from the index.
-export function weeklyFlow(jobs){
- const week=7*864e5,seen=new Set();let end=0,current=0,prior=0;
- const day=v=>dates.dayStart(dates.key(v));
- for(const j of jobs)if(j&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen),date(j.expiredAt));
- if(!end)return null;
- const endDay=day(end);
- for(const j of jobs){
-  if(!j||!regions.includes(j.location))continue;
-  const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
-  const t=day(j.firstSeen);if(!Number.isFinite(t)||t>endDay)continue;
-  const age=endDay-t;if(age<week)current++;else if(age<2*week)prior++;
- }
- return {current,prior,end:new Date(end).toISOString()};
+export function weeklyFlow(jobs,now=Date.now()){
+  const regions=["CN","HK","SG"],seen=new Set();
+  const day=v=>dates.dayStart(dates.key(v));
+  const end=dates.timestamp(now),endDay=day(now),week=7*864e5;
+  if(!Number.isFinite(end)||!Number.isFinite(endDay))return null;
+  let current=0,prior=0,valid=0;
+  for(const j of jobs){
+    if(!j||!regions.includes(j.location))continue;
+    const key=j.link||JSON.stringify([j.company,j.title,j.firstSeen]);if(seen.has(key))continue;seen.add(key);
+    const t=day(j.firstSeen);if(!Number.isFinite(t))continue;valid++;
+    const age=endDay-t;if(age<0)continue;
+    if(age<week)current++;else if(age<2*week)prior++;
+  }
+  return valid?{current,prior,end:new Date(end).toISOString()}:null;
 }
 export function previewData(index,details={},now=Date.now()){
  if(!Array.isArray(index.jobs))throw Error('Preview requires a valid index');
@@ -53,7 +54,7 @@ export function previewData(index,details={},now=Date.now()){
  const today=dates.key(now),days=Array.from({length:14},(_,i)=>({day:dates.addDays(today,i-13),count:0}));
  for(const j of active){const day=dates.key(postedAt(j)),time=dates.dayStart(day);if(!Number.isFinite(time)||time>now)continue;const bin=days.find(d=>d.day===day);if(bin)bin.count++;}
  const updated=Math.max(0,...active.map(j=>date(j.pushTime||j.firstSeen)));
- return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null,weekly:weeklyFlow(index.jobs)};
+ return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null,weekly:weeklyFlow(index.jobs,now)};
 }
 export function publicPreviewPayload(data,index){
  const selected=new Map(data.jobs.map(j=>[j.id,j]));
