@@ -1,9 +1,12 @@
 import {readFileSync,existsSync,writeFileSync} from 'node:fs';
 import {resolve} from 'node:path';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),dates=require('../calendar-date.js');
 const regions=['CN','HK','SG'];
 const clean=(v,n=240)=>String(v??'').replace(/[\u0000-\u001f]/g,' ').trim().slice(0,n);
 const escape=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const date=v=>Number.isFinite(Date.parse(v))?Date.parse(v):0;
+const date=v=>Number.isFinite(dates.timestamp(v))?dates.timestamp(v):0;
+const postedAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
 const number=v=>Number(v).toLocaleString('en-US');
 // New-role flow, shared definition with app.js weeklyFlow(): CN/HK/SG roles
 // first seen in the 7 days ending at the latest data update, including roles
@@ -24,13 +27,14 @@ export function weeklyFlow(jobs){
 export function previewData(index,details={},now=Date.now()){
  if(!Array.isArray(index.jobs))throw Error('Preview requires a valid index');
  const active=index.jobs.filter(j=>j&&j.jobStatus!=='expired'&&regions.includes(j.location)&&j.title&&j.company&&/^https:\/\/(?:[a-z]{2,3}\.)?linkedin\.com\/jobs\/view\//i.test(j.link||''));
- // Match the homepage's publication order: newest pushTime first, then
- // firstSeen, with the same region tie-break used by app.js. Do not fill a
- // fixed quota per region; that can pull yesterday's jobs ahead of today's feed.
+ // Follow the homepage's source posting-day order; observation time breaks
+ // same-day ties. Never invent regional sample quotas.
  const rank={CN:0,HK:1,SG:2};
  const ordered=active.map((job,index)=>({job,index})).sort((a,b)=>{
-  const time=date(b.job.pushTime||b.job.firstSeen)-date(a.job.pushTime||a.job.firstSeen);
+  const time=date(postedAt(b.job))-date(postedAt(a.job));
   if(time)return time;
+  const capture=date(b.job.pushTime||b.job.firstSeen)-date(a.job.pushTime||a.job.firstSeen);
+  if(capture)return capture;
   const region=(rank[a.job.location]??9)-(rank[b.job.location]??9);
   return region||a.index-b.index;
  });
@@ -39,12 +43,12 @@ export function previewData(index,details={},now=Date.now()){
  const source=details.details||details;
  const jobs=selected.map(j=>{const match=j.link.match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const entry=id?source[id]:null;
   const raw=String(entry?.descriptionHtml||entry?.description||'').replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,'').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/&[a-z0-9#]+;/gi,' ').replace(/\s+/g,' ').trim();
-  const stamp=j.firstSeen||j.pushTime;
-  return {id,title:clean(j.title,240),company:clean(j.company,160),region:j.location,city:clean(j.city||'',100),date:date(stamp)?new Date(stamp).toISOString().slice(0,10):'',snippet:raw?clean(raw,240)+(raw.length>240?'…':''):''};
+  const stamp=postedAt(j);
+  return {id,title:clean(j.title,240),company:clean(j.company,160),region:j.location,city:clean(j.city||'',100),date:dates.key(stamp),snippet:raw?clean(raw,240)+(raw.length>240?'…':''):''};
  });
  const totals=Object.fromEntries(regions.map(r=>[r,active.filter(j=>j.location===r).length]));
- const days=Array.from({length:14},(_,i)=>{const start=new Date(now);start.setUTCHours(0,0,0,0);start.setUTCDate(start.getUTCDate()-(13-i));return {day:start.toISOString().slice(0,10),count:0};});
- for(const j of active){const time=date(j.firstSeen||j.pushTime);if(!time||time>now)continue;const day=new Date(time).toISOString().slice(0,10),bin=days.find(d=>d.day===day);if(bin)bin.count++;}
+ const today=dates.key(now),days=Array.from({length:14},(_,i)=>({day:dates.addDays(today,i-13),count:0}));
+ for(const j of active){const stamp=j.firstSeen||j.pushTime,time=date(stamp);if(!time||time>now)continue;const day=dates.key(stamp),bin=days.find(d=>d.day===day);if(bin)bin.count++;}
  const updated=Math.max(0,...active.map(j=>date(j.pushTime||j.firstSeen)));
  return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null,weekly:weeklyFlow(index.jobs)};
 }
@@ -54,6 +58,7 @@ export function publicPreviewPayload(data,index){
  for(const original of index.jobs){const match=String(original.link||'').match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const preview=selected.get(id);if(!preview)continue;
   const job={title:preview.title,company:preview.company,link:original.link,location:preview.region,firstSeen:original.firstSeen||original.pushTime||preview.date,city:preview.city,locationRaw:String(original.locationRaw||''),hasJd:original.hasJd===true,jobStatus:'active',previewSnippet:preview.snippet};
   if(original.pushTime)job.pushTime=original.pushTime;
+  if(original.postingLastDate)job.postingLastDate=original.postingLastDate;
   if(original.salary!=null)job.salary=original.salary;
   jobs.push(job);selected.delete(id);
   const key=preview.company.toLowerCase(),asset=index.companyLogos?.[key];if(/^assets\/company-logos\/[a-f0-9]{24}\.(svg|webp)$/.test(asset||''))companyLogos[key]=asset;

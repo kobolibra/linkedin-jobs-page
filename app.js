@@ -223,12 +223,10 @@ const dayLabel=iso=>window.JobDates.fullDay(iso,{weekday:true});
 const isActiveJob=job=>job?.jobStatus!=="expired";
 const seenAt=j=>j.firstSeen||j.pushTime;
 const validDays=(start,end)=>{const a=Date.parse(start),b=Date.parse(end);if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.max(0,Math.floor((b-a)/864e5));};
-// pushTime is advanced only by JobSpy-confirmed same-day reposts; RSS merely
-// observes existing listings and must not move them to the top of the list.
-const placeAt=j=>j.pushTime||j.firstSeen;
-// Within one exact update batch, keep the requested editorial region order.
-// The timestamp remains the primary key, so a later batch always stays above
-// every earlier batch regardless of region.
+// Source posting dates outrank crawler observation timestamps. Verified
+// reposts advance postingLastDate; original firstSeen never moves.
+const placeAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
+// Within a posted calendar day, retain captured update order and region ties.
 const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
 const displayRegionOf=j=>norm(j?.location);
 const displayRegionTieBreak=(a,b)=>(displayRegionRank[displayRegionOf(a)]??9)-(displayRegionRank[displayRegionOf(b)]??9);
@@ -1143,7 +1141,7 @@ jobsDataPromise
     const groups=new Map();
     data.forEach(j=>{const t=placeAt(j);const k=dayKey(t);if(!groups.has(k))groups.set(k,{label:dayLabel(t),items:[]});groups.get(k).items.push(j);});
     const orderedGroups=[...groups.entries()].sort((a,b)=>{if(a[0]==="—")return 1;if(b[0]==="—")return -1;return a[0]<b[0]?1:a[0]>b[0]?-1:0;});
-    orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=new Date(placeAt(x)).getTime()||0,ty=new Date(placeAt(y)).getTime()||0;return ty-tx||displayRegionTieBreak(x,y);});});
+    orderedGroups.forEach(([,g])=>{g.items.sort((x,y)=>{const tx=Date.parse(x.pushTime||x.firstSeen||"")||0,ty=Date.parse(y.pushTime||y.firstSeen||"")||0;return ty-tx||displayRegionTieBreak(x,y);});});
     const renderGroups=[];
     orderedGroups.forEach(([key,g])=>{for(let i=0;i<g.items.length;i+=120)renderGroups.push([key,{label:g.label,items:g.items.slice(i,i+120),continuation:i>0}]);});
     let roleHistoryIndex=null;
