@@ -91,9 +91,10 @@ jobs:
             git fetch origin "$GITHUB_REF_NAME"
             git reset --hard "origin/$GITHUB_REF_NAME"
             python scripts/jobspy/publish_backfill.py --normalized /tmp/linkedin-backfill.json
+            python scripts/posting_event_history.py
             python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
             python scripts/audit_project.py --strict
-            git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json data/jobspy/jobspy_baseline_final_unified.json data/jobspy/*_f_c_*_final.json
+            git add jobs.json jobs-index.json jobs-details.json data/posting-events-ledger.json data/jev-boilerplate.json data/jobspy/jobspy_baseline_final_unified.json data/jobspy/*_f_c_*_final.json
             if git diff --cached --quiet; then exit 0; fi
             git commit -m "jobspy: enrich historical employer data without resetting lifecycle"
             if git push origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi

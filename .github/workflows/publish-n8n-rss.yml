@@ -68,11 +68,12 @@ jobs:
             health_rc=0
             python scripts/jobspy/scraper_health.py --apply /tmp/rss-logo-health.json --state data/jobspy/http-state.json || health_rc=$?
             if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
+            python scripts/posting_event_history.py
             python scripts/jobspy/compact_published_jobs.py
             python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-            git add jobs.json jobs-index.json jobs-details.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
+            git add jobs.json jobs-index.json jobs-details.json data/posting-events-ledger.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
             deploy_needed=false
-            if ! git diff --cached --quiet -- jobs.json jobs-index.json jobs-details.json company-logos.json assets/company-logos; then deploy_needed=true; fi
+            if ! git diff --cached --quiet -- jobs.json jobs-index.json jobs-details.json data/posting-events-ledger.json company-logos.json assets/company-logos; then deploy_needed=true; fi
             if git diff --cached --quiet; then
               echo "No publication changes"
               exit 0
