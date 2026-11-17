@@ -32,7 +32,7 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
         boilerplate_out.write_text(json.dumps({"schemaVersion": "1.0", "source": "jobs.json", "jevSchema": "jev-input-v4", "employers": boilerplate}, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     index_fields = (
         "title", "company", "link", "location", "locationRaw", "city",
-        "jobStatus", "pushTime", "firstSeen", "expiredAt", "expiredReason", "salary", "salaryPrevious", "salaryHistory",
+        "jobStatus", "pushTime", "firstSeen", "postingLastDate", "expiredAt", "expiredReason", "salary", "salaryPrevious", "salaryHistory",
     )
     for job in rows:
         if not isinstance(job, dict):
@@ -117,14 +117,14 @@ def self_test() -> None:
         source = root / "jobs.json"
         source.write_text(json.dumps({"jobs": [
             {"link": "https://x/jobs/view/123456/", "title": "A", "descriptionHtml": "<p>JD</p>", "salary": "10k"},
-            {"link": "https://x/jobs/view/123457/", "title": "B", "firstSeen": "2026-09-01", "expiredAt": "2026-09-11", "expiredReason": "linkedin_closed", "jobStatus": "expired"},
+            {"link": "https://x/jobs/view/123457/", "title": "B", "firstSeen": "2026-09-01", "postingLastDate": "2026-09-09", "expiredAt": "2026-09-11", "expiredReason": "linkedin_closed", "jobStatus": "expired"},
         ]}), encoding="utf-8")
         index, details = root / "jobs-index.json", root / "jobs-details.json"
         assert build(source, index, details) == (2, 1)
         index_doc = json.loads(index.read_text(encoding="utf-8"))
         detail_doc = json.loads(details.read_text(encoding="utf-8"))
         assert index_doc["jobs"][0]["hasJd"] is True
-        for key in ("firstSeen", "expiredAt", "expiredReason", "jobStatus"):
+        for key in ("firstSeen", "postingLastDate", "expiredAt", "expiredReason", "jobStatus"):
             assert index_doc["jobs"][1][key] == json.loads(source.read_text())["jobs"][1][key]
         assert "descriptionHtml" not in index_doc["jobs"][0]
         assert detail_doc["details"]["ln:123456"]["descriptionHtml"] == "<p>JD</p>"
