@@ -221,11 +221,13 @@ const keyOf=d=>window.JobDates.key(d);
 const dayKey=iso=>window.JobDates.key(iso)||"—";
 const dayLabel=iso=>window.JobDates.fullDay(iso,{weekday:true});
 const isActiveJob=job=>job?.jobStatus!=="expired";
-// Source posting-day cohorts are shared by the list, metrics and charts.
-const seenAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
+// A listing's age and lifetime start on its immutable first record, never on a repost.
+const seenAt=j=>j.firstSeen||j.pushTime;
+// Posting/reposting event charts have a separate, deliberate source-date clock.
+const postingAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
 const validDays=(start,end)=>{const cal=window.JobDates;const a=cal.dayStart(cal.key(start)),b=cal.dayStart(cal.key(end));if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.round((b-a)/864e5);};
-// Source posting dates outrank crawler observation timestamps. Verified
-// reposts advance postingLastDate; original firstSeen never moves.
+// List dates, age filters, regional stock cohorts and all lifetime metrics
+// use firstSeen. A verified repost changes postingAt but not listing age.
 const placeAt=seenAt;
 // Within a posted calendar day, retain captured update order and region ties.
 const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
@@ -568,8 +570,8 @@ jobsDataPromise
     // The daily 30-day chart below retains the separate daily-new metric.
     const regionOrder=["HK","SG","CN"];
     const regionRecords=Object.fromEntries(regionOrder.map(k=>[k,chartData.filter(j=>norm(j.location)===k)
-      .map(j=>({j,t:new Date(seenAt(j))})).filter(x=>Number.isFinite(x.t.getTime()))]));
-    const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
+      .map(j=>({j,t:window.JobDates.dayStart(window.JobDates.key(seenAt(j)))})).filter(x=>Number.isFinite(x.t))]));
+    const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t));
     const dayMs=86400000;
     const observedTimes=allTimes.filter(t=>t>=window.JobDates.dayStart('2026-01-01'));
     const timelineTimes=observedTimes.length?observedTimes:allTimes;
@@ -585,7 +587,7 @@ jobsDataPromise
     // Exact UTC daily observations. No rolling windows and no weekly buckets.
     const bucketCounts=regionOrder.map(()=>Array.from({length:bins},()=>0));
     regionOrder.forEach((k,ri)=>regionRecords[k].forEach(x=>{
-      const timestamp=x.t.getTime();
+      const timestamp=x.t;
       if(timestamp<tMin||timestamp>=tMax)return;
       bucketCounts[ri][Math.floor((timestamp-tMin)/dayMs)]++;
     }));
@@ -872,7 +874,7 @@ jobsDataPromise
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Cumulative stack of currently active roles by source posting date: HK, then SG, then CN. '+countFormat.format(endTotal)+
+      '" role="img" aria-label="Cumulative stack of currently active roles by first recorded date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       // The filled band and its contour end at the exact same x. A painted
@@ -1019,7 +1021,7 @@ jobsDataPromise
     }
     /* 近 30 日招聘节奏 · 一日一点，折线与日刻度 */
     const RKEYS=["OTHER","SG","HK","CN"];
-    const rcounts={};chartData.forEach(j=>{const k=dayKey(seenAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
+    const rcounts={};chartData.forEach(j=>{const k=dayKey(postingAt(j));const r=norm(j.location);(rcounts[k]=rcounts[k]||{})[r]=(rcounts[k][r]||0)+1;});
     const today=window.JobDates.key(Date.now()),days=[];
     for(let i=29;i>=0;i--){const key=window.JobDates.addDays(today,-i),d=new Date(key+"T00:00:00Z"),rc=rcounts[key]||{};days.push({key,date:d,label:window.JobDates.shortDay(key).toUpperCase(),weekend:[0,6].includes(window.JobDates.weekday(key)),rc,total:RKEYS.reduce((s,r)=>s+(rc[r]||0),0)});}
     const smax=Math.max(...days.map(d=>d.total),1),peak=Math.max(...days.map(d=>d.total));
@@ -1129,8 +1131,8 @@ jobsDataPromise
       e.preventDefault();node.tabIndex=-1;points[to].tabIndex=0;points[to].focus();
     });
     requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));
-    // Use the same source posting-day buckets and deduplicated active chart data
-    // as New Postings, with the radar exposing a separate region selector.
+    // Market Breadth uses first-recorded cohorts, unlike New Postings' latest
+    // publishing-event cohorts. Reposts cannot reset original listing dates.
     window.MarketWidth?.render(chartData,days);
     top50Rows=chartData;
     renderTop50(top50Rows,top50Mode);

@@ -3,7 +3,7 @@
    posting tiles preserve their relative count proportions, with a tiny visual
    floor for genuinely unreadable cells. Positive and zero-value tiles share
    the regular squarified treemap with no forced center or perimeter bands.
-   Counts retain their exact first-seen, currently-active meaning. */
+   Counts use each role's original firstSeen day, never its repost day. */
 (function(root){
 'use strict';
 const dates=(typeof module!=='undefined'&&module.exports)?require('./calendar-date.js'):root?.JobDates;
@@ -57,7 +57,7 @@ const firmIndex=name=>names.get(norm(name))??-1;
 const REGIONS=['all','CN','HK','SG'];
 const dateKey=d=>dates.key(d);
 const firstSeenKey=j=>{
- return dates.key(j.postingLastDate||j.firstSeen||j.pushTime||'');
+ return dates.key(j.firstSeen||j.pushTime||'');
 };
 function aggregate(rows,days,keyOf=firstSeenKey){
  const keys=days.map(d=>typeof d==='string'?d:d.key||dateKey(d.date));
@@ -65,7 +65,7 @@ function aggregate(rows,days,keyOf=firstSeenKey){
  const counts={all:empty(),CN:empty(),HK:empty(),SG:empty()};
  const slots=new Map(keys.map((key,i)=>[key,i]));
  for(const job of rows||[]){
-  if(!job||job.jobStatus==='expired')continue;
+  if(!job)continue;
   const firm=firmIndex(job.company),region=String(job.location||'').toUpperCase(),slot=slots.get(keyOf(job));
   if(firm<0||slot===undefined||!REGIONS.includes(region))continue;
   counts.all[slot][firm]++;counts[region][slot][firm]++;
