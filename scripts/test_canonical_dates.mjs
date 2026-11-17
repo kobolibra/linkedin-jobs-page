@@ -1,0 +1,61 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+import {readFileSync} from 'node:fs';
+const require=createRequire(import.meta.url);
+const dates=require('../calendar-date.js');
+const {aggregate,initialDay}=require('../market-width.js');
+const read=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8');
+
+test('canonical market date is independent of host timezone and matches UTC+8 midnight',()=>{
+ assert.equal(dates.key('2026-11-16T15:59:59Z'),'2026-11-16');
+ assert.equal(dates.key('2026-11-16T16:00:00Z'),'2026-11-17');
+ assert.equal(dates.key('2026-11-17T00:00:00+08:00'),'2026-11-17');
+ assert.equal(dates.key('2026-11-16T23:30:00-05:00'),'2026-11-17');
+ assert.equal(dates.key('2026-11-17T00:00:00'),'2026-11-17');
+ assert.equal(dates.key('2026-11-17'),'2026-11-17');
+ assert.equal(dates.dayStart('2026-11-17'),Date.parse('2026-11-16T16:00:00Z'));
+ assert.equal(dates.dayEnd('2026-11-16'),dates.dayStart('2026-11-17'));
+ assert.equal(dates.key(dates.dayEnd('2026-11-16')),'2026-11-17');
+});
+test('date-only, leap year, New Year, and bad date handling are stable',()=>{
+ assert.equal(dates.key('2028-02-29'),'2028-02-29');
+ assert.equal(dates.key('2027-02-29'),'');
+ assert.equal(dates.key('2026-13-01'),'');
+ assert.equal(dates.key('not a date'),'');
+ assert.equal(dates.key(''),'');
+ assert.equal(dates.key('2026-12-31T15:59:59Z'),'2026-12-31');
+ assert.equal(dates.key('2026-12-31T16:00:00Z'),'2027-01-01');
+ assert.equal(dates.addDays('2028-02-28',1),'2028-02-29');
+ assert.equal(dates.addDays('2028-02-29',1),'2028-03-01');
+ assert.equal(dates.addDays('2026-12-31',1),'2027-01-01');
+ assert.equal(dates.weekday('2026-11-16'),1);
+ assert.equal(dates.fullDay('2026-11-17'),'17 Nov 2026');
+ assert.equal(dates.shortDay('2026-11-17'),'17 Nov');
+ assert.match(dates.fullDay('2026-11-17',{weekday:true}),/17 Nov 2026/);
+ assert.match(dates.formatStamp('2026-11-16T16:01:00Z'),/17 Nov 2026.*00:01 UTC\+8/);
+ assert.equal(dates.formatStamp('invalid'),'—');
+});
+test('Market Breadth groups exact UTC+8 first-seen calendar days, not visitor local days',()=>{
+ const series=aggregate([
+  {company:'HSBC',location:'CN',firstSeen:'2026-11-16T15:59:59Z'},
+  {company:'HSBC',location:'HK',firstSeen:'2026-11-16T16:00:00Z'},
+  {company:'Citi',location:'SG',firstSeen:'2026-11-17'}
+ ],['2026-11-16','2026-11-17']);
+ assert.equal(series.counts.all[0][0],1);
+ assert.equal(series.counts.all[1][0],1);
+ assert.equal(series.counts.all[1][2],1);
+ assert.equal(initialDay(series,Date.parse('2026-11-17T15:59:59Z')),0);
+ assert.equal(initialDay(series,Date.parse('2026-11-17T16:00:00Z')),1);
+});
+test('site loads one shared calendar and all known user-facing dates use it',()=>{
+ const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');
+ const expected=['calendar-date.js','app.js','list-view.js','market-width.js','job-applications.js','guestbook.js','visitor-count.js'];
+ for(const asset of expected)assert.match(html,new RegExp(asset.replace('.','\\.')+'\\?v='));
+ for(const file of ['app.js','market-width.js','list-view.js','job-applications.js','guestbook.js','visitor-count.js'])
+  assert.match(read(file),/JobDates|calendar-date\.js/,file);
+ assert.match(app,/const dayKey=iso=>window\.JobDates\.key/);
+ assert.match(app,/const today=window\.JobDates\.key\(Date\.now\(\)\)/);
+ assert.match(breadth,/const dateKey=d=>dates\.key\(d\)/);
+ assert.doesNotMatch(app,/toLocaleDateString\("zh-CN"/);
+});

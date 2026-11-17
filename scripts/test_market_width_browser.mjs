@@ -9,6 +9,7 @@ const html=readFileSync(new URL('index.html',source),'utf8');
 const styles=['styles.css','styles-refinement.css','cn-city-map.css','market-width.css','home.css']
  .map(name=>readFileSync(new URL(name,source),'utf8')).join('\n');
 const script=readFileSync(new URL('market-width.js',source),'utf8');
+const calendarScript=readFileSync(new URL('calendar-date.js',source),'utf8');
 const appSource=readFileSync(new URL('app.js',source),'utf8');
 const leftStart=appSource.indexOf('    const rc={CN:0,HK:0,SG:0,OTHER:0};');
 const leftEndTag="    requestAnimationFrame(()=>sparkEl.classList.add('is-ready'));";
@@ -42,6 +43,7 @@ const browser=await chromium.launch({headless:true});
 const make=async(width,theme)=>{
  const page=await browser.newPage({viewport:{width,height:900},deviceScaleFactor:1,reducedMotion:'reduce'});
  await page.setContent('<!doctype html><html data-theme="'+theme+'"><head><style>'+styles+'</style></head><body><div class="shell">'+analytics+'</div></body></html>');
+ await page.addScriptTag({content:calendarScript});
  await page.addScriptTag({content:script});
  return page;
 };
@@ -52,7 +54,7 @@ async function renderLeft(page,chartData,theme){
  await page.evaluate(([draw,rows])=>{
   const norm=location=>location;
   const seenAt=job=>job.firstSeen;
-  const dayKey=date=>new Date(date).toISOString().slice(0,10);
+  const dayKey=date=>window.JobDates.key(date);
   const keyOf=dayKey;
   const REGIONS={CN:{label:'Mainland China'},HK:{label:'Hong Kong'},
    SG:{label:'Singapore'},OTHER:{label:'Other'}};
@@ -370,21 +372,21 @@ async function renderLeft(page,chartData,theme){
  }
  const allObservations=chartData.filter(r=>['SG','HK','CN'].includes(r.location))
   .map(r=>new Date(r.firstSeen||r.pushTime).getTime()).filter(Number.isFinite);
- const observations=allObservations.some(t=>t>=Date.UTC(2026,0,1))
-  ?allObservations.filter(t=>t>=Date.UTC(2026,0,1)):allObservations;
+ const observations=allObservations.some(t=>t>=Date.parse('2025-12-31T16:00:00Z'))
+  ?allObservations.filter(t=>t>=Date.parse('2025-12-31T16:00:00Z')):allObservations;
  const sampleSpan=Math.max(...observations)-Math.min(...observations);
  const expectedBins=Math.max(1,Math.floor(sampleSpan/86400000)+1);
  assert.ok(quality.bins>0&&quality.bins<=expectedBins*3,
   'each genuine first-seen observation remains in one daily bucket');
  assert.equal(quality.dayBins,Math.max(1,
-  Math.floor(Math.max(...observations)/86400000)-
-  Math.floor(Math.min(...observations)/86400000)+1),
-  'one bin per UTC calendar date, independent of source timestamps within each day');
+  Math.floor((Math.max(...observations)+8*3600000)/86400000)-
+  Math.floor((Math.min(...observations)+8*3600000)/86400000)+1),
+  'one bin per UTC+8 calendar date, independent of source timestamps within each day');
  assert.equal(quality.pointTotal,
   chartData.filter(r=>['SG','HK','CN'].includes(r.location)&&
     new Date(r.firstSeen).getTime()>=
-      (chartData.some(j=>['SG','HK','CN'].includes(j.location)&&new Date(j.firstSeen).getUTCFullYear()>=2026)
-        ?Date.UTC(2026,0,1):-Infinity)).length,
+      (chartData.some(j=>['SG','HK','CN'].includes(j.location)&&new Date(j.firstSeen).getTime()>=Date.parse('2025-12-31T16:00:00Z'))
+        ?Date.parse('2025-12-31T16:00:00Z'):-Infinity)).length,
   '2026 timeline includes every available SG/HK/CN record, without OTHER or pre-2026 anomalies');
  assert.equal(quality.finalTotal,quality.pointTotal,
   'rightmost cumulative stacked total equals the count of all included active roles');
@@ -761,7 +763,7 @@ try{
  const liveRows=indexRows.filter(j=>j?.jobStatus!=='expired');
  const valid2026=liveRows.filter(j=>
   ['HK','SG','CN'].includes(j.location)&&Number.isFinite(Date.parse(j.firstSeen||j.pushTime))&&
-  Date.parse(j.firstSeen||j.pushTime)>=Date.UTC(2026,0,1));
+  Date.parse(j.firstSeen||j.pushTime)>=Date.parse('2025-12-31T16:00:00Z'));
  assert.ok(valid2026.length>1000,'production source must contain a substantive 2026 active cohort');
  for(const [width,theme] of [[1440,'light'],[1440,'dark'],[390,'light']]){
   const productionPage=await make(width,theme);

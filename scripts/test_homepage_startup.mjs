@@ -74,7 +74,7 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
    await page.waitForFunction(n=>Number(document.getElementById('stat-week')?.textContent.replace(/\D/g,''))===n,flow?.current??-1,{timeout:5000});
    if(flow?.prior)assert.match(await page.locator('#stat-week-note').textContent(),/% vs the prior 7 days|level with the prior 7 days/);
    assert.equal(state.ready,true);assert.equal(state.empty,false);assert.ok(state.rows>0);assert.ok(state.days>0);
-   assert.ok(state.firstHeading?.includes('\u5e74'),'job-list keeps its original Chinese date labels');
+   assert.match(state.firstHeading||'',/\d{1,2} [A-Z][a-z]{2} 20\d\d/,'job-list uses the canonical day–month–year display');
    assert.equal(consoleErrors.length,0,consoleErrors.join('\n'));assert.equal(errors.length,0,errors.join('\n'));
    if(guest){
     assert.ok(!requests.includes('/jobs-index.json')&&!requests.includes('/jobs-version.json')&&!requests.includes('/auth/preferences'),'guest never requests protected index or account data');

@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),JobDates=require('../calendar-date.js');
 const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const cut=(a,b)=>{const i=app.indexOf(a),j=app.indexOf(b,i);assert.ok(i>=0&&j>i);return app.slice(i,j);};
 const axis=cut('    const regionTickFormat=','    // Snapshot counts and share labels');
 function history(from,to,width=320){
  const tMin=Date.parse(from+'T00:00:00Z'),dayMs=86400000,tMax=Date.parse(to+'T00:00:00Z')+dayMs,bins=Math.round((tMax-tMin)/dayMs);
- const c={tMin,tMax,dayMs,bins,TW:520,left:43,right:17,plotW:460,distEl:{getBoundingClientRect:()=>({width})},trendX:i=>43+(i-1)/Math.max(1,bins-1)*460,escSvg:s=>s};
+ const c={window:{JobDates},tMin:JobDates.dayStart(from),tMax:JobDates.dayEnd(to),dayMs,bins,TW:520,left:43,right:17,plotW:460,distEl:{getBoundingClientRect:()=>({width})},trendX:i=>43+(i-1)/Math.max(1,bins-1)*460,escSvg:s=>s};
  vm.runInNewContext(axis+'\nthis.result={ticks:calendarCandidates,mode:calendarMode,step:calendarStep};',c);
  return JSON.parse(JSON.stringify(c.result));
 }
@@ -42,9 +44,9 @@ test('every rolling 30-day window keeps every Monday, including across DST and N
  for(const end of ['2026-11-13T12:00:00','2027-01-04T12:00:00','2026-03-16T12:00:00']){
   const days=Array.from({length:30},(_,i)=>{const date=new Date(end);date.setHours(0,0,0,0);date.setDate(date.getDate()-29+i);return {date};});
   const keyOf=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');
-  const c={days,keyOf,SW:520,sLeft:33,sRight:17,sx:i=>33+i/29*470};
+  const c={window:{JobDates},days:days.map(d=>({...d,key:JobDates.key(d.date)})),keyOf,SW:520,sLeft:33,sRight:17,sx:i=>33+i/29*470};
   vm.runInNewContext(week+'\nthis.result={marks:rhythmMarks,labels:dateLabels};',c);
-  const marks=Array.from(c.result.marks);assert.deepEqual(marks,days.flatMap((d,i)=>d.date.getDay()===1?[i]:[]));
+  const marks=Array.from(c.result.marks);assert.deepEqual(marks,days.flatMap((d,i)=>JobDates.weekday(JobDates.key(d.date))===1?[i]:[]));
   assert.ok(marks.length>=4&&marks.length<=5);
   for(let i=1;i<marks.length;i++)assert.equal(marks[i]-marks[i-1],7);
   assert.match(c.result.labels,/data-date=/);

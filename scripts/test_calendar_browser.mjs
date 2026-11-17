@@ -20,10 +20,11 @@ for(const [engine,type] of Object.entries({chromium,webkit}).filter(([name])=>en
   const page=await browser.newPage({viewport:{width,height:1000},colorScheme:theme,timezoneId:'Asia/Shanghai'}),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.setContent('<!doctype html><html data-theme="'+theme+'"><head><style>'+styles+'</style></head><body><div class="shell"><header class="masthead">'+analytics+'</header></div></body></html>');
-  await page.addScriptTag({content:read('market-width.js')});
+  await page.addScriptTag({content:read('calendar-date.js')});
+   await page.addScriptTag({content:read('market-width.js')});
   await page.evaluate(({draw,rows})=>{
    const norm=loc=>['HK','SG','CN'].includes(loc)?loc:'OTHER',seenAt=j=>j.firstSeen||j.pushTime;
-   const keyOf=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+   const keyOf=d=>window.JobDates.key(d);
    const dayKey=d=>keyOf(new Date(d)),REGIONS={HK:{label:'Hong Kong'},SG:{label:'Singapore'},CN:{label:'Mainland China'},OTHER:{label:'Other'}},cityEl=document.createElement('select');
    new Function('chartData','norm','seenAt','dayKey','keyOf','REGIONS','cityEl',draw)(rows,norm,seenAt,dayKey,keyOf,REGIONS,cityEl);
   },{draw,rows});

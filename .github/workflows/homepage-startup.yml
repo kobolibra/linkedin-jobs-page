@@ -10,6 +10,7 @@ on:
       - 'scripts/test_homepage_startup.mjs'
       - 'scripts/test_startup_date_scope.mjs'
       - 'scripts/test_calendar_axes.mjs'
+      - 'scripts/test_canonical_dates.mjs'
       - 'scripts/test_calendar_browser.mjs'
       - 'scripts/assert_region_projections.mjs'
       - 'scripts/test_homepage_interaction.mjs'
@@ -18,6 +19,7 @@ on:
     branches: [main]
     paths:
       - 'app.js'
+      - 'calendar-date.js'
       - 'account.js'
       - 'auth-guest.js'
       - 'list-view.js'
@@ -25,6 +27,7 @@ on:
       - 'scripts/test_homepage_startup.mjs'
       - 'scripts/test_startup_date_scope.mjs'
       - 'scripts/test_calendar_axes.mjs'
+      - 'scripts/test_canonical_dates.mjs'
       - 'scripts/test_calendar_browser.mjs'
       - 'scripts/assert_region_projections.mjs'
       - '.github/workflows/homepage-startup.yml'
@@ -47,6 +50,10 @@ jobs:
           node-version: '22'
       - name: Verify chart and job-list date scope with regression negative control
         run: node --test scripts/test_startup_date_scope.mjs
+      - name: Verify canonical market day across host timezones
+        run: |
+          TZ=Asia/Shanghai node --test scripts/test_canonical_dates.mjs
+          TZ=America/Los_Angeles node --test scripts/test_canonical_dates.mjs
       - name: Verify calendar cadence across timezones, leap day and year boundaries
         run: |
           TZ=Asia/Shanghai node --test scripts/test_calendar_axes.mjs
