@@ -30,12 +30,16 @@
       if(!r)continue;
       const expired=r.status==='expired',region=['CN','HK','SG'].includes(r.region)?r.region:'OTHER';
       s.total++;s[expired?'expired':'active']++;s.regions[region]=(s.regions[region]||0)+1;
-      const start=time(r.date),end=time(r.expiredAt),validStart=Number.isFinite(start)&&start<=now,validEnd=Number.isFinite(end)&&end<=now;
       const cal=window.JobDates;
-      const posted=cal?.dayStart&&cal?.key&&r.postingDate?cal.dayStart(cal.key(r.postingDate)):NaN;
       const today=cal?.dayStart&&cal?.key?cal.dayStart(cal.key(now)):NaN;
-      // A legacy caller without postingDate retains its old elapsed-time policy.
-      const age=Number.isFinite(posted)&&Number.isFinite(today)?(today-posted)/DAY:(now-time(r.postingDate||r.date))/DAY;
+      const startDay=Number.isFinite(today)?cal.dayStart(cal.key(r.date)):NaN;
+      const endDay=Number.isFinite(today)?cal.dayStart(cal.key(r.expiredAt)):NaN;
+      const start=Number.isFinite(today)?startDay:time(r.date),end=Number.isFinite(today)?endDay:time(r.expiredAt);
+      const reference=Number.isFinite(today)?today:now;
+      const validStart=Number.isFinite(start)&&start<=reference,validEnd=Number.isFinite(end)&&end<=reference;
+      const posted=cal?.dayStart&&cal?.key&&r.postingDate?cal.dayStart(cal.key(r.postingDate)):NaN;
+      // Posting age always uses Beijing calendar days when JobDates is available.
+      const age=Number.isFinite(today)?(today-(Number.isFinite(posted)?posted:startDay))/DAY:(now-time(r.postingDate||r.date))/DAY;
       if(Number.isFinite(age)&&age>=0){
         const w=Math.floor(age/7);
         if(w<4)s.weeks[w].added++;
@@ -43,15 +47,14 @@
       }
       if(!validStart)s.missingStart++;
       if(!expired){
-        if(validStart)activeLifetimes.push((now-start)/DAY);
+        if(validStart)activeLifetimes.push((reference-start)/DAY);
         continue;
       }
       s.reasons[/^linkedin_(closed|removed)$/.test(r.expiredReason)?'confirmed':r.expiredReason==='missing_from_full_company_snapshot'?'snapshot':'other']++;
       if(!validEnd){s.missingEnd++;continue;}
       if(validStart&&end<start){s.invalidOrder++;continue;}
       // Compare published and closed events using identical local-day windows.
-      const closeDay=cal?.dayStart&&cal?.key&&r.postingDate?cal.dayStart(cal.key(r.expiredAt)):NaN;
-      const closeAge=Number.isFinite(closeDay)&&Number.isFinite(today)?(today-closeDay)/DAY:(now-end)/DAY;
+      const closeAge=Number.isFinite(today)?(today-endDay)/DAY:(now-end)/DAY;
       const w=Math.floor(closeAge/7);
       if(w<4)s.weeks[w].closed++;
       if(validStart){
