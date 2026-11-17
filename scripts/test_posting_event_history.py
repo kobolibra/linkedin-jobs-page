@@ -71,6 +71,7 @@ class PostingEventsTests(unittest.TestCase):
         empty = {"schemaVersion": "1.0", "events": []}
         self.assertEqual(len(reconcile(empty, [job(firstSeen=None, pushTime="2026-11-17")])["events"]), 0)
         self.assertEqual(identity(job(sourceJobId="li-4489793926")), "ln:4489793926")
+        self.assertEqual(identity(job(link="https://www.linkedin.com/jobs/view/cfo-financial-reporting-vp-4489793926/")), "ln:4489793926")
 
 
 if __name__ == "__main__":
