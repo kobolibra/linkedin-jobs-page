@@ -6,6 +6,7 @@
    Counts retain their exact first-seen, currently-active meaning. */
 (function(root){
 'use strict';
+const dates=(typeof module!=='undefined'&&module.exports)?require('./calendar-date.js'):root?.JobDates;
 const FIRMS=Object.freeze([
  'HSBC','Standard Chartered','Citi','JPMorgan Chase','BNP Paribas',
  'Societe Generale','DBS Bank','Deutsche Bank','Goldman Sachs','BlackRock',
@@ -54,10 +55,9 @@ const names=new Map();
 FIRMS.forEach((name,i)=>[name,...(ALIASES[name]||[])].forEach(key=>names.set(norm(key),i)));
 const firmIndex=name=>names.get(norm(name))??-1;
 const REGIONS=['all','CN','HK','SG'];
-const dateKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const dateKey=d=>dates.key(d);
 const firstSeenKey=j=>{
- const d=new Date(j.firstSeen||j.pushTime||'');
- return Number.isFinite(d.getTime())?dateKey(d):'';
+ return dates.key(j.firstSeen||j.pushTime||'');
 };
 function aggregate(rows,days,keyOf=firstSeenKey){
  const keys=days.map(d=>typeof d==='string'?d:d.key||dateKey(d.date));
@@ -248,18 +248,11 @@ function fitTileContent(button,rect,zero){
  button.dataset.fontFit='8';
 }
 const fmt=n=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(n);
-const prettyDate=key=>{
- const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
- if(!m)return String(key||'');
- return new Date(+m[1],+m[2]-1,+m[3],12).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-};
+const prettyDate=key=>dates.shortDay(key);
 /* A date is considered ended once the latest index update is beyond its
    local midnight. This is NOT proof every collector finished successfully.
    The default is the latest ended day, regardless of daily posting volume. */
-const dayEnd=key=>{
- const m=String(key||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
- return m?new Date(+m[1],+m[2]-1,+m[3]+1).getTime():NaN;
-};
+const dayEnd=key=>dates.dayEnd(key);
 function latestUpdate(rows){
  let latest=0;
  for(const job of rows||[]){
@@ -466,7 +459,7 @@ function render(rows,days){
    if(button)fitTileContent(button,tile,tile.zero);
   }
   count.textContent=fmt(data.total);firms.textContent=data.firms+'/18';
-  date.textContent=prettyDate(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
+  date.textContent=prettyDate(series.keys[day]);date.title=dates.fullDay(series.keys[day]);date.setAttribute('aria-label',series.keys[day]);
   date.dataset.partial=String(!isComplete(series.keys[day],updatedAt));
   if(strip)drawStrip();
   prev.disabled=day===0;next.disabled=day===last;
