@@ -18,7 +18,10 @@ def enrich_history(doc, history, observed_at):
         if posted and posted > observed:
             posted = None
         first = posting_day(old.get("firstSeen"))
-        if posted and (not first or posted < first):
+        # The first recorded posting day is immutable. An older date-only
+        # search card may simply be the UTC source date after its previous
+        # relative-age evidence has aged out; it cannot rewrite history.
+        if posted and first is None:
             first = posted
         raw = item.get("linkedinPostedRaw")
         # A legacy UTC/source-day becoming a Beijing day is NOT a repost.
