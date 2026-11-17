@@ -628,7 +628,7 @@ jobsDataPromise
       '<text class="region-spark-value" x="'+(left-9)+'" y="'+(trendY(v)+3).toFixed(2)+
       '" text-anchor="end">'+v+'</text>'
     ).join('');
-    const regionTickFormat={format:date=>window.JobDates.shortDay(date)};
+    const regionTickFormat=new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short',timeZone:'Asia/Singapore'});
     // This Date-only chart helper must NEVER shadow the ISO-safe list dayLabel.
     const regionAxisDayLabel=(date)=>regionTickFormat.format(date);
     const axisCssWidth=distEl.getBoundingClientRect().width||TW;
