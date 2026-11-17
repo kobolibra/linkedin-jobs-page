@@ -53,14 +53,15 @@ const summary=page=>page.locator('.mw-summary').textContent().then(v=>v.replace(
 async function renderLeft(page,chartData,theme){
  await page.evaluate(([draw,rows])=>{
   const norm=location=>location;
-  const seenAt=job=>job.postingLastDate||job.firstSeen||job.pushTime;
+  const seenAt=job=>job.firstSeen;
+  const postingAt=job=>job.postingLastDate||job.firstSeen||job.pushTime;
   const dayKey=date=>window.JobDates.key(date);
   const keyOf=dayKey;
   const REGIONS={CN:{label:'Mainland China'},HK:{label:'Hong Kong'},
    SG:{label:'Singapore'},OTHER:{label:'Other'}};
   const cityEl=document.createElement('select');
-  new Function('chartData','norm','seenAt','dayKey','keyOf',
-   'REGIONS','cityEl',draw)(rows,norm,seenAt,dayKey,keyOf,REGIONS,cityEl);
+  new Function('chartData','norm','seenAt','postingAt','dayKey','keyOf',
+   'REGIONS','cityEl',draw)(rows,norm,seenAt,postingAt,dayKey,keyOf,REGIONS,cityEl);
  },[leftDrawing,chartData]);
  const quality=await page.evaluate(()=>{
   const lines=[...document.querySelectorAll('#dist .region-spark-line')];
