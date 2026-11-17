@@ -15,7 +15,7 @@ const number=v=>Number(v).toLocaleString('en-US');
 export function weeklyFlow(jobs){
  const week=7*864e5,seen=new Set();let end=0,current=0,prior=0;
  const day=v=>dates.dayStart(dates.key(v));
- for(const j of jobs)if(j&&j.jobStatus!=='expired'&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen));
+ for(const j of jobs)if(j&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen),date(j.expiredAt));
  if(!end)return null;
  const endDay=day(end);
  for(const j of jobs){

@@ -474,10 +474,10 @@ window.VizTip=(()=>{
 const medianOf=values=>{const a=values.filter(Number.isFinite).sort((x,y)=>x-y);if(!a.length)return null;const m=a.length>>1;return a.length%2?a[m]:(a[m-1]+a[m])/2;};
 // Mirrors weeklyFlow() in scripts/guest_preview.mjs; keep the two identical.
 function weeklyFlow(jobs){
-  const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=Date.parse(v);return Number.isFinite(t)?t:0;};
+  const week=7*864e5,regions=["CN","HK","SG"],seen=new Set(),date=v=>{const t=window.JobDates.timestamp(v);return Number.isFinite(t)?t:0;};
   const day=v=>window.JobDates.dayStart(window.JobDates.key(v));
   let end=0,current=0,prior=0;
-  for(const j of jobs)if(j&&j.jobStatus!=="expired"&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen));
+  for(const j of jobs)if(j&&regions.includes(j.location))end=Math.max(end,date(j.pushTime||j.firstSeen),date(j.expiredAt));
   if(!end)return null;
   const endDay=day(end);
   for(const j of jobs){
@@ -491,9 +491,9 @@ function weeklyFlow(jobs){
 /* Masthead and metric band: every figure is derived from the same
    deduplicated rows as the charts below; nothing here is a static claim. */
 function renderHeadline(allRows,chartRows){
-  const overview=window.AuthGuest?.overview,now=Date.now(),day=864e5;
+  const overview=window.AuthGuest?.overview,now=Date.now();
   const ages=[];
-  for(const job of chartRows){const stamp=seenAt(job),start=window.JobDates.dayStart(window.JobDates.key(stamp));if(Number.isFinite(start))ages.push(Math.max(0,(now-start)/day));}
+  for(const job of chartRows){const age=window.JobDates.calendarAge(seenAt(job),now);if(age!=null)ages.push(age);}
   // One definition in both modes (see weeklyFlow in scripts/guest_preview.mjs):
   // CN/HK/SG roles posted in the 7 Beijing calendar days ending at the latest data update,
   // including roles that have since closed. Guests receive the counts from the
