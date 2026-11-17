@@ -4,7 +4,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 from linkedin_ids import linkedin_job_id
-from posting_dates import is_repost, posting_day
+from posting_dates import is_repost, posting_day, source_date_unchanged
 
 
 def enrich_history(doc, history, observed_at):
@@ -20,12 +20,18 @@ def enrich_history(doc, history, observed_at):
         first = posting_day(old.get("firstSeen"))
         if posted and (not first or posted < first):
             first = posted
-        item["jobspyRepost"] = is_repost({"jobspyLastPosted": old.get("lastPosted")}, posted, observed_at)
-        last = max(d for d in (posted, previous) if d) if posted or previous else None
+        raw = item.get("linkedinPostedRaw")
+        # A legacy UTC/source-day becoming a Beijing day is NOT a repost.
+        unchanged = bool(raw and source_date_unchanged({**old, "jobspyLastPosted": old.get("lastPosted")}, raw))
+        item["jobspyRepost"] = False if unchanged else is_repost({"jobspyLastPosted": old.get("lastPosted")}, posted, observed_at)
+        last = max(d for d in (posted if not unchanged else None, previous) if d) if (posted and not unchanged) or previous else None
         item["jobspyFirstSeen"] = first.isoformat() if first else None
         item["jobspyLastPosted"] = last.isoformat() if last else None
-        history[key] = {"firstSeen": item["jobspyFirstSeen"], "lastPosted": item["jobspyLastPosted"],
-                        "lastObservedAt": observed_at, "observations": int(old.get("observations", 0)) + 1}
+        record = {"firstSeen": item["jobspyFirstSeen"], "lastPosted": item["jobspyLastPosted"],
+                  "lastObservedAt": observed_at, "observations": int(old.get("observations", 0)) + 1}
+        if raw:
+            record["linkedinPostedRaw"] = raw
+        history[key] = record
     return doc, history
 
 
