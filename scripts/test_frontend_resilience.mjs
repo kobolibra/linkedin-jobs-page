@@ -215,14 +215,14 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.doesNotMatch(source,/First-observed active roles by geography|New postings per day<\/text>/);
  assert.match(source,/const bucketCounts=regionOrder\.map\(\(\)=>Array\.from\(\{length:bins\},\(\)=>0\)\)/);
  assert.match(source,/regionRecords\[k\]\.forEach\(x=>\{/);
- assert.match(source,/const rcounts=\{\};chartData\.forEach\(j=>/);
+ assert.match(source,/Object\.entries\(postingHistoryDaily\)/);
  assert.match(source,/const bars=days\.map\(\(d,i\)=>/);
  assert.match(source,/const calendarCandidates=\[\]/);
  assert.match(source,/const calendarMode=bins>180/);
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/window\.JobDates\.weekday\(d\.key\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=firstseen-age-1/);
+ assert.match(html,/app\.js\?v=immutable-postings-1/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });

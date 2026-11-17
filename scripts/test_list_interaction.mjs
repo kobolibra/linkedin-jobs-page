@@ -61,6 +61,15 @@ test('simple favorite/region toggles never inspect unsaved cards in a 12000-row 
   c.activeRegion='HK';c.apply();assert.equal(c.activeCountEl.textContent,0);assert.equal(s.style.display,''); // closed favorite is still shown
   c.activeRegion='all';c.favEl.events.click();assert.equal(c.activeCountEl.textContent,1);assert.equal(s.style.display,'');
 });
+test('entering Saved clears a previously selected age cohort so older saved roles stay visible',()=>{
+ const a=card('saved-oct'),b=card('saved-aug'),s=section([a,b]);
+ s._favoriteCards.add(a);s._favoriteCards.add(b);
+ const c=harness([s]);c.favs.add('saved-oct');c.favs.add('saved-aug');
+ c.ageEl.value='15-21';c.favEl.events.click();
+ assert.equal(c.ageEl.value,'all','saved mode must not inherit a stale 15-21 day cohort');
+ assert.equal(c.favOnly,true);assert.equal(c.activeCountEl.textContent,2);
+ c.ageEl.value='0';c.apply();assert.equal(c.activeCountEl.textContent,0,'explicit filtering within Saved still works');
+});
 test('favorites remain correct after search changes while favorite mode is enabled',()=>{
   const a=card('saved','CN','active','analyst'),b=card('other','CN','active','engineer'),s=section([a,b]);
   s._favoriteCards.add(a);const c=harness([s]);c.favs.add('saved');c.searchEl.value='analyst';c.apply();

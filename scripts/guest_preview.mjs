@@ -83,7 +83,7 @@ export function publicPreviewPayload(data,index){
   breadth.set(key,entry);
  }
  const marketBreadthBuckets=[...breadth].map(([key,entry])=>[...JSON.parse(key),entry.count,entry.pushTime]);
- return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets,marketBreadthBuckets},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
+ return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets,marketBreadthBuckets,postingHistoryDaily:index.postingHistoryDaily||null},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
 export function buildGuestPreview(root='.'){
  const index=JSON.parse(readFileSync(resolve(root,'jobs-index.json'),'utf8'));

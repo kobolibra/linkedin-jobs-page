@@ -68,10 +68,10 @@ test('repost keeps the original listing age and Market Breadth first-day cohort'
  const app=read('app.js');
  assert.match(app,/const seenAt=j=>j\.firstSeen;/);
  assert.match(app,/const postingAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
- assert.match(app,/const placeAt=seenAt/);
+ assert.equal(app.includes("const placeAt=j=>j.pushTime||j.firstSeen;"),true);
  assert.match(read('scripts/jobspy/build_frontend_payload.py'),/"postingLastDate"/);
- assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3);
- assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/);
+ assert.equal(app.split("ageDays(seenAt(job))").length-1,3);
+ assert.match(app,/Object\.entries\(postingHistoryDaily\)/);
  assert.match(app,/postingDate:postingAt\(job\)/);
  assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen,job\.expiredAt\)/);
  assert.match(app,/Cumulative stack of currently active roles by first recorded date/);
@@ -91,7 +91,7 @@ test('visible age metric labels describe firstSeen, not repost dates',()=>{
  assert.match(home,/Average Listing Age/);
  assert.match(home,/days since first recorded/);
  assert.match(home,/posted or reposted in the 7 days/);
- assert.match(app,/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(postingAt\(j\)\)/,'publishing events retain their separate repost-aware date');
+ assert.match(app,/Object\.entries\(postingHistoryDaily\)/,'publishing events retain their separate repost-aware date');
  assert.match(home,/距首次记录的天数/);
  assert.doesNotMatch(home,/days since latest posting|距最近发布的天数/);
  assert.match(about,/first-recorded date/);

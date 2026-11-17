@@ -39,7 +39,7 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             subprocess.run(("git", "clone", str(remote), str(checkout)), check=True, capture_output=True)
             # The real asset pack statically imports guest_preview.mjs at module load time.
             # Include it in the isolated checkout, even when reading only PUBLIC_FILES.
-            for name in ("sync_frontend_payloads.py", "build_jd_shards.mjs", "public_assets.mjs", "guest_preview.mjs"):
+            for name in ("sync_frontend_payloads.py", "build_jd_shards.mjs", "public_assets.mjs", "guest_preview.mjs", "posting_event_history.py"):
                 target = checkout / "scripts" / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / "scripts" / name, target)

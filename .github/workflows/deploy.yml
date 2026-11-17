@@ -35,6 +35,8 @@ on:
       - 'scripts/public_assets.mjs'
       - 'scripts/guest_preview.mjs'
       - 'scripts/sync_frontend_payloads.py'
+      - 'scripts/posting_event_history.py'
+      - 'data/posting-events-ledger.json'
       - 'scripts/jobspy/build_frontend_payload.py'
       - 'scripts/jobspy/jev_preprocess.py'
       - 'scripts/jobspy/linkedin_ids.py'

@@ -91,6 +91,21 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
     await page.locator('#search').fill('');
     await page.waitForFunction(()=>listRuntime.view.rows.length===listRuntime.meta.length);
    }
+   if(!guest){
+    if(label==='canonical'){
+     await page.locator('#search').fill('CFO - Financial Reporting Manager - VP');
+     await page.waitForFunction(()=>listRuntime.view.rows.length===1);
+     const role=await page.evaluate(()=>{
+      const m=listRuntime.meta[listRuntime.view.rows[0]];
+      return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-08-26'),label:m.label};
+     });
+     assert.equal(role.day,'2026-10-29','verified repost moves list heading to pushTime');
+     assert.equal(role.age,role.expectedAge,'repost never resets age');
+     assert.match(role.label,/29 Oct 2026/);
+     await page.locator('#search').fill('');
+     await page.waitForFunction(()=>listRuntime.view.rows.length===listRuntime.meta.length);
+    }
+   }
    await page.locator('#jobs').scrollIntoViewIfNeeded();
    await page.screenshot({path:resolve(out,`${engine}-${guest?'guest':'signed'}-${width}-${theme}-${label}.png`)});
    if(label==='canonical'){

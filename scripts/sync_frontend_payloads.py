@@ -8,7 +8,7 @@ import sys
 import time
 
 
-GENERATED = ("jobs-index.json", "jobs-details.json", "data/jev-boilerplate.json", "jobs-version.json")
+GENERATED = ("jobs-index.json", "jobs-details.json", "data/jev-boilerplate.json", "jobs-version.json", "data/posting-events-ledger.json")
 
 
 def run(*args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -38,6 +38,7 @@ def publish() -> None:
     for attempt in range(1, 6):
         run("git", "fetch", "--depth=1", "origin", "+refs/heads/main:refs/remotes/origin/main")
         run("git", "reset", "--hard", "origin/main")
+        run(sys.executable, "scripts/posting_event_history.py")
         build()
         run("git", "add", "--", *GENERATED)
         if has_staged_changes():
