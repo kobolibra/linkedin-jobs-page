@@ -33,7 +33,9 @@ test('date-only, leap year, New Year, and bad date handling are stable',()=>{
  assert.equal(dates.fullDay('2026-11-17'),'17 Nov 2026');
  assert.equal(dates.shortDay('2026-11-17'),'17 Nov');
  assert.match(dates.fullDay('2026-11-17',{weekday:true}),/17 Nov 2026/);
- assert.match(dates.formatStamp('2026-11-16T16:01:00Z'),/17 Nov 2026.*00:01 UTC\+8/);
+ assert.equal(dates.formatStamp('2026-11-16T16:01:00Z'),'17 Nov 2026 00:01');
+ assert.equal(dates.formatStamp('2026-11-16T16:01:00Z',{compact:true}),'17 Nov 00:01');
+ assert.doesNotMatch(dates.formatStamp('2026-11-16T16:01:00Z',{compact:true}),/UTC\+8|·/);
  assert.equal(dates.formatStamp('invalid'),'—');
 });
 test('Market Breadth groups exact UTC+8 first-seen calendar days, not visitor local days',()=>{
