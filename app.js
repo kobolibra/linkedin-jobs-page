@@ -232,7 +232,7 @@ const placeAt=j=>j.pushTime||j.firstSeen;
 const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
 const displayRegionOf=j=>norm(j?.location);
 const displayRegionTieBreak=(a,b)=>(displayRegionRank[displayRegionOf(a)]??9)-(displayRegionRank[displayRegionOf(b)]??9);
-const ageDays=iso=>{const d=new Date(iso);if(isNaN(d))return null;return Math.max(0,Math.floor((Date.now()-d)/864e5));};
+const ageDays=iso=>window.JobDates.calendarAge(iso);
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel==="22+")return d>=22;const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
 function animNum(el,target,suffix){suffix=suffix||"";if(reduce){el.innerHTML=target.toLocaleString()+suffix;return;}const dur=420,start=performance.now();const step=now=>{const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);el.innerHTML=Math.round(target*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -1154,7 +1154,7 @@ jobsDataPromise
     };
     const roleHistoryUi=window.JobRoleHistory?.bind(jobsEl,{get:id=>roleHistoryIndex?.get(id),id:j=>jobId(j.link),link:safeJobLink,onVisit:id=>{reads.add(id);saveReads();for(const card of jobCards)if(card.dataset.id===id)card.classList.add('read');}});
     function renderJobRow(job,idx,first){
-        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(seenAt(job)),expired=job.jobStatus==="expired",expiredText=expired?window.JobDates.shortDay(job.expiredAt):"",expiredValidDays=expired?validDays(seenAt(job),job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} ${expiredValidDays===1?"day":"days"}`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
+        const r=norm(job.location),lvl=levelOf(job.title),id=jobId(job.link)||(job.title+"|"+job.company),_ad=ageDays(placeAt(job)),expired=job.jobStatus==="expired",expiredText=expired?window.JobDates.shortDay(job.expiredAt):"",expiredValidDays=expired?validDays(seenAt(job),job.expiredAt):null,expiredDuration=expiredValidDays==null?"":` valid for ${expiredValidDays} ${expiredValidDays===1?"day":"days"}`,expiredCompanyHtml=expired?'<span class="status-expired status-expired-company" aria-label="关闭日期：'+esc(expiredText)+(expiredDuration?'，'+esc(expiredDuration):'')+'" title="关闭日期：'+esc(expiredText)+(expiredDuration?' · '+esc(expiredDuration):'')+'">'+esc(expiredText)+esc(expiredDuration)+'</span>':'';
         const _coKey=job.company?canonicalCompany(job.company)+"\x00"+r:"";const _coCnt=_coKey?companyRegionCount.get(_coKey)||0:0;const _coHtml=_coCnt>0?'<span class="co-count"><span class="co-separator" aria-hidden="true"></span>'+_coCnt+'</span>':'';
         const delay=first&&!reduce?' style="animation-delay:'+Math.min(idx*.006,.12)+'s"':'';
         const cityFilterValue=r==="OTHER"?"OTHER":cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
@@ -1168,7 +1168,7 @@ jobsDataPromise
     if(window.JobListView&&window.JobListQuery){
       const rowDays=new WeakMap();orderedGroups.forEach(([day,group])=>group.items.forEach(job=>rowDays.set(job,{day,label:group.label})));
       const rows=orderedGroups.flatMap(([,group])=>group.items);
-      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(seenAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:seenAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
+      const meta=rows.map(job=>{const region=norm(job.location),title=(job.title||'').toLowerCase(),comp=canonicalCompany(job.company),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';return {id:jobId(job.link)||(job.title+'|'+job.company),region,comp,title,displayTitle:job.title||'',search:(title+' '+comp+' '+cityLabel).toLowerCase(),city:region==='OTHER'?'OTHER':cityOf(job),age:ageDays(placeAt(job)),status:job.jobStatus==='expired'?'expired':'active',day:rowDays.get(job).day,label:rowDays.get(job).label,coData:{date:seenAt(job),expiredAt:job.expiredAt,expiredReason:job.expiredReason,status:job.jobStatus==='expired'?'expired':'active',region}};});
       const byId=new Map(meta.map(r=>[r.id,r]));
       const view=new JobListView({host:jobsEl,render:(index,i)=>renderJobRow(rows[index],i,index<120),onMount:()=>{daySections=view.blocks.map(b=>b.el);jobCards=daySections.flatMap(sec=>sec._jobCards);jobCards.forEach(card=>card._coData=byId.get(card.dataset.id)?.coData);roleHistoryUi?.restore();}});
       listRuntime={meta,view,lastKey:null};renderReady=true;delete regionsEl.dataset.pendingRegion;apply();return;
@@ -1245,7 +1245,7 @@ function countLoadedActiveJobs(){
     const company=canonicalCompany(job.company),title=(job.title||'').toLowerCase(),region=norm(job.location);
     const city=region==='OTHER'?'OTHER':cityOf(job),cityLabel=job.city||((job.locationRaw||'').split(',')[0].trim())||'';
     const id=jobId(job.link)||(job.title+'|'+job.company);
-    if(!blocked.has(company)&&!kwArr.some(k=>title.includes(k))&&(activeRegion==='all'||region===activeRegion)&&(activeCity==='all'||city===activeCity)&&(comp==='all'||company===comp)&&(!favOnly||favs.has(id))&&(!q||(title+' '+company+' '+cityLabel).toLowerCase().includes(q))&&ageMatch(ageSel,ageDays(seenAt(job))))count++;
+    if(!blocked.has(company)&&!kwArr.some(k=>title.includes(k))&&(activeRegion==='all'||region===activeRegion)&&(activeCity==='all'||city===activeCity)&&(comp==='all'||company===comp)&&(!favOnly||favs.has(id))&&(!q||(title+' '+company+' '+cityLabel).toLowerCase().includes(q))&&ageMatch(ageSel,ageDays(placeAt(job))))count++;
   }
   return count;
 }
