@@ -348,7 +348,8 @@
       const fixed=row.querySelector('.bubble-point').getBoundingClientRect();
       t.show('<span class="viz-tip-title">' + escSvg(d.company) + '</span>' + counts + lines
         + t.row('Average age', Number(d.mean).toFixed(1) + ' days') + t.row('Median age', Number(d.median).toFixed(1) + ' days')
-        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>', fixed.right, fixed.top, anchor);
+        + '<span class="viz-tip-hint">Click, or tap again, to show these roles</span>',
+        fixed.right, fixed.top, anchor || row.querySelector('.bubble-point'));
     };
     host.addEventListener('pointermove', (e) => {
       if (e.pointerType === 'touch') return; // touch readings are driven by taps below
