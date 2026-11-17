@@ -90,7 +90,7 @@ test('visible age metric labels describe firstSeen, not repost dates',()=>{
  const home=read('index.html'),about=read('about.html'),top=read('top30-layout.js'),app=read('app.js');
  assert.match(home,/Average Listing Age/);
  assert.match(home,/days since first recorded/);
- assert.match(home,/first recorded in the 7 days/);
+ assert.match(home,/first recorded in the last 7 calendar days/);
  assert.match(app,/Object\.entries\(postingHistoryDaily\)/,'publishing events retain their separate repost-aware date');
  assert.match(home,/距首次记录的天数/);
  assert.doesNotMatch(home,/days since latest posting|距最近发布的天数/);
