@@ -68,7 +68,7 @@ test('repost keeps the original listing age and Market Breadth first-day cohort'
  const app=read('app.js');
  assert.match(app,/const seenAt=j=>j\.firstSeen;/);
  assert.match(app,/const postingAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
- assert.match(app,/const placeAt=seenAt/);
+ assert.match(app,/const placeAt=j=>j\\.pushTime\\|\\|j\\.firstSeen/);
  assert.match(read('scripts/jobspy/build_frontend_payload.py'),/"postingLastDate"/);
  assert.equal([...app.matchAll(/ageDays\(placeAt\(job\)\)/g)].length,3);
  assert.match(app,/Object\.entries\(postingHistoryDaily\)/);
