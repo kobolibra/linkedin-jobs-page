@@ -223,7 +223,7 @@ const dayLabel=iso=>window.JobDates.fullDay(iso,{weekday:true});
 const isActiveJob=job=>job?.jobStatus!=="expired";
 // Source posting-day cohorts are shared by the list, metrics and charts.
 const seenAt=j=>j.postingLastDate||j.firstSeen||j.pushTime;
-const validDays=(start,end)=>{const a=Date.parse(start),b=Date.parse(end);if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.max(0,Math.floor((b-a)/864e5));};
+const validDays=(start,end)=>{const cal=window.JobDates;const a=cal.dayStart(cal.key(start)),b=cal.dayStart(cal.key(end));if(!Number.isFinite(a)||!Number.isFinite(b)||b<a)return null;return Math.round((b-a)/864e5);};
 // Source posting dates outrank crawler observation timestamps. Verified
 // reposts advance postingLastDate; original firstSeen never moves.
 const placeAt=seenAt;
