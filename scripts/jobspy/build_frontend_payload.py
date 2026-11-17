@@ -102,6 +102,23 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             if isinstance(state,dict):
                 fallback=next((logos[name] for name,entry in state.items() if name in logos and isinstance(entry,dict) and entry.get('status')=='ready' and entry.get('imageKind')=='placeholder'),'')
     index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows,"companyLogos":logos,"companyLogoFallback":fallback}
+    # Public daily counts come exclusively from the persistent event ledger.
+    # Do not expose job identities or replay mutable listing states into history.
+    event_path = source.parent / "data/posting-events-ledger.json"
+    if event_path.exists():
+        history = json.loads(event_path.read_text(encoding="utf-8"))
+        if history.get("schemaVersion") != "1.0" or not isinstance(history.get("events"), list):
+            raise ValueError("Invalid canonical posting history")
+        daily = {}
+        for event in history["events"]:
+            if not isinstance(event, dict) or event.get("kind") not in ("first", "repost"):
+                raise ValueError("Invalid canonical posting event")
+            key, region = event.get("day"), event.get("region")
+            if not isinstance(key, str) or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", key) or region not in ("CN", "HK", "SG", "OTHER"):
+                raise ValueError("Invalid canonical posting event date or region")
+            counts = daily.setdefault(key, {})
+            counts[region] = counts.get(region, 0) + 1
+        index_doc["postingHistoryDaily"] = {key: daily[key] for key in sorted(daily)}
     index_doc["dataVersion"]=hashlib.sha256(json.dumps(index_doc,ensure_ascii=False,separators=(",", ":")).encode("utf-8")).hexdigest()
     (index_out.parent/"jobs-version.json").write_text(json.dumps({"dataVersion":index_doc["dataVersion"]},separators=(",", ":"))+"\n",encoding="utf-8")
     details_doc = {"schemaVersion": "1.1", "source": "jobs.json", "details": details}
