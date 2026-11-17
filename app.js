@@ -571,7 +571,7 @@ jobsDataPromise
       .map(j=>({j,t:new Date(seenAt(j))})).filter(x=>Number.isFinite(x.t.getTime()))]));
     const allTimes=regionOrder.flatMap(k=>regionRecords[k].map(x=>x.t.getTime()));
     const dayMs=86400000;
-    const observedTimes=allTimes.filter(t=>t>=Date.UTC(2026,0,1));
+    const observedTimes=allTimes.filter(t=>t>=window.JobDates.dayStart('2026-01-01'));
     const timelineTimes=observedTimes.length?observedTimes:allTimes;
     const latestStamp=timelineTimes.length?Math.max(...timelineTimes):Date.now();
     const earliestStamp=timelineTimes.length?Math.min(...timelineTimes):latestStamp;
@@ -641,7 +641,7 @@ jobsDataPromise
       :calendarMode==='day'?Math.max(1,Math.ceil(bins/5),Math.ceil(40*Math.max(1,bins-1)/(plotW*axisCssWidth/TW))):1;
     const monthFormat=new Intl.DateTimeFormat('en-GB',{month:'short',timeZone:'UTC'});
     for(let day=0;day<bins;day++){
-      const date=new Date(tMin+day*dayMs),serial=Math.floor(date.getTime()/dayMs);
+      const dateKey=window.JobDates.key(tMin+day*dayMs),date=new Date(dateKey+'T00:00:00Z'),serial=Math.floor(date.getTime()/dayMs);
       const month=date.getUTCMonth();
       const include=calendarMode==='quarter'||calendarMode==='month'
         ?date.getUTCDate()===1&&month%calendarStep===0
