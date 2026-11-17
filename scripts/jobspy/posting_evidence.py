@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from bs4 import BeautifulSoup
 from urllib.parse import urlsplit
 from linkedin_ids import linkedin_job_id
-from posting_dates import LOCAL_TZ, posting_day
+from posting_dates import LOCAL_TZ, linkedin_card_date
 
 
 def markup(html):
@@ -58,9 +58,9 @@ def search_posting_dates(html):
             continue
         job_id = linkedin_job_id(link.get("href"))
         time = card.select_one("time[datetime]")
-        day = posting_day(time.get("datetime")) if time else None
+        day = linkedin_card_date(time.get("datetime"), "", None)[0] if time else ""
         if job_id and day:
-            found.setdefault(job_id, set()).add(day.isoformat())
+            found.setdefault(job_id, set()).add(day)
     return {job_id: next(iter(days)) for job_id, days in found.items() if len(days) == 1}
 
 
@@ -129,9 +129,9 @@ def detail_posting_date(html, job_id, checked_at):
     header = soup.select_one(".posted-time-ago__text")
     if header:
         own_time = header if header.name == "time" else header.select_one("time[datetime]")
-        exact = posting_day((own_time or header).get("datetime"))
+        exact, _ = linkedin_card_date((own_time or header).get("datetime"), header.get_text(" ", strip=True), checked_at)
         if exact:
-            return exact.isoformat(), "linkedin-detail-datetime"
+            return exact, "linkedin-detail-datetime"
         # LinkedIn rounds relative ages. Only accept a day when the entire
         # rounding interval lies within it; never invent an exact timestamp.
         bounds = relative_posting_bounds(soup, job_id, checked_at)
@@ -151,9 +151,9 @@ def detail_posting_date(html, job_id, checked_at):
             identifier = node.get("identifier", {})
             identifier = identifier.get("value") if isinstance(identifier, dict) else identifier
             matches = linkedin_job_id(node.get("url")) == str(job_id) or str(identifier) == str(job_id)
-            day = posting_day(node.get("datePosted"))
+            day = linkedin_card_date(node.get("datePosted"), "", checked_at)[0]
             if "JobPosting" in types and matches and day:
-                dates.add(day.isoformat())
+                dates.add(day)
             if "@graph" in node: visit(node["@graph"])
     for script in soup.select('script[type="application/ld+json"]'):
         try: visit(json.loads(script.string or script.get_text()))
