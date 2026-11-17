@@ -14,7 +14,6 @@ test('versioned deployment strips only tracking keys, preserves job identity, an
 });
 
 test('diagnostic: identify Deutsche Bank Shanghai CFO saved-role IDs in canonical index',()=>{
- const {readFileSync}=require('node:fs');
  const index=JSON.parse(readFileSync(new URL('../jobs-index.json',import.meta.url),'utf8'));
  const rows=index.jobs.filter(j=>/deutsche/i.test(j.company||'')&&/CFO.*Financial.*Reporting|Financial Reporting.*(?:Manager|Specialist)/i.test(j.title||''));
  console.log('DIAG_DEUTSCHE_CFO',JSON.stringify(rows.map(j=>({id:(String(j.link).match(/\/jobs\/view\/(\d+)/)||[])[1],title:j.title,firstSeen:j.firstSeen,postingLastDate:j.postingLastDate,pushTime:j.pushTime,jobStatus:j.jobStatus,location:j.location,city:j.city}))));
