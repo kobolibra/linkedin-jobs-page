@@ -57,7 +57,7 @@ test('daily first-seen roles exclude legacy inventory, expired roles, non-roster
  assert.equal(sum('all'),4);
 });
 
-test('shipped 30-day Market Breadth equals the 18-firm projection of first-seen New Postings',()=>{
+test('shipped 30-day Market Breadth equals the 18-firm projection of posting-day New Postings',()=>{
  const {jobs}=JSON.parse(read('jobs-index.json'));
  const dates=require('../calendar-date.js');
  const active=jobs.filter(j=>j&&j.jobStatus!=='expired'&&['CN','HK','SG'].includes(j.location));
@@ -65,11 +65,11 @@ test('shipped 30-day Market Breadth equals the 18-firm projection of first-seen 
  const end=dates.key(latest),days=Array.from({length:30},(_,i)=>dates.addDays(end,i-29));
  const series=aggregate(active,days);
  // Validate each actual business day, region and institution against the same
- // underlying firstSeen cohorts as New Postings; pushTime never creates a new.
+ // underlying source posting-day cohorts as New Postings; pushTime is only fallback.
  for(let i=0;i<days.length;i++){
   const expected=Object.fromEntries(['CN','HK','SG'].map(region=>[region,Array(FIRMS.length).fill(0)]));
   for(const job of active){
-   if(dates.key(job.firstSeen||job.pushTime)!==days[i])continue;
+   if(dates.key(job.postingLastDate||job.firstSeen||job.pushTime)!==days[i])continue;
    const firm=firmIndex(job.company);
    if(firm>=0)expected[job.location][firm]++;
   }
@@ -81,6 +81,7 @@ test('shipped 30-day Market Breadth equals the 18-firm projection of first-seen 
  // Each firm can occupy at most one first-seen date regardless of later
  // captures; the list can sort within that source posting day separately.
  assert.match(read('app.js'),/const rcounts=\{\};chartData\.forEach\(j=>\{const k=dayKey\(seenAt\(j\)\)/);
+ assert.match(read('app.js'),/const seenAt=j=>j\.postingLastDate\|\|j\.firstSeen\|\|j\.pushTime/);
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(chartData,days\)/);
 });
 
