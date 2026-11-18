@@ -537,7 +537,7 @@ async function inspectMosaic(page,nonzero){
    'mixed treemap must permit active firms on the outer edge again');
  }
 
- assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No first-recorded roles')),
+ assert.ok(details.rects.filter(t=>t.zero).every(t=>t.aria.includes('No new roles')),
   'zero labels are contextual rather than a numeric 0');
  assert.ok(details.rects.every(t=>t.w>0&&t.h>0&&t.x>=details.board.x-1&&t.y>=details.board.y-1));
  const totalArea=details.rects.reduce((sum,t)=>sum+t.area,0);
@@ -565,8 +565,8 @@ try{
    await page.evaluate(([rows,dates])=>window.MarketWidth.render(rows,dates),[regular,days]);
    await renderLeft(page,regular,theme);
    assert.equal(await page.locator('#marketWidthTitle').textContent(),'Market Breadth: 18 institutions we watch closely');
-   assert.equal(await summary(page),'14 first-recorded roles across 4/18 institutions');
-   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect roles first recorded on the day; reposts excluded');
+   assert.equal(await summary(page),'14 new roles across 4/18 institutions');
+   assert.equal(await page.locator('.mw-encoding').textContent(),'Size and shade reflect new roles on the day; reposts excluded');
    const trend=await page.evaluate(()=>{
     const chart=document.querySelector('#marketWidthStrip .mw-trend-svg');
     const line=chart?.querySelector('.mw-trend-line');
@@ -684,7 +684,7 @@ try{
    await page.locator('.mw-tile[data-firm="1"]').hover();
    assert.equal(await page.locator('.mw-detail').isVisible(),true);
    await page.locator('.mw-tile[data-firm="12"]').hover();
-   assert.match(await page.locator('.mw-detail').textContent(),/Morgan Stanley.*3 first-recorded roles/);
+   assert.match(await page.locator('.mw-detail').textContent(),/Morgan Stanley.*3 new roles/);
    const after=await page.evaluate(()=>({
     page:document.documentElement.scrollHeight,
     panel:document.querySelector('.ac-col-market').getBoundingClientRect().height,
@@ -692,15 +692,15 @@ try{
    }));
    assert.deepEqual(before,after,'moving over tiles must never shift document geometry');
    await page.locator('[data-market-region="CN"]').click();
-   assert.equal(await summary(page),'7 first-recorded roles across 2/18 institutions');
+   assert.equal(await summary(page),'7 new roles across 2/18 institutions');
    await inspectMosaic(page,2);
    await page.locator('[data-market-region="HK"]').click();
-   assert.equal(await summary(page),'3 first-recorded roles across 1/18 institutions');
+   assert.equal(await summary(page),'3 new roles across 1/18 institutions');
    await inspectMosaic(page,1);
    await page.locator('[data-market-region="SG"]').click();
-   assert.equal(await summary(page),'4 first-recorded roles across 1/18 institutions');
+   assert.equal(await summary(page),'4 new roles across 1/18 institutions');
    await page.locator('[data-market-region="all"]').click();
-   assert.equal(await summary(page),'14 first-recorded roles across 4/18 institutions');
+   assert.equal(await summary(page),'14 new roles across 4/18 institutions');
    // The fixture's last update is 09:00 on day 28, so day 27 is the latest
    // complete day and the default; day 28 is labelled as still collecting.
    assert.equal(await page.locator('#marketWidthDate').getAttribute('aria-label'),days[27].key);
@@ -711,9 +711,9 @@ try{
     'the selected date never appends a partial-day footnote');
    assert.equal(await page.locator('.mw-trend-indicator').getAttribute('data-day'),'28',
     'selected marker follows previous/next day navigation');
-   assert.equal(await summary(page),'14 first-recorded roles across 4/18 institutions');
+   assert.equal(await summary(page),'14 new roles across 4/18 institutions');
    await page.locator('#marketWidthNext').click();
-   assert.equal(await summary(page),'0 first-recorded roles across 0/18 institutions');
+   assert.equal(await summary(page),'0 new roles across 0/18 institutions');
    const allZero=await inspectMosaic(page,0);
    assert.ok(allZero.rects.every(t=>t.count===null),'all-zero day shows no numeral inside any tile');
    if(width===1440&&theme==='light'){
@@ -721,7 +721,7 @@ try{
     await page.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/all-zero-1440-light.png',source).pathname,animations:'disabled'});
    }
    await page.locator('#marketWidthPrev').click();
-   assert.equal(await summary(page),'14 first-recorded roles across 4/18 institutions');
+   assert.equal(await summary(page),'14 new roles across 4/18 institutions');
    await page.evaluate(()=>document.activeElement?.blur?.());
    if(width!==960){
     await page.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/mosaic-'+width+'-'+theme+'.png',source).pathname,animations:'disabled'});
@@ -897,7 +897,7 @@ try{
  // Sparse: only one firm is hiring, the other 17 are muted within the SAME map.
  const one=await make(960,'light');
  await one.evaluate(([date])=>window.MarketWidth.render([{company:'Standard Chartered',location:'CN',firstSeen:date+'T09:00:00Z',jobStatus:'active'}],[date]),[days[28].key]);
- assert.equal(await summary(one),'1 first-recorded roles across 1/18 institutions');
+ assert.equal(await summary(one),'1 new roles across 1/18 institutions');
  const sparse=await inspectMosaic(one,1);
  assert.equal(sparse.rects.find(t=>t.i===1).count,'1');
  const featured=sparse.rects.find(t=>t.i===1);
@@ -910,7 +910,7 @@ try{
  const dense=await make(960,'dark');
  const jobs=firms.map(company=>({company,location:'HK',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'}));
  await dense.evaluate(([rows,date])=>window.MarketWidth.render(rows,[date]),[jobs,days[28].key]);
- assert.equal(await summary(dense),'18 first-recorded roles across 18/18 institutions');
+ assert.equal(await summary(dense),'18 new roles across 18/18 institutions');
  const denseMap=await inspectMosaic(dense,18);
  assert.equal(new Set(denseMap.rects.map(t=>t.faceBg)).size,1,
   'eighteen identical posting counts must render exactly the same fill');
@@ -921,7 +921,7 @@ try{
  const extreme=Array.from({length:700},()=>({company:'HSBC',location:'CN',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'}));
  extreme.push({company:'Morgan Stanley',location:'CN',firstSeen:days[28].key+'T09:00:00Z',jobStatus:'active'});
  await skew.evaluate(([rows,date])=>window.MarketWidth.render(rows,[date]),[extreme,days[28].key]);
- assert.equal(await summary(skew),'701 first-recorded roles across 2/18 institutions');
+ assert.equal(await summary(skew),'701 new roles across 2/18 institutions');
  await inspectMosaic(skew,2);
  await skew.locator('.ac-col-market').screenshot({path:new URL('artifacts/market-width/extreme-960-light.png',source).pathname,animations:'disabled'});
  await skew.close();

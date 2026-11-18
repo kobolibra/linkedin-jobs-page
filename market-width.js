@@ -408,7 +408,7 @@ function render(rows,days){
  });
  const datum=i=>series.counts[region][day][i];
  const label=i=>{
-  const n=datum(i),what=n>0?fmt(n)+' first-recorded '+(n===1?'role':'roles'):'No first-recorded roles';
+  const n=datum(i),what=n>0?fmt(n)+' new '+(n===1?'role':'roles'):'No new roles';
   return DISPLAY[i]+' · '+what+' · '+series.keys[day]+' · '+(region==='all'?'all regions':region);
  };
  const quietDetail=()=>{if(selectedFirm===null){detail.textContent='';detail.hidden=true;}};
@@ -511,7 +511,7 @@ function render(rows,days){
   [...strip.querySelectorAll('.mw-strip-day')].forEach((button,i)=>{
    const n=totals[i],complete=isComplete(series.keys[i],updatedAt);
    button.className='mw-strip-day'+(i===day?' is-selected':'')+(n?'':' is-empty')+(complete?'':' is-partial');
-   button.title=prettyDate(series.keys[i])+' · '+fmt(n)+' first-recorded '+(n===1?'role':'roles');
+   button.title=prettyDate(series.keys[i])+' · '+fmt(n)+' new '+(n===1?'role':'roles');
   });
   const width=Math.max(1,Math.round(strip.getBoundingClientRect().width||board.getBoundingClientRect().width||600));
   const geometry=trendGeometry(totals,width);

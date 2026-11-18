@@ -33,7 +33,7 @@ test('recognized aliases count exactly once per firm and never accept unrelated 
  assert.equal(firmIndex('Unknown Firm'),-1);
 });
 
-test('Market Breadth counts retained first-recorded roles, including subsequently closed, but excludes repost events',()=>{
+test('Market Breadth counts retained new roles, including subsequently closed, but excludes repost events',()=>{
  const days=['2026-11-09','2026-11-10','2026-11-11'];
  const job=(company,location,firstSeen,pushTime='2026-11-11T09:00:00Z',jobStatus='active')=>({company,location,firstSeen,pushTime,jobStatus});
  const rows=[
@@ -227,8 +227,8 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.equal((html.match(/data-market-region=/g)||[]).length,4);
  assert.match(html,/<h3 id="marketWidthTitle"><span class="mw-heading-label">Market Breadth:<\/span> <span class="mw-title-phrase">18 institutions we watch closely<\/span><\/h3>/);
  assert.match(css,/\.mw-heading-label,\.mw-title-phrase\{white-space:nowrap\}/,'never split the figure label or institution phrase');
- assert.ok(html.includes('first-recorded roles across'));
- assert.ok(html.includes('Size and shade reflect roles first recorded on the day; reposts excluded'));
+ assert.ok(html.includes('new roles across'));
+ assert.ok(html.includes('Size and shade reflect new roles on the day; reposts excluded'));
  assert.ok(html.includes('id="marketWidthMap"'));
  assert.ok(html.includes('id="marketWidthDetail"'));
  assert.ok(pos('id="marketWidthTitle"')<pos('id="marketWidthRegions"')&&
@@ -248,7 +248,7 @@ test('homepage and About describe an all-in-one daily map, without zero lists or
  assert.match(js,/lockup\.append\(name\)/);
  assert.match(js,/lockup\.append\(amount\)/);
  assert.match(js,/function marketTiles\(/);
- for(const ver of ['market-width.js?v=firstseen-age-1','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
+ for(const ver of ['market-width.js?v=new-labels-mobile-20261118','market-width.css?v=market-trend-line-30'])assert.ok(html.includes(ver));
  assert.match(read('app.js'),/window\.MarketWidth\?\.render\(window\.AuthGuest\?\.marketBreadthRows\|\|data,days\)/);
  assert.match(read('account.js'),/'top30-layout\.js','market-width\.js'/);
  assert.match(read('scripts/browser_assets.mjs'),/'\/market-width\.js'/);
