@@ -406,8 +406,8 @@
   .top50-controls{min-width:0;max-width:100%;box-sizing:border-box}
   .top50-controls .top50-tabs{min-width:0}
   .top50-controls .top50-tab{min-width:0;padding-inline:6px}
-  .cn-map-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px}
-  .cn-map-heading{grid-column:1 / -1;min-width:0}
+  .cn-map-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .cn-map-heading{flex:1;min-width:0}
   .cn-map-head #cnCityMapTitle{max-width:none}
-  .cn-map-head .top50-toggle{grid-column:2;justify-self:end}
+  .cn-map-head .top50-toggle{flex:0 0 auto}
 }
