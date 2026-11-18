@@ -357,7 +357,6 @@ function setTop50Mode(mode){
   top50Mode=mode;
   if(top50Tabs){top50Tabs.dataset.active=mode;updateTop50Slider(mode);}
   top50Tabs?.querySelectorAll(".top50-tab").forEach(b=>{const active=b.dataset.topRegion===mode;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false");});
-  if(top50Title)top50Title.textContent="Top 30 Institutions by Active Roles: Who Is Hiring and Where?";
   if(top50Rows.length)renderTop50(top50Rows,top50Mode);
 }
 top50Tabs?.addEventListener("click",e=>{const b=e.target.closest(".top50-tab");if(b)setTop50Mode(b.dataset.topRegion);});
@@ -504,7 +503,7 @@ function renderHeadline(allRows,chartRows){
   if(weekEl){
     if(flow)animNum(weekEl,flow.current);else weekEl.textContent='—';
     const end=flow?.end?new Date(flow.end):null;
-    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore first recorded in the 7 calendar days to '+
+    if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore new in the 7 calendar days to '+
       end.toLocaleString('en-GB',{timeZone:'Asia/Singapore',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' SGT, including roles that have since closed';
   }
   if(weekNote&&flow&&flow.prior>0){
@@ -875,7 +874,7 @@ jobsDataPromise
       '" data-region-hk="'+cumulativeSeries[0][bins]+
       '" data-region-sg="'+cumulativeSeries[1][bins]+
       '" data-region-cn="'+cumulativeSeries[2][bins]+'" viewBox="0 0 '+TW+' '+TH+
-      '" role="img" aria-label="Cumulative stack of currently active roles by first recorded date: HK, then SG, then CN. '+countFormat.format(endTotal)+
+      '" role="img" aria-label="Cumulative stack of currently active roles by new listing date: HK, then SG, then CN. '+countFormat.format(endTotal)+
       ' active roles in this chart: '+regionOrder.map((k,i)=>k+' '+countFormat.format(snapshotCounts[i])+' ('+(shareTenths[i]/10).toFixed(1)+'%)').join(', ')+
       '. The y-axis is the sum of these three regions, not historical active inventory">'+
       // The filled band and its contour end at the exact same x. A painted
