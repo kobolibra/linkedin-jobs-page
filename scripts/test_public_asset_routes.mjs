@@ -101,7 +101,7 @@ test('About accurately describes posting-day analytics, historical dates and man
  const about=readFileSync(new URL('../about.html',import.meta.url),'utf8');
  const jobs=readFileSync(new URL('../job-applications.js',import.meta.url),'utf8');
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
- assert.match(about,/Horizontal and vertical positions represent the mean and median calendar days since each role was first recorded/);
+ assert.match(about,/Horizontal and vertical positions represent the mean and median calendar days since each role was new/);
  assert.match(about,/full text of job descriptions is not searchable/);
  assert.match(about,/Record each stage yourself/);
  assert.match(about,/Your history is preserved/);
