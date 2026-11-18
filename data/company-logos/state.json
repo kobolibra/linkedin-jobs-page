@@ -12081,5 +12081,46 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHmWnl1bCObEA/company-logo_100_100/B56Z5Jh.CLKwAI-/0/1779350102345?e=2147483647&v=beta&t=SE2vQ7FTahjfQlcUkVnGnd4HclNqbj0qudsDn2H8ib0",
     "companyUrl": "https://hk.linkedin.com/company/starshine-future",
     "sourceJobId": "4490414734"
+  },
+  "forestown international consulting inc.": {
+    "name": "Forestown International Consulting Inc.",
+    "checkedAt": "2026-11-18T04:02:41.903335+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2bfb83ec669e43e29598f079.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG5wyyUbcHo5A/company-logo_100_100/company-logo_100_100/0/1699859962249/forestowninternational_logo?e=2147483647&v=beta&t=ika9xwlRC5R9WHTk4sumgGBa-MPYmoTzoWoBoyeGNTo",
+    "companyUrl": "https://cn.linkedin.com/company/forestowninternational",
+    "sourceJobId": "4491491149"
+  },
+  "新特能源股份有限公司": {
+    "name": "新特能源股份有限公司",
+    "checkedAt": "2026-11-18T04:02:43.511279+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491475714",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491475714",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4491475714",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491475714",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491475714",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.5576628114545,
+        "deferred": true
+      }
+    ]
   }
 }
