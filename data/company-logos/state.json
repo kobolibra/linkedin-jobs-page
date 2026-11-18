@@ -3019,29 +3019,30 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-18T16:02:49.840782+00:00",
+    "checkedAt": "2026-11-18T22:03:29.316705+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
-      },
+      }
+    ],
+    "httpRetries": [
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 404,
-        "contentType": "",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
-        "jobId": "4445423723",
-        "reason": "http_error",
-        "stage": "job"
+        "waitSeconds": 61.85751255530303,
+        "deferred": true
       }
     ]
   },
@@ -12194,5 +12195,17 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://www.linkedin.com/company/%E6%B7%B1%E5%9C%B3%E5%B8%82%E4%BB%99%E8%BF%AA%E5%8C%96%E5%A6%86%E5%93%81%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4491485007"
+  },
+  "viral nation": {
+    "name": "Viral Nation",
+    "checkedAt": "2026-11-18T22:03:27.923446+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "bcbb1a0abc1d247d6c6f8ea9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG-kemS_TBw0g/company-logo_100_100/B56aGdvz7RIUAI-/0/1793647919019/viralnationinc_logo?e=2147483647&v=beta&t=aJNWFrxL8oPC14eGD22BCYsWAuePzRJd2VV9ySvj1yI",
+    "companyUrl": "https://www.linkedin.com/company/viralnationinc",
+    "sourceJobId": "4492097199"
   }
 }
