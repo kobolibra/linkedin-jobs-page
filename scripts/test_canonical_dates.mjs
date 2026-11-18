@@ -74,7 +74,7 @@ test('repost keeps the original listing age and Market Breadth first-day cohort'
  assert.match(app,/Object\.entries\(postingHistoryDaily\)/);
  assert.match(app,/postingDate:postingAt\(job\)/);
  assert.match(app,/expiredValidDays=expired\?validDays\(job\.firstSeen,job\.expiredAt\)/);
- assert.match(app,/Cumulative stack of currently active roles by first recorded date/);
+ assert.match(app,/Cumulative stack of currently active roles by new listing date/);
 });
 test('expired-role valid-day badge counts Beijing calendar boundaries, not UTC elapsed hours',()=>{
  const source=read('app.js');
@@ -89,15 +89,15 @@ test('expired-role valid-day badge counts Beijing calendar boundaries, not UTC e
 test('visible age metric labels describe firstSeen, not repost dates',()=>{
  const home=read('index.html'),about=read('about.html'),top=read('top30-layout.js'),app=read('app.js');
  assert.match(home,/Average Listing Age/);
- assert.match(home,/days since first recorded/);
- assert.match(home,/first recorded in the last 7 calendar days/);
+ assert.match(home,/days since new listing/);
+ assert.match(home,/new roles in the last 7 calendar days/);
  assert.match(app,/Object\.entries\(postingHistoryDaily\)/,'publishing events retain their separate repost-aware date');
  assert.match(home,/距首次记录的天数/);
  assert.doesNotMatch(home,/days since latest posting|距最近发布的天数/);
- assert.match(about,/first-recorded date/);
- assert.match(top,/AVERAGE DAYS SINCE FIRST RECORDED/);
- assert.match(top,/MEDIAN DAYS SINCE FIRST RECORDED/);
- assert.match(app,/currently active roles by first recorded date/);
+ assert.match(about,/new listing date/);
+ assert.match(top,/AVERAGE LISTING AGE \(DAYS\)/);
+ assert.match(top,/MEDIAN LISTING AGE \(DAYS\)/);
+ assert.match(app,/currently active roles by new listing date/);
 });
 test('site loads one shared calendar and all known user-facing dates use it',()=>{
  const html=read('index.html'),app=read('app.js'),breadth=read('market-width.js');
