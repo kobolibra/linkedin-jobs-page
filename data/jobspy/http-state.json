@@ -1,1 +1,7 @@
-{}
+{
+  "linkedin.com": {
+    "cooldownUntil": 1794996238.7512307,
+    "stopUntil": 1794996238.7512307,
+    "reason": "HTTP 429"
+  }
+}
