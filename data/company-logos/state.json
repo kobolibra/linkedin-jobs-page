@@ -12242,5 +12242,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHZX5FxWvwScA/company-logo_100_100/company-logo_100_100/0/1631373570663?e=2147483647&v=beta&t=VCLA1lkBdamgkICxdfYOj0TddZNTkfKXFZd-9Sf4-cA",
     "companyUrl": "https://cn.linkedin.com/company/sino-ocean-land",
     "sourceJobId": "4492250826"
+  },
+  "the recruitment consultancy limited": {
+    "name": "THE Recruitment Consultancy Limited",
+    "checkedAt": "2026-11-19T10:02:38.914505+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4492402518",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.08829511415919,
+        "deferred": true
+      }
+    ]
   }
 }
