@@ -57,12 +57,14 @@ class RunCompanySearchesTest(unittest.TestCase):
     def test_company_keys_and_count(self):
         keys = [spec["canonical"].replace(" ", "_") for spec in runner.COMPANIES.values()]
         self.assertEqual(len(keys), 19)
+        # Adding a new institution must never displace any of the established 18.
+        self.assertEqual(keys[-1], "state_street")
         self.assertEqual(
             keys,
             [
-                "state_street", "hsbc", "standard_chartered", "citi", "jpmorgan_chase",
+                "hsbc", "standard_chartered", "citi", "jpmorgan_chase",
                 "bnp_paribas", "societe_generale", "dbs_bank", "deutsche_bank",
-                "goldman_sachs", "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco",
+                "goldman_sachs", "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco", "state_street",
             ],
         )
 
@@ -93,7 +95,7 @@ class RunCompanySearchesTest(unittest.TestCase):
             self.assertEqual({p.stem for p in files}, {
                 "state_street", "hsbc", "standard_chartered", "citi", "jpmorgan_chase", "bnp_paribas",
                 "societe_generale", "dbs_bank", "deutsche_bank", "goldman_sachs",
-                "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco",
+                "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco", "state_street",
             })
             self.assertEqual(run.call_count, 19)
 
