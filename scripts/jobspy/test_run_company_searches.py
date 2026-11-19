@@ -64,7 +64,7 @@ class RunCompanySearchesTest(unittest.TestCase):
             [
                 "hsbc", "standard_chartered", "citi", "jpmorgan_chase",
                 "bnp_paribas", "societe_generale", "dbs_bank", "deutsche_bank",
-                "goldman_sachs", "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco",
+                "goldman_sachs", "blackrock", "bank_of_america", "fidelity_international", "morgan_stanley", "bbva", "natixis", "ubs", "schroders", "invesco", "state_street",
             ],
         )
 
