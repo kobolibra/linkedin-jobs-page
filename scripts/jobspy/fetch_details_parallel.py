@@ -26,7 +26,7 @@ def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: fl
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(); ap.add_argument("--input", type=Path, required=True); ap.add_argument("--output", type=Path, required=True); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--timeout", type=int, default=15); ap.add_argument("--attempts", type=int, default=3); ap.add_argument("--delay-min", type=float, default=1); ap.add_argument("--delay-max", type=float, default=3); ap.add_argument("--stop-on-rate-limit", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--input", type=Path, required=True); ap.add_argument("--output", type=Path, required=True); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--timeout", type=int, default=15); ap.add_argument("--attempts", type=int, default=3); ap.add_argument("--delay-min", type=float, default=1); ap.add_argument("--delay-max", type=float, default=3); ap.add_argument("--stop-on-rate-limit", action="store_true"); ap.add_argument("--continue-after-rate-limit", action="store_true"); ap.add_argument("--rate-limit-pause-seconds", type=float, default=360); ap.add_argument("--max-rate-limit-pauses", type=int, default=5); ap.add_argument("--max-runtime-seconds", type=int, default=9000); a = ap.parse_args()
     doc = json.loads(a.input.read_text(encoding="utf-8")); rows = doc if isinstance(doc, list) else doc.get("jobs", [])
     rows = [dict(x) for x in rows]; lock = Lock(); done = 0
     if a.output.parent and str(a.output.parent) not in ("", "."):
@@ -43,17 +43,38 @@ def main() -> int:
         print(json.dumps({"total":len(rows),"ok":0,"empty":0,"failed":0,"skipped":"no detail candidates"}, ensure_ascii=False), flush=True)
         return 0
     if a.stop_on_rate_limit:
-        # Historical backfill must not queue hundreds of requests after a 429.
+        # Dedicated historical import: one request at a time, server cooldown
+        # respected, then retry the SAME job after a bounded pause. The regular
+        # parallel JobSpy collector is deliberately unchanged.
         coordinator = Coordinator(min_interval=max(3, a.delay_min),
                                   interval_jitter=max(0, a.delay_max - a.delay_min))
-        for i in todo:
+        deadline = time.monotonic() + max(0, a.max_runtime_seconds)
+        position, pauses = 0, 0
+        while position < len(todo) and time.monotonic() < deadline:
+            i = todo[position]
             rows[i] = one(rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max, coordinator)
             done += 1
             save()
             print(f"detail {done}/{len(todo)} {rows[i].get('sourceJobId')} {rows[i].get('detailStatus')}", flush=True)
             if rows[i].get('detailStatus') == 'blocked':
-                print('Historical JD recovery paused after rate limit; preserving checkpoint', flush=True)
-                break
+                pauses += 1
+                if not a.continue_after_rate_limit or pauses >= max(1, a.max_rate_limit_pauses):
+                    print("Rate-limit recovery budget exhausted; checkpoint retained", flush=True)
+                    break
+                try:
+                    server_retry_at = float(rows[i].get('detailRetryAt') or 0)
+                except (ValueError, TypeError):
+                    server_retry_at = 0
+                # Never retry before the server's own retry boundary; after a
+                # 429 give the rolling quota time to recover as well.
+                wait = max(max(0, a.rate_limit_pause_seconds), server_retry_at - time.time())
+                if time.monotonic() + wait >= deadline:
+                    print("Historical JD runtime budget reached; checkpoint retained", flush=True)
+                    break
+                print(f"LinkedIn 429: pause {wait:.0f}s before retrying the blocked job", flush=True)
+                time.sleep(wait)
+                continue
+            position += 1
     else:
         with ThreadPoolExecutor(max_workers=max(1, a.workers)) as pool:
             coordinator = Coordinator()
