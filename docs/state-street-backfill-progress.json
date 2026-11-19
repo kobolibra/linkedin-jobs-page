@@ -1,6 +1,6 @@
 {
   "status": "INCOMPLETE; checkpoints only, NOT published canonical jobs",
-  "updatedAt": "2026-11-19T07:49:16.182962+00:00",
+  "updatedAt": "2026-11-19T08:22:53.976002+00:00",
   "company": "State Street",
   "companyIds": [
     "1767",
@@ -17,16 +17,16 @@
     "State Street::SG": "ok: 17 jobs"
   },
   "searchComplete": true,
-  "jdOk": 126,
+  "jdOk": 142,
   "jdTotal": 142,
-  "jdMissing": 16,
+  "jdMissing": 0,
   "jdOkByRegion": {
-    "CN": 113,
-    "HK": 0,
-    "SG": 13
+    "CN": 116,
+    "HK": 9,
+    "SG": 17
   },
-  "jdBlocked": 1,
-  "detailRetryAt": 1795074614.0004938,
+  "jdBlocked": 0,
+  "detailRetryAt": 0,
   "searchCheckpoint": "data/jobspy/backfill/state-street-live-search-checkpoint.json",
   "jdCheckpoint": "data/jobspy/backfill/state-street-live-jd-checkpoint.json",
   "sourceRepos": [
@@ -34,5 +34,5 @@
     "kobolibra/linkedin-jobs-executor"
   ],
   "datePolicy": "Only historical State Street new rows: pushTime = verified datePosted; preserve existing rows",
-  "blocker": "LinkedIn JD rate limiting; recover after cooldown"
+  "blocker": "Missing JD; continue verified historical detail collection"
 }
