@@ -1,0 +1,14 @@
+{
+  "company": "State Street",
+  "operation": "authoritative-CN-only-history",
+  "regions": {
+    "CN": 116,
+    "HK": 9,
+    "SG": 17
+  },
+  "expectedJobs": 142,
+  "cnJdOnly": true,
+  "discardAllEarlierStateStreet": true,
+  "pushTimePolicy": "all 142 source datePosted",
+  "requestedAt": "2026-11-19T08:32:26Z"
+}
