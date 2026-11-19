@@ -19,7 +19,7 @@ def identity(row):
     return linkedin_job_id(row.get('sourceJobId') or row.get('link'))
 
 
-def enrich(existing, incoming, blocked=()):
+def enrich(existing, incoming, blocked=(), *, state_street_post_date=False):
     result = dict(existing)
     rows = [dict(row) for row in existing['jobs']]
     by_id = {identity(row): row for row in rows if identity(row)}
@@ -39,6 +39,12 @@ def enrich(existing, incoming, blocked=()):
             row.update(sourceJobId='li-' + key, jobStatus='active')
             row.setdefault('firstSeen', row.get('datePosted') or row.get('fetchedAt'))
             row.setdefault('pushTime', row.get('fetchedAt') or row.get('datePosted'))
+            if state_street_post_date and source.get('requestedCompany') == 'State Street':
+                from posting_dates import posting_day
+                posted = posting_day(source.get('datePosted'))
+                if posted is None:
+                    raise ValueError('State Street backfill requires source datePosted: ' + key)
+                row['pushTime'] = posted.isoformat()
             row['dataSources'] = list(dict.fromkeys(list(row.get('dataSources') or []) + ['jobspy']))
             rows.append(row)
             by_id[key] = row
@@ -53,12 +59,13 @@ def write(path, value):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--normalized', required=True)
+    parser.add_argument('--state-street-post-date', action='store_true')
     args = parser.parse_args()
     rows = json.loads(Path(args.normalized).read_text())['jobs']
     batch_path = Path('data/n8n/rss-latest.json')
     batch = json.loads(batch_path.read_text()) if batch_path.exists() else {}
     canonical = json.loads(Path('jobs.json').read_text())
-    write('jobs.json', enrich(canonical, rows, blocklist_companies(batch)))
+    write('jobs.json', enrich(canonical, rows, blocklist_companies(batch), state_street_post_date=args.state_street_post_date))
     for company, (key, company_id) in SPECS.items():
         selected = [row for row in rows if row.get('requestedCompany') == company]
         if not selected:

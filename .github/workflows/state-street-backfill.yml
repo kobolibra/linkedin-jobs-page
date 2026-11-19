@@ -50,7 +50,7 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            python scripts/jobspy/publish_backfill.py --normalized /tmp/state-street-details.json
+            python scripts/jobspy/publish_backfill.py --normalized /tmp/state-street-details.json --state-street-post-date
             python scripts/posting_event_history.py
             python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
             python scripts/audit_project.py --strict
