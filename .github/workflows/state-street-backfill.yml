@@ -5,7 +5,7 @@ on:
     paths: [data/jobspy/backfill-requests/state-street.json]
   workflow_dispatch:
   schedule:
-    - cron: '17 */3 * * *'
+    - cron: '17 * * * *'
 permissions:
   contents: write
   actions: write
@@ -39,6 +39,15 @@ jobs:
           if Path('data/jobspy/backfill/state-street-initialized.json').exists():
               print('State Street history already published; no backfill requests needed')
               ready = False
+          details_path = Path(os.environ['DETAILS'])
+          if ready and details_path.exists():
+              previous = json.loads(details_path.read_text())
+              blocked_retries = [float(row.get('detailRetryAt') or 0)
+                                 for row in previous.get('jobs', [])
+                                 if row.get('detailStatus') == 'blocked']
+              if blocked_retries and max(blocked_retries) > time.time():
+                  print('Respect the latest JD retry boundary:', max(blocked_retries))
+                  ready = False
           checkpoint = Path(os.environ['SEARCH'])
           if ready and checkpoint.exists():
               doc = json.loads(checkpoint.read_text())
@@ -71,7 +80,7 @@ jobs:
         id: details
         if: steps.preflight.outputs.ready == 'true'
         run: |
-          python scripts/jobspy/fetch_details_parallel.py --input /tmp/state-street-jd-input.json --output "$DETAILS" --workers 1 --timeout 15 --attempts 1 --delay-min 8 --delay-max 12 --stop-on-rate-limit
+          python scripts/jobspy/fetch_details_parallel.py --input /tmp/state-street-jd-input.json --output "$DETAILS" --workers 1 --timeout 15 --attempts 1 --delay-min 18 --delay-max 24 --stop-on-rate-limit --continue-after-rate-limit --rate-limit-pause-seconds 360 --max-rate-limit-pauses 5 --max-runtime-seconds 9600
       - name: Validate full JD coverage before any canonical publication
         if: steps.preflight.outputs.ready == 'true'
         run: python scripts/jobspy/validate_state_street_backfill.py --input "$DETAILS" --details
@@ -101,7 +110,8 @@ jobs:
             for f in /tmp/state-street-persist/*.json; do
               if [ -f "$f" ]; then cp "$f" "data/jobspy/backfill/$(basename "$f")"; fi
             done
-            git add data/jobspy/backfill/state-street-live-search-checkpoint.json data/jobspy/backfill/state-street-live-jd-checkpoint.json
+            python scripts/jobspy/update_state_street_progress.py --search "$SEARCH" --details "$DETAILS" --output docs/state-street-backfill-progress.json
+            git add data/jobspy/backfill/state-street-live-search-checkpoint.json data/jobspy/backfill/state-street-live-jd-checkpoint.json docs/state-street-backfill-progress.json
             if git diff --cached --quiet; then break; fi
             git commit -m 'checkpoint: persist State Street historical recovery progress'
             if git push origin HEAD:main; then break; fi
