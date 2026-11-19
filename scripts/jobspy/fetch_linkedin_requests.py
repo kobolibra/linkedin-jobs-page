@@ -29,7 +29,6 @@ USER_AGENTS = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
 ]
 COMPANIES = {
-    "State Street": {"canonical": "state street", "company_id": "1767,1089754", "variants": ["state street", "state street investment management", "state street global advisors"]},
     "HSBC": {"canonical": "hsbc", "company_id": "1241", "variants": ["hsbc", "the hongkong and shanghai banking corporation"]},
     "Standard Chartered": {"canonical": "standard chartered", "company_id": "2235", "variants": ["standard chartered", "\u6e23\u6253\u73af\u7403\u5546\u4e1a\u670d\u52a1\u6709\u9650\u516c\u53f8"]},
     "Citi": {"canonical": "citi", "company_id": "11448", "variants": ["citi", "citibank", "citigroup"]},
@@ -48,6 +47,7 @@ COMPANIES = {
     "UBS": {"canonical": "ubs", "company_id": "1214", "variants": ["ubs", "ubs group"]},
     "Schroders": {"canonical": "schroders", "company_id": "5494", "variants": ["schroders", "schroder investment management"]},
     "Invesco": {"canonical": "invesco", "company_id": "3582438", "variants": ["invesco", "invesco ltd"]},
+    "State Street": {"canonical": "state street", "company_id": "1767,1089754", "variants": ["state street", "state street investment management", "state street global advisors"]},
 }
 
 
