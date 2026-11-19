@@ -16,3 +16,14 @@ class StateStreetTests(unittest.TestCase):
         with self.assertRaises(ValueError):validate(doc,True)
         doc["statusSummary"]["State Street::HK"]="partial@start=25"
         with self.assertRaises(ValueError):validate(doc)
+
+    def test_historical_push_time_opt_in_is_state_street_only(self):
+        from publish_backfill import enrich
+        source={"sourceJobId":"li-4492028185","company":"State Street","requestedCompany":"State Street","datePosted":"2026-11-10","fetchedAt":"2026-11-19T05:00:00Z"}
+        self.assertEqual(enrich({"jobs":[]},[source],state_street_post_date=True)["jobs"][0]["pushTime"],"2026-11-10")
+        self.assertEqual(enrich({"jobs":[]},[source])["jobs"][0]["pushTime"],source["fetchedAt"])
+        other=dict(source,sourceJobId="li-4492028186",company="Citi",requestedCompany="Citi")
+        self.assertEqual(enrich({"jobs":[]},[other],state_street_post_date=True)["jobs"][0]["pushTime"],source["fetchedAt"])
+        old=dict(source,pushTime="2026-11-08",firstSeen="2026-11-01",jobStatus="expired")
+        kept=enrich({"jobs":[old]},[source],state_street_post_date=True)["jobs"][0]
+        self.assertEqual((kept["pushTime"],kept["firstSeen"],kept["jobStatus"]),("2026-11-08","2026-11-01","expired"))
