@@ -107,9 +107,6 @@ def company_match(company: str, requested: str) -> bool:
 
 
 def rotate_user_agent(session: requests.Session, attempt: int) -> None:
-    if args.company == ['State Street'] and args.results_per_company >= 10000:
-        session.coordinator.min_interval = max(session.coordinator.min_interval, args.delay_min)
-        session.coordinator.interval_jitter = max(0, args.delay_max - args.delay_min)
     session.headers.update({"User-Agent": USER_AGENTS[attempt % len(USER_AGENTS)]})
 
 
@@ -233,6 +230,9 @@ def main() -> int:
     # handles 429 separately and always honors an explicit Retry-After.
     session = LinkedInSession(attempts=page_attempts, user_agents=USER_AGENTS,
                               linear_backoff=True)
+    if args.company == ['State Street'] and args.results_per_company >= 10000:
+        session.coordinator.min_interval = max(session.coordinator.min_interval, args.delay_min)
+        session.coordinator.interval_jitter = max(0, args.delay_max - args.delay_min)
     session.headers.update({
         "User-Agent": USER_AGENTS[0],
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
