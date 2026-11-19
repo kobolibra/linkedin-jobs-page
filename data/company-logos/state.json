@@ -12271,5 +12271,34 @@
         "deferred": true
       }
     ]
+  },
+  "inspirext": {
+    "name": "InspireXT",
+    "checkedAt": "2026-11-19T16:04:06.877098+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4492149272",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.99558984242755,
+        "deferred": true
+      }
+    ]
   }
 }
