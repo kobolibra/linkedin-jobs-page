@@ -7,10 +7,11 @@ const {FIRMS,DISPLAY,COMPACT,MICRO,REGIONS,firmIndex,aggregate,daily,limit,treem
 const root=new URL('../',import.meta.url);
 const read=name=>readFileSync(new URL(name,root),'utf8');
 
-test('tracked institutions match the 18-company collector registry and About list',()=>{
+test('18-firm chart stays independent of 19-company collection registry',()=>{
  const collector=read('scripts/jobspy/fetch_linkedin_requests.py'),about=read('about.html');
  const names=[...collector.matchAll(/^    "([^"]+)": \{"canonical":/gm)].map(m=>m[1]);
- assert.deepEqual(FIRMS,names);
+ assert.deepEqual(FIRMS,names.filter(name=>name!=='State Street'));
+ assert.equal(names.length,19);
  assert.equal(new Set(FIRMS).size,18);
  const aboutBrands=[...((about.match(/<div class="about-company-list">([\s\S]*?)<\/div>/)||[])[1]||'').matchAll(/<span>([^<]+)<\/span>/g)].map(x=>x[1]);
  assert.deepEqual(DISPLAY,aboutBrands,'chart labels must match the canonical About-page brands exactly');
