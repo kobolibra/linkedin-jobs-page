@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-18T16:03:01.918006+00:00",
+    "checkedAt": "2026-11-19T04:02:35.286086+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,30 +3019,29 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-18T22:03:29.316705+00:00",
+    "checkedAt": "2026-11-19T04:02:41.283015+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
+      },
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 429,
-        "contentType": "text/html",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
-        "waitSeconds": 61.85751255530303,
-        "deferred": true
+        "jobId": "4445423723",
+        "reason": "http_error",
+        "stage": "job"
       }
     ]
   },
@@ -3179,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-18T16:02:55.798247+00:00",
+    "checkedAt": "2026-11-19T04:02:29.390714+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5399,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-18T16:02:58.919632+00:00",
+    "checkedAt": "2026-11-19T04:02:32.255927+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12207,5 +12206,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQG-kemS_TBw0g/company-logo_100_100/B56aGdvz7RIUAI-/0/1793647919019/viralnationinc_logo?e=2147483647&v=beta&t=aJNWFrxL8oPC14eGD22BCYsWAuePzRJd2VV9ySvj1yI",
     "companyUrl": "https://www.linkedin.com/company/viralnationinc",
     "sourceJobId": "4492097199"
+  },
+  "anradus pte ltd": {
+    "name": "Anradus Pte Ltd",
+    "checkedAt": "2026-11-19T04:02:22.094562+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "8a643f31872d430d07d1dd19.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQF7YGzX8s5GPw/company-logo_100_100/company-logo_100_100/0/1630660199533?e=2147483647&v=beta&t=vf0r-y982srXVIPU02yMA69ZgtAH6YcfL4IQodYy5Fg",
+    "companyUrl": "https://www.linkedin.com/company/anradus-pte-ltd",
+    "sourceJobId": "4492239299"
+  },
+  "flexhire": {
+    "name": "Flexhire",
+    "checkedAt": "2026-11-19T04:02:23.448429+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2740f09968bb45e35ee6b8f7.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQF1MkMTaM5Tbg/company-logo_100_100/company-logo_100_100/0/1728374923449/flexhire_hr_logo?e=2147483647&v=beta&t=EjZ2CZgBWIRqpdLr9m469fkJgCoIR5UB5oEg_4oyYe4",
+    "companyUrl": "https://www.linkedin.com/company/flexhire-hr",
+    "sourceJobId": "4491897223"
+  },
+  "sino-ocean group": {
+    "name": "Sino-Ocean Group",
+    "checkedAt": "2026-11-19T04:02:26.386845+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "135fe4aad53dfdac220be9ed.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQHZX5FxWvwScA/company-logo_100_100/company-logo_100_100/0/1631373570663?e=2147483647&v=beta&t=VCLA1lkBdamgkICxdfYOj0TddZNTkfKXFZd-9Sf4-cA",
+    "companyUrl": "https://cn.linkedin.com/company/sino-ocean-land",
+    "sourceJobId": "4492250826"
   }
 }
