@@ -1,1 +1,38 @@
-{"status":"INCOMPLETE; checkpoints only, NOT published canonical jobs","updatedAt":"2026-11-19T06:03:04Z","company":"State Street","companyIds":["1767","1089754"],"regions":{"CN":100,"HK":9,"SG":17},"searchStatus":{"State Street::SG":"ok: 17 jobs","State Street::HK":"ok: 9 jobs","State Street::CN":"failed@start=100: HTTP 429 query deferred; resume after other work"},"jdOk":13,"jdTotal":126,"searchCheckpoint":"data/jobspy/backfill/state-street-live-search-checkpoint.json","jdCheckpoint":"data/jobspy/backfill/state-street-live-jd-checkpoint.json","sourceRepos":["kobolibra/linkedin-jobs-page","kobolibra/linkedin-jobs-executor"],"datePolicy":"Only this historical State Street import: publish_backfill.py --state-street-post-date; newly inserted State Street pushTime = verified datePosted. Preserve existing rows and all other companies.","blocker":"CN start=100 returns HTTP 429. Respect cooldown; keep completed HK/SG and verified CN prefix. All JD must be fetched before complete publication.","continuation":"Use --resume and preserve successful JD by canonical numeric LinkedIn ID. Do not use partial historical union for liveness expiration. Update from latest main before safe enrichment, build/audit, deploy and verify. Local workspace outputs/STATE_STREET_HANDOFF.txt has live process/log paths and fuller notes.","failedRemoteRuns":[44466649702,44468026342]}
+{
+  "status": "INCOMPLETE; checkpoints only, NOT published canonical jobs",
+  "updatedAt": "2026-11-19T07:49:16.182962+00:00",
+  "company": "State Street",
+  "companyIds": [
+    "1767",
+    "1089754"
+  ],
+  "regions": {
+    "CN": 116,
+    "HK": 9,
+    "SG": 17
+  },
+  "searchStatus": {
+    "State Street::CN": "partial@resumed-end: 116 jobs",
+    "State Street::HK": "ok: 9 jobs",
+    "State Street::SG": "ok: 17 jobs"
+  },
+  "searchComplete": true,
+  "jdOk": 126,
+  "jdTotal": 142,
+  "jdMissing": 16,
+  "jdOkByRegion": {
+    "CN": 113,
+    "HK": 0,
+    "SG": 13
+  },
+  "jdBlocked": 1,
+  "detailRetryAt": 1795074614.0004938,
+  "searchCheckpoint": "data/jobspy/backfill/state-street-live-search-checkpoint.json",
+  "jdCheckpoint": "data/jobspy/backfill/state-street-live-jd-checkpoint.json",
+  "sourceRepos": [
+    "kobolibra/linkedin-jobs-page",
+    "kobolibra/linkedin-jobs-executor"
+  ],
+  "datePolicy": "Only historical State Street new rows: pushTime = verified datePosted; preserve existing rows",
+  "blocker": "LinkedIn JD rate limiting; recover after cooldown"
+}
