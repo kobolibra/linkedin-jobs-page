@@ -14,7 +14,7 @@ class ReconcileTests(unittest.TestCase):
             "companies": {"Acme": "ok: 1 jobs"},
         }
 
-    def test_state_street_hk_sg_details_merge_without_opening_other_regions(self):
+    def test_all_employers_hk_sg_remain_lifecycle_only_even_with_detail_payload(self):
         items = [
             {"sourceJobId":"li-400000001","company":"State Street","requestedCompany":"State Street",
              "companyCanonical":"state street","location":"HK","fetchedAt":"2026-11-19T01:00:00Z",
@@ -30,8 +30,8 @@ class ReconcileTests(unittest.TestCase):
             "State Street::HK":"ok: 1 jobs","State Street::SG":"ok: 1 jobs","Other::HK":"ok: 1 jobs"}}
         result=reconcile({"jobs":[]},snapshot,"2026-11-19T02:00:00Z")
         found={x["sourceJobId"]:x for x in result["jobs"]}
-        self.assertEqual(found["li-400000001"]["descriptionHtml"],"<p>HK JD</p>")
-        self.assertEqual(found["li-400000002"]["descriptionHtml"],"<p>SG JD</p>")
+        self.assertNotIn("descriptionHtml", found["li-400000001"])
+        self.assertNotIn("descriptionHtml", found["li-400000002"])
         self.assertNotIn("descriptionHtml",found["li-400000003"])
 
     def test_repeated_snapshot_cannot_expire_later_rss_discovery(self):

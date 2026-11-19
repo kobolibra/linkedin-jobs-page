@@ -160,20 +160,17 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
                       "jobspyFirstSeen", "companyLogoSource"):
             if item.get(field) not in (None, ""):
                 merged[field] = item[field]
-        # Other employers remain lifecycle-only outside CN. State Street has
-        # explicitly collected HK/SG JD, which must reach canonical jobs.
-        detail_allowed = (location_key(item) == "CN" or
-                          (company_key(item) == "state street" and location_key(item) in ("HK", "SG")
-                           and item.get("detailStatus") == "ok"))
-        if detail_allowed:
+        # JD and city enrichment remain a CN-only pipeline. Preserve any
+        # existing HK/SG values and never let a lifecycle-only row add them.
+        if location_key(item) == "CN":
             for field in ("city", "descriptionText", "descriptionHtml", "detailStatus",
                           "detailFetchedAt", "detailError", "jdChangeStatus", "jdCheckedAt",
                           "jdChangedAt", "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText"):
                 if item.get(field) not in (None, ""):
                     merged[field] = item[field]
-        if detail_allowed and item.get("detailStatus") == "ok":
+        if location_key(item) == "CN" and item.get("detailStatus") == "ok":
             merged.pop("detailError", None)
-        if detail_allowed and item.get("jdChangeStatus") == "unchanged":
+        if location_key(item) == "CN" and item.get("jdChangeStatus") == "unchanged":
             for field in ("jdChangedAt", "jdDiffHtml", "jdDiffPreviousText", "jdDiffCurrentText"):
                 merged.pop(field, None)
         # JobSpy is a lifecycle/status observer, not the feed that defines when

@@ -219,10 +219,6 @@ def main() -> int:
     args = parser.parse_args()
     if args.results_per_company < 1:
         raise SystemExit("--results-per-company must be >= 1")
-    # Slow only the one-off State Street full-history import.
-    if args.company == ['State Street'] and args.results_per_company >= 10000:
-        args.delay_min = max(args.delay_min, 8)
-        args.delay_max = max(args.delay_max, 12)
     page_attempts = max(1, args.page_attempts)
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -230,9 +226,6 @@ def main() -> int:
     # handles 429 separately and always honors an explicit Retry-After.
     session = LinkedInSession(attempts=page_attempts, user_agents=USER_AGENTS,
                               linear_backoff=True)
-    if args.company == ['State Street'] and args.results_per_company >= 10000:
-        session.coordinator.min_interval = max(session.coordinator.min_interval, args.delay_min)
-        session.coordinator.interval_jitter = max(0, args.delay_max - args.delay_min)
     session.headers.update({
         "User-Agent": USER_AGENTS[0],
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
