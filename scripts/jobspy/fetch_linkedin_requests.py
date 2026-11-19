@@ -107,6 +107,9 @@ def company_match(company: str, requested: str) -> bool:
 
 
 def rotate_user_agent(session: requests.Session, attempt: int) -> None:
+    if args.company == ['State Street'] and args.results_per_company >= 10000:
+        session.coordinator.min_interval = max(session.coordinator.min_interval, args.delay_min)
+        session.coordinator.interval_jitter = max(0, args.delay_max - args.delay_min)
     session.headers.update({"User-Agent": USER_AGENTS[attempt % len(USER_AGENTS)]})
 
 
