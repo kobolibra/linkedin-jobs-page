@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-19T04:02:35.286086+00:00",
+    "checkedAt": "2026-11-19T22:02:20.474217+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-19T04:02:41.283015+00:00",
+    "checkedAt": "2026-11-19T22:02:26.295696+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-19T04:02:29.390714+00:00",
+    "checkedAt": "2026-11-19T22:02:16.083503+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-19T04:02:32.255927+00:00",
+    "checkedAt": "2026-11-19T22:02:17.369939+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12245,60 +12245,50 @@
   },
   "the recruitment consultancy limited": {
     "name": "THE Recruitment Consultancy Limited",
-    "checkedAt": "2026-11-19T10:02:38.914505+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-19T22:02:32.298327+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4492402518",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492402518",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.08829511415919,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "2869c4939241dc23192109df.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQE8Rqg9l-USiQ/company-logo_100_100/company-logo_100_100/0/1693227661003?e=2147483647&v=beta&t=oATkRMvci0wR5KkoVnHWzRXLCL0gSuPVCimnoKaj9Fo",
+    "companyUrl": "https://hk.linkedin.com/company/thejobs-hongkong",
+    "sourceJobId": "4492402518"
   },
   "inspirext": {
     "name": "InspireXT",
-    "checkedAt": "2026-11-19T16:04:06.877098+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-19T22:02:33.324294+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4492149272",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492149272",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.99558984242755,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "4c0b60e256ebd30529807e01.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQEh181oaxuqbw/company-logo_100_100/company-logo_100_100/0/1705660527179/inspirext_logo?e=2147483647&v=beta&t=BayLnzAUfk7mZmNwhzVWJqksVK0bszoHv0d4mJnYWyc",
+    "companyUrl": "https://www.linkedin.com/company/inspirext",
+    "sourceJobId": "4492149272"
+  },
+  "transnational group singapore": {
+    "name": "Transnational Group Singapore",
+    "checkedAt": "2026-11-19T22:02:12.055583+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "cc7871310d6bb6da5bfc04a8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQHtZYsC3KPX0A/company-logo_100_100/company-logo_100_100/0/1630650107450?e=2147483647&v=beta&t=YeKEs9VniHQVY5BpivJza0yD5e2FJHs63EbtyufvFWo",
+    "companyUrl": "https://sg.linkedin.com/company/transnational-grp",
+    "sourceJobId": "4491389088"
+  },
+  "university of nottingham school of humanities": {
+    "name": "University of Nottingham School of Humanities",
+    "checkedAt": "2026-11-19T22:02:13.135673+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "707af8b45b73a18be969b48e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHyGcx2pRqxHQ/company-logo_100_100/company-logo_100_100/0/1718624821240?e=2147483647&v=beta&t=ajtY8aDclonUM4_u_NMBuJQzkVhXvwKYYGLsBGlwdq0",
+    "companyUrl": "https://www.linkedin.com/company/university-of-nottingham-school-of-humanities",
+    "sourceJobId": "4492403914"
   }
 }
