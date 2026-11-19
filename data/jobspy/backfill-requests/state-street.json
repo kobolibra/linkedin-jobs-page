@@ -13,5 +13,6 @@
   "includeAllAvailableHistory": true,
   "includeJD": true,
   "resumeFromPersistedCheckpoints": true,
-  "requestRevision": "state-street-resume-after-277"
+  "requestRevision": "after-pr-278-bounded-jd-cooldown-recovery",
+  "retryMode": "single-run-respect-429-and-preserve-checkpoints"
 }
