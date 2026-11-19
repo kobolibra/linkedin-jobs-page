@@ -1,147 +1,31 @@
-name: State Street three-region historical backfill
+name: Verify completed State Street historical backfill
 on:
-  push:
-    branches: [main]
-    paths: [data/jobspy/backfill-requests/state-street.json]
   workflow_dispatch:
-  schedule:
-    - cron: '17 * * * *'
+
 permissions:
-  contents: write
-  actions: write
-concurrency:
-  group: state-street-history
-  cancel-in-progress: false
+  contents: read
+
 jobs:
-  backfill:
+  verify-archive:
     runs-on: ubuntu-24.04
-    timeout-minutes: 180
-    env:
-      LINKEDIN_HTTP_STATE: /tmp/state-street-http.json
-      LINKEDIN_HEALTH_EVENTS: /tmp/state-street-health.jsonl
-      SEARCH: data/jobspy/backfill/state-street-live-search-checkpoint.json
-      DETAILS: data/jobspy/backfill/state-street-live-jd-checkpoint.json
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install -r requirements-jobspy.txt
-      - name: Check historical gate and server cooldown
-        id: preflight
-        shell: bash
+      - name: Verify archived CN-only historical result without network requests
         run: |
           python - <<'PY'
-          import json, os, time
+          import json
           from pathlib import Path
-          ready = True
-          if Path('data/jobspy/backfill/state-street-initialized.json').exists():
-              print('State Street history already published; no backfill requests needed')
-              ready = False
-          details_path = Path(os.environ['DETAILS'])
-          if ready and details_path.exists():
-              previous = json.loads(details_path.read_text())
-              blocked_retries = [float(row.get('detailRetryAt') or 0)
-                                 for row in previous.get('jobs', [])
-                                 if row.get('detailStatus') == 'blocked']
-              if blocked_retries and max(blocked_retries) > time.time():
-                  print('Respect the latest JD retry boundary:', max(blocked_retries))
-                  ready = False
-          checkpoint = Path(os.environ['SEARCH'])
-          if ready and checkpoint.exists():
-              doc = json.loads(checkpoint.read_text())
-              retry_at = float(doc.get('retryAt') or 0)
-              if retry_at > time.time():
-                  print('LinkedIn cooldown remains in effect; defer all requests until after', retry_at)
-                  ready = False
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
-              output.write('ready=' + str(ready).lower() + '\n')
+          from collections import Counter
+          root = Path('data/jobspy/backfill')
+          done = json.loads((root / 'state-street-initialized.json').read_text())
+          assert done['status'] == 'complete' and done['jdPolicy'].startswith('CN-only')
+          rows = json.loads((root / 'state-street-live-jd-checkpoint.json').read_text())['jobs']
+          assert len(rows) == 142
+          assert Counter(x['location'] for x in rows) == {'CN': 116, 'HK': 9, 'SG': 17}
+          assert all(x.get('descriptionHtml') or x.get('descriptionText') for x in rows if x['location'] == 'CN')
+          assert all(not (x.get('descriptionHtml') or x.get('descriptionText')) for x in rows if x['location'] != 'CN')
+          print('State Street archive verified: 142 listings, 116 CN JD, HK/SG listing only')
           PY
-      - name: Initialize isolated pacing
-        if: steps.preflight.outputs.ready == 'true'
-        run: |
-          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
-          touch "$LINKEDIN_HEALTH_EVENTS"
-      - name: Resume State Street historical search without re-fetching completed regions
-        id: search
-        if: steps.preflight.outputs.ready == 'true'
-        run: |
-          mkdir -p data/jobspy/backfill
-          python scripts/jobspy/fetch_linkedin_requests.py --company "State Street" --location China --location "Hong Kong" --location Singapore --results-per-company 10000 --delay-min 8 --delay-max 12 --page-attempts 1 --output "$SEARCH" --resume
-      - name: Verify all three regional historical searches completed
-        if: steps.preflight.outputs.ready == 'true'
-        run: python scripts/jobspy/validate_state_street_backfill.py --input "$SEARCH"
-      - name: Reuse verified JDs from earlier checkpoint
-        if: steps.preflight.outputs.ready == 'true'
-        run: |
-          python scripts/jobspy/prepare_state_street_details.py --search "$SEARCH" --previous "$DETAILS" --output /tmp/state-street-jd-input.json
-      - name: Resume missing historical JDs with a single bounded requester
-        id: details
-        if: steps.preflight.outputs.ready == 'true'
-        run: |
-          python scripts/jobspy/fetch_details_parallel.py --input /tmp/state-street-jd-input.json --output "$DETAILS" --workers 1 --timeout 15 --attempts 1 --delay-min 18 --delay-max 24 --stop-on-rate-limit --continue-after-rate-limit --rate-limit-pause-seconds 360 --max-rate-limit-pauses 5 --max-runtime-seconds 9600
-      - name: Validate full JD coverage before any canonical publication
-        if: steps.preflight.outputs.ready == 'true'
-        run: python scripts/jobspy/validate_state_street_backfill.py --input "$DETAILS" --details
-      - name: Preserve backfill evidence even when incomplete
-        if: always() && steps.preflight.outputs.ready == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: state-street-history
-          path: |
-            data/jobspy/backfill/state-street-live-search-checkpoint.json
-            data/jobspy/backfill/state-street-live-jd-checkpoint.json
-          if-no-files-found: warn
-          retention-days: 30
-      - name: Persist progress to main even after rate limits
-        if: always() && steps.preflight.outputs.ready == 'true'
-        shell: bash
-        run: |
-          mkdir -p /tmp/state-street-persist
-          for name in state-street-live-search-checkpoint.json state-street-live-jd-checkpoint.json; do
-            if [ -f "data/jobspy/backfill/$name" ]; then cp "data/jobspy/backfill/$name" "/tmp/state-street-persist/$name"; fi
-          done
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            git reset --hard origin/main
-            for f in /tmp/state-street-persist/*.json; do
-              if [ -f "$f" ]; then cp "$f" "data/jobspy/backfill/$(basename "$f")"; fi
-            done
-            python scripts/jobspy/update_state_street_progress.py --search "$SEARCH" --details "$DETAILS" --output docs/state-street-backfill-progress.json
-            git add data/jobspy/backfill/state-street-live-search-checkpoint.json data/jobspy/backfill/state-street-live-jd-checkpoint.json docs/state-street-backfill-progress.json
-            if git diff --cached --quiet; then break; fi
-            git commit -m 'checkpoint: persist State Street historical recovery progress'
-            if git push origin HEAD:main; then break; fi
-            if [ "$attempt" = 5 ]; then exit 1; fi
-            sleep 3
-          done
-      - name: Merge verified complete history into latest canonical jobs
-        if: steps.preflight.outputs.ready == 'true'
-        shell: bash
-        run: |
-          cp "$DETAILS" /tmp/state-street-verified-details.json
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for attempt in 1 2 3 4 5; do
-            git fetch origin main
-            git reset --hard origin/main
-            python scripts/jobspy/publish_backfill.py --normalized /tmp/state-street-verified-details.json --state-street-post-date
-            python scripts/posting_event_history.py
-            python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-            python scripts/audit_project.py --strict
-            git add jobs.json jobs-index.json jobs-details.json jobs-version.json data/posting-events-ledger.json data/jev-boilerplate.json data/jobspy/state_street_f_c_1767_final.json data/jobspy/jobspy_baseline_final_unified.json data/jobspy/backfill/state-street-initialized.json docs/state-street-backfill-progress.json
-            git add -A jd-parts || true
-            if git diff --cached --quiet; then break; fi
-            git commit -m 'jobspy: publish verified State Street historical CN HK SG jobs and JD'
-            if git push origin HEAD:main; then break; fi
-            if [ "$attempt" = 5 ]; then exit 1; fi
-            sleep 3
-          done
-      - name: Deploy verified merged data
-        if: steps.preflight.outputs.ready == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy.yml --ref main
