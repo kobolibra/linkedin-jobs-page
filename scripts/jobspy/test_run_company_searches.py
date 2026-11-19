@@ -86,9 +86,11 @@ class RunCompanySearchesTest(unittest.TestCase):
                 "--max-workers", "2",
                 "--time-budget-seconds", "1",
             ]
-            with patch("sys.argv", args):
+            marker = Path(tmp) / "state-street-initialized.json"
+            marker.write_text('{"status":"complete"}')
+            with patch.object(runner, "STATE_STREET_INITIALIZED", marker), patch("sys.argv", args):
                 self.assertEqual(runner.main(), 0)
-            files = sorted(Path(tmp).glob("*.json"))
+            files = sorted(p for p in Path(tmp).glob("*.json") if p != marker)
             self.assertEqual(len(files), 19)
             self.assertEqual({p.stem for p in files}, {
                 "state_street", "hsbc", "standard_chartered", "citi", "jpmorgan_chase", "bnp_paribas",

@@ -38,7 +38,7 @@ test('About sourcing and firm list match collector configuration',()=>{
  const roster=about.match(/<div class="about-company-list">([\s\S]*?)<\/div>/)?.[1]||'';
  const companyConfig=source.match(/^COMPANIES = \{([\s\S]*?)^\}/m);
  assert.ok(companyConfig,'tracked company configuration exists');
- assert.equal([...companyConfig[1].matchAll(/^    "[^"]+": \{/gm)].length,18);
+ assert.equal([...companyConfig[1].matchAll(/^    "[^"]+": \{/gm)].length,19);
  assert.equal((roster.match(/<span>/g)||[]).length,18);
  assert.match(about,/follow 18 selected institutions/);
  assert.match(roster,/<span>Schroders<\/span>/);

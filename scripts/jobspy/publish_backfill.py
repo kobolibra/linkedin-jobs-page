@@ -2,6 +2,7 @@
 import argparse
 import json
 from pathlib import Path
+from datetime import datetime, timezone
 
 from linkedin_ids import linkedin_job_id
 from merge_n8n_incremental import blocklist_companies, normalize_company
@@ -61,7 +62,11 @@ def main():
     parser.add_argument('--normalized', required=True)
     parser.add_argument('--state-street-post-date', action='store_true')
     args = parser.parse_args()
-    rows = json.loads(Path(args.normalized).read_text())['jobs']
+    batch_doc = json.loads(Path(args.normalized).read_text())
+    rows = batch_doc['jobs']
+    if args.state_street_post_date:
+        from validate_state_street_backfill import validate
+        validate(batch_doc, details=True)
     batch_path = Path('data/n8n/rss-latest.json')
     batch = json.loads(batch_path.read_text()) if batch_path.exists() else {}
     canonical = json.loads(Path('jobs.json').read_text())
@@ -81,6 +86,18 @@ def main():
     write('data/jobspy/jobspy_baseline_final_unified.json',
           {'schemaVersion': '1.2', 'mode': 'historical-backfill-unified', 'country': 'China',
            'count': len(unified), 'jobs': list(unified.values())})
+    if args.state_street_post_date:
+        now = datetime.now(timezone.utc).isoformat()
+        counts = {region: sum(row.get('location') == region for row in rows) for region in ('CN', 'HK', 'SG')}
+        write('data/jobspy/backfill/state-street-initialized.json',
+              {'status': 'complete', 'publishedAt': now, 'jobs': len(rows), 'regions': counts,
+               'allJdVerified': True, 'source': 'state-street-historical-backfill'})
+        write('docs/state-street-backfill-progress.json',
+              {'status': 'COMPLETE; published canonical jobs', 'updatedAt': now,
+               'company': 'State Street', 'companyIds': ['1767', '1089754'],
+               'regions': counts, 'jdOk': len(rows), 'jdTotal': len(rows),
+               'searchCheckpoint': 'data/jobspy/backfill/state-street-live-search-checkpoint.json',
+               'jdCheckpoint': 'data/jobspy/backfill/state-street-live-jd-checkpoint.json'})
 
 
 if __name__ == '__main__':

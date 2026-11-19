@@ -7,7 +7,9 @@ def validate(doc, details=False):
     statuses = doc.get("statusSummary", {})
     for region in ("CN", "HK", "SG"):
         status = str(statuses.get("State Street::" + region, ""))
-        if not status.startswith("ok:"):
+        # Resumed tail is historically complete, but cannot expire missing
+        # canonical rows because its prefix was observed at a different time.
+        if not (status.startswith("ok:") or status.startswith("partial@resumed-end:")):
             raise ValueError("Incomplete State Street " + region + ": " + status)
     rows = doc.get("jobs", [])
     if not rows:
