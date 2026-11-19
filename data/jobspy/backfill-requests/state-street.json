@@ -1,1 +1,17 @@
-{"company":"State Street","companyIds":["1767","1089754"],"locations":["CN","HK","SG"],"requestedAt":"2026-11-19","includeAllAvailableHistory":true,"includeJD":true}
+{
+  "company": "State Street",
+  "companyIds": [
+    "1767",
+    "1089754"
+  ],
+  "locations": [
+    "CN",
+    "HK",
+    "SG"
+  ],
+  "requestedAt": "2026-11-19",
+  "includeAllAvailableHistory": true,
+  "includeJD": true,
+  "resumeFromPersistedCheckpoints": true,
+  "requestRevision": "state-street-resume-after-277"
+}
