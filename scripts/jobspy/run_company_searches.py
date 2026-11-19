@@ -21,7 +21,6 @@ from pathlib import Path
 from fetch_linkedin_requests import COMPANIES
 
 LOG = logging.getLogger("jobspy-orchestrator")
-STATE_STREET_INITIALIZED = Path("data/jobspy/backfill/state-street-initialized.json")
 
 
 def run_one(args: argparse.Namespace, key: str, company: str, company_id: str, *, resume=False) -> tuple[str, int, str]:
@@ -105,10 +104,7 @@ def main() -> int:
     if args.max_workers < 1:
         parser.error("--max-workers must be >= 1")
 
-    selected = [(company, spec) for company, spec in COMPANIES.items()
-                if company != 'State Street' or STATE_STREET_INITIALIZED.is_file()]
-    if 'State Street' in COMPANIES and not STATE_STREET_INITIALIZED.is_file():
-        LOG.info('State Street deferred until the complete historical backfill is published')
+    selected = list(COMPANIES.items())
     failures = []
     with ThreadPoolExecutor(max_workers=args.max_workers) as pool:
         futures = [
