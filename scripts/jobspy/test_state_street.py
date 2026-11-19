@@ -8,12 +8,16 @@ class StateStreetTests(unittest.TestCase):
         for name in ("State Street","State Street Investment Management","State Street Global Advisors"):
             self.assertTrue(company_match(name,"State Street"))
         self.assertFalse(company_match("Citi","State Street"))
-    def test_three_regions_and_every_jd_required(self):
+    def test_cn_only_jd_validation_and_three_region_search(self):
         doc={"statusSummary":{"State Street::"+r:"ok: 1 jobs" for r in ("CN","HK","SG")},
-             "jobs":[{"location":r,"detailStatus":"ok","descriptionHtml":"<p>JD</p>"} for r in ("CN","HK","SG")]}
+             "jobs":[{"location":r, **({"detailStatus":"ok","descriptionHtml":"<p>JD</p>"} if r=="CN" else {})} for r in ("CN","HK","SG")]}
         self.assertEqual(len(validate(doc,True)),3)
         doc["jobs"][0]["descriptionHtml"]=""
         with self.assertRaises(ValueError):validate(doc,True)
+        doc["jobs"][0]["descriptionHtml"]="<p>JD</p>"
+        doc["jobs"][1]["descriptionHtml"]="<p>Unexpected HK JD</p>"
+        with self.assertRaises(ValueError):validate(doc,True)
+        doc["jobs"][1].pop("descriptionHtml")
         doc["statusSummary"]["State Street::HK"]="partial@start=25"
         with self.assertRaises(ValueError):validate(doc)
         doc["statusSummary"]["State Street::HK"] = "partial@resumed-end: 1 jobs"
