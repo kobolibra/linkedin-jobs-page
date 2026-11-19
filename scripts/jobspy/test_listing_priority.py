@@ -89,7 +89,7 @@ class ListingPriorityTests(unittest.TestCase):
             return type('Completed',(),{'returncode':0,'stdout':'','stderr':''})()
         with tempfile.TemporaryDirectory() as tmp,patch('run_company_searches.subprocess.run',side_effect=network),patch.object(sys,'argv',['runner','--output-dir',tmp,'--max-workers','1']):
             self.assertEqual(runner.main(),0)
-        initial_count = len(runner.COMPANIES)
+        initial_count = len(runner.COMPANIES) - 1  # State Street gated before historical initialization
         self.assertEqual(len(calls), initial_count + 1)
         self.assertTrue(all(not resume for _,resume in calls[:initial_count]))
         self.assertEqual(calls[-1],('HSBC',True))
