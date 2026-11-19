@@ -16,6 +16,8 @@ class StateStreetTests(unittest.TestCase):
         with self.assertRaises(ValueError):validate(doc,True)
         doc["statusSummary"]["State Street::HK"]="partial@start=25"
         with self.assertRaises(ValueError):validate(doc)
+        doc["statusSummary"]["State Street::HK"] = "partial@resumed-end: 1 jobs"
+        self.assertEqual(len(validate(doc)),3)
 
     def test_historical_push_time_opt_in_is_state_street_only(self):
         from publish_backfill import enrich
