@@ -13,6 +13,7 @@
   "includeAllAvailableHistory": true,
   "includeJD": true,
   "resumeFromPersistedCheckpoints": true,
-  "requestRevision": "after-pr-278-bounded-jd-cooldown-recovery",
-  "retryMode": "single-run-respect-429-and-preserve-checkpoints"
+  "requestRevision": "resume-remaining-16-jds-after-preserved-126-checkpoint",
+  "retryMode": "single-run-respect-429-and-preserve-checkpoints",
+  "resumeRequestedAt": "2026-11-19T08:06:48Z"
 }
