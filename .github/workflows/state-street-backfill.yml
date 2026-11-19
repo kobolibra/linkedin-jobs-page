@@ -1,0 +1,67 @@
+name: State Street three-region historical backfill
+on:
+  push:
+    branches: [main]
+    paths: [data/jobspy/backfill-requests/state-street.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: state-street-history
+  cancel-in-progress: false
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      LINKEDIN_HTTP_STATE: /tmp/state-street-http.json
+      LINKEDIN_HEALTH_EVENTS: /tmp/state-street-health.jsonl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements-jobspy.txt
+      - name: Initialize pacing
+        run: |
+          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
+          touch "$LINKEDIN_HEALTH_EVENTS"
+      - name: Fetch all available State Street listings across CN HK SG
+        run: |
+          python scripts/jobspy/fetch_linkedin_requests.py --company "State Street" --location China --location "Hong Kong" --location Singapore --results-per-company 10000 --delay-min 2 --delay-max 5 --page-attempts 3 --output /tmp/state-street-search.json
+          python scripts/jobspy/validate_state_street_backfill.py --input /tmp/state-street-search.json
+      - name: Fetch every historical JD
+        run: |
+          python scripts/jobspy/fetch_details_parallel.py --input /tmp/state-street-search.json --output /tmp/state-street-details.json --workers 3 --timeout 15 --attempts 3 --delay-min 1 --delay-max 3
+          python scripts/jobspy/validate_state_street_backfill.py --input /tmp/state-street-details.json --details
+      - name: Preserve backfill evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: state-street-history
+          path: /tmp/state-street-*.json
+          retention-days: 30
+      - name: Merge into latest canonical data without resetting existing lifetimes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            python scripts/jobspy/publish_backfill.py --normalized /tmp/state-street-details.json
+            python scripts/posting_event_history.py
+            python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
+            python scripts/audit_project.py --strict
+            git add jobs.json jobs-index.json jobs-details.json jobs-version.json data/posting-events-ledger.json data/jev-boilerplate.json data/jobspy/state_street_f_c_1767_final.json data/jobspy/jobspy_baseline_final_unified.json
+            if git diff --cached --quiet; then break; fi
+            git commit -m 'jobspy: backfill State Street CN HK SG listings and JD'
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 5 ]; then exit 1; fi
+            sleep 3
+          done
+      - name: Publish merged jobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main

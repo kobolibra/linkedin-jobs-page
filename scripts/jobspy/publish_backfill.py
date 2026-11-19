@@ -7,6 +7,7 @@ from linkedin_ids import linkedin_job_id
 from merge_n8n_incremental import blocklist_companies, normalize_company
 
 SPECS = {
+    'State Street': ('state_street', '1767'),
     'BNP Paribas': ('bnp_paribas', '166278'), 'Societe Generale': ('societe_generale', '1691'),
     'DBS Bank': ('dbs_bank', '163379'), 'Deutsche Bank': ('deutsche_bank', '1262'),
     'Goldman Sachs': ('goldman_sachs', '1382'), 'BlackRock': ('blackrock', '4764'),
@@ -60,6 +61,8 @@ def main():
     write('jobs.json', enrich(canonical, rows, blocklist_companies(batch)))
     for company, (key, company_id) in SPECS.items():
         selected = [row for row in rows if row.get('requestedCompany') == company]
+        if not selected:
+            continue  # A targeted backfill must not erase other employers' baselines.
         write(f'data/jobspy/{key}_f_c_{company_id}_final.json',
               {'schemaVersion': '1.2', 'mode': 'historical-backfill', 'country': 'China',
                'company': company, 'companyId': company_id, 'count': len(selected), 'jobs': selected})
