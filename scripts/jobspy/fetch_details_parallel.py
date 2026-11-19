@@ -26,7 +26,7 @@ def one(item: dict, timeout: int, attempts: int, delay_min: float, delay_max: fl
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(); ap.add_argument("--input", type=Path, required=True); ap.add_argument("--output", type=Path, required=True); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--timeout", type=int, default=15); ap.add_argument("--attempts", type=int, default=3); ap.add_argument("--delay-min", type=float, default=1); ap.add_argument("--delay-max", type=float, default=3); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--input", type=Path, required=True); ap.add_argument("--output", type=Path, required=True); ap.add_argument("--workers", type=int, default=3); ap.add_argument("--timeout", type=int, default=15); ap.add_argument("--attempts", type=int, default=3); ap.add_argument("--delay-min", type=float, default=1); ap.add_argument("--delay-max", type=float, default=3); ap.add_argument("--stop-on-rate-limit", action="store_true"); a = ap.parse_args()
     doc = json.loads(a.input.read_text(encoding="utf-8")); rows = doc if isinstance(doc, list) else doc.get("jobs", [])
     rows = [dict(x) for x in rows]; lock = Lock(); done = 0
     if a.output.parent and str(a.output.parent) not in ("", "."):
@@ -42,19 +42,32 @@ def main() -> int:
     if not todo:
         print(json.dumps({"total":len(rows),"ok":0,"empty":0,"failed":0,"skipped":"no detail candidates"}, ensure_ascii=False), flush=True)
         return 0
-    with ThreadPoolExecutor(max_workers=max(1, a.workers)) as pool:
-        coordinator = Coordinator()
-        pending = todo
-        for round_number in range(max(1, a.attempts)):
-            fs = {pool.submit(one, rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max, coordinator, round_number): i for i in pending}
-            for f in as_completed(fs):
-                i = fs[f]; rows[i] = f.result()
-                if round_number == 0: done += 1
-                with lock: save()
-                print(f"detail {done}/{len(todo)} round={round_number+1} {rows[i].get('sourceJobId')} {rows[i].get('detailStatus')}", flush=True)
-            pending = [i for i in pending if rows[i].get('detailRetryable')]
-            if not pending: break
-    save()
+    if a.stop_on_rate_limit:
+        # Historical backfill must not queue hundreds of requests after a 429.
+        coordinator = Coordinator(min_interval=max(3, a.delay_min),
+                                  interval_jitter=max(0, a.delay_max - a.delay_min))
+        for i in todo:
+            rows[i] = one(rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max, coordinator)
+            done += 1
+            save()
+            print(f"detail {done}/{len(todo)} {rows[i].get('sourceJobId')} {rows[i].get('detailStatus')}", flush=True)
+            if rows[i].get('detailStatus') == 'blocked':
+                print('Historical JD recovery paused after rate limit; preserving checkpoint', flush=True)
+                break
+    else:
+        with ThreadPoolExecutor(max_workers=max(1, a.workers)) as pool:
+            coordinator = Coordinator()
+            pending = todo
+            for round_number in range(max(1, a.attempts)):
+                fs = {pool.submit(one, rows[i], a.timeout, a.attempts, a.delay_min, a.delay_max, coordinator, round_number): i for i in pending}
+                for f in as_completed(fs):
+                    i = fs[f]; rows[i] = f.result()
+                    if round_number == 0: done += 1
+                    with lock: save()
+                    print(f"detail {done}/{len(todo)} round={round_number+1} {rows[i].get('sourceJobId')} {rows[i].get('detailStatus')}", flush=True)
+                pending = [i for i in pending if rows[i].get('detailRetryable')]
+                if not pending: break
+        save()
     ok = sum(x.get("detailStatus") == "ok" for x in rows); failed = sum(x.get("detailStatus") in ("failed", "blocked", "gone") for x in rows); empty = sum(x.get("detailStatus") == "empty" for x in rows)
     print(json.dumps({"total":len(rows),"ok":ok,"empty":empty,"failed":failed}, ensure_ascii=False)); return 0
 if __name__ == "__main__": raise SystemExit(main())
