@@ -18,12 +18,12 @@ test('age badges and dropdown partition every calendar age through 10 weeks',()=
  const options=[...select.matchAll(/<option value="([^"]+)"([^>]*)>([^<]*)<\/option>/g)]
   .map(([,value,flags,label])=>({value,label,hidden:/\bhidden\b/.test(flags)}));
  const bins=[
-  ['0','今天',0,0],['1-7','1 周内',1,7],['8-14','2 周内',8,14],
-  ['15-21','3 周内',15,21],['22-28','4 周内',22,28],
-  ['29-35','5 周内',29,35],['36-42','6 周内',36,42],
-  ['43-49','7 周内',43,49],['50-56','8 周内',50,56],
-  ['57-63','9 周内',57,63],['64-70','10 周内',64,70],
-  ['71+','10 周+',71,Infinity]
+  ['0','Today',0,0],['1-7','1W',1,7],['8-14','2W',8,14],
+  ['15-21','3W',15,21],['22-28','4W',22,28],
+  ['29-35','5W',29,35],['36-42','6W',36,42],
+  ['43-49','7W',43,49],['50-56','8W',50,56],
+  ['57-63','9W',57,63],['64-70','10W',64,70],
+  ['71+','10W+',71,Infinity]
  ];
  assert.deepEqual(options.filter(x=>!x.hidden).map(x=>[x.value,x.label]),
   [['all','全部时间'],...bins.map(([value,label])=>[value,label])]);
@@ -34,7 +34,7 @@ test('age badges and dropdown partition every calendar age through 10 weeks',()=
  };
  const appMatch=getFromApp('ageMatch'),ageLabel=getFromApp('ageLabel');
  for(let day=0;day<=140;day++){
-  const expected=day===0?'今天':day>=71?'10周+':Math.ceil(day/7)+'周内';
+  const expected=day===0?'Today':day>=71?'10W+':Math.ceil(day/7)+'W';
   assert.equal(ageLabel(day),expected,'display label day '+day);
   let matched=0;
   for(const [value,,min,max] of bins){
@@ -51,7 +51,7 @@ test('age badges and dropdown partition every calendar age through 10 weeks',()=
  assert.equal(ageMatch('all',null),true);
  assert.equal(appMatch('71+',71),true);
  assert.equal(appMatch('71+',70),false);
- assert.deepEqual(options.filter(x=>x.hidden).map(x=>[x.value,x.label]),[['29+','4 周+']], 'Company Insight keeps its 4-week+ aggregate filter');
+ assert.deepEqual(options.filter(x=>x.hidden).map(x=>[x.value,x.label]),[['29+','4W+']], 'Company Insight keeps its 4-week+ aggregate filter');
  assert.equal(ageMatch('29+',28),false);
  assert.equal(ageMatch('29+',29),true);
  assert.equal(appMatch('29+',70),true);
