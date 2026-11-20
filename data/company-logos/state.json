@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-19T22:02:20.474217+00:00",
+    "checkedAt": "2026-11-20T16:04:08.814885+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-19T22:02:26.295696+00:00",
+    "checkedAt": "2026-11-20T16:04:14.686308+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-19T22:02:16.083503+00:00",
+    "checkedAt": "2026-11-20T16:04:04.588285+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-19T22:02:17.369939+00:00",
+    "checkedAt": "2026-11-20T16:04:05.820841+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12322,31 +12322,86 @@
   },
   "aeveyn group": {
     "name": "Aeveyn Group",
-    "checkedAt": "2026-11-20T10:02:12.819689+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-20T16:04:20.692989+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4492528230",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.4202589536297,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "be239d4975e4199404c3cdd8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHSdbaHKSEw1Q/company-logo_100_100/B56aH4SfQBIwAI-/0/1795166959049/pfcc_group_logo?e=2147483647&v=beta&t=TS3_LxUBLZvD1piMD8YujIRcG151N-7U7Axsu2rezZ8",
+    "companyUrl": "https://hk.linkedin.com/company/aeveyn-group",
+    "sourceJobId": "4492118380"
+  },
+  "buckman": {
+    "name": "Buckman",
+    "checkedAt": "2026-11-20T16:03:48.260592+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d2001d6c83a5e3c78ce6b5fc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQGfn7CYlxt93Q/company-logo_100_100/company-logo_100_100/0/1630585925864/buckman_logo?e=2147483647&v=beta&t=RdIudX6ZI4UjnCTg4RAIGCFkVa9rO5VR8vpoHUV0eRw",
+    "companyUrl": "https://www.linkedin.com/company/buckman",
+    "sourceJobId": "4492567940"
+  },
+  "retu management consulting limited": {
+    "name": "Retu Management Consulting Limited",
+    "checkedAt": "2026-11-20T16:03:49.663178+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "2a0fdf92975514def81bcccc.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHZxNAItBIQ1A/company-logo_100_100/B56aF2Yzq0KsAI-/0/1792987577235?e=2147483647&v=beta&t=TxRd01f0iL0JhiUqyGek0glp9h8yO67fLi5nEvTYk9A",
+    "companyUrl": "https://hk.linkedin.com/company/retu-management-consulting-limited",
+    "sourceJobId": "4492587277"
+  },
+  "rimkus": {
+    "name": "Rimkus",
+    "checkedAt": "2026-11-20T16:03:52.589952+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "741bcc4805b50900a0efd8f4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHLAOps-pYO5Q/company-logo_100_100/company-logo_100_100/0/1703696881396/rimkus_logo?e=2147483647&v=beta&t=Pl-7hKtcFvKHsSrlLueWnKQu4gjmpcGMUXScuYQq56c",
+    "companyUrl": "https://www.linkedin.com/company/rimkus",
+    "sourceJobId": "4491924740"
+  },
+  "slb": {
+    "name": "SLB",
+    "checkedAt": "2026-11-20T16:03:55.584323+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "41288236cf28f546053d42d6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFwhnoORL25KA/company-logo_100_100/company-logo_100_100/0/1666604496648/slbdigital_logo?e=2147483647&v=beta&t=Dx2L1wl4X53IDx6PaM6zRv90UelSa7pTdmJ32guEWpA",
+    "companyUrl": "https://www.linkedin.com/company/slbglobal",
+    "sourceJobId": "4491154420"
+  },
+  "sofi hong kong": {
+    "name": "SoFi Hong Kong",
+    "checkedAt": "2026-11-20T16:03:58.592699+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4757a080ee795aa236f47324.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFjBcDX84W_9Q/company-logo_100_100/company-logo_100_100/0/1656410266425/sofihongkong_logo?e=2147483647&v=beta&t=76U8OESL0aumuRVhvbeIxWUhNUBOvwbcxDjOjGXzESA",
+    "companyUrl": "https://www.linkedin.com/company/sofihongkong",
+    "sourceJobId": "4492537474"
+  },
+  "threatbook": {
+    "name": "ThreatBook",
+    "checkedAt": "2026-11-20T16:04:01.588613+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "9f412c4121cd2f7438c65055.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHS7xhLrMQz_w/company-logo_100_100/B56ZfyQfqHHoAQ-/0/1752116100123/threatbook_logo?e=2147483647&v=beta&t=GG9PDWodHctPAHMwUxBv-T2iGdK83Vha0yJWbR3vYto",
+    "companyUrl": "https://sg.linkedin.com/company/threatbook",
+    "sourceJobId": "4492569458"
   }
 }
