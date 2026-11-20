@@ -51,7 +51,10 @@ test('age badges and dropdown partition every calendar age through 10 weeks',()=
  assert.equal(ageMatch('all',null),true);
  assert.equal(appMatch('71+',71),true);
  assert.equal(appMatch('71+',70),false);
- assert.deepEqual(options.filter(x=>x.hidden),[],'all week buckets are visible');
+ assert.deepEqual(options.filter(x=>x.hidden).map(x=>[x.value,x.label]),[['22+','4 周+']], 'Company Insight keeps its 4-week aggregate filter');
+ assert.equal(ageMatch('22+',21),false);
+ assert.equal(ageMatch('22+',22),true);
+ assert.equal(appMatch('22+',70),true);
 });
 
 test('versioned deployment strips only tracking keys, preserves job identity, and rebuilds deterministically',async()=>{
