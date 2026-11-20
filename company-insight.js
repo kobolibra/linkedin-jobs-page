@@ -9,14 +9,7 @@
     {v:'1-7',label:'1–7 天',min:1,max:8,tier:'fresh'},
     {v:'8-14',label:'8–14 天',min:8,max:15,tier:'mid'},
     {v:'15-21',label:'15–21 天',min:15,max:22,tier:'stale'},
-    {v:'22-28',label:'4 周内',min:22,max:29,tier:'stale'},
-    {v:'29-35',label:'5 周内',min:29,max:36,tier:'stale'},
-    {v:'36-42',label:'6 周内',min:36,max:43,tier:'stale'},
-    {v:'43-49',label:'7 周内',min:43,max:50,tier:'stale'},
-    {v:'50-56',label:'8 周内',min:50,max:57,tier:'stale'},
-    {v:'57-63',label:'9 周内',min:57,max:64,tier:'stale'},
-    {v:'64-70',label:'10 周内',min:64,max:71,tier:'stale'},
-    {v:'71+',label:'10 周+',min:71,max:Infinity,tier:'stale'}
+    {v:'22+',label:'4 周+',min:22,max:Infinity,tier:'stale'}
   ];
   const quant=(a,p)=>{if(!a.length)return null;const i=(a.length-1)*p,lo=Math.floor(i);return a[lo]+(a[Math.ceil(i)]-a[lo])*(i-lo);};
   const num=n=>n==null?'—':String(Math.round(n*10)/10);
