@@ -42,10 +42,10 @@ test('repost never resets active age, while weekly publishing events remain dist
   const s=u.summarize(records,NOW);
   assert.equal(s.weeks[0].added,2,'including reposted roles closed since');
   assert.equal(s.open.buckets[0].count,0,'repost does not put a mature role into Today');
-  assert.equal(s.open.buckets[4].count,1,'firstSeen keeps a mature repost in 22+ days');
+  assert.equal(s.open.buckets[5].count,1,'firstSeen keeps a mature repost in the fifth week');
   assert.ok(s.close.median>30,'closure duration still uses the immutable firstSeen');
-  u.render('ACME',records,'22+');
-  assert.match(u.get('coHist').innerHTML,/data-age="22\+" aria-pressed="true"/);
+  u.render('ACME',records,'29-35');
+  assert.match(u.get('coHist').innerHTML,/data-age="29-35" aria-pressed="true"/);
   assert.equal(u.get('coFresh').textContent,2);
 });
 
@@ -94,8 +94,26 @@ test('means and interpolated quartiles are computed separately with weighted dup
 });
 test('original active age buckets retain exact list-filter boundaries and exclude expired roles',()=>{
   const s=summarize([0,.99,1,7.99,8,14.99,15,21.99,22].map(d=>record(d)).concat([record(40,'expired','HK',ago(1))]),NOW);
-  assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[1,2,2,2,2]);
+  assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[1,2,2,2,2,0,0,0,0,0,0,0]);
   assert.equal(s.close.median,39);assert.equal(s.close.buckets,undefined);
+});
+test('company histogram and dropdown share exact weekly boundaries through 10 weeks',()=>{
+ const u=ui();
+ const groups=[0,1,7,8,14,15,21,22,28,29,35,36,42,43,49,50,56,57,63,64,70,71,100];
+ const s=u.summarize(groups.map(d=>record(d)),NOW);
+ const expectedValues=['0','1-7','8-14','15-21','22-28','29-35','36-42','43-49','50-56','57-63','64-70','71+'];
+ assert.deepEqual(Array.from(s.open.buckets,b=>b.v),expectedValues);
+ assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[1,2,2,2,2,2,2,2,2,2,2,2]);
+ u.render('ACME',groups.map(d=>record(d)),'64-70');
+ const buttons=[...u.get('coHist').innerHTML.matchAll(/data-age="([^"]+)"/g)].map(m=>m[1]);
+ assert.deepEqual(buttons,expectedValues);
+ assert.match(u.get('coHist').innerHTML,/data-age="64-70" aria-pressed="true"/);
+ assert.doesNotMatch(u.get('coHist').innerHTML,/data-age="22\+"/);
+ const b={dataset:{age:'71+'},classList:classList()};
+ let calls=0;u.context.apply=()=>{calls++;};
+ u.get('coHist').events.click({target:{closest:()=>b}});
+ assert.equal(u.context.ageEl.value,'71+');
+ assert.equal(calls,1);
 });
 test('rolling weekly windows are equal and boundary events are not double counted',()=>{
   const s=summarize([0,6.999,7,13.999,14,21,28].map(d=>record(d)),NOW);
@@ -146,7 +164,7 @@ test('no-date panel shows unavailable stats and explicit missing counts, never f
 });
 test('only active histogram renders; closed duration remains a compact summary',()=>{
   const u=ui();u.render('ACME',[record(2),record(30,'expired','HK',ago(28))],'1-7');
-  assert.equal((u.get('coHist').innerHTML.match(/<button/g)||[]).length,5);
+  assert.equal((u.get('coHist').innerHTML.match(/<button/g)||[]).length,12);
   assert.match(u.get('coHist').innerHTML,/有效 1 个/);assert.doesNotMatch(u.get('coHist').innerHTML,/关闭|closed|co-pair/);
   assert.match(u.get('coHist').innerHTML,/aria-pressed="true"/);
   assert.equal(u.get('coCloseMed').textContent,'2 天');assert.equal(u.get('coCloseSample').textContent,'1 / 1 个');
