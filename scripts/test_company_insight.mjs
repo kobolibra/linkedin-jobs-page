@@ -110,9 +110,9 @@ test('Company Insight aggregates only after the 4-week bracket',()=>{
  let calls=0;u.context.apply=()=>{calls++;};
  const button={dataset:{age:'29+'},classList:classList()};
  u.get('coHist').events.click({target:{closest:()=>button}});
- assert.equal(u.context.ageEl.value,'all');
- u.get('coHist').events.click({target:{closest:()=>button}});
  assert.equal(u.context.ageEl.value,'29+');
+ u.get('coHist').events.click({target:{closest:()=>button}});
+ assert.equal(u.context.ageEl.value,'all');
  assert.equal(calls,2);
 });
 test('rolling weekly windows are equal and boundary events are not double counted',()=>{
