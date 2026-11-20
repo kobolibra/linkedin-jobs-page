@@ -1190,7 +1190,7 @@ jobsDataPromise
     for(const[key,g]of renderGroups){
       if(!first&&batchJobs>=120){jobsEl.appendChild(batch);batch=document.createDocumentFragment();batchJobs=0;await yieldToBrowser();}
       const sec=document.createElement("section");sec.className="day";sec.dataset.dayKey=key;sec.dataset.dayLabel=g.label;sec.dataset.dayContinuation=g.continuation?"1":"0";const rowEstimate=document.body.classList.contains("compact")?50:78;sec.style.containIntrinsicSize="0 "+(44+g.items.length*rowEstimate)+"px";sec._regionCounts={CN:0,HK:0,SG:0,OTHER:0};sec._regionActiveCounts={CN:0,HK:0,SG:0,OTHER:0};sec._activeCount=0;g.items.forEach(j=>{const region=norm(j.location);sec._regionCounts[region]++;if(isActiveJob(j)){sec._regionActiveCounts[region]++;sec._activeCount++;}});daySections.push(sec);
-      const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">'+g.items.filter(isActiveJob).length+' 个有效职位</span>'+'</div>';
+      const head=g.continuation?'':'<div class="day-head"><span class="day-date">'+esc(g.label)+'</span><span class="day-meta tnum" data-role="daycount">Σ='+g.items.filter(isActiveJob).length+'</span>'+'</div>';
       const rows=[];
       g.items.forEach((job,idx)=>rows.push(renderJobRow(job,idx,first)));
       sec.innerHTML=head+rows.join('');
@@ -1303,9 +1303,9 @@ function apply(){
       const active=dayActive.get(sec.dataset.dayKey)||0;
       if(!sec.querySelector('.day-head')){
         sec.dataset.filterHead="true";
-        sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+active+' 个有效职位</span></div>');
+        sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">Σ='+active+'</span></div>');
       }
-      const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=active+" 个有效职位";
+      const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent="Σ="+active;
     });
     updateJobCount(visible);
     emptyEl.classList.toggle("show",displayed===0);
@@ -1352,9 +1352,9 @@ function apply(){
     visibleDays.add(key);
     const dayTotal=dayTotals.get(key)||{active:0};
     if(!sec.querySelector('.day-head')){
-      sec.dataset.filterHead="true";sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">'+dayTotal.active+' 个有效职位</span></div>');
+      sec.dataset.filterHead="true";sec.insertAdjacentHTML('afterbegin','<div class="day-head" data-filter-head="true"><span class="day-date">'+esc(sec.dataset.dayLabel||"—")+'</span><span class="day-meta tnum" data-role="daycount">Σ='+dayTotal.active+'</span></div>');
     }
-    const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent=dayTotal.active+" 个有效职位";
+    const c=sec.querySelector('[data-role="daycount"]');if(c)c.textContent="Σ="+dayTotal.active;
   });
   updateJobCount(visible);
   emptyEl.classList.toggle("show",displayed===0);

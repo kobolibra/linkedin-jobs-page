@@ -30,7 +30,7 @@
       this.days=[...days.values()];const fragment=document.createDocumentFragment();
       for(const day of this.days)for(let offset=0;offset<day.indices.length;offset+=64){
         const indices=day.indices.slice(offset,offset+64),el=document.createElement('section');el.className='day';el.dataset.dayKey=day.key;el.dataset.dayLabel=day.label;el.dataset.dayContinuation=offset?'1':'0';
-        if(!offset)el.innerHTML='<div class="day-head"><span class="day-date">'+escape(day.label)+'</span><span class="day-meta tnum" data-role="daycount">'+day.active+' 个有效职位</span></div>';
+        if(!offset)el.innerHTML='<div class="day-head"><span class="day-date">'+escape(day.label)+'</span><span class="day-meta tnum" data-role="daycount">Σ='+day.active+'</span></div>';
         const height=indices.reduce((sum,i)=>sum+this.estimate(meta[i]),0)+(offset?0:36);el.style.height=height+'px';el._jobCards=[];el._favoriteCards=new Set();
         const block={el,indices,height,mounted:false,top:0};this.blocks.push(block);fragment.appendChild(el);
       }

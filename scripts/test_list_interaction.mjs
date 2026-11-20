@@ -89,9 +89,20 @@ test('personal blocked companies and keyword/time/active filters still constrain
 });
 test('a favorite in a continuation retains a date heading and totals after repeated toggles',()=>{
   const a=card('other'),b=card('saved'),s1=section([a]),s2=section([b],'2026-10-11',true);s2._favoriteCards.add(b);
-  const c=harness([s1,s2]);c.favEl.events.click();assert.equal(s1.style.display,'none');assert.equal(s2.hasHead,true);assert.equal(s2.count.textContent,'1 个有效职位');
-  c.favEl.events.click();assert.equal(s1.style.display,'');assert.equal(s2.generated,false);assert.equal(s1.count.textContent,'2 个有效职位');
-  c.favEl.events.click();assert.equal(s2.hasHead,true);assert.equal(s2.count.textContent,'1 个有效职位');
+  const c=harness([s1,s2]);c.favEl.events.click();assert.equal(s1.style.display,'none');assert.equal(s2.hasHead,true);assert.equal(s2.count.textContent,'Σ=1');
+  c.favEl.events.click();assert.equal(s1.style.display,'');assert.equal(s2.generated,false);assert.equal(s1.count.textContent,'Σ=2');
+  c.favEl.events.click();assert.equal(s2.hasHead,true);assert.equal(s2.count.textContent,'Σ=1');
+});
+test('all date-heading paths format active counts as Σ=N',()=>{
+ const view=fs.readFileSync(new URL('../list-view.js',import.meta.url),'utf8');
+ assert.equal((app.match(/data-role="daycount">Σ='/g)||[]).length,3,
+   'fallback initial, fast filter and full filter headings use the same symbol');
+ assert.equal((app.match(/c.textContent="Σ="\+/g)||[]).length,2,
+   'fast and full filter updates retain the sigma prefix');
+ assert.equal((view.match(/data-role="daycount">Σ='/g)||[]).length,1,
+   'virtualized day heading uses the same symbol');
+ assert.doesNotMatch(app,/ 个有效职位/);
+ assert.doesNotMatch(view,/ 个有效职位/);
 });
 test('each star click synchronizes both device buttons and the favorite index',()=>{
   const a=card('saved'),s=section([a]),c=harness([s]),buttons=[element(),element()];
