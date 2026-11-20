@@ -103,6 +103,7 @@ test('Company Insight aggregates only after the 4-week bracket',()=>{
  const rows=ages.map(d=>record(d));
  const s=u.summarize(rows,NOW);
  assert.deepEqual(Array.from(s.open.buckets,b=>b.v),['0','1-7','8-14','15-21','22-28','29+']);
+ assert.deepEqual(Array.from(s.open.buckets,b=>b.label),['Today','1W','2W','3W','4W','4W+']);
  assert.deepEqual(Array.from(s.open.buckets,b=>b.count),[1,2,2,2,2,5]);
  u.render('ACME',rows,'29+');
  assert.equal((u.get('coHist').innerHTML.match(/<button/g)||[]).length,6);
