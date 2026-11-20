@@ -42,10 +42,10 @@ test('repost never resets active age, while weekly publishing events remain dist
   const s=u.summarize(records,NOW);
   assert.equal(s.weeks[0].added,2,'including reposted roles closed since');
   assert.equal(s.open.buckets[0].count,0,'repost does not put a mature role into Today');
-  assert.equal(s.open.buckets[5].count,1,'firstSeen keeps a mature repost in the fifth week');
+  assert.equal(s.open.buckets[6].count,1,'firstSeen keeps a mature repost in the sixth week');
   assert.ok(s.close.median>30,'closure duration still uses the immutable firstSeen');
-  u.render('ACME',records,'29-35');
-  assert.match(u.get('coHist').innerHTML,/data-age="29-35" aria-pressed="true"/);
+  u.render('ACME',records,'36-42');
+  assert.match(u.get('coHist').innerHTML,/data-age="36-42" aria-pressed="true"/);
   assert.equal(u.get('coFresh').textContent,2);
 });
 
