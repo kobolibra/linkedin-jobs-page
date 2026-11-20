@@ -233,7 +233,7 @@ const displayRegionRank={CN:0,HK:1,SG:2,OTHER:3};
 const displayRegionOf=j=>norm(j?.location);
 const displayRegionTieBreak=(a,b)=>(displayRegionRank[displayRegionOf(a)]??9)-(displayRegionRank[displayRegionOf(b)]??9);
 const ageDays=iso=>window.JobDates.calendarAge(iso);
-const ageLabel=d=>d===0?"今天":d>70?"10周+":`${Math.max(1,Math.ceil(d/7))}周内`;
+const ageLabel=d=>d===0?"Today":d>70?"10W+":`${Math.max(1,Math.ceil(d/7))}W`;
 const ageMatch=(sel,d)=>{if(sel==="all")return true;if(d==null)return false;if(sel.endsWith("+"))return d>=Number(sel.slice(0,-1));const p=sel.split("-").map(Number);return p[1]==null?d===p[0]:(d>=p[0]&&d<=p[1]);};
 function levelOf(t){t=(t||"").toLowerCase();if(/\bintern(s|ship)?\b/.test(t)||/实习/.test(t))return"Intern";if(/\b(md|managing director|director|head of)\b/.test(t)||/总监|主管/.test(t))return"Director+";if(/\b(vp|svp|evp|vice president)\b/.test(t)||/副总裁/.test(t))return"VP";if(/associate/.test(t)||/经理/.test(t))return"Associate";if(/analyst/.test(t)||/分析师|专员/.test(t))return"Analyst";return"Other";}
 function animNum(el,target,suffix){suffix=suffix||"";if(reduce){el.innerHTML=target.toLocaleString()+suffix;return;}const dur=420,start=performance.now();const step=now=>{const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);el.innerHTML=Math.round(target*e).toLocaleString()+suffix;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
