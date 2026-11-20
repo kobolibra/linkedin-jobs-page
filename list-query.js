@@ -1,6 +1,6 @@
 /* Shared by the page and its worker: filtering never reads layout or DOM. */
 ((scope)=>{
-  function ageMatch(sel,age){if(sel==='all')return true;if(age==null)return false;if(sel==='22+')return age>=22;const [a,b]=sel.split('-').map(Number);return b==null?age===a:age>=a&&age<=b;}
+  function ageMatch(sel,age){if(sel==='all')return true;if(age==null)return false;if(sel.endsWith('+'))return age>=Number(sel.slice(0,-1));const [a,b]=sel.split('-').map(Number);return b==null?age===a:age>=a&&age<=b;}
   function query(records,state){
     const favorites=new Set(state.favorites),blocked=new Set(state.blocked),keywords=state.keywords||[],q=state.q||'';
     const indices=[],company=[];let active=0;
