@@ -12290,5 +12290,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHyGcx2pRqxHQ/company-logo_100_100/company-logo_100_100/0/1718624821240?e=2147483647&v=beta&t=ajtY8aDclonUM4_u_NMBuJQzkVhXvwKYYGLsBGlwdq0",
     "companyUrl": "https://www.linkedin.com/company/university-of-nottingham-school-of-humanities",
     "sourceJobId": "4492403914"
+  },
+  "independent salumi union": {
+    "name": "Independent Salumi Union",
+    "checkedAt": "2026-11-20T04:02:03.855312+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491683423",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491683423",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4491683423",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491683423",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491683423",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.92654969263176,
+        "deferred": true
+      }
+    ]
   }
 }
