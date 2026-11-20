@@ -66,6 +66,32 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
    assert.equal(state.rows,0);assert.equal(state.empty,true);
    assert.ok(consoleErrors.some(s=>/Invalid time value|date value is not finite|invalid date/i.test(s)),'negative control must reproduce the actual date exception');
   }else{
+   // Verify actual CSS geometry at desktop and mobile breakpoints before chart checks.
+   await page.locator('#jobs .day-head').first().scrollIntoViewIfNeeded();
+   await page.waitForFunction(()=>[...document.querySelectorAll('#jobs .day')].some(day=>
+     day.querySelector('.day-meta')&&day.querySelector(innerWidth>720?'.job-right .tag':'.job-right-mobile .tag')
+   ),null,{timeout:10000});
+   const rightEdge=await page.evaluate(()=>{
+     const mobile=innerWidth<=720,tagSel=mobile?'.job-right-mobile .tag':'.job-right .tag';
+     const day=[...document.querySelectorAll('#jobs .day')].find(d=>d.querySelector('.day-meta')&&d.querySelector(tagSel));
+     const header=day.querySelector('.day-head'),card=day.querySelector('.job'),count=day.querySelector('.day-meta');
+     const tag=day.querySelector(tagSel),footer=card.querySelector('.job-meta-end'),closed=card.querySelector('.status-expired-company');
+     return {mobile,countRight:count.getBoundingClientRect().right,tagRight:tag.getBoundingClientRect().right,
+       footerRight:mobile?null:footer?.getBoundingClientRect().right,
+       closedRight:mobile?null:closed?.getBoundingClientRect().right,
+       headerPadding:getComputedStyle(header).paddingRight,cardPadding:getComputedStyle(card).paddingRight};
+   });
+   assert.ok(Math.abs(rightEdge.countRight-rightEdge.tagRight)<=1,
+     'date total must align with region tag: '+JSON.stringify(rightEdge));
+   if(!rightEdge.mobile){
+     assert.ok(Math.abs(rightEdge.countRight-rightEdge.footerRight)<=1,
+       'date total must align with metadata right edge: '+JSON.stringify(rightEdge));
+     if(rightEdge.closedRight!=null)assert.ok(Math.abs(rightEdge.countRight-rightEdge.closedRight)<=1,
+       'date total must align with closed-date text: '+JSON.stringify(rightEdge));
+   }
+   assert.equal(rightEdge.headerPadding,rightEdge.cardPadding,'date header and card end padding must match');
+   console.log('Day heading right-edge geometry:',JSON.stringify(rightEdge));
+   await page.evaluate(()=>scrollTo(0,0));
    await assertRegionProjections(page);
    await assertRegionVisualBalance(page);
    // New This Week has one definition for guests and signed-in readers:
