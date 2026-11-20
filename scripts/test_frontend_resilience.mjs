@@ -245,11 +245,18 @@ test('masthead and summary labels use natural case, while geography acronyms rem
  assert.match(css,/\.nj-masthead-folio\{[^}]*letter-spacing:\.035em/);
 });
 
+test('day totals share a precise right edge with desktop cards and mobile region tags',()=>{
+ const css=readFileSync(new URL('../styles-list.css',import.meta.url),'utf8');
+ assert.match(css,/@media \(min-width:721px\) \{ \.day-head \{ padding-inline-end:var\(--s2\); \} \}/);
+ assert.equal((css.match(/grid-template-columns:minmax\(0,1fr\) auto;align-items:baseline;column-gap:var\(--s2\);row-gap:4px;/g)||[]).length,2,
+  'the two mobile breakpoints must not retain an empty third grid track');
+});
+
 test('active-only status uses Mainland ring color without recoloring the label',()=>{
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  const css=readFileSync(new URL('../styles-list.css',import.meta.url),'utf8');
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
- assert.match(html,/styles-list\.css\?v=mainland-ring-2/);
+ assert.match(html,/styles-list\.css\?v=aligned-day-count-20261120/);
  assert.match(html,/<button type="button" class="active-only-toggle" id="activeOnlyToggle" aria-pressed="false"[^>]*>有效<svg class="active-only-ring"/);
  assert.match(html,/class="active-only-ring"[^>]*aria-hidden="true" focusable="false"/);
  assert.match(html,/M8 24 C6 14 20 6 42 5/);
