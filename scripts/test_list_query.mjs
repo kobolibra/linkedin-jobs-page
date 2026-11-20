@@ -10,53 +10,49 @@ test('data filtering preserves all combinations, active totals and company age d
 });
 test('missing dates remain excluded from bounded age filters',()=>{assert.equal(ageMatch('all',null),true);assert.equal(ageMatch('1-7',null),false);assert.equal(ageMatch('22+',22),true);});
 
-test('age badges and all-time selector partition every day through 10 weeks, including boundaries',()=>{
+test('age badges and dropdown partition every calendar age through 10 weeks',()=>{
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  const app=readFileSync(new URL('../app.js',import.meta.url),'utf8');
- const select=html.match(/<select[^>]*id="age"[^>]*>(.*?)<\\/select>/)?.[1];
- assert.ok(select,'age filter must remain in the main toolbar');
- const options=[...select.matchAll(/<option value="([^"]+)"([^>]*)>([^<]*)<\\/option>/g)]
-   .map(([,value,flags,label])=>({value,label,hidden:/\\bhidden\\b/.test(flags)}));
+ const select=html.match(/<select[^>]*id="age"[^>]*>(.*?)<\/select>/)?.[1];
+ assert.ok(select,'age filter exists');
+ const options=[...select.matchAll(/<option value="([^"]+)"([^>]*)>([^<]*)<\/option>/g)]
+  .map(([,value,flags,label])=>({value,label,hidden:/\bhidden\b/.test(flags)}));
  const bins=[
-   ['0','今天',0,0],['1-7','1 周内',1,7],['8-14','2 周内',8,14],
-   ['15-21','3 周内',15,21],['22-28','4 周内',22,28],
-   ['29-35','5 周内',29,35],['36-42','6 周内',36,42],
-   ['43-49','7 周内',43,49],['50-56','8 周内',50,56],
-   ['57-63','9 周内',57,63],['64-70','10 周内',64,70],
-   ['71+','10 周+',71,Infinity]
+  ['0','今天',0,0],['1-7','1 周内',1,7],['8-14','2 周内',8,14],
+  ['15-21','3 周内',15,21],['22-28','4 周内',22,28],
+  ['29-35','5 周内',29,35],['36-42','6 周内',36,42],
+  ['43-49','7 周内',43,49],['50-56','8 周内',50,56],
+  ['57-63','9 周内',57,63],['64-70','10 周内',64,70],
+  ['71+','10 周+',71,Infinity]
  ];
  assert.deepEqual(options.filter(x=>!x.hidden).map(x=>[x.value,x.label]),
-   [['all','全部时间'],...bins.map(([v,label])=>[v,label])]);
- const fromApp=name=>{
-   const declaration=app.match(new RegExp('^const '+name+'=.*;, preserves job identity, and rebuilds deterministically',async()=>{
- const {mkdtempSync,writeFileSync,readFileSync,rmSync}=await import('node:fs'),{tmpdir}=await import('node:os'),{join}=await import('node:path'),{embedCompanyLogos}=await import('./build_jd_shards.mjs');const root=mkdtempSync(join(tmpdir(),'index-revision-'));try{const index=join(root,'jobs-index.json'),manifest=join(root,'company-logos.json'),state=join(root,'state.json');writeFileSync(index,JSON.stringify({jobs:[{link:'https://hk.linkedin.com/jobs/view/12345678?position=3&currentJobId=12345678&refId=abc&trackingId=def&pageNum=9',title:'Risk Analyst'},{link:'https://example.com/jobs?trackingId=keep'}]}));writeFileSync(manifest,'{}');writeFileSync(state,'{}');embedCompanyLogos(index,manifest,state);const doc=JSON.parse(readFileSync(index));assert.equal(doc.jobs[0].link,'https://hk.linkedin.com/jobs/view/12345678?currentJobId=12345678');assert.equal(doc.jobs[1].link,'https://example.com/jobs?trackingId=keep');assert.match(doc.dataVersion,/^[a-f0-9]{64}$/);assert.equal(JSON.parse(readFileSync(join(root,'jobs-version.json'))).dataVersion,doc.dataVersion);const first=readFileSync(index,'utf8');embedCompanyLogos(index,manifest,state);assert.equal(readFileSync(index,'utf8'),first);doc.jobs[0].title='Senior Risk Analyst';writeFileSync(index,JSON.stringify(doc));embedCompanyLogos(index,manifest,state);assert.notEqual(JSON.parse(readFileSync(index)).dataVersion,doc.dataVersion);}finally{rmSync(root,{recursive:true,force:true});}
-});
-
-,'m'))?.[0];
-   assert.ok(declaration,'app.js must define '+name);
-   return vm.runInNewContext(declaration+'\\n'+name);
+  [['all','全部时间'],...bins.map(([value,label])=>[value,label])]);
+ const getFromApp=name=>{
+  const line=app.split('\n').find(x=>x.startsWith('const '+name+'='));
+  assert.ok(line,'app declares '+name);
+  return vm.runInNewContext(line+'\n'+name);
  };
- const appMatch=fromApp('ageMatch'),ageLabel=fromApp('ageLabel');
+ const appMatch=getFromApp('ageMatch'),ageLabel=getFromApp('ageLabel');
  for(let day=0;day<=140;day++){
-   const expected=day===0?'今天':day>=71?'10周+':Math.ceil(day/7)+'周内';
-   assert.equal(ageLabel(day),expected,'age badge at day '+day);
-   const selected=bins.filter(([value,,min,max])=>{
-     const matched=day>=min&&day<=max;
-     assert.equal(ageMatch(value,day),matched,'query age bucket '+value+' day '+day);
-     assert.equal(appMatch(value,day),matched,'fallback age bucket '+value+' day '+day);
-     return matched;
-   });
-   assert.equal(selected.length,1,'each age must belong to exactly one bucket: '+day);
+  const expected=day===0?'今天':day>=71?'10周+':Math.ceil(day/7)+'周内';
+  assert.equal(ageLabel(day),expected,'display label day '+day);
+  let matched=0;
+  for(const [value,,min,max] of bins){
+   const expectedMatch=day>=min&&day<=max;
+   assert.equal(ageMatch(value,day),expectedMatch,'list query '+value+' day '+day);
+   assert.equal(appMatch(value,day),expectedMatch,'fallback '+value+' day '+day);
+   if(expectedMatch)matched++;
+  }
+  assert.equal(matched,1,'exactly one bucket at day '+day);
  }
- assert.equal((app.match(/ageLabel\\(_ad\\)/g)||[]).length,2,
-   'desktop and mobile badges must share the same age label function');
- assert.doesNotMatch(app,/3周\\+/);
+ assert.equal((app.match(/ageLabel\(_ad\)/g)||[]).length,2,'desktop/mobile share labels');
+ assert.doesNotMatch(app,/3周\+/);
  assert.equal(ageMatch('71+',null),false);
  assert.equal(ageMatch('all',null),true);
  assert.equal(appMatch('71+',71),true);
  assert.equal(appMatch('71+',70),false);
- // Company Insight still clicks its 22+ aggregate; keep a hidden selector value.
- assert.deepEqual(options.filter(x=>x.hidden).map(x=>[x.value,x.label]),[['22+','4 周及以上']]);
+ assert.deepEqual(options.filter(x=>x.hidden).map(x=>[x.value,x.label]),
+  [['22+','4 周及以上']],'keep Company Insight aggregate selector compatibility');
  assert.equal(ageMatch('22+',21),false);
  assert.equal(ageMatch('22+',22),true);
  assert.equal(appMatch('22+',70),true);
