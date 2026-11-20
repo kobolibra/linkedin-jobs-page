@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-20T16:04:08.814885+00:00",
+    "checkedAt": "2026-11-20T22:02:23.470126+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-20T16:04:14.686308+00:00",
+    "checkedAt": "2026-11-20T22:02:29.408241+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-20T16:04:04.588285+00:00",
+    "checkedAt": "2026-11-20T22:02:17.536745+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-20T16:04:05.820841+00:00",
+    "checkedAt": "2026-11-20T22:02:20.430498+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12403,5 +12403,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHS7xhLrMQz_w/company-logo_100_100/B56ZfyQfqHHoAQ-/0/1752116100123/threatbook_logo?e=2147483647&v=beta&t=GG9PDWodHctPAHMwUxBv-T2iGdK83Vha0yJWbR3vYto",
     "companyUrl": "https://sg.linkedin.com/company/threatbook",
     "sourceJobId": "4492569458"
+  },
+  "loopme": {
+    "name": "LoopMe",
+    "checkedAt": "2026-11-20T22:02:13.268310+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ba6817a01cdc08bc0377be83.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEv0qFhrtj54g/company-logo_100_100/company-logo_100_100/0/1687357076040/loopme_logo?e=2147483647&v=beta&t=cbaDO6PytTNxcL0pdV2u5fjnGr3iLuQU3aptx-gz5ns",
+    "companyUrl": "https://uk.linkedin.com/company/loopme",
+    "sourceJobId": "4492807575"
+  },
+  "sin chew woodpaq pte ltd": {
+    "name": "Sin Chew Woodpaq Pte Ltd",
+    "checkedAt": "2026-11-20T22:02:14.580944+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "b4273579d064c40a5850a382.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHwNoGogwE1sA/company-logo_100_100/company-logo_100_100/0/1735179424347/sinchewwoodpaq_logo?e=2147483647&v=beta&t=7XB43idsmvEBM8fn5nohGx6ohD_FO4yqhADYybvaMOI",
+    "companyUrl": "https://sg.linkedin.com/company/sinchewwoodpaq",
+    "sourceJobId": "4491665470"
   }
 }
