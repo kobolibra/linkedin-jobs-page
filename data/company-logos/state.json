@@ -12319,5 +12319,34 @@
         "deferred": true
       }
     ]
+  },
+  "aeveyn group": {
+    "name": "Aeveyn Group",
+    "checkedAt": "2026-11-20T10:02:12.819689+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4492528230",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492528230",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.4202589536297,
+        "deferred": true
+      }
+    ]
   }
 }
