@@ -5,12 +5,12 @@
 (function(){
   const DAY=864e5;
   const BINS=[
-    {v:'0',label:'今天',min:0,max:1,tier:'fresh'},
-    {v:'1-7',label:'1–7 天',min:1,max:8,tier:'fresh'},
-    {v:'8-14',label:'8–14 天',min:8,max:15,tier:'mid'},
-    {v:'15-21',label:'15–21 天',min:15,max:22,tier:'stale'},
-    {v:'22-28',label:'4 周内',min:22,max:29,tier:'stale'},
-    {v:'29+',label:'4 周+',min:29,max:Infinity,tier:'stale'}
+    {v:'0',label:'Today',min:0,max:1,tier:'fresh'},
+    {v:'1-7',label:'1W',min:1,max:8,tier:'fresh'},
+    {v:'8-14',label:'2W',min:8,max:15,tier:'mid'},
+    {v:'15-21',label:'3W',min:15,max:22,tier:'stale'},
+    {v:'22-28',label:'4W',min:22,max:29,tier:'stale'},
+    {v:'29+',label:'4W+',min:29,max:Infinity,tier:'stale'}
   ];
   const quant=(a,p)=>{if(!a.length)return null;const i=(a.length-1)*p,lo=Math.floor(i);return a[lo]+(a[Math.ceil(i)]-a[lo])*(i-lo);};
   const num=n=>n==null?'—':String(Math.round(n*10)/10);
