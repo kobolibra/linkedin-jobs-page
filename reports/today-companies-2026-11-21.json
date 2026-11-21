@@ -3,6 +3,66 @@
   "filter_window": "2026-11-20 18:17 ~ 2026-11-21 18:17 (Beijing)",
   "target_companies": [
     {
+      "company": "Aeveyn Group",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": ""
+    },
+    {
+      "company": "Buckman",
+      "category": "target",
+      "reason": "特种化学品/水处理",
+      "pushTime": ""
+    },
+    {
+      "company": "SLB",
+      "category": "target",
+      "reason": "油田服务/能源科技",
+      "pushTime": ""
+    },
+    {
+      "company": "ThreatBook",
+      "category": "target",
+      "reason": "网络安全",
+      "pushTime": ""
+    },
+    {
+      "company": "Rimkus",
+      "category": "target",
+      "reason": "工程与技术咨询",
+      "pushTime": ""
+    },
+    {
+      "company": "LoopMe",
+      "category": "target",
+      "reason": "广告科技",
+      "pushTime": ""
+    },
+    {
+      "company": "Sin Chew Woodpaq Pte Ltd",
+      "category": "target",
+      "reason": "物流/工业包装",
+      "pushTime": ""
+    },
+    {
+      "company": "Edelman",
+      "category": "target",
+      "reason": "公关传播",
+      "pushTime": ""
+    },
+    {
+      "company": "Zeno Group",
+      "category": "target",
+      "reason": "公关传播",
+      "pushTime": ""
+    },
+    {
+      "company": "TDK SensEI",
+      "category": "target",
+      "reason": "工业传感器/边缘AI",
+      "pushTime": ""
+    },
+    {
       "company": "Securitas Hong Kong",
       "category": "target",
       "reason": "待查证",
@@ -22,6 +82,18 @@
     }
   ],
   "excluded_companies": [
+    {
+      "company": "Space Executive",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Retu Management Consulting Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
     {
       "company": "Goldman Sachs",
       "category": "excluded",
@@ -119,12 +191,6 @@
       "pushTime": "2026-11-20T16:03:15.678Z"
     },
     {
-      "company": "Space Executive",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
       "company": "Amicorp Group",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
@@ -150,12 +216,6 @@
     },
     {
       "company": "Visa",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
-      "company": "Retu Management Consulting Limited",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-20T16:03:15.678Z"
@@ -227,7 +287,7 @@
       "pushTime": "2026-11-21T10:01:38.527Z"
     }
   ],
-  "total_target": 3,
+  "total_target": 13,
   "total_excluded": 34,
   "total_today_jobs": 107,
   "total_all_jobs": 15728
