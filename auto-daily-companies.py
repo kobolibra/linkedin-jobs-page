@@ -174,6 +174,91 @@ def update_blacklist_on_github(new_companies):
         print(f"[INFO] New companies to add manually: {new_companies}")
 
 
+def push_file_to_github(repo_path, text_content, commit_message):
+    """Create or update a single file on GitHub via Contents API.
+
+    repo_path: path inside repo, e.g. 'reports/today-companies-2026-11-21.json'
+    text_content: the file body as a string (will be base64-encoded)
+    commit_message: commit message
+    Returns True on success, False on failure.
+    """
+    api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{repo_path}"
+    content_b64 = base64.b64encode(text_content.encode("utf-8")).decode("ascii")
+
+    # Get existing file sha (needed when updating an existing file)
+    sha = None
+    try:
+        with _make_request(api_url) as resp:
+            info = json.loads(resp.read())
+            sha = info.get("sha")
+    except urllib.error.HTTPError as e:
+        if e.code != 404:
+            print(f"[WARN] Could not get sha for {repo_path}: HTTP {e.code}")
+    except Exception as e:
+        print(f"[WARN] Could not get sha for {repo_path}: {e}")
+
+    payload = json.dumps({
+        "message": commit_message,
+        "content": content_b64,
+        "branch": GITHUB_BRANCH,
+        **({"sha": sha} if sha else {})
+    })
+    try:
+        req = urllib.request.Request(api_url, data=payload.encode("utf-8"), method="PUT")
+        req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
+        req.add_header("Accept", "application/vnd.github+json")
+        req.add_header("Content-Type", "application/json")
+        ctx = ssl.create_default_context()
+        with urllib.request.urlopen(req, context=ctx, timeout=60) as resp:
+            result = json.loads(resp.read())
+            print(f"[INFO] Pushed to GitHub: {repo_path} (commit {result['commit']['sha'][:12]})")
+            return True
+    except Exception as e:
+        print(f"[WARN] Failed to push {repo_path} to GitHub: {e}")
+        return False
+
+
+def push_daily_report_to_github(results, today):
+    """Push the daily report (JSON + target TSV + excluded TSV) to GitHub.
+
+    Files are stored under reports/ in the repo so the root stays clean.
+    This ensures the target company list is persisted on GitHub every run,
+    not only saved locally.
+    """
+    print(f"\n=== Step: Push daily report to GitHub (reports/) ===")
+    stamp = datetime.now(BEIJING_TZ).strftime("%Y-%m-%d %H:%M")
+
+    # 1. Full JSON report (target + excluded)
+    json_body = json.dumps(results, ensure_ascii=False, indent=2)
+    push_file_to_github(
+        f"reports/today-companies-{today}.json",
+        json_body,
+        f"Daily report {today}: {results['total_target']} target / {results['total_excluded']} excluded",
+    )
+
+    # 2. Target companies TSV
+    target_lines = ["序号\t公司名\t备注"]
+    for i, c in enumerate(results["target_companies"], 1):
+        target_lines.append(f"{i}\t{c['company']}\t{c.get('reason', '')}")
+    push_file_to_github(
+        f"reports/today-target-companies-{today}.tsv",
+        "\n".join(target_lines) + "\n",
+        f"Daily target companies {today} ({results['total_target']} companies)",
+    )
+
+    # 3. Excluded companies TSV
+    excl_lines = ["序号\t公司名\t排除原因"]
+    for i, c in enumerate(results["excluded_companies"], 1):
+        excl_lines.append(f"{i}\t{c['company']}\t{c.get('reason', '')}")
+    push_file_to_github(
+        f"reports/today-excluded-companies-{today}.tsv",
+        "\n".join(excl_lines) + "\n",
+        f"Daily excluded companies {today} ({results['total_excluded']} companies)",
+    )
+
+    print(f"[INFO] Daily report pushed to GitHub at {stamp} (Beijing)")
+
+
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
@@ -350,6 +435,13 @@ def main():
         for i, c in enumerate(results["excluded_companies"], 1):
             f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
     print(f"[INFO] Excluded TSV table saved to: {excl_tsv_path}")
+
+    # Push daily report (JSON + target TSV + excluded TSV) to GitHub so the
+    # target company list is persisted on GitHub every run, not only locally.
+    try:
+        push_daily_report_to_github(results, today)
+    except Exception as e:
+        print(f"[WARN] push_daily_report_to_github failed: {e}")
 
     # Print summary
     print("\n" + "=" * 70)
