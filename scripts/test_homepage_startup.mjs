@@ -99,6 +99,11 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
    const flow=weeklyFlow(document.jobs);
    await page.waitForFunction(n=>Number(document.getElementById('stat-week')?.textContent.replace(/\D/g,''))===n,flow?.current??-1,{timeout:5000});
    if(flow?.prior)assert.match(await page.locator('#stat-week-note').textContent(),/% vs the prior 7 days|level with the prior 7 days/);
+   // The source snapshot has an exact update clock even when jobs have
+   // legacy date-only pushTime; both signed and guest views must retain HH:mm.
+   const stamp=await page.locator('#stat-updated').textContent();
+   assert.match(stamp,/\d{1,2} [A-Za-z]{3} \d{2}:\d{2}$/,'Last Updated must preserve hours and minutes');
+   if(document.updatedAt)assert.equal(stamp,'21 Nov 12:01','source observation is authoritative');
    assert.equal(state.ready,true);assert.equal(state.empty,false);assert.ok(state.rows>0);assert.ok(state.days>0);
    assert.match(state.firstHeading||'',/\d{1,2} [A-Z][a-z]{2} 20\d\d/,'job-list uses the canonical day–month–year display');
    assert.equal(consoleErrors.length,0,consoleErrors.join('\n'));assert.equal(errors.length,0,errors.join('\n'));
@@ -123,18 +128,23 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
      await page.waitForFunction(()=>listRuntime.view.rows.length===1);
      const role=await page.evaluate(()=>{
       const m=listRuntime.meta[listRuntime.view.rows[0]];
-      return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-08-26'),label:m.label};
+      const original=loadedJobs.find(job=>job.title==='CFO - Financial Reporting Manager - VP');
+     return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-08-26'),
+       expectedDay:window.JobDates.key(original?.pushTime||original?.firstSeen),
+       expectedLabel:window.JobDates.fullDay(original?.pushTime||original?.firstSeen),label:m.label};
      });
-     assert.equal(role.day,'2026-10-29','verified repost moves headings to pushTime');
+     assert.equal(role.day,role.expectedDay,'verified repost headings follow the current pushTime');
      assert.equal(role.age,role.expectedAge,'repost never resets age');
-     assert.match(role.label,/29 Oct 2026/);
+     assert.ok(role.label.includes(role.expectedLabel),'current posting day label matches the source record');
      await page.locator('#search').fill('Asset Management - AI Product Manager');
      await page.waitForFunction(()=>listRuntime.view.rows.length===1&&listRuntime.meta[listRuntime.view.rows[0]].search.includes('asset management - ai product manager'));
      const ai=await page.evaluate(()=>{
       const m=listRuntime.meta[listRuntime.view.rows[0]];
-      return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-11-16')};
+      const original=loadedJobs.find(job=>job.title==='Asset Management - AI Product Manager');
+     return {day:m.day,age:m.age,expectedAge:window.JobDates.calendarAge('2026-11-16'),
+       expectedDay:window.JobDates.key(original?.pushTime||original?.firstSeen)};
      });
-     assert.equal(ai.day,'2026-11-17','UTC pushTime on November 16 is November 17 in Beijing');
+     assert.equal(ai.day,ai.expectedDay,'Beijing posting day follows the current canonical pushTime');
      assert.equal(ai.age,ai.expectedAge,'AI role age stays on November 16');
 
      await page.locator('#search').fill('');
@@ -163,12 +173,13 @@ for(const engine of (process.env.STARTUP_BROWSERS||'chromium,webkit').split(',')
  try{
   await check(browser,engine,{broken:true,guest:true,label:'pre-fix'});
   for(const config of [{width:390},{width:390,guest:true},{width:1280},{width:390,theme:'dark'}])await check(browser,engine,config);
-  const edge={...index,jobs:[
+  const edge={...index,updatedAt:'2026-11-21T04:01:55.879Z',jobs:[
    {title:'HSBC Analyst',company:'HSBC',location:'CN',city:'Shanghai',link:'https://www.linkedin.com/jobs/view/123456701',firstSeen:'2026-11-12T16:30:00Z',pushTime:'2026-11-13T00:30:00+08:00'},
    {title:'HSBC Associate',company:'HSBC',location:'SG',link:'https://www.linkedin.com/jobs/view/123456702',firstSeen:'2026-11-12T09:00:00.123456+00:00',pushTime:'2026-11-12T09:00:00.123456+00:00'},
    {title:'HSBC Intern',company:'HSBC',location:'HK',link:'https://www.linkedin.com/jobs/view/123456703',firstSeen:'invalid',pushTime:'invalid'}
   ]};
   await check(browser,engine,{document:edge,label:'date-edge-cases'});
+  await check(browser,engine,{guest:true,document:edge,label:'date-edge-cases'});
  }finally{await browser.close();}
 }
 writeFileSync(resolve(out,'results.json'),JSON.stringify(evidence,null,2));
