@@ -218,45 +218,179 @@ def push_file_to_github(repo_path, text_content, commit_message):
         return False
 
 
-def push_daily_report_to_github(results, today):
-    """Push the daily report (JSON + target TSV + excluded TSV) to GitHub.
+def download_file_from_github(repo_path):
+    """Download a file's text content from GitHub. Returns None if not found."""
+    api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{repo_path}"
+    try:
+        with _make_request(api_url) as resp:
+            data = json.loads(resp.read())
+            if "content" in data and data.get("encoding") == "base64":
+                return base64.b64decode(data["content"]).decode("utf-8")
+    except Exception:
+        return None
+    return None
 
-    Files are stored under reports/ in the repo so the root stays clean.
-    This ensures the target company list is persisted on GitHub every run,
-    not only saved locally.
+
+def merge_company_lists(existing_list, new_list):
+    """Merge two company lists, deduplicating by company name (accumulate).
+
+    - Companies already in existing_list keep their position.
+    - New companies (not seen before) are appended at the end.
+    - If a company appears in both, update reason only when the new reason is
+      more informative (i.e. old reason was '待查证' and new one is verified).
+    Returns the merged list.
     """
-    print(f"\n=== Step: Push daily report to GitHub (reports/) ===")
+    merged = list(existing_list)
+    name_to_idx = {c.get("company"): i for i, c in enumerate(merged)}
+    for c in new_list:
+        name = c.get("company")
+        if name in name_to_idx:
+            idx = name_to_idx[name]
+            old_reason = merged[idx].get("reason", "")
+            new_reason = c.get("reason", "")
+            # Prefer verified industry over 待查证; never overwrite a verified
+            # reason back to 待查证.
+            if old_reason == "待查证" and new_reason and new_reason != "待查证":
+                merged[idx]["reason"] = new_reason
+            elif not old_reason and new_reason:
+                merged[idx]["reason"] = new_reason
+        else:
+            merged.append(c)
+            name_to_idx[name] = len(merged) - 1
+    return merged
+
+
+def push_daily_report_to_github(results, today):
+    """Push the daily report to GitHub with ACCUMULATION (never overwrite).
+
+    Behavior:
+    - Local files / stdout: only THIS run's new companies (unchanged behavior).
+    - GitHub daily files (reports/today-*-YYYY-MM-DD.*): accumulate WITHIN the
+      same day, so running the script multiple times on one day appends new
+      companies instead of overwriting earlier ones.
+    - GitHub cumulative files (reports/cumulative-*.tsv): accumulate ACROSS all
+      days, keeping first_seen / last_seen dates per company.
+    """
+    print(f"\n=== Step: Push daily report to GitHub (reports/, cumulative) ===")
     stamp = datetime.now(BEIJING_TZ).strftime("%Y-%m-%d %H:%M")
 
-    # 1. Full JSON report (target + excluded)
-    json_body = json.dumps(results, ensure_ascii=False, indent=2)
+    # ---- 1. Daily JSON report: merge with any existing report for today ----
+    daily_json_path = f"reports/today-companies-{today}.json"
+    merged = dict(results)  # shallow copy; we replace the two lists below
+    existing_json = download_file_from_github(daily_json_path)
+    if existing_json:
+        try:
+            prev = json.loads(existing_json)
+            prev_t = len(prev.get("target_companies", []))
+            prev_e = len(prev.get("excluded_companies", []))
+            merged["target_companies"] = merge_company_lists(
+                prev.get("target_companies", []), results["target_companies"])
+            merged["excluded_companies"] = merge_company_lists(
+                prev.get("excluded_companies", []), results["excluded_companies"])
+            merged["total_target"] = len(merged["target_companies"])
+            merged["total_excluded"] = len(merged["excluded_companies"])
+            print(f"[INFO] Merged daily report: target {prev_t} + {len(results['target_companies'])} new -> {merged['total_target']}, "
+                  f"excluded {prev_e} + {len(results['excluded_companies'])} new -> {merged['total_excluded']}")
+        except Exception as e:
+            print(f"[WARN] Could not parse existing daily JSON, will overwrite: {e}")
+
     push_file_to_github(
-        f"reports/today-companies-{today}.json",
-        json_body,
-        f"Daily report {today}: {results['total_target']} target / {results['total_excluded']} excluded",
+        daily_json_path,
+        json.dumps(merged, ensure_ascii=False, indent=2),
+        f"Daily report {today}: {merged['total_target']} target / {merged['total_excluded']} excluded (cumulative)",
     )
 
-    # 2. Target companies TSV
+    # ---- 2. Daily target TSV (from merged list) ----
     target_lines = ["序号\t公司名\t备注"]
-    for i, c in enumerate(results["target_companies"], 1):
+    for i, c in enumerate(merged["target_companies"], 1):
         target_lines.append(f"{i}\t{c['company']}\t{c.get('reason', '')}")
     push_file_to_github(
         f"reports/today-target-companies-{today}.tsv",
         "\n".join(target_lines) + "\n",
-        f"Daily target companies {today} ({results['total_target']} companies)",
+        f"Daily target companies {today} ({merged['total_target']} cumulative)",
     )
 
-    # 3. Excluded companies TSV
+    # ---- 3. Daily excluded TSV (from merged list) ----
     excl_lines = ["序号\t公司名\t排除原因"]
-    for i, c in enumerate(results["excluded_companies"], 1):
+    for i, c in enumerate(merged["excluded_companies"], 1):
         excl_lines.append(f"{i}\t{c['company']}\t{c.get('reason', '')}")
     push_file_to_github(
         f"reports/today-excluded-companies-{today}.tsv",
         "\n".join(excl_lines) + "\n",
-        f"Daily excluded companies {today} ({results['total_excluded']} companies)",
+        f"Daily excluded companies {today} ({merged['total_excluded']} cumulative)",
+    )
+
+    # ---- 4. Cumulative all-time target TSV (across days) ----
+    _push_cumulative_tsv(
+        "reports/cumulative-target-companies.tsv",
+        "公司名\t备注\t首次出现\t最近出现",
+        results["target_companies"],
+        today,
+        "Cumulative target companies",
+    )
+
+    # ---- 5. Cumulative all-time excluded TSV (across days) ----
+    _push_cumulative_tsv(
+        "reports/cumulative-excluded-companies.tsv",
+        "公司名\t排除原因\t首次出现\t最近出现",
+        results["excluded_companies"],
+        today,
+        "Cumulative excluded companies",
     )
 
     print(f"[INFO] Daily report pushed to GitHub at {stamp} (Beijing)")
+
+
+def _push_cumulative_tsv(repo_path, header, new_companies, today, label):
+    """Merge new_companies into an existing cumulative TSV on GitHub and push.
+
+    TSV columns: 公司名 / 备注(or 排除原因) / 首次出现 / 最近出现
+    Deduplicates by company name; appends new companies; updates last_seen and
+    upgrades reason from 待查证 to a verified industry when available.
+    """
+    existing_text = download_file_from_github(repo_path)
+    entries = []  # list of dicts
+    if existing_text:
+        for line in existing_text.strip().split("\n")[1:]:  # skip header
+            if not line.strip():
+                continue
+            parts = line.split("\t")
+            if len(parts) >= 4:
+                entries.append({
+                    "company": parts[0],
+                    "reason": parts[1],
+                    "first_seen": parts[2],
+                    "last_seen": parts[3],
+                })
+
+    by_name = {e["company"]: e for e in entries}
+    added = 0
+    for c in new_companies:
+        name = c.get("company")
+        new_reason = c.get("reason", "")
+        if name in by_name:
+            e = by_name[name]
+            e["last_seen"] = today
+            if e.get("reason") == "待查证" and new_reason and new_reason != "待查证":
+                e["reason"] = new_reason
+            elif not e.get("reason") and new_reason:
+                e["reason"] = new_reason
+        else:
+            e = {"company": name, "reason": new_reason,
+                 "first_seen": today, "last_seen": today}
+            entries.append(e)
+            by_name[name] = e
+            added += 1
+
+    lines = [header]
+    for e in entries:
+        lines.append(f"{e['company']}\t{e['reason']}\t{e['first_seen']}\t{e['last_seen']}")
+    push_file_to_github(
+        repo_path,
+        "\n".join(lines) + "\n",
+        f"{label}: +{added} new (total {len(entries)}) as of {today}",
+    )
+    print(f"[INFO] {label}: +{added} new companies (total {len(entries)})")
 
 
 # ============================================================
