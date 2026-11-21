@@ -393,8 +393,18 @@
   .stats .stat .v{font-size:30px;margin-top:6px}
   .stats .stat-primary .v{font-size:32px}
   .stats .stat .stat-note:not(#stat-week-note){display:none}
-  .stats .stat-meta-group{flex-direction:row;justify-content:space-between;padding:10px 0}
-  .stat-meta-group > div{gap:8px}
+  /* Give the full update timestamp its own line on phones so Visits cannot
+     squeeze or clip the trailing HH:mm. Desktop retains its inline layout. */
+  .stats .stat-meta-group{
+    display:grid;grid-template-columns:minmax(0,1fr) max-content;
+    align-items:start;column-gap:12px;padding:10px 0
+  }
+  .stats .stat-meta-group > div{
+    display:flex;flex-direction:column;align-items:flex-start;
+    justify-content:flex-start;gap:4px;min-width:0
+  }
+  .stats .stat-meta-group > .stat-meta{align-items:flex-end;text-align:right}
+  .stats .stat-meta-group #stat-updated{white-space:nowrap}
 }
 
 /* Keep mobile figure titles and their controls in separate, readable rows. */
