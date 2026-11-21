@@ -285,10 +285,76 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "Natixis Corporate & Investment Banking",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "BNP Paribas Asset Management",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Selby Jennings",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "CICC",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Nomura",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Osmium Consulting Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Julius Baer",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "ANZ",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "MUFG Investor Services",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Tri-Cap Consulting Pte. Ltd.",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
+    },
+    {
+      "company": "Bank of China (Hong Kong)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": ""
     }
   ],
   "total_target": 13,
-  "total_excluded": 34,
+  "total_excluded": 45,
   "total_today_jobs": 107,
   "total_all_jobs": 15728
 }
