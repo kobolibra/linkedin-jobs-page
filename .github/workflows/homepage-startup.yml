@@ -62,6 +62,15 @@ jobs:
         run: |
           npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
           npx playwright install --with-deps chromium webkit
+      - name: Diagnose Last Updated content and clipping in Chromium/WebKit (phone and desktop)
+        run: node scripts/diagnose_last_updated_mobile.mjs
+      - name: Retain Last Updated diagnostic screenshots and JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: last-updated-mobile-diagnostic
+          path: artifacts/last-updated-diagnostic
+          if-no-files-found: ignore
       - name: Boot actual homepage through populated lists with canonical data
         run: node scripts/test_homepage_startup.mjs
       - name: Verify calendar labels and true-height staircase geometry in both engines
