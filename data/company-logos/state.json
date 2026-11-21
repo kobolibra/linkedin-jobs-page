@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-21T04:02:41.297239+00:00",
+    "checkedAt": "2026-11-21T16:02:19.428667+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-21T04:02:47.217124+00:00",
+    "checkedAt": "2026-11-21T16:02:25.331206+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-21T04:02:35.448141+00:00",
+    "checkedAt": "2026-11-21T16:02:13.520721+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-21T04:02:38.273918+00:00",
+    "checkedAt": "2026-11-21T16:02:16.387566+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12492,5 +12492,29 @@
         "deferred": true
       }
     ]
+  },
+  "breeze": {
+    "name": "Breeze",
+    "checkedAt": "2026-11-21T16:02:09.193253+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "6cf2ef59980268a0607895b8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEIFmvtlrjFdA/company-logo_100_100/B56Z5mXxi5HsAI-/0/1779833969046/breeze_cash_logo?e=2147483647&v=beta&t=bpFzd0UbDAaRff0xZN5WYJuNLabBIR4G1HoD6FbVK3I",
+    "companyUrl": "https://www.linkedin.com/company/breeze-cash",
+    "sourceJobId": "4483905704"
+  },
+  "ministry of energy, trade and industry, singapore": {
+    "name": "Ministry of Energy, Trade and Industry, Singapore",
+    "checkedAt": "2026-11-21T16:02:10.628596+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f375913252ac5ca20138f5ec.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH1FB9JSDrZGg/company-logo_100_100/B56aD1ChwWHIAI-/0/1790817475936/metisingapore_logo?e=2147483647&v=beta&t=Y3T7d1jqNmRsps_2qxHkAfZtwdvLb2Aejv5kI9OgJNI",
+    "companyUrl": "https://sg.linkedin.com/company/metisingapore",
+    "sourceJobId": "4357102249"
   }
 }
