@@ -12463,5 +12463,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGRvCzfSlbiOQ/company-logo_100_100/company-logo_100_100/0/1699887626954/zeno_group_logo?e=2147483647&v=beta&t=-0YeZnz2_yFtNHCJinrN1bjt0mMwWK7IyOLHjN5m080",
     "companyUrl": "https://www.linkedin.com/company/zeno-group",
     "sourceJobId": "4492578188"
+  },
+  "carrefour city": {
+    "name": "Carrefour City",
+    "checkedAt": "2026-11-21T10:02:05.618755+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4493265646",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.116930979788116,
+        "deferred": true
+      }
+    ]
   }
 }
