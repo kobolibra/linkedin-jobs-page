@@ -204,11 +204,11 @@ class RssPublicationTests(unittest.TestCase):
             capture(root,inputs);merge(root,inputs,out)
             self.assertEqual(len(json.loads(out.read_text())['jobs']),1)
 
-    def test_workflow_has_only_rss_push_trigger_and_one_deployment_after_logo_apply(self):
+    def test_workflow_runs_for_rss_or_target_history_and_deploys_after_logo_apply(self):
         workflow=Path(__file__).resolve().parents[1]/'.github/workflows/publish-n8n-rss.yml'
         text=workflow.read_text()
         triggers=text.split('on:',1)[1].split('concurrency:',1)[0]
-        self.assertIn('paths: [data/n8n/rss-latest.json]',triggers)
+        self.assertIn('paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv]',triggers)
         self.assertNotIn('data/jobspy/',triggers)
         self.assertNotIn('.github/workflows/',triggers)
         collect_index=text.index('id: logos')
