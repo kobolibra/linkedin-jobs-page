@@ -110,3 +110,16 @@ test('site loads one shared calendar and all known user-facing dates use it',()=
  assert.match(breadth,/const dateKey=d=>dates\.key\(d\)/);
  assert.doesNotMatch(app,/toLocaleDateString\("zh-CN"/);
 });
+
+test('mobile Last Updated remains a full UTC+8 timestamp, isolated from Visits',()=>{
+ const app=read('app.js'),html=read('index.html'),css=read('home.css');
+ assert.match(app,/JobDates\.formatStamp\(window\.AuthGuest\?\.overview\?\.updated\|\|lastUpd,\{compact:true\}\)/);
+ assert.match(html,/id="stat-updated"/);
+ assert.match(html,/home\.css\?v=last-updated-mobile-20261121/);
+ const mobile=css.slice(css.indexOf('/* Give the full update timestamp its own line on phones'));
+ assert.match(mobile,/grid-template-columns:minmax\(0,1fr\) max-content/);
+ assert.match(mobile,/\.stats \.stat-meta-group > div\{\s*display:flex;flex-direction:column/);
+ assert.match(mobile,/\.stats \.stat-meta-group > \.stat-meta\{align-items:flex-end;text-align:right\}/);
+ assert.match(mobile,/#stat-updated\{white-space:nowrap\}/);
+ assert.equal(dates.formatStamp('2026-11-20T16:42:00Z',{compact:true}),'21 Nov 00:42');
+});
