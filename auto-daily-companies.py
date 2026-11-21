@@ -219,16 +219,23 @@ def push_file_to_github(repo_path, text_content, commit_message):
 
 
 def download_file_from_github(repo_path):
-    """Download a file's text content from GitHub. Returns None if not found."""
+    """Download a file's text content from GitHub.
+
+    Returns None only when the file genuinely does not exist. Any other read
+    failure is raised so callers never overwrite an existing cumulative report
+    with an incomplete list after a transient network/API error.
+    """
     api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{repo_path}"
     try:
         with _make_request(api_url) as resp:
             data = json.loads(resp.read())
             if "content" in data and data.get("encoding") == "base64":
                 return base64.b64decode(data["content"]).decode("utf-8")
-    except Exception:
-        return None
-    return None
+            raise RuntimeError(f"Unexpected GitHub contents response for {repo_path}")
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return None
+        raise
 
 
 def merge_company_lists(existing_list, new_list):
