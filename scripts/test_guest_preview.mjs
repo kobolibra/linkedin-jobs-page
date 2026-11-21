@@ -38,3 +38,13 @@ test('guest mode bypasses full-index cache and signed-in mode reuses one prepare
  assert.match(loader,/authState==='guest'\?"\/api\/public-preview":"jobs-index.json"/);
  assert.ok(!readFileSync(new URL('../index.html',import.meta.url),'utf8').includes('/guest.html'));
 });
+
+test('Last Updated prefers canonical source when the newest job pushTime has no HH:mm',()=>{
+ const index=fixture();
+ index.jobs.forEach(job=>{job.pushTime='2026-10-21';});
+ index.updatedAt='2026-10-21T09:14:25.000Z';
+ const preview=publicPreviewPayload(previewData(index,{},now),index);
+ assert.equal(preview.previewOverview.updated,'2026-10-21T09:14:25.000Z');
+ delete index.updatedAt;
+ assert.equal(previewData(index,{},now).updated,'2026-10-20T16:00:00.000Z','legacy fallback cannot recover the missing observation time');
+});
