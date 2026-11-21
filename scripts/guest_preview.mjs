@@ -54,7 +54,11 @@ export function previewData(index,details={},now=Date.now()){
  const today=dates.key(now),days=Array.from({length:14},(_,i)=>({day:dates.addDays(today,i-13),count:0}));
  for(const j of active){const day=dates.key(postedAt(j)),time=dates.dayStart(day);if(!Number.isFinite(time)||time>now)continue;const bin=days.find(d=>d.day===day);if(bin)bin.count++;}
  const updated=Math.max(0,...active.map(j=>date(j.pushTime||j.firstSeen)));
- return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:updated?new Date(updated).toISOString():null,weekly:weeklyFlow(index.jobs,now)};
+ // Prefer the exact source-observation timestamp forwarded from jobs.json.
+ // Legacy date-only job fields do not supply an HH:mm.
+ const observed=typeof index.updatedAt==='string'&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(index.updatedAt)
+   &&Number.isFinite(dates.timestamp(index.updatedAt))?index.updatedAt:null;
+ return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:observed||(updated?new Date(updated).toISOString():null),weekly:weeklyFlow(index.jobs,now)};
 }
 export function publicPreviewPayload(data,index){
  const selected=new Map(data.jobs.map(j=>[j.id,j]));

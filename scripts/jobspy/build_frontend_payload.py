@@ -7,6 +7,7 @@ import json
 import hashlib
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode, quote
 import re
+from datetime import datetime, timezone
 from pathlib import Path
 
 from linkedin_ids import linkedin_job_id
@@ -18,6 +19,34 @@ from bs4 import BeautifulSoup
 def job_id(link: object) -> str:
     value = linkedin_job_id(link)
     return f"ln:{value}" if value else ""
+
+
+def latest_pipeline_update(doc: object) -> str | None:
+    """Last successful source observation, not a job's date-only posting day.
+
+    The RSS merger and JobSpy reconciler record precise, stable UTC instants
+    in jobs.json. Preserve the latest of the two through frontend publication,
+    rather than infer a clock time from legacy date-only pushTime fields.
+    """
+    if not isinstance(doc, dict):
+        return None
+    rss = doc.get("n8nIncrementalMerge")
+    values = [(rss.get("mergedAt") if isinstance(rss, dict) else None),
+              doc.get("jobStatusUpdatedAt")]
+    parsed = []
+    for value in values:
+        if not isinstance(value, str) or not re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})?", value
+        ):
+            continue
+        try:
+            when = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if when.tzinfo is None:
+            when = when.replace(tzinfo=timezone.utc)
+        parsed.append(when.astimezone(timezone.utc))
+    return max(parsed).isoformat(timespec="milliseconds").replace("+00:00", "Z") if parsed else None
 
 
 def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Path | None = None) -> tuple[int, int]:
@@ -102,6 +131,9 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             if isinstance(state,dict):
                 fallback=next((logos[name] for name,entry in state.items() if name in logos and isinstance(entry,dict) and entry.get('status')=='ready' and entry.get('imageKind')=='placeholder'),'')
     index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows,"companyLogos":logos,"companyLogoFallback":fallback}
+    observed_at = latest_pipeline_update(doc)
+    if observed_at:
+        index_doc["updatedAt"] = observed_at
     # Public daily counts come exclusively from the persistent event ledger.
     # Do not expose job identities or replay mutable listing states into history.
     event_path = source.parent / "data/posting-events-ledger.json"
@@ -146,6 +178,17 @@ def self_test() -> None:
         assert "descriptionHtml" not in index_doc["jobs"][0]
         assert detail_doc["details"]["ln:123456"]["descriptionHtml"] == "<p>JD</p>"
         assert detail_doc["details"]["ln:123456"]["jevInput"]["schema"] == "jev-input-v4"
+        # Reproduce a real historical snapshot: the newest pushTime may be a
+        # date-only value, while the pipeline retains an exact observation time.
+        source_doc = json.loads(source.read_text(encoding="utf-8"))
+        source_doc["jobs"][0]["pushTime"] = "2026-11-20"
+        source_doc["n8nIncrementalMerge"] = {"mergedAt": "2026-11-20T04:11:00Z"}
+        source_doc["jobStatusUpdatedAt"] = "2026-11-20T05:32:15+00:00"
+        source.write_text(json.dumps(source_doc), encoding="utf-8")
+        assert build(source, index, details) == (2, 1)
+        assert json.loads(index.read_text(encoding="utf-8"))["updatedAt"] == "2026-11-20T05:32:15.000Z"
+        assert latest_pipeline_update({"n8nIncrementalMerge": {"mergedAt": "2026-11-20"}}) is None
+        assert latest_pipeline_update({"n8nIncrementalMerge": {"mergedAt": "invalid"}}) is None
         slug = "https://hk.linkedin.com/jobs/view/title-210740045-at-company-4468639951"
         assert job_id(slug) == "ln:4468639951"
 
