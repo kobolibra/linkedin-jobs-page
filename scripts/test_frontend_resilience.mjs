@@ -222,7 +222,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/window\.JobDates\.weekday\(d\.key\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=sigma-day-count-20261120/);
+ assert.match(html,/app\.js\?v=last-updated-source-20261121/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
