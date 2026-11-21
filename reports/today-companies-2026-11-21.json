@@ -1,78 +1,24 @@
 {
   "date": "2026-11-21",
-  "filter_window": "2026-11-20 12:09 ~ 2026-11-21 12:09 (Beijing)",
+  "filter_window": "2026-11-20 18:17 ~ 2026-11-21 18:17 (Beijing)",
   "target_companies": [
     {
-      "company": "Aeveyn Group",
+      "company": "Securitas Hong Kong",
       "category": "target",
       "reason": "待查证",
-      "pushTime": "2026-11-20T10:01:34.591Z"
+      "pushTime": "2026-11-21T10:01:38.527Z"
     },
     {
-      "company": "Buckman",
+      "company": "Cove",
       "category": "target",
       "reason": "待查证",
-      "pushTime": "2026-11-20T16:03:15.678Z"
+      "pushTime": "2026-11-21T10:01:38.527Z"
     },
     {
-      "company": "SLB",
+      "company": "Carrefour City",
       "category": "target",
       "reason": "待查证",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
-      "company": "ThreatBook",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
-      "company": "Space Executive",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
-      "company": "Rimkus",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
-      "company": "Retu Management Consulting Limited",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-20T16:03:15.678Z"
-    },
-    {
-      "company": "LoopMe",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-20T22:01:32.503Z"
-    },
-    {
-      "company": "Sin Chew Woodpaq Pte Ltd",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-20T22:01:32.503Z"
-    },
-    {
-      "company": "Edelman",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-21T04:01:55.879Z"
-    },
-    {
-      "company": "Zeno Group",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-21T04:01:55.879Z"
-    },
-    {
-      "company": "TDK SensEI",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-21T04:01:55.879Z"
+      "pushTime": "2026-11-21T10:01:38.527Z"
     }
   ],
   "excluded_companies": [
@@ -90,6 +36,24 @@
     },
     {
       "company": "BlackRock",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21"
+    },
+    {
+      "company": "Schroders",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21"
+    },
+    {
+      "company": "JPMorgan Chase",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21"
+    },
+    {
+      "company": "Morgan Stanley",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-21"
@@ -119,100 +83,10 @@
       "pushTime": "2026-11-21"
     },
     {
-      "company": "Citi",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T09:46:45Z"
-    },
-    {
-      "company": "Natixis Corporate & Investment Banking",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T09:46:45Z"
-    },
-    {
       "company": "Standard Chartered",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T09:46:45Z"
-    },
-    {
-      "company": "BNP Paribas Asset Management",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Selby Jennings",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "CICC",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Alpha Access Limited",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Nomura",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Links International",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Osmium Consulting Group",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Julius Baer",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "ANZ",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "MUFG Investor Services",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Tri-Cap Consulting Pte. Ltd.",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Hang Seng Bank",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
-    },
-    {
-      "company": "Bank of China (Hong Kong)",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T10:01:34.591Z"
+      "pushTime": "2026-11-20T15:38:20Z"
     },
     {
       "company": "Broadridge",
@@ -227,7 +101,7 @@
       "pushTime": "2026-11-20T16:03:15.678Z"
     },
     {
-      "company": "Morgan Stanley",
+      "company": "Alpha Access Limited",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-20T16:03:15.678Z"
@@ -240,6 +114,12 @@
     },
     {
       "company": "LSEG",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-20T16:03:15.678Z"
+    },
+    {
+      "company": "Space Executive",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-20T16:03:15.678Z"
@@ -275,19 +155,19 @@
       "pushTime": "2026-11-20T16:03:15.678Z"
     },
     {
+      "company": "Retu Management Consulting Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-20T16:03:15.678Z"
+    },
+    {
       "company": "Standard Chartered Singapore",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-20T16:03:15.678Z"
     },
     {
-      "company": "JPMorgan Chase",
-      "category": "excluded",
-      "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-20T21:43:53Z"
-    },
-    {
-      "company": "Schroders",
+      "company": "Citi",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-20T21:43:53Z"
@@ -305,7 +185,19 @@
       "pushTime": "2026-11-20T22:01:32.503Z"
     },
     {
+      "company": "Links International",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-20T22:01:32.503Z"
+    },
+    {
       "company": "State Street Investment Management",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-20T22:01:32.503Z"
+    },
+    {
+      "company": "Hang Seng Bank",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-20T22:01:32.503Z"
@@ -315,10 +207,28 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-21T04:01:55.879Z"
+    },
+    {
+      "company": "JAC Recruitment",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "finexis advisory Pte Ltd",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "Barclays",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
     }
   ],
-  "total_target": 12,
-  "total_excluded": 40,
-  "total_today_jobs": 141,
-  "total_all_jobs": 15733
+  "total_target": 3,
+  "total_excluded": 34,
+  "total_today_jobs": 107,
+  "total_all_jobs": 15728
 }
