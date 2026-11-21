@@ -6,12 +6,14 @@ new staging data arriving during collection cannot bypass the logo step.
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from pathlib import Path
 
 INPUTS = {
@@ -40,6 +42,47 @@ def capture(root: Path, destination: Path):
     return hashes
 
 
+
+TARGET_HISTORY = 'reports/cumulative-target-companies.tsv'
+
+
+def target_company_key(value: object) -> str:
+    """Exact employer-name matching, ignoring Unicode width/case/whitespace only."""
+    return ' '.join(unicodedata.normalize('NFKC', str(value or '')).casefold().split())
+
+
+def read_target_history(path: Path) -> set[str]:
+    """Load the Agent's cumulative TARGET TSV (never the financial blacklist)."""
+    with path.open(encoding='utf-8-sig', newline='') as source:
+        reader = csv.DictReader(source, delimiter='\t')
+        if not reader.fieldnames or '公司名' not in reader.fieldnames:
+            raise ValueError(f'Target history lacks 公司名 column: {path}')
+        names = set()
+        for row in reader:
+            if None in row or not target_company_key(row.get('公司名')):
+                raise ValueError(f'Invalid target company history row: {path}')
+            names.add(target_company_key(row['公司名']))
+    return names
+
+
+def filter_target_history(merged: Path, history: Path, output: Path) -> None:
+    """Hard-delete historical and incoming target-company jobs at publication."""
+    targets = read_target_history(history)  # Missing/unreadable history must block publication.
+    doc = json.loads(merged.read_text(encoding='utf-8'))
+    if not isinstance(doc, dict) or not isinstance(doc.get('jobs'), list):
+        raise ValueError('Merged canonical document must contain jobs[]')
+    kept = [row for row in doc['jobs']
+            if target_company_key(row.get('company')) not in targets]
+    removed = len(doc['jobs']) - len(kept)
+    if removed:
+        doc['jobs'] = kept
+        doc['count'] = len(kept)
+        output.write_text(json.dumps(doc, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+    else:
+        shutil.copyfile(merged, output)
+    print(f'Target-company history filter: {len(targets)} names, {removed} jobs removed')
+
+
 def merge(root: Path, inputs: Path, output: Path):
     root, inputs, output = root.resolve(), inputs.resolve(), output.resolve()
     hashes=json.loads((inputs/'inputs.json').read_text(encoding='utf-8'))['sha256']
@@ -66,7 +109,7 @@ def merge(root: Path, inputs: Path, output: Path):
             run('apply_liveness.py','--jobs',merged,'--liveness',inputs/'liveness.json',
                 '--delete-after-days','15','--output',work/'liveness.json')
             merged=work/'liveness.json'
-        shutil.copyfile(merged,output)
+        filter_target_history(merged, root/TARGET_HISTORY, output)
 
 
 def main():

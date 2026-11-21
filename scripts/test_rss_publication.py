@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 from types import SimpleNamespace
 
-from rss_publication import capture, merge
+from rss_publication import capture, merge, read_target_history, filter_target_history
 from company_logos import collect, apply
 import test_company_logos
 
@@ -16,6 +16,11 @@ import test_company_logos
 class RssPublicationTests(unittest.TestCase):
     def write(self, root, path, doc):
         target=root/path;target.parent.mkdir(parents=True,exist_ok=True)
+        if str(path) == 'data/n8n/rss-latest.json':
+            history=root/'reports/cumulative-target-companies.tsv'
+            history.parent.mkdir(parents=True,exist_ok=True)
+            if not history.exists():
+                history.write_text('公司名\t备注\t首次出现\t最近出现\n',encoding='utf-8')
         target.write_text(json.dumps(doc),encoding='utf-8')
         return target
 
@@ -144,11 +149,66 @@ class RssPublicationTests(unittest.TestCase):
             (inputs/'rss.json').write_text('{"jobs": [{}]}')
             with self.assertRaises(ValueError):merge(root,inputs,root/'out.json')
 
-    def test_workflow_has_only_rss_push_trigger_and_one_deployment_after_logo_apply(self):
+    def test_target_history_hard_deletes_existing_and_new_jobs_without_touching_n8n_blocklist(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'out.json'
+            history=root/'reports/cumulative-target-companies.tsv'
+            existing_target=self.job('100000001','  SLB  ')
+            new_target=self.job('100000002','slb')
+            allowed=self.job('100000003','SLB Energy')
+            bank=self.job('100000004','HSBC')
+            blocked=self.job('100000005','Google Sheet Blocked')
+            self.write(root,'jobs.json',{'jobs':[existing_target,allowed,bank,blocked]})
+            self.write(root,'data/n8n/rss-latest.json',{
+                'blocklist':['Google Sheet Blocked'],
+                'jobs':[new_target, self.job('100000006','Fresh Allowed')]})
+            history.write_text('公司名\t备注\t首次出现\t最近出现\nSLB\t能源\t2026-11-21\t2026-11-21\n',encoding='utf-8')
+            capture(root,inputs);merge(root,inputs,out)
+            got=json.loads(out.read_text(encoding='utf-8'))
+            self.assertEqual({row['sourceJobId'] for row in got['jobs']},
+                             {'li-100000003','li-100000004','li-100000006'})
+            self.assertEqual(got['count'],3)
+            self.assertEqual(got['n8nIncrementalMerge']['blocklistHardDelete'],1)
+
+    def test_target_history_refreshes_on_publication_retry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'out.json'
+            history=root/'reports/cumulative-target-companies.tsv'
+            self.write(root,'jobs.json',{'jobs':[self.job('100000001','Previously Allowed')]})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            capture(root,inputs);merge(root,inputs,out)
+            self.assertEqual(len(json.loads(out.read_text())['jobs']),1)
+            history.write_text('公司名\t备注\t首次出现\t最近出现\nPreviously Allowed\t待查证\t2026-11-21\t2026-11-21\n',encoding='utf-8')
+            merge(root,inputs,out)
+            self.assertEqual(json.loads(out.read_text())['jobs'],[])
+
+    def test_target_history_missing_or_corrupt_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'out.json'
+            history=root/'reports/cumulative-target-companies.tsv'
+            self.write(root,'jobs.json',{'jobs':[self.job('100000001')]})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            capture(root,inputs)
+            history.unlink()
+            with self.assertRaises(FileNotFoundError):merge(root,inputs,out)
+            history.write_text('公司名\t备注\nBad\tbroken\tunexpected\n')
+            with self.assertRaises(ValueError):merge(root,inputs,out)
+
+    def test_target_history_does_not_read_excluded_company_history(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'out.json'
+            self.write(root,'jobs.json',{'jobs':[self.job('100000001','HSBC')]})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            (root/'reports/cumulative-excluded-companies.tsv').write_text(
+                '公司名\t排除原因\t首次出现\t最近出现\nHSBC\t金融\t2026-11-21\t2026-11-21\n')
+            capture(root,inputs);merge(root,inputs,out)
+            self.assertEqual(len(json.loads(out.read_text())['jobs']),1)
+
+    def test_workflow_runs_for_rss_or_target_history_and_deploys_after_logo_apply(self):
         workflow=Path(__file__).resolve().parents[1]/'.github/workflows/publish-n8n-rss.yml'
         text=workflow.read_text()
         triggers=text.split('on:',1)[1].split('concurrency:',1)[0]
-        self.assertIn('paths: [data/n8n/rss-latest.json]',triggers)
+        self.assertIn('paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv]',triggers)
         self.assertNotIn('data/jobspy/',triggers)
         self.assertNotIn('.github/workflows/',triggers)
         collect_index=text.index('id: logos')

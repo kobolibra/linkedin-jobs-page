@@ -3,7 +3,7 @@ name: Publish n8n RSS into canonical jobs
 on:
   push:
     branches: [main]
-    paths: [data/n8n/rss-latest.json]
+    paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv]
   workflow_dispatch:
 
 concurrency:
