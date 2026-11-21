@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-20T22:02:23.470126+00:00",
+    "checkedAt": "2026-11-21T04:02:41.297239+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-20T22:02:29.408241+00:00",
+    "checkedAt": "2026-11-21T04:02:47.217124+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-20T22:02:17.536745+00:00",
+    "checkedAt": "2026-11-21T04:02:35.448141+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-20T22:02:20.430498+00:00",
+    "checkedAt": "2026-11-21T04:02:38.273918+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12427,5 +12427,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHwNoGogwE1sA/company-logo_100_100/company-logo_100_100/0/1735179424347/sinchewwoodpaq_logo?e=2147483647&v=beta&t=7XB43idsmvEBM8fn5nohGx6ohD_FO4yqhADYybvaMOI",
     "companyUrl": "https://sg.linkedin.com/company/sinchewwoodpaq",
     "sourceJobId": "4491665470"
+  },
+  "edelman": {
+    "name": "Edelman",
+    "checkedAt": "2026-11-21T04:02:28.120862+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "983e57490043bfec5643f58f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQEAzhZa5uRFvg/company-logo_100_100/company-logo_100_100/0/1672758014870/edelman_logo?e=2147483647&v=beta&t=q-ZVodqcDceO-vJnytU3tqnu21fOYg2_yE1F6q1DaYY",
+    "companyUrl": "https://www.linkedin.com/company/edelman",
+    "sourceJobId": "4492905648"
+  },
+  "tdk sensei": {
+    "name": "TDK SensEI",
+    "checkedAt": "2026-11-21T04:02:29.508246+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "154b4f1f81c4842bd96fdced.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGNhxlkK6nk_Q/company-logo_100_100/B56Zx8XnQmJMAQ-/0/1771613091184/tdksensei_logo?e=2147483647&v=beta&t=mM735U2WUwLWfXXVXUOoYfgJIRvkTkM2DvW7cBAPt90",
+    "companyUrl": "https://www.linkedin.com/company/tdksensei",
+    "sourceJobId": "4480084552"
+  },
+  "zeno group": {
+    "name": "Zeno Group",
+    "checkedAt": "2026-11-21T04:02:32.441880+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "26332d03d3bbfa53dee44ccd.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGRvCzfSlbiOQ/company-logo_100_100/company-logo_100_100/0/1699887626954/zeno_group_logo?e=2147483647&v=beta&t=-0YeZnz2_yFtNHCJinrN1bjt0mMwWK7IyOLHjN5m080",
+    "companyUrl": "https://www.linkedin.com/company/zeno-group",
+    "sourceJobId": "4492578188"
   }
 }
