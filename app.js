@@ -524,10 +524,10 @@ document.querySelectorAll('.nj-market-row[data-region]').forEach(row=>row.addEve
 const jdPlainText=html=>String(html||"").replace(/<br\s*\/?>/gi," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
 jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-box sk-mono"></div><div><div class="sk-box sk-l1"></div><div class="sk-box sk-l2"></div></div></div>').join("");
 // Keep immutable publication-event totals separate from mutable job records.
-let postingHistoryDaily=null;
+let postingHistoryDaily=null,snapshotUpdatedAt='';
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
 const jobsDataPromise=(window.__jobsIndexDocument||window.JobIndexStore.load())
-  .then(data=>{postingHistoryDaily=data?.postingHistoryDaily||data?.previewOverview?.postingHistoryDaily||null;window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
+  .then(data=>{snapshotUpdatedAt=typeof data?.updatedAt==='string'?data.updatedAt:'';postingHistoryDaily=data?.postingHistoryDaily||data?.previewOverview?.postingHistoryDaily||null;window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
 window.__jobsDataPromise=jobsDataPromise;
 let jobsDataReceived=false,jobsCoreReady=false;
 jobsDataPromise
@@ -555,8 +555,9 @@ jobsDataPromise
     const activeCompanies=new Set(activeData.map(j=>canonicalCompany(j.company)).filter(Boolean));
     animNum(document.getElementById("stat-comp"),window.AuthGuest?.overview?.companies??activeCompanies.size);
     const lastUpd=activeData.reduce((m,j)=>{const t=j.pushTime||j.firstSeen||"";return t>m?t:m;},"");
-    const lastUpdDate=new Date(window.AuthGuest?.overview?.updated||lastUpd);
-    const lastUpdText=window.JobDates.formatStamp(window.AuthGuest?.overview?.updated||lastUpd,{compact:true});
+    // Prefer the exact source-observation timestamp; legacy pushTime may
+    // contain only YYYY-MM-DD and cannot supply an HH:mm on its own.
+    const lastUpdText=window.JobDates.formatStamp(window.AuthGuest?.overview?.updated||snapshotUpdatedAt||lastUpd,{compact:true});
     document.getElementById("stat-updated").textContent=lastUpdText;
     renderHeadline(data,chartData);
     companies.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;companyEl.appendChild(o);});
