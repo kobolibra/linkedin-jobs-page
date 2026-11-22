@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-22T04:09:31.163537+00:00",
+    "checkedAt": "2026-11-22T16:02:30.400233+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-22T04:09:37.101026+00:00",
+    "checkedAt": "2026-11-22T16:02:36.317330+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,30 +3178,21 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-22T10:01:52.881776+00:00",
+    "checkedAt": "2026-11-22T16:02:42.291797+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4441170948",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.58525064524172,
-        "deferred": true
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
       }
     ]
   },
@@ -5407,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-22T04:09:28.250142+00:00",
+    "checkedAt": "2026-11-22T16:02:27.516647+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12549,5 +12540,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQH6K-bAfax0xA/company-logo_100_100/company-logo_100_100/0/1630551761418?e=2147483647&v=beta&t=i1FJywi6qHD2lJXcsy7nqsQhXdf7Gj4BuG-PbfOO6Ew",
     "companyUrl": "https://www.linkedin.com/company/%E9%9D%92%E5%B2%9B%E9%9F%A6%E7%AB%8B%E5%9B%BD%E9%99%85%E8%88%B9%E8%88%B6%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4492340260"
+  },
+  "fano (fano labs)": {
+    "name": "Fano (Fano Labs)",
+    "checkedAt": "2026-11-22T16:02:23.207683+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dd03e90fdaa44f2bd694ec17.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHeE6AmQD4aMA/company-logo_100_100/company-logo_100_100/0/1726475417981/fanolabs_logo?e=2147483647&v=beta&t=jnpDVVxAB2RJU5aJyqAi6ZUaB5Zfs1RvV41vcZVcprY",
+    "companyUrl": "https://hk.linkedin.com/company/fanolabs",
+    "sourceJobId": "4492292968"
+  },
+  "parich group limited": {
+    "name": "Parich Group Limited",
+    "checkedAt": "2026-11-22T16:02:24.579276+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "18f1499c859ee66380478580.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFsmbvBWhjsbg/company-logo_100_100/B56aG1.ANEIUAI-/0/1794054292520?e=2147483647&v=beta&t=yGG8tm-UGy5ChkUA69vd-7coPirRn8OHZpoAFqhoYRA",
+    "companyUrl": "https://www.linkedin.com/company/parichgroup",
+    "sourceJobId": "4492305898"
   }
 }
