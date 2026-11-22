@@ -1,0 +1,150 @@
+{
+  "date": "2026-11-22",
+  "filter_window": "2026-11-21 12:08 ~ 2026-11-22 12:08 (Beijing)",
+  "target_companies": [
+    {
+      "company": "Ministry of Energy, Trade and Industry, Singapore",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "Breeze",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "青岛韦立国际船舶管理有限公司",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-22T04:01:50.592Z"
+    },
+    {
+      "company": "Connect to the opportunity",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-22T04:01:50.592Z"
+    }
+  ],
+  "excluded_companies": [
+    {
+      "company": "HSBC",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22"
+    },
+    {
+      "company": "Goldman Sachs",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22"
+    },
+    {
+      "company": "BlackRock",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22"
+    },
+    {
+      "company": "Deutsche Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22"
+    },
+    {
+      "company": "Links International",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "JAC Recruitment",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "finexis advisory Pte Ltd",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "Barclays",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "渣打环球商业服务有限公司",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T10:01:38.527Z"
+    },
+    {
+      "company": "JPMorgan Chase",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "Bonhill Partners",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "Aster Recruiting",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "Standard Chartered Singapore",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "Santander",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T16:01:37.731Z"
+    },
+    {
+      "company": "GRIT",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T22:04:20.333Z"
+    },
+    {
+      "company": "Bank of China (Hong Kong)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T22:04:20.333Z"
+    },
+    {
+      "company": "Bank of Communications Co.,Ltd.",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T22:04:20.333Z"
+    },
+    {
+      "company": "Achieve Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-21T22:04:20.333Z"
+    },
+    {
+      "company": "The Citco Group Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T04:01:50.592Z"
+    }
+  ],
+  "total_target": 4,
+  "total_excluded": 19,
+  "total_today_jobs": 64,
+  "total_all_jobs": 15745
+}
