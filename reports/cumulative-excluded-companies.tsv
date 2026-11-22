@@ -1,13 +1,13 @@
 公司名	排除原因	首次出现	最近出现
 Space Executive	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Retu Management Consulting Limited	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Goldman Sachs	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-HSBC	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-BlackRock	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Goldman Sachs	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+HSBC	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+BlackRock	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 Schroders	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-JPMorgan Chase	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+JPMorgan Chase	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 Morgan Stanley	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Deutsche Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Deutsche Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 BNP Paribas	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 DBS Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 State Street	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
@@ -22,17 +22,17 @@ SGX Group	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Macquarie Group	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 PIMCO	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Visa	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Standard Chartered Singapore	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Standard Chartered Singapore	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 Citi	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Fitch Ratings	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Crédit Agricole CIB	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Links International	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Links International	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 State Street Investment Management	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Hang Seng Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-渣打环球商业服务有限公司	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-JAC Recruitment	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-finexis advisory Pte Ltd	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Barclays	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+渣打环球商业服务有限公司	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+JAC Recruitment	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+finexis advisory Pte Ltd	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+Barclays	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 Natixis Corporate & Investment Banking	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 BNP Paribas Asset Management	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Selby Jennings	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
@@ -43,4 +43,11 @@ Julius Baer	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 ANZ	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 MUFG Investor Services	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Tri-Cap Consulting Pte. Ltd.	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Bank of China (Hong Kong)	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Bank of China (Hong Kong)	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+Bonhill Partners	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+Aster Recruiting	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+Santander	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+GRIT	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+Bank of Communications Co.,Ltd.	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+Achieve Group	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+The Citco Group Limited	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
