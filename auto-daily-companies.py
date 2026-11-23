@@ -267,6 +267,14 @@ def merge_company_lists(existing_list, new_list):
     return merged
 
 
+
+def _is_financial_exclusion(name):
+    """A verified financial/headhunter exclusion must never remain a target."""
+    return str(name or "").strip().casefold() in {
+        value.strip().casefold() for value in FINANCIAL_BLACKLIST
+    }
+
+
 def push_daily_report_to_github(results, today):
     """Push the daily report to GitHub with ACCUMULATION (never overwrite).
 
@@ -300,6 +308,21 @@ def push_daily_report_to_github(results, today):
                   f"excluded {prev_e} + {len(results['excluded_companies'])} new -> {merged['total_excluded']}")
         except Exception as e:
             print(f"[WARN] Could not parse existing daily JSON, will overwrite: {e}")
+
+    # Verification can happen after a first-pass target report was saved.
+    # Reconcile stale targets against the now-updated financial classification.
+    reclassified = [c for c in merged["target_companies"]
+                    if _is_financial_exclusion(c.get("company"))]
+    merged["target_companies"] = [c for c in merged["target_companies"]
+                                  if not _is_financial_exclusion(c.get("company"))]
+    if reclassified:
+        merged["excluded_companies"] = merge_company_lists(
+            merged["excluded_companies"],
+            [{**c, "category": "excluded",
+              "reason": "verified financial/headhunter (reclassified)"} for c in reclassified],
+        )
+    merged["total_target"] = len(merged["target_companies"])
+    merged["total_excluded"] = len(merged["excluded_companies"])
 
     push_file_to_github(
         daily_json_path,
@@ -340,7 +363,9 @@ def push_daily_report_to_github(results, today):
     _push_cumulative_tsv(
         "reports/cumulative-excluded-companies.tsv",
         "公司名\t排除原因\t首次出现\t最近出现",
-        results["excluded_companies"],
+        results["excluded_companies"] +
+        [{**c, "category": "excluded", "reason": "verified financial/headhunter (reclassified)"}
+         for c in reclassified],
         today,
         "Cumulative excluded companies",
     )
@@ -370,10 +395,15 @@ def _push_cumulative_tsv(repo_path, header, new_companies, today, label):
                     "last_seen": parts[3],
                 })
 
+    if repo_path == "reports/cumulative-target-companies.tsv":
+        entries = [e for e in entries if not _is_financial_exclusion(e["company"])]
+
     by_name = {e["company"]: e for e in entries}
     added = 0
     for c in new_companies:
         name = c.get("company")
+        if repo_path == "reports/cumulative-target-companies.tsv" and _is_financial_exclusion(name):
+            continue
         new_reason = c.get("reason", "")
         if name in by_name:
             e = by_name[name]
