@@ -1,22 +1,22 @@
 公司名	排除原因	首次出现	最近出现
 Space Executive	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Retu Management Consulting Limited	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Goldman Sachs	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
-HSBC	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+Goldman Sachs	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
+HSBC	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 BlackRock	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 Schroders	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 JPMorgan Chase	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
-Morgan Stanley	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Morgan Stanley	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 Deutsche Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 BNP Paribas	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 DBS Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-State Street	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Standard Chartered	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+State Street	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
+Standard Chartered	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 Broadridge	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Argyll Scott	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Argyll Scott	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 Alpha Access Limited	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Millennium	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-LSEG	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+LSEG	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 Amicorp Group	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 SGX Group	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Macquarie Group	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
@@ -29,13 +29,13 @@ Crédit Agricole CIB	blacklist exact match (financial/headhunter)	2026-11-21	202
 Links International	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 State Street Investment Management	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Hang Seng Bank	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-渣打环球商业服务有限公司	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+渣打环球商业服务有限公司	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 JAC Recruitment	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
-finexis advisory Pte Ltd	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+finexis advisory Pte Ltd	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 Barclays	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
 Natixis Corporate & Investment Banking	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 BNP Paribas Asset Management	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Selby Jennings	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
+Selby Jennings	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 CICC	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Nomura	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Osmium Consulting Group	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
@@ -43,7 +43,7 @@ Julius Baer	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 ANZ	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 MUFG Investor Services	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
 Tri-Cap Consulting Pte. Ltd.	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-21
-Bank of China (Hong Kong)	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-22
+Bank of China (Hong Kong)	blacklist exact match (financial/headhunter)	2026-11-21	2026-11-23
 Bonhill Partners	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
 Aster Recruiting	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
 Santander	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
@@ -51,3 +51,15 @@ GRIT	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
 Bank of Communications Co.,Ltd.	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
 Achieve Group	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
 The Citco Group Limited	blacklist exact match (financial/headhunter)	2026-11-22	2026-11-22
+Ambition	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+KOS International Holdings Limited	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+Manulife	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+ACCA Careers	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+Mizuho	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+BBVA	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+CCB International (Holdings) Limited	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+Hays	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+Robert Half	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+Bo Le Associates	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+CITIC Securities International	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
+LVI Associates	blacklist exact match (financial/headhunter)	2026-11-23	2026-11-23
