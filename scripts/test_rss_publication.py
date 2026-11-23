@@ -217,10 +217,10 @@ class RssPublicationTests(unittest.TestCase):
             self.write(root,'jobs.json',{'jobs':[]})
             self.write(root,'data/n8n/rss-latest.json',{'jobs':[target],
                 'blocklist':['Breeze']})
-            history.write_text('公司名\\t备注\\t首次出现\\t最近出现\\n'
-                               'Parich Group Limited\\t待查证\\t2026-11-23\\t2026-11-23\\n'
-                               'Breeze\\t待查证\\t2026-11-22\\t2026-11-22\\n'
-                               'Fano (Fano Labs)\\tAI\\t2026-11-23\\t2026-11-23\\n')
+            history.write_text('公司名\t备注\t首次出现\t最近出现\n'
+                               'Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n'
+                               'Breeze\t待查证\t2026-11-22\t2026-11-22\n'
+                               'Fano (Fano Labs)\tAI\t2026-11-23\t2026-11-23\n')
             self.write(root,'financial_blacklist.json',['Parich Group Limited','Breeze'])
             self.write(root,'data/target-filter-quarantine.json',
                        {'schemaVersion':'1.0','jobs':[original,n8n_blocked]})
@@ -240,8 +240,8 @@ class RssPublicationTests(unittest.TestCase):
             self.write(root,'jobs.json',{'jobs':[old]})
             self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
             (root/'reports/cumulative-target-companies.tsv').write_text(
-                '公司名\\t备注\\t首次出现\\t最近出现\\n'
-                'Parich Group Limited\\t待查证\\t2026-11-23\\t2026-11-23\\n')
+                '公司名\t备注\t首次出现\t最近出现\n'
+                'Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n')
             quarantine=root/'data/target-filter-quarantine.json'
             capture(root,inputs);merge(root,inputs,out,quarantine)
             self.assertEqual(json.loads(out.read_text())['jobs'],[])
