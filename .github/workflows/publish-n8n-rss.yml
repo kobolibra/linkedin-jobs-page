@@ -35,7 +35,7 @@ jobs:
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
           PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py scripts/jobspy/test_liveness.py scripts/jobspy/test_reconcile_full_snapshots.py
-          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_rss_publication.py scripts/test_posting_event_history.py
+          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_rss_publication.py scripts/test_posting_event_history.py scripts/test_agent_reclassification.py
       - name: Freeze publication inputs and merge jobs before logo collection
         run: |
           git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
