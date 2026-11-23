@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-22T22:01:57.567845+00:00",
+    "checkedAt": "2026-11-23T04:09:41.942935+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,29 +3019,30 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-22T22:02:03.595077+00:00",
+    "checkedAt": "2026-11-23T04:09:48.080563+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
-      },
+      }
+    ],
+    "httpRetries": [
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 404,
-        "contentType": "",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
-        "jobId": "4445423723",
-        "reason": "http_error",
-        "stage": "job"
+        "waitSeconds": 60.09651039008787,
+        "deferred": true
       }
     ]
   },
@@ -5398,7 +5399,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-22T22:01:56.226326+00:00",
+    "checkedAt": "2026-11-23T04:09:40.541847+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
