@@ -12564,5 +12564,46 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFsmbvBWhjsbg/company-logo_100_100/B56aG1.ANEIUAI-/0/1794054292520?e=2147483647&v=beta&t=yGG8tm-UGy5ChkUA69vd-7coPirRn8OHZpoAFqhoYRA",
     "companyUrl": "https://www.linkedin.com/company/parichgroup",
     "sourceJobId": "4492305898"
+  },
+  "finlync company limited": {
+    "name": "Finlync Company Limited",
+    "checkedAt": "2026-11-23T04:02:13.927347+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "11b5a5a7e0572463abd53c5e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQHBERyH5GurGg/company-logo_100_100/B56aBXBVIKH0AI-/0/1788166361837/finlync_company_limited_logo?e=2147483647&v=beta&t=d0RgAJSjFzggEJs3BwYADp7ZKAXlLYcIsq5GtwyDcE4",
+    "companyUrl": "https://hk.linkedin.com/company/finlync-company-limited",
+    "sourceJobId": "4481863543"
+  },
+  "giti tire corporation": {
+    "name": "Giti Tire Corporation",
+    "checkedAt": "2026-11-23T04:02:15.365621+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492379105",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492379105",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4492379105",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492379105",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492379105",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.3139907659133,
+        "deferred": true
+      }
+    ]
   }
 }
