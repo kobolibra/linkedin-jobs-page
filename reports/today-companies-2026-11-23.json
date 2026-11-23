@@ -9,18 +9,6 @@
       "pushTime": "2026-11-22T16:01:49.652Z"
     },
     {
-      "company": "Parich Group Limited",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-22T16:01:49.652Z"
-    },
-    {
-      "company": "兴业数字金融服务(上海)股份有限公司",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-23T04:01:38.726Z"
-    },
-    {
       "company": "Giti Tire Corporation",
       "category": "target",
       "reason": "待查证",
@@ -183,10 +171,22 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Parich Group Limited",
+      "category": "excluded",
+      "reason": "agent-verified financial (reclassified from target)",
+      "pushTime": "2026-11-22T16:01:49.652Z"
+    },
+    {
+      "company": "兴业数字金融服务(上海)股份有限公司",
+      "category": "excluded",
+      "reason": "agent-verified financial (reclassified from target)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
     }
   ],
-  "total_target": 7,
-  "total_excluded": 23,
+  "total_target": 5,
+  "total_excluded": 25,
   "total_today_jobs": 39,
   "total_all_jobs": 15769
 }
