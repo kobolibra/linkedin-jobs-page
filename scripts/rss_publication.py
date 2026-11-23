@@ -9,6 +9,7 @@ import argparse
 import csv
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -44,6 +45,8 @@ def capture(root: Path, destination: Path):
 
 
 TARGET_HISTORY = 'reports/cumulative-target-companies.tsv'
+FINANCIAL_BLACKLIST = 'financial_blacklist.json'
+TARGET_QUARANTINE = 'data/target-filter-quarantine.json'
 
 
 def target_company_key(value: object) -> str:
@@ -65,25 +68,92 @@ def read_target_history(path: Path) -> set[str]:
     return names
 
 
-def filter_target_history(merged: Path, history: Path, output: Path) -> None:
-    """Hard-delete historical and incoming target-company jobs at publication."""
-    targets = read_target_history(history)  # Missing/unreadable history must block publication.
+def protected_financial_names(path: Path) -> set[str]:
+    """Veto deletion for confirmed finance/recruiting firms; never delete from this list."""
+    values = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
+        raise ValueError(f'Financial classification must be an array of names: {path}')
+    return {target_company_key(item) for item in values if target_company_key(item)}
+
+
+def effective_target_names(root: Path) -> set[str]:
+    return read_target_history(root/TARGET_HISTORY) - protected_financial_names(root/FINANCIAL_BLACKLIST)
+
+
+def job_identity(row: dict) -> str:
+    raw = str(row.get('sourceJobId') or row.get('link') or '').split('?', 1)[0].rstrip('/')
+    found = re.search(r'(?:^|[-/])(\\d{9,})$', raw)
+    return found.group(1) if found else raw
+
+
+def load_quarantine(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    data = json.loads(path.read_text(encoding='utf-8'))
+    if not isinstance(data, dict) or not isinstance(data.get('jobs'), list):
+        raise ValueError(f'Invalid target-company quarantine: {path}')
+    if not all(isinstance(row, dict) and row.get('company') and job_identity(row) for row in data['jobs']):
+        raise ValueError(f'Invalid target-company quarantine record: {path}')
+    return data['jobs']
+
+
+def restore_reclassified_jobs(baseline: Path, root: Path, output: Path) -> Path:
+    """Restore previously suppressed jobs before n8n blocklist is applied again."""
+    blocked_targets = effective_target_names(root)
+    archived = load_quarantine(root/TARGET_QUARANTINE)
+    eligible = [row for row in archived if target_company_key(row.get('company')) not in blocked_targets]
+    if not eligible:
+        return baseline
+    data = json.loads(baseline.read_text(encoding='utf-8'))
+    if not isinstance(data, dict) or not isinstance(data.get('jobs'), list):
+        raise ValueError('Canonical baseline must contain jobs[]')
+    existing = {job_identity(row) for row in data['jobs']}
+    restored = 0
+    for row in eligible:
+        key = job_identity(row)
+        if key not in existing:
+            data['jobs'].append(row)
+            existing.add(key)
+            restored += 1
+    data['count'] = len(data['jobs'])
+    output.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')) + '\\n', encoding='utf-8')
+    print(f'Target-company reclassification recovery: {restored} archived jobs restored before n8n blocklist')
+    return output
+
+
+def filter_target_history(merged: Path, root: Path, output: Path,
+                          quarantine_output: Path | None = None) -> None:
+    """Remove TARGET companies only, preserving a private recoverable archive."""
+    targets = effective_target_names(root)
     doc = json.loads(merged.read_text(encoding='utf-8'))
     if not isinstance(doc, dict) or not isinstance(doc.get('jobs'), list):
         raise ValueError('Merged canonical document must contain jobs[]')
-    kept = [row for row in doc['jobs']
-            if target_company_key(row.get('company')) not in targets]
-    removed = len(doc['jobs']) - len(kept)
-    if removed:
+    kept = [row for row in doc['jobs'] if target_company_key(row.get('company')) not in targets]
+    removed_rows = [row for row in doc['jobs'] if target_company_key(row.get('company')) in targets]
+    if removed_rows:
         doc['jobs'] = kept
         doc['count'] = len(kept)
-        output.write_text(json.dumps(doc, ensure_ascii=False, separators=(',', ':')) + '\n', encoding='utf-8')
+        output.write_text(json.dumps(doc, ensure_ascii=False, separators=(',', ':')) + '\\n', encoding='utf-8')
     else:
         shutil.copyfile(merged, output)
-    print(f'Target-company history filter: {len(targets)} names, {removed} jobs removed')
+
+    if quarantine_output is not None:
+        previous = load_quarantine(root/TARGET_QUARANTINE)
+        archive = {}
+        for row in previous + removed_rows:
+            if target_company_key(row.get('company')) in targets:
+                archive[job_identity(row)] = row
+        quarantine_output.parent.mkdir(parents=True, exist_ok=True)
+        quarantine_output.write_text(
+            json.dumps({'schemaVersion': '1.0', 'jobs': list(archive.values())},
+                       ensure_ascii=False, separators=(',', ':')) + '\\n', encoding='utf-8')
+        print(f'Target-company quarantine: {len(archive)} recoverable jobs retained')
+    print(f'Target-company history filter: {len(targets)} effective names, '
+          f'{len(removed_rows)} jobs removed '
+          f'({len(read_target_history(root/TARGET_HISTORY)) - len(targets)} financial names protected)')
 
 
-def merge(root: Path, inputs: Path, output: Path):
+def merge(root: Path, inputs: Path, output: Path, quarantine_output: Path | None = None):
     root, inputs, output = root.resolve(), inputs.resolve(), output.resolve()
     hashes=json.loads((inputs/'inputs.json').read_text(encoding='utf-8'))['sha256']
     for name,digest in hashes.items():
@@ -96,6 +166,7 @@ def merge(root: Path, inputs: Path, output: Path):
         subprocess.run([sys.executable,str(scripts/script),*map(str,args)],cwd=root,check=True)
     with tempfile.TemporaryDirectory(prefix='rss-merge-',dir=output.parent) as directory:
         work=Path(directory);baseline=root/'jobs.json'
+        baseline=restore_reclassified_jobs(baseline,root,work/'recovered-baseline.json')
         if 'jobspy.json' in hashes and 'completed_at' in hashes:
             observed=(inputs/'completed_at').read_text(encoding='utf-8').strip()
             run('track_jd_changes.py','--existing',baseline,'--snapshot',inputs/'jobspy.json',
@@ -109,7 +180,7 @@ def merge(root: Path, inputs: Path, output: Path):
             run('apply_liveness.py','--jobs',merged,'--liveness',inputs/'liveness.json',
                 '--delete-after-days','15','--output',work/'liveness.json')
             merged=work/'liveness.json'
-        filter_target_history(merged, root/TARGET_HISTORY, output)
+        filter_target_history(merged, root, output, quarantine_output)
 
 
 def main():
@@ -119,9 +190,10 @@ def main():
     group=parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--capture',action='store_true')
     group.add_argument('--output',type=Path)
+    parser.add_argument('--quarantine-output',type=Path)
     args=parser.parse_args()
     if args.capture: capture(args.root,args.inputs)
-    else: merge(args.root,args.inputs,args.output)
+    else: merge(args.root,args.inputs,args.output,args.quarantine_output)
 
 
 if __name__=='__main__':main()
