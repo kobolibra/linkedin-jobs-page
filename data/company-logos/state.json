@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-23T05:24:29.249657+00:00",
+    "checkedAt": "2026-11-23T16:02:36.297465+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-23T05:24:35.194242+00:00",
+    "checkedAt": "2026-11-23T16:02:42.260980+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-23T05:24:23.364226+00:00",
+    "checkedAt": "2026-11-23T16:02:32.085885+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-23T05:24:26.221918+00:00",
+    "checkedAt": "2026-11-23T16:02:33.269960+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12620,31 +12620,74 @@
   },
   "catl": {
     "name": "CATL",
-    "checkedAt": "2026-11-23T10:01:57.846176+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-23T16:02:48.260473+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4493726441",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.02334795441875,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "c7204f10cf3a91c713093e45.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFgviTmUMYgYw/company-logo_100_100/B4EZubygexIUAQ-/0/1767845268140/contemporary_amperex_technology_gmbh_logo?e=2147483647&v=beta&t=zGn4Fkjwm0tLUhnJgNfuJ74JQXcLMF7ro27aKJL1_us",
+    "companyUrl": "https://cn.linkedin.com/company/contemporary-amperex-technology-gmbh",
+    "sourceJobId": "4493726441"
+  },
+  "manifest global": {
+    "name": "Manifest Global",
+    "checkedAt": "2026-11-23T16:02:18.625111+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4c6591a41db0bae7edf6109e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFtQGdZHZp6fA/company-logo_100_100/company-logo_100_100/0/1732872219158/manifestglobal_logo?e=2147483647&v=beta&t=cPfIRh_UW2VeJsyjVX0dlEEJRSNA7V6koOrvfXi4EQ0",
+    "companyUrl": "https://sg.linkedin.com/company/manifestglobal",
+    "sourceJobId": "4490335971"
+  },
+  "pfcc talent solutions": {
+    "name": "PFCC Talent Solutions",
+    "checkedAt": "2026-11-23T16:02:20.204090+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1df60e8beac29ee5783c5cdf.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFA-FlX690Abw/company-logo_100_100/B56aIGg5e7KUAQ-/0/1795405617576?e=2147483647&v=beta&t=WFOAu5AvTjvdn5RExRYQINTW8YWpSPg8MPqKKMv2xGM",
+    "companyUrl": "https://www.linkedin.com/company/pfcc-talent",
+    "sourceJobId": "4493726322"
+  },
+  "quad lock": {
+    "name": "Quad Lock",
+    "checkedAt": "2026-11-23T16:02:23.147292+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3294b14c360bfedcade7f984.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGWs1C97iz4Dw/company-logo_100_100/company-logo_100_100/0/1630661329580/quadlock_logo?e=2147483647&v=beta&t=YQS1OddQgqgaJgJPCIKopaz7q3_8NMCkXL9AXhcdgWo",
+    "companyUrl": "https://au.linkedin.com/company/quadlock",
+    "sourceJobId": "4491939843"
+  },
+  "wisers information limited": {
+    "name": "Wisers Information Limited",
+    "checkedAt": "2026-11-23T16:02:26.032754+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fe5812db1771ddb18eb20342.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQFFGTN91lZibQ/company-logo_100_100/company-logo_100_100/0/1631410148889/wisers_information_ltd_logo?e=2147483647&v=beta&t=j3jU0bNG8JrBDtmPVeTvkwsfsnOhcakJuRviwXx6gOY",
+    "companyUrl": "https://hk.linkedin.com/company/wisers-information-ltd",
+    "sourceJobId": "4492367652"
+  },
+  "北京宇信科技集团股份有限公司": {
+    "name": "北京宇信科技集团股份有限公司",
+    "checkedAt": "2026-11-23T16:02:29.050395+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "1fb2729feb78c517ec773284.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFHYvWRqMkspw/company-logo_100_100/company-logo_100_100/0/1617259578951?e=2147483647&v=beta&t=p2vPBqpgPGfgNrAFFNnfCq5GvFTFZ0U5wKTxAL0-CWA",
+    "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E5%AE%87%E4%BF%A1%E7%A7%91%E6%8A%80%E9%9B%86%E5%9B%A2%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4492363863"
   }
 }
