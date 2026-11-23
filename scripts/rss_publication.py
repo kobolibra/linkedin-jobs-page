@@ -82,7 +82,7 @@ def effective_target_names(root: Path) -> set[str]:
 
 def job_identity(row: dict) -> str:
     raw = str(row.get('sourceJobId') or row.get('link') or '').split('?', 1)[0].rstrip('/')
-    found = re.search(r'(?:^|[-/])(\d{9,}), raw)
+    found = re.search(r'(?:^|[-/])(\d{9,})$', raw)
     return found.group(1) if found else raw
 
 
