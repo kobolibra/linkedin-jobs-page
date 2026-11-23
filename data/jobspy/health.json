@@ -2,52 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:44234514549:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-18T04:02:45.068581+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 3,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 2,
-        "429": 1
-      },
-      "outcomes": {
-        "response": 2,
-        "rate_limited": 1
-      },
-      "stages": {
-        "logos": 3
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1794974626.5448177,
-          "stopUntil": 1794974626.5448177,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 7,
-        "downloaded": 1,
-        "missing": 1,
-        "placeholders": 0,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 0,
-        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 61.6s",
-        "deferred": 5
-      }
-    },
-    {
       "runId": "jobs:44274929827:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -8595,6 +8549,253 @@
         "reusedSources": 0,
         "httpRetries": 0
       }
+    },
+    {
+      "runId": "jobs:45105351528:1",
+      "task": "jobs",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-23T03:40:46.683071+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 1,
+        "deferredQueries": 0
+      },
+      "requests": 315,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 209,
+        "429": 1,
+        "404": 105
+      },
+      "outcomes": {
+        "response": 314,
+        "parsed": 2,
+        "rate_limited": 1
+      },
+      "stages": {
+        "search": 163,
+        "details": 2,
+        "liveness": 150
+      },
+      "detailEndpoints": {
+        "guest": 2
+      },
+      "queries": {
+        "Bank of America::CN": "ok: 4 jobs",
+        "BBVA::CN": "ok: 5 jobs",
+        "BlackRock::CN": "ok: 2 jobs",
+        "BNP Paribas::CN": "ok: 1 jobs",
+        "Citi::CN": "ok: 69 jobs",
+        "DBS Bank::CN": "ok: 85 jobs",
+        "Deutsche Bank::CN": "ok: 14 jobs",
+        "Fidelity International::CN": "ok: 19 jobs",
+        "Goldman Sachs::CN": "ok: 9 jobs",
+        "HSBC::CN": "ok: 448 jobs",
+        "Invesco::CN": "no-results-untrusted",
+        "JPMorgan Chase::CN": "ok: 41 jobs",
+        "Morgan Stanley::CN": "ok: 20 jobs",
+        "Natixis::CN": "ok: 8 jobs",
+        "Schroders::CN": "ok: 3 jobs",
+        "Societe Generale::CN": "ok: 3 jobs",
+        "Standard Chartered::CN": "ok: 302 jobs",
+        "State Street::CN": "ok: 106 jobs",
+        "UBS::CN": "ok: 28 jobs"
+      },
+      "searchTransport": {
+        "Standard Chartered::CN": {
+          "requests": 33,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 33
+          },
+          "rateLimitedPages": []
+        },
+        "Citi::CN": {
+          "requests": 9,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 9
+          },
+          "rateLimitedPages": []
+        },
+        "HSBC::CN": {
+          "requests": 47,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 47
+          },
+          "rateLimitedPages": []
+        },
+        "JPMorgan Chase::CN": {
+          "requests": 7,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 7
+          },
+          "rateLimitedPages": []
+        },
+        "BNP Paribas::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "Societe Generale::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "DBS Bank::CN": {
+          "requests": 11,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 11
+          },
+          "rateLimitedPages": []
+        },
+        "Deutsche Bank::CN": {
+          "requests": 4,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 4
+          },
+          "rateLimitedPages": []
+        },
+        "Goldman Sachs::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "BlackRock::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "Bank of America::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "Fidelity International::CN": {
+          "requests": 4,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 4
+          },
+          "rateLimitedPages": []
+        },
+        "Morgan Stanley::CN": {
+          "requests": 4,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 4
+          },
+          "rateLimitedPages": []
+        },
+        "BBVA::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "UBS::CN": {
+          "requests": 5,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 5
+          },
+          "rateLimitedPages": []
+        },
+        "Schroders::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        },
+        "Invesco::CN": {
+          "requests": 2,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 2
+          },
+          "rateLimitedPages": []
+        },
+        "State Street::CN": {
+          "requests": 13,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 13
+          },
+          "rateLimitedPages": []
+        },
+        "Natixis::CN": {
+          "requests": 3,
+          "retries": 0,
+          "httpStatuses": {
+            "200": 3
+          },
+          "rateLimitedPages": []
+        }
+      },
+      "cooldowns": {},
+      "livenessTransport": {
+        "view": {
+          "requests": 150,
+          "httpStatuses": {
+            "429": 1,
+            "200": 44,
+            "404": 105
+          }
+        }
+      },
+      "details": {
+        "attempted": 2,
+        "candidates": 2,
+        "ok": 2,
+        "blocked": 0,
+        "failed": 0,
+        "gone": 0
+      },
+      "liveness": {
+        "postingDateSearchRequests": 0,
+        "postingDateNetworkDisabled": true,
+        "selected": 150,
+        "rateLimitedSkipped": 1,
+        "probed": 150,
+        "elapsedSeconds": 700.907,
+        "open": 31,
+        "closed": 0,
+        "not_accepting": 13,
+        "gone": 105,
+        "unknown": 1,
+        "postingDates": 6,
+        "postingDateSkippedNoEvidence": 25,
+        "regions": {
+          "CN": 12,
+          "HK": 69,
+          "SG": 69
+        },
+        "circuitOpen": false,
+        "selectorGuardTripped": false
+      }
     }
   ],
   "queryFailureStreaks": {
@@ -8628,7 +8829,7 @@
     "HSBC::CN": 0,
     "HSBC::HK": 0,
     "HSBC::SG": 0,
-    "Invesco::CN": 19,
+    "Invesco::CN": 20,
     "Invesco::HK": 0,
     "Invesco::SG": 10,
     "JPMorgan Chase::CN": 0,
