@@ -9,12 +9,6 @@
       "pushTime": "2026-11-21T16:01:37.731Z"
     },
     {
-      "company": "Breeze",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-21T16:01:37.731Z"
-    },
-    {
       "company": "青岛韦立国际船舶管理有限公司",
       "category": "target",
       "reason": "待查证",
@@ -141,10 +135,16 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-22T04:01:50.592Z"
+    },
+    {
+      "company": "Breeze",
+      "category": "excluded",
+      "reason": "financial blacklist (reclassified from target)",
+      "pushTime": "2026-11-21T16:01:37.731Z"
     }
   ],
-  "total_target": 4,
-  "total_excluded": 19,
+  "total_target": 3,
+  "total_excluded": 20,
   "total_today_jobs": 64,
   "total_all_jobs": 15745
 }

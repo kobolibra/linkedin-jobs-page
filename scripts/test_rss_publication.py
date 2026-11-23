@@ -21,6 +21,9 @@ class RssPublicationTests(unittest.TestCase):
             history.parent.mkdir(parents=True,exist_ok=True)
             if not history.exists():
                 history.write_text('公司名\t备注\t首次出现\t最近出现\n',encoding='utf-8')
+        blacklist=root/'financial_blacklist.json'
+        if not blacklist.exists():
+            blacklist.write_text('[]',encoding='utf-8')
         target.write_text(json.dumps(doc),encoding='utf-8')
         return target
 
@@ -204,11 +207,68 @@ class RssPublicationTests(unittest.TestCase):
             capture(root,inputs);merge(root,inputs,out)
             self.assertEqual(len(json.loads(out.read_text())['jobs']),1)
 
+    def test_reclassified_financial_companies_are_recovered_and_not_deleted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'jobs.json.out'
+            history=root/'reports/cumulative-target-companies.tsv'
+            original=self.job('100000011','Parich Group Limited',firstSeen='2026-11-22')
+            n8n_blocked=self.job('100000012','Breeze')
+            target=self.job('100000013','Fano (Fano Labs)')
+            self.write(root,'jobs.json',{'jobs':[]})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[target],
+                'blocklist':['Breeze']})
+            history.write_text('公司名\t备注\t首次出现\t最近出现\n'
+                               'Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n'
+                               'Breeze\t待查证\t2026-11-22\t2026-11-22\n'
+                               'Fano (Fano Labs)\tAI\t2026-11-23\t2026-11-23\n')
+            self.write(root,'financial_blacklist.json',['Parich Group Limited','Breeze'])
+            self.write(root,'data/target-filter-quarantine.json',
+                       {'schemaVersion':'1.0','jobs':[original,n8n_blocked]})
+            capture(root,inputs)
+            merge(root,inputs,out,root/'data/target-filter-quarantine.json')
+            doc=json.loads(out.read_text())
+            self.assertEqual([job['sourceJobId'] for job in doc['jobs']],['li-100000011'])
+            self.assertEqual(doc['jobs'][0]['firstSeen'],'2026-11-22')
+            self.assertEqual(doc['n8nIncrementalMerge']['blocklistHardDelete'],1)
+            saved=json.loads((root/'data/target-filter-quarantine.json').read_text())['jobs']
+            self.assertEqual([job['company'] for job in saved],['Fano (Fano Labs)'])
+
+    def test_after_verification_can_restore_job_deleted_by_earlier_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'out.json'
+            old=self.job('100000021','Parich Group Limited',firstSeen='2026-11-22')
+            self.write(root,'jobs.json',{'jobs':[old]})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            (root/'reports/cumulative-target-companies.tsv').write_text(
+                '公司名\t备注\t首次出现\t最近出现\n'
+                'Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n')
+            quarantine=root/'data/target-filter-quarantine.json'
+            capture(root,inputs);merge(root,inputs,out,quarantine)
+            self.assertEqual(json.loads(out.read_text())['jobs'],[])
+            self.assertEqual(len(json.loads(quarantine.read_text())['jobs']),1)
+            self.write(root,'jobs.json',{'jobs':[]})
+            self.write(root,'financial_blacklist.json',['Parich Group Limited'])
+            merge(root,inputs,out,quarantine)
+            result=json.loads(out.read_text())
+            self.assertEqual([j['company'] for j in result['jobs']],['Parich Group Limited'])
+            self.assertEqual(result['jobs'][0]['firstSeen'],'2026-11-22')
+            self.assertEqual(json.loads(quarantine.read_text())['jobs'],[])
+
+    def test_missing_financial_verification_data_blocks_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);inputs=root/'inputs';out=root/'out.json'
+            self.write(root,'jobs.json',{'jobs':[self.job('100000021')]})
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            capture(root,inputs)
+            (root/'financial_blacklist.json').unlink()
+            with self.assertRaises(FileNotFoundError):
+                merge(root,inputs,out)
+
     def test_workflow_runs_for_rss_or_target_history_and_deploys_after_logo_apply(self):
         workflow=Path(__file__).resolve().parents[1]/'.github/workflows/publish-n8n-rss.yml'
         text=workflow.read_text()
         triggers=text.split('on:',1)[1].split('concurrency:',1)[0]
-        self.assertIn('paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv]',triggers)
+        self.assertIn('paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv, financial_blacklist.json]',triggers)
         self.assertNotIn('data/jobspy/',triggers)
         self.assertNotIn('.github/workflows/',triggers)
         collect_index=text.index('id: logos')
