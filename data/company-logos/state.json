@@ -12617,5 +12617,34 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGRuGP2z4XFuA/company-logo_100_100/company-logo_100_100/0/1617259478430?e=2147483647&v=beta&t=g5wppdgTGT1PaiEtfTFsZkFLhBsgC1DrKxpeiogn9DU",
     "companyUrl": "https://www.linkedin.com/company/%E5%85%B4%E4%B8%9A%E6%95%B0%E5%AD%97%E9%87%91%E8%9E%8D%E6%9C%8D%E5%8A%A1-%E4%B8%8A%E6%B5%B7-%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4492378219"
+  },
+  "catl": {
+    "name": "CATL",
+    "checkedAt": "2026-11-23T10:01:57.846176+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4493726441",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493726441",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.02334795441875,
+        "deferred": true
+      }
+    ]
   }
 }
