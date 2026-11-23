@@ -1,0 +1,192 @@
+{
+  "date": "2026-11-23",
+  "filter_window": "2026-11-22 12:08 ~ 2026-11-23 12:08 (Beijing)",
+  "target_companies": [
+    {
+      "company": "Fano (Fano Labs)",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-22T16:01:49.652Z"
+    },
+    {
+      "company": "Parich Group Limited",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-22T16:01:49.652Z"
+    },
+    {
+      "company": "兴业数字金融服务(上海)股份有限公司",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Giti Tire Corporation",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "The Hong Kong University of Science and Technology",
+      "category": "target",
+      "reason": "高等教育",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Finlync Company Limited",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "WuXi XDC",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    }
+  ],
+  "excluded_companies": [
+    {
+      "company": "Morgan Stanley",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23"
+    },
+    {
+      "company": "Goldman Sachs",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23"
+    },
+    {
+      "company": "State Street",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23"
+    },
+    {
+      "company": "Ambition",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T10:01:23.282Z"
+    },
+    {
+      "company": "KOS International Holdings Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T10:01:23.282Z"
+    },
+    {
+      "company": "Standard Chartered",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T15:36:45Z"
+    },
+    {
+      "company": "Bank of China (Hong Kong)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T16:01:49.652Z"
+    },
+    {
+      "company": "HSBC",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T16:01:49.652Z"
+    },
+    {
+      "company": "LSEG",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T16:01:49.652Z"
+    },
+    {
+      "company": "Manulife",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T22:01:27.428Z"
+    },
+    {
+      "company": "ACCA Careers",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T22:01:27.428Z"
+    },
+    {
+      "company": "Mizuho",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T22:01:27.428Z"
+    },
+    {
+      "company": "渣打环球商业服务有限公司",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-22T22:01:27.428Z"
+    },
+    {
+      "company": "BBVA",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T03:40:44Z"
+    },
+    {
+      "company": "CCB International (Holdings) Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Hays",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Robert Half",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Bo Le Associates",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Selby Jennings",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "CITIC Securities International",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "finexis advisory Pte Ltd",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "Argyll Scott",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    },
+    {
+      "company": "LVI Associates",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T04:01:38.726Z"
+    }
+  ],
+  "total_target": 7,
+  "total_excluded": 23,
+  "total_today_jobs": 39,
+  "total_all_jobs": 15769
+}
