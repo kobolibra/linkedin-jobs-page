@@ -1,29 +1,32 @@
 #!/usr/bin/env python3
-"""Atomic reclassification: TARGET -> EXCLUDED across every persisted surface.
+"""Atomic reclassification: verify -> reconcile every persisted surface.
 
-Closes the race where a company is added to financial_blacklist.json but stays
-stranded in the cumulative/today target history. One invocation applies the
-change to BOTH the GitHub repo (via Contents API) and the local /workspace
-report files, so downstream output (the TSV the agent prints) is consistent too.
+One invocation applies verification results to BOTH the GitHub repo (Contents
+API) and the local /workspace report files, so the TSV the agent prints and the
+persisted ledgers are always identical.
+
+Ordering guarantee: the daily script (auto-daily-companies.py) writes ONLY the
+day's report. The cumulative ledgers are written here, AFTER verification, via
+``--finalize``. Unverified "待查证" candidates therefore never leak into the
+cumulative target history (which would let the publication filter delete their
+jobs before verification).
 
 Surfaces:
   remote + local (if present):
-    reports|.  today-companies-<date>.json      <- move target->excluded
-    reports|.  today-target-companies-<date>.tsv    <- remove + renumber
-    reports|.  today-excluded-companies-<date>.tsv  <- add + renumber
+    today-companies-<date>.json        move financial target->excluded,
+                                       apply verified industries to target notes
+    today-target-companies-<date>.tsv  rebuilt from the JSON (canonical)
+    today-excluded-companies-<date>.tsv rebuilt from the JSON (canonical)
   remote only:
-    financial_blacklist.json                        <- add
-    company_industries.json                         <- add verified industries
-    reports/cumulative-target-companies.tsv         <- remove
-    reports/cumulative-excluded-companies.tsv       <- add (idempotent)
+    financial_blacklist.json           add
+    company_industries.json            add verified industries
+    cumulative-target-companies.tsv    remove blacklisted; --finalize upsert verified targets
+    cumulative-excluded-companies.tsv  add blacklisted; --finalize upsert excluded
 
 Matching key: casefold + strip (same as auto-daily-companies._is_financial_exclusion).
 
 Usage:
-  # dry-run preview
-  python3 reclassify.py --dry-run --blacklist "PFCC Talent Solutions"
-  # apply
-  python3 reclassify.py --blacklist "PFCC Talent Solutions" \
+  python3 reclassify.py --finalize --blacklist "PFCC Talent Solutions" \
       --industry '{"Fano (Fano Labs)":"语言人工智能(AI)"}'
 """
 import argparse
@@ -93,7 +96,6 @@ class Repo:
                 return
             except urllib.error.HTTPError as e:
                 last = e
-                # 409/422: concurrent commit landed (e.g. CI reconcile). Refresh sha and retry.
                 if e.code in (409, 422) and i < attempts - 1:
                     time.sleep(1.5 * (i + 1))
                     _, sha = self.get(path)
@@ -118,7 +120,7 @@ def parse_tsv(text):
     return [ln.split("\t") for ln in text.splitlines() if ln.strip()]
 
 
-# ---------- pure transforms: text -> (new_text, changed, info) ----------
+# ---------- pure transforms ----------
 
 def t_cumulative_target(text, reclass):
     rows = parse_tsv(text)
@@ -126,9 +128,9 @@ def t_cumulative_target(text, reclass):
     ci = col_index(header, "公司名")
     kept = [r for r in data if norm(r[ci]) not in reclass]
     if len(kept) == len(data):
-        return text, False, 0
+        return text, 0
     out = ["\t".join(header)] + ["\t".join(r) for r in kept]
-    return "\n".join(out) + "\n", True, len(data) - len(kept)
+    return "\n".join(out) + "\n", len(data) - len(kept)
 
 
 def t_cumulative_excluded(text, reclass, today):
@@ -138,18 +140,61 @@ def t_cumulative_excluded(text, reclass, today):
     present = {norm(r[ci]) for r in data}
     additions = [[exact, REASON, today, today] for nk, exact in reclass.items() if nk not in present]
     if not additions:
-        return text, False, 0
+        return text, 0
     out = ["\t".join(header)] + ["\t".join(r) for r in data + additions]
-    return "\n".join(out) + "\n", True, len(additions)
+    return "\n".join(out) + "\n", len(additions)
+
+
+def t_daily_json(text, reclass, industries):
+    """Move financial targets->excluded and apply verified industries to notes.
+
+    Returns (new_text, changed, moved_count, moved_names, final_targets, final_excluded).
+    """
+    j = json.loads(text)
+    t = j.get("target_companies", [])
+    e = j.get("excluded_companies", [])
+    existing = {norm(c.get("company")) for c in e}
+    indu = {norm(k): v for k, v in (industries or {}).items()}
+    t2, newly, moved_names = [], [], []
+    changed = False
+    for c in t:
+        name = c.get("company")
+        k = norm(name)
+        if k in reclass:
+            moved_names.append(name)
+            changed = True
+            if k not in existing:
+                nc = dict(c)
+                nc["category"] = "excluded"
+                nc["reason"] = REASON
+                newly.append(nc)
+            continue
+        cc = dict(c)
+        if k in indu:
+            new_reason = indu[k]
+            if cc.get("reason") != new_reason:
+                cc["reason"] = new_reason
+                changed = True
+        t2.append(cc)
+    if not changed and not newly:
+        return text, False, 0, [], t, e
+    j["target_companies"] = t2
+    j["excluded_companies"] = e + newly
+    j["total_target"] = len(t2)
+    j["total_excluded"] = len(e) + len(newly)
+    return json.dumps(j, ensure_ascii=False, indent=2) + "\n", True, len(moved_names), moved_names, t2, j["excluded_companies"]
+
+
+def build_tsv(companies, kind):
+    header = ["序号", "公司名", "备注"] if kind == "target" else ["序号", "公司名", "排除原因"]
+    lines = ["\t".join(header)]
+    for i, c in enumerate(companies, 1):
+        lines.append(f"{i}\t{c.get('company', '')}\t{c.get('reason', '')}")
+    return "\n".join(lines) + "\n"
 
 
 def t_cum_upsert(text, companies, today, is_target, reclass):
-    """Upsert verified companies into a cumulative TSV (idempotent).
-
-    Used by --finalize: after verification, the daily report's remaining targets
-    are the verified non-financial companies; write them into the cumulative
-    ledger instead of letting the pre-verification daily script pollute it.
-    """
+    """Upsert verified companies into a cumulative TSV (idempotent)."""
     default = ["公司名", "备注" if is_target else "排除原因", "首次出现", "最近出现"]
     rows = parse_tsv(text) if text else [default]
     header = rows[0] if rows and len(rows[0]) >= 4 and rows[0][0] == "公司名" else default
@@ -185,94 +230,30 @@ def t_cum_upsert(text, companies, today, is_target, reclass):
     return "\n".join(out) + "\n"
 
 
-def t_daily_json(text, reclass):
-    j = json.loads(text)
-    t = j.get("target_companies", [])
-    e = j.get("excluded_companies", [])
-    existing = {norm(c.get("company")) for c in e}
-    t2, newly, moved_names = [], [], []
-    for c in t:
-        if norm(c.get("company")) in reclass:
-            moved_names.append(c.get("company"))
-            if norm(c.get("company")) not in existing:
-                nc = dict(c)
-                nc["category"] = "excluded"
-                nc["reason"] = REASON
-                newly.append(nc)
-        else:
-            t2.append(c)
-    if len(t2) == len(t) and not newly:
-        return text, False, 0, []
-    j["target_companies"] = t2
-    j["excluded_companies"] = e + newly
-    j["total_target"] = len(t2)
-    j["total_excluded"] = len(e) + len(newly)
-    return json.dumps(j, ensure_ascii=False, indent=2) + "\n", True, len(t) - len(t2), moved_names
-
-
-def t_daily_target_tsv(text, reclass):
-    rows = parse_tsv(text)
-    header, data = rows[0], rows[1:]
-    ci = col_index(header, "公司名")
-    ri = col_index(header, "备注")
-    kept = [r for r in data if norm(r[ci]) not in reclass]
-    if len(kept) == len(data):
-        return text, False, 0
-    out = ["\t".join(header)] + [f"{i}\t{r[ci]}\t{r[ri]}" for i, r in enumerate(kept, 1)]
-    return "\n".join(out) + "\n", True, len(data) - len(kept)
-
-
-def t_daily_excluded_tsv(text, reclass, moved_names):
-    """Only add companies that were actually in today's target (moved_names)."""
-    rows = parse_tsv(text)
-    header, data = rows[0], rows[1:]
-    ci = col_index(header, "公司名")
-    ri = col_index(header, "排除原因")
-    present = {norm(r[ci]) for r in data}
-    additions = []
-    for name in moved_names:
-        if norm(name) not in present:
-            additions.append([name, REASON])
-            present.add(norm(name))
-    if not additions:
-        return text, False, 0
-    merged = data + [["", n, r] for n, r in additions]
-    out = ["\t".join(header)] + [f"{i}\t{r[ci]}\t{r[ri]}" for i, r in enumerate(merged, 1)]
-    return "\n".join(out) + "\n", True, len(additions)
-
-
-def apply_local(local_root, date, reclass, dry):
-    """Apply the same reconciliation to local report files, if they exist."""
+def apply_local(local_root, date, reclass, industries, dry):
+    """Mirror the same reconciliation onto local report files, if present."""
     jp = os.path.join(local_root, f"today-companies-{date}.json")
     tp = os.path.join(local_root, f"today-target-companies-{date}.tsv")
     ep = os.path.join(local_root, f"today-excluded-companies-{date}.tsv")
     changed = []
-
-    moved_names = []
-    if os.path.exists(jp):
-        txt = open(jp, encoding="utf-8").read()
-        new, ch, n, moved_names = t_daily_json(txt, reclass)
-        if ch:
+    if not os.path.exists(jp):
+        print("  local: no local daily JSON; nothing to mirror")
+        return 0
+    txt = open(jp, encoding="utf-8").read()
+    new, ch, n, moved, final_t, final_e = t_daily_json(txt, reclass, industries)
+    if ch:
+        if not dry:
+            open(jp, "w", encoding="utf-8").write(new)
+        changed.append(f"{os.path.basename(jp)} (moved {n})")
+    for path, data, kind in [(tp, final_t, "target"), (ep, final_e, "excluded")]:
+        if not os.path.exists(path):
+            continue
+        b = build_tsv(data, kind)
+        old = open(path, encoding="utf-8").read()
+        if b != old:
             if not dry:
-                open(jp, "w", encoding="utf-8").write(new)
-            changed.append(f"{os.path.basename(jp)} (moved {n})")
-
-    if os.path.exists(tp):
-        txt = open(tp, encoding="utf-8").read()
-        new, ch, n = t_daily_target_tsv(txt, reclass)
-        if ch:
-            if not dry:
-                open(tp, "w", encoding="utf-8").write(new)
-            changed.append(f"{os.path.basename(tp)} (-{n})")
-
-    if os.path.exists(ep):
-        txt = open(ep, encoding="utf-8").read()
-        new, ch, n = t_daily_excluded_tsv(txt, reclass, moved_names)
-        if ch:
-            if not dry:
-                open(ep, "w", encoding="utf-8").write(new)
-            changed.append(f"{os.path.basename(ep)} (+{n})")
-
+                open(path, "w", encoding="utf-8").write(b)
+            changed.append(os.path.basename(path))
     if changed:
         print("  local: " + ", ".join(changed))
     else:
@@ -299,14 +280,13 @@ def main():
 
     dry = args.dry_run
     today = args.date or datetime.now(BEIJING).strftime("%Y-%m-%d")
-
     token, repo_name, branch, proxy = load_cfg()
     repo = Repo(token, repo_name, branch, build_opener(proxy))
     changes = 0
 
-    # ---- remote ----
+    # ---- 1. financial_blacklist.json ----
     if reclass:
-        print("\n[1/7] financial_blacklist.json")
+        print("\n[1/8] financial_blacklist.json")
         txt, sha = repo.get("financial_blacklist.json")
         bl = json.loads(txt) if txt else []
         new_bl = sorted(set(bl) | set(reclass.values()))
@@ -317,7 +297,8 @@ def main():
         else:
             print("  no change")
 
-    print("\n[2/7] company_industries.json")
+    # ---- 2. company_industries.json ----
+    print("\n[2/8] company_industries.json")
     if industries:
         txt, sha = repo.get("company_industries.json")
         ind = json.loads(txt) if txt else {}
@@ -328,12 +309,21 @@ def main():
     else:
         print("  skipped (no --industry)")
 
-    if reclass or args.finalize:
-        print("\n[3/7] cumulative-target-companies.tsv")
+    if not (reclass or args.finalize or industries):
+        print(f"\n=== Reclassify done: {changes} surface(s) changed{' (dry-run)' if dry else ''} ===")
+        return
+
+    jp = f"reports/today-companies-{today}.json"
+    tp = f"reports/today-target-companies-{today}.tsv"
+    ep = f"reports/today-excluded-companies-{today}.tsv"
+
+    # ---- 3. cumulative-target: remove blacklisted ----
+    if reclass:
+        print("\n[3/8] cumulative-target-companies.tsv (remove blacklisted)")
         txt, sha = repo.get("reports/cumulative-target-companies.tsv")
         if txt:
-            new, ch, n = t_cumulative_target(txt, reclass)
-            if ch:
+            new, n = t_cumulative_target(txt, reclass)
+            if n:
                 repo.put("reports/cumulative-target-companies.tsv", new, sha,
                          f"Reclassify: remove {n} from cumulative target ({today})", dry)
                 changes += 1
@@ -342,87 +332,77 @@ def main():
         else:
             print("  (file absent)")
 
-        print("\n[4/7] cumulative-excluded-companies.tsv")
-        txt, sha = repo.get("reports/cumulative-excluded-companies.tsv")
-        rows_header = "公司名\t排除原因\t首次出现\t最近出现\n"
-        new, ch, n = t_cumulative_excluded(txt if txt else rows_header, reclass, today)
+    # ---- 4. daily JSON: move financial, apply industries ----
+    print(f"\n[4/8] {jp}")
+    txt, sha = repo.get(jp)
+    final_t, final_e = [], []
+    if txt:
+        new, ch, n, moved, final_t, final_e = t_daily_json(txt, reclass, industries)
         if ch:
-            repo.put("reports/cumulative-excluded-companies.tsv", new, sha,
-                     f"Reclassify: archive {n} reclassified firms ({today})", dry)
+            repo.put(jp, new, sha, f"Reclassify {today}: move {n} target->excluded; apply industries", dry)
             changes += 1
         else:
             print("  no change")
+    else:
+        print("  (file absent)")
 
-        jp = f"reports/today-companies-{today}.json"
-        tp = f"reports/today-target-companies-{today}.tsv"
-        ep = f"reports/today-excluded-companies-{today}.tsv"
+    # ---- 5. target TSV: rebuild from JSON (canonical) ----
+    print(f"\n[5/8] {tp}")
+    if txt:
+        b = build_tsv(final_t, "target")
+        old, sha2 = repo.get(tp)
+        if b != (old or ""):
+            repo.put(tp, b, sha2, f"Reclassify {today}: rebuild target TSV", dry)
+            changes += 1
+        else:
+            print("  no change")
+    else:
+        print("  (skipped: no daily JSON)")
 
-        print(f"\n[5/7] {jp}")
-        txt, sha = repo.get(jp)
-        moved_names, final_t, final_e = [], [], []
-        if txt:
-            new, ch, n, moved_names = t_daily_json(txt, reclass)
-            parsed = json.loads(new)
-            final_t = parsed.get("target_companies", [])
-            final_e = parsed.get("excluded_companies", [])
-            if ch:
-                repo.put(jp, new, sha, f"Reclassify {today}: move {n} target->excluded", dry)
+    # ---- 6. excluded TSV: rebuild from JSON (canonical) ----
+    print(f"\n[6/8] {ep}")
+    if txt:
+        b = build_tsv(final_e, "excluded")
+        old, sha3 = repo.get(ep)
+        if b != (old or ""):
+            repo.put(ep, b, sha3, f"Reclassify {today}: rebuild excluded TSV", dry)
+            changes += 1
+        else:
+            print("  no change")
+    else:
+        print("  (skipped: no daily JSON)")
+
+    # ---- 7/8. finalize: verified report -> cumulative ledgers ----
+    if args.finalize:
+        print("\n[7/8] cumulative-target <- verified report")
+        if final_t:
+            txt, sha = repo.get("reports/cumulative-target-companies.tsv")
+            new = t_cum_upsert(txt, final_t, today, True, reclass)
+            if new != (txt or ""):
+                repo.put("reports/cumulative-target-companies.tsv", new, sha,
+                         f"Finalize {today}: upsert {len(final_t)} verified targets", dry)
                 changes += 1
             else:
                 print("  no change")
         else:
-            print("  (file absent)")
+            print("  (no targets)")
 
-        print(f"\n[6/7] {tp}")
-        txt, sha = repo.get(tp)
-        if txt:
-            new, ch, n = t_daily_target_tsv(txt, reclass)
-            if ch:
-                repo.put(tp, new, sha, f"Reclassify {today}: drop from target TSV", dry)
+        print("\n[8/8] cumulative-excluded <- verified report")
+        if final_e:
+            txt, sha = repo.get("reports/cumulative-excluded-companies.tsv")
+            new = t_cum_upsert(txt, final_e, today, False, reclass)
+            if new != (txt or ""):
+                repo.put("reports/cumulative-excluded-companies.tsv", new, sha,
+                         f"Finalize {today}: upsert {len(final_e)} excluded", dry)
                 changes += 1
             else:
                 print("  no change")
         else:
-            print("  (file absent)")
+            print("  (no excluded)")
 
-        print(f"\n[7/7] {ep}")
-        txt, sha = repo.get(ep)
-        if txt:
-            new, ch, n = t_daily_excluded_tsv(txt, reclass, moved_names)
-            if ch:
-                repo.put(ep, new, sha, f"Reclassify {today}: append to excluded TSV", dry)
-                changes += 1
-            else:
-                print("  no change")
-        else:
-            print("  (file absent)")
-
-        # ---- finalize: verified report -> cumulative ledgers (post-verification) ----
-        if args.finalize and (final_t or final_e):
-            print("\n[finalize] cumulative ledgers <- verified report")
-            if final_t:
-                txt, sha = repo.get("reports/cumulative-target-companies.tsv")
-                new = t_cum_upsert(txt, final_t, today, True, reclass)
-                if new != (txt or ""):
-                    repo.put("reports/cumulative-target-companies.tsv", new, sha,
-                             f"Finalize {today}: upsert {len(final_t)} verified targets", dry)
-                    changes += 1
-                else:
-                    print("  cumulative-target: no change")
-            if final_e:
-                txt, sha = repo.get("reports/cumulative-excluded-companies.tsv")
-                new = t_cum_upsert(txt, final_e, today, False, reclass)
-                if new != (txt or ""):
-                    repo.put("reports/cumulative-excluded-companies.tsv", new, sha,
-                             f"Finalize {today}: upsert {len(final_e)} excluded", dry)
-                    changes += 1
-                else:
-                    print("  cumulative-excluded: no change")
-
-    # ---- local mirror (keep the agent's local TSV output consistent) ----
-    if reclass:
-        print(f"\n[local] {args.local_root}")
-        changes += apply_local(args.local_root, today, reclass, dry)
+    # ---- local mirror ----
+    print(f"\n[local] {args.local_root}")
+    changes += apply_local(args.local_root, today, reclass, industries, dry)
 
     print(f"\n=== Reclassify done: {changes} surface(s) changed{' (dry-run)' if dry else ''} ===")
 
