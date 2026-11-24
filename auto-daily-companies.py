@@ -350,26 +350,10 @@ def push_daily_report_to_github(results, today):
         f"Daily excluded companies {today} ({merged['total_excluded']} cumulative)",
     )
 
-    # ---- 4. Cumulative all-time target TSV (across days) ----
-    _push_cumulative_tsv(
-        "reports/cumulative-target-companies.tsv",
-        "公司名\t备注\t首次出现\t最近出现",
-        results["target_companies"],
-        today,
-        "Cumulative target companies",
-    )
-
-    # ---- 5. Cumulative all-time excluded TSV (across days) ----
-    _push_cumulative_tsv(
-        "reports/cumulative-excluded-companies.tsv",
-        "公司名\t排除原因\t首次出现\t最近出现",
-        results["excluded_companies"] +
-        [{**c, "category": "excluded", "reason": "verified financial/headhunter (reclassified)"}
-         for c in reclassified],
-        today,
-        "Cumulative excluded companies",
-    )
-
+    # ---- 4/5. Cumulative ledgers are written AFTER verification by
+    # reclassify.py --finalize, so unverified "待查证" candidates never enter
+    # the cumulative target history (which would otherwise leak into the
+    # publication filter and delete their jobs before verification).
     print(f"[INFO] Daily report pushed to GitHub at {stamp} (Beijing)")
 
 
