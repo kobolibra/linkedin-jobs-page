@@ -32,6 +32,7 @@ import json
 import os
 import ssl
 import sys
+import time
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone, timedelta
@@ -72,20 +73,34 @@ class Repo:
                 return None, None
             raise
 
-    def put(self, path, text, sha, message, dry_run):
+    def put(self, path, text, sha, message, dry_run, attempts=4):
         if dry_run:
             print(f"  [dry-run] would PUT {path} ({len(text)} bytes)")
             return
-        payload = {"message": message, "branch": self.branch,
-                   "content": base64.b64encode(text.encode("utf-8")).decode("ascii")}
-        if sha:
-            payload["sha"] = sha
-        req = urllib.request.Request(self._url(path), data=json.dumps(payload).encode("utf-8"), method="PUT")
-        req.add_header("Authorization", f"Bearer {self.token}")
-        req.add_header("Accept", "application/vnd.github+json")
-        req.add_header("Content-Type", "application/json")
-        resp = json.loads(self.opener.open(req).read())
-        print(f"  [pushed] {path} commit {resp['commit']['sha'][:10]}")
+        last = None
+        for i in range(attempts):
+            payload = {"message": message, "branch": self.branch,
+                       "content": base64.b64encode(text.encode("utf-8")).decode("ascii")}
+            if sha:
+                payload["sha"] = sha
+            req = urllib.request.Request(self._url(path), data=json.dumps(payload).encode("utf-8"), method="PUT")
+            req.add_header("Authorization", f"Bearer {self.token}")
+            req.add_header("Accept", "application/vnd.github+json")
+            req.add_header("Content-Type", "application/json")
+            try:
+                resp = json.loads(self.opener.open(req).read())
+                print(f"  [pushed] {path} commit {resp['commit']['sha'][:10]}")
+                return
+            except urllib.error.HTTPError as e:
+                last = e
+                # 409/422: concurrent commit landed (e.g. CI reconcile). Refresh sha and retry.
+                if e.code in (409, 422) and i < attempts - 1:
+                    time.sleep(1.5 * (i + 1))
+                    _, sha = self.get(path)
+                    continue
+                raise
+        if last:
+            raise last
 
 
 def norm(name):
