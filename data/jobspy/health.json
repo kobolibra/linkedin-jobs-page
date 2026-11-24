@@ -2,50 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:44671616341:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-20T04:02:04.028413+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 1,
-      "retries": 0,
-      "httpStatuses": {
-        "429": 1
-      },
-      "outcomes": {
-        "rate_limited": 1
-      },
-      "stages": {
-        "logos": 1
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1795147385.88867,
-          "stopUntil": 1795147385.88867,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 8,
-        "downloaded": 0,
-        "missing": 1,
-        "placeholders": 0,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 0,
-        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 61.9s",
-        "deferred": 7
-      }
-    },
-    {
       "runId": "jobs:44709819484:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7907,6 +7863,43 @@
       "task": "logos",
       "workflowStatus": "success",
       "observedAt": "2026-11-24T10:02:30.429623+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 6,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 2,
+        "404": 4
+      },
+      "outcomes": {
+        "response": 6
+      },
+      "stages": {
+        "logos": 6
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 4,
+        "downloaded": 0,
+        "missing": 4,
+        "placeholders": 0,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
+    },
+    {
+      "runId": "logos:45388336764:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-24T11:54:17.468134+00:00",
       "rateLimitWaits": {
         "serverHints": 0,
         "clientFallbacks": 0,
