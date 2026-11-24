@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-24T04:02:45.793582+00:00",
+    "checkedAt": "2026-11-24T04:09:26.999333+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-24T04:02:51.744114+00:00",
+    "checkedAt": "2026-11-24T04:09:32.837479+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3036,12 +3036,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4445423723",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.219359498908354,
+        "deferred": true
       }
     ]
   },
@@ -3178,7 +3189,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-24T04:02:41.593877+00:00",
+    "checkedAt": "2026-11-24T04:09:22.740058+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5409,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-24T04:02:42.894979+00:00",
+    "checkedAt": "2026-11-24T04:09:23.970481+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
