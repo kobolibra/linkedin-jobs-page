@@ -194,6 +194,15 @@ def main():
     args=parser.parse_args()
     if args.capture: capture(args.root,args.inputs)
     else: merge(args.root,args.inputs,args.output,args.quarantine_output)
+    # Reconcile target/excluded history against the current blacklist so a firm
+    # later verified financial/headhunter never lingers in cumulative-target.
+    # Runs on every publication (incl. blacklist-change triggers); idempotent.
+    try:
+        import reconcile_classification, subprocess
+        reconcile_classification.main()
+        subprocess.run(['git','add','reports/'],cwd=str(args.root),check=False)
+    except Exception as exc:
+        print(f'classification reconciliation skipped: {exc}')
 
 
 if __name__=='__main__':main()
