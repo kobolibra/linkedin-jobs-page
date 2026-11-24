@@ -1,0 +1,408 @@
+{
+  "date": "2026-11-24",
+  "filter_window": "2026-11-23 12:08 ~ 2026-11-24 12:08 (Beijing)",
+  "target_companies": [
+    {
+      "company": "CATL",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "北京宇信科技集团股份有限公司",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Wisers Information Limited",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Quad Lock",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "PFCC Talent Solutions",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Manifest Global",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    }
+  ],
+  "excluded_companies": [
+    {
+      "company": "Morgan Stanley",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24"
+    },
+    {
+      "company": "HSBC",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24"
+    },
+    {
+      "company": "Goldman Sachs",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24"
+    },
+    {
+      "company": "Deutsche Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24"
+    },
+    {
+      "company": "Invesco",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24"
+    },
+    {
+      "company": "State Street",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24"
+    },
+    {
+      "company": "DBS Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T09:46:37Z"
+    },
+    {
+      "company": "UBS",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T09:46:37Z"
+    },
+    {
+      "company": "Bloomberg",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "CITIC Securities International",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "AMS",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Dexian Asia Pacific",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Fitch Ratings",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "AP Capital",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Visa",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Olive Asset Management",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "VISTRA",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Hong Kong Exchanges and Clearing Limited (HKEX)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Aden Financial Holdings Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Hays",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Links International",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "China Merchants Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "China CITIC Bank International Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "PERSOL APAC",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Selby Jennings",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Millennium",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Morgan McKinley",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "FactSet",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Ethos BeathChapman",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Aster Recruiting",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Michael Page",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T10:01:26.086Z"
+    },
+    {
+      "company": "Citi",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T15:41:20Z"
+    },
+    {
+      "company": "Societe Generale",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T15:41:20Z"
+    },
+    {
+      "company": "Standard Chartered",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T15:41:20Z"
+    },
+    {
+      "company": "Oliver James",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Pinpoint Asia",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "CTF Services Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "PineSearch Consulting",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "LSEG",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Allianz Global Investors",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Nomura",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Link",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "BNP Paribas Asset Management",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "BNP Paribas",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "ARK Wealth Management-NOAH",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Trustmoore",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "Ebury",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
+    },
+    {
+      "company": "BBVA",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T21:43:17Z"
+    },
+    {
+      "company": "HornbyChapman Ltd",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T22:01:48.537Z"
+    },
+    {
+      "company": "Hang Seng Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-23T22:01:48.537Z"
+    },
+    {
+      "company": "法国兴业银行(中国)有限公司",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Natixis Corporate & Investment Banking",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "JustOneGalaxy Recruitment",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Deutsche Börse Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Chandler Macleod",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Robert Walters",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Bolder Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "CCB International (Holdings) Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Saxo Singapore",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "Azimut Investment Management Singapore Ltd.",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-24T04:02:07.065Z"
+    }
+  ],
+  "total_target": 6,
+  "total_excluded": 60,
+  "total_today_jobs": 140,
+  "total_all_jobs": 15880
+}
