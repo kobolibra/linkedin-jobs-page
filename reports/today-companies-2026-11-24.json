@@ -27,12 +27,6 @@
       "pushTime": "2026-11-23T16:01:43.087Z"
     },
     {
-      "company": "PFCC Talent Solutions",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-23T16:01:43.087Z"
-    },
-    {
       "company": "Manifest Global",
       "category": "target",
       "reason": "待查证",
@@ -399,10 +393,16 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-24T04:02:07.065Z"
+    },
+    {
+      "company": "PFCC Talent Solutions",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-23T16:01:43.087Z"
     }
   ],
-  "total_target": 6,
-  "total_excluded": 60,
+  "total_target": 5,
+  "total_excluded": 61,
   "total_today_jobs": 140,
   "total_all_jobs": 15880
 }
