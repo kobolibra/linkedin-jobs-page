@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-24T04:09:26.999333+00:00",
+    "checkedAt": "2026-11-24T10:02:15.543459+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-24T04:09:32.837479+00:00",
+    "checkedAt": "2026-11-24T10:02:21.302357+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3036,23 +3036,12 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 404,
+        "contentType": "",
         "attempt": 1,
         "jobId": "4445423723",
-        "reason": "rate_limited",
+        "reason": "http_error",
         "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.219359498908354,
-        "deferred": true
       }
     ]
   },
@@ -3189,30 +3178,21 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-24T04:10:47.705258+00:00",
+    "checkedAt": "2026-11-24T10:02:27.276991+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 429,
-        "contentType": "text/html",
+        "status": 200,
+        "contentType": "text/html; charset=utf-8",
         "attempt": 1,
         "jobId": "4441170948",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4441170948",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.51787225245804,
-        "deferred": true
+        "reason": "no_employer",
+        "stage": "job",
+        "observedName": "",
+        "companyUrl": ""
       }
     ]
   },
@@ -5418,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-24T04:09:23.970481+00:00",
+    "checkedAt": "2026-11-24T10:02:14.194676+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
