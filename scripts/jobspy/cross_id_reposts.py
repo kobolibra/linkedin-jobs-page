@@ -47,10 +47,11 @@ def role_key(row):
 
 def link_repost(previous, previous_id, current, pending=False):
     lineage = previous.get("crossIdRepost", {})
+    current_lineage = current.get("crossIdRepost", {})
     first = lineage.get("postDate") or posting_day(previous["firstSeen"]).isoformat()
     current["crossIdRepost"] = {
         "rootId": lineage.get("rootId", previous_id),
-        "previousId": previous_id,
+        "previousId": current_lineage.get("previousId", previous_id),
         "postDate": first,
         "pending": pending,
     }
@@ -72,8 +73,38 @@ def arrival_order(group):
             yield from same_day
 
 
+def closing_day(row, started):
+    ended = posting_day(row.get("expiredAt"))
+    if row.get("jobStatus") == "expired" and ended and ended.toordinal() >= started:
+        return ended.toordinal()
+    return None
+
+
+def connect_next_day_reposts(group, removed):
+    # Traverse the surviving recruitment cycles by their original start dates.
+    # A latest ID may already represent a cycle that began several IDs earlier.
+    cycles = []
+    for started, number, job_id, row in group:
+        if job_id in removed:
+            continue
+        lineage = row.get("crossIdRepost", {})
+        cycle_start = posting_day(lineage["postDate"]).toordinal() if lineage else started
+        root = int(lineage["rootId"]) if lineage else number
+        cycles.append((cycle_start, root, started, job_id, row))
+    cycles.sort(key=lambda cycle: cycle[:2])
+
+    closed = defaultdict(list)
+    for cycle_start, _, started, job_id, row in cycles:
+        if candidates := closed[cycle_start - 1]:
+            previous_id, previous = candidates.pop()
+            link_repost(previous, previous_id, row)
+            removed.add(previous_id)
+        if ended := closing_day(row, started):
+            closed[ended].append((job_id, row))
+
+
 def reconcile(doc, observed_at=None):
-    """Remove only a closed predecessor with a same-day or next-day closure.
+    """Link a closed predecessor within one local calendar day of a repost.
 
     Keep a provisional link during the overlap window. Its independent dates
     remain available if the predecessor stays open past the following day.
@@ -118,9 +149,12 @@ def reconcile(doc, observed_at=None):
                     previous_id, previous = group[closed[prior_close].pop()][2:]
                     link_repost(previous, previous_id, row)
                     removed.add(previous_id)
-            ended = posting_day(row.get("expiredAt"))
-            if row.get("jobStatus") == "expired" and ended and ended.toordinal() >= started:
-                closed[ended.toordinal()].append(position)
+            if ended := closing_day(row, started):
+                closed[ended].append(position)
+
+        # Resolve overlaps and same-day handoffs first, then allow a listing to
+        # pick up an older cycle that closed on the preceding day.
+        connect_next_day_reposts(group, removed)
 
         previous_active = None
         for started, _, job_id, row in group:

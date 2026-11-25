@@ -86,7 +86,8 @@ class RssPublicationTests(unittest.TestCase):
             old = self.job('4492601518', 'RSS employer', city='Shanghai', firstSeen='2026-11-23')
             new = self.job('4494081522', 'RSS employer', locationRaw='Shanghai, Shanghai, China',
                            firstSeen='2026-11-24', pushTime='2026-11-24T04:02:07Z',
-                           datePosted='2026-11-24', observedAt='2026-11-24T04:02:07Z')
+                           datePosted='2026-11-24', postingLastDate='2026-11-24',
+                           observedAt='2026-11-24T04:02:07Z')
             self.write(root, 'jobs.json', {'jobs': [old], 'count': 1})
             self.write(root, 'data/n8n/rss-latest.json', {
                 'generatedAt': '2026-11-24T04:02:07Z', 'jobs': [new],
@@ -125,8 +126,9 @@ class RssPublicationTests(unittest.TestCase):
             payload = json.loads(index.read_text())
             card = payload['jobs'][0]
             self.assertTrue(card['repost'])
-            self.assertEqual([card[field] for field in ('firstSeen', 'pushTime', 'postingLastDate')],
-                             ['2026-11-23'] * 3)
+            self.assertEqual(card['firstSeen'], '2026-11-23')
+            self.assertEqual(card['pushTime'], '2026-11-24T04:02:07Z')
+            self.assertEqual(card['postingLastDate'], '2026-11-24')
             self.assertEqual(payload['postingHistoryDaily'], {'2026-11-23': {'CN': 1}})
 
     def test_completed_jobspy_and_liveness_are_merged_without_altering_source_snapshots(self):
