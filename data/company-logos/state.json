@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-25T07:55:33.581402+00:00",
+    "checkedAt": "2026-11-25T16:16:00.431213+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-25T07:55:39.511096+00:00",
+    "checkedAt": "2026-11-25T16:16:06.377986+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-25T07:55:29.356358+00:00",
+    "checkedAt": "2026-11-25T16:15:56.208739+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-25T07:55:30.699736+00:00",
+    "checkedAt": "2026-11-25T16:15:57.406766+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12747,31 +12747,86 @@
   },
   "ambr (nasdaq: ambr)": {
     "name": "AMBR (Nasdaq: AMBR)",
-    "checkedAt": "2026-11-25T10:01:46.590275+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-25T16:16:12.389027+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4494787426",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.39193330569722,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "23748da25b8b0fc41f37a42e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEnOiq7L-zkBg/company-logo_100_100/B56aBaxNCCJQAI-/0/1788229243645/ambr_io_logo?e=2147483647&v=beta&t=k9FvQfLbyE_DSy3C6AsnCP_qM2xgMO2Wr70v45Mj-2o",
+    "companyUrl": "https://www.linkedin.com/company/ambr-io",
+    "sourceJobId": "4494787426"
+  },
+  "archroma": {
+    "name": "Archroma",
+    "checkedAt": "2026-11-25T16:15:40.185838+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "407920639d38d8c3a5d1853d.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQH10s9HjNbmAA/company-logo_100_100/company-logo_100_100/0/1631319626665?e=2147483647&v=beta&t=vJE_2OTwZ0SesWdGbd3QH8SOExbcVm0EoS8uS5x8Al4",
+    "companyUrl": "https://ch.linkedin.com/company/archroma",
+    "sourceJobId": "4494790687"
+  },
+  "asus": {
+    "name": "ASUS",
+    "checkedAt": "2026-11-25T16:15:41.270601+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0f4d761e6b112ca706ed7133.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGIg__IXk05Eg/company-logo_100_100/company-logo_100_100/0/1663035290881/asus_logo?e=2147483647&v=beta&t=cO7Y8CN6KpLfrG2ZkFTBdD-86gOk_ByECjsyjoCfnxU",
+    "companyUrl": "https://tw.linkedin.com/company/asus",
+    "sourceJobId": "4494797370"
+  },
+  "barco": {
+    "name": "Barco",
+    "checkedAt": "2026-11-25T16:15:44.214237+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "3fef0a7fe435005b35dd113a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQEvfE9WNUeNYw/company-logo_100_100/company-logo_100_100/0/1631328262793?e=2147483647&v=beta&t=Atfafver5ot-0nM7oJMhCS65pQf4nPG7ESHkuAc2tmA",
+    "companyUrl": "https://be.linkedin.com/company/barco",
+    "sourceJobId": "4466512709"
+  },
+  "datawave technologies limited": {
+    "name": "Datawave Technologies Limited",
+    "checkedAt": "2026-11-25T16:15:47.212166+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c986fb18e496e6ff5d04114e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQGNKPzjsUTchw/company-logo_100_100/B56aFhemnxJkAI-/0/1792636775323?e=2147483647&v=beta&t=4dc5djtN7HuTg-WOs5h7VsrrEmGevlSHPnlJGhJXZxQ",
+    "companyUrl": "https://hk.linkedin.com/company/datawave-tech-hk",
+    "sourceJobId": "4486584625"
+  },
+  "starteam global": {
+    "name": "STARTEAM GLOBAL",
+    "checkedAt": "2026-11-25T16:15:50.209030+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "d6902c9da2b67f3f827d35e1.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH2C21HZp0dhA/company-logo_100_100/company-logo_100_100/0/1722419370547/starteamglobal_logo?e=2147483647&v=beta&t=n7HF8uOlFSWN1IuP9BxydgKSiznZa7oq3Rb4nNCUbbY",
+    "companyUrl": "https://hk.linkedin.com/company/starteamglobal",
+    "sourceJobId": "4494485998"
+  },
+  "trulyyy": {
+    "name": "Trulyyy",
+    "checkedAt": "2026-11-25T16:15:53.209956+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "fbffdf0fd405849355a8769e.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGsCyCQR_Nd9Q/company-logo_100_100/company-logo_100_100/0/1630670987288?e=2147483647&v=beta&t=cKTGKdbaxpL8Am-bu_oYbhLK9PJaS5Nt-j6rQQxjB-E",
+    "companyUrl": "https://sg.linkedin.com/company/trulyyy",
+    "sourceJobId": "4494793510"
   }
 }
