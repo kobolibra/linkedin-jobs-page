@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Retained-job firstSeen cohorts: reposts add nothing; expiration keeps counts.
+"""Retained-role firstSeen cohorts: reposts add nothing; expiration keeps counts.
 
-Reconcile against the complete canonical jobs collection, including expired
-rows. Physical deletion removes the original firstSeen contribution. Legacy
+Reconcile against all canonical jobs, including expired rows. A replacement
+keeps its role's original cohort while any linked listing is retained. Legacy
 repost events are intentionally removed when migrating to pure new counts.
 """
 from __future__ import annotations
@@ -62,8 +62,9 @@ def reconcile(ledger, jobs):
     for job in jobs:
         if not isinstance(job, dict):
             continue
-        job_id = identity(job)
-        first = day(job.get("firstSeen"))
+        repost = job.get("crossIdRepost")
+        job_id = "ln:" + repost["rootId"] if repost else identity(job)
+        first = day(job.get("rolePostDate") or job.get("firstSeen"))
         if not job_id or not first or job_id in seen:
             continue
         seen.add(job_id)

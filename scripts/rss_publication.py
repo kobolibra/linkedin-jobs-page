@@ -177,12 +177,10 @@ def merge(root: Path, inputs: Path, output: Path, quarantine_output: Path | None
                 '--observed-at',observed,'--output',work/'jobspy.json')
             baseline=work/'jobspy.json'
         run('merge_n8n_incremental.py','--baseline',baseline,'--batch',inputs/'rss.json','--output',work/'rss.json')
-        merged=work/'rss.json'
-        if 'liveness.json' in hashes:
-            run('apply_liveness.py','--jobs',merged,'--liveness',inputs/'liveness.json',
-                '--delete-after-days','15','--output',work/'liveness.json')
-            merged=work/'liveness.json'
-        filter_target_history(merged, root, output, quarantine_output)
+        liveness = inputs/'liveness.json' if 'liveness.json' in hashes else work/'missing-liveness.json'
+        run('apply_liveness.py','--jobs',work/'rss.json','--liveness',liveness,
+            '--delete-after-days','15','--output',work/'liveness.json')
+        filter_target_history(work/'liveness.json', root, output, quarantine_output)
 
 
 def main():

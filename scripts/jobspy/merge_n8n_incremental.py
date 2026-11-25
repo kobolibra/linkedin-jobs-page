@@ -6,12 +6,14 @@ import re
 import unicodedata
 from pathlib import Path
 
+from cross_id_reposts import linkedin_id, superseded_ids
 from linkedin_ids import linkedin_job_id
 from reconcile_full_snapshots import timestamp
 
 LIVENESS_EXPIRED_REASONS = {
     "linkedin_closed", "linkedin_not_accepting", "linkedin_removed",
 }
+CROSS_ID_FIELDS = {"crossIdRepost", "rolePostDate"}
 TITLE_TOKEN_ALIASES = {
     "sr": ["senior"], "snr": ["senior"], "mgr": ["manager"],
     "rep": ["representative"], "asst": ["assistant"], "assoc": ["associate"],
@@ -159,15 +161,17 @@ def merge_documents(baseline, batch_doc):
     batch = batch_rows(batch_doc)
     observed_at = batch_doc.get("generatedAt") if isinstance(batch_doc, dict) else None
     blocked = blocklist_companies(batch_doc)
+    superseded = superseded_ids(baseline)
     rows = [
         dict(row)
         for row in baseline["jobs"]
-        if normalize_company(row.get("company")) not in blocked
+        if normalize_company(row.get("company")) not in blocked and linkedin_id(row) not in superseded
     ]
     by_key = {job_key(row): i for i, row in enumerate(rows) if job_key(row)}
     added = updated = reactivated = liveness_kept_expired = 0
     for incoming in batch:
-        if not isinstance(incoming, dict) or normalize_company(incoming.get("company")) in blocked:
+        if (not isinstance(incoming, dict) or normalize_company(incoming.get("company")) in blocked
+                or linkedin_id(incoming) in superseded):
             continue
         key = job_key(incoming)
         if not key:
@@ -186,7 +190,7 @@ def merge_documents(baseline, batch_doc):
                 # only source allowed to advance it after confirming repost.
                 if field == "salary" and current.get("jobStatus") == "expired":
                     continue
-                if field in {
+                if field in CROSS_ID_FIELDS or field in {
                     "firstSeen", "pushTime", "datePosted", "source",
                     "postingLastDate", "postingDateSource", "postingDateObservedAt", "lastRepostedAt",
                     "jobspyFirstSeen", "jobspyLastPosted", "jobspyRepost",
@@ -217,7 +221,8 @@ def merge_documents(baseline, batch_doc):
             rows[by_key[key]] = merged
             updated += 1
         else:
-            merged = {k: v for k, v in incoming.items() if nonempty(v) and k not in {"liveDeletionExpiryAt", "liveDeletionCheckedAt"}}
+            merged = {k: v for k, v in incoming.items()
+                      if nonempty(v) and k not in CROSS_ID_FIELDS and k not in {"liveDeletionExpiryAt", "liveDeletionCheckedAt"}}
             merged.setdefault("sourceJobId", f"li-{key}")
             merged.setdefault("firstSeen", merged.get("pushTime") or observed_at)
             merged["dataSources"] = merge_sources({}, merged)

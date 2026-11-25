@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from datetime import datetime, timezone
 
+from cross_id_reposts import reconcile as reconcile_reposts, superseded_ids
 from linkedin_ids import linkedin_job_id
 from merge_n8n_incremental import blocklist_companies, normalize_company
 
@@ -23,10 +24,11 @@ def identity(row):
 def enrich(existing, incoming, blocked=(), *, state_street_post_date=False):
     result = dict(existing)
     rows = [dict(row) for row in existing['jobs']]
+    superseded = superseded_ids(existing)
     by_id = {identity(row): row for row in rows if identity(row)}
     for source in incoming:
         key = identity(source)
-        if not key or normalize_company(source.get('company')) in blocked:
+        if not key or key in superseded or normalize_company(source.get('company')) in blocked:
             continue
         if key in by_id:
             current = by_id[key]
@@ -50,6 +52,7 @@ def enrich(existing, incoming, blocked=(), *, state_street_post_date=False):
             rows.append(row)
             by_id[key] = row
     result.update(jobs=rows, count=len(rows))
+    reconcile_reposts(result)
     return result
 
 
