@@ -75,6 +75,45 @@ class CrossIdRepostsTests(unittest.TestCase):
         self.assertNotIn("rolePostDate", earlier)
         self.assertEqual(earlier["pushTime"], "2026-11-07")
 
+    def test_citi_next_day_repost_cleans_closed_rows_and_inherits_the_earliest_date(self):
+        title = "Sales Trader – Equity Brokerage"
+        earlier = listing("4486920504", "2026-11-05", "2026-11-18T15:36:10Z", title=title,
+                          rolePostDate="2026-10-28", crossIdRepost={
+                              "rootId": "4482516146", "previousId": "4485554793",
+                              "postDate": "2026-10-28", "pending": False,
+                          })
+        later = listing("4491853888", "2026-11-19", "2026-11-19T15:37:42Z", title=title,
+                        pushTime="2026-11-18T21:44:37Z", postingLastDate="2026-11-19")
+        doc = {"jobs": [later, earlier], "supersededLinkedInIds": ["4482516146", "4485554793"]}
+        reconcile(doc, "2026-11-25")
+
+        self.assertEqual(doc["jobs"], [later])
+        self.assertEqual(doc["supersededLinkedInIds"], ["4482516146", "4485554793", "4486920504"])
+        self.assertEqual(later["rolePostDate"], "2026-10-28")
+        self.assertEqual(later["crossIdRepost"]["previousId"], "4486920504")
+        self.assertEqual(later["jobStatus"], "expired")
+        self.assertEqual(later["expiredAt"], "2026-11-19T15:37:42Z")
+        self.assertEqual(later["pushTime"], "2026-11-18T21:44:37Z")
+        before = copy.deepcopy(doc)
+        reconcile(doc, "2026-11-25")
+        self.assertEqual(doc, before)
+
+    def test_next_day_handoff_can_join_two_previously_reconciled_cycles(self):
+        older = listing("4000000001", "2026-11-03", "2026-11-05", crossIdRepost={
+            "rootId": "4000000000", "previousId": "4000000000", "postDate": "2026-11-01", "pending": False,
+        })
+        newer = listing("4000000003", "2026-11-11", "2026-11-12", crossIdRepost={
+            "rootId": "4000000002", "previousId": "4000000002", "postDate": "2026-11-06", "pending": False,
+        })
+        doc = {"jobs": [older, newer], "supersededLinkedInIds": ["4000000000", "4000000002"]}
+        reconcile(doc, "2026-11-25")
+
+        self.assertEqual(doc["jobs"], [newer])
+        self.assertEqual(newer["crossIdRepost"], {
+            "rootId": "4000000000", "previousId": "4000000002", "postDate": "2026-11-01", "pending": False,
+        })
+        self.assertEqual(doc["supersededLinkedInIds"], ["4000000000", "4000000001", "4000000002"])
+
     def test_stale_retry_cannot_restore_an_expired_overlap_window(self):
         earlier = listing("4000000000", "2026-11-01")
         later = listing("4000000001", "2026-11-11")
@@ -103,14 +142,14 @@ class CrossIdRepostsTests(unittest.TestCase):
         self.assertEqual(doc["jobs"], [later])
         self.assertEqual(later["crossIdRepost"]["previousId"], "4000000001")
 
-    def test_only_same_title_company_city_with_the_two_allowed_day_offsets(self):
+    def test_only_same_title_company_city_within_one_day(self):
         for updates, close in (
             ({"title": "Advisory Sales - Equity Broker"}, "2026-11-11"),
             ({"company": "Citibank"}, "2026-11-11"),
             ({"city": "Beijing"}, "2026-11-11"),
             ({"city": "", "locationRaw": "China"}, "2026-11-11"),
             ({"location": "HK"}, "2026-11-11"),
-            ({}, "2026-11-10"),
+            ({}, "2026-11-09"),
             ({}, "2026-11-13"),
         ):
             with self.subTest(updates=updates, close=close):

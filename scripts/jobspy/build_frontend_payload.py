@@ -68,7 +68,7 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             continue
         item = {key: job.get(key) for key in index_fields if key in job}
         if role_date := job.get("rolePostDate"):
-            item.update(firstSeen=role_date, pushTime=role_date, postingLastDate=role_date)
+            item["firstSeen"] = role_date
         if job.get("crossIdRepost"):
             item["repost"] = True
         # Tracking keys carry no job identity and inflate the download.
