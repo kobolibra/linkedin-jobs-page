@@ -3,9 +3,9 @@
 import argparse
 import json
 import re
-import unicodedata
 from pathlib import Path
 
+from company_identity import normalize_company
 from cross_id_reposts import linkedin_id, superseded_ids
 from linkedin_ids import linkedin_job_id
 from reconcile_full_snapshots import timestamp
@@ -30,34 +30,6 @@ def job_key(job):
 
 def nonempty(value):
     return value is not None and value != "" and value != [] and value != {}
-
-
-def norm(value):
-    raw = unicodedata.normalize("NFKD", str(value or "").strip().casefold())
-    return "".join(ch for ch in raw if not unicodedata.combining(ch))
-
-
-def normalize_company(value):
-    company = re.sub(r"\s+", " ", norm(value))
-    compact = re.sub(r"[^a-z0-9\u3400-\u9fff]+", "", company)
-    aliases = {
-        "hsbc": "hsbc", "thehongkongandshanghaibankingcorporation": "hsbc",
-        "standardchartered": "standard chartered", "standardcharteredbank": "standard chartered",
-        "渣打环球商业服务有限公司": "standard chartered",
-        "citi": "citi", "citibank": "citi", "citigroup": "citi",
-        "jpmorganchase": "jpmorgan chase", "jpmorgan": "jpmorgan chase",
-        "jpmorganchaseco": "jpmorgan chase", "摩根大通亚洲咨询北京有限公司": "jpmorgan chase",
-        "bnpparibas": "bnp paribas", "bnp": "bnp paribas",
-        "societegenerale": "societe generale", "sg": "societe generale",
-        "dbs": "dbs bank", "dbsbank": "dbs bank",
-        "deutschebank": "deutsche bank", "goldmansachs": "goldman sachs",
-        "blackrock": "blackrock", "blackrockinc": "blackrock",
-        "morganstanley": "morgan stanley", "bbva": "bbva", "natixis": "natixis",
-        "natixiscorporateinvestmentbanking": "natixis", "bankofamerica": "bank of america",
-        "schroderinvestmentmanagement": "schroders", "schrodersinvestmentmanagement": "schroders",
-        "invescoltd": "invesco",
-    }
-    return aliases.get(compact, company)
 
 
 def normalize_title(value, company="", strip_chinese=False):
