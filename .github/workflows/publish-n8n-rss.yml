@@ -31,7 +31,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements-jobspy.txt -r requirements-logos.txt
       - name: Validate merger and logo publication
         run: |
-          python -m py_compile scripts/rss_publication.py scripts/jobspy/*.py
+          python -m py_compile auto-daily-companies.py reclassify.py scripts/reconcile_classification.py scripts/rss_publication.py scripts/jobspy/*.py
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
           PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py scripts/jobspy/test_liveness.py scripts/jobspy/test_reconcile_full_snapshots.py
@@ -63,6 +63,7 @@ jobs:
           for attempt in 1 2 3 4 5; do
             git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
             git reset --hard origin/main
+            python scripts/reconcile_classification.py
             python scripts/rss_publication.py --inputs /tmp/rss-publication --output jobs.json --quarantine-output data/target-filter-quarantine.json
             python scripts/company_logos.py --apply /tmp/rss-company-logos
             health_rc=0
@@ -71,7 +72,7 @@ jobs:
             python scripts/posting_event_history.py
             python scripts/jobspy/compact_published_jobs.py
             python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-            git add jobs.json jobs-index.json jobs-details.json data/target-filter-quarantine.json data/posting-events-ledger.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
+            git add reports/ jobs.json jobs-index.json jobs-details.json data/target-filter-quarantine.json data/posting-events-ledger.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
             deploy_needed=false
             if ! git diff --cached --quiet -- jobs.json jobs-index.json jobs-details.json data/posting-events-ledger.json company-logos.json assets/company-logos; then deploy_needed=true; fi
             if git diff --cached --quiet; then

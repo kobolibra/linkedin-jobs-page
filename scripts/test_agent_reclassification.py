@@ -1,86 +1,123 @@
+import base64
 import importlib.util
 import json
 import sys
+import tempfile
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
+from urllib.error import HTTPError
 
-import reclassify
+import reclassify as rc
+from scripts.reconcile_classification import reconcile
 
-
-SCRIPT = Path(__file__).resolve().parents[1] / "auto-daily-companies.py"
-spec = importlib.util.spec_from_file_location("auto_daily_companies", SCRIPT)
+ROOT = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location("daily", ROOT / "auto-daily-companies.py")
 daily = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(daily)
+DAY = "2026-11-23"
+JSON, TARGETS, EXCLUSIONS = rc.daily_paths(DAY)
 
 
-class AgentReclassificationTests(unittest.TestCase):
-    def test_verified_financial_companies_leave_target_history(self):
-        stamp = "2026-11-23"
-        fake_existing = {
-            f"reports/today-companies-{stamp}.json": json.dumps({
-                "target_companies": [{"company": "Parich Group Limited", "reason": "待查证"},
-                                     {"company": "Fano (Fano Labs)", "reason": "AI"}],
-                "excluded_companies": []}),
-            "reports/cumulative-target-companies.tsv": (
-                "公司名\t备注\t首次出现\t最近出现\n"
-                "Breeze\t待查证\t2026-11-22\t2026-11-22\n"
-                "Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n"),
-            "reports/cumulative-excluded-companies.tsv": (
-                "公司名\t排除原因\t首次出现\t最近出现\n"),
+class ClassificationTests(unittest.TestCase):
+    def setUp(self):
+        self.files = {
+            rc.BLACKLIST: '["Breeze"]', rc.INDUSTRIES: '{"Fano":"AI"}',
+            rc.TARGET: "公司名\t备注\t首次出现\t最近出现\nBreeze\t待查证\t2026-11-21\t2026-11-22\n",
+            rc.EXCLUDED: "公司名\t排除原因\t首次出现\t最近出现\n",
+            JSON: json.dumps({"target_companies": [{"company": n, "reason": "待查证"}
+                              for n in ("Fano", "Pending", "Bank")], "excluded_companies": []})
         }
-        published = {}
 
-        def record(path, body, message):
-            published[path] = body
-            return True
+    def test_partial_verification_backfill_and_idempotency(self):
+        args = dict(additions=["Bank"], industries={"Fano": "Software"}, finalize=True)
+        self.files.update(rc.plan(self.files.get, DAY, **args))
+        self.assertIn("Pending", self.files[TARGETS])
+        self.assertEqual(set(rc.read_ledger(self.files[rc.TARGET], "备注")), {"fano"})
+        self.assertIn("Fano\tSoftware", self.files[TARGETS])
+        self.assertIn("Fano\tSoftware", self.files[rc.TARGET])
+        self.assertIn("Bank", self.files[EXCLUSIONS])
+        self.assertEqual(set(rc.read_ledger(self.files[rc.EXCLUDED], "排除原因")), {"bank", "breeze"})
+        self.assertEqual(self.files, self.files | rc.plan(self.files.get, DAY, **args))
+        earlier = "2026-11-20"
+        self.files[rc.daily_paths(earlier)[0]] = self.files[JSON]
+        replay = rc.plan(self.files.get, earlier, finalize=True)
+        self.assertIn(f"Fano\tSoftware\t{earlier}\t{DAY}", replay[rc.TARGET])
 
-        rows = {"date": stamp,
-                "target_companies": [{"company": "兴业数字金融服务(上海)股份有限公司", "reason": "待查证"}],
-                "excluded_companies": [], "total_target": 1, "total_excluded": 0,
-                "total_today_jobs": 1, "total_all_jobs": 1}
-        blacklist = ["Parich Group Limited", "兴业数字金融服务(上海)股份有限公司", "Breeze"]
-        with patch.object(daily, "FINANCIAL_BLACKLIST", set(blacklist)), \
-             patch.object(daily, "download_file_from_github",
-                          side_effect=lambda path: fake_existing.get(path)), \
-             patch.object(daily, "push_file_to_github", side_effect=record):
-            daily.push_daily_report_to_github(rows, stamp)
+    def test_overlap_and_missing_report_fail_before_any_writes(self):
+        with self.assertRaises(FileNotFoundError):
+            rc.plan(self.files.get, "2026-11-25", finalize=True, require_daily=True)
+        report = json.loads(self.files[JSON])
+        report["excluded_companies"] = [{"company": " FANO ", "reason": "conflicting entry"}]
+        self.files[JSON] = json.dumps(report)
+        with self.assertRaisesRegex(ValueError, "Conflicting"):
+            rc.plan(self.files.get, DAY, finalize=True)
 
-        published_json = json.loads(published[f"reports/today-companies-{stamp}.json"])
-        self.assertEqual([x["company"] for x in published_json["target_companies"]],
-                         ["Fano (Fano Labs)"])
-        self.assertEqual({x["company"] for x in published_json["excluded_companies"]},
-                         {"Parich Group Limited", "兴业数字金融服务(上海)股份有限公司"})
-        # Daily output is provisional. Only the verification command owns the ledgers.
-        self.assertEqual(set(published), {
-            f"reports/today-companies-{stamp}.json",
-            f"reports/today-target-companies-{stamp}.tsv",
-            f"reports/today-excluded-companies-{stamp}.tsv",
-        })
-        files = {**fake_existing, **published}
-        argv = ["reclassify.py", "--date", stamp, "--finalize", "--blacklist", *blacklist]
-        with patch.object(sys, "argv", argv), \
-             patch.object(reclassify, "load_cfg", return_value=("", "test/repo", "main", "")), \
-             patch.object(reclassify, "Repo", autospec=True) as repo_cls, \
-             patch.object(reclassify, "apply_local", return_value=0):
-            repo = repo_cls.return_value
-            repo.get.side_effect = lambda path: (files.get(path), None)
+    def test_reconciliation_propagates_malformed_inputs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "reports").mkdir()
+            for path, body in self.files.items():
+                (root / path).write_text(body)
+            (root / JSON).write_text("{")
+            with self.assertRaises(ValueError):
+                reconcile(root, DAY)
+            self.assertEqual((root / rc.TARGET).read_text(), self.files[rc.TARGET])
 
-            def write_file(path, text, sha, message, dry):
-                files[path] = text
+    def test_daily_publishes_only_daily_files_and_mirrors_the_commit(self):
+        result = {}
+        def transact(build, message):
+            result.update(build(self.files.get))
+            return result
+        jobs = [{"company":"New", "pushTime":datetime.now(timezone.utc).isoformat()}]
+        with tempfile.TemporaryDirectory() as tmp, patch.object(daily, "OUTPUT_DIR", tmp), \
+             patch.object(rc.Repo, "transact", autospec=True, side_effect=lambda repo, *a: transact(*a)):
+            daily.push_daily_report_to_github(jobs, DAY)
+            self.assertEqual(set(result), set(rc.daily_paths(DAY)))
+            self.assertIn("New", result[TARGETS])
+            self.assertIn("Fano", result[TARGETS])
+            for path, content in result.items():
+                self.assertEqual((Path(tmp)/Path(path).name).read_text(encoding="utf-8-sig"), content)
+        with patch.object(rc.Repo, "transact", side_effect=OSError("offline")):
+            with self.assertRaises(OSError):
+                daily.push_daily_report_to_github(jobs, DAY)
 
-            repo.put.side_effect = write_file
-            reclassify.main()
+    def test_git_conflict_recomputes_whole_transaction_from_new_head(self):
+        repo = rc.Repo("test", "example/repo", "main", None)
+        heads = iter(["a", "b", "b"])
+        trees = []
+        patches = []
+        def api(path, body=None, method=None):
+            if path.startswith("/git/ref/"):
+                return {"object": {"sha": next(heads)}}
+            if path.startswith("/contents/"):
+                text = "A" if path.endswith("=a") else "AB"
+                return {"encoding":"base64", "content":base64.b64encode(text.encode()).decode()}
+            if path.startswith("/git/commits/"):
+                return {"tree":{"sha":"base"}}
+            if path == "/git/trees":
+                trees.append(body["tree"])
+                return {"sha":"tree"}
+            if path == "/git/commits":
+                return {"sha":"commit"}
+            self.assertEqual(method, "PATCH")
+            patches.append(body)
+            if len(patches) == 1:
+                raise HTTPError("url", 422, "not a fast-forward", {}, None)
+        with patch.object(repo, "api", side_effect=api), patch.object(rc.time, "sleep"):
+            repo.transact(lambda read: {p: read(p) + "C" for p in ("one", "two")}, "test")
+        self.assertEqual([[e["content"] for e in t] for t in trees], [["AC","AC"], ["ABC","ABC"]])
+        self.assertTrue(all(p["force"] is False for p in patches))
 
-        cumulative_targets = files["reports/cumulative-target-companies.tsv"]
-        self.assertIn("Fano (Fano Labs)", cumulative_targets)
-        self.assertNotIn("Parich Group Limited", cumulative_targets)
-        self.assertNotIn("兴业数字金融服务(上海)股份有限公司", cumulative_targets)
-        self.assertNotIn("Breeze", cumulative_targets)
-        cumulative_excluded = files["reports/cumulative-excluded-companies.tsv"]
-        self.assertIn("Parich Group Limited", cumulative_excluded)
-        self.assertIn("兴业数字金融服务(上海)股份有限公司", cumulative_excluded)
-
-
-if __name__ == "__main__":
-    unittest.main()
+    def test_finalize_cli_uses_committed_remote_report_for_local_mirror(self):
+        def transact(repo, build, message, dry):
+            self.assertFalse(dry)
+            return build(self.files.get)
+        with tempfile.TemporaryDirectory() as tmp, patch.object(sys, "argv", [
+            "reclassify.py", "--date", DAY, "--local-root", tmp, "--finalize"]), \
+             patch.object(rc.Repo, "transact", autospec=True, side_effect=transact), \
+             patch.object(Path, "read_text", autospec=True, return_value='{"repo":"x/y","branch":"main","github_token":"test"}'):
+            rc.main()
+            with (Path(tmp)/Path(TARGETS).name).open(encoding="utf-8-sig") as f:
+                self.assertIn("Fano\tAI", f.read())

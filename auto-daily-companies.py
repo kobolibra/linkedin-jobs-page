@@ -21,6 +21,7 @@ import base64
 import urllib.request
 import urllib.error
 import ssl
+import reclassify as classification
 from datetime import datetime, timezone, timedelta
 
 # ============================================================
@@ -37,21 +38,6 @@ INDUSTRIES_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/compa
 
 BEIJING_TZ = timezone(timedelta(hours=8))
 OUTPUT_DIR = "/workspace"
-
-# Built-in fallback blacklist (used if GitHub download fails)
-BUILTIN_BLACKLIST = {
-    "HSBC", "JPMorgan", "Morgan Stanley", "Goldman Sachs", "UBS", "Barclays",
-    "BNP Paribas", "Societe Generale", "MUFG", "Nomura", "Deutsche Bank",
-    "BlackRock", "Fidelity", "Vanguard", "PIMCO", "State Street", "Invesco",
-    "Michael Page", "Robert Walters", "Robert Half", "Hays", "Adecco",
-    "Manpower", "Randstad", "Kelly Services", "Bloomberg", "FactSet",
-    "Citi", "Standard Chartered", "Credit Suisse", "Macquarie",
-}
-
-# Loaded from GitHub at runtime
-FINANCIAL_BLACKLIST = set()
-COMPANY_INDUSTRIES = {}  # {company_name: industry_string}
-
 
 # ============================================================
 # GITHUB FUNCTIONS
@@ -99,324 +85,27 @@ def download_json_from_api(api_url, timeout=120):
         return None
 
 
-def load_blacklist_from_github():
-    """Load financial blacklist from GitHub API. Falls back to builtin if fails."""
-    global FINANCIAL_BLACKLIST
-    data = download_json_from_api(BLACKLIST_API_URL)
-    if data and isinstance(data, list):
-        FINANCIAL_BLACKLIST = set(data)
-        print(f"[INFO] Loaded {len(FINANCIAL_BLACKLIST)} blacklist entries from GitHub")
-    else:
-        print("[WARN] Failed to load blacklist from GitHub, using builtin fallback")
-        FINANCIAL_BLACKLIST = set(BUILTIN_BLACKLIST)
-        print(f"[INFO] Using {len(FINANCIAL_BLACKLIST)} builtin blacklist entries")
+def push_daily_report_to_github(jobs, today):
+    repo = classification.Repo(GITHUB_TOKEN, GITHUB_REPO, GITHUB_BRANCH, urllib.request.build_opener())
+    path = classification.daily_paths(today)[0]
 
+    def build(read):
+        blacklist, industries = classification.classifications(read)
+        results = process_jobs(jobs, today, blacklist, industries)
+        current = read(path)
+        previous = json.loads(current) if current is not None else None
+        merged = dict(results)
+        if previous is not None:
+            for key in ("target_companies", "excluded_companies"):
+                merged[key] = previous[key] + results[key]
+        report = classification.classify(merged, {classification.norm(n) for n in blacklist},
+                                         classification.verified_industries(industries))
+        return classification.daily_files(today, report)
 
-def load_industries_from_github():
-    """Load company industries from GitHub API. Falls back to empty if not found."""
-    global COMPANY_INDUSTRIES
-    try:
-        data = download_json_from_api(INDUSTRIES_API_URL)
-        if data and isinstance(data, dict):
-            COMPANY_INDUSTRIES = data
-            print(f"[INFO] Loaded {len(COMPANY_INDUSTRIES)} company industry entries from GitHub")
-        elif data is not None:
-            print(f"[WARN] company_industries.json is not a dict, ignoring")
-        else:
-            print("[INFO] company_industries.json not found on GitHub (first run)")
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            print("[INFO] company_industries.json not found on GitHub yet (first run)")
-        else:
-            print(f"[WARN] Could not load company_industries.json: HTTP {e.code}")
-    except Exception as e:
-        print(f"[WARN] Could not load company_industries.json: {e}")
+    files = repo.transact(build, f"Publish daily company report for {today}")
+    classification.mirror(files, today, OUTPUT_DIR)
+    return json.loads(files[path])
 
-
-def update_blacklist_on_github(new_companies):
-    """Add new companies to the blacklist JSON file on GitHub."""
-    if not new_companies:
-        return
-    # Merge with existing
-    updated = sorted(FINANCIAL_BLACKLIST | set(new_companies))
-    content = json.dumps(updated, ensure_ascii=False, indent=2)
-    content_b64 = base64.b64encode(content.encode("utf-8")).decode("ascii")
-
-    # Get current file sha (needed for update)
-    sha = None
-    try:
-        with _make_request(BLACKLIST_API_URL) as resp:
-            info = json.loads(resp.read())
-            sha = info.get("sha")
-    except urllib.error.HTTPError as e:
-        if e.code != 404:
-            print(f"[WARN] Could not get blacklist sha: {e.code}")
-
-    payload = json.dumps({
-        "message": f"Update financial blacklist: +{len(new_companies)} companies ({datetime.now(BEIJING_TZ).strftime('%Y-%m-%d')})",
-        "content": content_b64,
-        "branch": GITHUB_BRANCH,
-        **({"sha": sha} if sha else {})
-    })
-    try:
-        req = urllib.request.Request(BLACKLIST_API_URL, data=payload.encode("utf-8"), method="PUT")
-        req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
-        req.add_header("Accept", "application/vnd.github+json")
-        req.add_header("Content-Type", "application/json")
-        ctx = ssl.create_default_context()
-        with urllib.request.urlopen(req, context=ctx, timeout=30) as resp:
-            result = json.loads(resp.read())
-            print(f"[INFO] Blacklist updated on GitHub: +{len(new_companies)} companies (total: {len(updated)})")
-            print(f"[INFO] Commit: {result['commit']['sha'][:12]}")
-            FINANCIAL_BLACKLIST.update(new_companies)
-    except Exception as e:
-        print(f"[WARN] Failed to update blacklist on GitHub: {e}")
-        print(f"[INFO] New companies to add manually: {new_companies}")
-
-
-def push_file_to_github(repo_path, text_content, commit_message):
-    """Create or update a single file on GitHub via Contents API.
-
-    repo_path: path inside repo, e.g. 'reports/today-companies-2026-11-21.json'
-    text_content: the file body as a string (will be base64-encoded)
-    commit_message: commit message
-    Returns True on success, False on failure.
-    """
-    api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{repo_path}"
-    content_b64 = base64.b64encode(text_content.encode("utf-8")).decode("ascii")
-
-    # Get existing file sha (needed when updating an existing file)
-    sha = None
-    try:
-        with _make_request(api_url) as resp:
-            info = json.loads(resp.read())
-            sha = info.get("sha")
-    except urllib.error.HTTPError as e:
-        if e.code != 404:
-            print(f"[WARN] Could not get sha for {repo_path}: HTTP {e.code}")
-    except Exception as e:
-        print(f"[WARN] Could not get sha for {repo_path}: {e}")
-
-    payload = json.dumps({
-        "message": commit_message,
-        "content": content_b64,
-        "branch": GITHUB_BRANCH,
-        **({"sha": sha} if sha else {})
-    })
-    try:
-        req = urllib.request.Request(api_url, data=payload.encode("utf-8"), method="PUT")
-        req.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
-        req.add_header("Accept", "application/vnd.github+json")
-        req.add_header("Content-Type", "application/json")
-        ctx = ssl.create_default_context()
-        with urllib.request.urlopen(req, context=ctx, timeout=60) as resp:
-            result = json.loads(resp.read())
-            print(f"[INFO] Pushed to GitHub: {repo_path} (commit {result['commit']['sha'][:12]})")
-            return True
-    except Exception as e:
-        print(f"[WARN] Failed to push {repo_path} to GitHub: {e}")
-        return False
-
-
-def download_file_from_github(repo_path):
-    """Download a file's text content from GitHub.
-
-    Returns None only when the file genuinely does not exist. Any other read
-    failure is raised so callers never overwrite an existing cumulative report
-    with an incomplete list after a transient network/API error.
-    """
-    api_url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{repo_path}"
-    try:
-        with _make_request(api_url) as resp:
-            data = json.loads(resp.read())
-            if "content" in data and data.get("encoding") == "base64":
-                return base64.b64decode(data["content"]).decode("utf-8")
-            raise RuntimeError(f"Unexpected GitHub contents response for {repo_path}")
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return None
-        raise
-
-
-def merge_company_lists(existing_list, new_list):
-    """Merge two company lists, deduplicating by company name (accumulate).
-
-    - Companies already in existing_list keep their position.
-    - New companies (not seen before) are appended at the end.
-    - If a company appears in both, update reason only when the new reason is
-      more informative (i.e. old reason was '待查证' and new one is verified).
-    Returns the merged list.
-    """
-    merged = list(existing_list)
-    name_to_idx = {c.get("company"): i for i, c in enumerate(merged)}
-    for c in new_list:
-        name = c.get("company")
-        if name in name_to_idx:
-            idx = name_to_idx[name]
-            old_reason = merged[idx].get("reason", "")
-            new_reason = c.get("reason", "")
-            # Prefer verified industry over 待查证; never overwrite a verified
-            # reason back to 待查证.
-            if old_reason == "待查证" and new_reason and new_reason != "待查证":
-                merged[idx]["reason"] = new_reason
-            elif not old_reason and new_reason:
-                merged[idx]["reason"] = new_reason
-        else:
-            merged.append(c)
-            name_to_idx[name] = len(merged) - 1
-    return merged
-
-
-
-def _is_financial_exclusion(name):
-    """A verified financial/headhunter exclusion must never remain a target."""
-    return str(name or "").strip().casefold() in {
-        value.strip().casefold() for value in FINANCIAL_BLACKLIST
-    }
-
-
-def push_daily_report_to_github(results, today):
-    """Push the daily report to GitHub with ACCUMULATION (never overwrite).
-
-    Behavior:
-    - Local files / stdout: only THIS run's new companies (unchanged behavior).
-    - GitHub daily files (reports/today-*-YYYY-MM-DD.*): accumulate WITHIN the
-      same day, so running the script multiple times on one day appends new
-      companies instead of overwriting earlier ones.
-    - GitHub cumulative files (reports/cumulative-*.tsv): accumulate ACROSS all
-      days, keeping first_seen / last_seen dates per company.
-    """
-    print(f"\n=== Step: Push daily report to GitHub (reports/, cumulative) ===")
-    stamp = datetime.now(BEIJING_TZ).strftime("%Y-%m-%d %H:%M")
-
-    # ---- 1. Daily JSON report: merge with any existing report for today ----
-    daily_json_path = f"reports/today-companies-{today}.json"
-    merged = dict(results)  # shallow copy; we replace the two lists below
-    existing_json = download_file_from_github(daily_json_path)
-    if existing_json:
-        try:
-            prev = json.loads(existing_json)
-            prev_t = len(prev.get("target_companies", []))
-            prev_e = len(prev.get("excluded_companies", []))
-            merged["target_companies"] = merge_company_lists(
-                prev.get("target_companies", []), results["target_companies"])
-            merged["excluded_companies"] = merge_company_lists(
-                prev.get("excluded_companies", []), results["excluded_companies"])
-            merged["total_target"] = len(merged["target_companies"])
-            merged["total_excluded"] = len(merged["excluded_companies"])
-            print(f"[INFO] Merged daily report: target {prev_t} + {len(results['target_companies'])} new -> {merged['total_target']}, "
-                  f"excluded {prev_e} + {len(results['excluded_companies'])} new -> {merged['total_excluded']}")
-        except Exception as e:
-            print(f"[WARN] Could not parse existing daily JSON, will overwrite: {e}")
-
-    # Verification can happen after a first-pass target report was saved.
-    # Reconcile stale targets against the now-updated financial classification.
-    reclassified = [c for c in merged["target_companies"]
-                    if _is_financial_exclusion(c.get("company"))]
-    merged["target_companies"] = [c for c in merged["target_companies"]
-                                  if not _is_financial_exclusion(c.get("company"))]
-    if reclassified:
-        merged["excluded_companies"] = merge_company_lists(
-            merged["excluded_companies"],
-            [{**c, "category": "excluded",
-              "reason": "verified financial/headhunter (reclassified)"} for c in reclassified],
-        )
-    merged["total_target"] = len(merged["target_companies"])
-    merged["total_excluded"] = len(merged["excluded_companies"])
-
-    push_file_to_github(
-        daily_json_path,
-        json.dumps(merged, ensure_ascii=False, indent=2),
-        f"Daily report {today}: {merged['total_target']} target / {merged['total_excluded']} excluded (cumulative)",
-    )
-
-    # ---- 2. Daily target TSV (from merged list) ----
-    target_lines = ["序号\t公司名\t备注"]
-    for i, c in enumerate(merged["target_companies"], 1):
-        target_lines.append(f"{i}\t{c['company']}\t{c.get('reason', '')}")
-    push_file_to_github(
-        f"reports/today-target-companies-{today}.tsv",
-        "\n".join(target_lines) + "\n",
-        f"Daily target companies {today} ({merged['total_target']} cumulative)",
-    )
-
-    # ---- 3. Daily excluded TSV (from merged list) ----
-    excl_lines = ["序号\t公司名\t排除原因"]
-    for i, c in enumerate(merged["excluded_companies"], 1):
-        excl_lines.append(f"{i}\t{c['company']}\t{c.get('reason', '')}")
-    push_file_to_github(
-        f"reports/today-excluded-companies-{today}.tsv",
-        "\n".join(excl_lines) + "\n",
-        f"Daily excluded companies {today} ({merged['total_excluded']} cumulative)",
-    )
-
-    # ---- 4/5. Cumulative ledgers are written AFTER verification by
-    # reclassify.py --finalize, so unverified "待查证" candidates never enter
-    # the cumulative target history (which would otherwise leak into the
-    # publication filter and delete their jobs before verification).
-    print(f"[INFO] Daily report pushed to GitHub at {stamp} (Beijing)")
-
-
-def _push_cumulative_tsv(repo_path, header, new_companies, today, label):
-    """Merge new_companies into an existing cumulative TSV on GitHub and push.
-
-    TSV columns: 公司名 / 备注(or 排除原因) / 首次出现 / 最近出现
-    Deduplicates by company name; appends new companies; updates last_seen and
-    upgrades reason from 待查证 to a verified industry when available.
-    """
-    existing_text = download_file_from_github(repo_path)
-    entries = []  # list of dicts
-    if existing_text:
-        for line in existing_text.strip().split("\n")[1:]:  # skip header
-            if not line.strip():
-                continue
-            parts = line.split("\t")
-            if len(parts) >= 4:
-                entries.append({
-                    "company": parts[0],
-                    "reason": parts[1],
-                    "first_seen": parts[2],
-                    "last_seen": parts[3],
-                })
-
-    if repo_path == "reports/cumulative-target-companies.tsv":
-        entries = [e for e in entries if not _is_financial_exclusion(e["company"])]
-
-    by_name = {e["company"]: e for e in entries}
-    added = 0
-    for c in new_companies:
-        name = c.get("company")
-        if repo_path == "reports/cumulative-target-companies.tsv" and _is_financial_exclusion(name):
-            continue
-        new_reason = c.get("reason", "")
-        if name in by_name:
-            e = by_name[name]
-            e["last_seen"] = today
-            if e.get("reason") == "待查证" and new_reason and new_reason != "待查证":
-                e["reason"] = new_reason
-            elif not e.get("reason") and new_reason:
-                e["reason"] = new_reason
-        else:
-            e = {"company": name, "reason": new_reason,
-                 "first_seen": today, "last_seen": today}
-            entries.append(e)
-            by_name[name] = e
-            added += 1
-
-    lines = [header]
-    for e in entries:
-        lines.append(f"{e['company']}\t{e['reason']}\t{e['first_seen']}\t{e['last_seen']}")
-    push_file_to_github(
-        repo_path,
-        "\n".join(lines) + "\n",
-        f"{label}: +{added} new (total {len(entries)}) as of {today}",
-    )
-    print(f"[INFO] {label}: +{added} new companies (total {len(entries)})")
-
-
-# ============================================================
-# HELPER FUNCTIONS
-# ============================================================
 
 def get_beijing_today():
     return datetime.now(BEIJING_TZ).strftime("%Y-%m-%d")
@@ -468,7 +157,7 @@ def is_crypto(name):
     return any(k in nl for k in kw)
 
 
-def get_target_reason(cn):
+def get_target_reason(cn, industries):
     """Determine the 备注 string for a target company.
     Shows verified industry from company_industries.json if available.
     Shows crypto tag for crypto companies.
@@ -476,14 +165,16 @@ def get_target_reason(cn):
     parts = []
     if is_crypto(cn):
         parts.append("crypto/blockchain (always included)")
-    if cn in COMPANY_INDUSTRIES:
-        parts.append(COMPANY_INDUSTRIES[cn])
+    if classification.norm(cn) in industries:
+        parts.append(industries[classification.norm(cn)])
     if not parts:
         return "待查证"
     return " | ".join(parts)
 
 
-def process_jobs(jobs, today):
+def process_jobs(jobs, today, blacklist, industries):
+    blocked = {classification.norm(name) for name in blacklist}
+    verified = classification.verified_industries(industries)
     if not isinstance(jobs, list):
         if isinstance(jobs, dict):
             for key in ["jobs", "data", "results", "items", "list"]:
@@ -514,13 +205,13 @@ def process_jobs(jobs, today):
         if cn in seen:
             continue
         seen.add(cn)
-        if cn in FINANCIAL_BLACKLIST:
+        if classification.norm(cn) in blocked:
             excluded.append({"company": cn, "category": "excluded",
                            "reason": "blacklist exact match (financial/headhunter)",
                            "pushTime": str(pt)})
         else:
             target.append({"company": cn, "category": "target",
-                          "reason": get_target_reason(cn),
+                          "reason": get_target_reason(cn, verified),
                           "pushTime": str(pt)})
 
     print(f"\n[INFO] Total jobs: {len(jobs)}, Past 24h: {len(today_jobs)}")
@@ -553,50 +244,14 @@ def main():
     today = get_beijing_today()
     print(f"[INFO] Today (Beijing): {today}")
 
-    # Load blacklist from GitHub (persistent storage)
-    load_blacklist_from_github()
-
-    # Load company industries from GitHub (persistent storage)
-    load_industries_from_github()
-
     # Download jobs data via API (private repo)
     jobs_data = download_json_from_api(JOBS_API_URL)
     if not jobs_data:
         print("[ERROR] Failed to download jobs.json")
         sys.exit(1)
 
-    # Process jobs
-    results = process_jobs(jobs_data, today)
-
-    # Save results as JSON
+    results = push_daily_report_to_github(jobs_data, today)
     filepath = os.path.join(OUTPUT_DIR, f"today-companies-{today}.json")
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-    print(f"\n[INFO] Results saved to: {filepath}")
-
-    # Save target companies as TSV (tab-separated) for easy copy-paste into Excel
-    tsv_path = os.path.join(OUTPUT_DIR, f"today-target-companies-{today}.tsv")
-    with open(tsv_path, "w", encoding="utf-8-sig") as f:
-        # UTF-8 BOM so Excel opens Chinese correctly
-        f.write("序号\t公司名\t备注\n")
-        for i, c in enumerate(results["target_companies"], 1):
-            f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
-    print(f"[INFO] TSV table saved to: {tsv_path}")
-
-    # Save excluded companies as TSV too
-    excl_tsv_path = os.path.join(OUTPUT_DIR, f"today-excluded-companies-{today}.tsv")
-    with open(excl_tsv_path, "w", encoding="utf-8-sig") as f:
-        f.write("序号\t公司名\t排除原因\n")
-        for i, c in enumerate(results["excluded_companies"], 1):
-            f.write(f"{i}\t{c['company']}\t{c.get('reason', '')}\n")
-    print(f"[INFO] Excluded TSV table saved to: {excl_tsv_path}")
-
-    # Push daily report (JSON + target TSV + excluded TSV) to GitHub so the
-    # target company list is persisted on GitHub every run, not only locally.
-    try:
-        push_daily_report_to_github(results, today)
-    except Exception as e:
-        print(f"[WARN] push_daily_report_to_github failed: {e}")
 
     # Print summary
     print("\n" + "=" * 70)

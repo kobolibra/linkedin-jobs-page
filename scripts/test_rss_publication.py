@@ -181,9 +181,20 @@ class RssPublicationTests(unittest.TestCase):
             self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
             capture(root,inputs);merge(root,inputs,out)
             self.assertEqual(len(json.loads(out.read_text())['jobs']),1)
-            history.write_text('公司名\t备注\t首次出现\t最近出现\nPreviously Allowed\t待查证\t2026-11-21\t2026-11-21\n',encoding='utf-8')
+            history.write_text('公司名\t备注\t首次出现\t最近出现\nPreviously Allowed\t已核验行业\t2026-11-21\t2026-11-21\n',encoding='utf-8')
             merge(root,inputs,out)
             self.assertEqual(json.loads(out.read_text())['jobs'],[])
+
+    def test_pending_history_does_not_hide_an_active_job(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.write(root, 'data/n8n/rss-latest.json', {'jobs': []})
+            self.write(root, 'jobs.json', {'jobs': [self.job('100000001', 'Pending')]})
+            (root/'reports/cumulative-target-companies.tsv').write_text(
+                '公司名\t备注\t首次出现\t最近出现\nPending\t待查证\t2026-11-21\t2026-11-21\n')
+            capture(root, root/'inputs')
+            merge(root, root/'inputs', root/'out.json')
+            self.assertEqual(json.loads((root/'out.json').read_text())['jobs'][0]['company'], 'Pending')
 
     def test_target_history_missing_or_corrupt_fails_closed(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -241,7 +252,7 @@ class RssPublicationTests(unittest.TestCase):
             self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
             (root/'reports/cumulative-target-companies.tsv').write_text(
                 '公司名\t备注\t首次出现\t最近出现\n'
-                'Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n')
+                'Parich Group Limited\t工业软件\t2026-11-23\t2026-11-23\n')
             quarantine=root/'data/target-filter-quarantine.json'
             capture(root,inputs);merge(root,inputs,out,quarantine)
             self.assertEqual(json.loads(out.read_text())['jobs'],[])
