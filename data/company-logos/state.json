@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-24T11:54:02.539899+00:00",
+    "checkedAt": "2026-11-25T02:43:23.366712+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-24T11:54:08.356803+00:00",
+    "checkedAt": "2026-11-25T02:43:29.216885+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-24T11:54:14.335705+00:00",
+    "checkedAt": "2026-11-25T02:43:35.210416+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-24T11:54:01.199158+00:00",
+    "checkedAt": "2026-11-25T02:43:20.399098+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12689,5 +12689,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQFHYvWRqMkspw/company-logo_100_100/company-logo_100_100/0/1617259578951?e=2147483647&v=beta&t=p2vPBqpgPGfgNrAFFNnfCq5GvFTFZ0U5wKTxAL0-CWA",
     "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E5%AE%87%E4%BF%A1%E7%A7%91%E6%8A%80%E9%9B%86%E5%9B%A2%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4492363863"
+  },
+  "dubai chambers": {
+    "name": "Dubai Chambers",
+    "checkedAt": "2026-11-25T02:43:13.100823+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ea54737065a80f0054efc3a2.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQE9mPf79PYeTQ/company-logo_100_100/B4DZ19_QCJKIAQ-/0/1775935226949?e=2147483647&v=beta&t=8OCuPGGgqPo-CT0f7ln7cHUK6JFhqtskJuauMJQD2bw",
+    "companyUrl": "https://www.linkedin.com/company/dubai-chambers",
+    "sourceJobId": "4494119444"
+  },
+  "orion james limited": {
+    "name": "Orion James Limited",
+    "checkedAt": "2026-11-25T02:43:14.470958+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://hk.linkedin.com/company/orion-james-ltd",
+    "sourceJobId": "4494324192"
+  },
+  "vista": {
+    "name": "Vista",
+    "checkedAt": "2026-11-25T02:43:17.418866+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "27d8ae12bcb92a6b0418a29a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHIvHfT4jsd-g/company-logo_100_100/company-logo_100_100/0/1735664340293?e=2147483647&v=beta&t=Ot8HanZL4V8H-G9mMywbo-98zPRaqC_YfGtdKWvluW4",
+    "companyUrl": "https://ae.linkedin.com/company/vista-global",
+    "sourceJobId": "4494390988"
   }
 }
