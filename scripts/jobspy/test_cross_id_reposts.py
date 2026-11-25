@@ -1,6 +1,7 @@
 import copy
 import unittest
 
+from company_identity import ALIASES
 from cross_id_reposts import reconcile
 from merge_n8n_incremental import merge_documents
 from publish_backfill import enrich
@@ -98,21 +99,52 @@ class CrossIdRepostsTests(unittest.TestCase):
         reconcile(doc, "2026-11-25")
         self.assertEqual(doc, before)
 
-    def test_next_day_handoff_can_join_two_previously_reconciled_cycles(self):
-        older = listing("4000000001", "2026-11-03", "2026-11-05", crossIdRepost={
-            "rootId": "4000000000", "previousId": "4000000000", "postDate": "2026-11-01", "pending": False,
-        })
-        newer = listing("4000000003", "2026-11-11", "2026-11-12", crossIdRepost={
-            "rootId": "4000000002", "previousId": "4000000002", "postDate": "2026-11-06", "pending": False,
-        })
-        doc = {"jobs": [older, newer], "supersededLinkedInIds": ["4000000000", "4000000002"]}
+    def test_each_allowed_offset_can_join_two_previously_reconciled_cycles(self):
+        for closed in ("2026-11-05", "2026-11-06", "2026-11-07"):
+            with self.subTest(closed=closed):
+                older = listing("4000000001", "2026-11-03", closed, crossIdRepost={
+                    "rootId": "4000000000", "previousId": "4000000000",
+                    "postDate": "2026-11-01", "pending": False,
+                })
+                newer = listing("4000000003", "2026-11-11", "2026-11-12", crossIdRepost={
+                    "rootId": "4000000002", "previousId": "4000000002",
+                    "postDate": "2026-11-06", "pending": False,
+                })
+                doc = {"jobs": [older, newer], "supersededLinkedInIds": ["4000000000", "4000000002"]}
+                reconcile(doc, "2026-11-25")
+
+                self.assertEqual(doc["jobs"], [newer])
+                self.assertEqual(newer["crossIdRepost"], {
+                    "rootId": "4000000000", "previousId": "4000000002",
+                    "postDate": "2026-11-01", "pending": False,
+                })
+                self.assertEqual(doc["supersededLinkedInIds"], ["4000000000", "4000000001", "4000000002"])
+
+    def test_jpmorgan_spelling_variants_share_one_closed_recruitment_cycle(self):
+        title = "China Securities Company - Global Employee Lifecycle & Access Management(GLAM) Relationship Specialist"
+        older = listing("4484452096", "2026-10-28", "2026-11-24T21:46:30Z",
+                        company="JPMorganChase", companyCanonical="jpmorgan chase", title=title,
+                        pushTime="2026-11-19")
+        newer = listing("4494434290", "2026-11-25", "2026-11-25T06:47:01Z",
+                        company="JPMorgan Chase", title=title, pushTime="2026-11-25T03:43:57Z")
+        doc = {"jobs": [newer, older], "count": 2}
         reconcile(doc, "2026-11-25")
 
         self.assertEqual(doc["jobs"], [newer])
-        self.assertEqual(newer["crossIdRepost"], {
-            "rootId": "4000000000", "previousId": "4000000002", "postDate": "2026-11-01", "pending": False,
-        })
-        self.assertEqual(doc["supersededLinkedInIds"], ["4000000000", "4000000001", "4000000002"])
+        self.assertEqual(doc["supersededLinkedInIds"], ["4484452096"])
+        self.assertEqual(newer["rolePostDate"], "2026-10-28")
+        self.assertEqual(newer["pushTime"], "2026-11-25T03:43:57Z")
+        self.assertEqual(newer["expiredAt"], "2026-11-25T06:47:01Z")
+
+    def test_shared_company_aliases_work_even_without_jobspy_metadata(self):
+        for alias, company in ALIASES.items():
+            with self.subTest(alias=alias):
+                older = listing("4000000000", "2026-11-01", "2026-11-11", company=alias)
+                newer = listing("4000000001", "2026-11-11", company=company)
+                doc = {"jobs": [older, newer]}
+                reconcile(doc, "2026-11-12")
+                self.assertEqual(doc["jobs"], [newer])
+                self.assertEqual(newer["rolePostDate"], "2026-11-01")
 
     def test_stale_retry_cannot_restore_an_expired_overlap_window(self):
         earlier = listing("4000000000", "2026-11-01")
@@ -145,7 +177,7 @@ class CrossIdRepostsTests(unittest.TestCase):
     def test_only_same_title_company_city_within_one_day(self):
         for updates, close in (
             ({"title": "Advisory Sales - Equity Broker"}, "2026-11-11"),
-            ({"company": "Citibank"}, "2026-11-11"),
+            ({"company": "HSBC"}, "2026-11-11"),
             ({"city": "Beijing"}, "2026-11-11"),
             ({"city": "", "locationRaw": "China"}, "2026-11-11"),
             ({"location": "HK"}, "2026-11-11"),

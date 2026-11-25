@@ -6,9 +6,11 @@ from datetime import date, datetime, timezone
 from itertools import groupby
 
 if __package__:
+    from .company_identity import normalize_company
     from .linkedin_ids import linkedin_job_id
     from .posting_dates import posting_day
 else:
+    from company_identity import normalize_company
     from linkedin_ids import linkedin_job_id
     from posting_dates import posting_day
 
@@ -26,7 +28,8 @@ def name(value):
 
 
 def role_key(row):
-    company, title, region = (name(row.get(field)) for field in ("company", "title", "location"))
+    company = normalize_company(row.get("companyCanonical") or row.get("company"))
+    title, region = (name(row.get(field)) for field in ("title", "location"))
     if not company or not title:
         return None
     if region in {"hk", "sg"}:
@@ -80,9 +83,10 @@ def closing_day(row, started):
     return None
 
 
-def connect_next_day_reposts(group, removed):
+def connect_surviving_cycles(group, removed):
     # Traverse the surviving recruitment cycles by their original start dates.
     # A latest ID may already represent a cycle that began several IDs earlier.
+    positions = {job_id: position for position, (_, _, job_id, _) in enumerate(group)}
     cycles = []
     for started, number, job_id, row in group:
         if job_id in removed:
@@ -94,13 +98,31 @@ def connect_next_day_reposts(group, removed):
     cycles.sort(key=lambda cycle: cycle[:2])
 
     closed = defaultdict(list)
-    for cycle_start, _, started, job_id, row in cycles:
-        if candidates := closed[cycle_start - 1]:
-            previous_id, previous = candidates.pop()
+    for cycle_start, root, started, job_id, row in cycles:
+        root_position = positions.get(str(root))
+
+        def precedes_root(candidate):
+            if root_position is not None:
+                return positions[candidate[2]] < root_position
+            return candidate[:2] < (cycle_start, root)
+
+        # A retained cycle can inherit an older one in any of the three
+        # allowed day positions. Compare to the newer cycle's original ID.
+        for days in ((cycle_start, cycle_start + 1), (cycle_start - 1,)):
+            eligible = ((positions[candidate[2]], day, candidate) for day in days
+                        for candidate in closed[day] if precedes_root(candidate))
+            choice = max(eligible, default=None)
+            if choice is None:
+                continue
+            _, day, candidate = choice
+            closed[day].remove(candidate)
+            _, _, previous_id, previous = candidate
             link_repost(previous, previous_id, row)
             removed.add(previous_id)
+            break
+
         if ended := closing_day(row, started):
-            closed[ended].append((job_id, row))
+            closed[ended].append((started, int(job_id), job_id, row))
 
 
 def reconcile(doc, observed_at=None):
@@ -152,9 +174,9 @@ def reconcile(doc, observed_at=None):
             if ended := closing_day(row, started):
                 closed[ended].append(position)
 
-        # Resolve overlaps and same-day handoffs first, then allow a listing to
-        # pick up an older cycle that closed on the preceding day.
-        connect_next_day_reposts(group, removed)
+        # Revisit retained cycles using their original dates, including the
+        # case where the next ID appeared a day after a predecessor closed.
+        connect_surviving_cycles(group, removed)
 
         previous_active = None
         for started, _, job_id, row in group:
