@@ -14,6 +14,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from cross_id_reposts import linkedin_id, superseded_ids
 from linkedin_ids import linkedin_job_id
 from posting_dates import apply_posting_date, is_repost, posting_day, last_posted, source_date_unchanged
 
@@ -101,6 +102,7 @@ def query_observation_times(snapshot, incoming, completed):
 
 def reconcile(existing_doc, snapshot_doc, observed_at=None):
     existing = [dict(x) for x in rows(existing_doc) if isinstance(x, dict)]
+    superseded = superseded_ids(existing_doc)
     incoming = [dict(x) for x in rows(snapshot_doc)]
     observed_at = now_iso(observed_at)
     observed_time = timestamp(observed_at)
@@ -137,7 +139,7 @@ def reconcile(existing_doc, snapshot_doc, observed_at=None):
     }
     for item in incoming:
         key = jid(item)
-        if not key or location_key(item) not in scope_locations:
+        if not key or linkedin_id(item) in superseded or location_key(item) not in scope_locations:
             continue
         old = by_id.get(key, {})
         query_key = company_location_key(company_key(item),location_key(item))

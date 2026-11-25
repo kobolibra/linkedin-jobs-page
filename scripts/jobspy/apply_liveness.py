@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse, json
 from datetime import datetime, timezone
 from pathlib import Path
+from cross_id_reposts import reconcile
 from job_liveness import LIVENESS_EXPIRED_REASONS, apply_observation, jid, in_scope, parse_time, deletion_check_confirmed, NON_TARGET_RETENTION_DAYS
 from logo_sources import validate_hint
 
@@ -12,10 +13,11 @@ def main():
     doc=json.loads(Path(args.jobs).read_text(encoding="utf-8")); out=dict(doc) if isinstance(doc,dict) else {"jobs":doc}
     try: live=json.loads(Path(args.liveness).read_text(encoding="utf-8"))
     except (FileNotFoundError,json.JSONDecodeError):
-        Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); return
+        live = None
     legacy = isinstance(live, dict) and live.get("schemaVersion") == "1.0" and live.get("mode") == "cn-job-liveness"
     regional = isinstance(live, dict) and live.get("schemaVersion") == "1.1" and live.get("mode") == "job-liveness"
     if not (legacy or regional) or not isinstance(live.get("observations"), list):
+        reconcile(out)
         Path(args.output).write_text(json.dumps(out,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); return
     scope = ["CN"] if legacy else [x for x in live.get("scopeLocations", []) if x in {"CN", "HK", "SG"}]
     def eligible_scope(row):
@@ -37,8 +39,12 @@ def main():
         elif result=="gone": stats["expired_gone"]+=int(row.get("expiredReason")=="linkedin_removed"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_removed")
         elif result=="not_accepting": stats["expired_not_accepting"]+=int(row.get("expiredReason")=="linkedin_not_accepting"); stats["pending"]+=int(row.get("expiredReason")!="linkedin_not_accepting")
         else: stats["unknown"]+=1
+    # A closed predecessor can still contribute its original posting day before
+    # normal expired-job retention removes it.
+    out["jobs"] = list(by.values())
+    reconcile(out, live.get("observedAt"))
     now=datetime.now(timezone.utc); kept=[]; deleted=0
-    for row in by.values():
+    for row in out["jobs"]:
         expired_at=parse_time(row.get("expiredAt"))
         eligible=(eligible_scope(row) and row.get("jobStatus")=="expired" and row.get("expiredReason") in LIVENESS_EXPIRED_REASONS and expired_at and (now-expired_at).total_seconds() >= args.delete_after_days*24*3600 and deletion_check_confirmed(row,now,args.delete_after_days))
         if eligible:

@@ -9,6 +9,7 @@ from unittest.mock import patch
 from types import SimpleNamespace
 
 from rss_publication import capture, merge, read_target_history, filter_target_history
+from posting_event_history import daily_counts, reconcile
 from company_logos import collect, apply
 import test_company_logos
 
@@ -77,6 +78,56 @@ class RssPublicationTests(unittest.TestCase):
             merge(root,inputs,out)
             self.assertEqual({x['sourceJobId'] for x in json.loads(out.read_text())['jobs']},
                 {'li-100000001','li-100000002','li-100000004'})
+
+    def test_repost_overlap_and_confirmed_closure_publish_one_new_role(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inputs, out = root / 'inputs', root / 'jobs.json'
+            old = self.job('4492601518', 'RSS employer', city='Shanghai', firstSeen='2026-11-23')
+            new = self.job('4494081522', 'RSS employer', locationRaw='Shanghai, Shanghai, China',
+                           firstSeen='2026-11-24', pushTime='2026-11-24T04:02:07Z',
+                           datePosted='2026-11-24', observedAt='2026-11-24T04:02:07Z')
+            self.write(root, 'jobs.json', {'jobs': [old], 'count': 1})
+            self.write(root, 'data/n8n/rss-latest.json', {
+                'generatedAt': '2026-11-24T04:02:07Z', 'jobs': [new],
+            })
+            capture(root, inputs)
+            merge(root, inputs, out)
+            overlap = json.loads(out.read_text())
+            self.assertEqual([row['jobStatus'] for row in overlap['jobs']], ['active', 'active'])
+            self.assertEqual([row['rolePostDate'] for row in overlap['jobs']], ['2026-11-23'] * 2)
+            self.assertTrue(overlap['jobs'][1]['crossIdRepost']['pending'])
+            history = reconcile({'events': []}, overlap['jobs'])
+            self.assertEqual(daily_counts(history), {'2026-11-23': {'CN': 1}})
+
+            self.write(root, 'data/jobspy/incremental/liveness.json', {
+                'schemaVersion': '1.1', 'mode': 'job-liveness', 'scopeLocations': ['CN'],
+                'observedAt': '2026-11-24T09:00:00Z', 'observations': [
+                    {'jobId': '4492601518', 'result': 'closed', 'checkedAt': '2026-11-24T09:00:00Z'},
+                ],
+            })
+            capture(root, inputs)
+            merge(root, inputs, out)
+            confirmed = json.loads(out.read_text())
+            self.assertEqual(confirmed['supersededLinkedInIds'], ['4492601518'])
+            self.assertEqual(confirmed['count'], 1)
+            row = confirmed['jobs'][0]
+            self.assertEqual(row['sourceJobId'], 'li-4494081522')
+            self.assertFalse(row['crossIdRepost']['pending'])
+            self.assertEqual(row['datePosted'], '2026-11-24')
+            self.assertEqual(reconcile(history, confirmed['jobs']), history)
+
+            self.write(root, 'data/posting-events-ledger.json', history)
+            builder = Path(__file__).resolve().parent / 'jobspy/build_frontend_payload.py'
+            index = root / 'jobs-index.json'
+            subprocess.run([sys.executable, str(builder), '--source', str(out), '--index', str(index),
+                            '--details', str(root / 'jobs-details.json')], check=True, capture_output=True)
+            payload = json.loads(index.read_text())
+            card = payload['jobs'][0]
+            self.assertTrue(card['repost'])
+            self.assertEqual([card[field] for field in ('firstSeen', 'pushTime', 'postingLastDate')],
+                             ['2026-11-23'] * 3)
+            self.assertEqual(payload['postingHistoryDaily'], {'2026-11-23': {'CN': 1}})
 
     def test_completed_jobspy_and_liveness_are_merged_without_altering_source_snapshots(self):
         with tempfile.TemporaryDirectory() as directory:
