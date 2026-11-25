@@ -5398,21 +5398,30 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-25T03:02:50.733572+00:00",
+    "checkedAt": "2026-11-25T04:02:21.731085+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
-        "status": 200,
-        "contentType": "text/html; charset=utf-8",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4467705418",
-        "reason": "no_employer",
-        "stage": "job",
-        "observedName": "",
-        "companyUrl": ""
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4467705418",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.80070927124429,
+        "deferred": true
       }
     ]
   },
