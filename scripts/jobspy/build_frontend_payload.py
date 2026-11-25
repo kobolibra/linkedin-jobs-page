@@ -68,6 +68,11 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             continue
         item = {key: job.get(key) for key in index_fields if key in job}
         if role_date := job.get("rolePostDate"):
+            # Preserve the usual per-ID fallback for legacy rows before
+            # firstSeen is projected to the start of the entire cycle.
+            if listing_date := job.get("firstSeen"):
+                item["pushTime"] = item.get("pushTime") or listing_date
+                item["postingLastDate"] = item.get("postingLastDate") or listing_date
             item["firstSeen"] = role_date
         if job.get("crossIdRepost"):
             item["repost"] = True
@@ -171,14 +176,19 @@ def self_test() -> None:
         source.write_text(json.dumps({"jobs": [
             {"link": "https://x/jobs/view/123456/", "title": "A", "descriptionHtml": "<p>JD</p>", "salary": "10k"},
             {"link": "https://x/jobs/view/123457/", "title": "B", "firstSeen": "2026-09-01", "postingLastDate": "2026-09-09", "expiredAt": "2026-09-11", "expiredReason": "linkedin_closed", "jobStatus": "expired"},
+            {"link": "https://x/jobs/view/123458/", "title": "C", "firstSeen": "2026-09-09",
+             "rolePostDate": "2026-09-01", "crossIdRepost": {"rootId": "123455", "pending": False}},
         ]}), encoding="utf-8")
         index, details = root / "jobs-index.json", root / "jobs-details.json"
-        assert build(source, index, details) == (2, 1)
+        assert build(source, index, details) == (3, 1)
         index_doc = json.loads(index.read_text(encoding="utf-8"))
         detail_doc = json.loads(details.read_text(encoding="utf-8"))
         assert index_doc["jobs"][0]["hasJd"] is True
         for key in ("firstSeen", "postingLastDate", "expiredAt", "expiredReason", "jobStatus"):
             assert index_doc["jobs"][1][key] == json.loads(source.read_text())["jobs"][1][key]
+        legacy_repost = index_doc["jobs"][2]
+        assert legacy_repost["firstSeen"] == "2026-09-01" and legacy_repost["repost"]
+        assert legacy_repost["pushTime"] == legacy_repost["postingLastDate"] == "2026-09-09"
         assert "descriptionHtml" not in index_doc["jobs"][0]
         assert detail_doc["details"]["ln:123456"]["descriptionHtml"] == "<p>JD</p>"
         assert detail_doc["details"]["ln:123456"]["jevInput"]["schema"] == "jev-input-v4"
@@ -189,7 +199,7 @@ def self_test() -> None:
         source_doc["n8nIncrementalMerge"] = {"mergedAt": "2026-11-20T04:11:00Z"}
         source_doc["jobStatusUpdatedAt"] = "2026-11-20T05:32:15+00:00"
         source.write_text(json.dumps(source_doc), encoding="utf-8")
-        assert build(source, index, details) == (2, 1)
+        assert build(source, index, details) == (3, 1)
         assert json.loads(index.read_text(encoding="utf-8"))["updatedAt"] == "2026-11-20T05:32:15.000Z"
         assert latest_pipeline_update({"n8nIncrementalMerge": {"mergedAt": "2026-11-20"}}) is None
         assert latest_pipeline_update({"n8nIncrementalMerge": {"mergedAt": "invalid"}}) is None
