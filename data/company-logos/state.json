@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-25T16:16:00.431213+00:00",
+    "checkedAt": "2026-11-25T22:02:23.756774+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-25T16:16:06.377986+00:00",
+    "checkedAt": "2026-11-25T22:02:29.726273+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-25T16:15:56.208739+00:00",
+    "checkedAt": "2026-11-25T22:02:17.913827+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-25T16:15:57.406766+00:00",
+    "checkedAt": "2026-11-25T22:02:20.770160+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12828,5 +12828,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGsCyCQR_Nd9Q/company-logo_100_100/company-logo_100_100/0/1630670987288?e=2147483647&v=beta&t=cKTGKdbaxpL8Am-bu_oYbhLK9PJaS5Nt-j6rQQxjB-E",
     "companyUrl": "https://sg.linkedin.com/company/trulyyy",
     "sourceJobId": "4494793510"
+  },
+  "entrust": {
+    "name": "Entrust",
+    "checkedAt": "2026-11-25T22:02:16.558409+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "032011d00649adc868b5df6b.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFsJa-zzF7kyw/company-logo_100_100/company-logo_100_100/0/1724085708811/entrust_logo?e=2147483647&v=beta&t=r4Q1KHdjMEoEEZ2sPseOGSGYPw9dDrcQYyoiLP0V7o4",
+    "companyUrl": "https://www.linkedin.com/company/entrust",
+    "sourceJobId": "4494428599"
   }
 }
