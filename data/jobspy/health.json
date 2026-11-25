@@ -2,43 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:44769454142:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-20T16:04:23.876516+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 19,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 15,
-        "404": 4
-      },
-      "outcomes": {
-        "response": 19
-      },
-      "stages": {
-        "logos": 19
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 11,
-        "downloaded": 7,
-        "missing": 4,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 1,
-        "httpRetries": 0
-      }
-    },
-    {
       "runId": "jobs:44819382641:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -7905,6 +7868,43 @@
         "downloaded": 3,
         "missing": 4,
         "placeholders": 1,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
+    },
+    {
+      "runId": "logos:45537136436:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-25T03:03:08.665449+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 12,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 8,
+        "404": 4
+      },
+      "outcomes": {
+        "response": 12
+      },
+      "stages": {
+        "logos": 12
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 7,
+        "downloaded": 3,
+        "missing": 4,
+        "placeholders": 0,
         "blocked": 0,
         "reusedSources": 0,
         "httpRetries": 0

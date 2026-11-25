@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-25T02:43:23.366712+00:00",
+    "checkedAt": "2026-11-25T03:02:53.616376+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-25T02:43:29.216885+00:00",
+    "checkedAt": "2026-11-25T03:02:59.550556+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-25T02:43:35.210416+00:00",
+    "checkedAt": "2026-11-25T03:03:05.556399+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-25T02:43:20.399098+00:00",
+    "checkedAt": "2026-11-25T03:02:50.733572+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12466,32 +12466,15 @@
   },
   "carrefour city": {
     "name": "Carrefour City",
-    "checkedAt": "2026-11-21T10:02:05.618755+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-25T03:02:47.733397+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4493265646",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493265646",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.116930979788116,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "ba47177b578c315a4f889264.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQH-YFtYnfuFUw/company-logo_100_100/company-logo_100_100/0/1663764366539?e=2147483647&v=beta&t=9U9A0oqM8lYoGKEjWqiMNnoNmEmejfpK1Xe1szDOXgE",
+    "companyUrl": "https://fr.linkedin.com/company/carrefour-city-lthdistri",
+    "sourceJobId": "4493265646"
   },
   "breeze": {
     "name": "Breeze",
@@ -12725,5 +12708,29 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQHIvHfT4jsd-g/company-logo_100_100/company-logo_100_100/0/1735664340293?e=2147483647&v=beta&t=Ot8HanZL4V8H-G9mMywbo-98zPRaqC_YfGtdKWvluW4",
     "companyUrl": "https://ae.linkedin.com/company/vista-global",
     "sourceJobId": "4494390988"
+  },
+  "cove": {
+    "name": "Cove",
+    "checkedAt": "2026-11-25T03:02:43.416686+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "4cb00d573c870e655ff85fe9.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C560BAQGI8xYTMCGwCQ/company-logo_100_100/company-logo_100_100/0/1630669393050?e=2147483647&v=beta&t=-rad3M939Y755G6XW8xqTSa9OwJv7pXyb9hVemULnFM",
+    "companyUrl": "https://sg.linkedin.com/company/cove-coliving",
+    "sourceJobId": "4492883162"
+  },
+  "securitas hong kong": {
+    "name": "Securitas Hong Kong",
+    "checkedAt": "2026-11-25T03:02:44.759766+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "f09d0a8edc2d1925c08c22d6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEh71lSWzC2RQ/company-logo_100_100/company-logo_100_100/0/1729487012981/securitas_hong_kong_logo?e=2147483647&v=beta&t=oFQcaQg2C5vedxTw0yXuGzeNzS0ylc8fzq07xa10hHA",
+    "companyUrl": "https://hk.linkedin.com/company/securitas-hong-kong",
+    "sourceJobId": "4492563899"
   }
 }
