@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-25T04:14:11.987705+00:00",
+    "checkedAt": "2026-11-25T06:49:42.049293+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-25T04:14:16.347026+00:00",
+    "checkedAt": "2026-11-25T06:49:47.858488+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3036,12 +3036,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4445423723",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.717669812558164,
+        "deferred": true
       }
     ]
   },
@@ -12732,5 +12743,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEh71lSWzC2RQ/company-logo_100_100/company-logo_100_100/0/1729487012981/securitas_hong_kong_logo?e=2147483647&v=beta&t=oFQcaQg2C5vedxTw0yXuGzeNzS0ylc8fzq07xa10hHA",
     "companyUrl": "https://hk.linkedin.com/company/securitas-hong-kong",
     "sourceJobId": "4492563899"
+  },
+  "福维克公司": {
+    "name": "福维克公司",
+    "checkedAt": "2026-11-25T06:49:40.748213+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E7%A6%8F%E7%BB%B4%E5%85%8B%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4492257656"
   }
 }
