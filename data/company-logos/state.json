@@ -12744,5 +12744,34 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://cn.linkedin.com/company/%E7%A6%8F%E7%BB%B4%E5%85%8B%E5%85%AC%E5%8F%B8",
     "sourceJobId": "4492257656"
+  },
+  "ambr (nasdaq: ambr)": {
+    "name": "AMBR (Nasdaq: AMBR)",
+    "checkedAt": "2026-11-25T10:01:46.590275+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4494787426",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4494787426",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 60.39193330569722,
+        "deferred": true
+      }
+    ]
   }
 }
