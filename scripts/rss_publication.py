@@ -58,13 +58,15 @@ def read_target_history(path: Path) -> set[str]:
     """Load the Agent's cumulative TARGET TSV (never the financial blacklist)."""
     with path.open(encoding='utf-8-sig', newline='') as source:
         reader = csv.DictReader(source, delimiter='\t')
-        if not reader.fieldnames or '公司名' not in reader.fieldnames:
+        if not reader.fieldnames or not {'公司名', '备注'} <= set(reader.fieldnames):
             raise ValueError(f'Target history lacks 公司名 column: {path}')
         names = set()
         for row in reader:
             if None in row or not target_company_key(row.get('公司名')):
                 raise ValueError(f'Invalid target company history row: {path}')
-            names.add(target_company_key(row['公司名']))
+            reason = (row['备注'] or '').strip()
+            if reason and reason != '待查证' and not reason.startswith('crypto/blockchain (always included)'):
+                names.add(target_company_key(row['公司名']))
     return names
 
 
@@ -194,15 +196,6 @@ def main():
     args=parser.parse_args()
     if args.capture: capture(args.root,args.inputs)
     else: merge(args.root,args.inputs,args.output,args.quarantine_output)
-    # Reconcile target/excluded history against the current blacklist so a firm
-    # later verified financial/headhunter never lingers in cumulative-target.
-    # Runs on every publication (incl. blacklist-change triggers); idempotent.
-    try:
-        import reconcile_classification, subprocess
-        reconcile_classification.main()
-        subprocess.run(['git','add','reports/'],cwd=str(args.root),check=False)
-    except Exception as exc:
-        print(f'classification reconciliation skipped: {exc}')
 
 
 if __name__=='__main__':main()

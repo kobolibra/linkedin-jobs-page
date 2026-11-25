@@ -12,6 +12,7 @@ on:
       - 'scripts/company_logos.py'
       - 'auto-daily-companies.py'
       - 'reclassify.py'
+      - 'scripts/reconcile_classification.py'
       - 'scripts/test_agent_reclassification.py'
       - 'scripts/rss_publication.py'
       - 'scripts/test_rss_publication.py'
