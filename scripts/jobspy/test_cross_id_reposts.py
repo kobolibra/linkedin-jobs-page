@@ -95,6 +95,14 @@ class CrossIdRepostsTests(unittest.TestCase):
         reconcile(doc, "2026-11-11")
         self.assertEqual(doc, before)
 
+    def test_same_day_observation_times_take_priority_over_id_order(self):
+        earlier = listing("4000000001", "2026-11-10T17:00:00Z", "2026-11-11T06:00:00Z")
+        later = listing("4000000000", "2026-11-11T05:00:00Z")
+        doc = {"jobs": [later, earlier]}
+        reconcile(doc, "2026-11-11")
+        self.assertEqual(doc["jobs"], [later])
+        self.assertEqual(later["crossIdRepost"]["previousId"], "4000000001")
+
     def test_only_same_title_company_city_with_the_two_allowed_day_offsets(self):
         for updates, close in (
             ({"title": "Advisory Sales - Equity Broker"}, "2026-11-11"),

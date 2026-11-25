@@ -2,7 +2,8 @@
 import re
 import unicodedata
 from collections import Counter, defaultdict
-from datetime import date
+from datetime import date, datetime, timezone
+from itertools import groupby
 
 if __package__:
     from .linkedin_ids import linkedin_job_id
@@ -58,6 +59,19 @@ def link_repost(previous, previous_id, current, pending=False):
         previous["rolePostDate"] = first
 
 
+def arrival_order(group):
+    group.sort(key=lambda listing: listing[:2])
+    for _, listings in groupby(group, key=lambda listing: listing[0]):
+        same_day = list(listings)
+        times = [str(listing[3]["firstSeen"]).strip() for listing in same_day]
+        if len(same_day) > 1 and all(len(value) > 10 for value in times):
+            instants = [datetime.fromisoformat(value.replace("Z", "+00:00")) for value in times]
+            instants = [value if value.tzinfo else value.replace(tzinfo=timezone.utc) for value in instants]
+            yield from (listing for _, listing in sorted(zip(instants, same_day), key=lambda pair: pair[0]))
+        else:
+            yield from same_day
+
+
 def reconcile(doc, observed_at=None):
     """Remove only a closed predecessor with a same-day or next-day closure.
 
@@ -92,10 +106,9 @@ def reconcile(doc, observed_at=None):
         if len(group) < 2:
             continue
         counts = Counter(listing[2] for listing in group)
-        group = [listing for listing in group if counts[listing[2]] == 1]
-        # Calendar dates can tie. The ascending numeric LinkedIn ID supplies a
-        # stable order for different IDs first seen on the same day.
-        group.sort(key=lambda listing: listing[:2])
+        # Sort same-day arrivals by their recorded times when available. The
+        # LinkedIn ID supplies a stable tie-break for date-only observations.
+        group = list(arrival_order([listing for listing in group if counts[listing[2]] == 1]))
         closed = defaultdict(list)
         for position, (started, _, job_id, row) in enumerate(group):
             if not row.get("crossIdRepost"):
