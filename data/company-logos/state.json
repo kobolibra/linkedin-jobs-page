@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-26T14:12:06.769536+00:00",
+    "checkedAt": "2026-11-26T22:02:24.311977+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-26T14:12:12.526728+00:00",
+    "checkedAt": "2026-11-26T22:02:30.194546+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-26T14:12:05.372988+00:00",
+    "checkedAt": "2026-11-26T22:02:21.374641+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12951,31 +12951,62 @@
   },
   "aloha group": {
     "name": "Aloha Group",
-    "checkedAt": "2026-11-26T16:02:14.882283+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-26T22:02:36.197067+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495012275",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495012275",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4495012275",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495012275",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495012275",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 60.12690107536659,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "ade29c28bf77650484656470.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4E0BAQFOYuQRD-2u0A/company-logo_100_100/company-logo_100_100/0/1631315000462?e=2147483647&v=beta&t=Cexzxxw31I03wE74H-57966H29LmIQqLer_VEEMwLlU",
+    "companyUrl": "https://hk.linkedin.com/company/aloha-group-limited",
+    "sourceJobId": "4495012275"
+  },
+  "commodity supplies ag": {
+    "name": "Commodity Supplies AG",
+    "checkedAt": "2026-11-26T22:02:11.068734+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0e6da260358f03efeb3589fb.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEXXqU51YB_vQ/company-logo_100_100/B4EZdp5ChyHYAU-/0/1749828250135/commodity_supplies_ag_logo?e=2147483647&v=beta&t=S4xCQlM29C5ISQyfF53SaeJF9D4Mm1CvWoxugM_3gZE",
+    "companyUrl": "https://ch.linkedin.com/company/commodity-supplies-ag",
+    "sourceJobId": "4495508653"
+  },
+  "enflame": {
+    "name": "Enflame",
+    "checkedAt": "2026-11-26T22:02:12.466322+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "7d97a20a410f380e903c8855.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C510BAQEqzzXWE6ngEA/company-logo_100_100/company-logo_100_100/0/1630606658876/enflame_logo?e=2147483647&v=beta&t=Wi9RUhOLsSXDu0apGkLEmkZN14dNw9ucUm2tdg5Xchg",
+    "companyUrl": "https://cn.linkedin.com/company/enflame",
+    "sourceJobId": "4493066523"
+  },
+  "fellow": {
+    "name": "Fellow",
+    "checkedAt": "2026-11-26T22:02:15.369994+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "ed553d034a3425e089f8711c.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFj46O0GRaX3A/company-logo_100_100/B56Z0DHIYiKYAU-/0/1773873694904/fellowproducts_logo?e=2147483647&v=beta&t=nonVRdtAdCY0EBob1_h_3Ga4GARyyRLCZIYcrX3Y3Rc",
+    "companyUrl": "https://www.linkedin.com/company/fellowproducts",
+    "sourceJobId": "4494984565"
+  },
+  "higgsfield ai": {
+    "name": "Higgsfield AI",
+    "checkedAt": "2026-11-26T22:02:18.374295+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "96ea69cb7aee0955470ddf27.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHRtj-PrkO-xA/company-logo_100_100/B4DZXtWv90HAAU-/0/1743443919176/higgsfield_logo?e=2147483647&v=beta&t=nUNa9okG1Gr5Wm4icdmpvW5n0Cn9qleQUKdUD1QsYDI",
+    "companyUrl": "https://www.linkedin.com/company/higgsfield",
+    "sourceJobId": "4487584224"
   }
 }
