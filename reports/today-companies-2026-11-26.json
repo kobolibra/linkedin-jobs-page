@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "filter_window": "2026-11-25 15:37 ~ 2026-11-26 15:37 (Beijing)",
+  "filter_window": "2026-11-25 18:24 ~ 2026-11-26 18:24 (Beijing)",
   "target_companies": [
     {
       "company": "Archroma",
@@ -61,6 +61,42 @@
       "category": "target",
       "reason": "制药",
       "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "亚能生物技术（深圳）有限公司",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Bess Broadway",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Aleph",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "True North Education",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "SharePoint Developer",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Rolejob",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T10:01:18.354Z"
     }
   ],
   "excluded_companies": [
@@ -110,7 +146,7 @@
       "company": "DBS Bank",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T21:43:26Z"
+      "pushTime": "2026-11-26"
     },
     {
       "company": "JPMorgan Chase",
@@ -128,7 +164,7 @@
       "company": "Standard Chartered",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T09:43:17Z"
+      "pushTime": "2026-11-25T15:37:22Z"
     },
     {
       "company": "UBS",
@@ -212,13 +248,13 @@
       "company": "BBVA",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T09:43:17Z"
+      "pushTime": "2026-11-25T21:43:26Z"
     },
     {
       "company": "King Deux Group",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T10:01:16.800Z"
+      "pushTime": "2026-11-26T04:01:58.258Z"
     },
     {
       "company": "Amicorp Group",
@@ -254,7 +290,7 @@
       "company": "Bank of America",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T21:43:26Z"
+      "pushTime": "2026-11-26"
     },
     {
       "company": "Citi",
@@ -345,10 +381,64 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "State Street",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T09:44:07Z"
+    },
+    {
+      "company": "The Edge Partnership - The Edge in Asia",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Visa",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Green Lake Executive Search",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Endeavour Search Limited",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Darmax Global",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Hong Kong Exchanges and Clearing Limited (HKEX)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Eastspring Investments",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Hang Seng Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
     }
   ],
-  "total_target": 10,
-  "total_excluded": 47,
-  "total_today_jobs": 90,
-  "total_all_jobs": 15064
+  "total_target": 16,
+  "total_excluded": 56,
+  "total_today_jobs": 132,
+  "total_all_jobs": 15099
 }
