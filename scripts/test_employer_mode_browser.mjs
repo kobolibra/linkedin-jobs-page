@@ -116,6 +116,15 @@ try{
     sample.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;';
     sample.style.font=style.font;sample.style.letterSpacing=style.letterSpacing;sample.textContent=mode.selectedOptions[0].textContent;document.body.append(sample);
     const labelWidth=sample.getBoundingClientRect().width;sample.remove();
+    const label=mode.parentElement.querySelector('.nj-mode-label');
+    const labelRange=document.createRange();labelRange.selectNodeContents(label);
+    const labelInk=labelRange.getBoundingClientRect();
+    const chevron=mode.parentElement.querySelector('.nj-mode-chevron'),chevronBox=chevron.getBoundingClientRect();
+    const pathBox=chevron.querySelector('path').getBBox(),scale=chevronBox.width/chevron.viewBox.baseVal.width;
+    const chevronGap=chevronBox.left+(pathBox.x-.7)*scale-labelInk.right;
+    const labelMatches=label.textContent===mode.selectedOptions[0].textContent;
+    const compactChevron=chevronGap>=3&&chevronGap<=7&&Math.abs(middle(chevronBox)-middle(mode.getBoundingClientRect()))<=1;
+    const pickerCoversFace=mode.getBoundingClientRect().left<=labelInk.left&&mode.getBoundingClientRect().right>=chevronBox.right&&style.opacity==='0';
     const aboutText=document.createRange();aboutText.selectNodeContents(nodes[1]);
     const aboutInk=aboutText.getBoundingClientRect();
     const aboutGap=rects[2].left+parseFloat(style.paddingLeft)-aboutInk.right;
@@ -136,6 +145,7 @@ try{
      within:rects.every(r=>r.left>=row.left-1&&r.right<=row.right+1),
      accountFits:!!actualAccount&&actualAccount.left>=rects[4].left-1&&actualAccount.right<=rects[4].right+1,
      labelFits:labelWidth<=mode.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),
+     labelMatches,compactChevron,pickerCoversFace,chevronGap,
      brandFits:nodes[0].scrollWidth<=nodes[0].clientWidth+1,
      nameVisible:getComputedStyle(name).display!=='none',
      aboutBreathingRoom:aboutGap>=aboutMin,
@@ -144,9 +154,9 @@ try{
      rects:rects.map(r=>[r.left,r.top,r.width,r.height]),labelWidth,aboutGap,centerDelta,inkDelta,
      leftInkGap:dividerBox.left-themeInk.right,rightInkGap:accountInk?accountInk.left-dividerBox.right:null};
    });
-   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,brandFits:true,nameVisible:width>369,aboutBreathingRoom:true,dividerSymmetry:true,dividerCorrect:true};
+   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,labelMatches:true,compactChevron:true,pickerCoversFace:true,brandFits:true,nameVisible:width>369,aboutBreathingRoom:true,dividerSymmetry:true,dividerCorrect:true};
    for(const [key,value] of Object.entries(expectedGeometry))assert.equal(geometry[key],value,engine+' '+width+' '+theme+' '+mode+' '+key+' '+JSON.stringify(geometry));
-   console.log('MASTHEAD_GEOMETRY '+JSON.stringify({engine,width,theme,isGuest,mode,aboutGap:geometry.aboutGap,centerDelta:geometry.centerDelta,inkDelta:geometry.inkDelta,leftInkGap:geometry.leftInkGap,rightInkGap:geometry.rightInkGap}));
+   console.log('MASTHEAD_GEOMETRY '+JSON.stringify({engine,width,theme,isGuest,mode,chevronGap:geometry.chevronGap,aboutGap:geometry.aboutGap,centerDelta:geometry.centerDelta,inkDelta:geometry.inkDelta,leftInkGap:geometry.leftInkGap,rightInkGap:geometry.rightInkGap}));
    // Capture before clicking any other element; the select is still focused.
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
    await assertBorderless('focused after screenshot '+mode,true);
@@ -166,7 +176,9 @@ try{
   // Three consecutive changes in one task exercise the same document and latest scope.
   await page.evaluate(()=>{EmployerMode.set('direct');EmployerMode.set('agency');EmployerMode.set('direct');});await wait('direct');
   assert.equal(navigations,0);assert.equal(indexRequests,initialFetches,'mode switches must reuse one master snapshot');
+  assert.equal(await page.locator('.nj-mode-label').textContent(),'Direct mode');
   await page.reload();await wait('direct');
+  assert.equal(await page.locator('.nj-mode-label').textContent(),'Direct mode');
   assert.deepEqual(errors,[]);
   await context.close();
  }

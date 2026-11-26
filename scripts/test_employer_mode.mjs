@@ -66,3 +66,16 @@ test('masthead reserves real About whitespace and an independent symmetric icon 
  assert.match(css,/#headerTools \.nj-account-slot \.account-control::before\{content:none;display:none\}/);
  assert.match(html,/<span class="nj-account-divider" aria-hidden="true"><\/span>/);
 });
+
+test('mode face follows selected option while the full fixed rail remains a native picker',()=>{
+ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ const css=readFileSync(new URL('../next-journey-masthead.css',import.meta.url),'utf8');
+ const js=readFileSync(new URL('../employer-mode.js',import.meta.url),'utf8');
+ assert.match(html,/<span class="nj-mode-label" aria-hidden="true">Full mode<\/span>/);
+ assert.match(css,/grid-template-columns:max-content 11px minmax\(0,1fr\);column-gap:3px/);
+ assert.match(css,/#headerTools \.nj-mode-chevron\{grid-column:2;grid-row:1;/);
+ assert.match(css,/#headerTools \.nj-employer-mode select\{position:absolute;inset:0;grid-column:1\/-1;grid-row:1;z-index:1;opacity:0;/);
+ assert.match(js,/modeLabel\.textContent=select\.selectedOptions\[0\]/);
+ assert.match(js,/syncPicker\(selected\)/);
+ assert.match(js,/syncPicker\(mode\)/);
+});
