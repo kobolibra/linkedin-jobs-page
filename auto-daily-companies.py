@@ -21,6 +21,9 @@ import base64
 import urllib.request
 import urllib.error
 import ssl
+from pathlib import Path
+# Isolated Python (-I) deliberately excludes the script directory.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import reclassify as classification
 from datetime import datetime, timezone, timedelta
 
@@ -37,7 +40,7 @@ BLACKLIST_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/financ
 INDUSTRIES_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/company_industries.json"
 
 BEIJING_TZ = timezone(timedelta(hours=8))
-OUTPUT_DIR = "/workspace"
+OUTPUT_DIR = os.environ.get("NEXT_JOURNEY_OUTPUT_DIR", "/workspace")
 
 # ============================================================
 # GITHUB FUNCTIONS

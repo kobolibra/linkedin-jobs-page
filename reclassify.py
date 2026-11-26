@@ -334,12 +334,12 @@ def mirror(files, day, root):
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(allow_abbrev=False)
     ap.add_argument("--blacklist", nargs="*", default=[])
     ap.add_argument("--blacklist-records", default="[]", help="JSON array of typed company records")
     ap.add_argument("--industry", default="{}")
     ap.add_argument("--date", default=datetime.now(BEIJING).date().isoformat())
-    ap.add_argument("--local-root", default="/workspace")
+    ap.add_argument("--local-root", default=os.environ.get("NEXT_JOURNEY_OUTPUT_DIR", "/workspace"))
     ap.add_argument("--finalize", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -347,7 +347,7 @@ def main():
     typed_additions = blacklist_records(json.loads(args.blacklist_records), allow_legacy=False)
     if not (args.blacklist or typed_additions or industries or args.finalize):
         return
-    cfg = json.loads(Path("/workspace/config.json").read_text())
+    cfg = json.loads(Path(os.environ.get("NEXT_JOURNEY_CONFIG", "/workspace/config.json")).read_text())
     handlers = [urllib.request.HTTPSHandler(context=ssl.create_default_context())]
     if cfg.get("proxy"):
         handlers.append(urllib.request.ProxyHandler(dict.fromkeys(("http", "https"), cfg["proxy"])))
