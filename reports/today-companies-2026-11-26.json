@@ -1,0 +1,354 @@
+{
+  "date": "2026-11-26",
+  "filter_window": "2026-11-25 12:10 ~ 2026-11-26 12:10 (Beijing)",
+  "target_companies": [
+    {
+      "company": "First Sentier Group",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Archroma",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "STARTEAM GLOBAL",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "AMBR (Nasdaq: AMBR)",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "Trulyyy",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "Barco",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "福维克公司",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "Datawave Technologies Limited",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "ASUS",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "Pratt & Whitney",
+      "category": "target",
+      "reason": "Aerospace Manufacturing (Aircraft Engines)",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "Entrust",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-25T22:01:40.435Z"
+    },
+    {
+      "company": "株式会社精研",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "第一三共",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "ConnectedSolutions",
+      "category": "target",
+      "reason": "待查证",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    }
+  ],
+  "excluded_companies": [
+    {
+      "company": "Goldman Sachs",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26"
+    },
+    {
+      "company": "Deutsche Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26"
+    },
+    {
+      "company": "Morgan Stanley",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26"
+    },
+    {
+      "company": "HSBC",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26"
+    },
+    {
+      "company": "Invesco",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26"
+    },
+    {
+      "company": "Bloomberg",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26"
+    },
+    {
+      "company": "BNP Paribas",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:47:01Z"
+    },
+    {
+      "company": "DBS Bank",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:47:01Z"
+    },
+    {
+      "company": "JPMorgan Chase",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:47:01Z"
+    },
+    {
+      "company": "JPMorganChase",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:47:01Z"
+    },
+    {
+      "company": "Standard Chartered",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:47:01Z"
+    },
+    {
+      "company": "UBS",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:47:01Z"
+    },
+    {
+      "company": "BNP Paribas Asset Management",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "China Construction Bank (Asia)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Mastercard",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "晨星资讯(深圳)有限公司",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Robert Walters",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Nomura",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "MUFG Investor Services",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Randstad Singapore",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Standard Chartered Singapore",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "CITIC Securities International",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "Maples Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T07:25:19.584Z"
+    },
+    {
+      "company": "Charterhouse Partnership",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T07:25:19.584Z"
+    },
+    {
+      "company": "BBVA",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T09:43:17Z"
+    },
+    {
+      "company": "King Deux Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "Amicorp Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "Temasek",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "Robert Half",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "GRIT",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "Hays",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T16:01:35.756Z"
+    },
+    {
+      "company": "Bank of America",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T21:43:26Z"
+    },
+    {
+      "company": "Citi",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T21:43:26Z"
+    },
+    {
+      "company": "Schroders",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T21:43:26Z"
+    },
+    {
+      "company": "Societe Generale",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T21:43:26Z"
+    },
+    {
+      "company": "LSEG",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T22:01:40.435Z"
+    },
+    {
+      "company": "S&P Global",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T22:01:40.435Z"
+    },
+    {
+      "company": "VISTRA",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-25T22:01:40.435Z"
+    },
+    {
+      "company": "Ethos BeathChapman",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "Salient Group",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "Gravitas Recruitment Group (Global) Ltd",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "Bank of China (Hong Kong)",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "ALL-STAR AGENCY",
+      "category": "excluded",
+      "reason": "blacklist exact match (financial/headhunter)",
+      "pushTime": "2026-11-26T04:01:58.258Z"
+    }
+  ],
+  "total_target": 14,
+  "total_excluded": 43,
+  "total_today_jobs": 136,
+  "total_all_jobs": 15076
+}
