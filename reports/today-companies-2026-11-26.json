@@ -65,7 +65,7 @@
     {
       "company": "亚能生物技术（深圳）有限公司",
       "category": "target",
-      "reason": "待查证",
+      "reason": "分子诊断/体外诊断(IVD)",
       "pushTime": "2026-11-26T10:01:18.354Z"
     },
     {
@@ -77,23 +77,17 @@
     {
       "company": "Aleph",
       "category": "target",
-      "reason": "待查证",
+      "reason": "数字广告/媒体(OpenAI ChatGPT Ads 独家分销)",
       "pushTime": "2026-11-26T10:01:18.354Z"
     },
     {
       "company": "True North Education",
       "category": "target",
-      "reason": "待查证",
+      "reason": "教育咨询/留学申请辅导",
       "pushTime": "2026-11-26T10:01:18.354Z"
     },
     {
       "company": "SharePoint Developer",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-26T10:01:18.354Z"
-    },
-    {
-      "company": "Rolejob",
       "category": "target",
       "reason": "待查证",
       "pushTime": "2026-11-26T10:01:18.354Z"
@@ -435,10 +429,16 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Rolejob",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
     }
   ],
-  "total_target": 16,
-  "total_excluded": 56,
+  "total_target": 15,
+  "total_excluded": 57,
   "total_today_jobs": 132,
   "total_all_jobs": 15099
 }
