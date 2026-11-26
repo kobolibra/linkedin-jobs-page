@@ -137,6 +137,9 @@ try{
     const faceCenterDelta=Math.abs((labelInk.left+chevronBox.right)/2-(rects[2].left+rects[2].right)/2);
     const hit=(r)=>document.elementFromPoint((r.left+r.right)/2,(r.top+r.bottom)/2)===mode;
     const brandAboutGap=aboutInk.left-rects[0].right;
+    const sign=nodes[4].querySelector('.auth-guest-sign');
+    let guestThemeGap=null;
+    if(sign){const r=document.createRange();r.selectNodeContents(sign.firstChild);guestThemeGap=r.getBoundingClientRect().left-themeInk.right;}
     const centerDelta=accountInk?Math.abs((dividerCenter-themeInk.center)-(accountInk.center-dividerCenter)):0;
     const inkDelta=accountInk?Math.abs((dividerBox.left-themeInk.right)-(accountInk.left-dividerBox.right)):0;
     const desktop=innerWidth>720,aboutMin=desktop?30:14;
@@ -153,7 +156,8 @@ try{
      pickerHitTargets:hit(labelInk)&&hit(chevronBox),
      modeThemeBreathingRoom:modeThemeGap>=(desktop?14:8)&&modeThemeGap<=(desktop?36:28),
      balancedModeFace:faceCenterDelta<=1,
-     brandAboutBreathingRoom:brandAboutGap>=(desktop?23:4),
+     brandAboutBreathingRoom:brandAboutGap>=(desktop?23:7),
+     guestThemeGap,guestThemeBreathingRoom:guestThemeGap===null||(guestThemeGap>=7&&guestThemeGap<=(desktop?32:24)),
      brandFits:nodes[0].scrollWidth<=nodes[0].clientWidth+1,
      nameVisible:getComputedStyle(name).display!=='none',
      aboutBreathingRoom:aboutGap>=aboutMin&&aboutGap<=(desktop?52:34),
@@ -162,9 +166,9 @@ try{
      rects:rects.map(r=>[r.left,r.top,r.width,r.height]),labelWidth,aboutGap,centerDelta,inkDelta,
      leftInkGap:dividerBox.left-themeInk.right,rightInkGap:accountInk?accountInk.left-dividerBox.right:null};
    });
-   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,labelMatches:true,compactChevron:true,pickerCoversFace:true,pickerHitTargets:true,modeThemeBreathingRoom:true,balancedModeFace:true,brandAboutBreathingRoom:true,brandFits:true,nameVisible:width>369,aboutBreathingRoom:true,dividerSymmetry:true,dividerCorrect:true};
+   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,labelMatches:true,compactChevron:true,pickerCoversFace:true,pickerHitTargets:true,modeThemeBreathingRoom:true,balancedModeFace:true,brandAboutBreathingRoom:true,guestThemeBreathingRoom:true,brandFits:true,nameVisible:width>369,aboutBreathingRoom:true,dividerSymmetry:true,dividerCorrect:true};
    for(const [key,value] of Object.entries(expectedGeometry))assert.equal(geometry[key],value,engine+' '+width+' '+theme+' '+mode+' '+key+' '+JSON.stringify(geometry));
-   console.log('MASTHEAD_GEOMETRY '+JSON.stringify({engine,width,theme,isGuest,mode,chevronGap:geometry.chevronGap,aboutGap:geometry.aboutGap,modeThemeGap:geometry.modeThemeGap,faceCenterDelta:geometry.faceCenterDelta,brandAboutGap:geometry.brandAboutGap,centerDelta:geometry.centerDelta,inkDelta:geometry.inkDelta,leftInkGap:geometry.leftInkGap,rightInkGap:geometry.rightInkGap}));
+   console.log('MASTHEAD_GEOMETRY '+JSON.stringify({engine,width,theme,isGuest,mode,chevronGap:geometry.chevronGap,aboutGap:geometry.aboutGap,modeThemeGap:geometry.modeThemeGap,faceCenterDelta:geometry.faceCenterDelta,brandAboutGap:geometry.brandAboutGap,guestThemeGap:geometry.guestThemeGap,centerDelta:geometry.centerDelta,inkDelta:geometry.inkDelta,leftInkGap:geometry.leftInkGap,rightInkGap:geometry.rightInkGap}));
    // Capture before clicking any other element; the select is still focused.
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
    await assertBorderless('focused after screenshot '+mode,true);
