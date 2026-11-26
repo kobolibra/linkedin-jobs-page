@@ -98,7 +98,7 @@ def push_daily_report_to_github(jobs, today):
         if previous is not None:
             for key in ("target_companies", "excluded_companies"):
                 merged[key] = previous[key] + results[key]
-        report = classification.classify(merged, {classification.norm(n) for n in blacklist},
+        report = classification.classify(merged, classification.protected_names(blacklist),
                                          classification.verified_industries(industries))
         return classification.daily_files(today, report)
 
@@ -173,7 +173,7 @@ def get_target_reason(cn, industries):
 
 
 def process_jobs(jobs, today, blacklist, industries):
-    blocked = {classification.norm(name) for name in blacklist}
+    blocked = classification.protected_names(classification.blacklist_records(blacklist))
     verified = classification.verified_industries(industries)
     if not isinstance(jobs, list):
         if isinstance(jobs, dict):

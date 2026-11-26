@@ -1,0 +1,32 @@
+name: Financial blacklist schema
+
+on:
+  pull_request:
+    paths: [financial_blacklist.json, reclassify.py, .github/workflows/validate-financial-blacklist.yml]
+  push:
+    branches: [main]
+    paths: [financial_blacklist.json, reclassify.py, .github/workflows/validate-financial-blacklist.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Require typed company records
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from reclassify import BLACKLIST, blacklist_records
+
+          records = blacklist_records(json.loads(Path(BLACKLIST).read_text(encoding="utf-8")), allow_legacy=False)
+          names = {record["company"] for record in records}
+          if not names or len(names) != len(records):
+              raise ValueError("Financial blacklist is empty or contains duplicate original names")
+          PY

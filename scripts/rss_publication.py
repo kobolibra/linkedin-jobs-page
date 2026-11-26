@@ -17,6 +17,10 @@ import tempfile
 import unicodedata
 from pathlib import Path
 
+# The publication script also runs directly as python scripts/rss_publication.py.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from reclassify import BLACKLIST as FINANCIAL_BLACKLIST, blacklist_records, protected_names
+
 INPUTS = {
     'rss.json': 'data/n8n/rss-latest.json',
     'jobspy.json': 'data/jobspy/incremental/search_combined.json',
@@ -45,7 +49,6 @@ def capture(root: Path, destination: Path):
 
 
 TARGET_HISTORY = 'reports/cumulative-target-companies.tsv'
-FINANCIAL_BLACKLIST = 'financial_blacklist.json'
 TARGET_QUARANTINE = 'data/target-filter-quarantine.json'
 
 
@@ -72,10 +75,7 @@ def read_target_history(path: Path) -> set[str]:
 
 def protected_financial_names(path: Path) -> set[str]:
     """Veto deletion for confirmed finance/recruiting firms; never delete from this list."""
-    values = json.loads(path.read_text(encoding='utf-8'))
-    if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
-        raise ValueError(f'Financial classification must be an array of names: {path}')
-    return {target_company_key(item) for item in values if target_company_key(item)}
+    return protected_names(blacklist_records(json.loads(path.read_text(encoding='utf-8'))))
 
 
 def effective_target_names(root: Path) -> set[str]:
