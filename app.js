@@ -956,6 +956,7 @@ jobsDataPromise
       };
       const solve=(limit,allowCollision=false)=>{
         const choices=geometry.map(item=>positions(item,limit,allowCollision));
+        if(!choices.length)return [];
         if(choices.some(items=>!items.length))return null;
         // Dynamic programming over the ordered labels: keep the least-cost
         // preceding option whose lower edge clears this option's upper edge.
