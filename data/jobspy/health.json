@@ -2,43 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:45117505827:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-23T05:24:41.257331+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 8,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 4,
-        "404": 4
-      },
-      "outcomes": {
-        "response": 8
-      },
-      "stages": {
-        "logos": 8
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 5,
-        "downloaded": 1,
-        "missing": 4,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 0,
-        "httpRetries": 0
-      }
-    },
-    {
       "runId": "jobs:45146059008:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -6472,6 +6435,53 @@
         "httpRetries": 0,
         "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 62.3s",
         "deferred": 0
+      }
+    },
+    {
+      "runId": "logos:45788800142:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-26T09:06:28.098674+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 4,
+      "retries": 0,
+      "httpStatuses": {
+        "404": 2,
+        "200": 1,
+        "429": 1
+      },
+      "outcomes": {
+        "response": 3,
+        "rate_limited": 1
+      },
+      "stages": {
+        "logos": 4
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1795684048.6102524,
+          "stopUntil": 1795684048.6102524,
+          "reason": "HTTP 429"
+        }
+      },
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 4,
+        "downloaded": 0,
+        "missing": 3,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 60.6s",
+        "deferred": 1
       }
     }
   ],
