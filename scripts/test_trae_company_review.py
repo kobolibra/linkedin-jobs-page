@@ -25,6 +25,9 @@ class TraeEntrypointTest(unittest.TestCase):
         subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
         subprocess.run(["git", "-C", str(self.root), "-c", "user.name=Test", "-c",
                         "user.email=test@example.com", "commit", "-qm", "fixture"], check=True)
+        self.config_patch = patch.object(entry, "CONFIG", self.cfg)
+        self.config_patch.start()
+        self.addCleanup(self.config_patch.stop)
         self.sha = entry.git(self.root, "rev-parse", "HEAD")
         self.manifest = {"codeCommit": self.sha, "dataCommit": self.sha,
                          "scripts": [{"path": p, "sha256": entry.digest(self.root / p)}
@@ -46,6 +49,21 @@ class TraeEntrypointTest(unittest.TestCase):
         self.cfg.write_text(json.dumps({"repo": "wrong/repo", "branch": "main", "github_token": "test"}))
         with self.assertRaises(ValueError):
             entry.load_config(self.cfg)
+
+    def test_authenticated_git_environment_is_process_local(self):
+        import base64
+        from scripts.trae_bootstrap import git_env, load_config
+        with patch.dict(os.environ, {"GIT_DIR": "/old", "GIT_TRACE": "1", "GITHUB_TOKEN": "env-test"}):
+            cfg = load_config(self.run / "missing.json")
+            env = git_env(cfg)
+        self.assertEqual(cfg["github_token"], "env-test")
+        self.assertNotIn("GIT_DIR", env)
+        self.assertNotIn("GIT_TRACE", env)
+        self.assertEqual(env["GIT_CONFIG_VALUE_0"],
+                         "Authorization: Basic " + base64.b64encode(b"x-access-token:env-test").decode())
+        self.assertEqual(env["GIT_CONFIG_KEY_0"], "http.https://github.com/.extraheader")
+        self.assertEqual(env["GIT_CONFIG_VALUE_1"], "")
+        self.assertNotIn("env-test", entry.REMOTE)
 
     def test_modified_or_untracked_business_code_is_refused(self):
         entry.check_code(self.root, self.manifest)
