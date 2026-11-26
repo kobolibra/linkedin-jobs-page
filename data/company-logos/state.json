@@ -3020,29 +3020,30 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-26T09:06:18.930515+00:00",
+    "checkedAt": "2026-11-26T09:17:33.765111+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4445434545",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
-      },
+      }
+    ],
+    "httpRetries": [
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445423723",
-        "status": 404,
-        "contentType": "",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4445434545",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
-        "jobId": "4445423723",
-        "reason": "http_error",
-        "stage": "job"
+        "waitSeconds": 60.700651316174735,
+        "deferred": true
       }
     ]
   },

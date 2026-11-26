@@ -2,50 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:45152281960:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-23T10:01:58.030079+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 1,
-      "retries": 0,
-      "httpStatuses": {
-        "429": 1
-      },
-      "outcomes": {
-        "rate_limited": 1
-      },
-      "stages": {
-        "logos": 1
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {
-        "linkedin.com": {
-          "cooldownUntil": 1795428179.9751768,
-          "stopUntil": 1795428179.9751768,
-          "reason": "HTTP 429"
-        }
-      },
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 9,
-        "downloaded": 0,
-        "missing": 1,
-        "placeholders": 0,
-        "blocked": 1,
-        "reusedSources": 0,
-        "httpRetries": 0,
-        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 62.0s",
-        "deferred": 8
-      }
-    },
-    {
       "runId": "jobs:45204046431:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -5957,6 +5913,50 @@
         "reusedSources": 0,
         "httpRetries": 0,
         "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 61.9s",
+        "deferred": 3
+      }
+    },
+    {
+      "runId": "logos:45790533899:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-26T09:17:33.935115+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 1,
+      "retries": 0,
+      "httpStatuses": {
+        "429": 1
+      },
+      "outcomes": {
+        "rate_limited": 1
+      },
+      "stages": {
+        "logos": 1
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {
+        "linkedin.com": {
+          "cooldownUntil": 1795684714.5677836,
+          "stopUntil": 1795684714.5677836,
+          "reason": "HTTP 429"
+        }
+      },
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 4,
+        "downloaded": 0,
+        "missing": 1,
+        "placeholders": 0,
+        "blocked": 1,
+        "reusedSources": 0,
+        "httpRetries": 0,
+        "stoppedReason": "RSS logo HTTP 429 deferred to the next publication; cooldown 60.7s",
         "deferred": 3
       }
     }
