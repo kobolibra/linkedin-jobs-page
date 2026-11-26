@@ -122,7 +122,7 @@ try{
      oneRow:rects.every(r=>Math.abs(middle(r)-middle(row))<=1),
      within:rects.every(r=>r.left>=row.left-1&&r.right<=row.right+1),
      accountFits:!!actualAccount&&actualAccount.left>=rects[4].left-1&&actualAccount.right<=rects[4].right+1,
-     labelFits:labelWidth<=mode.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)+1,
+     labelFits:labelWidth<=mode.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),
      brandFits:nodes[0].scrollWidth<=nodes[0].clientWidth+1,
      nameVisible:getComputedStyle(name).display!=='none',rects:rects.map(r=>[r.left,r.top,r.width,r.height]),labelWidth};
    });
