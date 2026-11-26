@@ -44,11 +44,14 @@ def main():
             "companyKeysByType": dict(Counter(classifications.get(key, "unlisted") for key in companies.values())),
         }
 
+    def was_reviewed(record):
+        return bool(record.get("evidence") or record.get("review"))
+
     report = {
         "originalNames": len(records),
         "companyKeys": len(types),
         "namesByType": dict(Counter(row["employerType"] for row in records)),
-        "reviewedUnknown": sum(row["employerType"] == "unknown" and bool(row.get("evidence")) for row in records),
+        "reviewedUnknown": sum(row["employerType"] == "unknown" and was_reviewed(row) for row in records),
         "all": counts(jobs),
         "active": counts(active),
         "website": counts(website, lambda name: name.strip().lower()),
@@ -61,14 +64,14 @@ def main():
         pending = {}
         for row in records:
             if row["employerType"] == "unknown":
-                pending[row["company"]] = "inconclusive" if row.get("evidence") else "pending"
+                pending[row["company"]] = "inconclusive" if was_reviewed(row) else "pending"
         for job in jobs:
             name = job.get("company")
             if name and norm(name) not in combined_types:
                 pending[name] = "unlisted"
         for row in extra:
             if row["employerType"] == "unknown":
-                pending[row["company"]] = "inconclusive" if row.get("evidence") else "pending"
+                pending[row["company"]] = "inconclusive" if was_reviewed(row) else "pending"
         report["reviewQueue"] = sorted(
             ({"company": name, "status": status, "activeJobsForKey": live_counts[norm(name)],
               "websiteJobsForKey": website_counts[norm(name)]}

@@ -87,6 +87,13 @@ def blacklist_records(values, *, allow_legacy=True):
             field(evidence.get("note"))
         elif kind != "unknown":
             raise ValueError(f"Missing evidence for {name}")
+        review = record.get("review")
+        if review is not None:
+            if kind != "unknown" or not isinstance(review, dict):
+                raise ValueError(f"Invalid inconclusive review for {name}")
+            date.fromisoformat(field(review.get("reviewedOn")))
+            field(review.get("query"))
+            field(review.get("note"))
         if types_by_name.setdefault(norm(name), kind) != kind:
             raise ValueError(f"Conflicting employerType for {name}")
     return values

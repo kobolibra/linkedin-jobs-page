@@ -29,8 +29,10 @@ For each verified classification store `evidence.url` (a source for the
 specific entity), `evidence.reviewedOn` (ISO date) and `evidence.note` (the
 supported claim and any identity mapping). Prefer the organization's website,
 regulatory register, filing or company-maintained LinkedIn page. An `unknown`
-with evidence records an inconclusive check. An `unknown` without evidence
-means review is pending. Unlisted publishers are tracked separately. For
+with evidence records an inconclusive check. For an inconclusive search
+without a reliable source, `review` records the date, query and specific
+reason. An `unknown` without either field is pending. Remove the
+inconclusive `review` after a type has been established. Unlisted publishers are tracked separately. For
 a classification confirmed by the project requester,
 `evidence.basis` is `requester_confirmation`. The note states which part
 is supplied by that confirmation and what the linked source supports.
@@ -101,8 +103,8 @@ normalized keys. `BAH Partners` / `Bah Partners` and `BOSS直聘` /
 | Company keys | 913 | 488 | 550 |
 | Company keys matching the protection list | 617 | 446 | 466 |
 | Jobs matching the protection list | 14,653 | 5,692 | 6,185 |
-| Jobs with an evidenced type other than unknown | 14,550 | 5,692 | 6,185 |
-| Jobs matching an unknown record | 103 | 0 | 0 |
+| Jobs with an evidenced type other than unknown | 14,647 | 5,692 | 6,185 |
+| Jobs matching an unknown record | 6 | 0 | 0 |
 | Jobs with no record | 411 | 47 | 115 |
 | Company keys with no record | 296 | 42 | 84 |
 
@@ -114,8 +116,8 @@ The 561 rows without `jobStatus` are eligible on this snapshot and add
 `jobStatus == "active"`.
 
 All 466 protection-list names that appear in the homepage metric are
-classified. In the full protection list, 751 records are classified and
-425 remain unknown. 1 have inconclusive reviews and 424 await evidence.
+classified. In the full protection list, 1158 records are classified and
+18 remain unknown. 18 have inconclusive reviews and 0 await evidence.
 In the canonical snapshot, 6,812 records have `companyCanonical` and
 `requestedCompany`, and 10,100 have `companyLogoSource`. No job has an
 `employerType` or `jobPoster` field.

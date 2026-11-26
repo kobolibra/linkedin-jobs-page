@@ -64,6 +64,14 @@ class ClassificationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "reviewed data change"):
             rc.plan(self.files.get, DAY, typed_additions=[dict(bank, employerType="mixed")])
 
+    def test_inconclusive_review_survives_appending_other_names(self):
+        review = {"reviewedOn": DAY, "query": '"Breeze" employer', "note": "Several entities share the name."}
+        row = {"company": "Breeze", "employerType": "unknown", "review": review}
+        self.files[rc.BLACKLIST] = json.dumps([row])
+        changes = rc.plan(self.files.get, DAY, additions=["Another company"])
+        records = rc.blacklist_records(json.loads(changes[rc.BLACKLIST]), allow_legacy=False)
+        self.assertIn(row, records)
+
     def test_rejects_lost_classification_or_conflicting_normalized_aliases(self):
         with self.assertRaises(ValueError):
             rc.blacklist_records(["Bank"], allow_legacy=False)
