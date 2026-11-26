@@ -1,20 +1,19 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-26T14:05:51.325Z",
-  "sourceCommit": "b2a3642eda1f8a1c6b6696f1c1f6fccf45e82cfd",
+  "generatedAt": "2026-11-26T14:10:34.262Z",
+  "sourceCommit": "e6965b747a338c39db6f249362e3a04fb03af6af",
   "summary": {
     "canonicalJobs": 15084,
     "indexJobs": 15084,
     "websiteJobs": 6307,
     "trackedCompanies": 287,
-    "reviewQueue": 18,
+    "reviewQueue": 10,
     "queueByStatus": {
-      "inconclusive": 7,
-      "not_started": 11
+      "inconclusive": 10
     },
     "queueBySource": {
-      "historical_pending": 4,
-      "unlisted": 13,
+      "historical_pending": 1,
+      "unlisted": 6,
       "inconclusive": 4
     },
     "stagingNotCanonical": 0,
@@ -398,78 +397,6 @@
       ]
     },
     {
-      "company": "Aceleradora Ágil",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Aeveyn Group",
-      "sourceStatuses": [
-        "historical_pending"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [
-        "2026-11-21"
-      ],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Carrefour City",
-      "sourceStatuses": [
-        "historical_pending",
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [
-        "2026-11-21"
-      ],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Connect to the opportunity",
-      "sourceStatuses": [
-        "historical_pending",
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [
-        "2026-11-22"
-      ],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
       "company": "Deutsche",
       "sourceStatuses": [
         "inconclusive"
@@ -492,26 +419,14 @@
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "investigationSummary": "The fragment matches Deutsche Bank and other names such as Deutsche Börse. A specific entity cannot be resolved.",
+      "investigationSummary": "Existing search found multiple distinct Deutsche entities, including Deutsche Bank and Deutsche Börse; there is no exact historical job or independently verifiable entity for this bare name.",
       "queries": [
         "\"Deutsche\" Deutsche Bank brand company Hong Kong"
-      ]
-    },
-    {
-      "company": "Everest Global (EVG)",
-      "sourceStatuses": [
-        "unlisted"
       ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "remainingQuestion": "Recover the original job/company page or full legal name.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [],
+      "observedJobs": []
     },
     {
       "company": "Family Office",
@@ -525,9 +440,31 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/trust-manager-at-family-office-4457306277"
+      ],
+      "investigationSummary": "The historical trust manager JD describes a Singapore family office; the generic publisher label does not identify a unique legal entity. Blanket classification would affect unrelated family offices.",
+      "remainingQuestion": "Determine legal entity or verified publisher-to-employer relation.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/trust-manager-at-family-office-4457306277",
+          "note": "The historical trust manager JD describes a Singapore family office; the generic publisher label does not identify a unique legal entity. Blanket classification would affect unrelated family offices."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Trust Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/trust-manager-at-family-office-4457306277",
+          "firstSeen": "2026-08-21T16:03:07.432Z",
+          "pushTime": "2026-08-22T10:04:11.127Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Finance Club Singapore",
@@ -595,22 +532,6 @@
       "lastReviewedOn": "2026-11-26"
     },
     {
-      "company": "Flowdesk-p",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
       "company": "Inskap",
       "sourceStatuses": [
         "unlisted"
@@ -622,9 +543,31 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/global-head-wealth-asset-management-senior-executive-c-suite-at-inskap-4426483806"
+      ],
+      "investigationSummary": "The role describes wealth and asset management, but no verified official financial business description or evidence that the publisher is the employing entity rather than an intermediary was found.",
+      "remainingQuestion": "Confirm legal employer, business activity or third-party recruitment relationship.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/global-head-wealth-asset-management-senior-executive-c-suite-at-inskap-4426483806",
+          "note": "The role describes wealth and asset management, but no verified official financial business description or evidence that the publisher is the employing entity rather than an intermediary was found."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Global Head, Wealth & Asset Management (senior executive / C-suite)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/global-head-wealth-asset-management-senior-executive-c-suite-at-inskap-4426483806",
+          "firstSeen": "2026-08-01T10:02:35.169Z",
+          "pushTime": "2026-08-02T04:02:51.849Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Intelligentsia Capital",
@@ -638,9 +581,39 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/idirect-international-apac-vice-president-at-intelligentsia-capital-4445434545"
+      ],
+      "investigationSummary": "Historical publisher roles correspond to iCapital vacancies. Other postings under this publisher also name iCapital; no independent confirmation that Intelligentsia Capital is an authorized recruiter, platform or direct employer.",
+      "remainingQuestion": "Identify the publisher's legal business and relationship with iCapital.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/idirect-international-apac-vice-president-at-intelligentsia-capital-4445434545",
+          "note": "Historical publisher roles correspond to iCapital vacancies. Other postings under this publisher also name iCapital; no independent confirmation that Intelligentsia Capital is an authorized recruiter, platform or direct employer."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "iDirect International APAC - Vice President",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/idirect-international-apac-vice-president-at-intelligentsia-capital-4445434545",
+          "firstSeen": "2026-07-28T04:02:30.049Z",
+          "pushTime": "2026-07-28T22:02:57.724Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Investor Relations - Assistant Vice President",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/investor-relations-assistant-vice-president-at-intelligentsia-capital-4445423723",
+          "firstSeen": "2026-07-28T04:02:30.049Z",
+          "pushTime": "2026-07-28T22:02:57.724Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Microsoft Germany",
@@ -654,9 +627,31 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": "Technology/Software",
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/fund-administrator-investor-relations-associate-shareholder-services-officer-at-microsoft-germany-4477062094"
+      ],
+      "investigationSummary": "The Singapore fund-administration posting is attributed to Microsoft Germany but the named poster identifies an unrelated audit organization. The employer identity is not established by the posting.",
+      "remainingQuestion": "Verify actual hiring entity and whether the company page was misattributed.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/fund-administrator-investor-relations-associate-shareholder-services-officer-at-microsoft-germany-4477062094",
+          "note": "The Singapore fund-administration posting is attributed to Microsoft Germany but the named poster identifies an unrelated audit organization. The employer identity is not established by the posting."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Fund Administrator / Investor Relations Associate / Shareholder Services Officer",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/fund-administrator-investor-relations-associate-shareholder-services-officer-at-microsoft-germany-4477062094",
+          "firstSeen": "2026-10-15T07:17:01.117Z",
+          "pushTime": "2026-10-15T07:17:01.117Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Pantera Capital CA",
@@ -670,92 +665,47 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Punjab Capital",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "identityStatus": "unresolved",
-      "industry": "未核实 / Unresolved",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/regional-threat-assessment-manager-at-pantera-capital-ca-4443803669"
+      ],
+      "investigationSummary": "Exact posting explicitly identifies Coinbase as hiring company; other publisher postings refer to distinct financial firms. This establishes reposting/misattribution but not an authorized agency or platform identity.",
+      "remainingQuestion": "Establish publisher's business and relationship to advertised employers; do not equate display name with Pantera Capital.",
+      "lastReviewedOn": "2026-11-26",
       "industryEvidence": [
         {
-          "url": "https://www.linkedin.com/company/punjab-capital",
-          "note": "输入提供该精确公司页线索，但 WebFetch 返回 HTTP 451，无法核验公司自述、法定实体或官网。"
-        },
-        {
-          "url": "https://sg.linkedin.com/jobs/view/founding-partner-investments-capital-formation-at-punjab-capital-4442610115",
-          "note": "原始标题含 Investments & Capital Formation，但职位名称本身不足以证明公司业务；页面无法取得，不能据此认定金融保护范围。"
+          "url": "https://sg.linkedin.com/jobs/view/regional-threat-assessment-manager-at-pantera-capital-ca-4443803669",
+          "note": "Exact posting explicitly identifies Coinbase as hiring company; other publisher postings refer to distinct financial firms. This establishes reposting/misattribution but not an authorized agency or platform identity."
         }
       ],
-      "employerType": "unknown",
-      "protectedRecord": null,
-      "queries": [
-        "\"Punjab Capital\" Singapore investments official",
-        "\"Punjab Capital\" \"Founding Partner\" Singapore",
-        "\"Punjab Capital\" \"4442610115\"",
-        "\"Punjab Capital\" LinkedIn Singapore investments capital formation",
-        "site:linkedin.com/company \"Punjab Capital\" Singapore"
-      ],
-      "investigationSummary": "多轮精确名称、新加坡、职位、职位 ID 和 LinkedIn 限定检索未找到该新加坡实体的官网或监管资料；结果中的巴基斯坦 Punjab Capital Securities 是不同名称和地区实体，不能作为证据。该 unlisted 项保护范围不明，因此不新增记录、不删除，也不把 unlisted 当 direct。",
-      "remainingQuestion": "新加坡 Punjab Capital 的法定实体、官方网站和实际业务是什么，是否与巴基斯坦 Punjab Capital Securities 无关，以及该 Founding Partner 职位由谁直接聘用？",
-      "lastReviewedOn": "2026-11-26"
-    },
-    {
-      "company": "SolarStone Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "inconclusive",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26",
-      "identityStatus": "unresolved",
-      "industry": "未核实 / Unresolved",
-      "industryEvidence": [
+      "observedJobs": [
         {
-          "url": "https://www.linkedin.com/company/solarstone-group",
-          "note": "输入提供了该公司维护页线索，但 WebFetch 返回 HTTP 451，无法读取公司自述或官网链接；精确网页检索亦未返回可核验结果。"
+          "title": "Regional Threat Assessment Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/regional-threat-assessment-manager-at-pantera-capital-ca-4443803669",
+          "firstSeen": "2026-07-23T10:03:00.164Z",
+          "pushTime": "2026-07-23T10:03:00.164Z",
+          "jobStatus": "expired"
         },
         {
-          "url": "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113",
-          "note": "原始职位仅能证明曾出现 Securities Operations 字样；页面无法取得，且按要求不得仅凭职位名称认定公司属于金融业。"
+          "title": "Member of Client Operations, Settlements",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/member-of-client-operations-settlements-at-pantera-capital-ca-4440484914",
+          "firstSeen": "2026-07-21T22:06:13.378Z",
+          "pushTime": "2026-07-22T16:04:17.609Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Solutions Engineer",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/solutions-engineer-at-pantera-capital-ca-4438784942",
+          "firstSeen": "2026-07-17T10:05:14.696Z",
+          "pushTime": "2026-07-18T04:05:33.376Z",
+          "jobStatus": "expired"
         }
-      ],
-      "employerType": "unknown",
-      "protectedRecord": null,
-      "queries": [
-        "\"SolarStone Group\" Hong Kong official securities",
-        "\"SolarStone Group\" LinkedIn Hong Kong",
-        "\"SolarStone\" \"Securities Operations\"",
-        "\"Solar Stone Group\" Hong Kong finance investment",
-        "\"solarstone-group\"",
-        "\"SolarStone Group Limited\" Hong Kong",
-        "SolarStone Group 香港 证券 集团",
-        "site:linkedin.com/company \"SolarStone Group\""
-      ],
-      "investigationSummary": "多轮精确名称、地区、职位和 LinkedIn 限定检索均未找到可归属于该实体的官网、监管记录或独立公司资料；公司页及原职位抓取受 451 限制。中文结果指向 Soliton 等不同实体，不能混用。由于该队列项为 unlisted 且保护范围不明，不新增保护记录，也不删除。",
-      "remainingQuestion": "SolarStone Group 的法定实体、官方网站及实际主营业务是什么，该证券运营职位是否代表其自有金融业务？",
-      "lastReviewedOn": "2026-11-26"
+      ]
     },
     {
       "company": "Spectrum Financial",
@@ -780,10 +730,14 @@
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "investigationSummary": "Several active financial firms use this name. The Omaha firm is classified under its explicit geographic name; this bare name has no identity link.",
+      "investigationSummary": "Existing searches found distinct companies with this name; the specific Omaha entity is separately classified. No original job identifies the bare name.",
       "queries": [
         "\"Spectrum Financial\" \"Spectrum Financial (Omaha\" employer"
-      ]
+      ],
+      "remainingQuestion": "Recover exact company page, jurisdiction or original vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [],
+      "observedJobs": []
     },
     {
       "company": "八斗猎头",
@@ -808,10 +762,14 @@
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "investigationSummary": "The wording suggests recruiting, but searches did not identify an independently verifiable exact entity or service page.",
+      "investigationSummary": "The wording suggests headhunting, but searches for the exact name and related businesses did not establish a verifiable entity. Similar 八斗人/八斗人才 names cannot be treated as the same business.",
       "queries": [
         "\"八斗猎头\" 猎头 招聘 官网"
-      ]
+      ],
+      "remainingQuestion": "Verify exact recruiter name, website, company registration or original client vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [],
+      "observedJobs": []
     }
   ],
   "companies": [
@@ -954,6 +912,7 @@
     {
       "company": "Aceleradora Ágil",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -962,10 +921,39 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "软件开发教育与技术咨询",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "identityStatus": "confirmed",
+      "industry": "软件开发教育与技术咨询",
+      "employerType": null,
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/client-partner-at-aceleradora-%C3%A1gil-4465352380"
+      ],
+      "investigationSummary": "Exact historical JD identifies Thoughtworks software consultancy, public sector, healthcare and life sciences. The named Aceleradora Ágil educational project is linked to Thoughtworks; neither indicates a financial institution or a third-party staffing service.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/client-partner-at-aceleradora-%C3%A1gil-4465352380",
+          "note": "Exact historical JD identifies Thoughtworks software consultancy, public sector, healthcare and life sciences. The named Aceleradora Ágil educational project is linked to Thoughtworks; neither indicates a financial institution or a third-party staffing service."
+        },
+        {
+          "url": "https://aceleradora-agil.com.br/",
+          "note": "Official software education project."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Client Partner",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/client-partner-at-aceleradora-%C3%A1gil-4465352380",
+          "firstSeen": "2026-09-09T22:03:27.184Z",
+          "pushTime": "2026-09-09T22:03:27.184Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "ACG Management Pte Ltd",
@@ -1152,7 +1140,8 @@
     {
       "company": "Aeveyn Group",
       "sourceStatuses": [
-        "historical_pending"
+        "historical_pending",
+        "resolved_observation"
       ],
       "activeJobsForKey": 0,
       "websiteJobsForKey": 0,
@@ -1161,11 +1150,44 @@
       ],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Aeveyn Group",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://sg.linkedin.com/jobs/view/assistant-relationship-manager-leading-investment-bank-at-aeveyn-group-4492528230",
+          "reviewedOn": "2026-11-26",
+          "note": "Published role explicitly recruits for a client investment bank; recruiter uses PFCC Group email and describes placement of technical talent at financial clients. Classify agency, not the client bank."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "identityStatus": "confirmed",
+      "industry": "金融与科技招聘及人才咨询",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/assistant-relationship-manager-leading-investment-bank-at-aeveyn-group-4492528230"
+      ],
+      "investigationSummary": "Published role explicitly recruits for a client investment bank; recruiter uses PFCC Group email and describes placement of technical talent at financial clients. Classify agency, not the client bank.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/assistant-relationship-manager-leading-investment-bank-at-aeveyn-group-4492528230",
+          "note": "Published role explicitly recruits for a client investment bank; recruiter uses PFCC Group email and describes placement of technical talent at financial clients. Classify agency, not the client bank."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [],
+      "protectedRecord": {
+        "company": "Aeveyn Group",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://sg.linkedin.com/jobs/view/assistant-relationship-manager-leading-investment-bank-at-aeveyn-group-4492528230",
+          "reviewedOn": "2026-11-26",
+          "note": "Published role explicitly recruits for a client investment bank; recruiter uses PFCC Group email and describes placement of technical talent at financial clients. Classify agency, not the client bank."
+        }
+      }
     },
     {
       "company": "Akamai Technologies",
@@ -4192,6 +4214,7 @@
       "company": "Carrefour City",
       "sourceStatuses": [
         "historical_pending",
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -4202,10 +4225,35 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "零售与便利店",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "identityStatus": "confirmed",
+      "industry": "零售与便利店",
+      "employerType": null,
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/warehouse-assistant-retail-sales-assistant-stock-replenishment-assistant-at-carrefour-city-4493265646"
+      ],
+      "investigationSummary": "Exact historical JD identifies inventory, shelves and store sales; Carrefour City is the retail store brand. This establishes non-financial business classification; no claim is made that the Singapore posting is an authentic local Carrefour vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/warehouse-assistant-retail-sales-assistant-stock-replenishment-assistant-at-carrefour-city-4493265646",
+          "note": "Exact historical JD identifies inventory, shelves and store sales; Carrefour City is the retail store brand. This establishes non-financial business classification; no claim is made that the Singapore posting is an authentic local Carrefour vacancy."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Warehouse Assistant / Retail Sales Assistant / Stock Replenishment Assistant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/warehouse-assistant-retail-sales-assistant-stock-replenishment-assistant-at-carrefour-city-4493265646",
+          "firstSeen": "2026-11-21T10:01:38.527Z",
+          "pushTime": "2026-11-21T10:01:38.527Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "CFTE - Centre for Finance, Technology and Entrepreneurship",
@@ -4756,6 +4804,7 @@
       "company": "Connect to the opportunity",
       "sourceStatuses": [
         "historical_pending",
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -4765,11 +4814,53 @@
       ],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Connect to the opportunity",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.linkedin.com/company/brainhunters-association",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact company page labels Human Resources Services and explicitly advertises recruitment for an automotive client. Direct evidence of third-party recruitment."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "identityStatus": "confirmed",
+      "industry": "人力资源与第三方招聘",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://www.linkedin.com/company/brainhunters-association"
+      ],
+      "investigationSummary": "Exact company page labels Human Resources Services and explicitly advertises recruitment for an automotive client. Direct evidence of third-party recruitment.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.linkedin.com/company/brainhunters-association",
+          "note": "Exact company page labels Human Resources Services and explicitly advertises recruitment for an automotive client. Direct evidence of third-party recruitment."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Logistic / Warehouse Assistant - Singapore (Class 3)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/logistic-warehouse-assistant-singapore-class-3-at-connect-to-the-opportunity-4493120941",
+          "firstSeen": "2026-11-22T04:01:50.592Z",
+          "pushTime": "2026-11-22T04:01:50.592Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Connect to the opportunity",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.linkedin.com/company/brainhunters-association",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact company page labels Human Resources Services and explicitly advertises recruitment for an automotive client. Direct evidence of third-party recruitment."
+        }
+      }
     },
     {
       "company": "Covalent Capital",
@@ -5168,10 +5259,14 @@
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "investigationSummary": "The fragment matches Deutsche Bank and other names such as Deutsche Börse. A specific entity cannot be resolved.",
+      "investigationSummary": "Existing search found multiple distinct Deutsche entities, including Deutsche Bank and Deutsche Börse; there is no exact historical job or independently verifiable entity for this bare name.",
       "queries": [
         "\"Deutsche\" Deutsche Bank brand company Hong Kong"
-      ]
+      ],
+      "remainingQuestion": "Recover the original job/company page or full legal name.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [],
+      "observedJobs": []
     },
     {
       "company": "DH International Fund Management Ltd",
@@ -5578,6 +5673,7 @@
     {
       "company": "Everest Global (EVG)",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -5585,11 +5681,53 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Everest Global (EVG)",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/senior-finance-manager-ai-tech-at-everest-global-evg-4444323284",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact posting identifies employer as Hong Kong-based Everest Ventures Group, a venture-building group with its own product portfolio and internal finance team; retain under investment/venture capital scope."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "identityStatus": "confirmed",
+      "industry": "创业投资及科技项目孵化",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/senior-finance-manager-ai-tech-at-everest-global-evg-4444323284"
+      ],
+      "investigationSummary": "Exact posting identifies employer as Hong Kong-based Everest Ventures Group, a venture-building group with its own product portfolio and internal finance team; retain under investment/venture capital scope.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/senior-finance-manager-ai-tech-at-everest-global-evg-4444323284",
+          "note": "Exact posting identifies employer as Hong Kong-based Everest Ventures Group, a venture-building group with its own product portfolio and internal finance team; retain under investment/venture capital scope."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Senior Finance Manager (AI/Tech)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/senior-finance-manager-ai-tech-at-everest-global-evg-4444323284",
+          "firstSeen": "2026-07-24T11:06:42.206Z",
+          "pushTime": "2026-07-25T08:55:45.632Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Everest Global (EVG)",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/senior-finance-manager-ai-tech-at-everest-global-evg-4444323284",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact posting identifies employer as Hong Kong-based Everest Ventures Group, a venture-building group with its own product portfolio and internal finance team; retain under investment/venture capital scope."
+        }
+      }
     },
     {
       "company": "Exail",
@@ -5644,9 +5782,31 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/trust-manager-at-family-office-4457306277"
+      ],
+      "investigationSummary": "The historical trust manager JD describes a Singapore family office; the generic publisher label does not identify a unique legal entity. Blanket classification would affect unrelated family offices.",
+      "remainingQuestion": "Determine legal entity or verified publisher-to-employer relation.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/trust-manager-at-family-office-4457306277",
+          "note": "The historical trust manager JD describes a Singapore family office; the generic publisher label does not identify a unique legal entity. Blanket classification would affect unrelated family offices."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Trust Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/trust-manager-at-family-office-4457306277",
+          "firstSeen": "2026-08-21T16:03:07.432Z",
+          "pushTime": "2026-08-22T10:04:11.127Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "FastCo",
@@ -6236,6 +6396,7 @@
     {
       "company": "Flowdesk-p",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6243,11 +6404,65 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Flowdesk-p",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://job-boards.eu.greenhouse.io/flowdesk/jobs/4998860101",
+          "reviewedOn": "2026-11-26",
+          "note": "Flowdesk's own Greenhouse board lists the same Singapore trading operations role, with matching distinctive duties and company description in historical Flowdesk-p postings. This substantiates the intended employer and financial business, not independent authentication of the '-p' LinkedIn account."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "identityStatus": "confirmed",
+      "industry": "数字资产交易与流动性金融科技",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://job-boards.eu.greenhouse.io/flowdesk/jobs/4998860101"
+      ],
+      "investigationSummary": "Flowdesk's own Greenhouse board lists the same Singapore trading operations role, with matching distinctive duties and company description in historical Flowdesk-p postings. This substantiates the intended employer and financial business, not independent authentication of the '-p' LinkedIn account.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://job-boards.eu.greenhouse.io/flowdesk/jobs/4998860101",
+          "note": "Flowdesk's own Greenhouse board lists the same Singapore trading operations role, with matching distinctive duties and company description in historical Flowdesk-p postings. This substantiates the intended employer and financial business, not independent authentication of the '-p' LinkedIn account."
+        },
+        {
+          "url": "https://sg.linkedin.com/jobs/view/operations-trading-operations-analyst-singapore-singapore-at-flowdesk-p-4446554770",
+          "note": "Exact historical description matches employer's official ATS."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Operations | Trading Operations Analyst | Singapore - Singapore",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/operations-trading-operations-analyst-singapore-singapore-at-flowdesk-p-4455584474",
+          "firstSeen": "2026-08-18T10:03:19.466Z",
+          "pushTime": "2026-08-18T10:03:19.466Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Operations | Trading Operations Analyst | Singapore - Singapore",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/operations-trading-operations-analyst-singapore-singapore-at-flowdesk-p-4446554770",
+          "firstSeen": "2026-07-29T10:02:37.388Z",
+          "pushTime": "2026-07-30T04:14:51.665Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Flowdesk-p",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://job-boards.eu.greenhouse.io/flowdesk/jobs/4998860101",
+          "reviewedOn": "2026-11-26",
+          "note": "Flowdesk's own Greenhouse board lists the same Singapore trading operations role, with matching distinctive duties and company description in historical Flowdesk-p postings. This substantiates the intended employer and financial business, not independent authentication of the '-p' LinkedIn account."
+        }
+      }
     },
     {
       "company": "FormFactor Inc.",
@@ -8141,9 +8356,31 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/global-head-wealth-asset-management-senior-executive-c-suite-at-inskap-4426483806"
+      ],
+      "investigationSummary": "The role describes wealth and asset management, but no verified official financial business description or evidence that the publisher is the employing entity rather than an intermediary was found.",
+      "remainingQuestion": "Confirm legal employer, business activity or third-party recruitment relationship.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/global-head-wealth-asset-management-senior-executive-c-suite-at-inskap-4426483806",
+          "note": "The role describes wealth and asset management, but no verified official financial business description or evidence that the publisher is the employing entity rather than an intermediary was found."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Global Head, Wealth & Asset Management (senior executive / C-suite)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/global-head-wealth-asset-management-senior-executive-c-suite-at-inskap-4426483806",
+          "firstSeen": "2026-08-01T10:02:35.169Z",
+          "pushTime": "2026-08-02T04:02:51.849Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Intelligentsia Capital",
@@ -8157,9 +8394,39 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/idirect-international-apac-vice-president-at-intelligentsia-capital-4445434545"
+      ],
+      "investigationSummary": "Historical publisher roles correspond to iCapital vacancies. Other postings under this publisher also name iCapital; no independent confirmation that Intelligentsia Capital is an authorized recruiter, platform or direct employer.",
+      "remainingQuestion": "Identify the publisher's legal business and relationship with iCapital.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/idirect-international-apac-vice-president-at-intelligentsia-capital-4445434545",
+          "note": "Historical publisher roles correspond to iCapital vacancies. Other postings under this publisher also name iCapital; no independent confirmation that Intelligentsia Capital is an authorized recruiter, platform or direct employer."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "iDirect International APAC - Vice President",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/idirect-international-apac-vice-president-at-intelligentsia-capital-4445434545",
+          "firstSeen": "2026-07-28T04:02:30.049Z",
+          "pushTime": "2026-07-28T22:02:57.724Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Investor Relations - Assistant Vice President",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/investor-relations-assistant-vice-president-at-intelligentsia-capital-4445423723",
+          "firstSeen": "2026-07-28T04:02:30.049Z",
+          "pushTime": "2026-07-28T22:02:57.724Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Interlink Talent Solutions",
@@ -9977,9 +10244,31 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": "Technology/Software",
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/fund-administrator-investor-relations-associate-shareholder-services-officer-at-microsoft-germany-4477062094"
+      ],
+      "investigationSummary": "The Singapore fund-administration posting is attributed to Microsoft Germany but the named poster identifies an unrelated audit organization. The employer identity is not established by the posting.",
+      "remainingQuestion": "Verify actual hiring entity and whether the company page was misattributed.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/fund-administrator-investor-relations-associate-shareholder-services-officer-at-microsoft-germany-4477062094",
+          "note": "The Singapore fund-administration posting is attributed to Microsoft Germany but the named poster identifies an unrelated audit organization. The employer identity is not established by the posting."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Fund Administrator / Investor Relations Associate / Shareholder Services Officer",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/fund-administrator-investor-relations-associate-shareholder-services-officer-at-microsoft-germany-4477062094",
+          "firstSeen": "2026-10-15T07:17:01.117Z",
+          "pushTime": "2026-10-15T07:17:01.117Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Millennium Technology Services",
@@ -11227,9 +11516,47 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "firstQueuedOn": "2026-11-26",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/regional-threat-assessment-manager-at-pantera-capital-ca-4443803669"
+      ],
+      "investigationSummary": "Exact posting explicitly identifies Coinbase as hiring company; other publisher postings refer to distinct financial firms. This establishes reposting/misattribution but not an authorized agency or platform identity.",
+      "remainingQuestion": "Establish publisher's business and relationship to advertised employers; do not equate display name with Pantera Capital.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/regional-threat-assessment-manager-at-pantera-capital-ca-4443803669",
+          "note": "Exact posting explicitly identifies Coinbase as hiring company; other publisher postings refer to distinct financial firms. This establishes reposting/misattribution but not an authorized agency or platform identity."
+        }
+      ],
+      "observedJobs": [
+        {
+          "title": "Regional Threat Assessment Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/regional-threat-assessment-manager-at-pantera-capital-ca-4443803669",
+          "firstSeen": "2026-07-23T10:03:00.164Z",
+          "pushTime": "2026-07-23T10:03:00.164Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Member of Client Operations, Settlements",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/member-of-client-operations-settlements-at-pantera-capital-ca-4440484914",
+          "firstSeen": "2026-07-21T22:06:13.378Z",
+          "pushTime": "2026-07-22T16:04:17.609Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Solutions Engineer",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/solutions-engineer-at-pantera-capital-ca-4438784942",
+          "firstSeen": "2026-07-17T10:05:14.696Z",
+          "pushTime": "2026-07-18T04:05:33.376Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Panthera Partners",
@@ -12259,6 +12586,7 @@
     {
       "company": "Punjab Capital",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -12266,13 +12594,21 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Punjab Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.punjab.capital/",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact-brand official site describes founder-controlled capital allocation across public/private markets and capital markets advisory; the same Singapore founding-partner recruitment describes a proposed research-led investment fund and co-founding GP role. Protect as financial investment/research business; do not assert an existing regulated fund or licensed status."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "inconclusive",
-      "protectionDecision": "undetermined",
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
       "firstQueuedOn": "2026-11-26",
-      "identityStatus": "unresolved",
-      "industry": "未核实 / Unresolved",
+      "identityStatus": "confirmed",
+      "industry": "资本配置、投资研究与资本市场咨询",
       "industryEvidence": [
         {
           "url": "https://www.linkedin.com/company/punjab-capital",
@@ -12281,20 +12617,47 @@
         {
           "url": "https://sg.linkedin.com/jobs/view/founding-partner-investments-capital-formation-at-punjab-capital-4442610115",
           "note": "原始标题含 Investments & Capital Formation，但职位名称本身不足以证明公司业务；页面无法取得，不能据此认定金融保护范围。"
+        },
+        {
+          "url": "https://www.punjab.capital/",
+          "note": "Exact-brand official site describes founder-controlled capital allocation across public/private markets and capital markets advisory; the same Singapore founding-partner recruitment describes a proposed research-led investment fund and co-founding GP role. Protect as financial investment/research business; do not assert an existing regulated fund or licensed status."
+        },
+        {
+          "url": "https://sg.linkedin.com/jobs/view/founding-partner-%E2%80%94-investments-capital-formation-at-punjab-capital-4440415559",
+          "note": "Same company and recruitment function; co-founding GP role."
         }
       ],
-      "employerType": "unknown",
-      "protectedRecord": null,
+      "employerType": "direct_employer",
+      "protectedRecord": {
+        "company": "Punjab Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.punjab.capital/",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact-brand official site describes founder-controlled capital allocation across public/private markets and capital markets advisory; the same Singapore founding-partner recruitment describes a proposed research-led investment fund and co-founding GP role. Protect as financial investment/research business; do not assert an existing regulated fund or licensed status."
+        }
+      },
       "queries": [
         "\"Punjab Capital\" Singapore investments official",
         "\"Punjab Capital\" \"Founding Partner\" Singapore",
         "\"Punjab Capital\" \"4442610115\"",
         "\"Punjab Capital\" LinkedIn Singapore investments capital formation",
-        "site:linkedin.com/company \"Punjab Capital\" Singapore"
+        "site:linkedin.com/company \"Punjab Capital\" Singapore",
+        "https://www.punjab.capital/"
       ],
-      "investigationSummary": "多轮精确名称、新加坡、职位、职位 ID 和 LinkedIn 限定检索未找到该新加坡实体的官网或监管资料；结果中的巴基斯坦 Punjab Capital Securities 是不同名称和地区实体，不能作为证据。该 unlisted 项保护范围不明，因此不新增记录、不删除，也不把 unlisted 当 direct。",
-      "remainingQuestion": "新加坡 Punjab Capital 的法定实体、官方网站和实际业务是什么，是否与巴基斯坦 Punjab Capital Securities 无关，以及该 Founding Partner 职位由谁直接聘用？",
-      "lastReviewedOn": "2026-11-26"
+      "investigationSummary": "Exact-brand official site describes founder-controlled capital allocation across public/private markets and capital markets advisory; the same Singapore founding-partner recruitment describes a proposed research-led investment fund and co-founding GP role. Protect as financial investment/research business; do not assert an existing regulated fund or licensed status.",
+      "remainingQuestion": null,
+      "lastReviewedOn": "2026-11-26",
+      "observedJobs": [
+        {
+          "title": "Founding Partner | Investments & Capital Formation",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/founding-partner-investments-capital-formation-at-punjab-capital-4442610115",
+          "firstSeen": "2026-07-21T16:05:55.345Z",
+          "pushTime": "2026-07-21T16:05:55.345Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Q Investment Partners",
@@ -13713,6 +14076,7 @@
     {
       "company": "SolarStone Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -13720,13 +14084,21 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "SolarStone Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact original JD contains employer's own description as securities and investment services organization for institutional and individual clients, and internal multi-asset settlement operations. Hong Kong registration confirms exact group name, while similarly named SolarStone Capital provides corroborating sector evidence; do not attribute another entity's licence to the group."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "inconclusive",
-      "protectionDecision": "undetermined",
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
       "firstQueuedOn": "2026-11-26",
-      "identityStatus": "unresolved",
-      "industry": "未核实 / Unresolved",
+      "identityStatus": "confirmed",
+      "industry": "证券交易及投资服务",
       "industryEvidence": [
         {
           "url": "https://www.linkedin.com/company/solarstone-group",
@@ -13735,10 +14107,26 @@
         {
           "url": "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113",
           "note": "原始职位仅能证明曾出现 Securities Operations 字样；页面无法取得，且按要求不得仅凭职位名称认定公司属于金融业。"
+        },
+        {
+          "url": "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113",
+          "note": "Exact original JD contains employer's own description as securities and investment services organization for institutional and individual clients, and internal multi-asset settlement operations. Hong Kong registration confirms exact group name, while similarly named SolarStone Capital provides corroborating sector evidence; do not attribute another entity's licence to the group."
+        },
+        {
+          "url": "https://www.hkcorporationsearch.com/business/78547147/",
+          "note": "Exact legal group name 朝盛集團有限公司, BRN 78547147."
         }
       ],
-      "employerType": "unknown",
-      "protectedRecord": null,
+      "employerType": "direct_employer",
+      "protectedRecord": {
+        "company": "SolarStone Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact original JD contains employer's own description as securities and investment services organization for institutional and individual clients, and internal multi-asset settlement operations. Hong Kong registration confirms exact group name, while similarly named SolarStone Capital provides corroborating sector evidence; do not attribute another entity's licence to the group."
+        }
+      },
       "queries": [
         "\"SolarStone Group\" Hong Kong official securities",
         "\"SolarStone Group\" LinkedIn Hong Kong",
@@ -13747,11 +14135,22 @@
         "\"solarstone-group\"",
         "\"SolarStone Group Limited\" Hong Kong",
         "SolarStone Group 香港 证券 集团",
-        "site:linkedin.com/company \"SolarStone Group\""
+        "site:linkedin.com/company \"SolarStone Group\"",
+        "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113"
       ],
-      "investigationSummary": "多轮精确名称、地区、职位和 LinkedIn 限定检索均未找到可归属于该实体的官网、监管记录或独立公司资料；公司页及原职位抓取受 451 限制。中文结果指向 Soliton 等不同实体，不能混用。由于该队列项为 unlisted 且保护范围不明，不新增保护记录，也不删除。",
-      "remainingQuestion": "SolarStone Group 的法定实体、官方网站及实际主营业务是什么，该证券运营职位是否代表其自有金融业务？",
-      "lastReviewedOn": "2026-11-26"
+      "investigationSummary": "Exact original JD contains employer's own description as securities and investment services organization for institutional and individual clients, and internal multi-asset settlement operations. Hong Kong registration confirms exact group name, while similarly named SolarStone Capital provides corroborating sector evidence; do not attribute another entity's licence to the group.",
+      "remainingQuestion": null,
+      "lastReviewedOn": "2026-11-26",
+      "observedJobs": [
+        {
+          "title": "Operations Executive / Senior Associate (Securities Operations)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/operations-executive-senior-associate-securities-operations-at-solarstone-group-4454202113",
+          "firstSeen": "2026-08-16T16:02:36.961Z",
+          "pushTime": "2026-08-17T10:04:09.127Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Spectrum Financial",
@@ -13776,10 +14175,14 @@
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "investigationSummary": "Several active financial firms use this name. The Omaha firm is classified under its explicit geographic name; this bare name has no identity link.",
+      "investigationSummary": "Existing searches found distinct companies with this name; the specific Omaha entity is separately classified. No original job identifies the bare name.",
       "queries": [
         "\"Spectrum Financial\" \"Spectrum Financial (Omaha\" employer"
-      ]
+      ],
+      "remainingQuestion": "Recover exact company page, jurisdiction or original vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [],
+      "observedJobs": []
     },
     {
       "company": "SPH Media",
@@ -15768,10 +16171,14 @@
       "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26",
-      "investigationSummary": "The wording suggests recruiting, but searches did not identify an independently verifiable exact entity or service page.",
+      "investigationSummary": "The wording suggests headhunting, but searches for the exact name and related businesses did not establish a verifiable entity. Similar 八斗人/八斗人才 names cannot be treated as the same business.",
       "queries": [
         "\"八斗猎头\" 猎头 招聘 官网"
-      ]
+      ],
+      "remainingQuestion": "Verify exact recruiter name, website, company registration or original client vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [],
+      "observedJobs": []
     },
     {
       "company": "株式会社精研",
