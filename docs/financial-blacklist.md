@@ -63,16 +63,20 @@ pushes directly to `main`. A required check and rules against bypass on
 
 ## Classification-only records
 
-`company_employer_types.json` uses the same record and evidence format. It
-covers the 84 other homepage publishers from the pinned 2026-11-26 snapshot.
-These names have no membership in the protection list. Classifications for
-them do not affect any Agent or RSS exclusion. A future display filter can
-look up both files using the same normalization. When a name later appears
-in both, a classified protection-list record takes precedence over the
-classification-only record.
+`company_employer_types.json` uses the same record and evidence format. Of
+the 84 homepage publishers originally outside the financial list, 23 direct
+employers were moved to `financial_blacklist.json` at the project requester's
+direction. They include the 19 traditional finance and investment companies
+from the review, plus Dow Jones, Alibaba Group, Baidu, and Tencent. All 23
+keep the same type and evidence. None is in the current effective target set.
 
-Of these 84 publishers, 70 are direct employers, 12 are recruiters, one is a
-recruitment platform and one has mixed operations. Together both files cover
+The other 61 publishers keep classification-only records: 47 direct
+employers, 12 recruiters, one recruitment platform and one mixed business.
+Their names do not affect any Agent or RSS exclusion. A future display
+filter can look up both files using the same normalization. When a name
+later appears in both, a classified financial-list record takes precedence.
+
+Together both files cover
 all 550 keys and 6,300 jobs in the homepage metric. Across the homepage the
 types are 360 direct employers, 173 recruitment agencies, two recruitment
 platforms and 15 mixed businesses.
@@ -101,12 +105,12 @@ normalized keys. `BAH Partners` / `Bah Partners` and `BOSS直聘` /
 | --- | ---: | ---: | ---: |
 | Jobs | 15,064 | 5,739 | 6,300 |
 | Company keys | 913 | 488 | 550 |
-| Company keys matching the protection list | 617 | 446 | 466 |
-| Jobs matching the protection list | 14,653 | 5,692 | 6,185 |
-| Jobs with an evidenced type other than unknown | 14,647 | 5,692 | 6,185 |
+| Company keys matching the protection list | 640 | 455 | 489 |
+| Jobs matching the protection list | 14,695 | 5,705 | 6,218 |
+| Jobs with an evidenced type other than unknown | 14,689 | 5,705 | 6,218 |
 | Jobs matching an unknown record | 6 | 0 | 0 |
-| Jobs with no record | 411 | 47 | 115 |
-| Company keys with no record | 296 | 42 | 84 |
+| Jobs with no record | 369 | 34 | 82 |
+| Company keys with no record | 273 | 33 | 61 |
 
 The live public preview and the pinned homepage build both returned 550
 companies and 6,300 jobs. The homepage uses eligible CN/HK/SG LinkedIn rows
@@ -115,8 +119,8 @@ The 561 rows without `jobStatus` are eligible on this snapshot and add
 62 company keys. The canonical explicit-active column instead requires
 `jobStatus == "active"`.
 
-All 466 protection-list names that appear in the homepage metric are
-classified. In the full protection list, 1158 records are classified and
+All 489 protection-list names that appear in the homepage metric are
+classified. In the full protection list, 1181 records are classified and
 18 remain unknown. 18 have inconclusive reviews and 0 await evidence.
 In the canonical snapshot, 6,812 records have `companyCanonical` and
 `requestedCompany`, and 10,100 have `companyLogoSource`. No job has an
