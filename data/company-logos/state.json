@@ -2688,39 +2688,29 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-26T09:01:56.896087+00:00",
+    "checkedAt": "2026-11-26T09:08:18.797452+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
-        "status": 404,
-        "contentType": "",
-        "attempt": 1,
-        "jobId": "4461013126",
-        "reason": "http_error",
-        "stage": "job"
-      },
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "status": 429,
         "contentType": "text/html",
         "attempt": 1,
-        "jobId": "4461002131",
+        "jobId": "4461013126",
         "reason": "rate_limited",
         "stage": "job"
       }
     ],
     "httpRetries": [
       {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461013126",
         "status": 429,
         "contentType": "text/html",
         "attempt": 1,
-        "waitSeconds": 62.27116780527079,
+        "waitSeconds": 61.891280149226716,
         "deferred": true
       }
     ]
