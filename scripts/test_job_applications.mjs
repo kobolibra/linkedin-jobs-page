@@ -245,3 +245,25 @@ test('Region ribbons inherit original five source codes without changing graph m
   assert.match(output,new RegExp('data-tone="source_'+code+'"'));
  }
 });
+
+test('historical favorites retain their last observed type; missing IDs belong to Full only',()=>{
+ const {favoriteScope,captureFavoriteTypes,favoriteTypeIndex}=scope.JobApplications;
+ const favorites=['direct-live','agency-live','direct-gone','agency-gone','unknown-gone','old-missing','unlisted-live'];
+ const initial=new Map([['direct-live','direct_employer'],['agency-live','recruitment_agency'],['direct-gone','direct_employer'],['agency-gone','recruitment_platform'],['unknown-gone','unknown'],['unlisted-live','unlisted']]);
+ const items=captureFavoriteTypes(favorites,initial,[],100),history=favoriteTypeIndex(items);
+ assert.equal(items.length,6);assert.equal(captureFavoriteTypes(favorites,initial,items,200).length,6);
+ const current=new Map([['direct-live','direct_employer'],['agency-live','recruitment_agency'],['unlisted-live','unlisted']]);
+ assert.deepEqual(plain(favoriteScope(favorites,'direct',current,history).visible),['direct-live','direct-gone']);
+ assert.deepEqual(plain(favoriteScope(favorites,'agency',current,history).visible),['agency-live','agency-gone','unknown-gone','unlisted-live']);
+ assert.deepEqual(plain(favoriteScope(favorites,'full',current,history).visible),favorites);
+ assert.deepEqual(plain(favoriteScope(favorites,'agency',current,history).missing),['old-missing']);
+ // A new verified classification wins; an offline stale snapshot must not replace history.
+ current.set('direct-gone','recruitment_agency');
+ assert.ok(favoriteScope(favorites,'agency',current,history).visible.includes('direct-gone'));
+ assert.ok(favoriteScope(favorites,'direct',current,history,{fresh:false}).visible.includes('direct-gone'));
+ const newer=favoriteTypeIndex(captureFavoriteTypes(favorites,current,items,300));
+ assert.equal(newer.get('direct-gone').k,'recruitment_agency');
+ assert.ok(favoriteScope(favorites,'agency',new Map(),newer).visible.includes('direct-gone'));
+ assert.equal(graph(favoriteScope(favorites,'direct',new Map(),newer).visible,new Map()).total,1);
+ assert.equal(favoriteTypeIndex(['{}',JSON.stringify({v:1,j:'bad',k:'invented',t:1})]).size,0);
+});

@@ -1,6 +1,6 @@
 /* Account-scoped cache + durable per-operation outbox; never upload entire lists. */
 (()=>{
- const kinds=['favs','blocked','blockedKw','reads','applications'],parse=(s,fallback)=>{try{return JSON.parse(s)||fallback;}catch{return fallback;}};
+ const kinds=['favs','blocked','blockedKw','reads','applications','favoriteTypes'],parse=(s,fallback)=>{try{return JSON.parse(s)||fallback;}catch{return fallback;}};
  const keyOf=(kind,item)=>JSON.stringify([kind,item]);
  class Preferences{
   constructor({user,api,status,expired}){

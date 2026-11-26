@@ -77,3 +77,16 @@ test('contact and no-response history with region snapshots synchronizes between
  assert.equal(f.sql.prepare("SELECT count(*) n FROM account_sync_items WHERE kind='applications'").get().n,3);
 });
 
+
+test('favorite employer observations synchronize privately without altering favorites or stage history',async()=>{
+ const f=fixture(),a=f.client(),b=f.client();await a.sync.flush();await b.sync.flush();
+ const item=JSON.stringify({v:1,j:'ln:123',k:'direct_employer',t:100});
+ a.offline(true);a.sync.set('favs','["ln:123"]');a.sync.set('favoriteTypes',JSON.stringify([item]));a.sync.stop();
+ const reload=f.client('alpha',a.store);assert.equal(await reload.sync.flush(),true);assert.equal(await b.sync.flush(),true);
+ assert.deepEqual(JSON.parse(b.sync.get('favoriteTypes')),[item]);assert.deepEqual(JSON.parse(b.sync.get('applications')),[]);
+ reload.sync.set('favs','[]');await reload.sync.flush();await b.sync.flush();
+ assert.deepEqual(JSON.parse(b.sync.get('favoriteTypes')),[item]);assert.deepEqual(JSON.parse(b.sync.get('favs')),[]);
+ const other=f.client('beta',a.store);await other.sync.flush();assert.deepEqual(JSON.parse(other.sync.get('favoriteTypes')),[]);
+ const send=operation=>preferences(new Request('https://site.test/auth/preferences',{method:'POST',headers:{origin:'https://site.test','x-csrf-token':'csrf-alpha','content-type':'application/json'},body:JSON.stringify({operations:[operation]})}),{AUTH_ORIGIN:'https://site.test',AUTH_DB:f.db},{user_id:'alpha',csrf:'csrf-alpha'});
+ for(const [bad,present] of [[JSON.stringify({v:1,j:'ln:123',k:'fake',t:100}),true],[item,false]])assert.equal((await send({id:'favorite_test_op_1234',kind:'favoriteTypes',item:bad,present})).status,400);
+});
