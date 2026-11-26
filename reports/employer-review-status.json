@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-26T13:58:14.354Z",
-  "sourceCommit": "9714ba2e193b4a4397e2c7d4e5b600c2a138c90f",
+  "generatedAt": "2026-11-26T14:01:57.790Z",
+  "sourceCommit": "524a92fa2671fee584de5e64bdfbad9910e086e6",
   "summary": {
     "canonicalJobs": 15084,
     "indexJobs": 15084,
     "websiteJobs": 6307,
     "trackedCompanies": 287,
-    "reviewQueue": 126,
+    "reviewQueue": 92,
     "queueByStatus": {
       "inconclusive": 7,
-      "not_started": 119
+      "not_started": 85
     },
     "queueBySource": {
       "historical_pending": 4,
-      "unlisted": 119,
+      "unlisted": 85,
       "inconclusive": 4,
       "staging_not_canonical": 2
     },
@@ -433,199 +433,7 @@
       "firstQueuedOn": "2026-11-26"
     },
     {
-      "company": "AL Capital",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Alumni Services",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Angel Hive Recruitment",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Aquila Talent",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "ARC Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "ARK SG Office Talents",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Ascendant Globalcredit Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Axway",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
       "company": "Beijing Foreign Enterprise Management Consultants Co.,Ltd.",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "BGC Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Blue Stream Consultancy Pte Ltd",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Candid Capital Management Pte. Ltd.",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Canvas Fundamental Research Group",
       "sourceStatuses": [
         "unlisted"
       ],
@@ -727,54 +535,6 @@
       "firstQueuedOn": "2026-11-26"
     },
     {
-      "company": "Cresco Investments",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Crossover Search Pte. Ltd.",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Da Cheng International Asset Management",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
       "company": "Deutsche",
       "sourceStatuses": [
         "inconclusive"
@@ -801,70 +561,6 @@
       "queries": [
         "\"Deutsche\" Deutsche Bank brand company Hong Kong"
       ]
-    },
-    {
-      "company": "DH International Fund Management Ltd",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Easy Consult HR Solutions DOO",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "EDX Markets",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "EFICYENT",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
     },
     {
       "company": "Everest Global (EVG)",
@@ -964,87 +660,7 @@
       "lastReviewedOn": "2026-11-26"
     },
     {
-      "company": "Fintonia Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "First Plus Asset Management",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
       "company": "Flowdesk-p",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Fort Financial",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "GAIA Culinary",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Global Sage",
       "sourceStatuses": [
         "unlisted"
       ],
@@ -1076,167 +692,7 @@
       "firstQueuedOn": "2026-11-26"
     },
     {
-      "company": "Gough Recruitment",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "GRT",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "GTN",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "HERMESYS PTE LTD",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Himension Capital",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Horizon Insights",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "HRLinked Asia Search & Consultancy Pte Ltd",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Hudson Talent Solutions",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Imperium Commodity Search",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
       "company": "Inex One",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 0,
-      "websiteJobsForKey": 0,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Inference Research",
       "sourceStatuses": [
         "unlisted"
       ],
@@ -2935,6 +2391,7 @@
     {
       "company": "AL Capital",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -2942,11 +2399,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "AL Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/investment-operations-associate-at-al-capital-4452901342",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact Hong Kong posting describes the employer as a family office managing its own investment portfolio."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "家族办公室及投资管理",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/investment-operations-associate-at-al-capital-4452901342"
+      ],
+      "investigationSummary": "Exact Hong Kong posting describes the employer as a family office managing its own investment portfolio.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/investment-operations-associate-at-al-capital-4452901342",
+          "note": "Exact Hong Kong posting describes the employer as a family office managing its own investment portfolio."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Investment Operations Associate",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/investment-operations-associate-at-al-capital-4452901342",
+          "firstSeen": "2026-08-14T04:02:44.913Z",
+          "pushTime": "2026-08-14T04:02:44.913Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "AL Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/investment-operations-associate-at-al-capital-4452901342",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact Hong Kong posting describes the employer as a family office managing its own investment portfolio."
+        }
+      }
     },
     {
       "company": "Albourne",
@@ -3460,6 +2958,7 @@
     {
       "company": "Alumni Services",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -3468,10 +2967,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "数字化转型及IT咨询",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "数字化转型及IT咨询",
+      "employerType": null,
+      "queries": [
+        "https://www.britcham.org.sg/membership-directory/corporate/382648"
+      ],
+      "investigationSummary": "Singapore chamber member profile describes cross-industry technology and digital transformation consulting, not a financial institution or recruitment firm.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.britcham.org.sg/membership-directory/corporate/382648",
+          "note": "Singapore chamber member profile describes cross-industry technology and digital transformation consulting, not a financial institution or recruitment firm."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Principal Consultant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/principal-consultant-at-alumni-services-4471099818",
+          "firstSeen": "2026-09-28T04:10:27.910Z",
+          "pushTime": "2026-09-28T04:10:27.910Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Ampol",
@@ -3570,6 +3093,7 @@
     {
       "company": "Angel Hive Recruitment",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -3577,11 +3101,68 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Angel Hive Recruitment",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.angelhiverecruitment.com/about-1",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site describes placement and recruitment services across industries."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "第三方人才招聘",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://www.angelhiverecruitment.com/about-1"
+      ],
+      "investigationSummary": "Official site describes placement and recruitment services across industries.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.angelhiverecruitment.com/about-1",
+          "note": "Official site describes placement and recruitment services across industries."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Wealth Management Consultant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/wealth-management-consultant-at-angel-hive-recruitment-4460213990",
+          "firstSeen": "2026-09-01T10:03:23.491Z",
+          "pushTime": "2026-09-01T10:03:23.491Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Wealth Management Consultant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/wealth-management-consultant-at-angel-hive-recruitment-4456845146",
+          "firstSeen": "2026-08-24T04:02:53.287Z",
+          "pushTime": "2026-08-24T04:02:53.287Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Wealth Management Consultant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/wealth-management-consultant-at-angel-hive-recruitment-4454230134",
+          "firstSeen": "2026-08-17T04:02:37.298Z",
+          "pushTime": "2026-08-17T16:04:18.096Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Angel Hive Recruitment",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.angelhiverecruitment.com/about-1",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site describes placement and recruitment services across industries."
+        }
+      }
     },
     {
       "company": "Annexion Partners",
@@ -3842,6 +3423,7 @@
     {
       "company": "Aquila Talent",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -3849,15 +3431,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Aquila Talent",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://sg.linkedin.com/company/aquila-talent",
+          "reviewedOn": "2026-11-26",
+          "note": "Company profile describes third-party talent acquisition and recruitment process outsourcing."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "招聘及RPO",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://sg.linkedin.com/company/aquila-talent"
+      ],
+      "investigationSummary": "Company profile describes third-party talent acquisition and recruitment process outsourcing.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/company/aquila-talent",
+          "note": "Company profile describes third-party talent acquisition and recruitment process outsourcing."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Customer Service Officer (Order Management)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/customer-service-officer-order-management-at-aquila-talent-4450113881",
+          "firstSeen": "2026-08-12T10:02:59.506Z",
+          "pushTime": "2026-08-13T04:17:41.385Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Aquila Talent",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://sg.linkedin.com/company/aquila-talent",
+          "reviewedOn": "2026-11-26",
+          "note": "Company profile describes third-party talent acquisition and recruitment process outsourcing."
+        }
+      }
     },
     {
       "company": "ARC Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -3865,11 +3489,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "ARC Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/senior-proprietary-trader-at-arc-group-4483844998",
+          "reviewedOn": "2026-11-26",
+          "note": "Same publisher and Hong Kong role describes proprietary trading using firm capital and capital markets business."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "资本市场咨询及自营交易",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/senior-proprietary-trader-at-arc-group-4483844998"
+      ],
+      "investigationSummary": "Same publisher and Hong Kong role describes proprietary trading using firm capital and capital markets business.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/senior-proprietary-trader-at-arc-group-4483844998",
+          "note": "Same publisher and Hong Kong role describes proprietary trading using firm capital and capital markets business."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Senior Proprietary Trader",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/senior-proprietary-trader-at-arc-group-4457404691",
+          "firstSeen": "2026-08-25T10:02:57.154Z",
+          "pushTime": "2026-08-25T22:03:04.306Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "ARC Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/senior-proprietary-trader-at-arc-group-4483844998",
+          "reviewedOn": "2026-11-26",
+          "note": "Same publisher and Hong Kong role describes proprietary trading using firm capital and capital markets business."
+        }
+      }
     },
     {
       "company": "Arcesium",
@@ -3963,6 +3628,7 @@
     {
       "company": "ARK SG Office Talents",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -3970,11 +3636,68 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "ARK SG Office Talents",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://sg.linkedin.com/jobs/view/ecosystem-development-executive-manager-at-ark-sg-office-talents-4401885133",
+          "reviewedOn": "2026-11-26",
+          "note": "Publisher explicitly identifies ARK Wealth Management Singapore as employer and supplies arkwealth.sg contact."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "财富管理机构招聘账号",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/ecosystem-development-executive-manager-at-ark-sg-office-talents-4401885133"
+      ],
+      "investigationSummary": "Publisher explicitly identifies ARK Wealth Management Singapore as employer and supplies arkwealth.sg contact.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/ecosystem-development-executive-manager-at-ark-sg-office-talents-4401885133",
+          "note": "Publisher explicitly identifies ARK Wealth Management Singapore as employer and supplies arkwealth.sg contact."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Securities Dealing Lead",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/securities-dealing-lead-at-ark-sg-office-talents-4459762781",
+          "firstSeen": "2026-08-31T10:10:19.070Z",
+          "pushTime": "2026-09-01T04:02:53.950Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Securities Dealing Lead",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/securities-dealing-lead-at-ark-sg-office-talents-4442273847",
+          "firstSeen": "2026-07-21T04:05:09.328Z",
+          "pushTime": "2026-07-21T16:05:55.345Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Securities Dealing Lead",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/securities-dealing-lead-at-ark-sg-office-talents-4442036300",
+          "firstSeen": "2026-07-20T10:06:35.577Z",
+          "pushTime": "2026-07-20T10:06:35.577Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "ARK SG Office Talents",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://sg.linkedin.com/jobs/view/ecosystem-development-executive-manager-at-ark-sg-office-talents-4401885133",
+          "reviewedOn": "2026-11-26",
+          "note": "Publisher explicitly identifies ARK Wealth Management Singapore as employer and supplies arkwealth.sg contact."
+        }
+      }
     },
     {
       "company": "Arta Finance",
@@ -4016,6 +3739,7 @@
     {
       "company": "Ascendant Globalcredit Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -4023,11 +3747,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Ascendant Globalcredit Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://sg.linkedin.com/company/ascendant-globalcredit-group-pte-ltd",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact Singapore company profile identifies financial referral/intermediation rather than employment placement."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "金融转介及信贷服务",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://sg.linkedin.com/company/ascendant-globalcredit-group-pte-ltd"
+      ],
+      "investigationSummary": "Exact Singapore company profile identifies financial referral/intermediation rather than employment placement.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/company/ascendant-globalcredit-group-pte-ltd",
+          "note": "Exact Singapore company profile identifies financial referral/intermediation rather than employment placement."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Assistant Vice President – Private Client Solutions",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/assistant-vice-president-%E2%80%93-private-client-solutions-at-ascendant-globalcredit-group-4459705444",
+          "firstSeen": "2026-08-29T22:02:34.498Z",
+          "pushTime": "2026-08-30T16:02:44.901Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Assistant Vice President – Private Client Solutions",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/assistant-vice-president-%E2%80%93-private-client-solutions-at-ascendant-globalcredit-group-4446768580",
+          "firstSeen": "2026-07-30T16:02:32.954Z",
+          "pushTime": "2026-07-31T04:02:10.724Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Ascendant Globalcredit Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://sg.linkedin.com/company/ascendant-globalcredit-group-pte-ltd",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact Singapore company profile identifies financial referral/intermediation rather than employment placement."
+        }
+      }
     },
     {
       "company": "Asia Partners Corporation",
@@ -4465,6 +4238,7 @@
     {
       "company": "Axway",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -4473,10 +4247,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "企业API及数据集成软件",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "企业API及数据集成软件",
+      "employerType": null,
+      "queries": [
+        "https://www.axway.com/en/company/about-us"
+      ],
+      "investigationSummary": "Official company description identifies cross-industry enterprise integration software.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.axway.com/en/company/about-us",
+          "note": "Official company description identifies cross-industry enterprise integration software."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Customer Accounts Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/customer-accounts-manager-at-axway-4413755157",
+          "firstSeen": "2026-08-29T16:02:32.569Z",
+          "pushTime": "2026-08-30T04:02:29.757Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Bakuun Holdings",
@@ -4757,6 +4555,7 @@
     {
       "company": "BGC Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -4764,11 +4563,68 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "BGC Group",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://bgc-group.com/about-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official company describes recruitment and workforce solutions; not BGC financial brokerage."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "第三方人才招聘",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://bgc-group.com/about-us/"
+      ],
+      "investigationSummary": "Official company describes recruitment and workforce solutions; not BGC financial brokerage.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://bgc-group.com/about-us/",
+          "note": "Official company describes recruitment and workforce solutions; not BGC financial brokerage."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Divisional Director, Standards & Surveillance",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/divisional-director-standards-surveillance-at-bgc-group-4454987272",
+          "firstSeen": "2026-08-19T22:02:48.134Z",
+          "pushTime": "2026-08-19T22:02:48.134Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Senior CDD Analyst",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/senior-cdd-analyst-at-bgc-group-4448661947",
+          "firstSeen": "2026-08-04T04:02:23.773Z",
+          "pushTime": "2026-08-04T22:02:19.994Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Application Support Analyst",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/application-support-analyst-at-bgc-group-4442088121",
+          "firstSeen": "2026-07-20T16:07:15.741Z",
+          "pushTime": "2026-07-20T22:05:11.207Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "BGC Group",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://bgc-group.com/about-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official company describes recruitment and workforce solutions; not BGC financial brokerage."
+        }
+      }
     },
     {
       "company": "BIPO",
@@ -4938,6 +4794,7 @@
     {
       "company": "Blue Stream Consultancy Pte Ltd",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -4945,11 +4802,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Blue Stream Consultancy Pte Ltd",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://sg.linkedin.com/jobs/view/office-administration-and-hr-coordinator-at-blue-stream-consultancy-pte-ltd-4446746004",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact historical posting recruits for a client utility company."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "招聘及人才咨询",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://sg.linkedin.com/jobs/view/office-administration-and-hr-coordinator-at-blue-stream-consultancy-pte-ltd-4446746004"
+      ],
+      "investigationSummary": "Exact historical posting recruits for a client utility company.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/jobs/view/office-administration-and-hr-coordinator-at-blue-stream-consultancy-pte-ltd-4446746004",
+          "note": "Exact historical posting recruits for a client utility company."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Office Administration and HR Coordinator",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/office-administration-and-hr-coordinator-at-blue-stream-consultancy-pte-ltd-4446746004",
+          "firstSeen": "2026-07-30T10:02:11.263Z",
+          "pushTime": "2026-07-30T10:02:11.263Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Blue Stream Consultancy Pte Ltd",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://sg.linkedin.com/jobs/view/office-administration-and-hr-coordinator-at-blue-stream-consultancy-pte-ltd-4446746004",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact historical posting recruits for a client utility company."
+        }
+      }
     },
     {
       "company": "Brunel",
@@ -5107,6 +5005,7 @@
     {
       "company": "Candid Capital Management Pte. Ltd.",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -5114,15 +5013,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Candid Capital Management Pte. Ltd.",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/print?category=Capital+Markets+Services+Licensee",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS directory lists exact Singapore legal entity under fund management."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "基金管理",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://eservices.mas.gov.sg/fid/institution/print?category=Capital+Markets+Services+Licensee"
+      ],
+      "investigationSummary": "MAS directory lists exact Singapore legal entity under fund management.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://eservices.mas.gov.sg/fid/institution/print?category=Capital+Markets+Services+Licensee",
+          "note": "MAS directory lists exact Singapore legal entity under fund management."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Fund Accounting and Operations Associate — Private Equity",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/fund-accounting-and-operations-associate-%E2%80%94-private-equity-at-candid-capital-management-pte-ltd-4460226381",
+          "firstSeen": "2026-09-01T10:03:23.491Z",
+          "pushTime": "2026-09-02T04:03:16.657Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Candid Capital Management Pte. Ltd.",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/print?category=Capital+Markets+Services+Licensee",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS directory lists exact Singapore legal entity under fund management."
+        }
+      }
     },
     {
       "company": "Canvas Fundamental Research Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -5130,11 +5071,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Canvas Fundamental Research Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://careers.point72.com/CSJobDetail?jobCode=PMI-0015128",
+          "reviewedOn": "2026-11-26",
+          "note": "Point72 official careers page confirms Canvas is its proprietary fundamental research group serving investment professionals; company profile identifies exact brand."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "投资研究（Point72）",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://careers.point72.com/CSJobDetail?jobCode=PMI-0015128"
+      ],
+      "investigationSummary": "Point72 official careers page confirms Canvas is its proprietary fundamental research group serving investment professionals; company profile identifies exact brand.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://careers.point72.com/CSJobDetail?jobCode=PMI-0015128",
+          "note": "Point72 official careers page confirms Canvas is its proprietary fundamental research group serving investment professionals; company profile identifies exact brand."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "International Trade Support, Analyst/Associate, Hong Kong",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/international-trade-support-analyst-associate-hong-kong-at-canvas-fundamental-research-group-4449403811",
+          "firstSeen": "2026-08-05T04:02:23.681Z",
+          "pushTime": "2026-08-05T22:02:25.438Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "International Trade Support Associate, Singapore",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/international-trade-support-associate-singapore-at-canvas-fundamental-research-group-4449410590",
+          "firstSeen": "2026-08-05T04:02:23.681Z",
+          "pushTime": "2026-08-05T22:02:25.438Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Canvas Fundamental Research Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://careers.point72.com/CSJobDetail?jobCode=PMI-0015128",
+          "reviewedOn": "2026-11-26",
+          "note": "Point72 official careers page confirms Canvas is its proprietary fundamental research group serving investment professionals; company profile identifies exact brand."
+        }
+      }
     },
     {
       "company": "Capital One",
@@ -5930,6 +5920,7 @@
     {
       "company": "Cresco Investments",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -5937,15 +5928,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Cresco Investments",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.cresco-investments.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site identifies investment, M&A, capital raising and strategic advisory activities."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "投资及企业融资顾问",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://www.cresco-investments.com/"
+      ],
+      "investigationSummary": "Official site identifies investment, M&A, capital raising and strategic advisory activities.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.cresco-investments.com/",
+          "note": "Official site identifies investment, M&A, capital raising and strategic advisory activities."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Analyst/Associate (Business Management | Deals)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/analyst-associate-business-management-deals-at-cresco-investments-4447640032",
+          "firstSeen": "2026-08-02T16:02:59.163Z",
+          "pushTime": "2026-08-02T16:02:59.163Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Cresco Investments",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.cresco-investments.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site identifies investment, M&A, capital raising and strategic advisory activities."
+        }
+      }
     },
     {
       "company": "Crossover Search Pte. Ltd.",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -5953,11 +5986,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Crossover Search Pte. Ltd.",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.companies.sg/business/202546964H/CROSSOVER-SEARCH-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact Singapore entity ACRA-derived record lists employment agency as principal activity and links MOM employment agency licence."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "职业介绍及人力资源服务",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://www.companies.sg/business/202546964H/CROSSOVER-SEARCH-PTE-LTD"
+      ],
+      "investigationSummary": "Exact Singapore entity ACRA-derived record lists employment agency as principal activity and links MOM employment agency licence.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.companies.sg/business/202546964H/CROSSOVER-SEARCH-PTE-LTD",
+          "note": "Exact Singapore entity ACRA-derived record lists employment agency as principal activity and links MOM employment agency licence."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Client Partnerships Executive",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/client-partnerships-executive-at-crossover-search-pte-ltd-4440698006",
+          "firstSeen": "2026-07-16T22:04:39.850Z",
+          "pushTime": "2026-07-17T10:05:14.696Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Crossover Search Pte. Ltd.",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.companies.sg/business/202546964H/CROSSOVER-SEARCH-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact Singapore entity ACRA-derived record lists employment agency as principal activity and links MOM employment agency licence."
+        }
+      }
     },
     {
       "company": "CrowdStrike",
@@ -6035,6 +6109,7 @@
     {
       "company": "Da Cheng International Asset Management",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6042,11 +6117,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Da Cheng International Asset Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.dcfund.com.hk/en/AboutUs/CompanyProfile/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official Hong Kong subsidiary profile identifies securities and asset management regulated activities."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "资产管理及证券业务",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://www.dcfund.com.hk/en/AboutUs/CompanyProfile/"
+      ],
+      "investigationSummary": "Official Hong Kong subsidiary profile identifies securities and asset management regulated activities.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.dcfund.com.hk/en/AboutUs/CompanyProfile/",
+          "note": "Official Hong Kong subsidiary profile identifies securities and asset management regulated activities."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "合規經理/主任compliance manager/officer",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/%E5%90%88%E8%A6%8F%E7%B6%93%E7%90%86-%E4%B8%BB%E4%BB%BBcompliance-manager-officer-at-da-cheng-international-asset-management-4445483585",
+          "firstSeen": "2026-07-28T22:02:57.724Z",
+          "pushTime": "2026-07-28T22:02:57.724Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Da Cheng International Asset Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.dcfund.com.hk/en/AboutUs/CompanyProfile/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official Hong Kong subsidiary profile identifies securities and asset management regulated activities."
+        }
+      }
     },
     {
       "company": "Deutsche",
@@ -6079,6 +6195,7 @@
     {
       "company": "DH International Fund Management Ltd",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6086,11 +6203,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "DH International Fund Management Ltd",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/company/dh-international-fund-management-ltd",
+          "reviewedOn": "2026-11-26",
+          "note": "Company profile identifies Hong Kong fund management subsidiary of Dunhe, with Type 4 and 9 licences."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "基金管理",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://hk.linkedin.com/company/dh-international-fund-management-ltd"
+      ],
+      "investigationSummary": "Company profile identifies Hong Kong fund management subsidiary of Dunhe, with Type 4 and 9 licences.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/company/dh-international-fund-management-ltd",
+          "note": "Company profile identifies Hong Kong fund management subsidiary of Dunhe, with Type 4 and 9 licences."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Operational Specialist",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/operational-specialist-at-dh-international-fund-management-ltd-4452795326",
+          "firstSeen": "2026-08-14T04:02:44.913Z",
+          "pushTime": "2026-08-20T22:03:13.265Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "DH International Fund Management Ltd",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/company/dh-international-fund-management-ltd",
+          "reviewedOn": "2026-11-26",
+          "note": "Company profile identifies Hong Kong fund management subsidiary of Dunhe, with Type 4 and 9 licences."
+        }
+      }
     },
     {
       "company": "DIGITEC Financial Technologies and Services",
@@ -6153,6 +6311,7 @@
     {
       "company": "Easy Consult HR Solutions DOO",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6160,15 +6319,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Easy Consult HR Solutions DOO",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.linkedin.com/company/hr-solution",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact company profile lists permanent placement, temporary staffing and RPO."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "第三方招聘及RPO",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://www.linkedin.com/company/hr-solution"
+      ],
+      "investigationSummary": "Exact company profile lists permanent placement, temporary staffing and RPO.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.linkedin.com/company/hr-solution",
+          "note": "Exact company profile lists permanent placement, temporary staffing and RPO."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Web3 Consultant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/web3-consultant-at-easy-consult-hr-solutions-doo-4446632235",
+          "firstSeen": "2026-08-04T10:02:30.792Z",
+          "pushTime": "2026-08-04T10:02:30.792Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Easy Consult HR Solutions DOO",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.linkedin.com/company/hr-solution",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact company profile lists permanent placement, temporary staffing and RPO."
+        }
+      }
     },
     {
       "company": "EDX Markets",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6176,15 +6377,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "EDX Markets",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://edxmarkets.com/edx-markets-launches-singapore-based-edxm-international/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official launch confirms Singapore affiliate operates institutional digital asset settlement platform."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "数字资产交易及清算",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://edxmarkets.com/edx-markets-launches-singapore-based-edxm-international/"
+      ],
+      "investigationSummary": "Official launch confirms Singapore affiliate operates institutional digital asset settlement platform.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://edxmarkets.com/edx-markets-launches-singapore-based-edxm-international/",
+          "note": "Official launch confirms Singapore affiliate operates institutional digital asset settlement platform."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Director, Business Development, Asia",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/director-business-development-asia-at-edx-markets-4444460345",
+          "firstSeen": "2026-07-23T16:03:00.965Z",
+          "pushTime": "2026-07-23T16:03:00.965Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "EDX Markets",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://edxmarkets.com/edx-markets-launches-singapore-based-edxm-international/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official launch confirms Singapore affiliate operates institutional digital asset settlement platform."
+        }
+      }
     },
     {
       "company": "EFICYENT",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6192,11 +6435,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "EFICYENT",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.fintechfestival.sg/exhibitors?sff_website_url=eficyent",
+          "reviewedOn": "2026-11-26",
+          "note": "Singapore FinTech Festival profile identifies payments infrastructure, FX and white-label financial services."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "跨境支付基础设施",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://www.fintechfestival.sg/exhibitors?sff_website_url=eficyent"
+      ],
+      "investigationSummary": "Singapore FinTech Festival profile identifies payments infrastructure, FX and white-label financial services.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.fintechfestival.sg/exhibitors?sff_website_url=eficyent",
+          "note": "Singapore FinTech Festival profile identifies payments infrastructure, FX and white-label financial services."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Associate Director - Sales & Operations",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/associate-director-sales-operations-at-eficyent-4441174051",
+          "firstSeen": "2026-07-17T10:05:14.696Z",
+          "pushTime": "2026-07-18T04:05:33.376Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "EFICYENT",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.fintechfestival.sg/exhibitors?sff_website_url=eficyent",
+          "reviewedOn": "2026-11-26",
+          "note": "Singapore FinTech Festival profile identifies payments infrastructure, FX and white-label financial services."
+        }
+      }
     },
     {
       "company": "Emmes Group",
@@ -6814,6 +7098,7 @@
     {
       "company": "Fintonia Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6821,15 +7106,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Fintonia Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/200808-FINTONIA-GROUP-SINGAPORE-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS directory lists licensed fund management."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "基金管理",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://eservices.mas.gov.sg/fid/institution/detail/200808-FINTONIA-GROUP-SINGAPORE-PTE-LTD"
+      ],
+      "investigationSummary": "MAS directory lists licensed fund management.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/200808-FINTONIA-GROUP-SINGAPORE-PTE-LTD",
+          "note": "MAS directory lists licensed fund management."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "BTC Loan Origination",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/btc-loan-origination-at-fintonia-group-4414553281",
+          "firstSeen": "2026-06-11T04:01:58.397Z",
+          "pushTime": "2026-07-28T16:02:35.892Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Fintonia Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/200808-FINTONIA-GROUP-SINGAPORE-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS directory lists licensed fund management."
+        }
+      }
     },
     {
       "company": "First Plus Asset Management",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6837,11 +7164,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "First Plus Asset Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/233935-FIRST-PLUS-ASSET-MANAGEMENT-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS lists fund management and exempt financial advisory activities."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "资产管理",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://eservices.mas.gov.sg/fid/institution/detail/233935-FIRST-PLUS-ASSET-MANAGEMENT-PTE-LTD"
+      ],
+      "investigationSummary": "MAS lists fund management and exempt financial advisory activities.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/233935-FIRST-PLUS-ASSET-MANAGEMENT-PTE-LTD",
+          "note": "MAS lists fund management and exempt financial advisory activities."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Financial Executive",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/financial-executive-at-first-plus-asset-management-4449459652",
+          "firstSeen": "2026-08-05T10:02:37.875Z",
+          "pushTime": "2026-08-05T22:02:25.438Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Fund Accountant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/fund-accountant-at-first-plus-asset-management-4447068666",
+          "firstSeen": "2026-07-30T22:02:46.346Z",
+          "pushTime": "2026-07-31T04:02:10.724Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "First Plus Asset Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/233935-FIRST-PLUS-ASSET-MANAGEMENT-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS lists fund management and exempt financial advisory activities."
+        }
+      }
     },
     {
       "company": "Fitch Learning",
@@ -6936,6 +7312,7 @@
     {
       "company": "Fort Financial",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6943,15 +7320,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Fort Financial",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://crs.findsgjobs.com/career-resource/job-detail/848732792310075392/management-trainee-financial-service/",
+          "reviewedOn": "2026-11-26",
+          "note": "Same Singapore company and management trainee function explicitly identify banking, finance and insurance and internal training; other positions include financial consultants."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "保险及财富顾问",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://crs.findsgjobs.com/career-resource/job-detail/848732792310075392/management-trainee-financial-service/"
+      ],
+      "investigationSummary": "Same Singapore company and management trainee function explicitly identify banking, finance and insurance and internal training; other positions include financial consultants.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://crs.findsgjobs.com/career-resource/job-detail/848732792310075392/management-trainee-financial-service/",
+          "note": "Same Singapore company and management trainee function explicitly identify banking, finance and insurance and internal training; other positions include financial consultants."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Management Trainee (Entry Level, Training Provided)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/management-trainee-entry-level-training-provided-at-fort-financial-4407191530",
+          "firstSeen": "2026-08-04T10:02:30.792Z",
+          "pushTime": "2026-08-04T10:02:30.792Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Fort Financial",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://crs.findsgjobs.com/career-resource/job-detail/848732792310075392/management-trainee-financial-service/",
+          "reviewedOn": "2026-11-26",
+          "note": "Same Singapore company and management trainee function explicitly identify banking, finance and insurance and internal training; other positions include financial consultants."
+        }
+      }
     },
     {
       "company": "GAIA Culinary",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -6960,10 +7379,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "餐饮及生活方式品牌运营",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "餐饮及生活方式品牌运营",
+      "employerType": null,
+      "queries": [
+        "https://sg.linkedin.com/company/gaia-culinary"
+      ],
+      "investigationSummary": "Company profile identifies Singapore/Indonesia restaurant and F&B operator.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/company/gaia-culinary",
+          "note": "Company profile identifies Singapore/Indonesia restaurant and F&B operator."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Guest Relations Executive - BAR KAP",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/guest-relations-executive-bar-kap-at-gaia-culinary-4457236270",
+          "firstSeen": "2026-09-27T22:02:28.970Z",
+          "pushTime": "2026-09-27T22:02:28.970Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Genesis Connect",
@@ -7025,6 +7468,7 @@
     {
       "company": "Global Sage",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7032,11 +7476,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Global Sage",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://globalsage.com/about-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official description identifies retained third-party executive searches."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "金融行业猎头",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://globalsage.com/about-us/"
+      ],
+      "investigationSummary": "Official description identifies retained third-party executive searches.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://globalsage.com/about-us/",
+          "note": "Official description identifies retained third-party executive searches."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Trader, Portfolio Manager – Investment Division (Ref: AL11540)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/trader-portfolio-manager-%E2%80%93-investment-division-ref-al11540-at-global-sage-4459780970",
+          "firstSeen": "2026-08-31T16:03:40.467Z",
+          "pushTime": "2026-09-01T10:03:23.491Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Investment Associate – Global Equities Hedge Fund-of-Funds (Ref: RL130826)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/investment-associate-%E2%80%93-global-equities-hedge-fund-of-funds-ref-rl130826-at-global-sage-4452918423",
+          "firstSeen": "2026-08-13T16:02:26.137Z",
+          "pushTime": "2026-08-14T04:02:44.913Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Global Sage",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://globalsage.com/about-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official description identifies retained third-party executive searches."
+        }
+      }
     },
     {
       "company": "Glory Family Heritage",
@@ -7211,6 +7704,7 @@
     {
       "company": "Gough Recruitment",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7218,11 +7712,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Gough Recruitment",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://hk.linkedin.com/company/gough-recruitment",
+          "reviewedOn": "2026-11-26",
+          "note": "Company profile confirms specialist recruitment for real estate and construction clients."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "房地产行业招聘",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://hk.linkedin.com/company/gough-recruitment"
+      ],
+      "investigationSummary": "Company profile confirms specialist recruitment for real estate and construction clients.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/company/gough-recruitment",
+          "note": "Company profile confirms specialist recruitment for real estate and construction clients."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Programme & Asset Manager",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/programme-asset-manager-at-gough-recruitment-4456872345",
+          "firstSeen": "2026-08-24T16:03:17.081Z",
+          "pushTime": "2026-08-25T10:02:57.154Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Gough Recruitment",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://hk.linkedin.com/company/gough-recruitment",
+          "reviewedOn": "2026-11-26",
+          "note": "Company profile confirms specialist recruitment for real estate and construction clients."
+        }
+      }
     },
     {
       "company": "GreenPrice",
@@ -7268,6 +7803,7 @@
     {
       "company": "GRT",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7275,15 +7811,57 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "GRT",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/quantitative-options-trader-junior-mid-level-asia-based-at-grt-4444181507",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact observed job explicitly describes internal OTC options trading and risk management at a digital-asset trading firm."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "数字资产衍生品及自营交易",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/quantitative-options-trader-junior-mid-level-asia-based-at-grt-4444181507"
+      ],
+      "investigationSummary": "Exact observed job explicitly describes internal OTC options trading and risk management at a digital-asset trading firm.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/quantitative-options-trader-junior-mid-level-asia-based-at-grt-4444181507",
+          "note": "Exact observed job explicitly describes internal OTC options trading and risk management at a digital-asset trading firm."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Quantitative Options Trader (Junior / Mid-Level) - Asia Based",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/quantitative-options-trader-junior-mid-level-asia-based-at-grt-4444181507",
+          "firstSeen": "2026-07-30T16:02:32.954Z",
+          "pushTime": "2026-07-30T16:02:32.954Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "GRT",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/quantitative-options-trader-junior-mid-level-asia-based-at-grt-4444181507",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact observed job explicitly describes internal OTC options trading and risk management at a digital-asset trading firm."
+        }
+      }
     },
     {
       "company": "GTN",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7291,11 +7869,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "GTN",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution?term=gtn",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS lists GTN Asia Financial Services as capital markets services licensee."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "资本市场及经纪服务",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://eservices.mas.gov.sg/fid/institution?term=gtn"
+      ],
+      "investigationSummary": "MAS lists GTN Asia Financial Services as capital markets services licensee.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://eservices.mas.gov.sg/fid/institution?term=gtn",
+          "note": "MAS lists GTN Asia Financial Services as capital markets services licensee."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Dealer - Asian and European Markets",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/dealer-asian-and-european-markets-at-gtn-4447435103",
+          "firstSeen": "2026-08-01T10:02:35.169Z",
+          "pushTime": "2026-08-01T10:02:35.169Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "GTN",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution?term=gtn",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS lists GTN Asia Financial Services as capital markets services licensee."
+        }
+      }
     },
     {
       "company": "Hamsa",
@@ -7626,6 +8245,7 @@
     {
       "company": "HERMESYS PTE LTD",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7634,10 +8254,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "通信安防及工业线缆设备",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "通信安防及工业线缆设备",
+      "employerType": null,
+      "queries": [
+        "https://sg.linkedin.com/company/hermesys-pte-ltd"
+      ],
+      "investigationSummary": "Exact company profile identifies network security, satellite communications and cable manufacturing.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://sg.linkedin.com/company/hermesys-pte-ltd",
+          "note": "Exact company profile identifies network security, satellite communications and cable manufacturing."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Customer Service Executive (Sales Support) – Singapore",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/customer-service-executive-sales-support-%E2%80%93-singapore-at-hermesys-pte-ltd-4471330073",
+          "firstSeen": "2026-09-28T04:10:27.910Z",
+          "pushTime": "2026-09-28T04:10:27.910Z",
+          "jobStatus": "expired"
+        }
+      ]
     },
     {
       "company": "Hex Trust",
@@ -7715,6 +8359,7 @@
     {
       "company": "Himension Capital",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7722,11 +8367,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Himension Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/229899-HIMENSION-CAPITAL-SINGAPORE-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS directory identifies Singapore capital markets licensee for fund management."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "基金管理",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://eservices.mas.gov.sg/fid/institution/detail/229899-HIMENSION-CAPITAL-SINGAPORE-PTE-LTD"
+      ],
+      "investigationSummary": "MAS directory identifies Singapore capital markets licensee for fund management.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/229899-HIMENSION-CAPITAL-SINGAPORE-PTE-LTD",
+          "note": "MAS directory identifies Singapore capital markets licensee for fund management."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Operations Analyst",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/operations-analyst-at-himension-capital-4454235528",
+          "firstSeen": "2026-08-17T10:04:09.127Z",
+          "pushTime": "2026-08-19T04:03:20.187Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Operations Analyst",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/operations-analyst-at-himension-capital-4454252463",
+          "firstSeen": "2026-08-17T10:04:09.127Z",
+          "pushTime": "2026-08-17T16:04:18.096Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Himension Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/229899-HIMENSION-CAPITAL-SINGAPORE-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS directory identifies Singapore capital markets licensee for fund management."
+        }
+      }
     },
     {
       "company": "Hire Feed",
@@ -7846,6 +8540,7 @@
     {
       "company": "Horizon Insights",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7853,11 +8548,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Horizon Insights",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.hzinsights.com/en/pages/WhatSetsUsApart.html",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site describes equity research and bespoke research for institutional investors, corroborating institutional sales job."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "金融市场研究及机构数据服务",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://www.hzinsights.com/en/pages/WhatSetsUsApart.html"
+      ],
+      "investigationSummary": "Official site describes equity research and bespoke research for institutional investors, corroborating institutional sales job.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.hzinsights.com/en/pages/WhatSetsUsApart.html",
+          "note": "Official site describes equity research and bespoke research for institutional investors, corroborating institutional sales job."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Institutional Sales",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/institutional-sales-at-horizon-insights-4441791109",
+          "firstSeen": "2026-07-19T16:04:49.146Z",
+          "pushTime": "2026-07-20T10:06:35.577Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Horizon Insights",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.hzinsights.com/en/pages/WhatSetsUsApart.html",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site describes equity research and bespoke research for institutional investors, corroborating institutional sales job."
+        }
+      }
     },
     {
       "company": "HoYoverse",
@@ -7894,6 +8630,7 @@
     {
       "company": "HRLinked Asia Search & Consultancy Pte Ltd",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7901,15 +8638,65 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "HRLinked Asia Search & Consultancy Pte Ltd",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://hrlinkedasia.com/contact-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official company identifies executive search business and EA licence number."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "猎头及招聘",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://hrlinkedasia.com/contact-us/"
+      ],
+      "investigationSummary": "Official company identifies executive search business and EA licence number.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hrlinkedasia.com/contact-us/",
+          "note": "Official company identifies executive search business and EA licence number."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Service Coordinator",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/service-coordinator-at-hrlinked-asia-search-consultancy-pte-ltd-4453917220",
+          "firstSeen": "2026-08-15T16:02:54.168Z",
+          "pushTime": "2026-08-16T10:02:56.775Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Customer Success Specialist",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/customer-success-specialist-at-hrlinked-asia-search-consultancy-pte-ltd-4444032312",
+          "firstSeen": "2026-07-23T22:02:35.981Z",
+          "pushTime": "2026-07-24T11:06:42.206Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "HRLinked Asia Search & Consultancy Pte Ltd",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://hrlinkedasia.com/contact-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official company identifies executive search business and EA licence number."
+        }
+      }
     },
     {
       "company": "Hudson Talent Solutions",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -7917,11 +8704,76 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Hudson Talent Solutions",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.britcham.org.sg/news/new-member-hudson-talent-solutions",
+          "reviewedOn": "2026-11-26",
+          "note": "Chamber member description identifies recruiting services for client organisations."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "招聘流程外包及人才服务",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://www.britcham.org.sg/news/new-member-hudson-talent-solutions"
+      ],
+      "investigationSummary": "Chamber member description identifies recruiting services for client organisations.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.britcham.org.sg/news/new-member-hudson-talent-solutions",
+          "note": "Chamber member description identifies recruiting services for client organisations."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Senior Compliance Manager (REIT)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/senior-compliance-manager-reit-at-hudson-talent-solutions-4450463354",
+          "firstSeen": "2026-08-13T16:02:26.137Z",
+          "pushTime": "2026-08-13T16:02:26.137Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Ethics & Compliance Counsel",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/ethics-compliance-counsel-at-hudson-talent-solutions-4446287681",
+          "firstSeen": "2026-08-04T16:02:59.803Z",
+          "pushTime": "2026-08-04T16:02:59.803Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Global Markets Compliance Officer",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/global-markets-compliance-officer-at-hudson-talent-solutions-4442339617",
+          "firstSeen": "2026-07-26T10:02:16.207Z",
+          "pushTime": "2026-07-27T04:02:24.815Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Financial Crime Compliance Lead",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/financial-crime-compliance-lead-at-hudson-talent-solutions-4442332578",
+          "firstSeen": "2026-07-26T10:02:16.207Z",
+          "pushTime": "2026-07-27T04:02:24.815Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Hudson Talent Solutions",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.britcham.org.sg/news/new-member-hudson-talent-solutions",
+          "reviewedOn": "2026-11-26",
+          "note": "Chamber member description identifies recruiting services for client organisations."
+        }
+      }
     },
     {
       "company": "ib vogt GmbH",
@@ -8067,6 +8919,7 @@
     {
       "company": "Imperium Commodity Search",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -8074,11 +8927,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Imperium Commodity Search",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://imperiumcs.com/find-commodities-jobs/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site identifies retained third-party search mandates."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "大宗商品行业猎头",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "https://imperiumcs.com/find-commodities-jobs/"
+      ],
+      "investigationSummary": "Official site identifies retained third-party search mandates.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://imperiumcs.com/find-commodities-jobs/",
+          "note": "Official site identifies retained third-party search mandates."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Commodity Brokers - Physical or Derivatives",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/commodity-brokers-physical-or-derivatives-at-imperium-commodity-search-4440130673",
+          "firstSeen": "2026-07-21T04:05:09.328Z",
+          "pushTime": "2026-07-21T04:05:09.328Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Imperium Commodity Search",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://imperiumcs.com/find-commodities-jobs/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site identifies retained third-party search mandates."
+        }
+      }
     },
     {
       "company": "Inex One",
@@ -8099,6 +8993,7 @@
     {
       "company": "Inference Research",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 0,
@@ -8106,11 +9001,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Inference Research",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/fund-accountant-admin-at-inference-research-4445438470",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact observed role describes own investment team, flagship funds, portfolio NAV and prime broker reconciliations; company registration-backed profile corroborates investment trading."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "量化投资及基金交易",
+      "employerType": "direct_employer",
+      "queries": [
+        "https://hk.linkedin.com/jobs/view/fund-accountant-admin-at-inference-research-4445438470"
+      ],
+      "investigationSummary": "Exact observed role describes own investment team, flagship funds, portfolio NAV and prime broker reconciliations; company registration-backed profile corroborates investment trading.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/fund-accountant-admin-at-inference-research-4445438470",
+          "note": "Exact observed role describes own investment team, flagship funds, portfolio NAV and prime broker reconciliations; company registration-backed profile corroborates investment trading."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Fund Accountant/Admin",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/fund-accountant-admin-at-inference-research-4445438470",
+          "firstSeen": "2026-07-28T04:02:30.049Z",
+          "pushTime": "2026-07-28T22:02:57.724Z",
+          "jobStatus": "expired"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Inference Research",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/fund-accountant-admin-at-inference-research-4445438470",
+          "reviewedOn": "2026-11-26",
+          "note": "Exact observed role describes own investment team, flagship funds, portfolio NAV and prime broker reconciliations; company registration-backed profile corroborates investment trading."
+        }
+      }
     },
     {
       "company": "Inicio Group Pte Ltd",
