@@ -957,22 +957,27 @@ jobsDataPromise
       const solve=(limit,allowCollision=false)=>{
         const choices=geometry.map(item=>positions(item,limit,allowCollision));
         if(choices.some(items=>!items.length))return null;
-        let best=null,bestCost=Infinity;
-        // Three labels only. Branch-and-bound avoids doing layout work in the
-        // search, and guarantees that one label never blocks a better solution.
-        function visit(i,placed,cost){
-          if(cost>=bestCost)return;
-          if(i===geometry.length){best=placed.slice();bestCost=cost;return;}
-          for(const option of choices[i]){
-            const nextCost=cost+Math.abs(option.delta)+option.collisions*10000;
-            if(nextCost>=bestCost)continue;
-            const overlap=placed.some(other=>option.top<other.bottom+1.5);
-            if(overlap)continue;
-            visit(i+1,[...placed,option],nextCost);
-          }
+        // Dynamic programming over the ordered labels: keep the least-cost
+        // preceding option whose lower edge clears this option's upper edge.
+        // This gives the same global optimum without an exponential search.
+        let states=choices[0].map(option=>({option,cost:Math.abs(option.delta)+option.collisions*10000,prev:null}));
+        for(let i=1;i<choices.length;i++){
+          const earlier=states.slice().sort((a,b)=>a.option.bottom-b.option.bottom);
+          let cursor=0,best=null;
+          states=choices[i].slice().sort((a,b)=>a.top-b.top).flatMap(option=>{
+            while(cursor<earlier.length&&earlier[cursor].option.bottom+1.5<=option.top){
+              const candidate=earlier[cursor++];
+              if(!best||candidate.cost<best.cost)best=candidate;
+            }
+            return best?[{option,cost:best.cost+Math.abs(option.delta)+option.collisions*10000,prev:best}]:[];
+          });
+          if(!states.length)return null;
         }
-        visit(0,[],0);
-        return best;
+        let best=states.reduce((a,b)=>!a||b.cost<a.cost?b:a,null);
+        if(!best)return null;
+        const solution=[];
+        while(best){solution.push(best.option);best=best.prev;}
+        return solution.reverse();
       };
       const limit=Math.ceil(box.height);
       let layout=solve(24)||solve(limit);
