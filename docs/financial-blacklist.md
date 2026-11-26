@@ -17,7 +17,7 @@ matching rules.
 | `direct_employer` | The identified organization operates its own business or institution and primarily hires for its own operations. Its posts are candidates for a company-level direct-employer view. |
 | `recruitment_agency` | Recruiting for clients is a core service, including executive search, staffing, labor dispatch and recruitment process outsourcing. The company can also hire its own staff. |
 | `recruitment_platform` | The identified brand mainly runs a marketplace or job board. The display name alone does not identify the ultimate employer. |
-| `mixed` | Legacy compatibility only; do not assign to new or reviewed records. Material third-party staffing, placement, RPO or EOR services normally warrant `recruitment_agency`, even alongside other operations. |
+| `mixed` | Legacy compatibility only; do not assign to new or reviewed records. Third-party staffing, placement, RPO or EOR businesses warrant `recruitment_agency` when that is the publisher's core business. Incidental service lines of a direct operating business are insufficient. |
 | `unknown` | Evidence is missing, conflicting or does not resolve the exact entity or service. Keep it out of a strict direct-employer view. |
 
 The live display has two mutually exclusive scopes: Direct includes only
@@ -26,8 +26,11 @@ publishers. The label is a display grouping, not proof that an unresolved
 publisher is an agency. Full includes both scopes.
 
 HR consulting, payroll software and managed services do not by themselves
-establish recruiting for clients. Material third-party recruitment or labor
-supply is classified as agency rather than mixed. Preserve expressly
+establish recruiting for clients. Publishers primarily providing third-party recruitment or labor supply are
+classified as agency rather than mixed. For corporate services, fund
+administration and consulting businesses, assess the principal business and
+actual publisher vacancies; a secondary staffing service is not sufficient
+to classify the whole company as agency. Preserve expressly
 requester-confirmed classifications (including VISTRA and Apex Group Ltd as direct), with their
 evidence basis; do not extrapolate those exceptions to other employers. Choose a type using evidence of the
 organization's services and identity. Financial institution names, brand
