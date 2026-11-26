@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "filter_window": "2026-11-25 12:10 ~ 2026-11-26 12:10 (Beijing)",
+  "filter_window": "2026-11-25 15:36 ~ 2026-11-26 15:36 (Beijing)",
   "target_companies": [
     {
       "company": "Archroma",
@@ -110,7 +110,7 @@
       "company": "DBS Bank",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:47:01Z"
+      "pushTime": "2026-11-25T21:43:26Z"
     },
     {
       "company": "JPMorgan Chase",
@@ -122,19 +122,19 @@
       "company": "JPMorganChase",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:47:01Z"
+      "pushTime": "2026-11-25T21:43:26Z"
     },
     {
       "company": "Standard Chartered",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:47:01Z"
+      "pushTime": "2026-11-25T09:43:17Z"
     },
     {
       "company": "UBS",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:47:01Z"
+      "pushTime": "2026-11-25T15:37:22Z"
     },
     {
       "company": "BNP Paribas Asset Management",
@@ -146,7 +146,7 @@
       "company": "China Construction Bank (Asia)",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:49:03.569Z"
+      "pushTime": "2026-11-26T04:01:58.258Z"
     },
     {
       "company": "Mastercard",
@@ -164,7 +164,7 @@
       "company": "Robert Walters",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:49:03.569Z"
+      "pushTime": "2026-11-26T04:01:58.258Z"
     },
     {
       "company": "Nomura",
@@ -188,13 +188,13 @@
       "company": "Standard Chartered Singapore",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:49:03.569Z"
+      "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
       "company": "CITIC Securities International",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T06:49:03.569Z"
+      "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
       "company": "Maples Group",
@@ -206,7 +206,7 @@
       "company": "Charterhouse Partnership",
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
-      "pushTime": "2026-11-25T07:25:19.584Z"
+      "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
       "company": "BBVA",
@@ -331,24 +331,24 @@
     {
       "company": "AMBR (Nasdaq: AMBR)",
       "category": "excluded",
-      "reason": "verified financial/headhunter (reclassified)",
+      "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-25T10:01:16.800Z"
     },
     {
       "company": "Trulyyy",
       "category": "excluded",
-      "reason": "verified financial/headhunter (reclassified)",
+      "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-25T10:01:16.800Z"
     },
     {
       "company": "ConnectedSolutions",
       "category": "excluded",
-      "reason": "verified financial/headhunter (reclassified)",
+      "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-26T04:01:58.258Z"
     }
   ],
   "total_target": 10,
   "total_excluded": 47,
-  "total_today_jobs": 136,
-  "total_all_jobs": 15076
+  "total_today_jobs": 90,
+  "total_all_jobs": 15064
 }
