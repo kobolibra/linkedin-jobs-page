@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-25T22:02:23.756774+00:00",
+    "checkedAt": "2026-11-26T04:02:48.297618+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-25T22:02:29.726273+00:00",
+    "checkedAt": "2026-11-26T04:02:54.219340+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-25T22:02:17.913827+00:00",
+    "checkedAt": "2026-11-26T04:02:42.238342+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-25T22:02:20.770160+00:00",
+    "checkedAt": "2026-11-26T04:02:45.280429+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12840,5 +12840,41 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFsJa-zzF7kyw/company-logo_100_100/company-logo_100_100/0/1724085708811/entrust_logo?e=2147483647&v=beta&t=r4Q1KHdjMEoEEZ2sPseOGSGYPw9dDrcQYyoiLP0V7o4",
     "companyUrl": "https://www.linkedin.com/company/entrust",
     "sourceJobId": "4494428599"
+  },
+  "connectedsolutions": {
+    "name": "ConnectedSolutions",
+    "checkedAt": "2026-11-26T04:02:35.063429+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "dcb2ae69314d80236894c478.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEvd-7jSYmduw/company-logo_100_100/company-logo_100_100/0/1736941964144/connectedsolutionshk_logo?e=2147483647&v=beta&t=RK_SQhkzD5NSbbRx31nB6ClJ4Y8TKvNEemEn1XSiK8Q",
+    "companyUrl": "https://hk.linkedin.com/company/connectedgroup-connectedsolutions",
+    "sourceJobId": "4494986154"
+  },
+  "株式会社精研": {
+    "name": "株式会社精研",
+    "checkedAt": "2026-11-26T04:02:36.485347+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE%E7%B2%BE%E7%A0%94",
+    "sourceJobId": "4493471925"
+  },
+  "第一三共": {
+    "name": "第一三共",
+    "checkedAt": "2026-11-26T04:02:39.461489+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E7%AC%AC%E4%B8%80%E4%B8%89%E5%85%B1",
+    "sourceJobId": "4493494091"
   }
 }
