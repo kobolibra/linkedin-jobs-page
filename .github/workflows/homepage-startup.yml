@@ -68,6 +68,15 @@ jobs:
         run: node scripts/test_calendar_browser.mjs
       - name: Verify keyboard, touch, navigation and mobile density in both engines
         run: node scripts/test_homepage_interaction.mjs
+      - name: Verify global employer modes in both browser engines
+        run: MODE_BROWSERS=chromium,webkit node scripts/test_employer_mode_browser.mjs
+      - name: Retain employer mode browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: employer-mode-browser-engines
+          path: artifacts/employer-mode
+          if-no-files-found: ignore
       - name: Retain homepage startup evidence
         if: always()
         uses: actions/upload-artifact@v4

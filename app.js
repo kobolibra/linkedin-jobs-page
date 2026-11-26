@@ -932,40 +932,57 @@ jobsDataPromise
       labels.forEach(node=>{node.style.transform='translateY(-50%)';});
       const cssY=y=>box.top+y*box.height/TH;
       const cssX=x=>box.left+x*box.width/TW;
-      for(const label of labels){
+      // Measure all text once, then solve their positions jointly. A greedy
+      // per-label nudge can strand the middle label after a late font change.
+      // Prefer the original staircase; search wider only when it cannot fit.
+      const geometry=labels.map(label=>{
         const frame=label.getBoundingClientRect();
-        const textRows=[...label.querySelectorAll(
-          '.region-end-name,.region-end-count,.region-end-share'
-        )].map(node=>node.getBoundingClientRect());
-        const relevant=references.filter(ref=>textRows.some(rect=>
-          rect.right>cssX(ref.start)&&rect.left<cssX(ref.end)));
-        // Half-pixel search (max 24 CSS px) preserves the existing staircase
-        // while letting a dash pass through the 3px row gap on narrow phones.
-        const fits=delta=>{
-          if(frame.top+delta<box.top+5||frame.bottom+delta>box.bottom-5)return false;
-          for(const ref of relevant)for(const rect of textRows){
-            const y=cssY(ref.y);
-            if(y>=rect.top+delta-.9&&y<=rect.bottom+delta+.9)return false;
+        const rows=[...label.querySelectorAll('.region-end-name,.region-end-count,.region-end-share')]
+          .map(node=>node.getBoundingClientRect());
+        const guides=references.filter(ref=>rows.some(rect=>rect.right>cssX(ref.start)&&rect.left<cssX(ref.end)))
+          .map(ref=>cssY(ref.y));
+        return {label,frame,rows,guides};
+      }).sort((a,b)=>a.frame.top-b.frame.top);
+      const positions=(item,limit,allowCollision=false)=>{
+        const options=[];
+        for(let step=0;step<=Math.ceil(limit*2);step++){
+          for(const delta of step===0?[0]:[-step*.5,step*.5]){
+            if(item.frame.top+delta<box.top+5||item.frame.bottom+delta>box.bottom-5)continue;
+            const collisions=item.guides.reduce((n,y)=>n+item.rows.filter(rect=>y>=rect.top+delta-.9&&y<=rect.bottom+delta+.9).length,0);
+            if(!collisions||allowCollision)options.push({delta,collisions,top:item.frame.top+delta,bottom:item.frame.bottom+delta});
           }
-          for(const other of labels){
-            if(other===label)continue;
-            const rect=other.getBoundingClientRect();
-            if(frame.left<rect.right+2&&frame.right>rect.left-2&&
-               frame.top+delta<rect.bottom+2&&frame.bottom+delta>rect.top-2)return false;
-          }
-          return true;
-        };
-        let shift=null;
-        for(let step=0;step<=48;step++){
-          const candidates=step===0?[0]:[-step*.5,step*.5];
-          const selected=candidates.find(fits);
-          if(selected!==undefined){shift=selected;break;}
         }
-        // In an exceptionally crowded/zero-height band, prefer an intact,
-        // low-opacity guide behind foreground text to a conspicuous hole.
-        if(shift!==null&&shift!==0)
-          label.style.transform='translateY(calc(-50% + '+shift.toFixed(1)+'px))';
-      }
+        return options.sort((a,b)=>a.collisions-b.collisions||Math.abs(a.delta)-Math.abs(b.delta));
+      };
+      const solve=(limit,allowCollision=false)=>{
+        const choices=geometry.map(item=>positions(item,limit,allowCollision));
+        if(choices.some(items=>!items.length))return null;
+        let best=null,bestCost=Infinity;
+        // Three labels only. Branch-and-bound avoids doing layout work in the
+        // search, and guarantees that one label never blocks a better solution.
+        function visit(i,placed,cost){
+          if(cost>=bestCost)return;
+          if(i===geometry.length){best=placed.slice();bestCost=cost;return;}
+          for(const option of choices[i]){
+            const nextCost=cost+Math.abs(option.delta)+option.collisions*10000;
+            if(nextCost>=bestCost)continue;
+            const overlap=placed.some(other=>option.top<other.bottom+1.5);
+            if(overlap)continue;
+            visit(i+1,[...placed,option],nextCost);
+          }
+        }
+        visit(0,[],0);
+        return best;
+      };
+      const limit=Math.ceil(box.height);
+      let layout=solve(24)||solve(limit);
+      // On a truly overcrowded phone, leave the guide continuous behind
+      // foreground text. Minimize actual glyph collisions, then displacement.
+      if(!layout)layout=solve(limit,true);
+      if(layout)geometry.forEach((item,i)=>{
+        const shift=layout[i].delta;
+        if(shift)item.label.style.transform='translateY(calc(-50% + '+shift.toFixed(1)+'px))';
+      });
       const markup=references.map(ref=>
         '<g class="region-projection" data-level="'+ref.level+
         '" data-start="'+ref.start+'" data-end="'+ref.end+'" data-y="'+ref.y+'">'+

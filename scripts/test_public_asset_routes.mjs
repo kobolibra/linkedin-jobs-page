@@ -112,7 +112,8 @@ test('About accurately describes posting-day analytics, historical dates and man
  assert.match(about,/Swipe left/);
  assert.match(about,/limited to 500 characters/);
  assert.match(jobs,/const stages=\[\['saved','Saved'\]/);
- assert.match(jobs,/const data=graph\(favorites,states,\{regions\}\)/);
+ assert.match(jobs,/const data=graph\(visible,states,\{regions\}\)/);
+ assert.match(about,/Direct mode/);assert.match(about,/Agency mode/);assert.match(about,/Full mode/);
  assert.match(app,/const JEV_API_ENDPOINT="\/api\/jev\/analyze"/);
 });
 test('About preserves all external routes and private asset boundaries',()=>{
