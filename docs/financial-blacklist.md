@@ -78,13 +78,16 @@ normalized keys. `BAH Partners` / `Bah Partners` and `BOSS直聘` /
 | Jobs | 15,064 | 5,739 |
 | Company keys | 913 | 488 |
 | Jobs matching the protection list | 14,653 | 5,692 |
-| Jobs with an evidenced type other than unknown | 13,254 | 5,199 |
-| Jobs matching an unknown record | 1,399 | 493 |
+| Jobs with an evidenced type other than unknown | 14,297 | 5,684 |
+| Jobs matching an unknown record | 356 | 8 |
 | Jobs with no record | 411 | 47 |
 | Company keys with no record | 296 | 42 |
 
-The first batch resolves 234 records. Of the 942 unknown records, one has an
-inconclusive source and 941 await evidence. The 561 records with no
+There are 501 classified records. Every protection-list name matched by an
+explicitly active job has been reviewed. Six such names remain inconclusive
+and account for eight active jobs. Another 669 names without active jobs
+await evidence. Each inconclusive active record describes the open question
+in its evidence note. The 561 records with no
 `jobStatus` are included in the all-jobs column. In the same jobs snapshot,
 6,812 records have `companyCanonical` and `requestedCompany` and 10,100
 have `companyLogoSource`. No job has an `employerType` or `jobPoster` field.
