@@ -75,7 +75,7 @@ jobs:
       - name: Test public route-to-asset mapping before packaging
         run: node --test scripts/test_public_asset_routes.mjs scripts/test_visitor_count.mjs
       - name: Verify startup concurrency, cache freshness and guest data boundaries
-        run: node --test scripts/test_startup_loading.mjs scripts/test_frontend_resilience.mjs scripts/test_guest_preview.mjs scripts/test_startup_date_scope.mjs
+        run: node --test scripts/test_startup_loading.mjs scripts/test_frontend_resilience.mjs scripts/test_guest_preview.mjs scripts/test_startup_date_scope.mjs scripts/test_employer_mode.mjs
       - name: Synchronize and verify generated frontend payloads
         run: python scripts/sync_frontend_payloads.py --publish
       - name: Verify the exact protected asset directory before deployment
