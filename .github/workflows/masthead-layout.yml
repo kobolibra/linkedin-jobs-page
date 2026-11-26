@@ -1,0 +1,40 @@
+name: Masthead optical spacing
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'next-journey-masthead.css'
+      - 'account-identity.css'
+      - 'auth.css'
+      - 'account.js'
+      - 'auth-guest.js'
+      - 'employer-mode.js'
+      - 'scripts/test_employer_mode_browser.mjs'
+      - '.github/workflows/masthead-layout.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: masthead-layout-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  geometry:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pinned Chromium and WebKit
+        run: |
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Test all modes, header ink gaps, mobile fit and interaction
+        run: MODE_BROWSERS=chromium,webkit node scripts/test_employer_mode_browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: masthead-optical-spacing-evidence
+          path: artifacts/employer-mode
+          if-no-files-found: ignore

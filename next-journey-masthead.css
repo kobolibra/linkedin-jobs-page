@@ -132,10 +132,13 @@
 /* Fixed independent tracks, before and after authentication. The mode
    reads as editorial navigation rather than a boxed form field. */
 .nj-brand-row{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:24px;align-items:center;justify-content:normal;margin-bottom:0}
-#headerTools{position:static;inset:auto;display:grid;grid-template-columns:44px 100px 40px 68px;align-items:center;column-gap:9px;width:max-content;min-width:0;min-height:40px;margin:0;padding:0;z-index:81}
+/* Give each action its own optical space. About is left-aligned in a
+   wider track, the longest mode label owns a constant width, and the
+   divider is independently centered between the two icon centers. */
+#headerTools{--rail-about:70px;--rail-mode:120px;--rail-theme:40px;--rail-account:64px;--rail-divider-inset:12px;position:relative;inset:auto;display:grid;grid-template-columns:var(--rail-about) var(--rail-mode) var(--rail-theme) var(--rail-account);align-items:center;column-gap:0;width:max-content;min-width:0;min-height:40px;margin:0;padding:0;z-index:81}
 #headerTools .nj-top-nav{position:static;inset:auto;display:block;padding:0;z-index:auto}
 #headerTools .nj-about-link,#headerTools .nj-employer-mode select{font:550 12px/1.4 var(--sans,system-ui);letter-spacing:.008em;color:var(--nj-secondary);text-decoration:none;transition:color .15s ease}
-#headerTools .nj-about-link{display:flex;justify-content:center;align-items:center;padding:0;min-height:40px;background:transparent;border-radius:0}
+ #headerTools .nj-about-link{display:flex;justify-content:flex-start;align-items:center;padding:0;min-height:40px;background:transparent;border-radius:0}
 #headerTools .nj-about-link:hover,#headerTools .nj-employer-mode select:hover{background:transparent;color:var(--nj-ink)}
 #headerTools .nj-employer-mode{display:flex;position:relative;align-items:center;width:100%;min-width:0}
 #headerTools .nj-employer-mode select{appearance:none;-webkit-appearance:none;box-sizing:border-box;width:100%;height:40px;min-height:40px;padding:0 15px 0 0;margin:0;border:0;border-radius:0;box-shadow:none;background:transparent;cursor:pointer;text-align:left}
@@ -155,6 +158,11 @@
 #headerTools .theme-toggle{position:static;box-sizing:border-box;width:40px;height:40px;min-height:40px;margin:0;padding:10px;justify-self:center}
 #headerTools .nj-account-slot{display:flex;justify-content:flex-end;align-items:center;width:100%;height:40px;min-width:0;position:relative}
 #headerTools .nj-account-slot .account-control{flex:none;margin:0}
+#headerTools .nj-account-slot .account-control::before{content:none;display:none}
+#headerTools .nj-account-slot .account-trigger{width:40px;min-width:40px;flex:0 0 40px;height:40px;min-height:40px;padding:0}
+#headerTools .nj-account-slot .account-person-icon{width:24px;height:24px}
+#headerTools .nj-account-divider{position:absolute;top:50%;right:calc(var(--rail-account) - var(--rail-divider-inset));width:1px;height:17px;transform:translate(50%,-50%);background:var(--nj-rule);visibility:hidden;pointer-events:none}
+#headerTools:has(.account-control) .nj-account-divider{visibility:visible}
 #headerTools .nj-account-slot .auth-guest-sign{white-space:nowrap;flex:none;padding:0 3px;gap:5px}
 [data-theme="dark"] #headerTools select{color-scheme:dark}
 @media(min-width:721px){html{scrollbar-gutter:stable}}
@@ -162,9 +170,9 @@
    mode label and the guest/ signed-in account widths before auth arrives.
    Never wrap the navigation below the brand or clip a functional control. */
 @media(max-width:720px){
- .nj-brand-row{height:60px;grid-template-columns:minmax(0,1fr) max-content;column-gap:7px;margin:0;padding:0}
+ .nj-brand-row{height:60px;grid-template-columns:minmax(0,1fr) max-content;column-gap:5px;margin:0;padding:0}
  .nj-brand-row>.nj-brand{min-width:0;max-width:100%;justify-self:start}
- #headerTools{grid-template-columns:32px 96px 32px 52px;column-gap:2px;min-height:40px;justify-self:end}
+ #headerTools{--rail-about:50px;--rail-mode:96px;--rail-theme:32px;--rail-account:52px;--rail-divider-inset:8px;min-height:40px;justify-self:end}
  #headerTools .nj-about-link,#headerTools .nj-employer-mode select{font-size:12px}
  #headerTools .nj-employer-mode select{padding-right:12px}
  #headerTools .nj-mode-chevron{right:1px;width:10px;height:10px}
@@ -173,9 +181,9 @@
  #headerTools .nj-account-slot .auth-sign-arrow{font-size:12px}
 }
 @media(max-width:420px){
- .nj-brand-row>.nj-brand{gap:5px}
- .nj-brand-mark{width:22px;height:22px}
- .nj-brand-name{font-size:clamp(14px,calc(10vw - 23px),16px)}
+ .nj-brand-row>.nj-brand{gap:4px}
+ .nj-brand-mark{width:clamp(20px,calc(10vw - 17px),22px);height:clamp(20px,calc(10vw - 17px),22px)}
+ .nj-brand-name{font-size:clamp(13px,calc(13.333vw - 36px),16px)}
 }
 /* Only the brand contracts on the very narrowest phones; the complete
    name remains in the link's accessible label, and all controls stay visible. */

@@ -56,3 +56,13 @@ test('mobile masthead uses one row and only contracts the brand at narrowest wid
  assert.match(css,/\.nj-brand-row\{height:60px;grid-template-columns:minmax\(0,1fr\) max-content;/);
  assert.match(css,/@media\(max-width:369px\)\{[^}]*\.nj-brand-row[^}]*\}[^}]*\.nj-brand-name\{display:none\}/s);
 });
+
+test('masthead reserves real About whitespace and an independent symmetric icon divider',()=>{
+ const css=readFileSync(new URL('../next-journey-masthead.css',import.meta.url),'utf8');
+ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert.match(css,/--rail-about:70px;--rail-mode:120px;--rail-theme:40px;--rail-account:64px;--rail-divider-inset:12px/);
+ assert.match(css,/--rail-about:50px;--rail-mode:96px;--rail-theme:32px;--rail-account:52px;--rail-divider-inset:8px/);
+ assert.match(css,/#headerTools \.nj-about-link\{display:flex;justify-content:flex-start/);
+ assert.match(css,/#headerTools \.nj-account-slot \.account-control::before\{content:none;display:none\}/);
+ assert.match(html,/<span class="nj-account-divider" aria-hidden="true"><\/span>/);
+});
