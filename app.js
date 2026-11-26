@@ -451,9 +451,12 @@ window.VizTip=(()=>{
   // tooltip follows it instead of vanishing. Pointer readings hide on scroll.
   let anchor=null;
   const place=(x,y)=>{
-    const t=tip,r=t.getBoundingClientRect(),margin=10;
-    // Touch WebKit can report an expanded innerWidth when a scrollable chart
-    // is wider than its viewport. Use the actual visible/layout bounds.
+    const t=tip,margin=10;
+    // Fixed-position origin and the visible viewport can diverge on touch
+    // WebKit after native focus pans a horizontally scrollable chart. Measure
+    // the untransformed origin in client coordinates instead of assuming 0,0.
+    t.style.transform='translate(0px,0px)';
+    const r=t.getBoundingClientRect();
     const viewportWidth=Math.min(innerWidth,document.documentElement.clientWidth||innerWidth,window.visualViewport?.width||innerWidth);
     const viewportHeight=Math.min(innerHeight,document.documentElement.clientHeight||innerHeight,window.visualViewport?.height||innerHeight);
     const maxLeft=Math.max(margin,viewportWidth-r.width-margin);
@@ -463,7 +466,13 @@ window.VizTip=(()=>{
     if(top<margin)top=y+18;
     left=Math.min(maxLeft,Math.max(margin,left));
     top=Math.min(maxTop,Math.max(margin,top));
-    t.style.transform='translate('+Math.round(left)+'px,'+Math.round(top)+'px)';
+    t.style.transform='translate('+Math.round(left-r.left)+'px,'+Math.round(top-r.top)+'px)';
+    // Native viewport panning may settle while placing. Correct the actual
+    // painted rectangle rather than trusting the transform's nominal origin.
+    const placed=t.getBoundingClientRect();
+    if(Math.abs(placed.left-left)>1||Math.abs(placed.top-top)>1){
+      t.style.transform='translate('+Math.round(left-r.left+left-placed.left)+'px,'+Math.round(top-r.top+top-placed.top)+'px)';
+    }
   };
   function show(html,x,y,target=null){
     const t=ensure();t.innerHTML=html;t.hidden=false;anchor=target;
