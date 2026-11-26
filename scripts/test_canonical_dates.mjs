@@ -113,7 +113,7 @@ test('site loads one shared calendar and all known user-facing dates use it',()=
 
 test('Last Updated prefers source precision over date-only job observations in both modes',()=>{
  const app=read('app.js'),preview=read('scripts/guest_preview.mjs'),html=read('index.html');
- assert.ok(app.includes("snapshotUpdatedAt=typeof data?.updatedAt==='string'?data.updatedAt:''"));
+ assert.ok(app.includes("snapshotUpdatedAt=typeof doc?.updatedAt==='string'?doc.updatedAt:''"));
  assert.ok(app.includes("formatStamp(window.AuthGuest?.overview?.updated||snapshotUpdatedAt||lastUpd,{compact:true})"));
  assert.match(preview,/updated:observed\|\|\(updated\?/);
  assert.match(html,/id="stat-updated"/);

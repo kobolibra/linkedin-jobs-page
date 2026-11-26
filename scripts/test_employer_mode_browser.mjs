@@ -30,7 +30,7 @@ try{
    const url=new URL(route.request().url());
    if(url.hostname!=='127.0.0.1'){const cb=url.searchParams.get('jsonpCallback');return route.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:cb?'application/javascript':url.pathname.includes('css')?'text/css':'application/json',body:cb?`${cb}({site_pv:1})`:url.pathname.includes('css')?'':'[]'});}
    const path=url.pathname;
-   if(path==='/auth/session')return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:{enabled:true,user:{id:'mode-test',name:'Regression'},csrf:'test-only'})});
+   if(path==='/auth/session'){await new Promise(resolve=>setTimeout(resolve,200));return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:{enabled:true,user:{id:'mode-test',name:'Regression'},csrf:'test-only'})});}
    if(path==='/auth/preferences')return route.fulfill({contentType:'application/json',body:JSON.stringify({userId:'mode-test',entries:[],cursor:0,more:false,acknowledged:[]})});
    if(path==='/jobs-version.json')return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:{dataVersion:index.dataVersion})});
    if(path==='/jobs-index.json')return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:index)});
@@ -41,7 +41,7 @@ try{
    if(path==='/'&&isGuest)body=Buffer.from(body.toString().replace('<html ','<html data-auth-state="guest" ').replace('</head>','<link rel="stylesheet" href="/auth-guest.css?v=2"></head>'));
    return route.fulfill({status:200,contentType:types[extname(local)]||'application/octet-stream',body});
   });
-  const page=await context.newPage(),errors=[];
+  const page=await context.newPage(),errors=[];let indexRequests=0;page.on('request',request=>{const p=new URL(request.url()).pathname;if(p==='/jobs-index.json'||p==='/api/public-preview')indexRequests++;});
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))errors.push(m.text());});
   await page.goto('http://127.0.0.1:47653/');
   const wait=async mode=>{
@@ -69,11 +69,15 @@ try{
    console.log(JSON.stringify({engine,width,theme,isGuest,mode,snapshot:{...snapshot,history:undefined}}));
   };
   await wait('full');
+  const initialFetches=indexRequests;
   const initialHeader=await page.evaluate(()=>{window.__modeQA={header:document.getElementById('headerTools'),theme:document.getElementById('themeToggle'),account:document.getElementById('headerAccount').firstElementChild,select:document.getElementById('employerMode')};const rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return [...document.getElementById('headerTools').children].map(rect);});
   let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
   for(const mode of ['direct','agency','full']){
+   await page.evaluate(()=>{const sample=()=>{const q=window.__modeQA;const r=[...q.header.children].map(e=>{const b=e.getBoundingClientRect();return [b.x,b.y,b.width,b.height];});window.__modeFrames.push(r);if(window.__modeSampling)requestAnimationFrame(sample);};window.__modeFrames=[];window.__modeSampling=true;requestAnimationFrame(sample);});
    await page.selectOption('#employerMode',mode);
    await wait(mode);
+   const frames=await page.evaluate(async()=>{for(let i=0;i<3;i++)await new Promise(requestAnimationFrame);window.__modeSampling=false;return window.__modeFrames;});
+   for(const boxes of frames)for(let i=0;i<boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(boxes[i][j]-initialHeader[i][j])<=1,'transient header jump '+JSON.stringify({boxes,initialHeader}));
    assert.equal(await page.locator('#employerMode').inputValue(),mode);
    assert.equal(navigations,0,'mode switch must not navigate');
    const stability=await page.evaluate(()=>{const q=window.__modeQA,header=document.getElementById('headerTools'),rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return {same:q.header===header&&q.theme===document.getElementById('themeToggle')&&q.account===document.getElementById('headerAccount').firstElementChild&&q.select===document.getElementById('employerMode'),boxes:[...header.children].map(rect),border:getComputedStyle(q.select).borderTopWidth,shadow:getComputedStyle(q.select).boxShadow,accountRight:q.account?.getBoundingClientRect().right};});
@@ -87,7 +91,7 @@ try{
   }
   // Three consecutive changes in one task exercise the same document and latest scope.
   await page.evaluate(()=>{EmployerMode.set('direct');EmployerMode.set('agency');EmployerMode.set('direct');});await wait('direct');
-  assert.equal(navigations,0);
+  assert.equal(navigations,0);assert.equal(indexRequests,initialFetches,'mode switches must reuse one master snapshot');
   await page.reload();await wait('direct');
   assert.deepEqual(errors,[]);
   await context.close();

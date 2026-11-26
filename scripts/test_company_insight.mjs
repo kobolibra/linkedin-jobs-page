@@ -267,8 +267,10 @@ test('early count precedes card rendering and respects existing filters',async()
   c.ageEl.value='1-7';assert.equal(context.countLoadedActiveJobs(),0);
   c.ageEl.value='all';c.activeRegion='all';c.activeCity='Hong Kong';c.companyEl.value='ACME';c.favOnly=true;assert.equal(context.countLoadedActiveJobs(),1);
   Object.assign(c,{keepLatestSameCityTitle:jobs=>jobs,updateJobCount:n=>events.push(['count',n]),requestAnimationFrame:fn=>{events.push(['frame']);fn();},setTimeout:fn=>{events.push(['yield']);fn();}});
-  const start=app.indexOf('if(!Array.isArray(data))data=[];',app.indexOf('jobsDataPromise\n'));
-  const end=app.indexOf('const activeData=data.filter(isActiveJob);',start);
-  await vm.runInContext('(async data=>{'+app.slice(start,end)+'})',context)(rows);
+  const start=app.indexOf('async function paintInitialCount(){');
+  const end=app.indexOf('async function renderJobScope(',start);
+  assert.ok(start>=0&&end>start);
+  await vm.runInContext(app.slice(start,end)+'\npaintInitialCount()',context);
+  assert.match(app,/if\(initial\)\{await paintInitialCount\(\);if\(revision!==scopeRevision\)return;\}/);
   assert.deepEqual(events,[['count',1],['frame'],['yield']]);
 });

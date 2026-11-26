@@ -537,6 +537,11 @@ const jobsDataPromise=jobsIndexDocument.then(raw=>{masterJobsDocument=raw;jobsDa
 window.__jobsDataPromise=jobsDataPromise;
 jobsDataPromise.catch(()=>{});
 function currentMode(){return window.EmployerMode?.current()||'full';}
+async function paintInitialCount(){
+  updateJobCount(countLoadedActiveJobs());
+  await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
+  await new Promise(resolve=>setTimeout(resolve,0));
+}
 async function renderJobScope(raw,mode){
     // Validate before changing the live page. The immutable master document
     // is retained for every switch; no second network load or page reload.
@@ -557,6 +562,7 @@ async function renderJobScope(raw,mode){
     const rows=Array.isArray(doc)?doc:(Array.isArray(doc?.jobs)?doc.jobs:[]);
     const data=keepLatestSameCityTitle(rows.map(job=>({...job,company:canonicalCompany(job.company)})));
     loadedJobs=data;window.__jobsScopedRows=data;window.__jobsDataPromise=Promise.resolve(data);
+    if(initial){await paintInitialCount();if(revision!==scopeRevision)return;}
     companyEl.replaceChildren(new Option('全部机构','all'));
     cityEl.replaceChildren(new Option('其他','all'));
     const title=emptyEl.querySelector('.big');if(title){title.textContent='未找到匹配的职位';if(title.nextElementSibling)title.nextElementSibling.textContent='试试调整筛选条件或清空搜索关键词。';}
