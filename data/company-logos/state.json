@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-26T08:53:10.617626+00:00",
+    "checkedAt": "2026-11-26T08:58:28.084086+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -2705,12 +2705,23 @@
       {
         "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
         "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
-        "status": 404,
-        "contentType": "",
+        "status": 429,
+        "contentType": "text/html",
         "attempt": 1,
         "jobId": "4461002131",
-        "reason": "http_error",
+        "reason": "rate_limited",
         "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4461002131",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.884365107231204,
+        "deferred": true
       }
     ]
   },
@@ -3178,7 +3189,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-26T08:53:06.396699+00:00",
+    "checkedAt": "2026-11-26T08:58:23.880360+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5409,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-26T08:53:07.676858+00:00",
+    "checkedAt": "2026-11-26T08:58:25.092650+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
