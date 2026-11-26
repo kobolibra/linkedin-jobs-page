@@ -21,11 +21,26 @@
     return {...doc,jobs,postingHistoryDaily:postingHistoryDaily||null};
   }
   let selected='full';
-  const api={KEY,normalize,matches,scope,current:()=>selected};
+  const api={KEY,normalize,matches,scope,current:()=>selected,set:setMode};
   if(typeof module==='object'&&module.exports)module.exports=api;
   root.EmployerMode=api;
+  let select;
+  function setMode(value,{notify=true}={}){
+    const mode=normalize(value),previous=selected;
+    selected=mode;
+    if(typeof document==='undefined')return mode;
+    if(select)select.value=mode;
+    document.documentElement.dataset.employerMode=mode;
+    let persisted=false;
+    try{localStorage.setItem(KEY,mode);persisted=localStorage.getItem(KEY)===mode;}catch{}
+    const url=new URL(location.href);
+    if(persisted)url.searchParams.delete('employerMode');else url.searchParams.set('employerMode',mode);
+    if(url.href!==location.href)try{history.replaceState(history.state,'',url.href);}catch{}
+    if(notify&&previous!==mode)root.dispatchEvent(new CustomEvent('employermodechange',{detail:{mode,previous}}));
+    return mode;
+  }
   if(typeof document==='undefined')return;
-  const select=document.getElementById('employerMode');
+  select=document.getElementById('employerMode');
   if(!select)return;
   const url=new URL(location.href);
   let saved=null;
@@ -33,17 +48,5 @@
   selected=normalize(valid(url.searchParams.get('employerMode'))?url.searchParams.get('employerMode'):saved);
   select.value=selected;
   document.documentElement.dataset.employerMode=selected;
-  select.addEventListener('change',()=>{
-    const mode=normalize(select.value);
-    if(mode===selected)return;
-    select.disabled=true;
-    let persisted=false;
-    try{localStorage.setItem(KEY,mode);persisted=localStorage.getItem(KEY)===mode;}catch{}
-    // Version-checked initialization avoids stale chart observers, virtual-list
-    // state and mixed-scope asynchronous rendering.
-    const next=new URL(location.href);
-    if(persisted)next.searchParams.delete('employerMode');
-    else next.searchParams.set('employerMode',mode);
-    if(next.href===location.href)location.reload();else location.replace(next.href);
-  });
+  select.addEventListener('change',()=>setMode(select.value));
 })(typeof globalThis!=='undefined'?globalThis:this);
