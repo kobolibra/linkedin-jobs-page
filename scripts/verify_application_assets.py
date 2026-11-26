@@ -47,7 +47,7 @@ def _verify():
 
     # Keep SHA checks and HTML references aligned with the checked-in release.
     # A pinned literal asset version caused a false failure after the date fix.
-    tracked_assets = ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js')
+    tracked_assets = ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js', 'employer-mode.js', 'next-journey-masthead.css')
     for name in tracked_assets:
         expected = (root / name).read_bytes()
         digest = hashlib.sha256(expected).hexdigest()
@@ -81,6 +81,17 @@ def _verify():
             raise RuntimeError('Production jobs preview is empty or exceeds its public limit')
         if overview.get('total') != expected_total:
             raise RuntimeError('Production jobs count does not match the canonical RSS index')
+        if index.get('employerModeSchema') == 1:
+            if preview.get('employerModeSchema') != 1:
+                raise RuntimeError('Production preview missing employer-mode schema')
+            scoped = preview.get('previewOverviewByMode') or {}
+            direct_index = {**index, 'jobs': [row for row in index['jobs'] if row.get('employerType') == 'direct_employer']}
+            direct = _expected_public_total(direct_index)
+            if scoped.get('direct', {}).get('total') != direct or scoped.get('agency', {}).get('total') != expected_total - direct:
+                raise RuntimeError('Production employer-mode totals do not match canonical index')
+            if any('employerType' not in row for row in jobs):
+                raise RuntimeError('Production sample missing employer types')
+            print(f'Production employer modes verified: Direct {direct}, Agency {expected_total-direct}, Full {expected_total}')
         if any('descriptionHtml' in item or 'description' in item for item in jobs):
             raise RuntimeError('Production preview unexpectedly contains private descriptions')
     print(f'Production RSS payload verified: {expected_total} eligible roles, version {version[:16]}')

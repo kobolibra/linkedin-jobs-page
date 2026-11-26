@@ -412,6 +412,6 @@
   .cn-map-head .top50-toggle{flex:0 0 auto}
 }
 
-/* Keep the institution-count caption on one line on phones. */
-.stats .stat-orgs .stat-note{white-space:nowrap}
-@media(max-width:400px){.stats .stat-orgs .stat-note{font-size:10px;letter-spacing:-.02em}}
+/* Institution caption follows the same readable type scale as other metrics.
+   Phones hide redundant metric captions; never shrink copy to fit a line. */
+.stats .stat-orgs .stat-note{white-space:normal}
