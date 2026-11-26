@@ -295,7 +295,7 @@ async function phone(browser,engine,theme){
    overflow:document.documentElement.scrollWidth-innerWidth,
    top30Open:!document.getElementById('top50').hidden,
    stats:[...document.querySelectorAll('.stats .stat')].map(n=>n.scrollWidth>n.clientWidth+1),
-   smallest:Math.min(...[...document.querySelectorAll('.fig-dek,.stat-note,.mw-summary,.nj-market-row')].map(n=>parseFloat(getComputedStyle(n).fontSize)))
+   copySizes:[...document.querySelectorAll('.fig-dek,.stat-note,.mw-summary,.nj-market-row')].map(n=>({class:n.className,size:parseFloat(getComputedStyle(n).fontSize)}))
   }));
   assert.ok(state.overflow<=1,'no horizontal page overflow on a phone');
   const mwRow=await page.evaluate(()=>{
@@ -316,7 +316,7 @@ async function phone(browser,engine,theme){
    '390px date must align right without overlapping summary: '+JSON.stringify(mwRow));
   assert.equal(state.top30Open,false,'Top 30 starts folded on phones');
   assert.ok(state.stats.every(c=>!c),'metrics fit their cells on a phone');
-  assert.ok(state.smallest>=11,'body copy on phones stays at least 11px');
+  assert.ok(state.copySizes.every(item=>item.size>=11),'body copy on phones stays at least 11px: '+JSON.stringify(state.copySizes.filter(item=>item.size<11)));
   assert.equal(await page.locator('.nj-browse-roles').getAttribute('href'),'#roles');
   assert.equal(await page.locator('#marketWidthPlay').count(),0);
   await page.locator('.ac-col-market').scrollIntoViewIfNeeded();

@@ -66,10 +66,18 @@ jobs:
         run: node scripts/test_homepage_startup.mjs
       - name: Verify calendar labels and true-height staircase geometry in both engines
         run: node scripts/test_calendar_browser.mjs
-      - name: Verify keyboard, touch, navigation and mobile density in both engines
-        run: node scripts/test_homepage_interaction.mjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Generate employer scopes from actual canonical data
+        run: |
+          python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
+          python scripts/jobspy/build_frontend_payload.py
+          python scripts/verify_employer_modes.py
       - name: Verify global employer modes in both browser engines
         run: MODE_BROWSERS=chromium,webkit node scripts/test_employer_mode_browser.mjs
+      - name: Verify keyboard, touch, navigation and mobile density in both engines
+        run: node scripts/test_homepage_interaction.mjs
       - name: Retain employer mode browser evidence
         if: always()
         uses: actions/upload-artifact@v4
