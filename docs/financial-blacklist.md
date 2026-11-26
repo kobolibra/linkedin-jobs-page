@@ -96,8 +96,8 @@ The 561 rows without `jobStatus` are eligible on this snapshot and add
 `jobStatus == "active"`.
 
 All 466 protection-list names that appear in the homepage metric are
-classified. In the full protection list, 691 records are classified and
-485 remain unknown. One has an inconclusive source, and 484 await evidence.
+classified. In the full protection list, 751 records are classified and
+425 remain unknown. 1 have inconclusive reviews and 424 await evidence.
 In the canonical snapshot, 6,812 records have `companyCanonical` and
 `requestedCompany`, and 10,100 have `companyLogoSource`. No job has an
 `employerType` or `jobPoster` field.
