@@ -17,11 +17,19 @@ matching rules.
 | `direct_employer` | The identified organization operates its own business or institution and primarily hires for its own operations. Its posts are candidates for a company-level direct-employer view. |
 | `recruitment_agency` | Recruiting for clients is a core service, including executive search, staffing, labor dispatch and recruitment process outsourcing. The company can also hire its own staff. |
 | `recruitment_platform` | The identified brand mainly runs a marketplace or job board. The display name alone does not identify the ultimate employer. |
-| `mixed` | Material recruitment, staffing, employer-of-record or workforce outsourcing services coexist with substantial other business lines. Keep the role of this organization unclassified at the individual posting level. |
+| `mixed` | Legacy compatibility only; do not assign to new or reviewed records. Material third-party staffing, placement, RPO or EOR services normally warrant `recruitment_agency`, even alongside other operations. |
 | `unknown` | Evidence is missing, conflicting or does not resolve the exact entity or service. Keep it out of a strict direct-employer view. |
 
+The live display has two mutually exclusive scopes: Direct includes only
+`direct_employer`; Agency includes every other classification and unmatched
+publishers. The label is a display grouping, not proof that an unresolved
+publisher is an agency. Full includes both scopes.
+
 HR consulting, payroll software and managed services do not by themselves
-establish recruiting for clients. Choose a type using evidence of the
+establish recruiting for clients. Material third-party recruitment or labor
+supply is classified as agency rather than mixed. Preserve expressly
+requester-confirmed exceptions (including VISTRA as direct), with their
+evidence basis; do not extrapolate those exceptions to other employers. Choose a type using evidence of the
 organization's services and identity. Financial institution names, brand
 fragments and search hits with a similar spelling alone are insufficient.
 
@@ -126,9 +134,9 @@ The 561 rows without `jobStatus` are eligible on this snapshot and add
 62 company keys. The canonical explicit-active column instead requires
 `jobStatus == "active"`.
 
-All 489 protection-list names that appear in the homepage metric are
-classified. In the full protection list, 1181 records are classified and
-18 remain unknown. 18 have inconclusive reviews and 0 await evidence.
+At this historical snapshot all 489 protection-list names appearing in the
+homepage metric were classified. In the full protection list, 1181 records
+were classified and 18 remained unknown; all 18 had inconclusive reviews.
 In the canonical snapshot, 6,812 records have `companyCanonical` and
 `requestedCompany`, and 10,100 have `companyLogoSource`. No job has an
 `employerType` or `jobPoster` field.
