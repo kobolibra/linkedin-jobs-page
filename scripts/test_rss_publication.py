@@ -24,7 +24,7 @@ class RssPublicationTests(unittest.TestCase):
                 history.write_text('公司名\t备注\t首次出现\t最近出现\n',encoding='utf-8')
         blacklist=root/'financial_blacklist.json'
         if not blacklist.exists():
-            blacklist.write_text('[]',encoding='utf-8')
+            blacklist.write_text(json.dumps([{'company':'Existing','employerType':'unknown'}]),encoding='utf-8')
         target.write_text(json.dumps(doc),encoding='utf-8')
         return target
 

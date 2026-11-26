@@ -103,7 +103,10 @@ async function check(browser,engine,{guest=false,width=390,theme='light',broken=
    // legacy date-only pushTime; both signed and guest views must retain HH:mm.
    const stamp=await page.locator('#stat-updated').textContent();
    assert.match(stamp,/\d{1,2} [A-Za-z]{3} \d{2}:\d{2}$/,'Last Updated must preserve hours and minutes');
-   if(document.updatedAt)assert.equal(stamp,'21 Nov 12:01','source observation is authoritative');
+   if(document.updatedAt){
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Shanghai',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(document.updatedAt)).map(p=>[p.type,p.value]));
+    assert.equal(stamp,parts.day+' '+parts.month+' '+parts.hour+':'+parts.minute,'source observation is authoritative');
+   }
    assert.equal(state.ready,true);assert.equal(state.empty,false);assert.ok(state.rows>0);assert.ok(state.days>0);
    assert.match(state.firstHeading||'',/\d{1,2} [A-Z][a-z]{2} 20\d\d/,'job-list uses the canonical day–month–year display');
    assert.equal(consoleErrors.length,0,consoleErrors.join('\n'));assert.equal(errors.length,0,errors.join('\n'));
