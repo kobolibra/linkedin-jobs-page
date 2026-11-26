@@ -99,6 +99,25 @@ def blacklist_records(values, *, allow_legacy=True):
     return values
 
 
+def validate_blacklist_transition(previous, proposed):
+    """Fail closed on accidental loss or downgrade of protected classifications."""
+    old = blacklist_records(previous, allow_legacy=False)
+    new = blacklist_records(proposed, allow_legacy=False)
+    names = {record["company"]: record for record in new}
+    if not names or len(names) != len(new):
+        raise ValueError("Empty blacklist or duplicate original names")
+    missing = sorted(set(record["company"] for record in old) - names.keys())
+    if missing:
+        raise ValueError(f"Protected company records removed: {missing[:10]} ({len(missing)} total)")
+    for record in old:
+        updated = names[record["company"]]
+        if record["employerType"] not in {"unknown", "mixed"} and updated["employerType"] in {"unknown", "mixed"}:
+            raise ValueError(f"Confirmed employer classification downgraded: {record['company']}")
+        if record.get("evidence") and not updated.get("evidence"):
+            raise ValueError(f"Employer evidence removed: {record['company']}")
+    return new
+
+
 def blacklist_text(records):
     rows = ",\n".join(f"  {json.dumps(record, ensure_ascii=False)}" for record in records)
     return f"[\n{rows}\n]\n" if rows else "[]\n"
@@ -273,6 +292,12 @@ class Repo:
                         cache[path] = base64.b64decode(entry["content"]).decode()
                 return cache[path]
             files = build(read)
+            if BLACKLIST in files:
+                before = json.loads(read(BLACKLIST))
+                after = json.loads(files[BLACKLIST])
+                # Keep historical migration fixtures readable; never downgrade an existing typed source.
+                if any(isinstance(record, dict) for record in before):
+                    validate_blacklist_transition(before, after)
             changed = [p for p, content in files.items() if content != read(p)]
             if dry or not changed:
                 print(f"{'Dry run' if dry else 'No changes'}: {changed}")

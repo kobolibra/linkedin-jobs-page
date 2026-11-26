@@ -2,10 +2,10 @@ name: Financial blacklist schema
 
 on:
   pull_request:
-    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, scripts/publication_state.py, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
   push:
     branches: [main]
-    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, scripts/publication_state.py, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
 
 permissions:
   contents: read
@@ -18,20 +18,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Require typed company records
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          from reclassify import BLACKLIST, blacklist_records
-
-          if Path("company_employer_types.json").exists():
-              raise ValueError("Employer classification must use only financial_blacklist.json")
-          records = blacklist_records(json.loads(Path(BLACKLIST).read_text(encoding="utf-8")), allow_legacy=False)
-          names = {record["company"] for record in records}
-          if not names or len(names) != len(records):
-              raise ValueError(f"{BLACKLIST} is empty or contains duplicate original names")
-          PY
+      - name: Require typed company records and preserve verified history
+        run: python scripts/publication_state.py --validate
       - name: Audit employer coverage from the protection list only
         run: |
           python scripts/audit_employer_types.py

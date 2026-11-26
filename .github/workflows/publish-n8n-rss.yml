@@ -1,103 +1,21 @@
 name: Publish n8n RSS into canonical jobs
 
+# Compatibility entry for manual dispatches. Push events are handled only by
+# deploy.yml, which owns the entire canonical-publication/deployment sequence.
 on:
-  push:
-    branches: [main]
-    paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv, financial_blacklist.json]
   workflow_dispatch:
 
-concurrency:
-  group: jobspy-incremental
-  cancel-in-progress: false
-
 permissions:
-  contents: write
+  contents: read
   actions: write
 
 jobs:
   publish:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    env:
-      LINKEDIN_HTTP_STATE: /tmp/rss-logo-http-runtime.json
-      LINKEDIN_HEALTH_EVENTS: /tmp/rss-logo-health.jsonl
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install merger and logo dependencies
-        run: python -m pip install --disable-pip-version-check -r requirements-jobspy.txt -r requirements-logos.txt
-      - name: Validate merger and logo publication
-        run: |
-          python -m py_compile auto-daily-companies.py reclassify.py scripts/reconcile_classification.py scripts/rss_publication.py scripts/jobspy/*.py
-          python scripts/jobspy/jev_preprocess.py
-          python scripts/jobspy/build_frontend_payload.py --self-test
-          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py scripts/jobspy/test_liveness.py scripts/jobspy/test_reconcile_full_snapshots.py
-          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_rss_publication.py scripts/test_posting_event_history.py scripts/test_agent_reclassification.py
-      - name: Freeze publication inputs and merge jobs before logo collection
-        run: |
-          git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
-          git reset --hard origin/main
-          python scripts/rss_publication.py --inputs /tmp/rss-publication --capture
-          python scripts/rss_publication.py --inputs /tmp/rss-publication --output /tmp/rss-publication/merged-jobs.json
-          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
-          : > "$LINKEDIN_HEALTH_EVENTS"
-      - name: Reuse cached logos and collect retained missing companies before deployment
-        id: logos
-        continue-on-error: true
-        run: python scripts/company_logos.py --mode rss --jobs /tmp/rss-publication/merged-jobs.json --output /tmp/rss-company-logos
-      - name: Capture logo results before publication retries reset the checkout
-        if: always() && steps.logos.outcome != 'skipped'
-        run: |
-          python scripts/jobspy/scraper_health.py --task logos --workflow-status '${{ steps.logos.outcome }}' --logo-report /tmp/rss-company-logos/report.json --snapshot /tmp/rss-logo-health.json
-          if [[ '${{ steps.logos.outcome }}' != 'success' ]]; then
-            echo "::warning title=RSS logo collection::Logo collection failed; retain cached images and publish verified job data. Missing companies remain eligible for the next RSS retry."
-          fi
-      - name: Commit merged jobs and collected logos together and deploy once
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          for attempt in 1 2 3 4 5; do
-            git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
-            git reset --hard origin/main
-            python scripts/reconcile_classification.py
-            python scripts/rss_publication.py --inputs /tmp/rss-publication --output jobs.json --quarantine-output data/target-filter-quarantine.json
-            python scripts/company_logos.py --apply /tmp/rss-company-logos
-            health_rc=0
-            python scripts/jobspy/scraper_health.py --apply /tmp/rss-logo-health.json --state data/jobspy/http-state.json || health_rc=$?
-            if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
-            python scripts/posting_event_history.py
-            python scripts/jobspy/compact_published_jobs.py
-            python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
-            git add reports/ jobs.json jobs-index.json jobs-details.json data/target-filter-quarantine.json data/posting-events-ledger.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
-            deploy_needed=false
-            if ! git diff --cached --quiet -- jobs.json jobs-index.json jobs-details.json data/posting-events-ledger.json company-logos.json assets/company-logos; then deploy_needed=true; fi
-            if git diff --cached --quiet; then
-              echo "No publication changes"
-              exit 0
-            fi
-            git commit -m "[rss-merged] publish merged jobs with collected company logos"
-            if git push origin HEAD:main; then
-              if [[ "$deploy_needed" == true ]]; then
-                GH_TOKEN="${{ github.token }}" gh workflow run deploy.yml --ref main
-                echo "Dispatched one deployment after jobs and logos were published together"
-              fi
-              exit 0
-            fi
-            sleep $((attempt * 5))
-          done
-          echo "Unable to publish canonical RSS merge" >&2
-          exit 1
-      - name: Save logo collection evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: rss-company-logo-report
-          path: |
-            /tmp/rss-company-logos/*.json
-            /tmp/rss-publication/inputs.json
-          if-no-files-found: ignore
-
+      - name: Dispatch the serialized publication and deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run deploy.yml --ref main -f force_rss=true

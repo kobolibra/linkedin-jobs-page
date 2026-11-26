@@ -5,6 +5,13 @@ on:
     branches: [ main ]
     paths:
       - 'financial_blacklist.json'
+      - 'data/n8n/rss-latest.json'
+      - 'reports/cumulative-target-companies.tsv'
+      - 'scripts/publication_state.py'
+      - 'scripts/rss_publication.py'
+      - 'scripts/reconcile_classification.py'
+      - 'reclassify.py'
+      - '.github/workflows/publish-n8n-rss.yml'
       - 'jobs.json'
       - 'jobs-index.json'
       - 'jobs-version.json'
@@ -47,9 +54,14 @@ on:
       - 'scripts/deploy_cloudflare.py'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:
+    inputs:
+      force_rss:
+        description: Reprocess the latest RSS and classification inputs
+        type: boolean
+        default: false
 
-# Never interrupt an already running n8n/RSS data upload when another
-# unrelated UI commit reaches main. The next pending run deploys latest main.
+# Single publication and deployment lock. Every pending run reads latest main;
+# a replaced pending event cannot strand unprocessed RSS/classification inputs.
 concurrency:
   group: cloudflare-site
   cancel-in-progress: false
@@ -59,7 +71,11 @@ permissions:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      LINKEDIN_HTTP_STATE: /tmp/rss-logo-http-runtime.json
+      LINKEDIN_HEALTH_EVENTS: /tmp/rss-logo-health.jsonl
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,17 +83,107 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Refresh to latest main and validate publication inputs
+        id: publication
+        env:
+          FORCE_RSS: ${{ inputs.force_rss || false }}
+        run: |
+          git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          git reset --hard origin/main
+          python scripts/publication_state.py --validate
+          if [[ "$FORCE_RSS" == true ]] || ! python scripts/publication_state.py --check; then
+            echo "required=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "required=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Install frontend payload dependencies
         run: python -m pip install --disable-pip-version-check --requirement requirements-jobspy.txt
+      - name: Install publication-only logo dependencies
+        if: steps.publication.outputs.required == 'true'
+        run: python -m pip install --disable-pip-version-check -r requirements-logos.txt
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate merger and logo publication
+        if: steps.publication.outputs.required == 'true'
+        run: |
+          python -m py_compile auto-daily-companies.py reclassify.py scripts/reconcile_classification.py scripts/rss_publication.py scripts/jobspy/*.py
+          python scripts/jobspy/jev_preprocess.py
+          python scripts/jobspy/build_frontend_payload.py --self-test
+          PYTHONPATH=scripts/jobspy python -m unittest scripts/jobspy/test_merge_n8n_incremental.py scripts/jobspy/test_track_jd_changes.py scripts/jobspy/test_liveness.py scripts/jobspy/test_reconcile_full_snapshots.py
+          PYTHONPATH=scripts python -m unittest scripts/test_company_logos.py scripts/test_rss_publication.py scripts/test_posting_event_history.py scripts/test_agent_reclassification.py
+      - name: Freeze publication inputs and merge jobs before logo collection
+        if: steps.publication.outputs.required == 'true'
+        run: |
+          git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+          git reset --hard origin/main
+          python scripts/publication_state.py --validate
+          python scripts/publication_state.py --capture /tmp/rss-publication-sources.json
+          python scripts/rss_publication.py --inputs /tmp/rss-publication --capture
+          python scripts/rss_publication.py --inputs /tmp/rss-publication --output /tmp/rss-publication/merged-jobs.json
+          python scripts/jobspy/scraper_health.py --state data/jobspy/http-state.json --initialize-runtime "$LINKEDIN_HTTP_STATE"
+          : > "$LINKEDIN_HEALTH_EVENTS"
+      - name: Reuse cached logos and collect retained missing companies before deployment
+        if: steps.publication.outputs.required == 'true'
+        id: logos
+        continue-on-error: true
+        run: python scripts/company_logos.py --mode rss --jobs /tmp/rss-publication/merged-jobs.json --output /tmp/rss-company-logos
+      - name: Capture logo results before publication retries reset the checkout
+        if: always() && steps.publication.outputs.required == 'true' && steps.logos.outcome != 'skipped'
+        run: |
+          python scripts/jobspy/scraper_health.py --task logos --workflow-status '${{ steps.logos.outcome }}' --logo-report /tmp/rss-company-logos/report.json --snapshot /tmp/rss-logo-health.json
+          if [[ '${{ steps.logos.outcome }}' != 'success' ]]; then
+            echo "::warning title=RSS logo collection::Logo collection failed; retain cached images and publish verified job data. Missing companies remain eligible for the next RSS retry."
+          fi
+      - name: Commit merged jobs and collected logos together
+        if: steps.publication.outputs.required == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          for attempt in 1 2 3 4 5; do
+            git fetch --depth=1 origin +refs/heads/main:refs/remotes/origin/main
+            git reset --hard origin/main
+            python scripts/publication_state.py --validate
+            python scripts/publication_state.py --require-capture /tmp/rss-publication-sources.json
+            python scripts/reconcile_classification.py
+            python scripts/rss_publication.py --inputs /tmp/rss-publication --output jobs.json --quarantine-output data/target-filter-quarantine.json
+            python scripts/company_logos.py --apply /tmp/rss-company-logos
+            health_rc=0
+            python scripts/jobspy/scraper_health.py --apply /tmp/rss-logo-health.json --state data/jobspy/http-state.json || health_rc=$?
+            if [[ "$health_rc" != 0 && "$health_rc" != 2 ]]; then exit "$health_rc"; fi
+            python scripts/posting_event_history.py
+            python scripts/jobspy/compact_published_jobs.py
+            python scripts/jobspy/build_frontend_payload.py --boilerplate data/jev-boilerplate.json
+            python scripts/publication_state.py --record
+            git add reports/ jobs.json jobs-index.json jobs-details.json jobs-version.json data/publication-state.json data/target-filter-quarantine.json data/posting-events-ledger.json data/jev-boilerplate.json assets/company-logos company-logos.json data/company-logos/state.json data/jobspy/health.json data/jobspy/http-state.json
+            if git diff --cached --quiet; then
+              echo "No publication changes"
+              exit 0
+            fi
+            git commit -m "[rss-merged] publish merged jobs with collected company logos"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "Unable to publish canonical RSS merge" >&2
+          exit 1
+      - name: Save logo collection evidence
+        if: always() && steps.publication.outputs.required == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rss-company-logo-report
+          path: |
+            /tmp/rss-company-logos/*.json
+            /tmp/rss-publication/inputs.json
+          if-no-files-found: ignore
+      - name: Synchronize and verify generated frontend payloads
+        run: python scripts/sync_frontend_payloads.py --publish --require-publication
       - name: Test public route-to-asset mapping before packaging
         run: node --test scripts/test_public_asset_routes.mjs scripts/test_visitor_count.mjs
       - name: Verify startup concurrency, cache freshness and guest data boundaries
         run: node --test scripts/test_startup_loading.mjs scripts/test_frontend_resilience.mjs scripts/test_guest_preview.mjs scripts/test_startup_date_scope.mjs scripts/test_employer_mode.mjs
-      - name: Synchronize and verify generated frontend payloads
-        run: python scripts/sync_frontend_payloads.py --publish
       - name: Verify the exact protected asset directory before deployment
         run: node scripts/public_assets.mjs --check
       - name: Verify anonymous preview and account boundaries
