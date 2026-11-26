@@ -1,20 +1,20 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-26T13:17:46.771641+00:00",
-  "sourceCommit": "722d01c8148d00195b23d5488e3c78c63f7e33eb",
+  "generatedAt": "2026-11-26T13:50:00Z",
+  "sourceCommit": "2b656f11e9703ef523eaa8c59741a17213e693e8",
   "summary": {
     "canonicalJobs": 15084,
     "indexJobs": 15084,
     "websiteJobs": 6307,
     "trackedCompanies": 287,
-    "reviewQueue": 240,
+    "reviewQueue": 222,
     "queueByStatus": {
-      "not_started": 233,
+      "not_started": 215,
       "inconclusive": 7
     },
     "queueBySource": {
-      "unlisted": 229,
-      "historical_pending": 6,
+      "unlisted": 211,
+      "historical_pending": 5,
       "staging_not_canonical": 6,
       "inconclusive": 4
     },
@@ -22,70 +22,6 @@
     "indexNotCanonical": 0
   },
   "reviewQueue": [
-    {
-      "company": "Nexus Corporation",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 2,
-      "websiteJobsForKey": 2,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Alta Exchange",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 2,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Hex Trust",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 2,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Alstom Grid",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": "电力传输 / Power Grid & Energy",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
     {
       "company": "Black Sun Asia Pacific",
       "sourceStatuses": [
@@ -98,233 +34,6 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": "Corporate Communications & Stakeholder Advisory",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Blue Insurance Hong Kong",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "CIRCOR International, Inc.",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": "Flow Control & Industrial Equipment Manufacturing",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Cognition",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Cove",
-      "sourceStatuses": [
-        "historical_pending",
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [
-        "2026-11-21"
-      ],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "CrowdStrike",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "DIGITEC Financial Technologies and Services",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": "Fintech/SaaS (FX pricing engine for banks)",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Emmes Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Exail",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": "国防科技 / Defense Tech & Robotics",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Fenergo",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": "RegTech / 合规科技",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "FormFactor Inc.",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": "Semiconductor Test & Measurement Equipment",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "GreenPrice",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "Hayati®",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "ib vogt GmbH",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
-    },
-    {
-      "company": "IQVIA Asia Pacific",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
       "investigationStatus": "not_started",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-26"
@@ -4670,6 +4379,7 @@
     {
       "company": "Alstom Grid",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -4678,10 +4388,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": "电力传输 / Power Grid & Energy",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "电力电网设备与技术服务",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "电力电网设备与技术服务",
+      "employerType": null,
+      "queries": [
+        "Alstom Grid 电力电网设备与技术服务 official company / observed job identity"
+      ],
+      "investigationSummary": "GE confirms acquisition of Alstom power and grid businesses; the observed facilities and maintenance job fits industrial grid operations, not a financial or recruitment business.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.ge.com/news/press-releases/ge-completes-acquisition-alstom-power-and-grid-businesses-0",
+          "note": "GE confirms acquisition of Alstom power and grid businesses; the observed facilities and maintenance job fits industrial grid operations, not a financial or recruitment business."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Facilities & Maintenance Manager (including EHS)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/facilities-maintenance-manager-including-ehs-at-alstom-grid-4485961991",
+          "firstSeen": "2026-11-01T16:02:42.468Z",
+          "pushTime": "2026-11-01T16:02:42.468Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Alta (formerly Fundnel)",
@@ -4702,6 +4436,7 @@
     {
       "company": "Alta Exchange",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -4709,11 +4444,75 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Alta Exchange",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://alta.exchange/alta-exchange",
+          "reviewedOn": "2026-11-26",
+          "note": "Official exchange site identifies a member-driven private securities exchange regulated by MAS; MAS directory lists ALTAX PTE. LTD. as a Recognised Market Operator and capital markets licensee."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "Private securities exchange",
+      "employerType": "direct_employer",
+      "queries": [
+        "Alta Exchange Private securities exchange official company / observed job identity"
+      ],
+      "investigationSummary": "Official exchange site identifies a member-driven private securities exchange regulated by MAS; MAS directory lists ALTAX PTE. LTD. as a Recognised Market Operator and capital markets licensee.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://alta.exchange/alta-exchange",
+          "note": "Official exchange site identifies a member-driven private securities exchange regulated by MAS; MAS directory lists ALTAX PTE. LTD. as a Recognised Market Operator and capital markets licensee."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "VP, Client Success",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/vp-client-success-at-alta-exchange-4448135946",
+          "firstSeen": "2026-08-03T10:14:52.664Z",
+          "pushTime": "2026-08-04T04:02:23.773Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Analyst, Private Capital Markets - Sales",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/analyst-private-capital-markets-sales-at-alta-exchange-4448147148",
+          "firstSeen": "2026-08-03T10:14:52.664Z",
+          "pushTime": "2026-08-04T04:02:23.773Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "VP, Execution/Advisory, PCM",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/vp-execution-advisory-pcm-at-alta-exchange-4448146247",
+          "firstSeen": "2026-08-03T10:14:52.664Z",
+          "pushTime": "2026-08-03T16:02:35.653Z"
+        },
+        {
+          "title": "Head of Sales (Wholesale & Intermediary)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/head-of-sales-wholesale-intermediary-at-alta-exchange-4475844563",
+          "firstSeen": "2026-10-05T22:02:51.479Z",
+          "pushTime": "2026-10-05T22:02:51.479Z",
+          "jobStatus": "active"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Alta Exchange",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://alta.exchange/alta-exchange",
+          "reviewedOn": "2026-11-26",
+          "note": "Official exchange site identifies a member-driven private securities exchange regulated by MAS; MAS directory lists ALTAX PTE. LTD. as a Recognised Market Operator and capital markets licensee."
+        }
+      }
     },
     {
       "company": "AlTi Tiedemann Global",
@@ -5470,6 +5269,7 @@
     {
       "company": "Blue Insurance Hong Kong",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -5477,11 +5277,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Blue Insurance Hong Kong",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.blue.com.hk/en/about-us",
+          "reviewedOn": "2026-11-26",
+          "note": "The official Hong Kong insurer identifies its digital life insurance products; the Insurance Authority authorized-insurer list includes Blue Insurance Limited. Finance operations vacancy is internal."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "Digital life insurance",
+      "employerType": "direct_employer",
+      "queries": [
+        "Blue Insurance Hong Kong Digital life insurance official company / observed job identity"
+      ],
+      "investigationSummary": "The official Hong Kong insurer identifies its digital life insurance products; the Insurance Authority authorized-insurer list includes Blue Insurance Limited. Finance operations vacancy is internal.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.blue.com.hk/en/about-us",
+          "note": "The official Hong Kong insurer identifies its digital life insurance products; the Insurance Authority authorized-insurer list includes Blue Insurance Limited. Finance operations vacancy is internal."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Associate, Finance (Finance Operations)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/associate-finance-finance-operations-at-blue-insurance-hong-kong-4472473801",
+          "firstSeen": "2026-09-28T04:10:27.910Z",
+          "pushTime": "2026-09-28T04:10:27.910Z",
+          "jobStatus": "active"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Blue Insurance Hong Kong",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.blue.com.hk/en/about-us",
+          "reviewedOn": "2026-11-26",
+          "note": "The official Hong Kong insurer identifies its digital life insurance products; the Insurance Authority authorized-insurer list includes Blue Insurance Limited. Finance operations vacancy is internal."
+        }
+      }
     },
     {
       "company": "Blue Stream Consultancy Pte Ltd",
@@ -5813,6 +5654,7 @@
     {
       "company": "CIRCOR International, Inc.",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -5821,10 +5663,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": "Flow Control & Industrial Equipment Manufacturing",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "工业流体控制与泵阀制造",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "工业流体控制与泵阀制造",
+      "employerType": null,
+      "queries": [
+        "CIRCOR International, Inc. 工业流体控制与泵阀制造 official company / observed job identity"
+      ],
+      "investigationSummary": "Official products and sectors include engineered pumps and valves for commercial marine and industrial applications, matching the observed marine market manager role.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.circor.com/",
+          "note": "Official products and sectors include engineered pumps and valves for commercial marine and industrial applications, matching the observed marine market manager role."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Global Market Manager Commercial Marine",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/global-market-manager-commercial-marine-at-circor-international-inc-4484925041",
+          "firstSeen": "2026-10-29T22:02:39.661Z",
+          "pushTime": "2026-10-29T22:02:39.661Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "CITIC Pacific Limited",
@@ -5861,6 +5727,7 @@
     {
       "company": "Cognition",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -5869,10 +5736,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "AI 软件开发工具",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "AI 软件开发工具",
+      "employerType": null,
+      "queries": [
+        "Cognition AI 软件开发工具 official company / observed job identity"
+      ],
+      "investigationSummary": "Exact company-owned Singapore Account Director - APAC vacancy identifies Cognition as the applied AI lab behind Devin; enterprise software, not finance or recruitment.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://jobs.ashbyhq.com/cognition/99ac30db-26d9-4cae-8b50-5a509dfb10a9",
+          "note": "Exact company-owned Singapore Account Director - APAC vacancy identifies Cognition as the applied AI lab behind Devin; enterprise software, not finance or recruitment."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Account Director - APAC",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/account-director-apac-at-cognition-4410385790",
+          "firstSeen": "2026-08-29T16:02:32.569Z",
+          "pushTime": "2026-10-12",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "CoGoLinks",
@@ -5972,6 +5863,7 @@
       "company": "Cove",
       "sourceStatuses": [
         "historical_pending",
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -5982,10 +5874,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "联合居住与住宅租赁运营",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "联合居住与住宅租赁运营",
+      "employerType": null,
+      "queries": [
+        "Cove 联合居住与住宅租赁运营 official company / observed job identity"
+      ],
+      "investigationSummary": "Official Singapore company site describes a co-living residential rental operator; observed housekeeping role matches its operations.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://show.cove.sg/about",
+          "note": "Official Singapore company site describes a co-living residential rental operator; observed housekeeping role matches its operations."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Housekeeping Attendant",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/housekeeping-attendant-at-cove-4492883162",
+          "firstSeen": "2026-11-21T10:01:38.527Z",
+          "pushTime": "2026-11-21T10:01:38.527Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Creative Artists Agency",
@@ -6038,6 +5954,7 @@
     {
       "company": "CrowdStrike",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6046,10 +5963,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "网络安全软件与服务",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "网络安全软件与服务",
+      "employerType": null,
+      "queries": [
+        "CrowdStrike 网络安全软件与服务 official company / observed job identity"
+      ],
+      "investigationSummary": "Official investor relations describes cybersecurity platform and SaaS products, not a financial or staffing institution.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://ir.crowdstrike.com/",
+          "note": "Official investor relations describes cybersecurity platform and SaaS products, not a financial or staffing institution."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Corporate Account Manager - Hong Kong Market",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/corporate-account-manager-hong-kong-market-at-crowdstrike-4434808771",
+          "firstSeen": "2026-08-20T10:02:52.257Z",
+          "pushTime": "2026-10-24",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Cursor",
@@ -6146,6 +6087,7 @@
     {
       "company": "DIGITEC Financial Technologies and Services",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6153,11 +6095,52 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "DIGITEC Financial Technologies and Services",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://digitec.de/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official website explicitly identifies FX swaps, NDF and money-market pricing and workflow software for trading banks, and a Singapore office."
+        }
+      },
       "existingIndustry": "Fintech/SaaS (FX pricing engine for banks)",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "FX pricing and trading technology",
+      "employerType": "direct_employer",
+      "queries": [
+        "DIGITEC Financial Technologies and Services FX pricing and trading technology official company / observed job identity"
+      ],
+      "investigationSummary": "Official website explicitly identifies FX swaps, NDF and money-market pricing and workflow software for trading banks, and a Singapore office.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://digitec.de/",
+          "note": "Official website explicitly identifies FX swaps, NDF and money-market pricing and workflow software for trading banks, and a Singapore office."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Senior Sales Executive (all genders)",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/senior-sales-executive-all-genders-at-digitec-financial-technologies-and-services-4476695323",
+          "firstSeen": "2026-10-15T07:17:01.117Z",
+          "pushTime": "2026-10-15T07:17:01.117Z",
+          "jobStatus": "active"
+        }
+      ],
+      "protectedRecord": {
+        "company": "DIGITEC Financial Technologies and Services",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://digitec.de/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official website explicitly identifies FX swaps, NDF and money-market pricing and workflow software for trading banks, and a Singapore office."
+        }
+      }
     },
     {
       "company": "Easy Consult HR Solutions DOO",
@@ -6210,6 +6193,7 @@
     {
       "company": "Emmes Group",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6218,10 +6202,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "临床研究服务与生命科学软件",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "临床研究服务与生命科学软件",
+      "employerType": null,
+      "queries": [
+        "Emmes Group 临床研究服务与生命科学软件 official company / observed job identity"
+      ],
+      "investigationSummary": "Official Emmes Group identifies a clinical research organization for biopharma, academic and government customers, matching the CRO services BD vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.theemmesgroup.com/cro-services/emmes",
+          "note": "Official Emmes Group identifies a clinical research organization for biopharma, academic and government customers, matching the CRO services BD vacancy."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Director of Business Development - CRO Services & Software Solutions (Remote - Singapore, South Korea, Taiwan or China))",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/director-of-business-development-cro-services-software-solutions-remote-singapore-south-korea-taiwan-or-china-at-emmes-group-4459494164",
+          "firstSeen": "2026-08-30T04:02:29.757Z",
+          "pushTime": "2026-08-30T10:02:27.309Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Ethos",
@@ -6313,6 +6321,7 @@
     {
       "company": "Exail",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6321,10 +6330,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": "国防科技 / Defense Tech & Robotics",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "工业机器人、导航及海事科技",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "工业机器人、导航及海事科技",
+      "employerType": null,
+      "queries": [
+        "Exail 工业机器人、导航及海事科技 official company / observed job identity"
+      ],
+      "investigationSummary": "Company site describes manufacturing navigation, marine robotics and defense/civil technologies, consistent with the observed naval drones vacancy.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.exail.com/about-us",
+          "note": "Company site describes manufacturing navigation, marine robotics and defense/civil technologies, consistent with the observed naval drones vacancy."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Regional Sales Manager - Naval Drones & Subsea Navigation - APAC - F/M",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/regional-sales-manager-naval-drones-subsea-navigation-apac-f-m-at-exail-4483966084",
+          "firstSeen": "2026-11-01T22:02:07.742Z",
+          "pushTime": "2026-11-01T22:02:07.742Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Family Office",
@@ -6361,6 +6394,7 @@
     {
       "company": "Fenergo",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6368,11 +6402,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Fenergo",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.fenergo.com/client-lifecycle-management",
+          "reviewedOn": "2026-11-26",
+          "note": "Official product page explicitly targets financial institutions, with onboarding, KYC, AML and regulatory compliance technology."
+        }
+      },
       "existingIndustry": "RegTech / 合规科技",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "Financial-services RegTech and client lifecycle management",
+      "employerType": "direct_employer",
+      "queries": [
+        "Fenergo Financial-services RegTech and client lifecycle management official company / observed job identity"
+      ],
+      "investigationSummary": "Official product page explicitly targets financial institutions, with onboarding, KYC, AML and regulatory compliance technology.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.fenergo.com/client-lifecycle-management",
+          "note": "Official product page explicitly targets financial institutions, with onboarding, KYC, AML and regulatory compliance technology."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Strategic Account Development Representative",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/strategic-account-development-representative-at-fenergo-4457443798",
+          "firstSeen": "2026-08-25T22:03:04.306Z",
+          "pushTime": "2026-08-25T22:03:04.306Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Enterprise Business Development Representative",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/enterprise-business-development-representative-at-fenergo-4467873539",
+          "firstSeen": "2026-11-01T16:02:42.468Z",
+          "pushTime": "2026-11-01T16:02:42.468Z",
+          "jobStatus": "active"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Fenergo",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.fenergo.com/client-lifecycle-management",
+          "reviewedOn": "2026-11-26",
+          "note": "Official product page explicitly targets financial institutions, with onboarding, KYC, AML and regulatory compliance technology."
+        }
+      }
     },
     {
       "company": "FICOFI",
@@ -6629,6 +6712,7 @@
     {
       "company": "FormFactor Inc.",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6637,10 +6721,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": "Semiconductor Test & Measurement Equipment",
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "半导体测试与测量设备",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "半导体测试与测量设备",
+      "employerType": null,
+      "queries": [
+        "FormFactor Inc. 半导体测试与测量设备 official company / observed job identity"
+      ],
+      "investigationSummary": "Official site describes semiconductor probe systems, probe cards and test equipment.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.formfactor.com/",
+          "note": "Official site describes semiconductor probe systems, probe cards and test equipment."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Sales Account Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/sales-account-manager-at-formfactor-inc-4475134191",
+          "firstSeen": "2026-10-29T08:05:12.775Z",
+          "pushTime": "2026-10-29T08:05:12.775Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Fort Financial",
@@ -6812,6 +6920,7 @@
     {
       "company": "GreenPrice",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6820,10 +6929,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "临期食品与剩余库存零售",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "临期食品与剩余库存零售",
+      "employerType": null,
+      "queries": [
+        "GreenPrice 临期食品与剩余库存零售 official company / observed job identity"
+      ],
+      "investigationSummary": "Official Hong Kong retail company describes sale of surplus and short-dated stock; observed fulfilment role matches retail operations.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.greenprice.com/pages/our-story",
+          "note": "Official Hong Kong retail company describes sale of surplus and short-dated stock; observed fulfilment role matches retail operations."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "GreenPrice - 通宵全職店鋪理貨員 Fulfilment Operator",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/greenprice-%E9%80%9A%E5%AE%B5%E5%85%A8%E8%81%B7%E5%BA%97%E9%8B%AA%E7%90%86%E8%B2%A8%E5%93%A1-fulfilment-operator-at-greenprice-4464103211",
+          "firstSeen": "2026-09-09T22:03:27.184Z",
+          "pushTime": "2026-09-09T22:03:27.184Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "GRT",
@@ -6946,6 +7079,7 @@
     {
       "company": "Hayati®",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -6954,10 +7088,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "电子产品制造与销售",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "电子产品制造与销售",
+      "employerType": null,
+      "queries": [
+        "Hayati® 电子产品制造与销售 official company / observed job identity"
+      ],
+      "investigationSummary": "Exact observed job ID 4472471708 identifies electronics manufacturing, global talent acquisition and internal overseas order fulfilment, not a third-party recruiter.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/jobs/view/commercial-customer-service-representative-at-hayati%C2%AE-4472471708",
+          "note": "Exact observed job ID 4472471708 identifies electronics manufacturing, global talent acquisition and internal overseas order fulfilment, not a third-party recruiter."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Commercial Customer Service Representative",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/commercial-customer-service-representative-at-hayati%C2%AE-4472471708",
+          "firstSeen": "2026-09-28T04:10:27.910Z",
+          "pushTime": "2026-09-28T04:10:27.910Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "Henderson Scott",
@@ -6994,6 +7152,7 @@
     {
       "company": "Hex Trust",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -7001,11 +7160,67 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Hex Trust",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.hextrust.com/company",
+          "reviewedOn": "2026-11-26",
+          "note": "Official company profile identifies a Hong Kong-founded regulated financial institution providing institutional custody, trading and transfer infrastructure; exact HK roles match wealth and payment operations."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "Regulated digital asset custody and financial infrastructure",
+      "employerType": "direct_employer",
+      "queries": [
+        "Hex Trust Regulated digital asset custody and financial infrastructure official company / observed job identity"
+      ],
+      "investigationSummary": "Official company profile identifies a Hong Kong-founded regulated financial institution providing institutional custody, trading and transfer infrastructure; exact HK roles match wealth and payment operations.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.hextrust.com/company",
+          "note": "Official company profile identifies a Hong Kong-founded regulated financial institution providing institutional custody, trading and transfer infrastructure; exact HK roles match wealth and payment operations."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Responsible Officer",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/responsible-officer-at-hex-trust-4448963361",
+          "firstSeen": "2026-08-05T10:02:37.875Z",
+          "pushTime": "2026-08-05T16:02:40.087Z",
+          "jobStatus": "expired"
+        },
+        {
+          "title": "Director- Senior Sales, Cross-border Payments Solutions",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/director-senior-sales-cross-border-payments-solutions-at-hex-trust-4441418253",
+          "firstSeen": "2026-07-16T10:05:42.698Z",
+          "pushTime": "2026-07-16T22:04:39.850Z"
+        },
+        {
+          "title": "Relationship Manager - Wealth Management (Hong Kong)",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/relationship-manager-wealth-management-hong-kong-at-hex-trust-4475553744",
+          "firstSeen": "2026-10-06T10:02:49.597Z",
+          "pushTime": "2026-10-06T10:02:49.597Z",
+          "jobStatus": "active"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Hex Trust",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.hextrust.com/company",
+          "reviewedOn": "2026-11-26",
+          "note": "Official company profile identifies a Hong Kong-founded regulated financial institution providing institutional custody, trading and transfer infrastructure; exact HK roles match wealth and payment operations."
+        }
+      }
     },
     {
       "company": "Himension Capital",
@@ -7155,6 +7370,7 @@
     {
       "company": "ib vogt GmbH",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -7163,10 +7379,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "太阳能及储能项目开发与运营",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "太阳能及储能项目开发与运营",
+      "employerType": null,
+      "queries": [
+        "ib vogt GmbH 太阳能及储能项目开发与运营 official company / observed job identity"
+      ],
+      "investigationSummary": "Group subsidiary's shareholder description identifies ib vogt as a solar independent power producer and project developer/operator, rather than a financial asset manager. Investment Manager job title alone does not change industry.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.ibvenergy.com/shareholders/",
+          "note": "Group subsidiary's shareholder description identifies ib vogt as a solar independent power producer and project developer/operator, rather than a financial asset manager. Investment Manager job title alone does not change industry."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Investment Manager",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/investment-manager-at-ib-vogt-gmbh-4485347175",
+          "firstSeen": "2026-11-17T04:02:08.453Z",
+          "pushTime": "2026-11-17T04:02:08.453Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "IDC咨询(北京)有限公司",
@@ -7394,6 +7634,7 @@
     {
       "company": "IQVIA Asia Pacific",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 1,
@@ -7402,10 +7643,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "existingIndustry": "医药临床研究、医疗数据及科技",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "医药临床研究、医疗数据及科技",
+      "employerType": null,
+      "queries": [
+        "IQVIA Asia Pacific 医药临床研究、医疗数据及科技 official company / observed job identity"
+      ],
+      "investigationSummary": "Official APAC page describes healthcare and clinical research services with Singapore headquarters, matching the observed Medical Advisor role.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://www.iqvia.com/locations/Asia-pacific",
+          "note": "Official APAC page describes healthcare and clinical research services with Singapore headquarters, matching the observed Medical Advisor role."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Medical Advisor",
+          "location": "SG",
+          "link": "https://sg.linkedin.com/jobs/view/medical-advisor-at-iqvia-asia-pacific-4486032152",
+          "firstSeen": "2026-11-17T04:02:08.453Z",
+          "pushTime": "2026-11-17T04:02:08.453Z",
+          "jobStatus": "active"
+        }
+      ]
     },
     {
       "company": "ISS STOXX",
@@ -8126,6 +8391,7 @@
     {
       "company": "Nexus Corporation",
       "sourceStatuses": [
+        "resolved_observation",
         "unlisted"
       ],
       "activeJobsForKey": 2,
@@ -8133,11 +8399,60 @@
       "historicalPendingDates": [],
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
-      "existingRecord": null,
+      "existingRecord": {
+        "company": "Nexus Corporation",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://hk.linkedin.com/company/nexusconsulting-global",
+          "reviewedOn": "2026-11-26",
+          "note": "The company's own profile explicitly lists contingency search, permanent and contract staffing, HR consulting and a Hong Kong office. A Hong Kong business analyst posting describes on-site work at a client bank."
+        }
+      },
       "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-26"
+      "investigationStatus": "verified",
+      "protectionDecision": "protect",
+      "firstQueuedOn": "2026-11-26",
+      "industry": "IT staffing / executive search",
+      "employerType": "recruitment_agency",
+      "queries": [
+        "Nexus Corporation IT staffing / executive search official company / observed job identity"
+      ],
+      "investigationSummary": "The company's own profile explicitly lists contingency search, permanent and contract staffing, HR consulting and a Hong Kong office. A Hong Kong business analyst posting describes on-site work at a client bank.",
+      "lastReviewedOn": "2026-11-26",
+      "industryEvidence": [
+        {
+          "url": "https://hk.linkedin.com/company/nexusconsulting-global",
+          "note": "The company's own profile explicitly lists contingency search, permanent and contract staffing, HR consulting and a Hong Kong office. A Hong Kong business analyst posting describes on-site work at a client bank."
+        }
+      ],
+      "remainingQuestion": null,
+      "observedJobs": [
+        {
+          "title": "Crypto - Thales for Key Management & Entrust for HSM",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/crypto-thales-for-key-management-entrust-for-hsm-at-nexus-corporation-4474249196",
+          "firstSeen": "2026-10-05T10:02:47.691Z",
+          "pushTime": "2026-10-05T10:02:47.691Z",
+          "jobStatus": "active"
+        },
+        {
+          "title": "Business Analyst",
+          "location": "HK",
+          "link": "https://hk.linkedin.com/jobs/view/business-analyst-at-nexus-corporation-4465980137",
+          "firstSeen": "2026-10-07T16:04:51.293Z",
+          "pushTime": "2026-10-07T16:04:51.293Z",
+          "jobStatus": "active"
+        }
+      ],
+      "protectedRecord": {
+        "company": "Nexus Corporation",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://hk.linkedin.com/company/nexusconsulting-global",
+          "reviewedOn": "2026-11-26",
+          "note": "The company's own profile explicitly lists contingency search, permanent and contract staffing, HR consulting and a Hong Kong office. A Hong Kong business analyst posting describes on-site work at a client bank."
+        }
+      }
     },
     {
       "company": "Nexxus Capital Management",
