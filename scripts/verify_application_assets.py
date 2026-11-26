@@ -47,7 +47,7 @@ def _verify():
 
     # Keep SHA checks and HTML references aligned with the checked-in release.
     # A pinned literal asset version caused a false failure after the date fix.
-    tracked_assets = ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js', 'employer-mode.js', 'next-journey-masthead.css')
+    tracked_assets = ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js', 'employer-mode.js', 'next-journey-masthead.css', 'account.js')
     for name in tracked_assets:
         expected = (root / name).read_bytes()
         digest = hashlib.sha256(expected).hexdigest()

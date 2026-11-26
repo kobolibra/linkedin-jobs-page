@@ -28,7 +28,7 @@ class VerificationTests(unittest.TestCase):
                     'agency': {'total': subject._expected_public_total({**index, 'jobs': [r for r in index['jobs'] if r.get('employerType') != 'direct_employer']})},
                 }} if index.get('employerModeSchema') == 1 else {}),
             }).encode())
-        for name in ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js', 'employer-mode.js', 'next-journey-masthead.css'):
+        for name in ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js', 'employer-mode.js', 'next-journey-masthead.css', 'account.js'):
             if '/' + name in url:
                 return Response((Path(subject.__file__).parents[1] / name).read_bytes())
         return Response((Path(subject.__file__).parents[1] / 'index.html').read_bytes())
