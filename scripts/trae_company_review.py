@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Single, pinned entrypoint for the external TRAE company-review scheduler.
 
-The scheduler creates a fresh checkout of public main and calls prepare.
+The scheduler creates an authenticated fresh checkout of main and calls prepare.
 No Python code, prior report, or module is loaded from the outer workspace.
 Credentials remain outside Git. Subsequent steps use the same entrypoint.
 """
@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = "kobolibra/linkedin-jobs-page"
 REMOTE = "https://github.com/" + REPO + ".git"
 CONFIG = Path("/workspace/config.json")
+sys.path.insert(0, str(ROOT / "scripts"))
+from trae_bootstrap import git_env, load_config as bootstrap_config
 CODE_PATHS = (
     "auto-daily-companies.py", "reclassify.py", "scripts/",
     "docs/financial-blacklist.md", "docs/trae-company-review.md",
@@ -29,7 +31,7 @@ CODE_PATHS = (
 )
 KEY_FILES = (
     "auto-daily-companies.py", "reclassify.py",
-    "scripts/trae_company_review.py", "scripts/company_review_queue.py",
+    "scripts/trae_bootstrap.py", "scripts/trae_company_review.py", "scripts/company_review_queue.py",
     "scripts/audit_employer_types.py", "scripts/publication_state.py",
     "docs/financial-blacklist.md", "docs/trae-company-review.md",
 )
@@ -46,12 +48,8 @@ def utc():
 
 
 def git(root, *args):
-    # Public read-only fetch; never use the outer workspace's repo or git directory.
-    env = os.environ.copy()
-    for key in list(env):
-        if key.startswith("GIT_") and key not in {"GIT_SSL_CAINFO", "GIT_SSL_CAPATH"}:
-            env.pop(key)
-    env["GIT_TERMINAL_PROMPT"] = "0"
+    # Authenticate fetches and partial-clone lazy object downloads, also for private main.
+    env = git_env(load_config())
     return subprocess.check_output(
         ["git", "-C", str(root), *args], env=env, text=True
     ).strip()
@@ -73,20 +71,15 @@ def read(path):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_config(path=CONFIG):
-    cfg = read(path)
-    if cfg.get("repo") != REPO or cfg.get("branch") != "main":
-        raise ValueError("Wrong GitHub repository/branch in external config")
-    if not isinstance(cfg.get("github_token"), str) or not cfg["github_token"].strip():
-        raise ValueError("Missing GitHub credential in external config")
-    return cfg
+def load_config(path=None):
+    return bootstrap_config(CONFIG if path is None else path)
 
 
 def child_env(run_dir, config=CONFIG):
     cfg = load_config(config)
-    env = os.environ.copy()
+    env = git_env(cfg)
     for key in list(env):
-        if key.startswith("PYTHON") or key.startswith("GIT_"):
+        if key.startswith("PYTHON"):
             env.pop(key)
     env["GITHUB_TOKEN"] = cfg["github_token"]
     env["NEXT_JOURNEY_CONFIG"] = str(config)
@@ -152,7 +145,7 @@ def execute(root, run_dir, manifest, name, command, *, output=None, credentials=
              "argumentsSha256": hashlib.sha256(json.dumps(command[4:]).encode()).hexdigest()}
     manifest["events"].append(event)
     save(run_dir / "execution-manifest.json", manifest)
-    env = child_env(run_dir) if credentials else os.environ.copy()
+    env = child_env(run_dir)
     if not credentials:
         env.pop("GITHUB_TOKEN", None)
         env.pop("GH_TOKEN", None)

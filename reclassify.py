@@ -347,7 +347,14 @@ def main():
     typed_additions = blacklist_records(json.loads(args.blacklist_records), allow_legacy=False)
     if not (args.blacklist or typed_additions or industries or args.finalize):
         return
-    cfg = json.loads(Path(os.environ.get("NEXT_JOURNEY_CONFIG", "/workspace/config.json")).read_text())
+    config_path = Path(os.environ.get("NEXT_JOURNEY_CONFIG", "/workspace/config.json"))
+    try:
+        cfg = json.loads(config_path.read_text())
+    except FileNotFoundError:
+        cfg = {"repo": "kobolibra/linkedin-jobs-page", "branch": "main"}
+    cfg["github_token"] = cfg.get("github_token") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if not cfg["github_token"]:
+        raise ValueError("Missing GitHub credential")
     handlers = [urllib.request.HTTPSHandler(context=ssl.create_default_context())]
     if cfg.get("proxy"):
         handlers.append(urllib.request.ProxyHandler(dict.fromkeys(("http", "https"), cfg["proxy"])))
