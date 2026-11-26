@@ -24,12 +24,17 @@
   const api={KEY,normalize,matches,scope,current:()=>selected,set:setMode};
   if(typeof module==='object'&&module.exports)module.exports=api;
   root.EmployerMode=api;
-  let select;
+  let select,modeLabel;
+  function syncPicker(mode){
+    if(!select)return;
+    select.value=mode;
+    if(modeLabel)modeLabel.textContent=select.selectedOptions[0]?.textContent??'';
+  }
   function setMode(value,{notify=true}={}){
     const mode=normalize(value),previous=selected;
     selected=mode;
     if(typeof document==='undefined')return mode;
-    if(select)select.value=mode;
+    syncPicker(mode);
     document.documentElement.dataset.employerMode=mode;
     let persisted=false;
     try{localStorage.setItem(KEY,mode);persisted=localStorage.getItem(KEY)===mode;}catch{}
@@ -42,11 +47,12 @@
   if(typeof document==='undefined')return;
   select=document.getElementById('employerMode');
   if(!select)return;
+  modeLabel=select.parentElement.querySelector('.nj-mode-label');
   const url=new URL(location.href);
   let saved=null;
   try{saved=localStorage.getItem(KEY);}catch{}
   selected=normalize(valid(url.searchParams.get('employerMode'))?url.searchParams.get('employerMode'):saved);
-  select.value=selected;
+  syncPicker(selected);
   document.documentElement.dataset.employerMode=selected;
   select.addEventListener('change',()=>setMode(select.value));
 })(typeof globalThis!=='undefined'?globalThis:this);
