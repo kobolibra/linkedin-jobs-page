@@ -69,12 +69,6 @@
       "pushTime": "2026-11-26T10:01:18.354Z"
     },
     {
-      "company": "Bess Broadway",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-26T10:01:18.354Z"
-    },
-    {
       "company": "Aleph",
       "category": "target",
       "reason": "数字广告/媒体(OpenAI ChatGPT Ads 独家分销)",
@@ -435,10 +429,16 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-26T10:01:18.354Z"
+    },
+    {
+      "company": "Bess Broadway",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-26T10:01:18.354Z"
     }
   ],
-  "total_target": 15,
-  "total_excluded": 57,
+  "total_target": 14,
+  "total_excluded": 58,
   "total_today_jobs": 129,
   "total_all_jobs": 15096
 }
