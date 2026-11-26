@@ -34,6 +34,9 @@ def main():
                 and row.get("location") in ("CN", "HK", "SG") and row.get("title") and row.get("company")
                 and re.match(r"https://(?:[a-z]{2,3}\.)?linkedin\.com/jobs/view/", row.get("link") or "", re.I)]
     counts = Counter(row["employerType"] for row in eligible)
+    vistra = [row for row in index["jobs"] if isinstance(row.get("company"), str) and norm(row["company"]) == "vistra"]
+    assert all(row["employerType"] == "direct_employer" for row in vistra)
+    print(json.dumps({"vistraRecords": len(vistra), "vistraActive": sum(row.get("jobStatus") != "expired" for row in vistra)}))
     direct = counts["direct_employer"]
     print(json.dumps({"canonical": len(canonical), "full": len(eligible), "direct": direct,
                       "agency": len(eligible) - direct, "byType": dict(counts),

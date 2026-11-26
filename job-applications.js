@@ -170,5 +170,6 @@
  let journeyResize=0;addEventListener('resize',()=>{cancelAnimationFrame(journeyResize);journeyResize=requestAnimationFrame(()=>{if(journey?.open)renderJourney();});},{passive:true});
  // Reuse the already-requested index; never fetch data just to draw a personal chart.
  (window.__jobsFullDataPromise||window.__jobsDataPromise)?.then(rows=>{regions=regionIndex(rows);directFavoriteIds=new Set(rows.filter(row=>row.employerType==='direct_employer').map(row=>jobKey(row.link)).filter(Boolean));classificationReady=rows.every(row=>typeof row.employerType==='string');if(journey?.open)renderJourney();}).catch(()=>{});
+ addEventListener('employermodescoped',()=>{if(journey?.open)renderJourney();});
  addEventListener('account-preferences',refresh);refresh();
 })();

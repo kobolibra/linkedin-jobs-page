@@ -222,7 +222,7 @@ test('New Postings stacks each day by market in the same sand/sage/terracotta pa
  assert.match(source,/const rhythmMarks=days\.map/);
  assert.match(source,/window\.JobDates\.weekday\(d\.key\)===1/);
  assert.doesNotMatch(source,/const dateLabels=\[0,7,14,21,29\]/);
- assert.match(html,/app\.js\?v=employer-mode-1/);
+ assert.match(html,/app\.js\?v=mode-rail-3/);
 
  assert.doesNotMatch(css,/:root\s*\{\s*--viz-blue:#334EAC/);
 });
@@ -239,7 +239,7 @@ test('masthead and summary labels use natural case, while geography acronyms rem
  }
  assert.match(html,/>CN<\/button>/);
  assert.match(html,/New Postings: A Rolling 30-Day Snapshot/);
- assert.match(html,/next-journey-masthead\.css\?v=employer-mode-1/);
+ assert.match(html,/next-journey-masthead\.css\?v=mode-rail-2/);
  assert.match(css,/\.nj-eyebrow\{[^}]*letter-spacing:\.045em/);
  assert.match(css,/\.nj-market-heading\{[^}]*letter-spacing:\.035em/);
  assert.match(css,/\.nj-masthead-folio\{[^}]*letter-spacing:\.035em/);
@@ -274,4 +274,24 @@ test('active-only status uses Mainland ring color without recoloring the label',
  assert.match(app,/activeOnlyEl\.setAttribute\("aria-pressed",String\(activeOnly\)\)/);
  assert.match(css,/\.count \.active-only-toggle:focus-visible\s*\{[^}]*outline:2px solid var\(--cn\)/s);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
+});
+
+test('chart tooltip uses measured fixed origin on a panned WebKit viewport',()=>{
+ const start=source.indexOf('  const place=(x,y)=>{',source.indexOf('window.VizTip='));
+ const end=source.indexOf('  function show(',start);
+ assert.ok(start>=0&&end>start);
+ let originX=-12,originY=-7;
+ const tip={style:{transform:''},getBoundingClientRect(){
+  const match=this.style.transform.match(/translate\((-?[\d.]+)px,(-?[\d.]+)px\)/);
+  const left=originX+Number(match?.[1]||0),top=originY+Number(match?.[2]||0);
+  return {left,top,right:left+213,bottom:top+190,width:213,height:190};
+ }};
+ const context={tip,innerWidth:390,innerHeight:900,document:{documentElement:{clientWidth:390,clientHeight:900}},window:{visualViewport:{width:378,height:900}}};
+ vm.runInNewContext(source.slice(start,end)+'\nthis.place=place;',context);
+ for(const origin of [-12,0,12])for(const [x,y] of [[0,0],[20,600],[388,899],[240,830]]){
+  originX=origin;
+  context.place(x,y);
+  const box=tip.getBoundingClientRect();
+  assert.ok(box.left>=9&&box.right<=369&&box.top>=9&&box.bottom<=891,JSON.stringify({origin,x,y,box}));
+ }
 });

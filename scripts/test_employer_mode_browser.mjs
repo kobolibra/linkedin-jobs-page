@@ -30,7 +30,7 @@ try{
    const url=new URL(route.request().url());
    if(url.hostname!=='127.0.0.1'){const cb=url.searchParams.get('jsonpCallback');return route.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:cb?'application/javascript':url.pathname.includes('css')?'text/css':'application/json',body:cb?`${cb}({site_pv:1})`:url.pathname.includes('css')?'':'[]'});}
    const path=url.pathname;
-   if(path==='/auth/session')return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:{enabled:true,user:{id:'mode-test',name:'Regression'},csrf:'test-only'})});
+   if(path==='/auth/session'){await new Promise(resolve=>setTimeout(resolve,200));return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:{enabled:true,user:{id:'mode-test',name:'Regression'},csrf:'test-only'})});}
    if(path==='/auth/preferences')return route.fulfill({contentType:'application/json',body:JSON.stringify({userId:'mode-test',entries:[],cursor:0,more:false,acknowledged:[]})});
    if(path==='/jobs-version.json')return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:{dataVersion:index.dataVersion})});
    if(path==='/jobs-index.json')return route.fulfill({status:isGuest?401:200,contentType:'application/json',body:JSON.stringify(isGuest?{error:'unauthorized'}:index)});
@@ -41,13 +41,13 @@ try{
    if(path==='/'&&isGuest)body=Buffer.from(body.toString().replace('<html ','<html data-auth-state="guest" ').replace('</head>','<link rel="stylesheet" href="/auth-guest.css?v=2"></head>'));
    return route.fulfill({status:200,contentType:types[extname(local)]||'application/octet-stream',body});
   });
-  const page=await context.newPage(),errors=[];
+  const page=await context.newPage(),errors=[];let indexRequests=0;page.on('request',request=>{const p=new URL(request.url()).pathname;if(p==='/jobs-index.json'||p==='/api/public-preview')indexRequests++;});
   page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&m.text().includes('[jobs]'))errors.push(m.text());});
   await page.goto('http://127.0.0.1:47653/');
   const wait=async mode=>{
    const overview=mode==='full'?guest.previewOverview:guest.previewOverviewByMode[mode];
    const total=isGuest?overview.total:totals[mode];
-   await page.waitForFunction(({mode,total})=>document.documentElement.dataset.employerMode===mode&&document.getElementById('stat-total')?.textContent.replace(/,/g,'')===String(total)&&typeof renderReady!=='undefined'&&renderReady,{mode,total},{timeout:30000});
+   await page.waitForFunction(({mode,total})=>document.documentElement.dataset.renderedEmployerMode===mode&&document.getElementById('stat-total')?.textContent.replace(/,/g,'')===String(total)&&typeof renderReady!=='undefined'&&renderReady,{mode,total},{timeout:30000});
    const expected=scoped(mode),expectedRows=isGuest?guest.jobs.filter(j=>mode==='full'||modeOf(j)===mode):expected;
    const snapshot=await page.evaluate(()=>({rows:loadedJobs.length,direct:loadedJobs.filter(j=>j.employerType==='direct_employer').length,regions:Number(document.querySelector('#dist svg')?.dataset.finalTotal),bars:document.querySelectorAll('#spark .rhythm-bar').length,top:top50Rows.length,history:postingHistoryDaily,active:Number(document.getElementById('activeJobCount').textContent.replace(/,/g,''))}));
    assert.equal(snapshot.rows,expectedRows.length);
@@ -65,19 +65,47 @@ try{
    assert.equal(snapshot.bars,30);
    assert.deepEqual(snapshot.history,mode==='full'?index.postingHistoryDaily:index.postingHistoryDailyByMode[mode]);
    assert.equal(snapshot.active,total);
-   if(!isGuest){await page.locator('#regions .seg[data-region="CN"]').click();await page.waitForFunction(()=>activeRegion==='CN');assert.ok(await page.evaluate(()=>listRuntime.view.rows.every(i=>listRuntime.meta[i].region==='CN')));await page.locator('#regions .seg[data-region="all"]').click();}
    console.log(JSON.stringify({engine,width,theme,isGuest,mode,snapshot:{...snapshot,history:undefined}}));
   };
+  // The toolbar lives below the masthead; Playwright's normal click scrolls it
+  // into view. Measure a real visible masthead, without injecting that scroll.
   await wait('full');
+  await page.evaluate(async()=>{window.scrollTo({top:0,left:0,behavior:'instant'});await new Promise(requestAnimationFrame);await new Promise(requestAnimationFrame);});
+  const initialFetches=indexRequests;
+  const initialHeader=await page.evaluate(()=>{window.__modeQA={header:document.getElementById('headerTools'),theme:document.getElementById('themeToggle'),account:document.getElementById('headerAccount').firstElementChild,select:document.getElementById('employerMode')};const rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return [...document.getElementById('headerTools').children].map(rect);});
+  let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
   for(const mode of ['direct','agency','full']){
-   await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.selectOption('#employerMode',mode)]);
+   await page.evaluate(()=>{const sample=()=>{const q=window.__modeQA;const r=[...q.header.children].map(e=>{const b=e.getBoundingClientRect();return [b.x,b.y,b.width,b.height];});window.__modeFrames.push(r);if(window.__modeSampling)requestAnimationFrame(sample);};window.__modeFrames=[];window.__modeSampling=true;requestAnimationFrame(sample);});
+   await page.selectOption('#employerMode',mode);
    await wait(mode);
+   const frames=await page.evaluate(async()=>{for(let i=0;i<3;i++)await new Promise(requestAnimationFrame);window.__modeSampling=false;return window.__modeFrames;});
+   for(const boxes of frames)for(let i=0;i<boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(boxes[i][j]-initialHeader[i][j])<=1,'transient header jump '+JSON.stringify({boxes,initialHeader}));
    assert.equal(await page.locator('#employerMode').inputValue(),mode);
+   assert.equal(navigations,0,'mode switch must not navigate');
+   const stability=await page.evaluate(()=>{const q=window.__modeQA,header=document.getElementById('headerTools'),rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return {same:q.header===header&&q.theme===document.getElementById('themeToggle')&&q.account===document.getElementById('headerAccount').firstElementChild&&q.select===document.getElementById('employerMode'),boxes:[...header.children].map(rect),border:getComputedStyle(q.select).borderTopWidth,shadow:getComputedStyle(q.select).boxShadow,accountRight:q.account?.getBoundingClientRect().right};});
+   assert.equal(stability.same,true,'header controls must remain mounted');
+   assert.equal(stability.border,'0px');assert.equal(stability.shadow,'none');assert.ok(stability.accountRight<=width,'account must not leave viewport');
+   for(let i=0;i<stability.boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(stability.boxes[i][j]-initialHeader[i][j])<=1,'header geometry changed: '+JSON.stringify(stability));
    const geometry=await page.evaluate(()=>{const about=document.querySelector('.nj-about-link').getBoundingClientRect(),mode=document.getElementById('employerMode').getBoundingClientRect(),theme=document.getElementById('themeToggle').getBoundingClientRect(),brand=document.querySelector('.nj-brand').getBoundingClientRect();return {ordered:about.right<=mode.left+1&&mode.right<=theme.left+1,within:about.left>=0&&theme.right<=innerWidth,brandSeparate:brand.right<=about.left+1||brand.bottom<=about.top+1};});
    assert.deepEqual(geometry,{ordered:true,within:true,brandSeparate:true});
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
-   await page.reload();await wait(mode);
+   assert.equal(await page.evaluate(()=>localStorage.getItem('next-journey-employer-mode')),mode);
+   assert.equal(await page.evaluate(()=>window.scrollY),0,'switching mode at the masthead must not scroll the page');
+   if(!isGuest){
+    // Exercise the region filter independently of the visible-header motion
+    // test; DOM clicks preserve scroll rather than Playwright auto-scrolling.
+    await page.evaluate(()=>document.querySelector('#regions .seg[data-region="CN"]').click());
+    await page.waitForFunction(()=>activeRegion==='CN');
+    assert.ok(await page.evaluate(()=>listRuntime.view.rows.every(i=>listRuntime.meta[i].region==='CN')));
+    await page.evaluate(()=>document.querySelector('#regions .seg[data-region="all"]').click());
+    await page.waitForFunction(()=>activeRegion==='all');
+    await page.evaluate(async()=>{window.scrollTo({top:0,left:0,behavior:'instant'});await new Promise(requestAnimationFrame);await new Promise(requestAnimationFrame);});
+   }
   }
+  // Three consecutive changes in one task exercise the same document and latest scope.
+  await page.evaluate(()=>{EmployerMode.set('direct');EmployerMode.set('agency');EmployerMode.set('direct');});await wait('direct');
+  assert.equal(navigations,0);assert.equal(indexRequests,initialFetches,'mode switches must reuse one master snapshot');
+  await page.reload();await wait('direct');
   assert.deepEqual(errors,[]);
   await context.close();
  }
