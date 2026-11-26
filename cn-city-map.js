@@ -91,7 +91,7 @@
   window.CNCityMap=api;
   const panel=document.getElementById('cnCityMap'),toggle=document.getElementById('cnCityMapToggle');
   if(!panel||!toggle)return;
-  let ready=false,pending=null;
+  let ready=false,pending=null,atlasCache=null;
   const ns='http://www.w3.org/2000/svg';
   const node=(tag,attrs={},text)=>{const n=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))n.setAttribute(k,v);if(text!=null)n.textContent=text;return n;};
   const html=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls;if(text!=null)n.textContent=text;return n;};
@@ -160,12 +160,13 @@
       try {
         const atlasPromise=fetch('assets/maps/cn-cities.json',{signal:controller.signal,cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Map HTTP '+r.status);return r.json();});
         const rowsPromise=window.__jobsDataPromise;if(!rowsPromise)throw Error('Job index is unavailable');
-        const [atlas,rows]=await Promise.all([atlasPromise,rowsPromise]);render(atlas,window.AuthGuest?.chartRows||rows);ready=true;
+        atlasCache=await atlasPromise;const rows=await window.__jobsDataPromise;render(atlasCache,window.AuthGuest?.chartRows||rows);ready=true;
       } catch(error) {
         const message=html('p','cn-map-state','城市地图暂时无法加载。');const retry=html('button','top50-toggle cn-map-retry','Retry');retry.type='button';retry.addEventListener('click',()=>load());panel.replaceChildren(message,retry);
       } finally {clearTimeout(timer);pending=null;}
     })();return pending;
   }
+  window.addEventListener('employermodescoped',()=>{if(ready&&atlasCache)render(atlasCache,window.AuthGuest?.chartRows||window.__jobsScopedRows||[]);});
   toggle.addEventListener('click',()=>{
     const expanded=toggle.getAttribute('aria-expanded')!=='true';toggle.setAttribute('aria-expanded',String(expanded));toggle.textContent=expanded?'Collapse':'Expand';panel.hidden=!expanded;if(expanded)load();
   });

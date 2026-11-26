@@ -3,17 +3,18 @@
   const raf=()=>new Promise(requestAnimationFrame),escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   class JobListView{
     constructor({host,render,onMount}){
-      this.host=host;this.render=render;this.onMount=onMount;this.blocks=[];this.cache=[];this.open=new Set();this.frame=0;this.jump=0;this.full=false;this.dead=false;
+      this.host=host;this.render=render;this.onMount=onMount;this.blocks=[];this.cache=[];this.open=new Set();this.frame=0;this.jump=0;this.full=false;this.dead=false;this.events=new AbortController();
       host._jobView=this;host.classList.add('job-windowed');
       this.scroll=()=>this.schedule();window.addEventListener('scroll',this.scroll,{passive:true});
       this.resize=()=>{if(this.host.clientWidth!==this.estimateWidth)this.invalidate();else this.schedule(true);};window.addEventListener('resize',this.resize,{passive:true});
       this.cancelJump=()=>{this.jump++;};for(const type of ['wheel','touchstart','pointerdown'])window.addEventListener(type,this.cancelJump,{passive:true});
-      host.addEventListener('pointerdown',event=>this.interaction=event.target.closest('.day'),{passive:true});
+      host.addEventListener('pointerdown',event=>this.interaction=event.target.closest('.day'),{passive:true,signal:this.events.signal});
       this.observer=new ResizeObserver(()=>this.schedule(true));
       for(const element of [host,document.querySelector('.masthead'),document.querySelector('.toolbar')])if(element)this.observer.observe(element);
       this.find=event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='f')this.expandAll();if(event.key==='Escape'&&this.full){this.full=false;this.schedule(true);}};window.addEventListener('keydown',this.find);
       this.print=()=>this.expandAll();this.afterPrint=()=>{this.full=false;this.schedule(true);};window.addEventListener('beforeprint',this.print);window.addEventListener('afterprint',this.afterPrint);
     }
+    dispose(){if(this.dead)return;this.dead=true;this.jump++;cancelAnimationFrame(this.frame);this.events.abort();this.observer.disconnect();window.removeEventListener('scroll',this.scroll);window.removeEventListener('resize',this.resize);for(const type of ['wheel','touchstart','pointerdown'])window.removeEventListener(type,this.cancelJump);window.removeEventListener('keydown',this.find);window.removeEventListener('beforeprint',this.print);window.removeEventListener('afterprint',this.afterPrint);if(this.host._jobView===this)delete this.host._jobView;this.blocks=[];this.cache=[];}
     capture(){
       const top=this.toolbar()+14;
       for(const block of this.blocks){if(!block.mounted)continue;const rect=block.el.getBoundingClientRect();if(rect.bottom<=top||rect.top>innerHeight)continue;
@@ -51,7 +52,7 @@
       if(block.mounted)return;block.mounted=true;block.el.style.height='auto';
       if(block.cached){block.el.appendChild(block.cached);block.cached=null;this.cache=this.cache.filter(b=>b!==block);}
       else{const template=document.createElement('template');template.innerHTML=block.indices.map((index,i)=>this.render(index,i)).join('');block.el.appendChild(template.content);}block.el._jobCards=[...block.el.querySelectorAll('.job')];block.el._favoriteCards=new Set(block.el._jobCards.filter(card=>card.classList.contains('is-favorite')));
-      queueMicrotask(()=>{for(const card of block.el._jobCards)if(this.open.has(card.dataset.id)){const details=card.querySelector('details.job-jd'),button=card.querySelector('.job-jd-toggle');if(button&&button.getAttribute('aria-expanded')!=='true')button.click();else if(details)details.open=true;}});
+      queueMicrotask(()=>{if(this.dead)return;for(const card of block.el._jobCards)if(this.open.has(card.dataset.id)){const details=card.querySelector('details.job-jd'),button=card.querySelector('.job-jd-toggle');if(button&&button.getAttribute('aria-expanded')!=='true')button.click();else if(details)details.open=true;}});
     }
     pinned(block){const selection=getSelection();return block.el.contains(document.activeElement)||(selection&&!selection.isCollapsed&&block.el.contains(selection.anchorNode))||(document.querySelector('.job-action-sheet[open]')&&this.interaction===block.el);}
     unmount(block){
@@ -126,7 +127,7 @@
  }
  function button(group){if(!group)return '';return '<button type="button" class="job-history-toggle" aria-expanded="false" aria-controls="'+escape(panelId(group.owner))+'" aria-label="Show '+group.entries.length+' listings with this exact title" title="View all '+group.entries.length+' listings"><span class="co-separator" aria-hidden="true"></span><span class="co-separator" aria-hidden="true"></span><span class="co-separator" aria-hidden="true"></span></button>';}
  function bind(host,{get,id,link,onVisit}){
-  const desktop=()=>matchMedia('(min-width:721px)').matches,opened=new Set();
+  const desktop=()=>matchMedia('(min-width:721px)').matches,opened=new Set(),events=new AbortController();
   const date=value=>window.JobDates.fullDay(value);
   function populate(card,group){
    let panel=card.querySelector('.job-history-panel');if(panel)return panel;
@@ -146,9 +147,9 @@
    const trigger=event.target.closest?.('.job-history-toggle');
    if(trigger){event.preventDefault();event.stopImmediatePropagation();if(desktop())set(trigger.closest('.job'),trigger.getAttribute('aria-expanded')!=='true');return;}
    const target=event.target.closest?.('.job-history-link');if(target){const item=target.closest('.job-history-item');if(item)onVisit?.(item.dataset.historyId);}
-  },true);
-  host.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const target=event.target.closest?.('.job-history-panel,.job-history-toggle');if(!target)return;const card=target.closest('.job');if(card?.querySelector('.job-history-toggle')?.getAttribute('aria-expanded')!=='true')return;event.preventDefault();event.stopImmediatePropagation();set(card,false,{focus:true});},true);
-  return {restore(){if(!opened.size||!desktop())return;for(const trigger of host.querySelectorAll('.job-history-toggle')){const card=trigger.closest('.job');if(opened.has(card.dataset.id)&&trigger.getAttribute('aria-expanded')!=='true')set(card,true);}}};
+  },{capture:true,signal:events.signal});
+  host.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const target=event.target.closest?.('.job-history-panel,.job-history-toggle');if(!target)return;const card=target.closest('.job');if(card?.querySelector('.job-history-toggle')?.getAttribute('aria-expanded')!=='true')return;event.preventDefault();event.stopImmediatePropagation();set(card,false,{focus:true});},{capture:true,signal:events.signal});
+  return {dispose(){events.abort();opened.clear();},restore(){if(!opened.size||!desktop())return;for(const trigger of host.querySelectorAll('.job-history-toggle')){const card=trigger.closest('.job');if(opened.has(card.dataset.id)&&trigger.getAttribute('aria-expanded')!=='true')set(card,true);}}};
  }
  window.JobRoleHistory={build,button,bind};
 })();
