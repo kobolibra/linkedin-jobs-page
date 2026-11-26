@@ -229,7 +229,7 @@ def apply_results(companies: list[dict], results: list[dict]) -> list[dict]:
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--root", type=Path, default=ROOT)
     parser.add_argument("--write", action="store_true", help="Write the merged progress state in the checkout")
     parser.add_argument("--apply-results", type=Path, help="Merge an agent investigation JSON object or array")

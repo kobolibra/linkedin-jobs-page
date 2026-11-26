@@ -10,6 +10,7 @@ and proxy settings; it is NOT a script, report, or module source.
 ```bash
 set -Eeuo pipefail
 umask 077
+unset PYTHONPATH PYTHONHOME GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES
 BASE=/workspace/next-journey-runs
 mkdir -p "$BASE"
 RUN="$(mktemp -d "$BASE/run.XXXXXXXX")"
@@ -36,6 +37,9 @@ python3 -I -B "$ENTRYPOINT" publication --check
 python3 -I -B "$ENTRYPOINT" publish-audit
 ```
 
+Preparation automatically publishes the initial execution manifest. The final
+audit call updates that same run record. Store research JSON inside RUN_DIR,
+not in the outer workspace; do not reuse a prior run's results file.
 The queue command writes the local progress file; persist it via a reviewed,
 non-overwriting GitHub data update before refreshing. Existing classification
 corrections follow the reviewed PR process. Never force-push, never use legacy

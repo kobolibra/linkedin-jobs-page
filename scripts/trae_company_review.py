@@ -177,10 +177,14 @@ def prepare(root, run_dir):
         raise RuntimeError("Run already initialized; start a new run for prepare")
     head = git(root, "rev-parse", "HEAD")
     git(root, "fetch", "--depth=1", "--no-tags", "origin", "refs/heads/main")
-    if git(root, "rev-parse", "FETCH_HEAD") != head:
-        raise RuntimeError("Main advanced during checkout; start a new run")
+    latest = git(root, "rev-parse", "FETCH_HEAD")
     if git(root, "status", "--porcelain", "--untracked-files=all"):
         raise RuntimeError("Prepare requires a clean checkout")
+    if latest != head:
+        if git(root, "diff", "--name-only", head, latest, "--", *CODE_PATHS):
+            raise RuntimeError("Main business code advanced during checkout; start a new run")
+        git(root, "checkout", "--detach", latest)
+        head = latest
     load_config()
     manifest = {"version": 1, "runId": run_dir.name, "repository": REPO,
                 "branch": "main", "startedAt": utc(), "codeCommit": head,
@@ -201,6 +205,9 @@ def prepare(root, run_dir):
     build_queue(root, run_dir, manifest)
     manifest["preparedAt"] = utc()
     save(manifest_path, manifest)
+    # Establish proof of the actual scheduled invocation even if the AI research
+    # is interrupted before its final audit call.
+    publish_audit(root, run_dir, manifest)
 
 
 def build_queue(root, run_dir, manifest):
@@ -225,8 +232,14 @@ def checked_arguments(action, args, root, run_dir):
         if "--local-root" in flags or any(x.startswith("--local") for x in flags):
             raise ValueError("Output root is controlled by the run entrypoint")
     if action in {"queue", "publication"}:
-        if any(x.startswith("--ro") for x in flags):
+        if "--root" in flags:
             raise ValueError("Data root is controlled by the run entrypoint")
+        if action == "queue":
+            for i, value in enumerate(args):
+                if value == "--apply-results" or value.startswith("--apply-results="):
+                    file = Path(value.split("=", 1)[1] if "=" in value else args[i + 1])
+                    if not file.is_absolute() or not file.resolve().is_relative_to(run_dir):
+                        raise ValueError("Investigation results must be an absolute file inside this run")
         args.extend(["--root", str(root)])
     return args
 

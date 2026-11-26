@@ -71,8 +71,40 @@ class TraeEntrypointTest(unittest.TestCase):
                 entry.checked_arguments(action, args, self.root, self.run)
         self.assertEqual(entry.checked_arguments("queue", ["--write"], self.root, self.run),
                          ["--write", "--root", str(self.root)])
+        with self.assertRaisesRegex(ValueError, "inside this run"):
+            entry.checked_arguments("queue", ["--apply-results", "/workspace/old.json"], self.root, self.run)
+        results = str(self.run / "research.json")
+        self.assertEqual(entry.checked_arguments("queue", ["--apply-results", results], self.root, self.run),
+                         ["--apply-results", results, "--root", str(self.root)])
         self.assertEqual(entry.checked_arguments("reclassify", ["--blacklist-records", "[]"], self.root, self.run),
                          ["--blacklist-records", "[]"])
+
+    def test_real_sparse_checkout_and_remote_version_guard(self):
+        subprocess.run(["git", "-C", str(self.root), "branch", "-M", "main"], check=True)
+        other = Path(self.tmp.name) / "run.integration"
+        other.mkdir()
+        clone = other / "repo"
+        remote = self.root.as_uri()
+        subprocess.run(["git", "clone", "--depth=1", "--filter=blob:none", "--no-checkout",
+                        "--single-branch", "--branch", "main", remote, str(clone)], check=True)
+        entry.git(clone, "sparse-checkout", "set", "--no-cone",
+                  "/auto-daily-companies.py", "/reclassify.py", "/scripts/", "/docs/", "/data/")
+        entry.git(clone, "checkout", "--detach", "refs/remotes/origin/main")
+        with patch.object(entry, "REMOTE", remote):
+            entry.check_layout(clone, other)
+        entry.check_code(clone, self.manifest)
+        (self.root / "data").mkdir()
+        (self.root / "data" / "new.json").write_text("{}")
+        entry.git(self.root, "add", ".")
+        entry.git(self.root, "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-m", "data only")
+        entry.refresh(clone, other, self.manifest)
+        self.assertEqual((clone / "data" / "new.json").read_text(), "{}")
+        self.assertEqual(self.manifest["codeCommit"], self.sha)
+        (self.root / "reclassify.py").write_text("new business code")
+        entry.git(self.root, "add", ".")
+        entry.git(self.root, "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-m", "new code")
+        with self.assertRaisesRegex(RuntimeError, "GitHub business code changed"):
+            entry.refresh(clone, other, self.manifest)
 
     def test_data_only_refresh_preserves_pinned_code(self):
         self.manifest["scripts"] = []

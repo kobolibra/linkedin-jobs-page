@@ -334,7 +334,7 @@ def mirror(files, day, root):
 
 
 def main():
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(allow_abbrev=False)
     ap.add_argument("--blacklist", nargs="*", default=[])
     ap.add_argument("--blacklist-records", default="[]", help="JSON array of typed company records")
     ap.add_argument("--industry", default="{}")

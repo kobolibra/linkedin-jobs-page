@@ -70,7 +70,7 @@ def require_capture(root: Path, path: Path) -> None:
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--root", type=Path, default=ROOT)
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--validate", action="store_true")
