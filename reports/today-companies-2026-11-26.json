@@ -3,57 +3,39 @@
   "filter_window": "2026-11-25 12:10 ~ 2026-11-26 12:10 (Beijing)",
   "target_companies": [
     {
-      "company": "First Sentier Group",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-25T06:49:03.569Z"
-    },
-    {
       "company": "Archroma",
       "category": "target",
-      "reason": "待查证",
+      "reason": "特种化学品(纺织/包装/涂料)",
       "pushTime": "2026-11-25T10:01:16.800Z"
     },
     {
       "company": "STARTEAM GLOBAL",
       "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-25T10:01:16.800Z"
-    },
-    {
-      "company": "AMBR (Nasdaq: AMBR)",
-      "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-25T10:01:16.800Z"
-    },
-    {
-      "company": "Trulyyy",
-      "category": "target",
-      "reason": "待查证",
+      "reason": "印刷电路板(PCB)制造",
       "pushTime": "2026-11-25T10:01:16.800Z"
     },
     {
       "company": "Barco",
       "category": "target",
-      "reason": "待查证",
+      "reason": "可视化/显示技术",
       "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
       "company": "福维克公司",
       "category": "target",
-      "reason": "待查证",
+      "reason": "高端家电/智能生活(直销)",
       "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
       "company": "Datawave Technologies Limited",
       "category": "target",
-      "reason": "待查证",
+      "reason": "企业AI/软件/CRM解决方案",
       "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
       "company": "ASUS",
       "category": "target",
-      "reason": "待查证",
+      "reason": "计算机硬件/消费电子",
       "pushTime": "2026-11-25T16:01:35.756Z"
     },
     {
@@ -65,25 +47,19 @@
     {
       "company": "Entrust",
       "category": "target",
-      "reason": "待查证",
+      "reason": "数字安全/身份与访问管理",
       "pushTime": "2026-11-25T22:01:40.435Z"
     },
     {
       "company": "株式会社精研",
       "category": "target",
-      "reason": "待查证",
+      "reason": "精密制造/半导体测试治具(探针)",
       "pushTime": "2026-11-26T04:01:58.258Z"
     },
     {
       "company": "第一三共",
       "category": "target",
-      "reason": "待查证",
-      "pushTime": "2026-11-26T04:01:58.258Z"
-    },
-    {
-      "company": "ConnectedSolutions",
-      "category": "target",
-      "reason": "待查证",
+      "reason": "制药",
       "pushTime": "2026-11-26T04:01:58.258Z"
     }
   ],
@@ -345,10 +321,34 @@
       "category": "excluded",
       "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-26T04:01:58.258Z"
+    },
+    {
+      "company": "First Sentier Group",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-25T06:49:03.569Z"
+    },
+    {
+      "company": "AMBR (Nasdaq: AMBR)",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "Trulyyy",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-25T10:01:16.800Z"
+    },
+    {
+      "company": "ConnectedSolutions",
+      "category": "excluded",
+      "reason": "verified financial/headhunter (reclassified)",
+      "pushTime": "2026-11-26T04:01:58.258Z"
     }
   ],
-  "total_target": 14,
-  "total_excluded": 43,
+  "total_target": 10,
+  "total_excluded": 47,
   "total_today_jobs": 136,
   "total_all_jobs": 15076
 }
