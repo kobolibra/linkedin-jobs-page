@@ -22,7 +22,6 @@ requirements-jobspy.txt
 requirements-logos.txt
 pv.json
 financial_blacklist.json
-company_employer_types.json
 company_industries.json
 public-assets
 *.map
