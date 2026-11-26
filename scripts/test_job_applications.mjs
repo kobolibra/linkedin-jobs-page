@@ -267,3 +267,14 @@ test('historical favorites retain their last observed type; missing IDs belong t
  assert.equal(graph(favoriteScope(favorites,'direct',new Map(),newer).visible,new Map()).total,1);
  assert.equal(favoriteTypeIndex(['{}',JSON.stringify({v:1,j:'bad',k:'invented',t:1})]).size,0);
 });
+
+test('two open pages with different index snapshots cannot continually overwrite each other',()=>{
+ const {captureFavoriteTypes,favoriteTypeIndex}=scope.JobApplications;
+ const favorites=['ln:role'],old=new Map([['ln:role','direct_employer']]),fresh=new Map([['ln:role','recruitment_agency']]);
+ const oldObserved=new Set(),freshObserved=new Set();
+ let items=captureFavoriteTypes(favorites,old,[],100,oldObserved);
+ items=captureFavoriteTypes(favorites,fresh,items,200,freshObserved);
+ assert.equal(favoriteTypeIndex(items).get('ln:role').k,'recruitment_agency');
+ assert.equal(captureFavoriteTypes(favorites,old,items,300,oldObserved).length,2);
+ assert.equal(captureFavoriteTypes(favorites,fresh,items,400,freshObserved).length,2);
+});

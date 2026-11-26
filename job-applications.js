@@ -37,9 +37,9 @@
  function favoriteTypeIndex(items){
   const result=new Map();for(const item of items||[]){try{const e=JSON.parse(item);if(!validFavoriteType(e))continue;const old=result.get(e.j);if(!old||e.t>old.t||(e.t===old.t&&e.k>old.k))result.set(e.j,e);}catch{}}return result;
  }
- function captureFavoriteTypes(favorites,current,items,time=Date.now()){
+ function captureFavoriteTypes(favorites,current,items,time=Date.now(),observed=new Set()){
   const saved=new Set(items||[]),history=favoriteTypeIndex(saved);
-  for(const j of favorites){const k=current.get(j),old=history.get(j);if(!employerTypes.has(k)||old?.k===k)continue;const e={v:1,j,k,t:Math.max(time,(old?.t??-1)+1)};if(validFavoriteType(e))saved.add(JSON.stringify(e));}
+  for(const j of favorites){const k=current.get(j),old=history.get(j);if(!employerTypes.has(k)||observed.has(j))continue;observed.add(j);if(old?.k===k)continue;const e={v:1,j,k,t:Math.max(time,(old?.t??-1)+1)};if(validFavoriteType(e))saved.add(JSON.stringify(e));}
   return [...saved];
  }
  function favoriteScope(favorites,mode,current,history,{fresh=true}={}){
@@ -142,10 +142,11 @@
  if(typeof document==='undefined'||!globalThis.AccountPreferences)return;
  const preferences=globalThis.AccountPreferences,host=document.getElementById('jobs');if(!host)return;
  let regions=new Map();
- let currentEmployerTypes=new Map(),historicalEmployerTypes=new Map(),classificationReady=false,classificationFresh=false;
+ let currentEmployerTypes=new Map(),historicalEmployerTypes=new Map(),classificationReady=false,classificationFresh=false,classificationSettled=false;
+ const observedFavorites=new Set();
  let states=new Map(),favorites=new Set(),editor=null,selected=null,anchor=null,hoverTimer=0,closeTimer=0,hoverOpened=false,journey=null,returnFocus=null;
  function refresh(){const lists=preferences.snapshot();states=index(lists.applications);favorites=new Set(lists.favs);historicalEmployerTypes=favoriteTypeIndex(lists.favoriteTypes);
-  if(classificationFresh){const next=captureFavoriteTypes(favorites,currentEmployerTypes,lists.favoriteTypes);if(next.length!==(lists.favoriteTypes||[]).length){historicalEmployerTypes=favoriteTypeIndex(next);preferences.set('favoriteTypes',JSON.stringify(next));}}
+  if(classificationFresh){const next=captureFavoriteTypes(favorites,currentEmployerTypes,lists.favoriteTypes,Date.now(),observedFavorites);if(next.length!==(lists.favoriteTypes||[]).length){historicalEmployerTypes=favoriteTypeIndex(next);preferences.set('favoriteTypes',JSON.stringify(next));}}
   for(const card of host.querySelectorAll('.job')){
    let button=card.querySelector('.application-trigger');const favorite=favorites.has(card.dataset.id);
    if(!favorite){button?.remove();continue;}
@@ -185,7 +186,7 @@
  addEventListener('scroll',()=>{if(editor?.open&&!editor.classList.contains('is-modal')){if(!anchor?.isConnected)editor.close();else position();}},{passive:true});addEventListener('resize',()=>{if(editor?.open&&!editor.classList.contains('is-modal'))position();},{passive:true});
  document.addEventListener('jobsfilterchange',()=>{if(editor?.open&&!editor.classList.contains('is-modal')){if(!selected?.isConnected||selected.classList.contains('hidden')||!selected.getClientRects().length)editor.close();else position();}});
  function renderJourney(){const phonePortrait=matchMedia('(pointer:coarse) and (orientation:portrait)').matches,compact=(phonePortrait?innerWidth:innerHeight)<850;journey.classList.toggle('is-compact',compact);const mode=window.EmployerMode?.current()||'full';const {visible,missing}=favoriteScope(favorites,mode,currentEmployerTypes,historicalEmployerTypes,{fresh:classificationFresh});const data=graph(visible,states,{regions});journey.querySelector('.ap-kpis').innerHTML=[['Saved',data.total],['Applications',data.applied],['Interviewing',data.interviewing],['Offers',data.counts.offer]].map(([label,value])=>'<div><dt>'+label+'</dt><dd>'+value+'</dd></div>').join('');
-  const chart=journey.querySelector('.ap-chart');chart.innerHTML=data.total?svg(data,{compact}):'<div class="ap-empty"><h3>'+ (mode!=='full'&&!classificationReady?'Loading recruitment types…':mode!=='full'&&favorites.size?'No saved roles in this mode':data.allTotal?'No saved roles in this region':'No saved roles yet') +'</h3><p>'+(mode!=='full'&&!classificationReady?'Employer information is not available for all saved roles yet.':mode!=='full'&&favorites.size?'Switch to Full mode to see all your saved roles.':data.allTotal?'Choose another region to see your application progress.':'Save a role and record your progress to see it here.')+'</p></div>';
+  const chart=journey.querySelector('.ap-chart');chart.innerHTML=data.total?svg(data,{compact}):'<div class="ap-empty"><h3>'+ (mode!=='full'&&!classificationReady?(classificationSettled?'Recruitment types unavailable':'Loading recruitment types…'):mode!=='full'&&favorites.size?'No saved roles in this mode':data.allTotal?'No saved roles in this region':'No saved roles yet') +'</h3><p>'+(mode!=='full'&&!classificationReady?'Employer information is not available for all saved roles yet.':mode!=='full'&&favorites.size?'Switch to Full mode to see all your saved roles.':data.allTotal?'Choose another region to see your application progress.':'Save a role and record your progress to see it here.')+'</p></div>';
   journey.querySelector('footer').textContent='Private to your account · '+(mode==='direct'?'Direct mode · ':mode==='agency'?'Agency mode · ':'')+'Widths show role counts; percentages use saved roles in this view.'+(mode!=='full'&&missing.length?' '+missing.length+' saved '+(missing.length===1?'role has':'roles have')+' no recorded recruitment type; included in Full only.':'');
   journey.querySelector('.ap-legend').hidden=!data.total;
   journey.querySelector('.ap-stage-summary').innerHTML=stages.map(([s,label])=>'<div><dt>'+label+'</dt><dd>'+data.counts[s]+'</dd></div>').join('');
@@ -196,7 +197,7 @@
  const journeyButton=document.createElement('button');journeyButton.type='button';journeyButton.className='pill application-journey-toggle';journeyButton.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';journeyButton.setAttribute('aria-haspopup','dialog');journeyButton.onclick=openJourney;const entry=document.createElement('div');entry.className='application-journey-entry';entry.hidden=true;entry.innerHTML='<div><p class="ap-eyebrow">YOUR APPLICATIONS</p><p class="ap-entry-caption">Track your saved roles, from application to outcome.</p></div>';entry.append(journeyButton);document.querySelector('.content-row')?.before(entry);const toggleEntry=()=>{entry.hidden=!document.getElementById('favToggle')?.classList.contains('active');};document.getElementById('favToggle')?.addEventListener('click',()=>queueMicrotask(toggleEntry));document.addEventListener('jobsfilterchange',toggleEntry);const accountEntry=document.createElement('button');accountEntry.type='button';accountEntry.className='account-journey';accountEntry.innerHTML=JOURNEY_ICON+'<span>My Journey</span>';accountEntry.onclick=openJourney;document.querySelector('.account-sync-now')?.before(accountEntry);
  let journeyResize=0;addEventListener('resize',()=>{cancelAnimationFrame(journeyResize);journeyResize=requestAnimationFrame(()=>{if(journey?.open)renderJourney();});},{passive:true});
  // Reuse the already-requested index; never fetch data just to draw a personal chart.
- (window.__jobsFullDataPromise||window.__jobsDataPromise)?.then(rows=>{regions=regionIndex(rows);if(window.__jobsFullDataPromise){currentEmployerTypes=employerIndex(rows);classificationReady=rows.every(row=>employerTypes.has(row.employerType));classificationFresh=classificationReady&&window.JobIndexStore?.cacheState!=='stale';}refresh();}).catch(()=>{});
+ (window.__jobsFullDataPromise||window.__jobsDataPromise)?.then(rows=>{regions=regionIndex(rows);if(window.__jobsFullDataPromise){currentEmployerTypes=employerIndex(rows);classificationReady=rows.every(row=>employerTypes.has(row.employerType));classificationFresh=classificationReady&&window.JobIndexStore?.cacheState!=='stale';}classificationSettled=true;refresh();}).catch(()=>{classificationSettled=true;if(journey?.open)renderJourney();});
  addEventListener('employermodescoped',()=>{if(journey?.open)renderJourney();});
  addEventListener('account-preferences',refresh);refresh();
 })();
