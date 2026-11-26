@@ -36,3 +36,5 @@ jobs:
         run: |
           python scripts/audit_employer_types.py
           python scripts/audit_employer_types.py --pending > /tmp/employer-review-queue.json
+      - name: Rank every employer by current homepage job count
+        run: python scripts/audit_employer_types.py --ranked
