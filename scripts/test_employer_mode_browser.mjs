@@ -65,10 +65,12 @@ try{
    assert.equal(snapshot.bars,30);
    assert.deepEqual(snapshot.history,mode==='full'?index.postingHistoryDaily:index.postingHistoryDailyByMode[mode]);
    assert.equal(snapshot.active,total);
-   if(!isGuest){await page.locator('#regions .seg[data-region="CN"]').click();await page.waitForFunction(()=>activeRegion==='CN');assert.ok(await page.evaluate(()=>listRuntime.view.rows.every(i=>listRuntime.meta[i].region==='CN')));await page.locator('#regions .seg[data-region="all"]').click();}
    console.log(JSON.stringify({engine,width,theme,isGuest,mode,snapshot:{...snapshot,history:undefined}}));
   };
+  // The toolbar lives below the masthead; Playwright's normal click scrolls it
+  // into view. Measure a real visible masthead, without injecting that scroll.
   await wait('full');
+  await page.evaluate(async()=>{window.scrollTo({top:0,left:0,behavior:'instant'});await new Promise(requestAnimationFrame);await new Promise(requestAnimationFrame);});
   const initialFetches=indexRequests;
   const initialHeader=await page.evaluate(()=>{window.__modeQA={header:document.getElementById('headerTools'),theme:document.getElementById('themeToggle'),account:document.getElementById('headerAccount').firstElementChild,select:document.getElementById('employerMode')};const rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return [...document.getElementById('headerTools').children].map(rect);});
   let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
@@ -88,6 +90,17 @@ try{
    assert.deepEqual(geometry,{ordered:true,within:true,brandSeparate:true});
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
    assert.equal(await page.evaluate(()=>localStorage.getItem('next-journey-employer-mode')),mode);
+   assert.equal(await page.evaluate(()=>window.scrollY),0,'switching mode at the masthead must not scroll the page');
+   if(!isGuest){
+    // Exercise the region filter independently of the visible-header motion
+    // test; DOM clicks preserve scroll rather than Playwright auto-scrolling.
+    await page.evaluate(()=>document.querySelector('#regions .seg[data-region="CN"]').click());
+    await page.waitForFunction(()=>activeRegion==='CN');
+    assert.ok(await page.evaluate(()=>listRuntime.view.rows.every(i=>listRuntime.meta[i].region==='CN')));
+    await page.evaluate(()=>document.querySelector('#regions .seg[data-region="all"]').click());
+    await page.waitForFunction(()=>activeRegion==='all');
+    await page.evaluate(async()=>{window.scrollTo({top:0,left:0,behavior:'instant'});await new Promise(requestAnimationFrame);await new Promise(requestAnimationFrame);});
+   }
   }
   // Three consecutive changes in one task exercise the same document and latest scope.
   await page.evaluate(()=>{EmployerMode.set('direct');EmployerMode.set('agency');EmployerMode.set('direct');});await wait('direct');
