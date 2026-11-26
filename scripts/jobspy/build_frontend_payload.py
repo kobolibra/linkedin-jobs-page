@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import hashlib
+import sys
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode, quote
 import re
 from datetime import datetime, timezone
@@ -49,11 +50,24 @@ def latest_pipeline_update(doc: object) -> str | None:
     return max(parsed).isoformat(timespec="milliseconds").replace("+00:00", "Z") if parsed else None
 
 
+def load_employer_types(path: Path):
+    """Use the protection list's exact normalization and validated schema."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    from reclassify import blacklist_records, norm
+    records = blacklist_records(json.loads(path.read_text(encoding="utf-8")), allow_legacy=False)
+    if not records:
+        raise ValueError("Empty employer classification source")
+    return {norm(row["company"]): row["employerType"] for row in records}, norm
+
+
 def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Path | None = None) -> tuple[int, int]:
     doc = json.loads(source.read_text(encoding="utf-8"))
     rows = doc if isinstance(doc, list) else doc.get("jobs", [])
     index_rows = []
     details = {}
+    employer_path = source.parent / "financial_blacklist.json"
+    employer_types, company_key = load_employer_types(employer_path) if employer_path.is_file() else (None, None)
+    event_types = {}
     source_pairs = [(str(job.get("company") or "Unknown"), str(job.get("descriptionText") or job.get("description") or job.get("descriptionHtml") or "")) for job in rows if isinstance(job, dict)]
     boilerplate = build_boilerplate_table(source_pairs)
     if boilerplate_out:
@@ -67,6 +81,15 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
         if not isinstance(job, dict):
             continue
         item = {key: job.get(key) for key in index_fields if key in job}
+        if employer_types is not None:
+            company = job.get("company")
+            kind = employer_types.get(company_key(company), "unlisted") if isinstance(company, str) else "unlisted"
+            item["employerType"] = kind
+            repost = job.get("crossIdRepost")
+            event_id = "ln:" + repost["rootId"] if repost else (
+                job_id(job.get("sourceJobId")) or job_id(job.get("link")))
+            if event_id:
+                event_types.setdefault(event_id, kind)
         if role_date := job.get("rolePostDate"):
             # Preserve the usual per-ID fallback for legacy rows before
             # firstSeen is projected to the start of the entire cycle.
@@ -140,6 +163,8 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             if isinstance(state,dict):
                 fallback=next((logos[name] for name,entry in state.items() if name in logos and isinstance(entry,dict) and entry.get('status')=='ready' and entry.get('imageKind')=='placeholder'),'')
     index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows,"companyLogos":logos,"companyLogoFallback":fallback}
+    if employer_types is not None:
+        index_doc["employerModeSchema"] = 1
     observed_at = latest_pipeline_update(doc)
     if observed_at:
         index_doc["updatedAt"] = observed_at
@@ -151,6 +176,7 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
         if history.get("schemaVersion") != "1.0" or not isinstance(history.get("events"), list):
             raise ValueError("Invalid canonical posting history")
         daily = {}
+        scoped_daily = {"direct": {}, "agency": {}}
         for event in history["events"]:
             if not isinstance(event, dict) or event.get("kind") not in ("first", "repost"):
                 raise ValueError("Invalid canonical posting event")
@@ -159,7 +185,19 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
                 raise ValueError("Invalid canonical posting event date or region")
             counts = daily.setdefault(key, {})
             counts[region] = counts.get(region, 0) + 1
+            if employer_types is not None:
+                kind = event_types.get(event.get("jobId"))
+                if kind is None:
+                    raise ValueError("Posting history cannot resolve employer type for " + str(event.get("jobId")))
+                mode = "direct" if kind == "direct_employer" else "agency"
+                scoped = scoped_daily[mode].setdefault(key, {})
+                scoped[region] = scoped.get(region, 0) + 1
         index_doc["postingHistoryDaily"] = {key: daily[key] for key in sorted(daily)}
+        if employer_types is not None:
+            index_doc["postingHistoryDailyByMode"] = {
+                mode: {key: days[key] for key in sorted(days)}
+                for mode, days in scoped_daily.items()
+            }
     index_doc["dataVersion"]=hashlib.sha256(json.dumps(index_doc,ensure_ascii=False,separators=(",", ":")).encode("utf-8")).hexdigest()
     (index_out.parent/"jobs-version.json").write_text(json.dumps({"dataVersion":index_doc["dataVersion"]},separators=(",", ":"))+"\n",encoding="utf-8")
     details_doc = {"schemaVersion": "1.1", "source": "jobs.json", "details": details}
@@ -219,6 +257,8 @@ def main() -> None:
         self_test()
         print("frontend_payload_test_ok")
         return
+    if not (args.source.parent / "financial_blacklist.json").is_file():
+        raise FileNotFoundError("Missing financial_blacklist.json; cannot build classified production index")
     count, detail_count = build(args.source, args.index, args.details, args.boilerplate)
     print("frontend_index_jobs", count, "frontend_details", detail_count,
           "index_bytes", args.index.stat().st_size, "details_bytes", args.details.stat().st_size)

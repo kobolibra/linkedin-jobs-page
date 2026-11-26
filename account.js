@@ -28,7 +28,7 @@
   // This module defines the loader only; no protected data is read before auth.
   const [r]=await Promise.all([api('/auth/session'),storeSource?loadScript(storeSource):Promise.resolve()]);
   if(r.status===401&&document.documentElement.dataset.authState==='guest'){
-   await loadScript('/auth-guest.js?v=firstseen-age-1');window.AuthGuest.install();
+   await loadScript('/auth-guest.js?v=employer-mode-1');window.AuthGuest.install();
   }else if(r.status===401){expired();return;}
   if(!r.ok&&r.status!==401)throw Error();
   const data=r.ok?await r.json():{enabled:false};

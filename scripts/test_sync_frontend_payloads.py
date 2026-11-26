@@ -51,6 +51,11 @@ class FrontendPayloadSyncTests(unittest.TestCase):
                 target = checkout / "scripts" / "jobspy" / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(ROOT / "scripts" / "jobspy" / name, target)
+            shutil.copy2(ROOT / "reclassify.py", checkout / "reclassify.py")
+            (checkout / "financial_blacklist.json").write_text(json.dumps([{
+                "company": "Acme", "employerType": "direct_employer",
+                "evidence": {"url": "https://example.invalid/about", "reviewedOn": "2026-11-26", "note": "Fixture"}
+            }]), encoding="utf-8")
             (checkout / "jobs.json").write_text(json.dumps({"jobs": [{"title": "Engineer", "company": "Acme", "link": "https://www.linkedin.com/jobs/view/12345678", "descriptionText": "Build and operate reliable data pipelines for business applications."}]}), encoding="utf-8")
             (checkout / "company-logos.json").write_text(json.dumps({"acme": "assets/company-logos/" + "a" * 24 + ".svg", "historical": "assets/company-logos/" + "b" * 24 + ".webp"}), encoding="utf-8")
             state = checkout / "data" / "company-logos" / "state.json"
@@ -89,6 +94,8 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             self.assertEqual(clean.stdout.count('frontend_index_jobs'),1)
             index = json.loads((checkout / "jobs-index.json").read_text(encoding="utf-8"))
             self.assertEqual(len(index["jobs"]), 1)
+            self.assertEqual(index["jobs"][0]["employerType"], "direct_employer")
+            self.assertEqual(index["employerModeSchema"], 1)
             self.assertEqual(len(index["companyLogos"]), 2)
             self.assertEqual(index["companyLogoFallback"], index["companyLogos"]["acme"])
             subprocess.run(command, cwd=checkout, check=True, capture_output=True)

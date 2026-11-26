@@ -60,11 +60,12 @@ export function previewData(index,details={},now=Date.now()){
    &&Number.isFinite(dates.timestamp(index.updatedAt))?index.updatedAt:null;
  return {jobs,totals,total:active.length,companies:new Set(active.map(j=>j.company.trim().toLowerCase())).size,days,updated:observed||(updated?new Date(updated).toISOString():null),weekly:weeklyFlow(index.jobs,now)};
 }
-export function publicPreviewPayload(data,index){
+function basePublicPreviewPayload(data,index){
  const selected=new Map(data.jobs.map(j=>[j.id,j]));
  const jobs=[];const companyLogos={};
  for(const original of index.jobs){const match=String(original.link||'').match(/(?:-|\/)(\d{6,})(?:[/?#]|$)/),id=match?'ln:'+match[1]:'';const preview=selected.get(id);if(!preview)continue;
   const job={title:preview.title,company:preview.company,link:original.link,location:preview.region,firstSeen:original.firstSeen||null,city:preview.city,locationRaw:String(original.locationRaw||''),hasJd:original.hasJd===true,jobStatus:'active',previewSnippet:preview.snippet};
+  if(index.employerModeSchema===1)job.employerType=original.employerType;
   if(original.pushTime)job.pushTime=original.pushTime;
   if(original.postingLastDate)job.postingLastDate=original.postingLastDate;
   if(original.salary!=null)job.salary=original.salary;
@@ -90,9 +91,23 @@ export function publicPreviewPayload(data,index){
  const marketBreadthBuckets=[...breadth].map(([key,entry])=>[...JSON.parse(key),entry.count,entry.pushTime]);
  return {schemaVersion:'1.1',source:'public-preview',jobs,companyLogos,companyLogoFallback:index.companyLogoFallback||'',previewOverview:{total:data.total,companies:data.companies,updated:data.updated,weekly:data.weekly,chartBuckets,marketBreadthBuckets,postingHistoryDaily:index.postingHistoryDaily||null},dataVersion:'preview-'+String(index.dataVersion||'snapshot')};
 }
+// The original fixed sample is never expanded or rotated by the mode.
+export function publicPreviewPayload(data,index,now=Date.now()){
+ const payload=basePublicPreviewPayload(data,index);
+ if(index.employerModeSchema!==1)return payload;
+ payload.employerModeSchema=1;
+ payload.previewOverviewByMode={};
+ for(const mode of ['direct','agency']){
+  const jobs=index.jobs.filter(job=>(job.employerType==='direct_employer')===(mode==='direct'));
+  const scoped={...index,jobs,postingHistoryDaily:index.postingHistoryDailyByMode?.[mode]??null};
+  payload.previewOverviewByMode[mode]=basePublicPreviewPayload(previewData(scoped,{},now),scoped).previewOverview;
+ }
+ return payload;
+}
 export function buildGuestPreview(root='.'){
  const index=JSON.parse(readFileSync(resolve(root,'jobs-index.json'),'utf8'));
  const detailPath=resolve(root,'jobs-details.json'),details=existsSync(detailPath)?JSON.parse(readFileSync(detailPath,'utf8')):{};
- const payload=publicPreviewPayload(previewData(index,details),index);
+ const now=Date.now();
+ const payload=publicPreviewPayload(previewData(index,details,now),index,now);
  writeFileSync(resolve(root,'preview-index.json'),JSON.stringify(payload));return payload;
 }

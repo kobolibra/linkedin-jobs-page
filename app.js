@@ -526,8 +526,11 @@ jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-
 // Keep immutable publication-event totals separate from mutable job records.
 let postingHistoryDaily=null,snapshotUpdatedAt='';
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
-const jobsDataPromise=(window.__jobsIndexDocument||window.JobIndexStore.load())
-  .then(data=>{snapshotUpdatedAt=typeof data?.updatedAt==='string'?data.updatedAt:'';postingHistoryDaily=data?.postingHistoryDaily||data?.previewOverview?.postingHistoryDaily||null;window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);rows.forEach(job=>{const company=canonicalCompany(job.company);if(company!==job.company)job.company=company;});return rows;});
+const jobsIndexDocument=window.__jobsIndexDocument||window.JobIndexStore.load();
+window.__jobsFullDataPromise=jobsIndexDocument.then(doc=>Array.isArray(doc)?doc:(Array.isArray(doc?.jobs)?doc.jobs:[]));
+window.__jobsFullDataPromise.catch(()=>{});
+const jobsDataPromise=jobsIndexDocument
+  .then(raw=>{const data=window.EmployerMode?window.EmployerMode.scope(raw,window.EmployerMode.current()):raw;snapshotUpdatedAt=typeof data?.updatedAt==='string'?data.updatedAt:'';postingHistoryDaily=data?.postingHistoryDaily||data?.previewOverview?.postingHistoryDaily||null;window.AuthGuest?.setOverview(data);window.CompanyLogos?.setManifest(data?.companyLogos,data?.companyLogoFallback);const rows=Array.isArray(data)?data:(Array.isArray(data?.jobs)?data.jobs:[]);return rows.map(job=>({...job,company:canonicalCompany(job.company)}));});
 window.__jobsDataPromise=jobsDataPromise;
 let jobsDataReceived=false,jobsCoreReady=false;
 jobsDataPromise
@@ -1226,7 +1229,10 @@ jobsDataPromise
     jobsEl.replaceChildren();
     const title=emptyEl.querySelector('.big');
     const detail=title?.nextElementSibling;
-    if(stage==='render'){
+    if(error?.code==='EMPLOYER_MODE_UNAVAILABLE'){
+      title.textContent='招聘类型数据暂不可用';
+      detail.textContent='当前缓存还没有招聘类型信息。请选择 Full mode 或重新连接网络获取最新数据。';
+    }else if(stage==='render'){
       title.textContent='页面数据处理失败';
       detail.textContent='职位数据已获取，但页面渲染发生错误。请重新加载。';
     }else if(stage==='scripts'){
