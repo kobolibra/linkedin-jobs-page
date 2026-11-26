@@ -28,7 +28,7 @@ publisher is an agency. Full includes both scopes.
 HR consulting, payroll software and managed services do not by themselves
 establish recruiting for clients. Material third-party recruitment or labor
 supply is classified as agency rather than mixed. Preserve expressly
-requester-confirmed exceptions (including VISTRA as direct), with their
+requester-confirmed classifications (including VISTRA and Apex Group Ltd as direct), with their
 evidence basis; do not extrapolate those exceptions to other employers. Choose a type using evidence of the
 organization's services and identity. Financial institution names, brand
 fragments and search hits with a similar spelling alone are insufficient.
