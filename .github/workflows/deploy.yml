@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
+      - 'financial_blacklist.json'
       - 'jobs.json'
       - 'jobs-index.json'
       - 'jobs-version.json'
