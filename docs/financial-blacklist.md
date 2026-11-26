@@ -1,7 +1,7 @@
 # Financial and recruitment protection list
 
-`financial_blacklist.json` is a protection list for the company analysis and
-RSS publication paths. Protection applies to every name regardless of
+`financial_blacklist.json` is the sole maintained employer-type classification
+source and the protection list for the company analysis and RSS publication paths. Protection applies to every name regardless of
 `employerType`. The RSS effective deletion set is the cumulative target list
 minus the protection list. The n8n blocklist has its own inputs.
 
@@ -32,7 +32,9 @@ regulatory register, filing or company-maintained LinkedIn page. An `unknown`
 with evidence records an inconclusive check. For an inconclusive search
 without a reliable source, `review` records the date, query and specific
 reason. An `unknown` without either field is pending. Remove the
-inconclusive `review` after a type has been established. Unlisted publishers are tracked separately. For
+inconclusive `review` after a type has been established. Publishers outside the
+protection list have no maintained employer type; absence is not a type or a
+reason to add protection. For
 a classification confirmed by the project requester,
 `evidence.basis` is `requester_confirmation`. The note states which part
 is supplied by that confirmation and what the linked source supports.
@@ -52,7 +54,10 @@ python reclassify.py --date 2026-11-26 --finalize \
 ```
 
 The older `--blacklist NAME ...` argument still records new names as
-`unknown`. Use the current writer for the complete atomic transaction.
+`unknown` for compatibility. Routine Agent operation must use typed additions
+with evidence (or an explicit inconclusive review) and the current writer for
+the complete atomic transaction. A protected name is added only when it
+qualifies under the existing protection rules, independent of its employer type.
 Keep existing records and their evidence intact. Do not regenerate the
 file from a list of company strings or reconstructed reports. Submit evidence
 or type corrections to existing rows for review. Readers accept the legacy
@@ -61,25 +66,21 @@ string array on pull requests and reports a downgrade if an external writer
 pushes directly to `main`. A required check and rules against bypass on
 `main` are needed to prevent direct writers from bypassing this check.
 
-## Classification-only records
+## Single classification source
 
-`company_employer_types.json` uses the same record and evidence format. Of
-the 84 homepage publishers originally outside the financial list, 23 direct
-employers were moved to `financial_blacklist.json` at the project requester's
-direction. They include the 19 traditional finance and investment companies
-from the review, plus Dow Jones, Alibaba Group, Baidu, and Tencent. All 23
-keep the same type and evidence. None is in the current effective target set.
+The 23 homepage publishers explicitly selected by the project requester were
+added to `financial_blacklist.json` with their existing types and evidence:
+19 traditional finance and investment companies plus Dow Jones, Alibaba Group,
+Baidu, Inc., and Tencent. The original 1,176 rows and these 23 additions are
+retained; the migration baseline has 1,199 rows and 1,197 normalized keys.
 
-The other 61 publishers keep classification-only records: 47 direct
-employers, 12 recruiters, one recruitment platform and one mixed business.
-Their names do not affect any Agent or RSS exclusion. A future display
-filter can look up both files using the same normalization. When a name
-later appears in both, a classified financial-list record takes precedence.
-
-Together both files cover
-all 550 keys and 6,300 jobs in the homepage metric. Across the homepage the
-types are 360 direct employers, 173 recruitment agencies, two recruitment
-platforms and 15 mixed businesses.
+The previously introduced classification-only file has been retired. Its 61
+other publishers are not added to the protection list: classification alone
+must never confer protection or change an existing deletion decision. Their
+historical research remains available in PR #295 and Git history. Do not
+recreate, read or maintain a second employer-type registry. A future
+display-only filter must treat any unmatched publisher as unclassified,
+never assume direct employment, and leave canonical deletion rules unchanged.
 
 ## Coverage audit
 
@@ -87,19 +88,25 @@ Run `python scripts/audit_employer_types.py` against a checkout with
 `jobs.json`. Add `--pending` for the review queue, ordered by the number of jobs that
 count toward the public homepage. Publishers are matched using
 `jobs[].company` and the protection list's existing normalization.
-`website` reports the protection-list intersection.
-`websiteIncludingOtherEmployers` reports combined classification coverage.
+`website` reports coverage against the sole protection list. `unlisted` is a
+coverage-audit status for unmatched publishers, not an allowed stored
+`employerType`. The review queue does not authorize adding those publishers.
 `companyCanonical`, `requestedCompany` and LinkedIn profile links can help
 resolve identity where present. Source and job status fields describe ingestion
 and availability, respectively. Company classification and the available job
 fields do not prove who posted an individual job or the ultimate employing
-organization. A future webpage filter needs coverage outside this list and a
-decision about how to display unresolved publishers.
+organization. A future strict direct-employer filter should only include matched
+`direct_employer` records; unresolved or unlisted publishers must not be
+silently classified as direct employers. The full unfiltered view remains available.
 
 At the 2026-11-26 baseline (`ca8c716c4ab4ad549ac6df880dbbfbaa79c38bf9`),
-all 1,176 original records and their order were preserved. There are 1,174
-normalized keys. `BAH Partners` / `Bah Partners` and `BOSS直聘` /
+all 1,176 original records and their order were preserved. There were 1,174
+normalized original keys before the 23 requester-selected additions. `BAH Partners` / `Bah Partners` and `BOSS直聘` /
 `Boss直聘` share their respective types and evidence.
+
+The following historical coverage snapshot is for the protection list after
+its 23 authorized additions, not the retired combined registry. Re-run the audit
+for current counts as jobs and protected names change.
 
 | 2026-11-26 snapshot | All canonical jobs | Explicitly active | Website homepage |
 | --- | ---: | ---: | ---: |

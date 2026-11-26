@@ -10,9 +10,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from reclassify import BLACKLIST, blacklist_records, norm
 
-OTHER_EMPLOYERS = "company_employer_types.json"
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pending", action="store_true", help="List unknown and unlisted names by the homepage job count")
@@ -20,11 +17,6 @@ def main():
     records = blacklist_records(json.loads((ROOT / BLACKLIST).read_text(encoding="utf-8")), allow_legacy=False)
     jobs = json.loads((ROOT / "jobs.json").read_text(encoding="utf-8"))["jobs"]
     types = {norm(row["company"]): row["employerType"] for row in records}
-    extra = blacklist_records(json.loads((ROOT / OTHER_EMPLOYERS).read_text(encoding="utf-8")), allow_legacy=False)
-    combined_types = {norm(row["company"]): row["employerType"] for row in extra}
-    for key, kind in types.items():
-        if key not in combined_types or kind != "unknown":
-            combined_types[key] = kind
     active = [job for job in jobs if job.get("jobStatus") == "active"]
     index = json.loads((ROOT / "jobs-index.json").read_text(encoding="utf-8"))
     # Match the public homepage metric in scripts/guest_preview.mjs.
@@ -35,13 +27,13 @@ def main():
         and re.match(r"https://(?:[a-z]{2,3}\.)?linkedin\.com/jobs/view/", job.get("link") or "", re.I)
     ]
 
-    def counts(rows, company_key=norm, classifications=types):
+    def counts(rows, company_key=norm):
         companies = {company_key(job["company"]): norm(job["company"]) for job in rows if job.get("company")}
         return {
             "jobs": len(rows),
             "companyKeys": len(companies),
-            "jobsByType": dict(Counter(classifications.get(norm(job.get("company") or ""), "unlisted") for job in rows)),
-            "companyKeysByType": dict(Counter(classifications.get(key, "unlisted") for key in companies.values())),
+            "jobsByType": dict(Counter(types.get(norm(job.get("company") or ""), "unlisted") for job in rows)),
+            "companyKeysByType": dict(Counter(types.get(key, "unlisted") for key in companies.values())),
         }
 
     def was_reviewed(record):
@@ -55,10 +47,9 @@ def main():
         "all": counts(jobs),
         "active": counts(active),
         "website": counts(website, lambda name: name.strip().lower()),
-        "websiteIncludingOtherEmployers": counts(website, lambda name: name.strip().lower(), combined_types),
-        "otherEmployerNamesByType": dict(Counter(row["employerType"] for row in extra)),
     }
     if args.pending:
+        # Unlisted publishers are observations, not authorizations to add protection.
         live_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
         website_counts = Counter(norm(job["company"]) for job in website)
         pending = {}
@@ -67,11 +58,8 @@ def main():
                 pending[row["company"]] = "inconclusive" if was_reviewed(row) else "pending"
         for job in jobs:
             name = job.get("company")
-            if name and norm(name) not in combined_types:
+            if name and norm(name) not in types:
                 pending[name] = "unlisted"
-        for row in extra:
-            if row["employerType"] == "unknown":
-                pending[row["company"]] = "inconclusive" if was_reviewed(row) else "pending"
         report["reviewQueue"] = sorted(
             ({"company": name, "status": status, "activeJobsForKey": live_counts[norm(name)],
               "websiteJobsForKey": website_counts[norm(name)]}
