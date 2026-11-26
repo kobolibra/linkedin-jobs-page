@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-26T13:14:10.989945+00:00",
-  "sourceCommit": "03543d2b7b820ac4d753050b30cf87d81b482d52",
+  "generatedAt": "2026-11-26T13:17:46.771641+00:00",
+  "sourceCommit": "722d01c8148d00195b23d5488e3c78c63f7e33eb",
   "summary": {
-    "canonicalJobs": 15096,
-    "indexJobs": 15096,
-    "websiteJobs": 6313,
+    "canonicalJobs": 15084,
+    "indexJobs": 15084,
+    "websiteJobs": 6307,
     "trackedCompanies": 287,
     "reviewQueue": 240,
     "queueByStatus": {
