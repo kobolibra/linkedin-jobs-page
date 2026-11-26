@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-26T09:19:29.253422+00:00",
+    "checkedAt": "2026-11-26T10:02:23.557279+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3019,7 +3019,7 @@
   },
   "intelligentsia capital": {
     "name": "Intelligentsia Capital",
-    "checkedAt": "2026-11-26T09:19:35.179705+00:00",
+    "checkedAt": "2026-11-26T10:02:29.621697+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -3178,7 +3178,7 @@
   },
   "jhc consulting": {
     "name": "JHC Consulting",
-    "checkedAt": "2026-11-26T09:19:25.054713+00:00",
+    "checkedAt": "2026-11-26T10:02:17.611564+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-26T09:19:26.281631+00:00",
+    "checkedAt": "2026-11-26T10:02:20.592873+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -12876,5 +12876,77 @@
     "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
     "companyUrl": "https://cn.linkedin.com/company/%E7%AC%AC%E4%B8%80%E4%B8%89%E5%85%B1",
     "sourceJobId": "4493494091"
+  },
+  "aleph": {
+    "name": "Aleph",
+    "checkedAt": "2026-11-26T10:02:01.337765+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "c617bcd7091d42938fb3f258.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEfQ5RAJxLqVg/company-logo_100_100/B4EZ5Pq7nQGwAI-/0/1779453116378/alephgroup_logo?e=2147483647&v=beta&t=VqObG2RxxOKZpjUQFxSLwt_a0qF2RUS1gW1Pt0hsdno",
+    "companyUrl": "https://www.linkedin.com/company/alephgroup",
+    "sourceJobId": "4494793841"
+  },
+  "bess broadway": {
+    "name": "Bess Broadway",
+    "checkedAt": "2026-11-26T10:02:02.685653+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/bess-broadway",
+    "sourceJobId": "4493474879"
+  },
+  "rolejob": {
+    "name": "Rolejob",
+    "checkedAt": "2026-11-26T10:02:05.678933+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "78f7010f615a7d9b745c5419.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQFs_XeyPazFUw/company-logo_100_100/B4DaGcI0j2K0AI-/0/1793620920771/rolejobb_logo?e=2147483647&v=beta&t=_X8s8vN7Y8je_fFliX-GNcT7h8BbWZDjeN2VwaXB3ic",
+    "companyUrl": "https://www.linkedin.com/company/rolejobb",
+    "sourceJobId": "4495004321"
+  },
+  "sharepoint developer": {
+    "name": "SharePoint Developer",
+    "checkedAt": "2026-11-26T10:02:08.641662+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://uk.linkedin.com/company/sharepoint-developer",
+    "sourceJobId": "4494992194"
+  },
+  "true north education": {
+    "name": "True North Education",
+    "checkedAt": "2026-11-26T10:02:11.555234+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "82d07c5bf3ddbf93e6c03ae6.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQEjPjfFCxj7jw/company-logo_100_100/B56ZtDyAGjKEAQ-/0/1766368740572/truenorth_edu_logo?e=2147483647&v=beta&t=EIh2Vads_eoaZ3xJtf-eg3AD92gcxYjhuI-RzJjUgrY",
+    "companyUrl": "https://hk.linkedin.com/company/truenorth-edu",
+    "sourceJobId": "4494995029"
+  },
+  "亚能生物技术(深圳)有限公司": {
+    "name": "亚能生物技术（深圳）有限公司",
+    "checkedAt": "2026-11-26T10:02:14.712808+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://cn.linkedin.com/company/%E4%BA%9A%E8%83%BD%E7%94%9F%E7%89%A9%E6%8A%80%E6%9C%AF%EF%BC%88%E6%B7%B1%E5%9C%B3%EF%BC%89%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4493493189"
   }
 }
