@@ -30,7 +30,10 @@ specific entity), `evidence.reviewedOn` (ISO date) and `evidence.note` (the
 supported claim and any identity mapping). Prefer the organization's website,
 regulatory register, filing or company-maintained LinkedIn page. An `unknown`
 with evidence records an inconclusive check. An `unknown` without evidence
-means review is pending. Unlisted publishers are tracked separately.
+means review is pending. Unlisted publishers are tracked separately. For
+a classification confirmed by the project requester,
+`evidence.basis` is `requester_confirmation`. The note states which part
+is supplied by that confirmation and what the linked source supports.
 
 ## Agent write contract
 
@@ -59,7 +62,8 @@ pushes directly to `main`. A required check and rules against bypass on
 ## Coverage audit
 
 Run `python scripts/audit_employer_types.py` against a checkout with
-`jobs.json`. Add `--pending` for the review queue. Counts use only
+`jobs.json`. Add `--pending` for the review queue, ordered by the number of jobs that
+count toward the public homepage. Publishers are matched using
 `jobs[].company` and the protection list's existing normalization.
 `companyCanonical`, `requestedCompany` and LinkedIn profile links can help
 resolve identity where present. Source and job status fields describe ingestion
@@ -73,21 +77,27 @@ all 1,176 original records and their order were preserved. There are 1,174
 normalized keys. `BAH Partners` / `Bah Partners` and `BOSS直聘` /
 `Boss直聘` share their respective types and evidence.
 
-| 2026-11-26 snapshot | All jobs | Explicitly active jobs |
-| --- | ---: | ---: |
-| Jobs | 15,064 | 5,739 |
-| Company keys | 913 | 488 |
-| Jobs matching the protection list | 14,653 | 5,692 |
-| Jobs with an evidenced type other than unknown | 14,297 | 5,684 |
-| Jobs matching an unknown record | 356 | 8 |
-| Jobs with no record | 411 | 47 |
-| Company keys with no record | 296 | 42 |
+| 2026-11-26 snapshot | All canonical jobs | Explicitly active | Website homepage |
+| --- | ---: | ---: | ---: |
+| Jobs | 15,064 | 5,739 | 6,300 |
+| Company keys | 913 | 488 | 550 |
+| Company keys matching the protection list | 617 | 446 | 466 |
+| Jobs matching the protection list | 14,653 | 5,692 | 6,185 |
+| Jobs with an evidenced type other than unknown | 14,550 | 5,692 | 6,185 |
+| Jobs matching an unknown record | 103 | 0 | 0 |
+| Jobs with no record | 411 | 47 | 115 |
+| Company keys with no record | 296 | 42 | 84 |
 
-There are 501 classified records. Every protection-list name matched by an
-explicitly active job has been reviewed. Six such names remain inconclusive
-and account for eight active jobs. Another 669 names without active jobs
-await evidence. Each inconclusive active record describes the open question
-in its evidence note. The 561 records with no
-`jobStatus` are included in the all-jobs column. In the same jobs snapshot,
-6,812 records have `companyCanonical` and `requestedCompany` and 10,100
-have `companyLogoSource`. No job has an `employerType` or `jobPoster` field.
+The live public preview and the pinned homepage build both returned 550
+companies and 6,300 jobs. The homepage uses eligible CN/HK/SG LinkedIn rows
+in `jobs-index.json` and counts every row whose status is not `expired`.
+The 561 rows without `jobStatus` are eligible on this snapshot and add
+62 company keys. The canonical explicit-active column instead requires
+`jobStatus == "active"`.
+
+All 466 protection-list names that appear in the homepage metric are
+classified. In the full protection list, 691 records are classified and
+485 remain unknown. One has an inconclusive source, and 484 await evidence.
+In the canonical snapshot, 6,812 records have `companyCanonical` and
+`requestedCompany`, and 10,100 have `companyLogoSource`. No job has an
+`employerType` or `jobPoster` field.
