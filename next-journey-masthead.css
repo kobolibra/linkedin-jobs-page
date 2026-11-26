@@ -192,6 +192,13 @@
     separation between brand and About on compact phones. */
  .nj-brand-name{font-size:clamp(13px,calc(10vw - 24px),16px)}
 }
+/* At 370–380px the brand needs a little more breathing room without
+   changing the navigation rails or hiding the full wordmark. */
+@media(min-width:370px) and (max-width:380px){
+ .nj-brand-row>.nj-brand{gap:2px}
+ .nj-brand-mark{width:19px;height:19px}
+ .nj-brand-name{font-size:clamp(12.75px,calc(12.5vw - 33.5px),14px)}
+}
 /* Only the brand contracts on the very narrowest phones; the complete
    name remains in the link's accessible label, and all controls stay visible. */
 @media(max-width:369px){
