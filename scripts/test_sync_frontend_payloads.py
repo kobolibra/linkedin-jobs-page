@@ -103,6 +103,16 @@ class FrontendPayloadSyncTests(unittest.TestCase):
             python_index = (checkout / "jobs-index.json").read_bytes()
             subprocess.run(("node", "scripts/build_jd_shards.mjs"), cwd=checkout, check=True, capture_output=True)
             self.assertEqual((checkout / "jobs-index.json").read_bytes(), python_index)
+            classification = checkout / "financial_blacklist.json"
+            old_version = index["dataVersion"]
+            original = classification.read_bytes()
+            classification.write_text(classification.read_text(encoding="utf-8").replace("direct_employer", "recruitment_agency"), encoding="utf-8")
+            subprocess.run((sys.executable, "scripts/jobspy/build_frontend_payload.py"), cwd=checkout, check=True, capture_output=True)
+            changed = json.loads((checkout / "jobs-index.json").read_text(encoding="utf-8"))
+            self.assertEqual(changed["jobs"][0]["employerType"], "recruitment_agency")
+            self.assertNotEqual(changed["dataVersion"], old_version)
+            classification.write_bytes(original)
+            subprocess.run((sys.executable, "scripts/jobspy/build_frontend_payload.py"), cwd=checkout, check=True, capture_output=True)
             jobs = checkout / "jobs.json"
             jobs.write_text(jobs.read_text(encoding="utf-8").replace("Engineer", "Analyst"), encoding="utf-8")
             self.assertNotEqual(subprocess.run(command, cwd=checkout, capture_output=True).returncode, 0)

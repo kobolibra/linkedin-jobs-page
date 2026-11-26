@@ -30,12 +30,13 @@
   const url=new URL(location.href);
   let saved=null;
   try{saved=localStorage.getItem(KEY);}catch{}
-  selected=normalize(valid(saved)?saved:url.searchParams.get('employerMode'));
+  selected=normalize(valid(url.searchParams.get('employerMode'))?url.searchParams.get('employerMode'):saved);
   select.value=selected;
   document.documentElement.dataset.employerMode=selected;
   select.addEventListener('change',()=>{
     const mode=normalize(select.value);
     if(mode===selected)return;
+    select.disabled=true;
     let persisted=false;
     try{localStorage.setItem(KEY,mode);persisted=localStorage.getItem(KEY)===mode;}catch{}
     // Version-checked initialization avoids stale chart observers, virtual-list

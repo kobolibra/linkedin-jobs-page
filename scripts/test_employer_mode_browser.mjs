@@ -28,7 +28,7 @@ try{
    const local=resolve(root,path==='/'?'index.html':path.slice(1));
    if(!local.startsWith(root+'/')||!existsSync(local)||!statSync(local).isFile())return route.fulfill({status:404,body:''});
    let body=readFileSync(local);
-   if(path==='/'&&isGuest)body=Buffer.from(body.toString().replace('<html lang="zh-CN">','<html lang="zh-CN" data-auth-state="guest">'));
+   if(path==='/'&&isGuest)body=Buffer.from(body.toString().replace('<html ','<html data-auth-state="guest" ').replace('</head>','<link rel="stylesheet" href="/auth-guest.css?v=2"></head>'));
    return route.fulfill({status:200,contentType:types[extname(local)]||'application/octet-stream',body});
   });
   const page=await context.newPage(),errors=[];

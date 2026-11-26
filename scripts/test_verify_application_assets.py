@@ -20,11 +20,15 @@ class VerificationTests(unittest.TestCase):
             root = Path(subject.__file__).parents[1]
             index = json.loads((root / 'jobs-index.json').read_text('utf-8'))
             return Response(json.dumps({
-                'jobs': [{'title': 'Public redacted listing'}],
+                'jobs': [{'title': 'Public redacted listing', 'employerType': 'unlisted'}],
                 'dataVersion': 'preview-' + index['dataVersion'],
                 'previewOverview': {'total': subject._expected_public_total(index)},
+                **({'employerModeSchema': 1, 'previewOverviewByMode': {
+                    'direct': {'total': subject._expected_public_total({**index, 'jobs': [r for r in index['jobs'] if r.get('employerType') == 'direct_employer']})},
+                    'agency': {'total': subject._expected_public_total({**index, 'jobs': [r for r in index['jobs'] if r.get('employerType') != 'direct_employer']})},
+                }} if index.get('employerModeSchema') == 1 else {}),
             }).encode())
-        for name in ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js'):
+        for name in ('job-applications.js', 'job-applications.css', 'calendar-date.js', 'app.js', 'employer-mode.js', 'next-journey-masthead.css'):
             if '/' + name in url:
                 return Response((Path(subject.__file__).parents[1] / name).read_bytes())
         return Response((Path(subject.__file__).parents[1] / 'index.html').read_bytes())

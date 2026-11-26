@@ -48,6 +48,7 @@ on:
       - 'next-journey-masthead.css'
       - 'scripts/test_employer_mode.mjs'
       - 'scripts/test_employer_mode_browser.mjs'
+      - 'scripts/verify_employer_modes.py'
       - 'scripts/test_market_width.mjs'
       - 'scripts/test_market_width_browser.mjs'
       - 'account.js'
@@ -142,6 +143,8 @@ jobs:
           python -m unittest discover -s scripts/jobspy -p 'test_*.py'
           python scripts/jobspy/jev_preprocess.py
           python scripts/jobspy/build_frontend_payload.py --self-test
+          python scripts/jobspy/build_frontend_payload.py
+          python scripts/verify_employer_modes.py
       - name: Test company logo identity and cache publication
         run: |
           python -m pip install --disable-pip-version-check -r requirements-logos.txt
