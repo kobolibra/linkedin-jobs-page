@@ -13,6 +13,7 @@ from reclassify import BLACKLIST, blacklist_records, norm
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pending", action="store_true", help="List unknown and unlisted names by the homepage job count")
+    parser.add_argument("--ranked", action="store_true", help="List every protected company in descending homepage job count")
     args = parser.parse_args()
     records = blacklist_records(json.loads((ROOT / BLACKLIST).read_text(encoding="utf-8")), allow_legacy=False)
     jobs = json.loads((ROOT / "jobs.json").read_text(encoding="utf-8"))["jobs"]
@@ -66,6 +67,15 @@ def main():
              for name, status in pending.items()),
             key=lambda row: (-row["websiteJobsForKey"], -row["activeJobsForKey"], norm(row["company"]), row["company"]),
         )
+    if args.ranked:
+        live_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
+        website_counts = Counter(norm(job["company"]) for job in website)
+        ranked = sorted(records, key=lambda row: (-website_counts[norm(row["company"])], -live_counts[norm(row["company"])], norm(row["company"]), row["company"]))
+        print("rank\twebsite_jobs\tactive_jobs\temployer_type\tcompany")
+        for i, row in enumerate(ranked, 1):
+            key = norm(row["company"])
+            print(f'{i}\t{website_counts[key]}\t{live_counts[key]}\t{row["employerType"]}\t{row["company"]}')
+        return
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
