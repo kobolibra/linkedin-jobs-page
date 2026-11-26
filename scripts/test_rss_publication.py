@@ -332,21 +332,55 @@ class RssPublicationTests(unittest.TestCase):
                 merge(root,inputs,out)
 
     def test_workflow_runs_for_rss_or_target_history_and_deploys_after_logo_apply(self):
-        workflow=Path(__file__).resolve().parents[1]/'.github/workflows/publish-n8n-rss.yml'
-        text=workflow.read_text()
-        triggers=text.split('on:',1)[1].split('concurrency:',1)[0]
-        self.assertIn('paths: [data/n8n/rss-latest.json, reports/cumulative-target-companies.tsv, financial_blacklist.json]',triggers)
-        self.assertNotIn('data/jobspy/',triggers)
-        self.assertNotIn('.github/workflows/',triggers)
-        collect_index=text.index('id: logos')
-        publish_index=text.index('name: Commit merged jobs')
-        self.assertLess(collect_index,publish_index)
-        shell=text[publish_index:]
+        root=Path(__file__).resolve().parents[1]/'.github/workflows'
+        workflow=(root/'deploy.yml').read_text()
+        compatibility=(root/'publish-n8n-rss.yml').read_text()
+        triggers=workflow.split('on:',1)[1].split('concurrency:',1)[0]
+        for path in ('data/n8n/rss-latest.json','reports/cumulative-target-companies.tsv','financial_blacklist.json'):
+            self.assertIn(path,triggers)
+        self.assertNotIn('data/jobspy/incremental/',triggers)
+        self.assertNotIn('push:',compatibility)
+        self.assertIn('force_rss=true',compatibility)
+        self.assertIn('group: cloudflare-site',workflow)
+        self.assertLess(workflow.index('id: publication'),workflow.index('id: logos'))
+        self.assertLess(workflow.index('id: logos'),workflow.index('name: Commit merged jobs'))
+        shell=workflow[workflow.index('name: Commit merged jobs'):]
+        self.assertLess(shell.index('--require-capture'),shell.index('reconcile_classification.py'))
         self.assertLess(shell.index('company_logos.py --apply'),shell.index('build_frontend_payload.py'))
-        self.assertLess(shell.index('build_frontend_payload.py'),shell.index('git push'))
-        self.assertLess(shell.index('git push'),shell.index('gh workflow run deploy.yml'))
-        self.assertEqual(workflow.read_text().count('gh workflow run deploy.yml'),1)
-        self.assertNotIn('gh workflow run company-logos.yml',workflow.read_text())
+        self.assertLess(shell.index('build_frontend_payload.py'),shell.index('--record'))
+        self.assertLess(shell.index('--record'),shell.index('git push'))
+        self.assertLess(shell.index('git push'),shell.index('--require-publication'))
+        self.assertLess(shell.index('--require-publication'),shell.index('deploy_cloudflare.py'))
+        self.assertNotIn('gh workflow run deploy.yml',workflow)
+
+    def test_publication_state_tracks_exact_sources_and_rejects_superseded_capture(self):
+        from publication_state import fingerprint, current, require_capture, STAMP
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[]})
+            original=fingerprint(root)
+            self.write(root,STAMP,{'version':1,'classificationCommit':'a'*40,'inputs':original})
+            self.assertTrue(current(root))
+            captured=self.write(root,'capture.json',original)
+            self.write(root,'data/n8n/rss-latest.json',{'jobs':[self.job('100000001')]})
+            self.assertFalse(current(root))
+            with self.assertRaisesRegex(ValueError,'advanced'):
+                require_capture(root,captured)
+
+    def test_classification_transition_rejects_truncation_and_downgrade(self):
+        from reclassify import validate_blacklist_transition
+        evidence={'url':'https://example.com/about','reviewedOn':'2026-11-26','note':'Fixture'}
+        old=[{'company':'Bank','employerType':'direct_employer','evidence':evidence},
+             {'company':'Agency','employerType':'recruitment_agency','evidence':evidence}]
+        self.assertEqual(validate_blacklist_transition(old,old),old)
+        with self.assertRaisesRegex(ValueError,'removed'):
+            validate_blacklist_transition(old,old[:1])
+        with self.assertRaisesRegex(ValueError,'downgraded'):
+            validate_blacklist_transition(old,[dict(old[0],employerType='unknown'),old[1]])
+        self.assertEqual(validate_blacklist_transition(old,[dict(old[0],employerType='recruitment_agency'),old[1]])[0]['employerType'],'recruitment_agency')
+        with self.assertRaises(ValueError):
+            validate_blacklist_transition(old,['Bank','Agency'])
+
 
 
 if __name__=='__main__':unittest.main()

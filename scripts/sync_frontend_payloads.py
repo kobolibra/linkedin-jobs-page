@@ -34,10 +34,13 @@ def check_clean_build() -> None:
     print("frontend_payloads_match_committed_sources")
 
 
-def publish() -> None:
+def publish(*, require_publication: bool = False) -> None:
     for attempt in range(1, 6):
         run("git", "fetch", "--depth=1", "origin", "+refs/heads/main:refs/remotes/origin/main")
         run("git", "reset", "--hard", "origin/main")
+        if require_publication:
+            run(sys.executable, "scripts/publication_state.py", "--check")
+            run(sys.executable, "scripts/publication_state.py", "--validate")
         run(sys.executable, "scripts/posting_event_history.py")
         build()
         run("git", "add", "--", *GENERATED)
@@ -64,9 +67,10 @@ def publish() -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--publish", action="store_true", help="commit generated drift to main before deployment")
+    parser.add_argument("--require-publication", action="store_true", help="refuse to deploy unprocessed classification or RSS inputs")
     args = parser.parse_args()
     if args.publish:
-        publish()
+        publish(require_publication=args.require_publication)
     else:
         check_clean_build()
 
