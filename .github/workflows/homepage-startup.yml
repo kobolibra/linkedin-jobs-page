@@ -14,6 +14,7 @@ on:
       - 'scripts/test_calendar_browser.mjs'
       - 'scripts/assert_region_projections.mjs'
       - 'scripts/test_homepage_interaction.mjs'
+      - 'scripts/test_employer_mode_browser.mjs'
       - '.github/workflows/homepage-startup.yml'
   push:
     branches: [main]
@@ -24,6 +25,9 @@ on:
       - 'auth-guest.js'
       - 'list-view.js'
       - 'index.html'
+      - 'next-journey-masthead.css'
+      - 'account-identity.css'
+      - 'scripts/test_employer_mode_browser.mjs'
       - 'scripts/test_homepage_startup.mjs'
       - 'scripts/test_startup_date_scope.mjs'
       - 'scripts/test_calendar_axes.mjs'

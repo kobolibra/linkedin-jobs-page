@@ -23,7 +23,7 @@ const types={'.js':'application/javascript','.mjs':'application/javascript','.cs
 for(const engine of (process.env.MODE_BROWSERS||'chromium').split(',')){
 const browser=await ({chromium,webkit}[engine]).launch({headless:true});
 try{
- for(const [width,theme,isGuest] of [[1440,'light',false],[390,'dark',false],[390,'light',true],[375,'dark',true],[320,'light',false],[320,'dark',true]]){
+ for(const [width,theme,isGuest] of [[1440,'light',false],[1280,'dark',false],[768,'light',true],[430,'light',false],[390,'dark',false],[390,'light',true],[375,'dark',true],[370,'light',false],[360,'dark',false],[320,'light',false],[320,'dark',true]]){
   const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce',hasTouch:width<=720,isMobile:width<=720});
   await context.addInitScript(({theme})=>{if(!localStorage.getItem('theme'))localStorage.setItem('theme',theme);},{theme});
   await context.route('**/*',async route=>{
@@ -116,6 +116,19 @@ try{
     sample.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;';
     sample.style.font=style.font;sample.style.letterSpacing=style.letterSpacing;sample.textContent=mode.selectedOptions[0].textContent;document.body.append(sample);
     const labelWidth=sample.getBoundingClientRect().width;sample.remove();
+    const aboutText=document.createRange();aboutText.selectNodeContents(nodes[1]);
+    const aboutInk=aboutText.getBoundingClientRect();
+    const aboutGap=rects[2].left+parseFloat(style.paddingLeft)-aboutInk.right;
+    const divider=document.querySelector('.nj-account-divider');
+    const dividerBox=divider.getBoundingClientRect(),dividerCenter=(dividerBox.left+dividerBox.right)/2;
+    const themeIcon=nodes[3].querySelector('svg'),accountIcon=nodes[4].querySelector('.account-person-icon');
+    const iconInk=svg=>{const r=svg.getBoundingClientRect(),b=svg.getBBox(),v=svg.viewBox.baseVal,k=r.width/v.width;return {left:r.left+(b.x-v.x-.75)*k,right:r.left+(b.x+b.width-v.x+.75)*k,center:(r.left+r.right)/2};};
+    const themeInk=iconInk(themeIcon),accountInk=accountIcon?iconInk(accountIcon):null;
+    const centerDelta=accountInk?Math.abs((dividerCenter-themeInk.center)-(accountInk.center-dividerCenter)):0;
+    const inkDelta=accountInk?Math.abs((dividerBox.left-themeInk.right)-(accountInk.left-dividerBox.right)):0;
+    const aboutMin=innerWidth>720?30:14;
+    const dividerVisible=getComputedStyle(divider).visibility==='visible';
+    const oldDivider=nodes[4].querySelector('.account-control');
     const name=nodes[0].querySelector('.nj-brand-name');
     const actualAccount=nodes[4].firstElementChild?.getBoundingClientRect();
     return {ordered:rects.every((r,i)=>i===0||r.left>=rects[i-1].right-1),
@@ -124,10 +137,16 @@ try{
      accountFits:!!actualAccount&&actualAccount.left>=rects[4].left-1&&actualAccount.right<=rects[4].right+1,
      labelFits:labelWidth<=mode.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight),
      brandFits:nodes[0].scrollWidth<=nodes[0].clientWidth+1,
-     nameVisible:getComputedStyle(name).display!=='none',rects:rects.map(r=>[r.left,r.top,r.width,r.height]),labelWidth};
+     nameVisible:getComputedStyle(name).display!=='none',
+     aboutBreathingRoom:aboutGap>=aboutMin,
+     dividerSymmetry:!accountIcon||(centerDelta<=1&&inkDelta<=1.5),
+     dividerCorrect:dividerVisible===!!accountIcon&&(!oldDivider||getComputedStyle(oldDivider,'::before').display==='none'),
+     rects:rects.map(r=>[r.left,r.top,r.width,r.height]),labelWidth,aboutGap,centerDelta,inkDelta,
+     leftInkGap:dividerBox.left-themeInk.right,rightInkGap:accountInk?accountInk.left-dividerBox.right:null};
    });
-   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,brandFits:true,nameVisible:width>369};
+   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,brandFits:true,nameVisible:width>369,aboutBreathingRoom:true,dividerSymmetry:true,dividerCorrect:true};
    for(const [key,value] of Object.entries(expectedGeometry))assert.equal(geometry[key],value,engine+' '+width+' '+theme+' '+mode+' '+key+' '+JSON.stringify(geometry));
+   console.log('MASTHEAD_GEOMETRY '+JSON.stringify({engine,width,theme,isGuest,mode,aboutGap:geometry.aboutGap,centerDelta:geometry.centerDelta,inkDelta:geometry.inkDelta,leftInkGap:geometry.leftInkGap,rightInkGap:geometry.rightInkGap}));
    // Capture before clicking any other element; the select is still focused.
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
    await assertBorderless('focused after screenshot '+mode,true);
