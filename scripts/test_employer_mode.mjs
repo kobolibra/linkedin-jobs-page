@@ -49,3 +49,10 @@ test('the recruitment picker has no rectangular focus, hover or active style',()
  assert.doesNotMatch(css,/#headerTools \.nj-employer-mode select:focus-visible/);
  assert.match(css,/:has\(#employerMode:focus-visible\)::after\{[^}]*height:1px/);
 });
+
+test('mobile masthead uses one row and only contracts the brand at narrowest widths',()=>{
+ const css=readFileSync(new URL('../next-journey-masthead.css',import.meta.url),'utf8');
+ assert.doesNotMatch(css,/\.nj-brand-row\{[^}]*grid-template-columns:minmax\(0,1fr\);/);
+ assert.match(css,/\.nj-brand-row\{height:60px;grid-template-columns:minmax\(0,1fr\) max-content;/);
+ assert.match(css,/@media\(max-width:369px\)\{[^}]*\.nj-brand-row[^}]*\}[^}]*\.nj-brand-name\{display:none\}/s);
+});

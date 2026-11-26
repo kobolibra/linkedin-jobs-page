@@ -118,7 +118,6 @@
 .nj-top-nav .nj-about-link:hover{color:var(--nj-ink);background:var(--surface-2)}
 .nj-top-nav .nj-about-link:focus-visible{outline:2px solid var(--nj-accent);outline-offset:2px}
 @media(max-width:720px){.nj-top-nav{right:var(--header-tools-width,120px);padding-right:6px}.nj-top-nav .nj-about-link{padding:0 6px;font-size:11px}}
-@media(max-width:400px){.nj-top-nav{top:60px;bottom:auto;right:auto;left:0;padding-right:0}.nj-brand-row{margin-bottom:45px}.nj-top-nav .nj-about-link{padding:0 4px}}
 
 /* Brand polish: official mark, balanced wordmark, no decorative substitute. */
 .nj-brand-row>.nj-brand{display:inline-flex;align-items:center;gap:11px;min-height:44px;color:var(--nj-ink);text-decoration:none;white-space:nowrap}
@@ -159,17 +158,31 @@
 #headerTools .nj-account-slot .auth-guest-sign{white-space:nowrap;flex:none;padding:0 3px;gap:5px}
 [data-theme="dark"] #headerTools select{color-scheme:dark}
 @media(min-width:721px){html{scrollbar-gutter:stable}}
+/* Mobile is still a single editorial masthead row. Reserve the longest
+   mode label and the guest/ signed-in account widths before auth arrives.
+   Never wrap the navigation below the brand or clip a functional control. */
 @media(max-width:720px){
- .nj-brand-row{column-gap:12px}
- #headerTools{grid-template-columns:38px 94px 36px 64px;column-gap:5px;min-height:40px}
+ .nj-brand-row{height:60px;grid-template-columns:minmax(0,1fr) max-content;column-gap:7px;margin:0;padding:0}
+ .nj-brand-row>.nj-brand{min-width:0;max-width:100%;justify-self:start}
+ #headerTools{grid-template-columns:32px 90px 32px 52px;column-gap:3px;min-height:40px;justify-self:end}
  #headerTools .nj-about-link,#headerTools .nj-employer-mode select{font-size:12px}
- #headerTools .theme-toggle{width:36px;height:40px;min-height:40px;padding:8px}
- #headerTools .nj-account-slot .auth-guest-sign{font-size:11px}
+ #headerTools .nj-employer-mode select{padding-right:12px}
+ #headerTools .nj-mode-chevron{right:1px;width:10px;height:10px}
+ #headerTools .theme-toggle{width:32px;height:40px;min-height:40px;padding:6px}
+ #headerTools .nj-account-slot .auth-guest-sign{box-sizing:border-box;width:52px;min-height:40px;padding:0 2px;gap:3px;justify-content:center;font-size:11px}
+ #headerTools .nj-account-slot .auth-sign-arrow{font-size:12px}
 }
-@media(max-width:520px){
- .nj-brand-row{height:auto;min-height:0;grid-template-columns:minmax(0,1fr);row-gap:2px;padding:8px 0 5px}
- .nj-brand-row>.nj-brand{min-height:35px;justify-self:start}
- #headerTools{justify-self:end;grid-template-columns:38px 94px 36px 64px;column-gap:5px}
+@media(max-width:420px){
+ .nj-brand-row>.nj-brand{gap:5px}
+ .nj-brand-mark{width:22px;height:22px}
+ .nj-brand-name{font-size:16px}
+}
+/* Only the brand contracts on the very narrowest phones; the complete
+   name remains in the link's accessible label, and all controls stay visible. */
+@media(max-width:369px){
+ .nj-brand-row>.nj-brand{gap:0}
+ .nj-brand-name{display:none}
+ .nj-brand-mark{width:25px;height:25px}
 }
 @media(prefers-reduced-motion:reduce){#headerTools .nj-about-link,#headerTools select{transition:none}}
 @media print{#headerTools{display:none}}

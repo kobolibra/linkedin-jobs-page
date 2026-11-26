@@ -23,8 +23,8 @@ const types={'.js':'application/javascript','.mjs':'application/javascript','.cs
 for(const engine of (process.env.MODE_BROWSERS||'chromium').split(',')){
 const browser=await ({chromium,webkit}[engine]).launch({headless:true});
 try{
- for(const [width,theme,isGuest] of [[1440,'light',false],[390,'dark',false],[390,'light',true],[320,'dark',true]]){
-  const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});
+ for(const [width,theme,isGuest] of [[1440,'light',false],[390,'dark',false],[390,'light',true],[375,'dark',true],[320,'light',false],[320,'dark',true]]){
+  const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce',hasTouch:width<=720,isMobile:width<=720});
   await context.addInitScript(({theme})=>{if(!localStorage.getItem('theme'))localStorage.setItem('theme',theme);},{theme});
   await context.route('**/*',async route=>{
    const url=new URL(route.request().url());
@@ -88,7 +88,7 @@ try{
    if(style.focusVisible){assert.notEqual(style.keyboardMark,'none',phase);assert.equal(style.keyboardMarkHeight,'1px',phase);}
   };
   await assertBorderless('rest');
-  await page.locator('#employerMode').hover();await assertBorderless('hover');
+  if(width>720){await page.locator('#employerMode').hover();await assertBorderless('hover');}
   for(const mode of ['direct','agency','full']){
    await page.evaluate(()=>{const sample=()=>{const q=window.__modeQA;const r=[...q.header.children].map(e=>{const b=e.getBoundingClientRect();return [b.x,b.y,b.width,b.height];});window.__modeFrames.push(r);if(window.__modeSampling)requestAnimationFrame(sample);};window.__modeFrames=[];window.__modeSampling=true;requestAnimationFrame(sample);});
    // Playwright selectOption alone does not reproduce the native picker
@@ -108,8 +108,26 @@ try{
    assert.equal(stability.same,true,'header controls must remain mounted');
    assert.equal(stability.border,'0px');assert.equal(stability.shadow,'none');assert.ok(stability.accountRight<=width,'account must not leave viewport');
    for(let i=0;i<stability.boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(stability.boxes[i][j]-initialHeader[i][j])<=1,'header geometry changed: '+JSON.stringify(stability));
-   const geometry=await page.evaluate(()=>{const about=document.querySelector('.nj-about-link').getBoundingClientRect(),mode=document.getElementById('employerMode').getBoundingClientRect(),theme=document.getElementById('themeToggle').getBoundingClientRect(),brand=document.querySelector('.nj-brand').getBoundingClientRect();return {ordered:about.right<=mode.left+1&&mode.right<=theme.left+1,within:about.left>=0&&theme.right<=innerWidth,brandSeparate:brand.right<=about.left+1||brand.bottom<=about.top+1};});
-   assert.deepEqual(geometry,{ordered:true,within:true,brandSeparate:true});
+   const geometry=await page.evaluate(()=>{
+    const nodes=[document.querySelector('.nj-brand'),document.querySelector('.nj-about-link'),document.getElementById('employerMode'),document.getElementById('themeToggle'),document.getElementById('headerAccount')];
+    const rects=nodes.map(n=>n.getBoundingClientRect()),row=document.querySelector('.nj-brand-row').getBoundingClientRect();
+    const middle=r=>(r.top+r.bottom)/2;
+    const mode=nodes[2],style=getComputedStyle(mode),sample=document.createElement('span');
+    sample.style.cssText='position:absolute;visibility:hidden;white-space:nowrap;';
+    sample.style.font=style.font;sample.style.letterSpacing=style.letterSpacing;sample.textContent=mode.selectedOptions[0].textContent;document.body.append(sample);
+    const labelWidth=sample.getBoundingClientRect().width;sample.remove();
+    const name=nodes[0].querySelector('.nj-brand-name');
+    const actualAccount=nodes[4].firstElementChild?.getBoundingClientRect();
+    return {ordered:rects.every((r,i)=>i===0||r.left>=rects[i-1].right-1),
+     oneRow:rects.every(r=>Math.abs(middle(r)-middle(row))<=1),
+     within:rects.every(r=>r.left>=row.left-1&&r.right<=row.right+1),
+     accountFits:!!actualAccount&&actualAccount.left>=rects[4].left-1&&actualAccount.right<=rects[4].right+1,
+     labelFits:labelWidth<=mode.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)+1,
+     brandFits:nodes[0].scrollWidth<=nodes[0].clientWidth+1,
+     nameVisible:getComputedStyle(name).display!=='none',rects:rects.map(r=>[r.left,r.top,r.width,r.height]),labelWidth};
+   });
+   const expectedGeometry={ordered:true,oneRow:true,within:true,accountFits:true,labelFits:true,brandFits:true,nameVisible:width>369};
+   for(const [key,value] of Object.entries(expectedGeometry))assert.equal(geometry[key],value,engine+' '+width+' '+theme+' '+mode+' '+key+' '+JSON.stringify(geometry));
    // Capture before clicking any other element; the select is still focused.
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
    await assertBorderless('focused after screenshot '+mode,true);
