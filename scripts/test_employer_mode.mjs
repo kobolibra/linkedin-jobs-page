@@ -37,3 +37,6 @@ test('selection initializes before account bootstrap and sits between About and 
  assert.ok(html.indexOf('employer-mode.js?')<html.indexOf('src="account.js?'));
  assert.ok(html.indexOf('nj-about-link')<html.indexOf('id="employerMode"')&&html.indexOf('id="employerMode"')<html.indexOf('id="themeToggle"'));
 });
+
+test('mode switching is in-page; no location reload',()=>{const source=readFileSync(new URL('../employer-mode.js',import.meta.url),'utf8');assert.doesNotMatch(source,/location\.(?:reload|replace)\(/);assert.match(source,/employermodechange/);});
+test('VISTRA is a requester-confirmed direct employer',()=>{const rows=JSON.parse(readFileSync(new URL('../financial_blacklist.json',import.meta.url),'utf8'));const row=rows.find(r=>r.company.toLowerCase()==='vistra');assert.equal(row?.employerType,'direct_employer');assert.equal(row?.evidence?.basis,'requester_confirmation');});

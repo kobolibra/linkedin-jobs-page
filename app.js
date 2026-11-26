@@ -504,7 +504,7 @@ function renderHeadline(allRows,chartRows){
   const flow=overview?overview.weekly:weeklyFlow(allRows);
   const weekEl=document.getElementById("stat-week"),weekNote=document.getElementById("stat-week-note");
   if(weekEl){
-    if(flow)animNum(weekEl,flow.current);else weekEl.textContent='—';
+    if(flow)animNum(weekEl,flow.current);else{if(typeof numberFrames!=='undefined')cancelAnimationFrame(numberFrames.get(weekEl)||0);weekEl.textContent='—';}
     const end=flow?.end?new Date(flow.end):null;
     if(end&&!Number.isNaN(end.getTime()))weekEl.closest('.stat').title='Roles in Mainland China, Hong Kong and Singapore new in the 7 calendar days to '+
       end.toLocaleString('en-GB',{timeZone:'Asia/Singapore',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false})+' SGT, including roles that have since closed';

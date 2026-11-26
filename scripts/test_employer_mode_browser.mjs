@@ -47,7 +47,7 @@ try{
   const wait=async mode=>{
    const overview=mode==='full'?guest.previewOverview:guest.previewOverviewByMode[mode];
    const total=isGuest?overview.total:totals[mode];
-   await page.waitForFunction(({mode,total})=>document.documentElement.dataset.employerMode===mode&&document.getElementById('stat-total')?.textContent.replace(/,/g,'')===String(total)&&typeof renderReady!=='undefined'&&renderReady,{mode,total},{timeout:30000});
+   await page.waitForFunction(({mode,total})=>document.documentElement.dataset.renderedEmployerMode===mode&&document.getElementById('stat-total')?.textContent.replace(/,/g,'')===String(total)&&typeof renderReady!=='undefined'&&renderReady,{mode,total},{timeout:30000});
    const expected=scoped(mode),expectedRows=isGuest?guest.jobs.filter(j=>mode==='full'||modeOf(j)===mode):expected;
    const snapshot=await page.evaluate(()=>({rows:loadedJobs.length,direct:loadedJobs.filter(j=>j.employerType==='direct_employer').length,regions:Number(document.querySelector('#dist svg')?.dataset.finalTotal),bars:document.querySelectorAll('#spark .rhythm-bar').length,top:top50Rows.length,history:postingHistoryDaily,active:Number(document.getElementById('activeJobCount').textContent.replace(/,/g,''))}));
    assert.equal(snapshot.rows,expectedRows.length);
@@ -69,15 +69,26 @@ try{
    console.log(JSON.stringify({engine,width,theme,isGuest,mode,snapshot:{...snapshot,history:undefined}}));
   };
   await wait('full');
+  const initialHeader=await page.evaluate(()=>{window.__modeQA={header:document.getElementById('headerTools'),theme:document.getElementById('themeToggle'),account:document.getElementById('headerAccount').firstElementChild,select:document.getElementById('employerMode')};const rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return [...document.getElementById('headerTools').children].map(rect);});
+  let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
   for(const mode of ['direct','agency','full']){
-   await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.selectOption('#employerMode',mode)]);
+   await page.selectOption('#employerMode',mode);
    await wait(mode);
    assert.equal(await page.locator('#employerMode').inputValue(),mode);
+   assert.equal(navigations,0,'mode switch must not navigate');
+   const stability=await page.evaluate(()=>{const q=window.__modeQA,header=document.getElementById('headerTools'),rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return {same:q.header===header&&q.theme===document.getElementById('themeToggle')&&q.account===document.getElementById('headerAccount').firstElementChild&&q.select===document.getElementById('employerMode'),boxes:[...header.children].map(rect),border:getComputedStyle(q.select).borderTopWidth,shadow:getComputedStyle(q.select).boxShadow,accountRight:q.account?.getBoundingClientRect().right};});
+   assert.equal(stability.same,true,'header controls must remain mounted');
+   assert.equal(stability.border,'0px');assert.equal(stability.shadow,'none');assert.ok(stability.accountRight<=width,'account must not leave viewport');
+   for(let i=0;i<stability.boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(stability.boxes[i][j]-initialHeader[i][j])<=1,'header geometry changed: '+JSON.stringify(stability));
    const geometry=await page.evaluate(()=>{const about=document.querySelector('.nj-about-link').getBoundingClientRect(),mode=document.getElementById('employerMode').getBoundingClientRect(),theme=document.getElementById('themeToggle').getBoundingClientRect(),brand=document.querySelector('.nj-brand').getBoundingClientRect();return {ordered:about.right<=mode.left+1&&mode.right<=theme.left+1,within:about.left>=0&&theme.right<=innerWidth,brandSeparate:brand.right<=about.left+1||brand.bottom<=about.top+1};});
    assert.deepEqual(geometry,{ordered:true,within:true,brandSeparate:true});
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
-   await page.reload();await wait(mode);
+   assert.equal(await page.evaluate(()=>localStorage.getItem('next-journey-employer-mode')),mode);
   }
+  // Three consecutive changes in one task exercise the same document and latest scope.
+  await page.evaluate(()=>{EmployerMode.set('direct');EmployerMode.set('agency');EmployerMode.set('direct');});await wait('direct');
+  assert.equal(navigations,0);
+  await page.reload();await wait('direct');
   assert.deepEqual(errors,[]);
   await context.close();
  }
