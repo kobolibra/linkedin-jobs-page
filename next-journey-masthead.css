@@ -141,7 +141,17 @@
 #headerTools .nj-employer-mode{display:flex;position:relative;align-items:center;width:100%;min-width:0}
 #headerTools .nj-employer-mode select{appearance:none;-webkit-appearance:none;box-sizing:border-box;width:100%;height:40px;min-height:40px;padding:0 15px 0 0;margin:0;border:0;border-radius:0;box-shadow:none;background:transparent;cursor:pointer;text-align:left}
 #headerTools .nj-employer-mode select option{background:var(--surface);color:var(--nj-ink)}
-#headerTools .nj-employer-mode select:focus-visible,#headerTools .nj-about-link:focus-visible{outline:1px solid var(--nj-accent);outline-offset:2px;border-radius:3px}
+/* The native picker remains keyboard-accessible, but never looks like a boxed
+   input, even while it retains focus after selection. A text underline is
+   the keyboard focus affordance; it does not affect the fixed header tracks. */
+#headerTools #employerMode,
+#headerTools #employerMode:hover,
+#headerTools #employerMode:active,
+#headerTools #employerMode:focus,
+#headerTools #employerMode:focus-visible{border:0;border-radius:0;outline:none;outline-offset:0;box-shadow:none;background:transparent;-webkit-tap-highlight-color:transparent}
+#headerTools #employerMode:focus-visible{color:var(--nj-ink)}
+#headerTools .nj-employer-mode:has(#employerMode:focus-visible)::after{content:"";position:absolute;left:0;right:15px;bottom:7px;height:1px;background:var(--nj-accent);pointer-events:none}
+#headerTools .nj-about-link:focus-visible{outline:1px solid var(--nj-accent);outline-offset:2px;border-radius:3px}
 #headerTools .nj-mode-chevron{position:absolute;right:3px;top:50%;width:11px;height:11px;transform:translateY(-50%);color:var(--nj-secondary);pointer-events:none}
 #headerTools .theme-toggle{position:static;box-sizing:border-box;width:40px;height:40px;min-height:40px;margin:0;padding:10px;justify-self:center}
 #headerTools .nj-account-slot{display:flex;justify-content:flex-end;align-items:center;width:100%;height:40px;min-width:0;position:relative}

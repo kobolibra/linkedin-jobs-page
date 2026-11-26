@@ -40,3 +40,12 @@ test('selection initializes before account bootstrap and sits between About and 
 
 test('mode switching is in-page; no location reload',()=>{const source=readFileSync(new URL('../employer-mode.js',import.meta.url),'utf8');assert.doesNotMatch(source,/location\.(?:reload|replace)\(/);assert.match(source,/employermodechange/);});
 test('VISTRA is a requester-confirmed direct employer',()=>{const rows=JSON.parse(readFileSync(new URL('../financial_blacklist.json',import.meta.url),'utf8'));const row=rows.find(r=>r.company.toLowerCase()==='vistra');assert.equal(row?.employerType,'direct_employer');assert.equal(row?.evidence?.basis,'requester_confirmation');});
+
+test('the recruitment picker has no rectangular focus, hover or active style',()=>{
+ const css=readFileSync(new URL('../next-journey-masthead.css',import.meta.url),'utf8');
+ const rule=css.match(/#headerTools #employerMode,\s*#headerTools #employerMode:hover,\s*#headerTools #employerMode:active,\s*#headerTools #employerMode:focus,\s*#headerTools #employerMode:focus-visible\s*\{([^}]+)\}/);
+ assert.ok(rule,'explicitly style every persistent focus state');
+ for(const property of ['border:0','border-radius:0','outline:none','box-shadow:none','background:transparent'])assert.ok(rule[1].includes(property),property);
+ assert.doesNotMatch(css,/#headerTools \.nj-employer-mode select:focus-visible/);
+ assert.match(css,/:has\(#employerMode:focus-visible\)::after\{[^}]*height:1px/);
+});

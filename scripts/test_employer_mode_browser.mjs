@@ -74,10 +74,32 @@ try{
   const initialFetches=indexRequests;
   const initialHeader=await page.evaluate(()=>{window.__modeQA={header:document.getElementById('headerTools'),theme:document.getElementById('themeToggle'),account:document.getElementById('headerAccount').firstElementChild,select:document.getElementById('employerMode')};const rect=e=>{const r=e.getBoundingClientRect();return [r.x,r.y,r.width,r.height];};return [...document.getElementById('headerTools').children].map(rect);});
   let navigations=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations++;});
+  const assertBorderless=async (phase,requireFocus=false)=>{
+   const style=await page.locator('#employerMode').evaluate(el=>{
+    const c=getComputedStyle(el);
+    const wrapper=getComputedStyle(el.parentElement,'::after');
+    return {focused:document.activeElement===el,focusVisible:el.matches(':focus-visible'),border:c.borderTopWidth,outline:c.outlineStyle,outlineWidth:c.outlineWidth,shadow:c.boxShadow,background:c.backgroundColor,radius:c.borderRadius,keyboardMark:wrapper.content,keyboardMarkHeight:wrapper.height};
+   });
+   if(requireFocus)assert.ok(style.focused,'focus must remain on picker: '+phase);
+   assert.equal(style.border,'0px',phase);assert.equal(style.outline,'none',phase);
+   assert.equal(style.outlineWidth,'0px',phase);assert.equal(style.shadow,'none',phase);
+   assert.ok(style.background==='rgba(0, 0, 0, 0)'||style.background==='transparent',phase+': '+style.background);
+   assert.equal(style.radius,'0px',phase);
+   if(style.focusVisible){assert.notEqual(style.keyboardMark,'none',phase);assert.equal(style.keyboardMarkHeight,'1px',phase);}
+  };
+  await assertBorderless('rest');
+  await page.locator('#employerMode').hover();await assertBorderless('hover');
   for(const mode of ['direct','agency','full']){
    await page.evaluate(()=>{const sample=()=>{const q=window.__modeQA;const r=[...q.header.children].map(e=>{const b=e.getBoundingClientRect();return [b.x,b.y,b.width,b.height];});window.__modeFrames.push(r);if(window.__modeSampling)requestAnimationFrame(sample);};window.__modeFrames=[];window.__modeSampling=true;requestAnimationFrame(sample);});
+   // Playwright selectOption alone does not reproduce the native picker
+   // retaining focus after a human selects a mode. Exercise that state
+   // before, immediately after and several frames after each real switch.
+   await page.locator('#employerMode').focus();
+   await assertBorderless('focused before '+mode,true);
    await page.selectOption('#employerMode',mode);
+   await assertBorderless('focused immediately after '+mode,true);
    await wait(mode);
+   await assertBorderless('focused after render '+mode,true);
    const frames=await page.evaluate(async()=>{for(let i=0;i<3;i++)await new Promise(requestAnimationFrame);window.__modeSampling=false;return window.__modeFrames;});
    for(const boxes of frames)for(let i=0;i<boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(boxes[i][j]-initialHeader[i][j])<=1,'transient header jump '+JSON.stringify({boxes,initialHeader}));
    assert.equal(await page.locator('#employerMode').inputValue(),mode);
@@ -88,7 +110,9 @@ try{
    for(let i=0;i<stability.boxes.length;i++)for(let j=0;j<4;j++)assert.ok(Math.abs(stability.boxes[i][j]-initialHeader[i][j])<=1,'header geometry changed: '+JSON.stringify(stability));
    const geometry=await page.evaluate(()=>{const about=document.querySelector('.nj-about-link').getBoundingClientRect(),mode=document.getElementById('employerMode').getBoundingClientRect(),theme=document.getElementById('themeToggle').getBoundingClientRect(),brand=document.querySelector('.nj-brand').getBoundingClientRect();return {ordered:about.right<=mode.left+1&&mode.right<=theme.left+1,within:about.left>=0&&theme.right<=innerWidth,brandSeparate:brand.right<=about.left+1||brand.bottom<=about.top+1};});
    assert.deepEqual(geometry,{ordered:true,within:true,brandSeparate:true});
+   // Capture before clicking any other element; the select is still focused.
    await page.locator('.nj-brand-row').screenshot({path:resolve(output,engine+'-'+width+'-'+theme+(isGuest?'-guest':'')+'-'+mode+'.png')});
+   await assertBorderless('focused after screenshot '+mode,true);
    assert.equal(await page.evaluate(()=>localStorage.getItem('next-journey-employer-mode')),mode);
    assert.equal(await page.evaluate(()=>window.scrollY),0,'switching mode at the masthead must not scroll the page');
    if(!isGuest){
