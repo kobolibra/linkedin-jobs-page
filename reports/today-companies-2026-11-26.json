@@ -1,6 +1,6 @@
 {
   "date": "2026-11-26",
-  "filter_window": "2026-11-25 19:57 ~ 2026-11-26 19:57 (Beijing)",
+  "filter_window": "2026-11-25 20:40 ~ 2026-11-26 20:40 (Beijing)",
   "target_companies": [
     {
       "company": "Archroma",
@@ -433,12 +433,12 @@
     {
       "company": "Rolejob",
       "category": "excluded",
-      "reason": "verified financial/headhunter (reclassified)",
+      "reason": "blacklist exact match (financial/headhunter)",
       "pushTime": "2026-11-26T10:01:18.354Z"
     }
   ],
   "total_target": 15,
   "total_excluded": 57,
-  "total_today_jobs": 132,
-  "total_all_jobs": 15099
+  "total_today_jobs": 129,
+  "total_all_jobs": 15096
 }
