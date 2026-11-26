@@ -93,6 +93,20 @@ recreate, read or maintain a second employer-type registry. A future
 display-only filter must treat any unmatched publisher as unclassified,
 never assume direct employment, and leave canonical deletion rules unchanged.
 
+## Company investigation progress
+
+`reports/employer-review-status.json` tracks research progress only; it is not a runtime classification source. It combines current unknown/unlisted employers, historical daily reports marked `待查证`, staging/canonical coverage gaps, and unresolved work carried forward after jobs expire.
+
+Build it after the daily company report:
+
+```sh
+python scripts/company_review_queue.py --write
+```
+
+Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. Merge actual research with `--apply-results`; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. Applying a research result does not itself change runtime classification.
+
+Resolved protection decisions still go through `reclassify.py --blacklist-records` for new records or the reviewed PR process for existing records. Resolved delete decisions still use `--industry` and the normal cumulative-list finalization. Never reconstruct `company_employer_types.json` from this progress file.
+
 ## Coverage audit
 
 Run `python scripts/audit_employer_types.py` against a checkout with

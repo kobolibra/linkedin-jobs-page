@@ -2,10 +2,10 @@ name: Financial blacklist schema
 
 on:
   pull_request:
-    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, scripts/publication_state.py, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
   push:
     branches: [main]
-    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, scripts/publication_state.py, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
 
 permissions:
   contents: read
@@ -26,3 +26,7 @@ jobs:
           python scripts/audit_employer_types.py --pending > /tmp/employer-review-queue.json
       - name: Rank every employer by current homepage job count
         run: python scripts/audit_employer_types.py --ranked
+      - name: Test and rebuild the persistent company investigation queue
+        run: |
+          python -m unittest scripts.test_company_review_queue
+          python scripts/company_review_queue.py > /tmp/company-review-queue.json
