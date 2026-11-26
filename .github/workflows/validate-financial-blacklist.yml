@@ -2,10 +2,10 @@ name: Financial blacklist schema
 
 on:
   pull_request:
-    paths: [financial_blacklist.json, reclassify.py, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, .github/workflows/validate-financial-blacklist.yml]
   push:
     branches: [main]
-    paths: [financial_blacklist.json, reclassify.py, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, reclassify.py, .github/workflows/validate-financial-blacklist.yml]
 
 permissions:
   contents: read
@@ -25,8 +25,9 @@ jobs:
           from pathlib import Path
           from reclassify import BLACKLIST, blacklist_records
 
-          records = blacklist_records(json.loads(Path(BLACKLIST).read_text(encoding="utf-8")), allow_legacy=False)
-          names = {record["company"] for record in records}
-          if not names or len(names) != len(records):
-              raise ValueError("Financial blacklist is empty or contains duplicate original names")
+          for filename in (BLACKLIST, "company_employer_types.json"):
+              records = blacklist_records(json.loads(Path(filename).read_text(encoding="utf-8")), allow_legacy=False)
+              names = {record["company"] for record in records}
+              if not names or len(names) != len(records):
+                  raise ValueError(f"{filename} is empty or contains duplicate original names")
           PY

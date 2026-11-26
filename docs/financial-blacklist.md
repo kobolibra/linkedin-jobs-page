@@ -59,12 +59,30 @@ string array on pull requests and reports a downgrade if an external writer
 pushes directly to `main`. A required check and rules against bypass on
 `main` are needed to prevent direct writers from bypassing this check.
 
+## Classification-only records
+
+`company_employer_types.json` uses the same record and evidence format. It
+covers the 84 other homepage publishers from the pinned 2026-11-26 snapshot.
+These names have no membership in the protection list. Classifications for
+them do not affect any Agent or RSS exclusion. A future display filter can
+look up both files using the same normalization. When a name later appears
+in both, a classified protection-list record takes precedence over the
+classification-only record.
+
+Of these 84 publishers, 70 are direct employers, 12 are recruiters, one is a
+recruitment platform and one has mixed operations. Together both files cover
+all 550 keys and 6,300 jobs in the homepage metric. Across the homepage the
+types are 360 direct employers, 173 recruitment agencies, two recruitment
+platforms and 15 mixed businesses.
+
 ## Coverage audit
 
 Run `python scripts/audit_employer_types.py` against a checkout with
 `jobs.json`. Add `--pending` for the review queue, ordered by the number of jobs that
 count toward the public homepage. Publishers are matched using
 `jobs[].company` and the protection list's existing normalization.
+`website` reports the protection-list intersection.
+`websiteIncludingOtherEmployers` reports combined classification coverage.
 `companyCanonical`, `requestedCompany` and LinkedIn profile links can help
 resolve identity where present. Source and job status fields describe ingestion
 and availability, respectively. Company classification and the available job
