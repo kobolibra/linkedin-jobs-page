@@ -285,7 +285,10 @@ class RssPublicationTests(unittest.TestCase):
                                'Parich Group Limited\t待查证\t2026-11-23\t2026-11-23\n'
                                'Breeze\t待查证\t2026-11-22\t2026-11-22\n'
                                'Fano (Fano Labs)\tAI\t2026-11-23\t2026-11-23\n')
-            self.write(root,'financial_blacklist.json',['Parich Group Limited','Breeze'])
+            self.write(root, 'financial_blacklist.json', [
+                {'company': 'Parich Group Limited', 'employerType': 'unknown'},
+                {'company': 'Breeze', 'employerType': 'unknown'},
+            ])
             self.write(root,'data/target-filter-quarantine.json',
                        {'schemaVersion':'1.0','jobs':[original,n8n_blocked]})
             capture(root,inputs)

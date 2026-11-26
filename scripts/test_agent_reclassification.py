@@ -45,6 +45,45 @@ class ClassificationTests(unittest.TestCase):
         replay = rc.plan(self.files.get, earlier, finalize=True)
         self.assertIn(f"Fano\tSoftware\t{earlier}\t{DAY}", replay[rc.TARGET])
 
+    def test_legacy_addition_migrates_all_names_and_marks_unknown(self):
+        self.files[rc.BLACKLIST] = '["Breeze", "ＢＲＥＥＺＥ"]'
+        plan = rc.plan(self.files.get, DAY, additions=["Bank", "  bank  "])
+        records = rc.blacklist_records(json.loads(plan[rc.BLACKLIST]), allow_legacy=False)
+        self.assertEqual({r["company"] for r in records}, {"Breeze", "ＢＲＥＥＺＥ", "Bank"})
+        self.assertEqual({r["employerType"] for r in records}, {"unknown"})
+
+    def test_typed_addition_preserves_existing_evidence_and_legacy_callers(self):
+        bank = {"company": "Bank", "employerType": "direct_employer", "evidence": {
+            "url": "https://example.com/about", "reviewedOn": DAY, "note": "Bank profile"}}
+        self.files.update(rc.plan(self.files.get, DAY, typed_additions=[bank]))
+        self.files.update(rc.plan(self.files.get, DAY, additions=["  BANK ", "Other"]))
+        records, _ = rc.classifications(self.files.get)
+        self.assertIn(bank, records)
+        self.assertEqual(rc.protected_names(records), {"bank", "breeze", "other"})
+        self.assertIn({"company": "Other", "employerType": "unknown"}, records)
+        with self.assertRaisesRegex(ValueError, "reviewed data change"):
+            rc.plan(self.files.get, DAY, typed_additions=[dict(bank, employerType="mixed")])
+
+    def test_inconclusive_review_survives_appending_other_names(self):
+        review = {"reviewedOn": DAY, "query": '"Breeze" employer', "note": "Several entities share the name."}
+        row = {"company": "Breeze", "employerType": "unknown", "review": review}
+        self.files[rc.BLACKLIST] = json.dumps([row])
+        changes = rc.plan(self.files.get, DAY, additions=["Another company"])
+        records = rc.blacklist_records(json.loads(changes[rc.BLACKLIST]), allow_legacy=False)
+        self.assertIn(row, records)
+
+    def test_rejects_lost_classification_or_conflicting_normalized_aliases(self):
+        with self.assertRaises(ValueError):
+            rc.blacklist_records(["Bank"], allow_legacy=False)
+        with self.assertRaisesRegex(ValueError, "Missing evidence"):
+            rc.blacklist_records([{"company": "Bank", "employerType": "direct_employer"}])
+        with self.assertRaisesRegex(ValueError, "Conflicting employerType"):
+            rc.blacklist_records([
+                {"company": "Bank", "employerType": "unknown"},
+                {"company": " Ｂａｎｋ ", "employerType": "direct_employer", "evidence": {
+                    "url": "https://example.com/about", "reviewedOn": DAY, "note": "Bank profile"}},
+            ])
+
     def test_overlap_and_missing_report_fail_before_any_writes(self):
         with self.assertRaises(FileNotFoundError):
             rc.plan(self.files.get, "2026-11-25", finalize=True, require_daily=True)
@@ -70,12 +109,15 @@ class ClassificationTests(unittest.TestCase):
         def transact(build, message):
             result.update(build(self.files.get))
             return result
-        jobs = [{"company":"New", "pushTime":datetime.now(timezone.utc).isoformat()}]
+        self.files[rc.BLACKLIST] = '[{"company":"Breeze","employerType":"unknown"}]'
+        now = datetime.now(timezone.utc).isoformat()
+        jobs = [{"company": name, "pushTime": now} for name in ("New", "Ｂｒｅｅｚｅ")]
         with tempfile.TemporaryDirectory() as tmp, patch.object(daily, "OUTPUT_DIR", tmp), \
              patch.object(rc.Repo, "transact", autospec=True, side_effect=lambda repo, *a: transact(*a)):
             daily.push_daily_report_to_github(jobs, DAY)
             self.assertEqual(set(result), set(rc.daily_paths(DAY)))
             self.assertIn("New", result[TARGETS])
+            self.assertIn("Ｂｒｅｅｚｅ", result[EXCLUSIONS])
             self.assertIn("Fano", result[TARGETS])
             for path, content in result.items():
                 self.assertEqual((Path(tmp)/Path(path).name).read_text(encoding="utf-8-sig"), content)

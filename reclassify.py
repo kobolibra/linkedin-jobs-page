@@ -24,6 +24,7 @@ EXCLUDED = "reports/cumulative-excluded-companies.tsv"
 BLACKLIST = "financial_blacklist.json"
 INDUSTRIES = "company_industries.json"
 PENDING = "待查证"
+EMPLOYER_TYPES = {"direct_employer", "recruitment_agency", "recruitment_platform", "mixed", "unknown"}
 
 
 def norm(name):
@@ -60,17 +61,62 @@ def daily_files(day, report):
     return result
 
 
+def blacklist_records(values, *, allow_legacy=True):
+    """Read legacy names or typed records without changing original spellings."""
+    if not isinstance(values, list):
+        raise ValueError("Financial blacklist must be an array")
+    if allow_legacy and all(isinstance(value, str) for value in values):
+        values = [{"company": name, "employerType": "unknown"} for name in values]
+    types_by_name = {}
+    for record in values:
+        if not isinstance(record, dict):
+            raise ValueError("Financial blacklist must contain only company records")
+        name = field(record.get("company"))
+        kind = record.get("employerType")
+        if not isinstance(kind, str) or kind not in EMPLOYER_TYPES:
+            raise ValueError(f"Invalid employerType for {name}")
+        evidence = record.get("evidence")
+        if evidence is not None:
+            if not isinstance(evidence, dict):
+                raise ValueError(f"Invalid evidence for {name}")
+            url = field(evidence.get("url"))
+            link = urllib.parse.urlsplit(url)
+            if link.scheme != "https" or not link.hostname:
+                raise ValueError(f"Evidence must be an HTTPS source for {name}")
+            date.fromisoformat(field(evidence.get("reviewedOn")))
+            field(evidence.get("note"))
+        elif kind != "unknown":
+            raise ValueError(f"Missing evidence for {name}")
+        review = record.get("review")
+        if review is not None:
+            if kind != "unknown" or not isinstance(review, dict):
+                raise ValueError(f"Invalid inconclusive review for {name}")
+            date.fromisoformat(field(review.get("reviewedOn")))
+            field(review.get("query"))
+            field(review.get("note"))
+        if types_by_name.setdefault(norm(name), kind) != kind:
+            raise ValueError(f"Conflicting employerType for {name}")
+    return values
+
+
+def blacklist_text(records):
+    rows = ",\n".join(f"  {json.dumps(record, ensure_ascii=False)}" for record in records)
+    return f"[\n{rows}\n]\n" if rows else "[]\n"
+
+
+def protected_names(records):
+    return {norm(record["company"]) for record in records}
+
+
 def classifications(read):
-    names = json.loads(read(BLACKLIST))
+    records = blacklist_records(json.loads(read(BLACKLIST)))
     industries = json.loads(read(INDUSTRIES))
-    if not isinstance(names, list) or not isinstance(industries, dict):
-        raise ValueError("Invalid company classification files")
-    for name in names:
-        field(name)
+    if not isinstance(industries, dict):
+        raise ValueError("Invalid company industries file")
     for name, reason in industries.items():
         field(name)
         field(reason)
-    return names, industries
+    return records, industries
 
 
 def classify(report, blacklist, industries):
@@ -122,16 +168,26 @@ def verified_industries(industries):
     return {norm(k): v.strip() for k, v in industries.items() if v.strip() != PENDING}
 
 
-def plan(read, day, additions=(), industries=None, finalize=False, require_daily=False):
-    names, known = classifications(read)
-    blocked = {norm(n) for n in names}
+def plan(read, day, additions=(), industries=None, finalize=False, require_daily=False, *,
+         typed_additions=()):
+    records, known = classifications(read)
+    blocked = protected_names(records)
     changes = {}
-    for name in additions:
-        key = norm(field(name))
+    added = False
+    candidates = blacklist_records(list(typed_additions), allow_legacy=False)
+    candidates += blacklist_records(list(additions))
+    for record in candidates:
+        key = norm(record["company"])
         if key not in blocked:
-            names.append(name)
+            records.append(record)
             blocked.add(key)
-            changes[BLACKLIST] = json_text(sorted(names))
+            added = True
+        elif record["employerType"] != "unknown" and any(
+            norm(old["company"]) == key and old["employerType"] != record["employerType"] for old in records
+        ):
+            raise ValueError(f"Use a reviewed data change to update {record['company']}")
+    if added:
+        changes[BLACKLIST] = blacklist_text(sorted(records, key=lambda record: record["company"]))
     spelling = {norm(k): k for k in known}
     for name, reason in (industries or {}).items():
         key = norm(field(name))
@@ -255,6 +311,7 @@ def mirror(files, day, root):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--blacklist", nargs="*", default=[])
+    ap.add_argument("--blacklist-records", default="[]", help="JSON array of typed company records")
     ap.add_argument("--industry", default="{}")
     ap.add_argument("--date", default=datetime.now(BEIJING).date().isoformat())
     ap.add_argument("--local-root", default="/workspace")
@@ -262,7 +319,8 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     industries = json.loads(args.industry)
-    if not (args.blacklist or industries or args.finalize):
+    typed_additions = blacklist_records(json.loads(args.blacklist_records), allow_legacy=False)
+    if not (args.blacklist or typed_additions or industries or args.finalize):
         return
     cfg = json.loads(Path("/workspace/config.json").read_text())
     handlers = [urllib.request.HTTPSHandler(context=ssl.create_default_context())]
@@ -270,7 +328,7 @@ def main():
         handlers.append(urllib.request.ProxyHandler(dict.fromkeys(("http", "https"), cfg["proxy"])))
     repo = Repo(cfg["github_token"], cfg["repo"], cfg["branch"], urllib.request.build_opener(*handlers))
     files = repo.transact(lambda read: plan(read, args.date, args.blacklist, industries, args.finalize,
-                                          require_daily=args.finalize),
+                                          require_daily=args.finalize, typed_additions=typed_additions),
                           f"Verify company classifications for {args.date}", args.dry_run)
     if not args.dry_run:
         mirror(files, args.date, args.local_root)
