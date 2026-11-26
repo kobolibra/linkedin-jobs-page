@@ -369,7 +369,7 @@ async function phone(browser,engine,theme){
   }
   assert.ok(t&&t.text.includes(company),
    'first tap must read the actually targeted institution '+company+': '+JSON.stringify(t));
-  assert.ok(t.left>=0&&t.right<=width,'tooltip stays on screen on a phone');
+  assert.ok(t.left>=0&&t.right<=width,'tooltip stays on screen on a phone '+JSON.stringify({engine,width,theme,tooltip:t,viewport:await page.evaluate(()=>({innerWidth,clientWidth:document.documentElement.clientWidth,visualWidth:window.visualViewport?.width}))}));
   assert.equal(await page.evaluate(()=>document.getElementById('company').value),before,'first tap does not navigate');
   await bubble.locator('.bubble-point').tap();
   await page.waitForFunction(name=>document.getElementById('company').value===name,company,{timeout:5000});

@@ -148,7 +148,7 @@
 #headerTools .nj-account-slot .account-control{flex:none;margin:0}
 #headerTools .nj-account-slot .auth-guest-sign{white-space:nowrap;flex:none;padding:0 3px;gap:5px}
 [data-theme="dark"] #headerTools select{color-scheme:dark}
-html{scrollbar-gutter:stable}
+@media(min-width:721px){html{scrollbar-gutter:stable}}
 @media(max-width:720px){
  .nj-brand-row{column-gap:12px}
  #headerTools{grid-template-columns:38px 94px 36px 64px;column-gap:5px;min-height:40px}

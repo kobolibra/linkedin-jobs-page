@@ -452,10 +452,14 @@ window.VizTip=(()=>{
   let anchor=null;
   const place=(x,y)=>{
     const t=tip,r=t.getBoundingClientRect(),margin=10;
-    const maxLeft=Math.max(margin,innerWidth-r.width-margin);
-    const maxTop=Math.max(margin,innerHeight-r.height-margin);
+    // Touch WebKit can report an expanded innerWidth when a scrollable chart
+    // is wider than its viewport. Use the actual visible/layout bounds.
+    const viewportWidth=Math.min(innerWidth,document.documentElement.clientWidth||innerWidth,window.visualViewport?.width||innerWidth);
+    const viewportHeight=Math.min(innerHeight,document.documentElement.clientHeight||innerHeight,window.visualViewport?.height||innerHeight);
+    const maxLeft=Math.max(margin,viewportWidth-r.width-margin);
+    const maxTop=Math.max(margin,viewportHeight-r.height-margin);
     let left=x+16,top=y-r.height-14;
-    if(left+r.width>innerWidth-margin)left=x-r.width-16;
+    if(left+r.width>viewportWidth-margin)left=x-r.width-16;
     if(top<margin)top=y+18;
     left=Math.min(maxLeft,Math.max(margin,left));
     top=Math.min(maxTop,Math.max(margin,top));
