@@ -248,6 +248,10 @@ def apply_review(root, run_dir, manifest, args):
     execute(root, run_dir, manifest, "apply-review" if opts.results else "checkpoint-queue",
             script_command(root, "scripts/apply_company_review.py", command), credentials=True)
     refresh(root, run_dir, manifest)
+    if opts.results and not opts.dry_run:
+        # Replace the task worklist after a committed batch, so completed
+        # investigations cannot be selected again within the same run.
+        build_queue(root, run_dir, manifest)
 
 
 def checked_arguments(action, args, root, run_dir):
