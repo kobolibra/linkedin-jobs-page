@@ -13,14 +13,14 @@ class CompanyReviewQueueTest(unittest.TestCase):
         (self.root / "reports").mkdir()
         (self.root / "data/n8n").mkdir(parents=True)
         self.write("jobs.json", {"jobs": [
-            {"company": "High Impact", "jobStatus": "active"},
-            {"company": "Known Ordinary", "jobStatus": "active"},
+            {"company": "High Impact", "sourceJobId": "li-100000001", "jobStatus": "active"},
+            {"company": "Known Ordinary", "sourceJobId": "li-100000003", "jobStatus": "active"},
         ]})
         self.write("jobs-index.json", {"jobs": [
             {"company": "High Impact", "jobStatus": "active", "location": "HK", "title": "Analyst",
-             "link": "https://hk.linkedin.com/jobs/view/1"},
+             "link": "https://hk.linkedin.com/jobs/view/100000001"},
             {"company": "High Impact", "jobStatus": "active", "location": "HK", "title": "Engineer",
-             "link": "https://hk.linkedin.com/jobs/view/2"},
+             "link": "https://hk.linkedin.com/jobs/view/100000002"},
         ]})
         self.write("financial_blacklist.json", [{"company": "Protected Unknown", "employerType": "unknown"}])
         self.write("company_industries.json", {})
@@ -44,11 +44,12 @@ class CompanyReviewQueueTest(unittest.TestCase):
         companies, report = queue.discover(self.root)
         names = [row["company"] for row in report["reviewQueue"]]
         self.assertEqual(names[0], "High Impact")
-        self.assertIn("Protected Unknown", names)
-        self.assertIn("Expired Pending", names)
+        self.assertNotIn("Protected Unknown", names)
+        self.assertNotIn("Expired Pending", names)
+        self.assertEqual({r["company"] for r in report["deferredObservations"]}, {"Protected Unknown", "Expired Pending"})
         self.assertIn("Known Ordinary", names)
         self.assertEqual(report["reviewQueue"][0]["websiteJobsForKey"], 2)
-        self.assertEqual(report["summary"]["queueByStatus"], {"not_started": 4})
+        self.assertEqual(report["summary"]["queueByStatus"], {"not_started": 2})
 
     def test_requester_excluded_company_not_reopened(self):
         (self.root / "reports/cumulative-target-companies.tsv").write_text(
@@ -67,7 +68,7 @@ class CompanyReviewQueueTest(unittest.TestCase):
         self.write("data/jobspy/incremental/latest.json", {"jobs": [
             {"company": "JobSpy Fixed Company", "jobStatus": "active"}]})
         self.write("data/n8n/rss-latest.json", {"jobs": [
-            {"company": "RSS New Company", "jobStatus": "active"}]})
+            {"company": "RSS New Company", "sourceJobId": "li-100000005", "jobStatus": "active"}]})
         _, report = queue.discover(self.root)
         names = {row["company"] for row in report["reviewQueue"]}
         self.assertIn("RSS New Company", names)
@@ -94,10 +95,52 @@ class CompanyReviewQueueTest(unittest.TestCase):
             "firstQueuedOn": "2026-11-01",
         }]})
         _, report = queue.discover(self.root)
-        row = next(row for row in report["reviewQueue"] if row["company"] == "Old Investigation")
+        row = next(row for row in report["deferredObservations"] if row["company"] == "Old Investigation")
         self.assertEqual(row["sourceStatuses"], ["carry_forward"])
         self.assertEqual(row["firstQueuedOn"], "2026-11-01")
-        self.assertIn("Unfinalized Delete", {row["company"] for row in report["reviewQueue"]})
+        self.assertIn("Unfinalized Delete", {row["company"] for row in report["deferredObservations"]})
+
+    def test_only_new_job_id_reopens_inconclusive_employer(self):
+        companies, _ = queue.discover(self.root)
+        result = {"company": "High Impact", "investigationStatus": "inconclusive",
+                  "protectionDecision": "undetermined", "queries": ["High Impact official"],
+                  "remainingQuestion": "Legal identity unclear"}
+        self.write(queue.STATUS_PATH, {"companies": queue.apply_results(companies, [result])})
+        def due():
+            _, report = queue.discover(self.root)
+            return {r["company"] for r in report["reviewQueue"]}
+        self.assertNotIn("High Impact", due())
+        self.write("data/n8n/rss-latest.json", {"jobs": [
+            {"company": "HIGH IMPACT", "sourceJobId": "li-same-job-100000001",
+             "pushTime": "2026-11-27T03:00:00Z"}]})
+        self.assertNotIn("High Impact", due())
+        self.write("jobs.json", {"jobs": [
+            {"company": "High Impact", "sourceJobId": "li-100000001", "jobStatus": "expired"},
+            {"company": "High Impact", "sourceJobId": "li-100000010", "jobStatus": "active",
+             "crossIdRepost": {"rootId": "100000001", "pending": False}}]})
+        self.assertNotIn("High Impact", due())
+        self.write("data/n8n/rss-latest.json", {"jobs": [
+            {"company": "High Impact", "sourceJobId": "li-100000011"}]})
+        self.assertIn("High Impact", due())
+        companies, report = queue.discover(self.root)
+        self.write(queue.STATUS_PATH, {"companies": queue.apply_results(companies, [result])})
+        self.assertNotIn("High Impact", due())
+        self.write("jobs.json", {"jobs": [
+            {"company": "High Impact", "sourceJobId": "li-100000011", "jobStatus": "active"}]})
+        self.assertNotIn("High Impact", due())
+
+    def test_legacy_inconclusive_is_baselined_and_no_job_is_deferred(self):
+        self.write(queue.STATUS_PATH, {"companies": [
+            {"company": "High Impact", "investigationStatus": "inconclusive",
+             "protectionDecision": "undetermined", "queries": ["old"], "lastReviewedOn": "2026-11-26"}]})
+        companies, report = queue.discover(self.root)
+        row = next(r for r in report["deferredObservations"] if r["company"] == "High Impact")
+        self.assertEqual(set(row["reviewedJobIds"]), {"100000001", "100000002"})
+        self.write(queue.STATUS_PATH, {"companies": companies})
+        self.write("data/n8n/rss-latest.json", {"jobs": [
+            {"company": "High Impact", "sourceJobId": "li-100000099"}]})
+        _, report = queue.discover(self.root)
+        self.assertIn("High Impact", {r["company"] for r in report["reviewQueue"]})
 
     def test_apply_and_resolve_delete_requires_industry_and_evidence(self):
         companies, report = queue.discover(self.root)

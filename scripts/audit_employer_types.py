@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from reclassify import BLACKLIST, blacklist_records, norm
+from scripts.company_review_queue import discover
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -50,23 +51,10 @@ def main():
         "website": counts(website, lambda name: name.strip().lower()),
     }
     if args.pending:
-        # Unlisted publishers are observations, not authorizations to add protection.
-        live_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
-        website_counts = Counter(norm(job["company"]) for job in website)
-        pending = {}
-        for row in records:
-            if row["employerType"] == "unknown":
-                pending[row["company"]] = "inconclusive" if was_reviewed(row) else "pending"
-        for job in jobs:
-            name = job.get("company")
-            if name and norm(name) not in types:
-                pending[name] = "unlisted"
-        report["reviewQueue"] = sorted(
-            ({"company": name, "status": status, "activeJobsForKey": live_counts[norm(name)],
-              "websiteJobsForKey": website_counts[norm(name)]}
-             for name, status in pending.items()),
-            key=lambda row: (-row["websiteJobsForKey"], -row["activeJobsForKey"], norm(row["company"]), row["company"]),
-        )
+        # Same worklist as the scheduler, never a second unconditional queue.
+        _, work = discover(ROOT)
+        report["reviewQueue"] = work["reviewQueue"]
+        report["deferredCompanies"] = work["summary"]["deferredCompanies"]
     if args.ranked:
         live_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
         website_counts = Counter(norm(job["company"]) for job in website)

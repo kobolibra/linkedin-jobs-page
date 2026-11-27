@@ -41,7 +41,13 @@ and checkpoints unresolved observations to GitHub before AI research begins.
 
 ## AI task contract
 
-Research the highest-impact companies first, using the exact publisher identity,
+Research **only** rows in `reviewQueue`, highest impact first. Never research
+`deferredObservations`, past daily TSVs, or other coverage audits independently.
+An inconclusive investigation persists the LinkedIn IDs observed in that run.
+Only a genuinely new, previously unreviewed open listing can reopen it; repeated
+RSS pulls, timestamp/status changes, and known linked reposts do not. Companies
+with no new listing stay deferred even if they had historical jobs. The worklist
+is rebuilt after each successful batch. Use the exact publisher identity,
 official/regulatory or company-maintained sources and original job context.
 Do not infer the industry or agency status from the name or job title alone.
 Do not assign a new mixed/unknown protection record. Submit inconclusive

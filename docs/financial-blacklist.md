@@ -111,7 +111,7 @@ never assume direct employment, and leave canonical deletion rules unchanged.
 
 ## Company investigation progress
 
-`reports/employer-review-status.json` tracks research progress only; it is not a runtime classification source. It combines current unknown/unlisted employers, historical daily reports marked `待查证`, staging/canonical coverage gaps, and unresolved work carried forward after jobs expire.
+`reports/employer-review-status.json` tracks research progress only; it is not a runtime classification source. It combines current unknown/unlisted employers, historical daily reports marked `待查证`, staging/canonical coverage gaps, and unresolved work carried forward after jobs expire. Only companies with a currently open, unreviewed LinkedIn job ID enter `reviewQueue`. Inconclusive results persist the observed IDs; old jobs, repeated snapshots, and known linked reposts cannot reopen research. Deferred observations remain recorded but must not be investigated until a new job appears.
 
 Build it after the daily company report:
 

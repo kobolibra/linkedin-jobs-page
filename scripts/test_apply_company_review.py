@@ -17,6 +17,10 @@ class AtomicReviewTests(unittest.TestCase):
              "sourceStatuses": ["historical_pending"], "activeJobsForKey": 0, "websiteJobsForKey": 0},
             {"company": "Bank Co", "firstQueuedOn": DAY, "sourceStatuses": ["staging_not_canonical"]},
             {"company": "Unknown Co", "firstQueuedOn": DAY, "sourceStatuses": ["unlisted"]}]}
+        for i, row in enumerate(self.snapshot["reviewQueue"], 1):
+            row["candidateJobIds"] = row["observedJobIds"] = [str(100000000 + i)]
+            row["reviewedJobIds"] = []
+            row["observationAt"] = "2026-11-27T03:00:00+00:00"
         self.files[rc.daily_paths("2026-08-03")[0]] = json.dumps({"target_companies":
             [{"company":"Retail Co","reason":"待查证"}],"excluded_companies":[]})
         self.retail = {"company":"Retail Co","investigationStatus":"verified","protectionDecision":"delete",
@@ -60,7 +64,8 @@ class AtomicReviewTests(unittest.TestCase):
         self.assertIn("Retail", changes[rc.daily_paths("2026-08-03")[0]])
         self.files.update(changes)
         status = json.loads(self.files[apply.queue.STATUS_PATH])
-        self.assertEqual([x["company"] for x in status["reviewQueue"]], ["Unknown Co"])
+        self.assertEqual(status["reviewQueue"], [])
+        self.assertEqual(status["summary"]["deferredCompanies"], 1)
         self.assertFalse(self.plan([self.retail, self.bank, self.unknown]))
 
     def test_reject_unobserved_duplicate_and_unverified_delete(self):
@@ -81,6 +86,42 @@ class AtomicReviewTests(unittest.TestCase):
         correction["employerType"] = correction["protectedRecord"]["employerType"] = "recruitment_agency"
         with self.assertRaisesRegex(ValueError, "reviewed PR"):
             self.plan([correction])
+
+    def test_deferred_state_checkpoint_and_concurrent_new_job_are_not_lost(self):
+        self.files.update(self.plan([self.unknown]))
+        status = json.loads(self.files[apply.queue.STATUS_PATH])
+        old = next(r for r in status["companies"] if r["company"] == "Unknown Co")
+        self.assertEqual(old["reviewedJobIds"], ["100000003"])
+        self.assertNotIn("Unknown Co", {r["company"] for r in status["reviewQueue"]})
+        # A later checkpoint sees a new job while an old run still has its
+        # previous queue. That old run cannot mark the new ID investigated.
+        newer = copy.deepcopy(self.snapshot)
+        row = next(r for r in newer["reviewQueue"] if r["company"] == "Unknown Co")
+        row.update(candidateJobIds=["100000004"], observedJobIds=["100000003", "100000004"],
+                   reviewedJobIds=["100000003"], observationAt="2026-11-27T04:00:00+00:00")
+        self.files.update(apply.plan_review(self.files.get, newer, [], DAY))
+        self.files.update(self.plan([self.unknown]))
+        status = json.loads(self.files[apply.queue.STATUS_PATH])
+        row = next(r for r in status["reviewQueue"] if r["company"] == "Unknown Co")
+        self.assertEqual(row["candidateJobIds"], ["100000004"])
+        self.assertEqual(row["reviewedJobIds"], ["100000003"])
+        self.files.update(apply.plan_review(self.files.get, newer, [self.unknown], DAY))
+        status = json.loads(self.files[apply.queue.STATUS_PATH])
+        self.assertNotIn("Unknown Co", {r["company"] for r in status["reviewQueue"]})
+        row = next(r for r in status["companies"] if r["company"] == "Unknown Co")
+        self.assertEqual(row["reviewedJobIds"], ["100000003", "100000004"])
+
+    def test_deferred_observation_is_persisted_but_cannot_be_researched(self):
+        snapshot = copy.deepcopy(self.snapshot)
+        row = snapshot["reviewQueue"].pop()
+        row.update(candidateJobIds=[], observedJobIds=[], reviewedJobIds=[])
+        snapshot["deferredObservations"] = [row]
+        self.files.update(apply.plan_review(self.files.get, snapshot, [], DAY))
+        status = json.loads(self.files[apply.queue.STATUS_PATH])
+        self.assertEqual(status["summary"]["deferredCompanies"], 1)
+        self.assertIn("Unknown Co", {r["company"] for r in status["companies"]})
+        with self.assertRaisesRegex(ValueError, "not in this run"):
+            apply.plan_review(self.files.get, snapshot, [self.unknown], DAY)
 
     def test_concurrent_verified_status_never_downgraded(self):
         self.files.update(self.plan([self.retail]))

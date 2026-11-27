@@ -10,7 +10,6 @@ import ssl
 import subprocess
 import sys
 import urllib.request
-from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -28,7 +27,7 @@ FIELDS = {"company", "investigationStatus", "protectionDecision", "identityStatu
           "queries", "investigationSummary", "remainingQuestion", "lastReviewedOn"}
 OBSERVED = {"company", "sourceStatuses", "activeJobsForKey", "websiteJobsForKey",
             "historicalPendingDates", "stagingNotCanonical", "indexNotCanonical",
-            "firstQueuedOn", "observedFirstOn", "observedLastOn"}
+            "firstQueuedOn", "observedFirstOn", "observedLastOn", "candidateJobIds", "observationAt"}
 
 
 def iso_day(value):
@@ -101,10 +100,14 @@ def validate_result(result, allowed, records, day):
 
 
 def merge_observation(old, observation):
-    row = copy.deepcopy(old or {})
-    for k in OBSERVED:
-        if k in observation and k not in {"company", "firstQueuedOn", "historicalPendingDates", "observedFirstOn", "observedLastOn"}:
-            row[k] = copy.deepcopy(observation[k])
+    row = copy.deepcopy(old or observation)
+    newer = observation.get("observationAt", "") >= row.get("observationAt", "")
+    if newer:
+        for k in OBSERVED:
+            if k in observation and k not in {"company", "firstQueuedOn", "historicalPendingDates", "observedFirstOn", "observedLastOn"}:
+                row[k] = copy.deepcopy(observation[k])
+    row["observedJobIds"] = sorted(set(row.get("observedJobIds", [])) | set(observation.get("observedJobIds", [])))
+    row["reviewedJobIds"] = sorted(set(row.get("reviewedJobIds", [])) | set(observation.get("reviewedJobIds", [])))
     row["company"] = row.get("company") or rc.field(observation["company"])
     row.setdefault("investigationStatus", "not_started")
     row.setdefault("protectionDecision", "undetermined")
@@ -126,20 +129,25 @@ def plan_review(read, snapshot, results, day):
     current = json.loads(read(queue.STATUS_PATH) or "{}")
     rows = {rc.norm(row["company"]): copy.deepcopy(row) for row in current.get("companies", []) if rc.norm(row["company"]) not in manual}
     allowed = {}
-    for observation in snapshot["reviewQueue"]:
-        key = rc.norm(rc.field(observation["company"]))
-        if key in manual:
-            continue
-        if key in allowed:
-            raise ValueError("Duplicate normalized company in queue")
-        allowed[key] = observation
-        rows[key] = merge_observation(rows.get(key), observation)
+    observed = set()
+    for eligible, observations in ((True, snapshot["reviewQueue"]),
+                                   (False, snapshot.get("deferredObservations", []))):
+        for observation in observations:
+            key = rc.norm(rc.field(observation["company"]))
+            if key in manual:
+                continue
+            if key in observed:
+                raise ValueError("Duplicate normalized company in queue")
+            observed.add(key)
+            if eligible:
+                allowed[key] = observation
+            rows[key] = merge_observation(rows.get(key), observation)
     records_list, industries_before = rc.classifications(read)
     records = {rc.norm(row["company"]): row for row in records_list}
     targets_before = rc.read_ledger(read(rc.TARGET), "备注")
     excluded_before = rc.read_ledger(read(rc.EXCLUDED), "排除原因")
     prior_industries = rc.verified_industries(industries_before)
-    seen, accepted, protections, industries = set(), [], [], {}
+    seen, accepted, protections, industries, covered_ids = set(), [], [], {}, {}
     for result in results:
         key = validate_result(result, allowed, records, day)
         if key in seen:
@@ -155,6 +163,14 @@ def plan_review(read, snapshot, results, day):
                 raise ValueError("Conflicting verified industry: " + result["company"])
             if queue.resolved(old, records, prior_industries, targets_before, excluded_before):
                 continue
+        # CAS retries and overlapping runs cannot submit a second investigation
+        # for the same job IDs. Only the snapshot actually researched is covered.
+        observation = allowed[key]
+        if queue.established(key, records, prior_industries, targets_before, excluded_before):
+            continue
+        if not (set(observation.get("candidateJobIds", [])) - set(old.get("reviewedJobIds", []))):
+            continue
+        covered_ids[key] = set(observation.get("observedJobIds", [])) | set(observation.get("candidateJobIds", []))
         clean = copy.deepcopy(result)
         clean["company"] = old["company"]
         clean["lastReviewedOn"] = clean.get("lastReviewedOn") or day
@@ -205,28 +221,20 @@ def plan_review(read, snapshot, results, day):
             if body is not None:
                 report = rc.classify(json.loads(body), set(record_map), normalized_industries)
                 changed.update(rc.daily_files(historical_day, report))
-    companies = queue.apply_results(list(rows.values()), accepted)
-    unresolved = []
+    companies = queue.apply_results(list(rows.values()), accepted, covered_ids=covered_ids)
     for row in companies:
         key = rc.norm(row["company"])
         row["existingRecord"] = record_map.get(key)
         row["existingIndustry"] = normalized_industries.get(key)
-        if not queue.resolved(row, record_map, normalized_industries, targets, excluded):
-            unresolved.append(row)
     for result in accepted:
         if result["investigationStatus"] == "verified":
             row = next(x for x in companies if rc.norm(x["company"]) == rc.norm(result["company"]))
             if not queue.resolved(row, record_map, normalized_industries, targets, excluded):
                 raise ValueError("Verified decision failed runtime reconciliation: " + result["company"])
-    unresolved.sort(key=lambda row: (-int(row.get("websiteJobsForKey") or 0), -int(row.get("activeJobsForKey") or 0), rc.norm(row["company"])))
-    summary = dict(snapshot.get("summary") or {})
-    summary.update(trackedCompanies=len(companies), reviewQueue=len(unresolved),
-                   queueByStatus=dict(Counter(x["investigationStatus"] for x in unresolved)),
-                   queueBySource=dict(Counter(s for x in unresolved for s in x.get("sourceStatuses", []))),
-                   stagingNotCanonical=sum(bool(x.get("stagingNotCanonical")) for x in unresolved),
-                   indexNotCanonical=sum(bool(x.get("indexNotCanonical")) for x in unresolved))
+    ready, waiting = queue.partition(companies, record_map, normalized_industries, targets, excluded)
+    summary = queue.queue_summary(snapshot.get("summary") or {}, companies, ready, waiting)
     payload = {"version": 1, "sourceCommit": snapshot.get("sourceCommit"),
-               "summary": summary, "reviewQueue": unresolved, "companies": companies}
+               "summary": summary, "reviewQueue": ready, "companies": companies}
     old_payload = {k: v for k, v in current.items() if k != "generatedAt"}
     if payload != old_payload:
         payload["generatedAt"] = datetime.now(timezone.utc).isoformat()

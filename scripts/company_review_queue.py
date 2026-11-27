@@ -15,12 +15,13 @@ import json
 import re
 import subprocess
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from reclassify import BEIJING, BLACKLIST, EXCLUDED, INDUSTRIES, TARGET, blacklist_records, norm, read_ledger, requester_excluded_names
+from scripts.jobspy.linkedin_ids import linkedin_job_id
 
 STATUS_PATH = "reports/employer-review-status.json"
 PENDING = "待查证"
@@ -74,6 +75,78 @@ def resolved(row: dict, records: dict[str, dict], industries: dict[str, str],
     return False
 
 
+def job_id(job):
+    return linkedin_job_id(job.get("sourceJobId")) or linkedin_job_id(job.get("link"))
+
+
+def job_observations(jobs, index, staging):
+    """Use stable listing IDs; confirmed or pending linked reposts share their root."""
+    all_ids, open_ids = defaultdict(set), defaultdict(set)
+    aliases = {}
+    canonical = {}
+    for job in jobs:
+        name, listing = job.get("company"), job_id(job)
+        if not name or not listing:
+            continue
+        key = norm(name)
+        canonical[(key, listing)] = job.get("jobStatus")
+        lineage = job.get("crossIdRepost") or {}
+        if lineage.get("rootId"):
+            root = linkedin_job_id(lineage["rootId"])
+            if root:
+                aliases[(key, listing)] = root
+    for job in jobs + index + staging:
+        name, listing = job.get("company"), job_id(job)
+        if not name or not listing:
+            continue
+        key = norm(name)
+        root = aliases.get((key, listing), listing)
+        all_ids[key].update((listing, root))
+        # A stale RSS copy cannot reopen a canonical expired listing.
+        if canonical.get((key, listing), job.get("jobStatus")) != "expired":
+            open_ids[key].add(root)
+    return all_ids, open_ids, aliases
+
+
+def established(key, records, industries, targets, excluded):
+    record = records.get(key)
+    if record and record["employerType"] not in {"unknown", "mixed"} and record.get("evidence"):
+        return True
+    return (key not in records and key in targets and key not in excluded
+            and key in industries and industries[key] != PENDING
+            and targets[key][1] == industries[key])
+
+
+def review_due(row):
+    # Verified decisions with inconsistent ledgers are a reconciliation issue,
+    # never an instruction to research the same company again.
+    if row.get("investigationStatus") == "verified":
+        return False
+    return bool(set(row.get("candidateJobIds", [])) - set(row.get("reviewedJobIds", [])))
+
+
+def partition(companies, records, industries, targets, excluded):
+    active, waiting = [], []
+    for row in companies:
+        key = norm(row["company"])
+        if resolved(row, records, industries, targets, excluded) or established(key, records, industries, targets, excluded):
+            continue
+        (active if review_due(row) else waiting).append(row)
+    order = lambda row: (-int(row.get("websiteJobsForKey") or 0),
+                         -int(row.get("activeJobsForKey") or 0), norm(row["company"]))
+    return sorted(active, key=order), sorted(waiting, key=order)
+
+
+def queue_summary(summary, companies, active, waiting):
+    return dict(summary, trackedCompanies=len(companies), reviewQueue=len(active),
+                deferredCompanies=len(waiting),
+                deferredByStatus=dict(Counter(row["investigationStatus"] for row in waiting)),
+                queueByStatus=dict(Counter(row["investigationStatus"] for row in active)),
+                queueBySource=dict(Counter(source for row in active for source in row.get("sourceStatuses", []))),
+                stagingNotCanonical=sum(bool(row.get("stagingNotCanonical")) for row in active),
+                indexNotCanonical=sum(bool(row.get("indexNotCanonical")) for row in active))
+
+
 def discover(root: Path) -> tuple[list[dict], dict]:
     records_list = blacklist_records(read_json(root / BLACKLIST), allow_legacy=False)
     records = {norm(row["company"]): row for row in records_list}
@@ -82,6 +155,9 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     excluded = read_ledger((root / EXCLUDED).read_text(encoding="utf-8"), "排除原因")
     jobs = jobs_from(root, "jobs.json")
     index = jobs_from(root, "jobs-index.json")
+    staging = jobs_from(root, "data/n8n/rss-latest.json")
+    observed_ids, candidate_ids, aliases = job_observations(jobs, index, staging)
+    observation_at = dt.datetime.now(dt.timezone.utc).isoformat()
     active = [job for job in jobs if job.get("jobStatus") == "active"]
     website = website_jobs(index)
     active_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
@@ -146,7 +222,7 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     index_names = {norm(job["company"]): job["company"] for job in index if job.get("company")}
     # JobSpy searches a fixed, already verified company universe. Only the
     # open-ended RSS input needs pre-publication company discovery.
-    for job in jobs_from(root, "data/n8n/rss-latest.json"):
+    for job in staging:
         job_dates(job)
         name = job.get("company")
         if name and norm(name) not in canonical_names and norm(name) not in manual:
@@ -162,14 +238,11 @@ def discover(root: Path) -> tuple[list[dict], dict]:
             observe(old["company"], "carry_forward")
 
     companies = []
-    queue = []
     for key, found in observed.items():
         old = copy.deepcopy(previous.get(key, {}))
         # Established policy entries do not require another AI investigation just
         # because a staging snapshot has not yet reached canonical publication.
-        if not old and key in records and records[key]["employerType"] not in {"unknown", "mixed"}:
-            continue
-        if not old and key not in records and key in targets and key in industries and targets[key][1] == industries[key] and industries[key] != PENDING:
+        if not old and established(key, records, industries, targets, excluded):
             continue
         observation_days = dates.get(key, set()) | set(old.get("historicalPendingDates", [])) | found["historicalPendingDates"]
         observation_days.update(x for x in (old.get("observedFirstOn"), old.get("observedLastOn")) if x)
@@ -196,10 +269,22 @@ def discover(root: Path) -> tuple[list[dict], dict]:
                 row["investigationStatus"] = "inconclusive"
                 row["investigationSummary"] = (record.get("review") or record.get("evidence") or {}).get("note")
                 row["queries"] = [(record.get("review") or {}).get("query")] if record.get("review", {}).get("query") else []
+        # Retain IDs even after expiration, removal, or a repeated RSS snapshot.
+        all_seen = set(old.get("observedJobIds", [])) | observed_ids[key]
+        reviewed = set(old.get("reviewedJobIds", []))
+        if row["investigationStatus"] == "inconclusive" and "reviewedJobIds" not in old:
+            # Legacy investigations have no per-job checkpoint. Baseline their
+            # existing listings once rather than rerun old research on upgrade.
+            reviewed.update(all_seen)
+        # When canonical publication links a previously reviewed listing to a
+        # repost lineage, carry that coverage across the known alias.
+        for (company, listing), root_id in aliases.items():
+            if company == key and (listing in reviewed or root_id in reviewed):
+                reviewed.update((listing, root_id))
+        row.update(observedJobIds=sorted(all_seen), reviewedJobIds=sorted(reviewed),
+                   candidateJobIds=sorted(candidate_ids[key]), observationAt=observation_at)
         if resolved(row, records, industries, targets, excluded):
             row["sourceStatuses"] = sorted(set(row["sourceStatuses"]) | {"resolved_observation"})
-        else:
-            queue.append(row)
         companies.append(row)
 
     # Preserve resolved history without putting it back into the active queue.
@@ -208,24 +293,16 @@ def discover(root: Path) -> tuple[list[dict], dict]:
         if key not in current_keys:
             companies.append(old)
 
-    order = lambda row: (-row.get("websiteJobsForKey", 0), -row.get("activeJobsForKey", 0), norm(row["company"]), row["company"])
-    queue.sort(key=order)
     companies.sort(key=lambda row: (norm(row["company"]), row["company"]))
-    summary = {
-        "canonicalJobs": len(jobs),
-        "indexJobs": len(index),
-        "websiteJobs": len(website),
-        "trackedCompanies": len(companies),
-        "reviewQueue": len(queue),
-        "queueByStatus": dict(Counter(row["investigationStatus"] for row in queue)),
-        "queueBySource": dict(Counter(source for row in queue for source in row["sourceStatuses"])),
-        "stagingNotCanonical": sum(row["stagingNotCanonical"] for row in queue),
-        "indexNotCanonical": sum(row["indexNotCanonical"] for row in queue),
-    }
-    return companies, {"summary": summary, "reviewQueue": queue}
+    ready, deferred = partition(companies, records, industries, targets, excluded)
+    summary = queue_summary({"canonicalJobs": len(jobs), "indexJobs": len(index),
+                             "websiteJobs": len(website)}, companies, ready, deferred)
+    # Deferred observations are for checkpointing only, never AI research.
+    return companies, {"summary": summary, "reviewQueue": ready,
+                       "deferredObservations": deferred}
 
 
-def apply_results(companies: list[dict], results: list[dict]) -> list[dict]:
+def apply_results(companies: list[dict], results: list[dict], *, covered_ids=None) -> list[dict]:
     by_key = {norm(row["company"]): row for row in companies}
     for result in results:
         name = result.get("company")
@@ -262,6 +339,8 @@ def apply_results(companies: list[dict], results: list[dict]) -> list[dict]:
             if value is not None:
                 row[field] = value
         row["lastReviewedOn"] = result.get("lastReviewedOn") or dt.datetime.now(BEIJING).date().isoformat()
+        covered = (covered_ids or {}).get(key, row.get("observedJobIds", []))
+        row["reviewedJobIds"] = sorted(set(row.get("reviewedJobIds", [])) | set(covered))
     return sorted(by_key.values(), key=lambda row: (norm(row["company"]), row["company"]))
 
 
@@ -279,12 +358,9 @@ def main():
         industries = {norm(key): value for key, value in read_json(args.root / INDUSTRIES, {}).items()}
         targets = read_ledger((args.root / TARGET).read_text(encoding="utf-8"), "备注")
         excluded = read_ledger((args.root / EXCLUDED).read_text(encoding="utf-8"), "排除原因")
-        report["reviewQueue"] = sorted((row for row in companies if not resolved(row, records, industries, targets, excluded)),
-                                       key=lambda row: (-row.get("websiteJobsForKey", 0), -row.get("activeJobsForKey", 0), norm(row["company"])))
-        report["summary"]["trackedCompanies"] = len(companies)
-        report["summary"]["reviewQueue"] = len(report["reviewQueue"])
-        report["summary"]["queueByStatus"] = dict(Counter(row["investigationStatus"] for row in report["reviewQueue"]))
-        report["summary"]["queueBySource"] = dict(Counter(source for row in report["reviewQueue"] for source in row.get("sourceStatuses", [])))
+        ready, deferred = partition(companies, records, industries, targets, excluded)
+        report["reviewQueue"], report["deferredObservations"] = ready, deferred
+        report["summary"] = queue_summary(report["summary"], companies, ready, deferred)
     try:
         source_commit = subprocess.check_output(("git", "rev-parse", "HEAD"), cwd=args.root, text=True).strip()
     except (OSError, subprocess.CalledProcessError):
