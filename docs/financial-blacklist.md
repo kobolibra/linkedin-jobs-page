@@ -108,11 +108,11 @@ never assume direct employment, and leave canonical deletion rules unchanged.
 
 `reports/employer-review-status.json` tracks research progress only; it is not a runtime classification source. It combines current unknown/unlisted employers, historical daily reports marked `待查证`, staging/canonical coverage gaps, and unresolved work carried forward after jobs expire. Only companies with a currently open, unreviewed LinkedIn job ID enter `reviewQueue`. Inconclusive results persist the observed IDs; old jobs, repeated snapshots, and known linked reposts cannot reopen research. Deferred observations remain recorded but must not be investigated until a new job appears.
 
-Build it after the daily company report:
-
-```sh
-python scripts/company_review_queue.py --write
-```
+The scheduled entrypoint prepares the daily report and review checkpoint in
+one transaction. The queue is generated once per run; successful batches
+return the updated worklist from the committed state, without rescanning jobs.
+The standalone queue command is a maintenance diagnostic, not a second
+scheduled task.
 
 Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. In scheduled runs submit actual research only through the atomic `apply-review` command in the scheduler contract; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. The older local `--apply-results` command is a maintenance diagnostic, not a scheduled write procedure.
 

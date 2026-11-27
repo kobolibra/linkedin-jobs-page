@@ -101,14 +101,42 @@ class AtomicReviewTests(unittest.TestCase):
         self.assertNotIn(rc.TARGET, changes)
         self.assertNotIn(rc.BLACKLIST, changes)
 
+    def test_prepare_maintains_only_confirmed_ledger_history(self):
+        old = "2026-01-01"
+        self.files[rc.BLACKLIST] = json.dumps([self.bank["protectedRecord"]])
+        self.files[rc.TARGET] += f"Old Retail\tRetail\t{old}\t{old}\n"
+        self.files[rc.EXCLUDED] += f"Bank Co\t{rc.REASON}\t{old}\t{old}\n"
+        self.files[rc.INDUSTRIES] = json.dumps({"Old Retail": "Retail", "Old Fintech": "Financial technology"})
+        self.files[rc.daily_paths(DAY)[0]] = json.dumps({
+            "target_companies": [{"company": "Old Retail", "reason": "Retail"},
+                                 {"company": "Old Fintech", "reason": "Financial technology"}],
+            "excluded_companies": [{"company": "Bank Co", "reason": rc.REASON}]})
+        changes = apply.plan_prepare(self.files.get, self.snapshot, [], DAY)
+        self.assertIn(f"Old Retail\tRetail\t{old}\t{DAY}", changes[rc.TARGET])
+        self.assertIn(f"Bank Co\t{rc.REASON}\t{old}\t{DAY}", changes[rc.EXCLUDED])
+        self.assertNotIn("Old Fintech", changes[rc.TARGET])
+        self.assertNotIn(rc.BLACKLIST, changes)
+
     def test_remaining_snapshot_only_keeps_original_unreviewed_listings(self):
-        from copy import deepcopy
-        state = {"reviewQueue": deepcopy(self.snapshot["reviewQueue"])}
-        state["reviewQueue"][0]["reviewedJobIds"] = ["100000001"]
+        state = {}
+        self.files.update(apply.plan_review(self.files.get, self.snapshot, [], DAY, worklist=state))
+        state["reviewQueue"][0]["reviewedJobIds"] = state["reviewQueue"][0]["candidateJobIds"]
         state["reviewQueue"][1]["candidateJobIds"] = ["999999999"]
+        names = {r["company"] for r in state["reviewQueue"][:2]}
         result = apply.remaining_snapshot(self.snapshot, state)
-        self.assertEqual([row["company"] for row in result["reviewQueue"]], ["Unknown Co"])
+        self.assertEqual({row["company"] for row in result["reviewQueue"]},
+                         {r["company"] for r in self.snapshot["reviewQueue"]} - names)
         self.assertEqual(result["summary"]["reviewQueue"], 1)
+
+    def test_receipt_immediately_moves_inconclusive_to_waiting(self):
+        state = {}
+        self.files.update(apply.plan_review(self.files.get, self.snapshot, [self.unknown], DAY, worklist=state))
+        result = apply.remaining_snapshot(self.snapshot, state)
+        self.assertEqual(result["summary"]["reviewQueue"], 2)
+        self.assertEqual(result["summary"]["deferredCompanies"], 1)
+        self.assertEqual([row["company"] for row in result["deferredObservations"]], ["Unknown Co"])
+        self.assertNotIn("Unknown Co", {row["company"] for row in result["reviewQueue"]})
+        self.assertFalse(apply.plan_review(self.files.get, result, [], DAY))
 
     def test_verified_crypto_company_is_target_not_protected(self):
         crypto = dict(self.retail, industry="加密货币交易所",

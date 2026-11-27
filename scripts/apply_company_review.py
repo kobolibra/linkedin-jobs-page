@@ -163,7 +163,7 @@ def merge_observation(old, observation):
     return row
 
 
-def plan_review(read, snapshot, results, day):
+def plan_review(read, snapshot, results, day, *, worklist=None):
     """Recompute against a single current Git head on every CAS retry."""
     day = iso_day(day)
     manual = rc.requester_excluded_names(read)
@@ -279,6 +279,10 @@ def plan_review(read, snapshot, results, day):
     summary = queue.queue_summary(snapshot.get("summary") or {}, companies, ready, waiting)
     payload = {"version": 1, "sourceCommit": snapshot.get("sourceCommit"),
                "summary": summary, "reviewQueue": ready, "companies": companies}
+    if worklist is not None:
+        # Return the authoritative result of the same transaction, without
+        # persisting a redundant copy of deferred rows in GitHub.
+        worklist.update(payload, deferredObservations=waiting)
     old_payload = {k: v for k, v in current.items() if k != "generatedAt"}
     if payload != old_payload:
         payload["generatedAt"] = datetime.now(timezone.utc).isoformat()
@@ -286,38 +290,59 @@ def plan_review(read, snapshot, results, day):
     return changed
 
 
-def plan_prepare(read, snapshot, jobs, day):
-    """One transaction for today's report and the observed review checkpoint."""
+def plan_prepare(read, snapshot, jobs, day, *, worklist=None):
+    """One transaction for today's report, existing ledger dates and checkpoint."""
     spec = importlib.util.spec_from_file_location("daily_report", ROOT / "auto-daily-companies.py")
     daily = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(daily)
     report = daily.plan_daily_report(read, jobs, day)
+    observed = json.loads(report[rc.daily_paths(day)[0]])
+    records, _ = rc.classifications(read)
+    protected = rc.protected_names(records)
+    # Preserve the former daily ledger date maintenance. A historical industry
+    # label alone must never create a new target/deletion entry.
+    for path, label, observations in (
+        (rc.TARGET, "备注", observed["target_companies"]),
+        (rc.EXCLUDED, "排除原因", observed["excluded_companies"]),
+    ):
+        previous = rc.read_ledger(read(path), label)
+        ledger = copy.deepcopy(previous)
+        for row in observations:
+            name = row["company"]
+            key = rc.norm(name)
+            if path == rc.TARGET:
+                if key not in ledger or key in protected:
+                    continue
+                reason = ledger[key][1]
+            else:
+                if key not in protected:
+                    continue
+                reason = ledger[key][1] if key in ledger else row["reason"]
+            rc.upsert(ledger, name, reason, day, day)
+        if ledger != previous:
+            report[path] = rc.tsv([["公司名", label, "首次出现", "最近出现"], *ledger.values()])
     overlay = lambda path: report[path] if path in report else read(path)
-    return {**report, **plan_review(overlay, snapshot, [], day)}
+    return {**report, **plan_review(overlay, snapshot, [], day, worklist=worklist)}
 
 
 def remaining_snapshot(snapshot, state):
-    """Keep only still-due companies from this run's original observation."""
+    """Keep original unreviewed listings; update counts from the committed state."""
     live = {rc.norm(row["company"]): row for row in state["reviewQueue"]}
     ready = []
     for row in snapshot["reviewQueue"]:
         current = live.get(rc.norm(row["company"]))
-        if current and (set(row.get("candidateJobIds", []))
-                        & set(current.get("candidateJobIds", []))
-                        - set(current.get("reviewedJobIds", []))):
-            ready.append(row)
-    summary = dict(snapshot.get("summary") or {})
-    summary["reviewQueue"] = len(ready)
-    summary["queueByStatus"] = {}
-    summary["queueBySource"] = {}
-    for row in ready:
-        status = row.get("investigationStatus", "not_started")
-        summary["queueByStatus"][status] = summary["queueByStatus"].get(status, 0) + 1
-        for source in row.get("sourceStatuses", []):
-            summary["queueBySource"][source] = summary["queueBySource"].get(source, 0) + 1
-    for key in ("stagingNotCanonical", "indexNotCanonical"):
-        summary[key] = sum(bool(row.get(key)) for row in ready)
-    return dict(snapshot, reviewQueue=ready, summary=summary)
+        if current:
+            pending = (set(row.get("candidateJobIds", []))
+                       & set(current.get("candidateJobIds", []))
+                       - set(current.get("reviewedJobIds", [])))
+            if pending:
+                ready.append(dict(row, candidateJobIds=sorted(pending),
+                                  reviewedJobIds=current.get("reviewedJobIds", []),
+                                  investigationStatus=current["investigationStatus"],
+                                  protectionDecision=current["protectionDecision"]))
+    waiting = state["deferredObservations"]
+    summary = queue.queue_summary(state["summary"], state["companies"], ready, waiting)
+    return dict(snapshot, reviewQueue=ready, deferredObservations=waiting, summary=summary)
 
 
 def main():
@@ -357,18 +382,16 @@ def main():
     committed_state = {}
 
     def build(read):
-        changes = (plan_prepare(read, snapshot, jobs, args.date) if args.prepare
-                   else plan_review(read, snapshot, results, args.date))
-        state = changes.get(queue.STATUS_PATH)
-        committed_state["value"] = json.loads(state if state is not None else read(queue.STATUS_PATH))
-        return changes
+        return (plan_prepare(read, snapshot, jobs, args.date, worklist=committed_state)
+                if args.prepare else
+                plan_review(read, snapshot, results, args.date, worklist=committed_state))
 
     message = ("Prepare company review" if args.prepare else
                "Apply verified company review" if args.results else "Checkpoint company review queue")
     repo.transact(build, message + " " + run.name, args.dry_run, head_guard=guard)
     if not args.dry_run:
         from trae_company_review import save
-        save(args.queue, remaining_snapshot(snapshot, committed_state["value"]))
+        save(args.queue, remaining_snapshot(snapshot, committed_state))
 
 
 if __name__ == "__main__":
