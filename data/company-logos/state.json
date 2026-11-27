@@ -13049,5 +13049,58 @@
         "deferred": true
       }
     ]
+  },
+  "ineos": {
+    "name": "INEOS",
+    "checkedAt": "2026-11-27T16:02:19.829725+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "0a476fd80abaf18e6a18699a.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEXaYGLCRlTcg/company-logo_100_100/company-logo_100_100/0/1664466116399?e=2147483647&v=beta&t=mesANFYTBbJ1BbWAjvZn-GSl_C5HbT054OP8sKAmPKs",
+    "companyUrl": "https://uk.linkedin.com/company/ineos",
+    "sourceJobId": "4495579318"
+  },
+  "ineos aromatics": {
+    "name": "INEOS Aromatics",
+    "checkedAt": "2026-11-27T16:02:21.865084+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "9b4cf2f271ab07afdb2268a4.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/C4D0BAQHVQCwAayTUIQ/company-logo_100_100/company-logo_100_100/0/1630577418458?e=2147483647&v=beta&t=Z4phkfOM982ADko6G3Wpu5HDGt22rJlDxBt0faIZY44",
+    "companyUrl": "https://www.linkedin.com/company/ineos-aromatics",
+    "sourceJobId": "4493865576"
+  },
+  "sitecore": {
+    "name": "Sitecore",
+    "checkedAt": "2026-11-27T16:02:23.852189+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4495093536",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 61.35775966864232,
+        "deferred": true
+      }
+    ]
   }
 }
