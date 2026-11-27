@@ -2,10 +2,10 @@ name: Financial blacklist schema
 
 on:
   pull_request:
-    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, docs/trae-company-review.md, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, scripts/apply_company_review.py, scripts/test_apply_company_review.py, scripts/test_agent_reclassification.py, reports/cumulative-target-companies.tsv, reports/cumulative-excluded-companies.tsv, company_industries.json, docs/trae-company-review.md, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
   push:
     branches: [main]
-    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, docs/trae-company-review.md, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, scripts/apply_company_review.py, scripts/test_apply_company_review.py, scripts/test_agent_reclassification.py, reports/cumulative-target-companies.tsv, reports/cumulative-excluded-companies.tsv, company_industries.json, docs/trae-company-review.md, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
 
 permissions:
   contents: read
@@ -31,4 +31,4 @@ jobs:
           python -m unittest scripts.test_company_review_queue
           python scripts/company_review_queue.py > /tmp/company-review-queue.json
       - name: Test pinned TRAE scheduler entrypoint and workspace isolation
-        run: python -m unittest scripts.test_trae_company_review
+        run: python -m unittest scripts.test_trae_company_review scripts.test_apply_company_review scripts.test_agent_reclassification

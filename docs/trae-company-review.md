@@ -32,32 +32,52 @@ PY
 
 The authenticated API download and process-local HTTPS Git authentication support both public and private repositories, including subsequent fetches. Never put credentials into URLs, logs or task text.
 
-Do not use a previous run folder. Never fall back to old workspace scripts.
-The printed ENTRYPOINT is an absolute path; use it on every subsequent call
-(even if the shell/cwd changes). Read the current checkout's financial policy
-and the review queue generated beside the checkout. Complete the AI research
-and apply only verified decisions. Examples, where ENTRYPOINT and the
-arguments are real values from this run:
+Do not use a previous run folder or old workspace scripts. The printed ENTRYPOINT
+is absolute; use it on every subsequent call. Read the current checkout's policy
+and RUN_DIR/company-review-queue.json. New-company discovery uses canonical
+jobs and open-ended RSS staging; JobSpy's fixed, already verified company
+universe is not separately scanned for new companies. Preparation publishes a startup audit
+and checkpoints unresolved observations to GitHub before AI research begins.
+
+## AI task contract
+
+Research the highest-impact companies first, using the exact publisher identity,
+official/regulatory or company-maintained sources and original job context.
+Do not infer the industry or agency status from the name or job title alone.
+Do not assign a new mixed/unknown protection record. Submit inconclusive
+investigations with specific outstanding questions; do not delete or add new
+protection without evidence.
+
+Write a JSON array in the current RUN_DIR, with one object per researched company:
+company, investigationStatus (verified or inconclusive), protectionDecision
+(protect, delete, or undetermined), identityStatus, industry, industryEvidence
+(array of HTTPS url/note objects), queries (actual search strings or query
+objects), investigationSummary, remainingQuestion if inconclusive. For a
+verified result identityStatus must be confirmed. For verified protection add
+employerType and protectedRecord (company, employerType, evidence containing
+HTTPS url, reviewedOn and note). For verified deletion do not assign
+employerType or protectedRecord. Dates use Beijing time. Existing protected
+type corrections require a reviewed PR; never remove protection.
+
+Submit results in small independent batches; each batch is a single atomic
+GitHub transaction with the cumulative ledgers, typed protection/industry
+sources, applicable daily reports and research history. The writer recalculates
+against the latest head, rejects conflicting or unobserved decisions, preserves
+historical observation dates, and refuses to overwrite newer verified decisions.
 
 ```bash
-python3 -I -B "$ENTRYPOINT" reclassify --date "$DAY" --finalize --blacklist-records "$PROTECTED_JSON" --industry "$INDUSTRY_JSON" --dry-run
-python3 -I -B "$ENTRYPOINT" reclassify --date "$DAY" --finalize --blacklist-records "$PROTECTED_JSON" --industry "$INDUSTRY_JSON"
-python3 -I -B "$ENTRYPOINT" queue --apply-results "$RESULTS_FILE" --write
+python3 -I -B "$ENTRYPOINT" apply-review --results "$RESULTS_FILE" --dry-run
+python3 -I -B "$ENTRYPOINT" apply-review --results "$RESULTS_FILE"
 python3 -I -B "$ENTRYPOINT" refresh
 python3 -I -B "$ENTRYPOINT" publication --check
 python3 -I -B "$ENTRYPOINT" publish-audit
 ```
 
-Preparation automatically publishes the initial execution manifest. The final
-audit call updates that same run record. Store research JSON inside RUN_DIR,
-not in the outer workspace; do not reuse a prior run's results file.
-The queue command writes the local progress file; persist it via a reviewed,
-non-overwriting GitHub data update before refreshing. Existing classification
-corrections follow the reviewed PR process. Never force-push, never use legacy
---blacklist, and do not edit the publication watermark. On code changes,
-preserve research outside the checkout and start another fresh run; do not
-continue with a mixed code version. If preparation or any step fails, report
-the failure and publish the available audit where possible. A published audit
-records actual script steps and their exit codes; it is not a claim that the
-AI investigation or production deployment succeeded. Keep the final task
-report separate and verify Actions and production normally.
+The legacy split reclassify and local queue write commands are disabled in the
+TRAE entrypoint; use apply-review instead. Never edit cumulative lists, state
+files, or the publication watermark directly. Refresh checkpoints new
+observations and preserves previous unresolved research. On code changes,
+preserve research outside the checkout and start a fresh run; do not mix code
+versions. Publication may still be pending after a successful data transaction;
+verify the relevant GitHub Actions and production separately. The execution
+manifest records actual steps, not proof of successful research or deployment.

@@ -50,7 +50,23 @@ a classification confirmed by the project requester,
 `evidence.basis` is `requester_confirmation`. The note states which part
 is supplied by that confirmation and what the linked source supports.
 
+## Explicit requester exclusions
+
+An exact company name in the cumulative target ledger with reason
+`用户指定排除（不再核验）` is an explicit requester decision, not an AI
+industry determination. Remove any conflicting unresolved protection record
+through a reviewed PR. Publication continues to use the normal cumulative
+target filter. Discovery and atomic review skip these companies, and the
+agent may not overwrite their requester decision. Confirmed protection
+records cannot be removed by this exception.
+
 ## Agent write contract
+
+Scheduled TRAE runs must use the canonical atomic `apply-review` entrypoint in
+[the scheduler contract](trae-company-review.md). It checkpoints discoveries and
+commits verified decisions, historical ledgers and investigation progress together.
+The legacy commands below describe manual compatibility workflows, not scheduled
+TRAE writes.
 
 Refresh both `auto-daily-companies.py` and `reclassify.py` together in any
 external Agent checkout (including persistent copies under `/workspace`)
@@ -105,7 +121,7 @@ python scripts/company_review_queue.py --write
 
 Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. Merge actual research with `--apply-results`; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. Applying a research result does not itself change runtime classification.
 
-Resolved protection decisions still go through `reclassify.py --blacklist-records` for new records or the reviewed PR process for existing records. Resolved delete decisions still use `--industry` and the normal cumulative-list finalization. Never reconstruct `company_employer_types.json` from this progress file.
+For scheduled TRAE research, use `apply-review --results FILE` to atomically persist both classification and investigation progress, including historical or staging-only companies. Existing protected type corrections require the reviewed PR process. Manual legacy commands are not a complete transaction for research progress. Never reconstruct `company_employer_types.json` from this progress file.
 
 ## Coverage audit
 

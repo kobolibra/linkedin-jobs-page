@@ -83,7 +83,7 @@
     {
       "company": "SharePoint Developer",
       "category": "target",
-      "reason": "待查证",
+      "reason": "用户指定排除（不再核验）",
       "pushTime": "2026-11-26T10:01:18.354Z"
     }
   ],

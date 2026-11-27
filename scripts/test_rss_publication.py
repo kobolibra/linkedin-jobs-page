@@ -367,6 +367,19 @@ class RssPublicationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'advanced'):
                 require_capture(root,captured)
 
+    def test_explicit_requester_exclusion_retires_only_unknown_protection(self):
+        from reclassify import validate_blacklist_transition
+        evidence = {'url':'https://example.com/about','reviewedOn':'2026-11-26','note':'Fixture'}
+        old = [{'company':'Ambiguous','employerType':'unknown'},
+               {'company':'Bank','employerType':'direct_employer','evidence':evidence}]
+        self.assertEqual(validate_blacklist_transition(old, old[1:], requester_exclusions={'ambiguous'}), old[1:])
+        with self.assertRaises(ValueError):
+            validate_blacklist_transition(old, old[1:])
+        with self.assertRaises(ValueError):
+            validate_blacklist_transition(old, old[:1], requester_exclusions={'bank'})
+        with self.assertRaises(ValueError):
+            validate_blacklist_transition(old, old, requester_exclusions={'ambiguous'})
+
     def test_classification_transition_rejects_truncation_and_downgrade(self):
         from reclassify import validate_blacklist_transition
         evidence={'url':'https://example.com/about','reviewedOn':'2026-11-26','note':'Fixture'}

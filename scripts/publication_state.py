@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from reclassify import BLACKLIST, TARGET, validate_blacklist_transition
+from reclassify import BLACKLIST, TARGET, requester_excluded_names, validate_blacklist_transition
 
 STAMP = "data/publication-state.json"
 SOURCES = ("data/n8n/rss-latest.json", TARGET, BLACKLIST)
@@ -50,7 +50,8 @@ def validate(root: Path) -> None:
         # Actions checks out a shallow clone. Retrieve only the verified ancestor.
         subprocess.run(("git", "fetch", "--depth=1", "origin", ref), cwd=root, check=True)
         old = git(root, "show", f"{ref}:{BLACKLIST}")
-    validate_blacklist_transition(json.loads(old), json.loads((root / BLACKLIST).read_text(encoding="utf-8")))
+    manual = requester_excluded_names(lambda path: (root / path).read_text(encoding="utf-8") if (root / path).is_file() else None)
+    validate_blacklist_transition(json.loads(old), json.loads((root / BLACKLIST).read_text(encoding="utf-8")), requester_exclusions=manual)
 
 
 def current(root: Path) -> bool:

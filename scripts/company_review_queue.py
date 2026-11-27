@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from reclassify import BLACKLIST, EXCLUDED, INDUSTRIES, TARGET, blacklist_records, norm, read_ledger
+from reclassify import BEIJING, BLACKLIST, EXCLUDED, INDUSTRIES, TARGET, blacklist_records, norm, read_ledger, requester_excluded_names
 
 STATUS_PATH = "reports/employer-review-status.json"
 PENDING = "待查证"
@@ -61,13 +61,14 @@ def resolved(row: dict, records: dict[str, dict], industries: dict[str, str],
     decision = row.get("protectionDecision")
     key = norm(row["company"])
     if decision == "delete":
-        return (key in industries and industries[key] != PENDING and bool(row.get("industryEvidence"))
-                and key in targets and key not in excluded)
+        return (key not in records and key in industries and industries[key] != PENDING
+                and bool(row.get("industryEvidence")) and key in targets and key not in excluded
+                and targets[key][1] == industries[key])
     if decision == "protect":
         record = records.get(key)
         if not record or record.get("employerType") != row.get("employerType"):
             return False
-        if record["employerType"] == "unknown":
+        if record["employerType"] in {"unknown", "mixed"}:
             return False
         return bool(record.get("evidence")) and key in excluded and key not in targets
     return False
@@ -85,11 +86,34 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     website = website_jobs(index)
     active_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
     website_counts = Counter(norm(job["company"]) for job in website)
-    previous = previous_rows(root)
+    manual = requester_excluded_names(lambda path: (root / path).read_text(encoding="utf-8") if (root / path).is_file() else None)
+    previous = {key: row for key, row in previous_rows(root).items() if key not in manual}
     observed: dict[str, dict] = {}
+    dates: dict[str, set[str]] = {}
+
+    def observed_date(name, value):
+        if not name or not isinstance(value, str):
+            return
+        try:
+            stamp = dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+            if stamp.tzinfo:
+                stamp = stamp.astimezone(BEIJING)
+            day = stamp.date().isoformat()
+        except ValueError:
+            return
+        dates.setdefault(norm(name), set()).add(day)
+
+    def job_dates(job):
+        for field in ("firstSeen", "pushTime", "first_seen", "push_time"):
+            observed_date(job.get("company"), job.get(field))
+
+    for job in jobs + index:
+        job_dates(job)
 
     def observe(name: str, source: str, date: str | None = None):
         key = norm(name)
+        if key in manual:
+            return
         row = observed.setdefault(key, {
             "company": name,
             "sourceStatuses": set(),
@@ -112,22 +136,25 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     for path in sorted((root / "reports").glob("today-companies-*.json")):
         report = read_json(path, {})
         day = report.get("date") or path.stem.removeprefix("today-companies-")
+        for company in report.get("target_companies", []) + report.get("excluded_companies", []):
+            observed_date(company.get("company"), company.get("pushTime") or day)
         for company in report.get("target_companies", []):
             if (company.get("reason") or "").strip() == PENDING:
                 observe(company["company"], "historical_pending", day)
 
-    canonical_names = {job.get("company") for job in jobs if job.get("company")}
-    index_names = {job.get("company") for job in index if job.get("company")}
-    rss = read_json(root / "data/n8n/rss-latest.json", {})
-    staging = rss.get("jobs", []) if isinstance(rss, dict) else rss
-    for job in staging:
+    canonical_names = {norm(job["company"]) for job in jobs if job.get("company")}
+    index_names = {norm(job["company"]): job["company"] for job in index if job.get("company")}
+    # JobSpy searches a fixed, already verified company universe. Only the
+    # open-ended RSS input needs pre-publication company discovery.
+    for job in jobs_from(root, "data/n8n/rss-latest.json"):
+        job_dates(job)
         name = job.get("company")
-        if name and name not in canonical_names:
+        if name and norm(name) not in canonical_names and norm(name) not in manual:
             observe(name, "staging_not_canonical")
             observed[norm(name)]["stagingNotCanonical"] = True
-    for name in index_names - canonical_names:
-        observe(name, "index_not_canonical")
-        observed[norm(name)]["indexNotCanonical"] = True
+    for key in index_names.keys() - canonical_names - manual:
+        observe(index_names[key], "index_not_canonical")
+        observed[key]["indexNotCanonical"] = True
 
     # Carry unresolved investigations forward even after every job expires.
     for key, old in previous.items():
@@ -138,6 +165,14 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     queue = []
     for key, found in observed.items():
         old = copy.deepcopy(previous.get(key, {}))
+        # Established policy entries do not require another AI investigation just
+        # because a staging snapshot has not yet reached canonical publication.
+        if not old and key in records and records[key]["employerType"] not in {"unknown", "mixed"}:
+            continue
+        if not old and key not in records and key in targets and key in industries and targets[key][1] == industries[key] and industries[key] != PENDING:
+            continue
+        observation_days = dates.get(key, set()) | set(old.get("historicalPendingDates", [])) | found["historicalPendingDates"]
+        observation_days.update(x for x in (old.get("observedFirstOn"), old.get("observedLastOn")) if x)
         row = {
             **old,
             "company": found["company"],
@@ -151,7 +186,9 @@ def discover(root: Path) -> tuple[list[dict], dict]:
             "existingIndustry": industries.get(key),
             "investigationStatus": old.get("investigationStatus", "not_started"),
             "protectionDecision": old.get("protectionDecision", "undetermined"),
-            "firstQueuedOn": old.get("firstQueuedOn") or dt.date.today().isoformat(),
+            "firstQueuedOn": old.get("firstQueuedOn") or dt.datetime.now(BEIJING).date().isoformat(),
+            "observedFirstOn": min(observation_days, default=None),
+            "observedLastOn": max(observation_days, default=None),
         }
         if not old and row["existingRecord"] and row["existingRecord"].get("employerType") in {"unknown", "mixed"}:
             record = row["existingRecord"]
@@ -218,13 +255,13 @@ def apply_results(companies: list[dict], results: list[dict]) -> list[dict]:
         if status == "inconclusive" and not result.get("remainingQuestion"):
             raise ValueError(f"Inconclusive investigation requires a specific remaining question: {name}")
         key = norm(name)
-        row = by_key.setdefault(key, {"company": name, "firstQueuedOn": dt.date.today().isoformat(), "sourceStatuses": ["carry_forward"]})
+        row = by_key.setdefault(key, {"company": name, "firstQueuedOn": dt.datetime.now(BEIJING).date().isoformat(), "sourceStatuses": ["carry_forward"]})
         preserved = {field: row.get(field) for field in ("firstQueuedOn", "activeJobsForKey", "websiteJobsForKey", "sourceStatuses", "historicalPendingDates")}
         row.update(copy.deepcopy(result))
         for field, value in preserved.items():
             if value is not None:
                 row[field] = value
-        row["lastReviewedOn"] = result.get("lastReviewedOn") or dt.date.today().isoformat()
+        row["lastReviewedOn"] = result.get("lastReviewedOn") or dt.datetime.now(BEIJING).date().isoformat()
     return sorted(by_key.values(), key=lambda row: (norm(row["company"]), row["company"]))
 
 

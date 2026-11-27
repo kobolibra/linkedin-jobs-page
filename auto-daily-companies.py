@@ -94,15 +94,20 @@ def push_daily_report_to_github(jobs, today):
 
     def build(read):
         blacklist, industries = classification.classifications(read)
+        manual = classification.requester_excluded_names(read)
         results = process_jobs(jobs, today, blacklist, industries)
+        for row in results["target_companies"]:
+            if classification.norm(row["company"]) in manual:
+                row["reason"] = classification.REQUESTER_EXCLUSION
         current = read(path)
         previous = json.loads(current) if current is not None else None
         merged = dict(results)
         if previous is not None:
             for key in ("target_companies", "excluded_companies"):
                 merged[key] = previous[key] + results[key]
-        report = classification.classify(merged, classification.protected_names(blacklist),
-                                         classification.verified_industries(industries))
+        verified = classification.verified_industries(industries)
+        verified.update({key: classification.REQUESTER_EXCLUSION for key in manual})
+        report = classification.classify(merged, classification.protected_names(blacklist), verified)
         return classification.daily_files(today, report)
 
     files = repo.transact(build, f"Publish daily company report for {today}")
@@ -134,8 +139,9 @@ def parse_push_time_dt(s):
 
 
 def extract_company_name(job):
+    # A missing employer must not turn a job title or generic name into a company.
     for f in ["company", "companyName", "company_name", "employer",
-              "employerName", "employer_name", "organization", "org", "name", "title"]:
+              "employerName", "employer_name", "organization", "org"]:
         v = job.get(f)
         if v and isinstance(v, str) and v.strip():
             return v.strip()
@@ -247,8 +253,15 @@ def main():
     today = get_beijing_today()
     print(f"[INFO] Today (Beijing): {today}")
 
-    # Download jobs data via API (private repo)
-    jobs_data = download_json_from_api(JOBS_API_URL)
+    # In scheduled runs use the pinned checkout, not a second moving main read.
+    snapshot = os.environ.get("NEXT_JOURNEY_SNAPSHOT")
+    if snapshot:
+        expected = Path(__file__).resolve().parent / "jobs.json"
+        if Path(snapshot).resolve() != expected:
+            raise ValueError("Daily snapshot must be the pinned checkout jobs.json")
+        jobs_data = json.loads(expected.read_text(encoding="utf-8"))
+    else:
+        jobs_data = download_json_from_api(JOBS_API_URL)
     if not jobs_data:
         print("[ERROR] Failed to download jobs.json")
         sys.exit(1)
