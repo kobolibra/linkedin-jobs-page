@@ -54,6 +54,11 @@ class CrossIdRepostsTests(unittest.TestCase):
         self.assertEqual(doc["supersededLinkedInIds"], [
             "4482515166", "4483899555", "4485550888", "4486921470", "4492601518",
         ])
+        self.assertEqual(doc["linkedinJobReplacements"], {
+            **{old["sourceJobId"][3:]: new["sourceJobId"][3:]
+               for old, new in zip(first_chain, first_chain[1:])},
+            "4492601518": "4494081522",
+        })
         before = copy.deepcopy(doc)
         reconcile(doc, "2026-11-25")
         self.assertEqual(doc, before)
@@ -65,6 +70,7 @@ class CrossIdRepostsTests(unittest.TestCase):
         reconcile(doc, "2026-11-11")
         self.assertEqual([row["rolePostDate"] for row in doc["jobs"]], ["2026-11-01"] * 2)
         self.assertTrue(later["crossIdRepost"]["pending"])
+        self.assertNotIn("linkedinJobReplacements", doc)
         self.assertEqual([row["jobStatus"] for row in doc["jobs"]], ["active"] * 2)
         reconcile(doc, "2026-11-12")
         self.assertTrue(later["crossIdRepost"]["pending"])
@@ -119,6 +125,7 @@ class CrossIdRepostsTests(unittest.TestCase):
                     "postDate": "2026-11-01", "pending": False,
                 })
                 self.assertEqual(doc["supersededLinkedInIds"], ["4000000000", "4000000001", "4000000002"])
+                self.assertEqual(doc["linkedinJobReplacements"], {"4000000001": "4000000003"})
 
     def test_jpmorgan_spelling_variants_share_one_closed_recruitment_cycle(self):
         title = "China Securities Company - Global Employee Lifecycle & Access Management(GLAM) Relationship Specialist"
@@ -204,6 +211,7 @@ class CrossIdRepostsTests(unittest.TestCase):
                        reconcile_snapshot(canonical, snapshot, "2026-11-12T01:00:00Z"),
                        enrich(canonical, [stale])):
             self.assertEqual([row["sourceJobId"] for row in result["jobs"]], ["li-4000000001"])
+            self.assertEqual(result["linkedinJobReplacements"], {"4000000000": "4000000001"})
 
 
 if __name__ == "__main__":

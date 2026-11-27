@@ -83,7 +83,7 @@ def closing_day(row, started):
     return None
 
 
-def connect_surviving_cycles(group, removed):
+def connect_surviving_cycles(group, removed, replacements):
     # Traverse the surviving recruitment cycles by their original start dates.
     # A latest ID may already represent a cycle that began several IDs earlier.
     positions = {job_id: position for position, (_, _, job_id, _) in enumerate(group)}
@@ -118,6 +118,7 @@ def connect_surviving_cycles(group, removed):
             closed[day].remove(candidate)
             _, _, previous_id, previous = candidate
             link_repost(previous, previous_id, row)
+            replacements[previous_id] = job_id
             removed.add(previous_id)
             break
 
@@ -133,6 +134,8 @@ def reconcile(doc, observed_at=None):
     """
     rows = doc.get("jobs", [])
     removed = superseded_ids(doc)
+    # Keep each confirmed link after its predecessor is removed from jobs.
+    replacements = dict(doc.get("linkedinJobReplacements", {}))
     checked_day = doc.get("crossIdRepostCheckedDay")
     observed = [observed_at, checked_day, doc.get("jobStatusUpdatedAt"),
                 (doc.get("n8nIncrementalMerge") or {}).get("mergedAt"),
@@ -170,13 +173,14 @@ def reconcile(doc, observed_at=None):
                 if prior_close is not None:
                     previous_id, previous = group[closed[prior_close].pop()][2:]
                     link_repost(previous, previous_id, row)
+                    replacements[previous_id] = job_id
                     removed.add(previous_id)
             if ended := closing_day(row, started):
                 closed[ended].append(position)
 
         # Revisit retained cycles using their original dates, including the
         # case where the next ID appeared a day after a predecessor closed.
-        connect_surviving_cycles(group, removed)
+        connect_surviving_cycles(group, removed, replacements)
 
         previous_active = None
         for started, _, job_id, row in group:
@@ -194,6 +198,8 @@ def reconcile(doc, observed_at=None):
         if len(retained) != len(rows):
             doc.update(jobs=retained, count=len(retained))
         doc["supersededLinkedInIds"] = sorted(removed)
+    if replacements:
+        doc["linkedinJobReplacements"] = dict(sorted(replacements.items()))
     # A frozen RSS retry can carry an older processing date than the baseline.
     if today and (pending or checked_day):
         doc["crossIdRepostCheckedDay"] = date.fromordinal(today).isoformat()

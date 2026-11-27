@@ -48,3 +48,10 @@ test('Last Updated prefers canonical source when the newest job pushTime has no 
  delete index.updatedAt;
  assert.equal(previewData(index,{},now).updated,'2026-10-20T16:00:00.000Z','legacy fallback cannot recover the missing observation time');
 });
+
+test('confirmed job replacements stay in the authenticated index',()=>{
+ const index=fixture();
+ index.linkedinJobReplacements={'ln:1234567':'ln:1234568'};
+ const payload=publicPreviewPayload(previewData(index,{},now),index);
+ assert.equal(payload.linkedinJobReplacements,undefined);
+});

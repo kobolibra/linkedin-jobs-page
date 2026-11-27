@@ -4,7 +4,7 @@
  const keyOf=(kind,item)=>JSON.stringify([kind,item]);
  class Preferences{
   constructor({user,api,status,expired}){
-   this.user=user;this.api=api;this.status=status;this.expired=expired;this.prefix='lj-account-v2:'+user.id+':';this.rows=new Map();this.cursor=0;this.memory=new Map();this.last='';this.stopped=false;this.busy=null;
+   this.user=user;this.api=api;this.status=status;this.expired=expired;this.prefix='lj-account-v2:'+user.id+':';this.rows=new Map();this.jobReplacements=new Map();this.cursor=0;this.memory=new Map();this.last='';this.stopped=false;this.busy=null;
    this.readCache();
    try{const owner=localStorage.getItem('lj-legacy-owner');if(!owner){const legacy={};for(const kind of kinds)legacy[kind]=parse(localStorage.getItem(kind),[]);localStorage.setItem(this.prefix+'legacy',JSON.stringify(legacy));localStorage.setItem('lj-legacy-owner',user.id);}}catch{this.status('浏览器存储不可用，当前更改请保持页面打开直至同步');}
    addEventListener('storage',e=>{if(e.key?.startsWith(this.prefix)){this.readCache();this.emit();this.schedule();}});
@@ -13,7 +13,49 @@
   }
   readCache(){try{const c=parse(localStorage.getItem(this.prefix+'cache'),{});this.cursor=Math.max(this.cursor,c.cursor||0);for(const row of c.entries||[]){const key=keyOf(row.kind,row.item);if((this.rows.get(key)?.revision||0)<row.revision)this.rows.set(key,row);}}catch{}}
   pending(){const all=new Map(this.memory);try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key?.startsWith(this.prefix+'op:')){const op=parse(localStorage.getItem(key),null);if(op)all.set(op.id,op);}}}catch{}return [...all.values()].sort((a,b)=>a.time-b.time||a.id.localeCompare(b.id));}
-  snapshot(){const map=new Map(this.rows);for(const op of this.pending())map.set(keyOf(op.kind,op.item),op);const lists=Object.fromEntries(kinds.map(k=>[k,[]]));for(const row of map.values())if(row.present&&lists[row.kind])lists[row.kind].push(row.item);for(const k of kinds)lists[k].sort();return lists;}
+  setJobReplacements(replacements){
+   const edges=new Map(Object.entries(replacements||{}).filter(([old,next])=>/^ln:[0-9]+$/.test(old)&&typeof next==='string'&&/^ln:[0-9]+$/.test(next)));
+   this.jobReplacements.clear();
+   for(const old of edges.keys()){
+    const visited=new Set();let current=old;
+    while(edges.has(current)&&!visited.has(current)){visited.add(current);current=edges.get(current);}
+    if(!edges.has(current))this.jobReplacements.set(old,current);
+   }
+   this.emit();
+  }
+  jobKey(item){return this.jobReplacements.get(item)||item;}
+  snapshot(){
+   // Resolve server revisions and queued user actions across the entire replacement chain.
+   const pending=this.pending(),map=new Map(this.rows),favorites=new Map();
+   for(const row of this.rows.values()){
+    if(row.kind!=='favs')continue;
+    const item=this.jobKey(row.item);
+    if((favorites.get(item)?.revision||0)<row.revision)favorites.set(item,row);
+   }
+   for(const op of pending){
+    if(op.kind==='favs')favorites.set(this.jobKey(op.item),op);
+    else map.set(keyOf(op.kind,op.item),op);
+   }
+   const lists=Object.fromEntries(kinds.map(k=>[k,[]]));
+   for(const [item,row] of favorites)if(row.present)lists.favs.push(item);
+   for(const row of map.values()){
+    if(!row.present||!lists[row.kind]||row.kind==='favs')continue;
+    let item=row.item;
+    if(this.jobReplacements.size&&(row.kind==='applications'||row.kind==='favoriteTypes')){
+     // Keep the stored events immutable while presenting one journey for the role.
+     const event=parse(item,null),job=this.jobReplacements.get(event?.j);
+     if(job)item=JSON.stringify({...event,j:job});
+    }
+    lists[row.kind].push(item);
+   }
+   for(const k of kinds)lists[k].sort();
+   return lists;
+  }
+  toggleFavorite(item){
+   item=this.jobKey(item);
+   const present=!this.snapshot().favs.includes(item);
+   this.enqueue('favs',item,present);this.emit();this.schedule();return present;
+  }
   get(kind){return kinds.includes(kind)?JSON.stringify(this.snapshot()[kind]):null;}
   set(kind,text){if(!kinds.includes(kind))return false;const next=new Set(parse(text,[]).filter(x=>typeof x==='string'&&x.trim()&&x.length<=500&&!/[\u0000-\u001f\u007f]/.test(x))),old=new Set(this.snapshot()[kind]);for(const item of new Set([...old,...next]))if(old.has(item)!==next.has(item))this.enqueue(kind,item,next.has(item));this.emit();this.schedule();return true;}
   enqueue(kind,item,present){const op={id:crypto.randomUUID().replaceAll('-',''),kind,item,present,time:(this.clock=Math.max(Date.now(),(this.clock||0)+1))};this.memory.set(op.id,op);try{localStorage.setItem(this.prefix+'op:'+op.id,JSON.stringify(op));}catch{this.status('浏览器存储已满，请保持页面打开直至同步');}}
