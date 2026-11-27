@@ -13102,5 +13102,34 @@
         "deferred": true
       }
     ]
+  },
+  "tüv rheinland group": {
+    "name": "TÜV Rheinland Group",
+    "checkedAt": "2026-11-27T22:02:12.571872+00:00",
+    "status": "missing",
+    "parserVersion": 6,
+    "attempts": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "jobId": "4495591300",
+        "reason": "rate_limited",
+        "stage": "job"
+      }
+    ],
+    "httpRetries": [
+      {
+        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
+        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
+        "status": 429,
+        "contentType": "text/html",
+        "attempt": 1,
+        "waitSeconds": 62.165703688104266,
+        "deferred": true
+      }
+    ]
   }
 }
