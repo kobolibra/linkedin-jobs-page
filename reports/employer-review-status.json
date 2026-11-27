@@ -1,19 +1,181 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-26T14:10:34.262Z",
-  "sourceCommit": "e6965b747a338c39db6f249362e3a04fb03af6af",
+  "sourceCommit": "30d999585124e2b74c2c21a8ba63b80c9a5e8d64",
   "summary": {
-    "canonicalJobs": 15084,
-    "indexJobs": 15084,
-    "websiteJobs": 6307,
-    "trackedCompanies": 277,
-    "reviewQueue": 0,
-    "queueByStatus": {},
-    "queueBySource": {},
+    "canonicalJobs": 15089,
+    "indexJobs": 15089,
+    "websiteJobs": 6278,
+    "trackedCompanies": 283,
+    "reviewQueue": 6,
+    "deferredCompanies": 0,
+    "deferredByStatus": {},
+    "queueByStatus": {
+      "not_started": 6
+    },
+    "queueBySource": {
+      "unlisted": 6
+    },
     "stagingNotCanonical": 0,
     "indexNotCanonical": 0
   },
-  "reviewQueue": [],
+  "reviewQueue": [
+    {
+      "company": "Aloha Group",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495012275"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495012275"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
+      "company": "Commodity Supplies AG",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495508653"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495508653"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
+      "company": "Enflame",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4493066523"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4493066523"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
+      "company": "Fellow",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4494984565"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4494984565"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
+      "company": "Higgsfield AI",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4487584224"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4487584224"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
+      "company": "高济医药(四川)有限公司",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4492326650"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4492326650"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    }
+  ],
   "companies": [
     {
       "company": "129Knots",
@@ -50,7 +212,17 @@
       ],
       "investigationSummary": "政府网站上的公司公告直接确认金融科技、贸易融资和数字资产主业，并非根据 Web3 职位名推断；属于直接金融科技雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "129Knots",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.edb.gov.sg/en/news-and-insights/129knots-launches-with-10million-500million-pipeline-otd-tech",
+          "reviewedOn": "2026-11-26",
+          "note": "Singapore EDB's company-issued launch announcement identifies 129Knots as a global fintech venture providing real-world-asset origination, liquidity, trade-finance, tokenization and credit-risk technology."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Acadian Asset Management",
@@ -736,7 +908,43 @@
       ],
       "investigationSummary": "原始 LinkedIn 公司页 alexisservices 与官网一致，官网服务页明确其第三方招聘和人员配置性质。Settlements AVP 等金融职位是招聘服务覆盖领域，不能据此将 Alexis Services 当作金融直接雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Alexis Services",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://alexisservices.com/our-services/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接确认 Alexis Services 代表客户搜寻及招聘人才，提供猎头、 contingency recruitment、interim 和合同人员配置；原始 LinkedIn 公司页 alexisservices 与官网及香港服务区域一致，故为 recruitment_agency。"
+        }
+      },
+      "existingIndustry": null
+    },
+    {
+      "company": "Aloha Group",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495012275"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495012275"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
     },
     {
       "company": "Alpha FMC",
@@ -1497,7 +1705,17 @@
       ],
       "investigationSummary": "官网及 SEC 检索结果均支持其投资管理业务，原始 LinkedIn 公司页与官网品牌精确对应；金融机构保护与直接雇主分类明确。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "AQR Capital Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.aqr.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接证明 AQR 是系统化量化投资机构，提供创新、多元化投资策略；原始 LinkedIn 公司页 aqr-capital-management 与官网一致，香港 Business Development 职位服务自身投资管理业务，故为 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Aquila Talent",
@@ -1813,7 +2031,17 @@
       ],
       "investigationSummary": "官网直接确认受监管财富管理及机构财富基础设施，不是 Arta TechFin 等名称相近公司；原始 B2B Wealth Platform 产品与官网业务一致，按直接金融科技雇主保护。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Arta Finance",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://artafinance.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "Arta's official website confirms a regulated Singapore and US wealth platform combining AI, investment products and wealth infrastructure for individuals and financial institutions."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Ascendant Globalcredit Group",
@@ -2312,7 +2540,17 @@
       ],
       "investigationSummary": "AXA 与 BNP Paribas 官方资料均确认资产管理业务。后续并入 BNP Paribas 集团及法律实体整合不改变其金融保护属性。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "AXA Investment Managers",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://careers.axa.com/global/en/axa-investment-managers",
+          "reviewedOn": "2026-11-26",
+          "note": "AXA's official careers page confirms AXA Investment Managers' active long-term investment function across traditional and alternative asset classes; BNP Paribas independently describes it as an asset manager."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Axway",
@@ -2431,7 +2669,17 @@
       ],
       "investigationSummary": "官方业务与监管披露一致确认投资银行业务，且原始职位是投资银行岗位；属于直接金融雇主，应保护。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Barclays Investment Bank",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.ib.barclays/investment-banking.html",
+          "reviewedOn": "2026-11-26",
+          "note": "Barclays' official Investment Banking page confirms direct provision of M&A advisory, capital raising, debt and equity capital markets, financing and risk-management services."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Barrington James",
@@ -2522,7 +2770,17 @@
       ],
       "investigationSummary": "官网投资能力页与原始固定收益投资职位及 LinkedIn 公司页相互印证，确认是受保护的资产管理机构，而非招聘中介。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "BEA Union Investment 東亞聯豐",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://buim.com/investment-capabilities-a",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接证明该公司为客户管理股票、固定收益、多资产及强积金资产，属于资产管理金融机构；原始 LinkedIn 公司页 bea-union-investment 与官网品牌一致，招聘职位支持自身经营，故为 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Beijing Foreign Enterprise Management Consultants Co.,Ltd.",
@@ -2671,7 +2929,17 @@
         "LinkedIn 公司页的 Type 自选字段显示 Public Company，但这不是注册处法律形式证明；法律实体类型以 HKEX 招股文件所述 BVI 有限公司为准。"
       ],
       "remainingQuestion": "LinkedIn 未披露劳动合同的签署法人，公开资料也未给出 BVI 注册编号。若需合同或合规层面的精确雇主法人确认，仍需劳动合同、BVI 注册证书或注册代理文件；该缺口不影响本次投资机构、直接招聘及保护判定。",
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Bess Broadway",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://hk.linkedin.com/jobs/view/finance-supervisor-at-bess-broadway-4493474879",
+          "reviewedOn": "2026-11-26",
+          "note": "实际取得的 LinkedIn 职位正文将招聘方业务称为 global BESS investment platform，并把海外投资项目、SPV、交易协议、财务模型、退出回报及交割执行列为岗位核心职责；雇主链接直达 Bess Broadway 公司页。港交所招股文件另独立确认 BESS Broadway Limited 的 BVI 法律实体及中长期投资主业。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "BGC Group",
@@ -3082,7 +3350,17 @@
       ],
       "investigationSummary": "官方 Investor Brand 服务页及 Investor Relations Society 目录确认真实品牌、原 Brunswick Creative 名称和 LinkedIn 对应关系。其保护依据是明确的金融传播、投资者关系和资本市场咨询，不是普通船舶公司 Brunswick Corporation，也不是招聘机构。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Brunswick Investor Brand",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.brunswickgroup.com/investor-brand",
+          "reviewedOn": "2026-11-26",
+          "note": "官方服务页确认 Investor Brand 是 Brunswick 面向资本市场的金融传播、投资者沟通及品牌咨询业务，覆盖 IPO、资本市场日、业绩与年报，属于金融相关专业服务；原始 LinkedIn 公司页 brunswickinvestorbrand 由 Investor Relations Society 交叉印证，其职位为自身咨询团队招聘，故为 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Cana Consulting",
@@ -3121,7 +3399,17 @@
       ],
       "investigationSummary": "官网和招聘机构目录均确认其为猎头公司；原始 In-house Corporate Secretary 职位是招聘服务所涉岗位，不能据此把 Cana 当作普通企业服务公司或直接雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Cana Consulting",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://cana-search.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "Cana Consulting's official website expressly describes it as a specialist executive search firm focused on legal and governance recruitment, offering contingent and retained search and other hiring services."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Candid Capital Management Pte. Ltd.",
@@ -4002,6 +4290,32 @@
       }
     },
     {
+      "company": "Commodity Supplies AG",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495508653"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495508653"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
       "company": "Compass International Holdings",
       "sourceStatuses": [
         "resolved_observation",
@@ -4145,7 +4459,17 @@
       ],
       "investigationSummary": "通过 covacap 官网、MAS 报告及 MAS 实体目录锁定新加坡债券平台公司，未采用同名 ADGM 投资公司资料；金融属性来自官方业务与监管资料，而非 Debt Capital Markets 职位名。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Covalent Capital",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://covacap.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "Covalent Capital's official site and a Monetary Authority of Singapore debt-market report confirm its bond-issuance, book-building and capital-markets technology business; MAS also lists the Singapore legal entity."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Cove",
@@ -4810,6 +5134,32 @@
       ]
     },
     {
+      "company": "Enflame",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4493066523"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4493066523"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
       "company": "Ethos",
       "firstQueuedOn": "2026-11-26",
       "sourceStatuses": [
@@ -4845,7 +5195,17 @@
       ],
       "investigationSummary": "原始职位的 LinkedIn 公司页为 askethos。官网及专家条款确认其运营主体和平台模式：客户发布专家需求，专家通过平台参与按项目计费的咨询、顾问及研究工作。金融职位名称是平台上的专家项目，不足以把 Ethos 视为金融机构；保护依据是第三方专家人才匹配平台。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Ethos",
+        "employerType": "recruitment_platform",
+        "evidence": {
+          "url": "https://agent.askethos.com/expert-terms",
+          "reviewedOn": "2026-11-26",
+          "note": "官方条款确认 Ethos 拥有并运营连接客户与专家的在线平台，平台促成专家项目请求、互动与服务，而非 Ethos 自身直接招聘全部 M&A、投资等职位；其原始 LinkedIn 公司页 askethos 与该官网一致，因此按专家项目/人才匹配平台归为 recruitment_platform。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Eurazeo",
@@ -4878,7 +5238,17 @@
       ],
       "investigationSummary": "官网明确私募市场资管业务及 Venture 等投资策略，与原始新加坡 Venture 实习和 LinkedIn 公司页一致；金融机构保护和直接雇主结论均有官方证据。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Eurazeo",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.eurazeo.com/en",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接确认 Eurazeo 是私募股权、私募债及实物资产领域的私募市场资产管理集团；原始 LinkedIn 公司页 eurazeo 与官网一致，新加坡 Venture 实习支持自身投资业务，故为 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Everest Global (EVG)",
@@ -5037,6 +5407,32 @@
           "note": "Official FastCo identifies FastJobs recruitment portal and FastGig flexible-work recruitment app."
         }
       }
+    },
+    {
+      "company": "Fellow",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4494984565"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4494984565"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
     },
     {
       "company": "Fenergo",
@@ -5225,7 +5621,17 @@
       ],
       "investigationSummary": "官网确认其不是纯通用文档工具：fileLedger 专门处理财务运营，fileShield 专门服务银行、保险和金融服务；同时承认其跨行业用途。基于实际专门 BFSI 产品而非职位名，按金融相关直接雇主保护。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "fileAI",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.file.ai/",
+          "reviewedOn": "2026-11-26",
+          "note": "fileAI's official site identifies dedicated fileLedger financial-operations automation and fileShield products purpose-built for insurance, banking and financial services. Although fileForge is cross-industry, these material BFSI offerings place the company within financial-related protection."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Financial Planning Standards Board Ltd.",
@@ -5498,7 +5904,17 @@
       ],
       "investigationSummary": "官方 About 页直接确认金融教育主营及 Fitch Group 从属关系，不是仅凭名称中的 Fitch 推断；按金融相关专业服务保护，招聘为自身业务所用。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Fitch Learning",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://fitchlearning.com/about-us/?regioncode=AP",
+          "reviewedOn": "2026-11-26",
+          "note": "官网确认 Fitch Learning 是 Fitch Group 旗下专门提供金融教育和金融专业资格的机构，属于金融相关专业服务；原始 LinkedIn 公司页 fitch-learning 一致，Client Relationship Management 职位支持自身培训业务，故为 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Flowdesk-p",
@@ -6044,7 +6460,17 @@
       ],
       "investigationSummary": "原始 LinkedIn 公司页 gonetzero、品牌官网和上市公司 Sembcorp 业务页完成身份闭环。其业务不只是通用减排咨询，还直接采购、供应碳信用和能源属性证书并经纪购电协议，按环境商品市场相关实体保护；并非招聘平台。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "GoNetZero™",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.sembcorp.com/en/driving-energy-transition/our-businesses/decarbonisation-solutions/carbon-management-solutions/",
+          "reviewedOn": "2026-11-26",
+          "note": "Sembcorp 官方业务页确认 GoNetZero™ 从事环境属性采购与供应、碳信用及能源属性证书解决方案，并提供购电协议结构设计与经纪，属于环境商品及市场型金融相关业务；原始 LinkedIn 公司页 gonetzero 与该品牌一致，招聘支持自身经营，故为 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Gough Recruitment",
@@ -6297,7 +6723,17 @@
       ],
       "investigationSummary": "精确职位检索与官网相互印证到同一 Hamsa；判定依据是官网金融基础设施业务及官方招聘页，而非 IT 职位名称。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Hamsa",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.hamsa.com/about-us",
+          "reviewedOn": "2026-11-26",
+          "note": "Hamsa's official About page confirms that its Unified Ledger supplies clearing, settlement and interoperability infrastructure to major banks and central banks, establishing a financial-infrastructure business."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Hartree Partners",
@@ -6702,6 +7138,32 @@
       }
     },
     {
+      "company": "Higgsfield AI",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4487584224"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4487584224"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+    },
+    {
       "company": "Himension Capital",
       "sourceStatuses": [
         "resolved_observation",
@@ -6798,7 +7260,17 @@
       ],
       "investigationSummary": "精确品牌检索找到 HireFeed 官方职位目录，页面关于来源链接、职位搜索和匹配工具的说明直接证明招聘平台属性。原始 Customer Service、Account Manager 等发布名称应视为平台发布记录，不能据此认定为直接招聘。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Hire Feed",
+        "employerType": "recruitment_platform",
+        "evidence": {
+          "url": "https://hirefeed.co.in/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网明确 HireFeed 运营可搜索的第三方工作机会目录，每个职位回链雇主或 ATS，并提供职位发现与匹配工具，属于招聘/职位聚合平台而非这些职位的共同直接雇主，故归为 recruitment_platform。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Hong Kong Monetary Authority (HKMA)",
@@ -7449,7 +7921,17 @@
       ],
       "investigationSummary": "原始 LinkedIn 公司页 inicio-group-pte-ltd 与官网完整法人名一致。虽然原始职位是系统化交易执行岗位，官网证明发布者主营业务是多行业招聘与咨询，故按招聘机构保护而非金融直接雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Inicio Group Pte Ltd",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://iniciogroup.com/inicio-group/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网精确对应 Inicio Group Pte Ltd，并直接列出 executive search、长期及临时人员配置和招聘流程外包，符合 recruitment_agency；原始 Execution Trader 职位应视为其客户招聘项目，不能据此认定 Inicio 自身为交易机构。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Interlink Talent Solutions",
@@ -8251,7 +8733,17 @@
       ],
       "investigationSummary": "官网和原始 LinkedIn 公司页精确对应，且官方服务范围覆盖猎头、招聘流程外包、人员配置及 EOR。Wealth Management Relationship Manager 是其招聘业务中的客户职位，不应据此归为直接金融机构。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Kingfisher HR Solutions Group",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.kingfisherintl.com/about/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接确认 Kingfisher 为客户提供 Executive Search、RPO、Staffing、猎头及 EOR/HR 外包，主营第三方人才获取与人员服务；原始 LinkedIn 公司页 kingfisher-hr-solutions-group 一致，故归为 recruitment_agency。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Kingsway Family Office",
@@ -9063,7 +9555,17 @@
       ],
       "investigationSummary": "官网 About 页直接确认投资管理业务，与原始 India Research Analyst 职位及 LinkedIn 公司页一致；身份、保护范围和直接雇主属性均明确。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Matthews Asia",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.matthewsasia.com/about/our-story/",
+          "reviewedOn": "2026-11-26",
+          "note": "官方 About 页直接证明 Matthews Asia 是主动投资管理机构，专注亚洲和新兴市场组合管理；原始 LinkedIn 公司页 matthews-asia 与官网一致，属于受保护的 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "MCG Talent",
@@ -9398,7 +9900,17 @@
       ],
       "investigationSummary": "精确 HSBC 标题检索定位到 Mission Media 官网职位策划页；该页明确其为第三方职位清单维护者，且实际雇主链接与输入发布方不同，按招聘平台保护。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Mission Media",
+        "employerType": "recruitment_platform",
+        "evidence": {
+          "url": "https://missionmedia.asia/marketing-communications-job-openings-southeast-asia-list/",
+          "reviewedOn": "2026-11-26",
+          "note": "Mission Media's own article states that it curates and maintains a live list of third-party job openings with direct application links. The exact HSBC Singapore role appears there and links to HSBC's separate original posting, so Mission Media is acting as a job-information platform rather than the direct employer."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "MOBILIZE Talent Acquisition",
@@ -9791,7 +10303,17 @@
       ],
       "investigationSummary": "原始职位位于新加坡，LinkedIn 公司页为 nexxuscapitalmgmt；新加坡官网与 MAS 精确法人及牌照记录共同排除了墨西哥、美国等同名机构。其 Accountant 是投资机构内部职能，不改变金融保护属性。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Nexxus Capital Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://eservices.mas.gov.sg/fid/institution/detail/249939-NEXXUS-CAPITAL-MANAGEMENT-PTE-LTD",
+          "reviewedOn": "2026-11-26",
+          "note": "MAS 官方目录确认该新加坡实体持有 Venture Capital Fund Management 资本市场服务牌照，官网同时证明其科技成长投资策略；原始 LinkedIn 公司页 nexxuscapitalmgmt 与新加坡官网对应，故为受保护的 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "No deviation",
@@ -10124,7 +10646,17 @@
       ],
       "investigationSummary": "官网和官方文档直接确认受监管金融产品与代币化投资平台，属于直接金融相关雇主，而非普通软件企业。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "OpenEden",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://openeden.com/about",
+          "reviewedOn": "2026-11-26",
+          "note": "OpenEden's official About page identifies it as a regulated tokenization platform bringing financial assets onchain through regulated entities, including tokenized Treasury and bond products."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Optimas Capital Limited",
@@ -10520,7 +11052,17 @@
       ],
       "investigationSummary": "官网直接确认投资与金融猎头业务，且列出输入中的同一 LinkedIn 公司页。Private Equity Real Estate 职位属于客户招聘任务，不是 Panthera 自营私募股权投资。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Panthera Partners",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.pantherapartners.co.uk/",
+          "reviewedOn": "2026-11-26",
+          "note": "Panthera Partners' official website explicitly identifies it as an investment and finance search firm that hires talent for private-equity and credit funds, corporates and advisers; it is a recruitment agency."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Park Brown International",
@@ -11305,7 +11847,17 @@
       ],
       "investigationSummary": "官网直接确认猎头业务及职业介绍所牌照，原始私人银行职位不能解释为该公司自营银行业务；应按招聘机构保护。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Privee Associates",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.priveeassociates.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "Official site explicitly identifies Privee Associates as a private banking and wealth management executive search firm and provides Hong Kong employment agency licence 82062; it is a recruitment agency, not a direct bank employer."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Progression Search",
@@ -11512,7 +12064,17 @@
       ],
       "investigationSummary": "官网明确法定机构 Public Sector Pension Investment Board 及养老金投资管理职责，和原始 Private Equity 职位及 LinkedIn 公司页相互印证；身份与直接雇主分类无歧义。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "PSP Investments | Investissements PSP",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.investpsp.com/en/psp/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接证明 PSP Investments 是为加拿大公共部门养老金计划管理资产的机构投资者，投资范围包括私募股权和资本市场；原始 LinkedIn 公司页 psp-investments 一致，属于受保护的 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Punjab Capital",
@@ -12302,7 +12864,17 @@
         "未核实 RoleJob 品牌背后的注册法人名称；该信息不影响本次对发布品牌、主营业务及 employerType 的判定。"
       ],
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Rolejob",
+        "employerType": "recruitment_platform",
+        "evidence": {
+          "url": "https://rolejob.com/about",
+          "reviewedOn": "2026-11-26",
+          "note": "RoleJob's official About page explicitly identifies a source-verified multi-employer job index, prohibits direct employer submissions, and states that RoleJob never processes applications and Apply buttons open the employer's original page. The exact observed Data Governance Platform Engineer(Digital Trust) listing is separately attributed to Coupang and links to Coupang's official posting (gh_jid=8416625), confirming Rolejob as a recruitment platform rather than the direct employer."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Ropedia",
@@ -12837,7 +13409,17 @@
       ],
       "investigationSummary": "官网首页直接证明其环境商品交易及金融解决方案业务，原始 Trade Operations Specialist 与自营交易运营一致。保护依据是实际交易业务，而非仅凭职位名中的 Trade。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "STX Group",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://stxgroup.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网明确 STX Group 的核心业务是环境商品交易，并跨能源、燃料、天然气和碳市场提供实物及金融解决方案；原始 LinkedIn 公司页 stxgroup 与官网一致，属于金融相关大宗商品交易业务的 direct_employer。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Supermicro",
@@ -13027,7 +13609,17 @@
       ],
       "investigationSummary": "官网直接证明招聘和人员配置业务，原始 Global Bank 职位应为代客户发布，不能因终端客户是银行而将 Taylor Root 归为直接金融雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Taylor Root",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.taylorroot.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接确认 Taylor Root 是为法律、风险与合规雇主提供 executive search、长期招聘和合同/临时人员配置的第三方招聘机构；原始 LinkedIn 公司页 taylor-root 一致，故为 recruitment_agency。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Tech Aalto",
@@ -13221,7 +13813,17 @@
       ],
       "investigationSummary": "官方业务及监管资料确认其为银行，并明确香港分行受 HKMA 监管；原始 Senior Relationship Manager 属于直接银行雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "The Access Bank UK Limited",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.theaccessbankukltd.co.uk/about-us/",
+          "reviewedOn": "2026-11-26",
+          "note": "The bank's official About page confirms trade finance, commercial banking and asset management activities, PRA/FCA authorization and an HKMA-regulated Hong Kong branch."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "The Church of Jesus Christ of Latter-day Saints",
@@ -13674,7 +14276,17 @@
       ],
       "investigationSummary": "官网不仅明确招聘与猎头业务，还列出与原始数据完全相同的 Institutional Relationship Manager（Singapore），因此可确认该职位是其为客户提供的金融招聘项目，而非 Trevose 自身金融机构岗位。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Trevose Partners",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.trevosepartners.com/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接确认 Trevose Partners 为金融机构提供专业招聘与猎头服务，客户包括投行、资管、对冲基金、交易所及金融科技公司；原始 LinkedIn 公司页 trevose-partners 及官网同款新加坡职位完成身份核对，故为 recruitment_agency。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "TriLake Partners",
@@ -13863,7 +14475,17 @@
       ],
       "investigationSummary": "多个官网页面确认其金融服务、对冲和基金金融主业，并非根据 Trader 职位名称推断；属于直接金融相关雇主。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Validus Risk Management",
+        "employerType": "direct_employer",
+        "evidence": {
+          "url": "https://www.validusrm.com/news-insights/11-pitfalls-fx-hedging-g/",
+          "reviewedOn": "2026-11-26",
+          "note": "Validus explicitly describes itself on its official site as a financial services firm specializing in market risk management, fund finance and technology solutions; its client page confirms FX, rates, liquidity and hedging services for private capital."
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Vantage Associates Pte Ltd",
@@ -14383,7 +15005,17 @@
       ],
       "investigationSummary": "官网精确使用原始公司品牌，并明确客户招聘、人才匹配、长期和合同人员配置服务。KYC File Review 是其招聘业务涉及的岗位，不影响雇主类型判断。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "WilliamSELECT",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.williams-asia.com/why-william-select/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网以 WilliamSELECT 品牌直接介绍招聘服务，并提供长期员工配置、合同及专业招聘和 HR 咨询，符合第三方招聘与人员配置机构定义，故保护并归为 recruitment_agency。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Winner Zone Asset Management Limited",
@@ -14475,7 +15107,17 @@
       ],
       "investigationSummary": "官网明确 Winston Fox 自身是猎头公司而非对冲基金，且技术招聘是其正式服务线。两个原始 Quant Hedge Fund 工程职位因此按第三方招聘项目处理，保护发布者并归为招聘机构。",
       "remainingQuestion": null,
-      "lastReviewedOn": "2026-11-26"
+      "lastReviewedOn": "2026-11-26",
+      "existingRecord": {
+        "company": "Winston Fox",
+        "employerType": "recruitment_agency",
+        "evidence": {
+          "url": "https://www.winston-fox.co.uk/",
+          "reviewedOn": "2026-11-26",
+          "note": "官网直接确认 Winston Fox 是为对冲基金客户提供定向人才搜寻与 placement 的 executive search firm；原始 LinkedIn 公司页 winston-fox 一致，Quant Hedge Fund 技术职位属于其客户招聘项目，故为 recruitment_agency。"
+        }
+      },
+      "existingIndustry": null
     },
     {
       "company": "Wirgem",
@@ -14734,6 +15376,33 @@
       ],
       "remainingQuestion": null,
       "observedJobs": []
+    },
+    {
+      "company": "高济医药(四川)有限公司",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-27",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4492326650"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4492326650"
+      ],
+      "observationAt": "2026-11-27T05:03:56.392712+00:00"
     }
-  ]
+  ],
+  "generatedAt": "2026-11-27T05:04:03.916567+00:00"
 }
