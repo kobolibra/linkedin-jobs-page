@@ -50,6 +50,19 @@ class TraeEntrypointTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             entry.load_config(self.cfg)
 
+    def test_credential_only_workspace_config_uses_canonical_defaults(self):
+        self.cfg.write_text(json.dumps({"github_token": "test-only"}))
+        cfg = entry.load_config(self.cfg)
+        self.assertEqual((cfg["repo"], cfg["branch"]), (entry.REPO, "main"))
+        self.assertEqual(cfg["github_token"], "test-only")
+
+    def test_execution_uses_manifest_review_day(self):
+        self.manifest["reviewDay"] = "2026-11-27"
+        self.manifest["events"] = []
+        with patch.object(entry, "check_code"), patch.object(entry, "child_env", return_value={}), patch.object(entry.subprocess, "run") as run:
+            entry.execute(self.root, self.run, self.manifest, "daily-report", ["python", "-I", "-B", "daily.py"])
+            self.assertEqual(run.call_args.kwargs["env"]["NEXT_JOURNEY_REVIEW_DAY"], "2026-11-27")
+
     def test_authenticated_git_environment_is_process_local(self):
         import base64
         from scripts.trae_bootstrap import git_env, load_config

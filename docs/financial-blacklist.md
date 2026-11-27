@@ -106,7 +106,7 @@ Build it after the daily company report:
 python scripts/company_review_queue.py --write
 ```
 
-Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. Merge actual research with `--apply-results`; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. Applying a research result does not itself change runtime classification.
+Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. In scheduled runs submit actual research only through the atomic `apply-review` command in the scheduler contract; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. The older local `--apply-results` command is a maintenance diagnostic, not a scheduled write procedure.
 
 For scheduled TRAE research, use `apply-review --results FILE` to atomically persist both classification and investigation progress, including historical or staging-only companies. Existing protected type corrections require the reviewed PR process. Manual legacy commands are not a complete transaction for research progress. Never reconstruct `company_employer_types.json` from this progress file.
 

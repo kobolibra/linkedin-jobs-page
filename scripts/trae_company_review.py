@@ -148,6 +148,8 @@ def execute(root, run_dir, manifest, name, command, *, output=None, credentials=
     manifest["events"].append(event)
     save(run_dir / "execution-manifest.json", manifest)
     env = child_env(run_dir)
+    if manifest.get("reviewDay"):
+        env["NEXT_JOURNEY_REVIEW_DAY"] = manifest["reviewDay"]
     if not credentials:
         env.pop("GITHUB_TOKEN", None)
         env.pop("GH_TOKEN", None)

@@ -46,7 +46,10 @@ duplicate mutable classification rules, result schemas, commands or reporting
 rules. Read this section and the current checkout's financial-blacklist.md
 after every successful bootstrap. The scheduler retains only the authenticated
 bootstrap and the instruction to follow this contract. A failed bootstrap
-must stop the task; never choose an older run directory as a fallback.
+must stop the task; never choose an older run directory as a fallback. Use one
+bootstrap per task and do not deliberately overlap two scheduled or manual
+runs. The writer prevents stale duplicate commits, but independent overlapping
+agents can still waste research on the same queue.
 
 ### 1. Worklist
 
