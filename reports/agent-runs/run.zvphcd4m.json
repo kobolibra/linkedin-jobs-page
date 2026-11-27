@@ -6,10 +6,22 @@
   "branch": "main",
   "startedAt": "2026-11-27T04:08:52.052966+00:00",
   "codeCommit": "681ea0fe07c8042c8486cfeb4050e9634aa7af1a",
-  "dataCommit": "681ea0fe07c8042c8486cfeb4050e9634aa7af1a",
+  "dataCommit": "71bb3b3ed68d7fe23a8895e2113c5c1e35363013",
   "checkout": "/workspace/next-journey-runs/run.zvphcd4m/repo",
   "pythonExecutable": "/root/.pyenv/versions/3.14.8/bin/python3",
-  "events": [],
+  "events": [
+    {
+      "step": "queue-regressions",
+      "startedAt": "2026-11-27T04:08:59.237895+00:00",
+      "dataCommit": "71bb3b3ed68d7fe23a8895e2113c5c1e35363013",
+      "executable": "/root/.pyenv/versions/3.14.8/bin/python3",
+      "script": "-c",
+      "argumentFlags": [],
+      "argumentsSha256": "e8aff67c65b089123371eb626fbe243509d083c58075d946238bf3446ee4a7f8",
+      "exitCode": 1,
+      "finishedAt": "2026-11-27T04:08:59.328781+00:00"
+    }
+  ],
   "scripts": [
     {
       "path": "auto-daily-companies.py",
@@ -52,5 +64,7 @@
       "sha256": "b108202e058f58b0d5ad93c3e5830323b1661d3c17633722e2ec51b1dfb5691c"
     }
   ],
-  "auditPublishedAt": "2026-11-27T04:08:52.230545+00:00"
+  "auditPublishedAt": "2026-11-27T04:08:59.402729+00:00",
+  "preparationFailedAt": "2026-11-27T04:08:59.329521+00:00",
+  "preparationErrorType": "RuntimeError"
 }
