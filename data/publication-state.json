@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "classificationCommit": "5c972aa8ddb9d6ad43d494f162159977e67f7cd6",
+  "classificationCommit": "e73c6714d0a974f4d6ff7bdf478c214b37b784eb",
   "inputs": {
     "data/n8n/rss-latest.json": "e239e2347590ab2c7dfd4670246c31ae626ffe23851ab521d2a64957bb060ff8",
-    "reports/cumulative-target-companies.tsv": "ee83ed1c2585059a3b0d9ed0df6d13ddc150c359f7bead293eed16a4c22c1a10",
-    "financial_blacklist.json": "d9df15007d57216a3714d022c012150ad5ec79c9c8c5b9304cb59d093817a851"
+    "reports/cumulative-target-companies.tsv": "11e1096bb9c3bae5d20d27625a58c2f421fbbf1ee1c968c53c017481053f6b39",
+    "financial_blacklist.json": "deeefbcadcc5868ab39ce5b079073d9021595b7e4d18a49309356761b94b895f"
   }
 }
