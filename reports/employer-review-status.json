@@ -6,176 +6,15 @@
     "indexJobs": 15089,
     "websiteJobs": 6278,
     "trackedCompanies": 283,
-    "reviewQueue": 6,
+    "reviewQueue": 0,
     "deferredCompanies": 0,
     "deferredByStatus": {},
-    "queueByStatus": {
-      "not_started": 6
-    },
-    "queueBySource": {
-      "unlisted": 6
-    },
+    "queueByStatus": {},
+    "queueBySource": {},
     "stagingNotCanonical": 0,
     "indexNotCanonical": 0
   },
-  "reviewQueue": [
-    {
-      "company": "Aloha Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-27",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4495012275"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4495012275"
-      ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
-    },
-    {
-      "company": "Commodity Supplies AG",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-27",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4495508653"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4495508653"
-      ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
-    },
-    {
-      "company": "Enflame",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-27",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4493066523"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4493066523"
-      ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
-    },
-    {
-      "company": "Fellow",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-27",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4494984565"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4494984565"
-      ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
-    },
-    {
-      "company": "Higgsfield AI",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-27",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4487584224"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4487584224"
-      ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
-    },
-    {
-      "company": "高济医药(四川)有限公司",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-27",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4492326650"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4492326650"
-      ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
-    }
-  ],
+  "reviewQueue": [],
   "companies": [
     {
       "company": "129Knots",
@@ -931,20 +770,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "数字营销/SEO",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-27",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4495012275"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4495012275"
+      ],
       "candidateJobIds": [
         "4495012275"
       ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+      "observationAt": "2026-11-27T05:03:56.392712+00:00",
+      "queries": [
+        "Aloha Group Hong Kong digital marketing agency company"
+      ],
+      "lastReviewedOn": "2026-11-27",
+      "identityStatus": "confirmed",
+      "industry": "数字营销/SEO",
+      "industryEvidence": [
+        {
+          "url": "https://www.alohaonline.asia/about-us/",
+          "note": "官网确认 Aloha Group 为 2016 年成立于香港的 SEO/数字营销科技公司，主营搜索引擎优化（SEO）、AI Overview 优化（AIO）与生成式引擎优化（GEO），非金融或招聘服务。"
+        }
+      ]
     },
     {
       "company": "Alpha FMC",
@@ -4300,20 +4153,35 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "海运物流/货运代理",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-27",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4495508653"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4495508653"
+      ],
       "candidateJobIds": [
         "4495508653"
       ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+      "observationAt": "2026-11-27T05:03:56.392712+00:00",
+      "queries": [
+        "Commodity Supplies AG company Switzerland commodities trading",
+        "\"Commodity Supplies AG\" Wollerau company website"
+      ],
+      "lastReviewedOn": "2026-11-27",
+      "identityStatus": "confirmed",
+      "industry": "海运物流/货运代理",
+      "industryEvidence": [
+        {
+          "url": "https://www.commodity.ch/",
+          "note": "官网确认 Commodity Supplies AG 成立于 1997 年，主营全球海运集装箱货物物流的采购与处理（货运代理/供应链物流），非金融、金融科技或招聘服务。"
+        }
+      ]
     },
     {
       "company": "Compass International Holdings",
@@ -5144,20 +5012,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "云端AI芯片/半导体",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-27",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4493066523"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4493066523"
+      ],
       "candidateJobIds": [
         "4493066523"
       ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+      "observationAt": "2026-11-27T05:03:56.392712+00:00",
+      "queries": [
+        "Enflame 燧原科技 AI chip semiconductor company"
+      ],
+      "lastReviewedOn": "2026-11-27",
+      "identityStatus": "confirmed",
+      "industry": "云端AI芯片/半导体",
+      "industryEvidence": [
+        {
+          "url": "https://www.enflame-tech.com/aboutus",
+          "note": "官网确认燧原科技（上海燧原科技股份有限公司，688801.SH）为云端 AI 芯片企业，自研 AI 芯片、加速卡及智算系统，属半导体行业，非金融或招聘服务。"
+        }
+      ]
     },
     {
       "company": "Ethos",
@@ -5419,20 +5301,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "咖啡器具/厨房用品",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-27",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4494984565"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4494984565"
+      ],
       "candidateJobIds": [
         "4494984565"
       ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+      "observationAt": "2026-11-27T05:03:56.392712+00:00",
+      "queries": [
+        "Fellow Products coffee equipment company San Francisco"
+      ],
+      "lastReviewedOn": "2026-11-27",
+      "identityStatus": "confirmed",
+      "industry": "咖啡器具/厨房用品",
+      "industryEvidence": [
+        {
+          "url": "https://fellowproducts.com/pages/about-us",
+          "note": "官网确认 Fellow（Fellow Products）为 2013 年成立于旧金山的咖啡及厨房器具品牌，主营咖啡壶、磨豆机、意式咖啡机等消费品，非金融或招聘服务。"
+        }
+      ]
     },
     {
       "company": "Fenergo",
@@ -7148,20 +7044,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "AI视频生成",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-27",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4487584224"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4487584224"
+      ],
       "candidateJobIds": [
         "4487584224"
       ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+      "observationAt": "2026-11-27T05:03:56.392712+00:00",
+      "queries": [
+        "Higgsfield AI video generation startup company"
+      ],
+      "lastReviewedOn": "2026-11-27",
+      "identityStatus": "confirmed",
+      "industry": "AI视频生成",
+      "industryEvidence": [
+        {
+          "url": "https://higgsfield.ai/about",
+          "note": "官网确认 Higgsfield AI 为 2023 年成立于旧金山的 AI 视频/图像生成平台，提供面向创作者与营销团队的 AI 视频生成服务，非金融或招聘服务。"
+        }
+      ]
     },
     {
       "company": "Himension Capital",
@@ -15388,21 +15298,35 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "医药批发",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-27",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4492326650"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4492326650"
+      ],
       "candidateJobIds": [
         "4492326650"
       ],
-      "observationAt": "2026-11-27T05:03:56.392712+00:00"
+      "observationAt": "2026-11-27T05:03:56.392712+00:00",
+      "queries": [
+        "高济医药 四川 有限公司 公司 主营业务"
+      ],
+      "lastReviewedOn": "2026-11-27",
+      "identityStatus": "confirmed",
+      "industry": "医药批发",
+      "industryEvidence": [
+        {
+          "url": "https://m.qixin.com/company/c399c110-36d2-4620-b80e-1fb0a6979395",
+          "note": "企业工商信息确认高济医药(四川)有限公司位于成都，所属行业为西药批发，经营范围销售药品、医疗器械、保健食品等，属医药批发/零售企业，非金融或招聘服务。"
+        }
+      ]
     }
   ],
-  "generatedAt": "2026-11-27T05:04:03.916567+00:00"
+  "generatedAt": "2026-11-27T05:06:57.427586+00:00"
 }
