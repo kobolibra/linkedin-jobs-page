@@ -134,8 +134,9 @@ def parse_push_time_dt(s):
 
 
 def extract_company_name(job):
+    # A missing employer must not turn a job title or generic name into a company.
     for f in ["company", "companyName", "company_name", "employer",
-              "employerName", "employer_name", "organization", "org", "name", "title"]:
+              "employerName", "employer_name", "organization", "org"]:
         v = job.get(f)
         if v and isinstance(v, str) and v.strip():
             return v.strip()
@@ -247,8 +248,15 @@ def main():
     today = get_beijing_today()
     print(f"[INFO] Today (Beijing): {today}")
 
-    # Download jobs data via API (private repo)
-    jobs_data = download_json_from_api(JOBS_API_URL)
+    # In scheduled runs use the pinned checkout, not a second moving main read.
+    snapshot = os.environ.get("NEXT_JOURNEY_SNAPSHOT")
+    if snapshot:
+        expected = Path(__file__).resolve().parent / "jobs.json"
+        if Path(snapshot).resolve() != expected:
+            raise ValueError("Daily snapshot must be the pinned checkout jobs.json")
+        jobs_data = json.loads(expected.read_text(encoding="utf-8"))
+    else:
+        jobs_data = download_json_from_api(JOBS_API_URL)
     if not jobs_data:
         print("[ERROR] Failed to download jobs.json")
         sys.exit(1)

@@ -52,6 +52,12 @@ is supplied by that confirmation and what the linked source supports.
 
 ## Agent write contract
 
+Scheduled TRAE runs must use the canonical atomic `apply-review` entrypoint in
+[the scheduler contract](trae-company-review.md). It checkpoints discoveries and
+commits verified decisions, historical ledgers and investigation progress together.
+The legacy commands below describe manual compatibility workflows, not scheduled
+TRAE writes.
+
 Refresh both `auto-daily-companies.py` and `reclassify.py` together in any
 external Agent checkout (including persistent copies under `/workspace`)
 before enabling writes against the migrated branch. Continue using
@@ -105,7 +111,7 @@ python scripts/company_review_queue.py --write
 
 Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. Merge actual research with `--apply-results`; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. Applying a research result does not itself change runtime classification.
 
-Resolved protection decisions still go through `reclassify.py --blacklist-records` for new records or the reviewed PR process for existing records. Resolved delete decisions still use `--industry` and the normal cumulative-list finalization. Never reconstruct `company_employer_types.json` from this progress file.
+For scheduled TRAE research, use `apply-review --results FILE` to atomically persist both classification and investigation progress, including historical or staging-only companies. Existing protected type corrections require the reviewed PR process. Manual legacy commands are not a complete transaction for research progress. Never reconstruct `company_employer_types.json` from this progress file.
 
 ## Coverage audit
 

@@ -33,6 +33,7 @@ KEY_FILES = (
     "auto-daily-companies.py", "reclassify.py",
     "scripts/trae_bootstrap.py", "scripts/trae_company_review.py", "scripts/company_review_queue.py",
     "scripts/audit_employer_types.py", "scripts/publication_state.py",
+    "scripts/apply_company_review.py",
     "docs/financial-blacklist.md", "docs/trae-company-review.md",
 )
 ALLOWED = {
@@ -84,6 +85,7 @@ def child_env(run_dir, config=CONFIG):
     env["GITHUB_TOKEN"] = cfg["github_token"]
     env["NEXT_JOURNEY_CONFIG"] = str(config)
     env["NEXT_JOURNEY_OUTPUT_DIR"] = str(run_dir)
+    env["NEXT_JOURNEY_SNAPSHOT"] = str(run_dir / "repo" / "jobs.json")
     env["GIT_TERMINAL_PROMPT"] = "0"
     if cfg.get("proxy"):
         for key in ("HTTP_PROXY", "HTTPS_PROXY", "http_proxy", "https_proxy"):
@@ -179,7 +181,10 @@ def prepare(root, run_dir):
         git(root, "checkout", "--detach", latest)
         head = latest
     load_config()
-    manifest = {"version": 1, "runId": run_dir.name, "repository": REPO,
+    from datetime import timedelta
+    day = datetime.now(timezone(timedelta(hours=8))).date().isoformat()
+    manifest = {"version": 2, "runId": run_dir.name, "repository": REPO,
+                "reviewDay": day,
                 "branch": "main", "startedAt": utc(), "codeCommit": head,
                 "dataCommit": head, "checkout": str(root),
                 "pythonExecutable": sys.executable, "events": [],
@@ -187,19 +192,31 @@ def prepare(root, run_dir):
                             for path in KEY_FILES]}
     save(manifest_path, manifest)
     check_code(root, manifest)
-    # Isolated test runner: only explicitly add the trusted checkout to sys.path.
-    execute(root, run_dir, manifest, "queue-regressions",
-            [sys.executable, "-I", "-B", "-c",
-             "import sys, unittest; sys.path.insert(0, '.'); "
-             "unittest.main(module='scripts.test_company_review_queue')"])
-    execute(root, run_dir, manifest, "daily-report",
-            script_command(root, "auto-daily-companies.py", []), credentials=True)
-    refresh(root, run_dir, manifest)
-    build_queue(root, run_dir, manifest)
-    manifest["preparedAt"] = utc()
+    # Publish startup evidence before any potentially failing business step.
+    publish_audit(root, run_dir, manifest)
+    try:
+        refresh(root, run_dir, manifest)
+        execute(root, run_dir, manifest, "queue-regressions",
+                [sys.executable, "-I", "-B", "-c",
+                 "import sys, unittest; sys.path.insert(0, '.'); "
+                 "unittest.main(argv=['unittest', 'scripts.test_company_review_queue', "
+                 "'scripts.test_apply_company_review'])"])
+        execute(root, run_dir, manifest, "daily-report",
+                script_command(root, "auto-daily-companies.py", []), credentials=True)
+        refresh(root, run_dir, manifest)
+        build_queue(root, run_dir, manifest)
+        apply_review(root, run_dir, manifest, [])
+        manifest["preparedAt"] = utc()
+    except Exception as error:
+        manifest["preparationFailedAt"] = utc()
+        manifest["preparationErrorType"] = type(error).__name__
+        save(manifest_path, manifest)
+        try:
+            publish_audit(root, run_dir, manifest)
+        except Exception:
+            print("Could not publish failure audit; retain local execution-manifest.json", file=sys.stderr)
+        raise
     save(manifest_path, manifest)
-    # Establish proof of the actual scheduled invocation even if the AI research
-    # is interrupted before its final audit call.
     publish_audit(root, run_dir, manifest)
 
 
@@ -213,6 +230,24 @@ def build_queue(root, run_dir, manifest):
     execute(root, run_dir, manifest, "review-queue",
             script_command(root, ALLOWED["queue"], ["--root", str(root)]),
             output=run_dir / "company-review-queue.json")
+
+
+def apply_review(root, run_dir, manifest, args):
+    parser = argparse.ArgumentParser(prog="apply-review", allow_abbrev=False)
+    parser.add_argument("--results", type=Path)
+    parser.add_argument("--dry-run", action="store_true")
+    opts = parser.parse_args(args)
+    command = ["--queue", str(run_dir / "company-review-queue.json"),
+               "--code-commit", manifest["codeCommit"], "--date", manifest["reviewDay"]]
+    if opts.results:
+        if not opts.results.is_absolute() or not opts.results.resolve().is_relative_to(run_dir):
+            raise ValueError("Results must be an absolute file inside this run")
+        command += ["--results", str(opts.results.resolve())]
+    if opts.dry_run:
+        command.append("--dry-run")
+    execute(root, run_dir, manifest, "apply-review" if opts.results else "checkpoint-queue",
+            script_command(root, "scripts/apply_company_review.py", command), credentials=True)
+    refresh(root, run_dir, manifest)
 
 
 def checked_arguments(action, args, root, run_dir):
@@ -261,7 +296,7 @@ def publish_audit(root, run_dir, manifest):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
-    parser.add_argument("action", choices=["prepare", "refresh", "publish-audit", *ALLOWED])
+    parser.add_argument("action", choices=["prepare", "refresh", "publish-audit", "apply-review", *ALLOWED])
     parser.add_argument("args", nargs=argparse.REMAINDER)
     opts = parser.parse_args()
     root = ROOT
@@ -288,14 +323,21 @@ def main():
                 if opts.args:
                     raise ValueError("refresh accepts no additional arguments")
                 build_queue(root, run_dir, manifest)
+                apply_review(root, run_dir, manifest, [])
+            elif opts.action == "apply-review":
+                apply_review(root, run_dir, manifest, opts.args)
+                publish_audit(root, run_dir, manifest)
             else:
                 args = checked_arguments(opts.action, opts.args, root, run_dir)
+                # Legacy split writes would bypass the evidence and atomicity gate.
+                # Keep read-only diagnostics and the old dry-run command available.
+                if opts.action == "reclassify" and "--dry-run" not in args:
+                    raise ValueError("Use apply-review --results FILE; legacy reclassify writes are disabled in TRAE")
+                if opts.action == "queue" and any(a == "--write" or a.startswith("--apply-results") for a in args):
+                    raise ValueError("Use apply-review --results FILE; never write queue state separately")
                 execute(root, run_dir, manifest, opts.action,
                         script_command(root, ALLOWED[opts.action], args),
                         credentials=opts.action == "reclassify")
-                # reclassify writes to GitHub, not this checkout.
-                if opts.action == "reclassify":
-                    refresh(root, run_dir, manifest)
     print("RUN_DIR=" + str(run_dir))
     print("REPO_DIR=" + str(root))
     print("ENTRYPOINT=" + str(root / "scripts/trae_company_review.py"))

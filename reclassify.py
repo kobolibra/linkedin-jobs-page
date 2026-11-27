@@ -274,9 +274,11 @@ class Repo:
         with self.opener.open(req, timeout=60) as response:
             return json.load(response)
 
-    def transact(self, build, message, dry=False):
+    def transact(self, build, message, dry=False, *, head_guard=None):
         for attempt in range(5):
             head = self.api(f"/git/ref/heads/{self.branch}")["object"]["sha"]
+            if head_guard is not None:
+                head_guard(head)
             cache = {}
             def read(path):
                 if path not in cache:
@@ -287,6 +289,10 @@ class Repo:
                             raise
                         cache[path] = None
                     else:
+                        # The Contents API omits inline content for files over 1 MiB.
+                        # Read the exact immutable blob, never a moving branch download.
+                        if entry.get("encoding") != "base64" and entry.get("sha"):
+                            entry = self.api(f"/git/blobs/{entry['sha']}")
                         if entry.get("encoding") != "base64":
                             raise ValueError(f"Unexpected contents response for {path}")
                         cache[path] = base64.b64decode(entry["content"]).decode()
