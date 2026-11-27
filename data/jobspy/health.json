@@ -2,43 +2,6 @@
   "schemaVersion": "1.0",
   "runs": [
     {
-      "runId": "logos:45571861722:1",
-      "task": "logos",
-      "workflowStatus": "success",
-      "observedAt": "2026-11-25T07:55:45.593836+00:00",
-      "rateLimitWaits": {
-        "serverHints": 0,
-        "clientFallbacks": 0,
-        "deferredQueries": 0
-      },
-      "requests": 6,
-      "retries": 0,
-      "httpStatuses": {
-        "200": 2,
-        "404": 4
-      },
-      "outcomes": {
-        "response": 6
-      },
-      "stages": {
-        "logos": 6
-      },
-      "detailEndpoints": {},
-      "queries": {},
-      "searchTransport": {},
-      "cooldowns": {},
-      "livenessTransport": {},
-      "logos": {
-        "candidates": 4,
-        "downloaded": 0,
-        "missing": 4,
-        "placeholders": 0,
-        "blocked": 0,
-        "reusedSources": 0,
-        "httpRetries": 0
-      }
-    },
-    {
       "runId": "jobs:45584393480:1",
       "task": "jobs",
       "workflowStatus": "success",
@@ -4463,6 +4426,43 @@
         "downloaded": 1,
         "missing": 2,
         "placeholders": 1,
+        "blocked": 0,
+        "reusedSources": 0,
+        "httpRetries": 0
+      }
+    },
+    {
+      "runId": "logos:45943853478:1",
+      "task": "logos",
+      "workflowStatus": "success",
+      "observedAt": "2026-11-27T05:07:42.633754+00:00",
+      "rateLimitWaits": {
+        "serverHints": 0,
+        "clientFallbacks": 0,
+        "deferredQueries": 0
+      },
+      "requests": 3,
+      "retries": 0,
+      "httpStatuses": {
+        "200": 1,
+        "404": 2
+      },
+      "outcomes": {
+        "response": 3
+      },
+      "stages": {
+        "logos": 3
+      },
+      "detailEndpoints": {},
+      "queries": {},
+      "searchTransport": {},
+      "cooldowns": {},
+      "livenessTransport": {},
+      "logos": {
+        "candidates": 2,
+        "downloaded": 0,
+        "missing": 2,
+        "placeholders": 0,
         "blocked": 0,
         "reusedSources": 0,
         "httpRetries": 0
