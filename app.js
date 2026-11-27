@@ -545,7 +545,6 @@ let postingHistoryDaily=null,snapshotUpdatedAt='';
 const jobsIndexDocument=(window.__jobsIndexDocument||window.JobIndexStore.load()).then(doc=>{
   const account=window.AccountPreferences;
   if(account&&doc?.linkedinJobReplacements){
-    account.setJobReplacements(doc.linkedinJobReplacements);
     favs.clear();for(const id of account.snapshot().favs)favs.add(id);
   }
   return doc;

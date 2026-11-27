@@ -150,3 +150,42 @@ test('an offline unstar follows further replacements and stays removed across de
  await b.sync.flush();await reloaded.sync.flush();
  assert.deepEqual(JSON.parse(reloaded.sync.get('favs')),[current]);
 });
+
+test('a delayed job index preserves an account unstar when the browser imports an old ID',async()=>{
+ const f=fixture(),a=f.client(),b=f.client('beta');
+ const old='ln:1234567',current='ln:1234568',unrelated='ln:1234569';
+ for(const client of [a,b]){
+  client.sync.set('favs',JSON.stringify([old]));
+  await client.sync.flush();
+  client.sync.setJobReplacements({[old]:current});
+ }
+ assert.equal(a.sync.toggleFavorite(current),false);
+ await a.sync.flush();
+ const legacy=f.client('alpha',f.storage({favs:JSON.stringify([old,unrelated])}));
+ let provideIndex;
+ const index=new Promise(resolve=>{provideIndex=resolve;});
+ legacy.sync.connectJobIndex(index);
+ const syncing=legacy.sync.flush();
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(legacy.sync.pending().length,0);
+ provideIndex({linkedinJobReplacements:{[old]:current}});
+ assert.equal(await syncing,true);
+ assert.deepEqual(JSON.parse(legacy.sync.get('favs')),[unrelated]);
+ await b.sync.flush();
+ assert.deepEqual(JSON.parse(b.sync.get('favs')),[current]);
+});
+
+test('a failed index keeps browser legacy favorites available for the next successful load',async()=>{
+ const f=fixture(),old='ln:1234567',current='ln:1234568';
+ const store=f.storage({favs:JSON.stringify([old]),blocked:JSON.stringify(['Acme'])});
+ const a=f.client('alpha',store);
+ await assert.rejects(a.sync.connectJobIndex(Promise.reject(Error('offline index'))));
+ assert.equal(await a.sync.flush(),true);
+ assert.deepEqual(JSON.parse(a.sync.get('blocked')),['Acme']);
+ assert.deepEqual(JSON.parse(a.sync.get('favs')),[]);
+ a.sync.stop();
+ const reload=f.client('alpha',store);
+ await reload.sync.connectJobIndex(Promise.resolve({linkedinJobReplacements:{[old]:current}}));
+ assert.equal(await reload.sync.flush(),true);
+ assert.deepEqual(JSON.parse(reload.sync.get('favs')),[current]);
+});

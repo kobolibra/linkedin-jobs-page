@@ -13,6 +13,11 @@
   }
   readCache(){try{const c=parse(localStorage.getItem(this.prefix+'cache'),{});this.cursor=Math.max(this.cursor,c.cursor||0);for(const row of c.entries||[]){const key=keyOf(row.kind,row.item);if((this.rows.get(key)?.revision||0)<row.revision)this.rows.set(key,row);}}catch{}}
   pending(){const all=new Map(this.memory);try{for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key?.startsWith(this.prefix+'op:')){const op=parse(localStorage.getItem(key),null);if(op)all.set(op.id,op);}}}catch{}return [...all.values()].sort((a,b)=>a.time-b.time||a.id.localeCompare(b.id));}
+  connectJobIndex(index){
+   const ready=index.then(doc=>{this.setJobReplacements(doc?.linkedinJobReplacements);return doc;});
+   this.jobIndexReady=ready.then(()=>window.JobIndexStore?.cacheState!=='stale',()=>false);
+   return ready;
+  }
   setJobReplacements(replacements){
    const edges=new Map(Object.entries(replacements||{}).filter(([old,next])=>/^ln:[0-9]+$/.test(old)&&typeof next==='string'&&/^ln:[0-9]+$/.test(next)));
    this.jobReplacements.clear();
@@ -63,8 +68,41 @@
   persist(){this.readCache();try{localStorage.setItem(this.prefix+'cache',JSON.stringify({cursor:this.cursor,entries:[...this.rows.values()]}));}catch{}}
   schedule(delay=350){if(this.stopped)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.flush(),delay);}
   async refresh(){let more;do{const r=await this.api('/auth/preferences?since='+this.cursor);if(r.status===401){this.stopped=true;this.expired();throw Error('expired');}if(!r.ok)throw Error('sync');const data=await r.json();if(data.userId!==this.user.id){this.stop();this.expired();throw Error('identity');}for(const row of data.entries){const key=keyOf(row.kind,row.item);if((this.rows.get(key)?.revision||0)<row.revision)this.rows.set(key,row);}this.cursor=data.cursor;more=data.more;this.persist();}while(more);this.emit();}
-  importLegacy(){let legacy;try{legacy=parse(localStorage.getItem(this.prefix+'legacy'),null);}catch{}if(!legacy)return;const pending=new Set(this.pending().map(o=>keyOf(o.kind,o.item)));for(const kind of kinds)for(let item of legacy[kind]||[]){if(typeof item!=='string')continue;if((kind==='favs'||kind==='reads')&&typeof jobId==='function')item=jobId(item);if(kind==='blocked'&&typeof canonicalCompany==='function')item=canonicalCompany(item);if(!item||item.length>500||/[\u0000-\u001f\u007f]/.test(item))continue;const key=keyOf(kind,item);if(!this.rows.has(key)&&!pending.has(key)){this.enqueue(kind,item,true);pending.add(key);}}try{localStorage.removeItem(this.prefix+'legacy');}catch{}this.emit();}
-  async flush(){if(this.stopped)return false;if(this.busy)return this.busy;this.busy=(async()=>{try{this.status('正在同步…');await this.refresh();this.importLegacy();let pending=this.pending();while(pending.length){const batch=[];let bytes=40;for(const op of pending.slice(0,100)){const size=new TextEncoder().encode(JSON.stringify(op)).length+1;if(bytes+size>48000)break;batch.push(op);bytes+=size;}const r=await this.api('/auth/preferences',{method:'POST',headers:{'content-type':'application/json','x-csrf-token':this.user.csrf},body:JSON.stringify({operations:batch.map(({id,kind,item,present})=>({id,kind,item,present}))})});if(r.status===401){this.stopped=true;this.expired();return false;}if(!r.ok)throw Error('sync');const data=await r.json();
+  readLegacy(){try{return parse(localStorage.getItem(this.prefix+'legacy'),null);}catch{return null;}}
+  importLegacy(legacy,importFavorites){
+   if(!legacy)return;
+   const key=this.prefix+'legacy';
+   // A local import is older than an explicit account action on any confirmed ID.
+   const operations=this.pending(),pending=new Set(operations.map(o=>keyOf(o.kind,o.item)));
+   const knownFavorites=new Set();
+   for(const row of [...this.rows.values(),...operations])if(row.kind==='favs')knownFavorites.add(this.jobKey(row.item));
+   for(const kind of kinds){
+    if(kind==='favs'&&!importFavorites)continue;
+    for(let item of legacy[kind]||[]){
+     if(typeof item!=='string')continue;
+     if((kind==='favs'||kind==='reads')&&typeof jobId==='function')item=jobId(item);
+     if(kind==='blocked'&&typeof canonicalCompany==='function')item=canonicalCompany(item);
+     if(!item||item.length>500||/[\u0000-\u001f\u007f]/.test(item))continue;
+     const opKey=keyOf(kind,item),favorite=kind==='favs'?this.jobKey(item):null;
+     if(this.rows.has(opKey)||pending.has(opKey)||knownFavorites.has(favorite))continue;
+     this.enqueue(kind,favorite||item,true);
+     if(favorite)knownFavorites.add(favorite);
+     pending.add(opKey);
+    }
+   }
+   try{
+    if(importFavorites)localStorage.removeItem(key);
+    else localStorage.setItem(key,JSON.stringify({favs:legacy.favs}));
+   }catch{}
+   this.emit();
+  }
+  async flush(){if(this.stopped)return false;if(this.busy)return this.busy;this.busy=(async()=>{try{this.status('正在同步…');
+    const legacy=this.readLegacy();
+    const importFavorites=!legacy?.favs?.length||!this.jobIndexReady||await this.jobIndexReady;
+    if(this.stopped)return false;
+    await this.refresh();
+    this.importLegacy(legacy,importFavorites);
+    let pending=this.pending();while(pending.length){const batch=[];let bytes=40;for(const op of pending.slice(0,100)){const size=new TextEncoder().encode(JSON.stringify(op)).length+1;if(bytes+size>48000)break;batch.push(op);bytes+=size;}const r=await this.api('/auth/preferences',{method:'POST',headers:{'content-type':'application/json','x-csrf-token':this.user.csrf},body:JSON.stringify({operations:batch.map(({id,kind,item,present})=>({id,kind,item,present}))})});if(r.status===401){this.stopped=true;this.expired();return false;}if(!r.ok)throw Error('sync');const data=await r.json();
     // Fetch the server result before retiring the durable outbox. A lost GET is retryable.
     await this.refresh();for(const id of data.acknowledged){this.memory.delete(id);try{localStorage.removeItem(this.prefix+'op:'+id);}catch{}}this.emit();pending=this.pending();}
    this.status('已同步至账号');return true;}catch{if(!this.stopped){this.status('暂未同步 · 恢复网络后自动重试');this.schedule(15000);}return false;}finally{this.busy=null;}})();return this.busy;}
