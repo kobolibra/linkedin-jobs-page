@@ -88,31 +88,34 @@ def download_json_from_api(api_url, timeout=120):
         return None
 
 
-def push_daily_report_to_github(jobs, today):
-    repo = classification.Repo(GITHUB_TOKEN, GITHUB_REPO, GITHUB_BRANCH, urllib.request.build_opener())
+def plan_daily_report(read, jobs, today):
+    """Build the daily report from a pinned jobs snapshot and current classifications."""
     path = classification.daily_paths(today)[0]
+    blacklist, industries = classification.classifications(read)
+    manual = classification.requester_excluded_names(read)
+    results = process_jobs(jobs, today, blacklist, industries)
+    for row in results["target_companies"]:
+        if classification.norm(row["company"]) in manual:
+            row["reason"] = classification.REQUESTER_EXCLUSION
+    current = read(path)
+    previous = json.loads(current) if current is not None else None
+    merged = dict(results)
+    if previous is not None:
+        for key in ("target_companies", "excluded_companies"):
+            merged[key] = previous[key] + results[key]
+    verified = classification.verified_industries(industries)
+    verified.update({key: classification.REQUESTER_EXCLUSION for key in manual})
+    report = classification.classify(merged, classification.protected_names(blacklist), verified)
+    return classification.daily_files(today, report)
 
-    def build(read):
-        blacklist, industries = classification.classifications(read)
-        manual = classification.requester_excluded_names(read)
-        results = process_jobs(jobs, today, blacklist, industries)
-        for row in results["target_companies"]:
-            if classification.norm(row["company"]) in manual:
-                row["reason"] = classification.REQUESTER_EXCLUSION
-        current = read(path)
-        previous = json.loads(current) if current is not None else None
-        merged = dict(results)
-        if previous is not None:
-            for key in ("target_companies", "excluded_companies"):
-                merged[key] = previous[key] + results[key]
-        verified = classification.verified_industries(industries)
-        verified.update({key: classification.REQUESTER_EXCLUSION for key in manual})
-        report = classification.classify(merged, classification.protected_names(blacklist), verified)
-        return classification.daily_files(today, report)
 
-    files = repo.transact(build, f"Publish daily company report for {today}")
+def push_daily_report_to_github(jobs, today):
+    """Compatibility entrypoint for manual use; TRAE uses the atomic writer."""
+    repo = classification.Repo(GITHUB_TOKEN, GITHUB_REPO, GITHUB_BRANCH, urllib.request.build_opener())
+    files = repo.transact(lambda read: plan_daily_report(read, jobs, today),
+                          f"Publish daily company report for {today}")
     classification.mirror(files, today, OUTPUT_DIR)
-    return json.loads(files[path])
+    return json.loads(files[classification.daily_paths(today)[0]])
 
 
 def get_beijing_today():

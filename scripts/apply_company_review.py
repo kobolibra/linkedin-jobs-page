@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import importlib.util
 import json
 import re
 import ssl
@@ -44,6 +45,46 @@ def evidence(entries):
         if link.scheme != "https" or not link.hostname:
             raise ValueError("Industry evidence must have an HTTPS source")
         rc.field(item.get("note"))
+
+
+def normalize_result(result, day):
+    """Translate a single research result into the existing persisted schema."""
+    if not isinstance(result, dict) or "decision" not in result:
+        return result
+    permitted = {"company", "decision", "industry", "employerType", "evidence",
+                 "queries", "summary", "remainingQuestion"}
+    if set(result) - permitted:
+        raise ValueError("Invalid compact review result fields")
+    decision = result["decision"]
+    if decision not in {"protect", "delete", "inconclusive"}:
+        raise ValueError("Invalid review decision")
+    compact = {
+        "company": result.get("company"),
+        "investigationStatus": "inconclusive" if decision == "inconclusive" else "verified",
+        "protectionDecision": "undetermined" if decision == "inconclusive" else decision,
+        "queries": result.get("queries"),
+        "lastReviewedOn": day,
+    }
+    if result.get("summary"):
+        compact["investigationSummary"] = rc.field(result["summary"])
+    if decision == "inconclusive":
+        if result.get("employerType") is not None:
+            raise ValueError("Inconclusive result cannot assign an employer type")
+        compact["remainingQuestion"] = result.get("remainingQuestion")
+        return compact
+    entries = result.get("evidence")
+    evidence(entries)
+    compact.update(identityStatus="confirmed", industry=result.get("industry"),
+                   industryEvidence=entries)
+    if decision == "protect":
+        kind = result.get("employerType")
+        compact.update(employerType=kind, protectedRecord={
+            "company": compact["company"], "employerType": kind,
+            "evidence": {"url": entries[0]["url"], "reviewedOn": day, "note": entries[0]["note"]},
+        })
+    elif result.get("employerType") is not None:
+        raise ValueError("Target company cannot assign a protected employer type")
+    return compact
 
 
 def validate_result(result, allowed, records, day):
@@ -148,7 +189,8 @@ def plan_review(read, snapshot, results, day):
     excluded_before = rc.read_ledger(read(rc.EXCLUDED), "排除原因")
     prior_industries = rc.verified_industries(industries_before)
     seen, accepted, protections, industries, covered_ids = set(), [], [], {}, {}
-    for result in results:
+    for raw in results:
+        result = normalize_result(raw, day)
         key = validate_result(result, allowed, records, day)
         if key in seen:
             raise ValueError("Duplicate normalized company in result batch")
@@ -182,7 +224,9 @@ def plan_review(read, snapshot, results, day):
                 industries[clean["company"]] = clean["industry"]
     changed = {}
     if protections or industries:
-        changed.update(rc.plan(read, day, typed_additions=protections, industries=industries, finalize=True))
+        # Only explicitly accepted decisions may add a new deletion entry.
+        # Historical industry labels alone are not a deletion authorization.
+        changed.update(rc.plan(read, day, typed_additions=protections, industries=industries, finalize=False))
     get = lambda path: changed[path] if path in changed else read(path)
     new_records, new_industries = rc.classifications(get)
     record_map = {rc.norm(row["company"]): row for row in new_records}
@@ -215,7 +259,7 @@ def plan_review(read, snapshot, results, day):
     if protections or industries:
         for path, label, ledger in ((rc.TARGET, "备注", targets), (rc.EXCLUDED, "排除原因", excluded)):
             changed[path] = rc.tsv([["公司名", label, "首次出现", "最近出现"], *ledger.values()])
-        for historical_day in sorted(historical_days):
+        for historical_day in sorted(historical_days | {day}):
             path = rc.daily_paths(historical_day)[0]
             body = get(path)
             if body is not None:
@@ -242,6 +286,40 @@ def plan_review(read, snapshot, results, day):
     return changed
 
 
+def plan_prepare(read, snapshot, jobs, day):
+    """One transaction for today's report and the observed review checkpoint."""
+    spec = importlib.util.spec_from_file_location("daily_report", ROOT / "auto-daily-companies.py")
+    daily = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(daily)
+    report = daily.plan_daily_report(read, jobs, day)
+    overlay = lambda path: report[path] if path in report else read(path)
+    return {**report, **plan_review(overlay, snapshot, [], day)}
+
+
+def remaining_snapshot(snapshot, state):
+    """Keep only still-due companies from this run's original observation."""
+    live = {rc.norm(row["company"]): row for row in state["reviewQueue"]}
+    ready = []
+    for row in snapshot["reviewQueue"]:
+        current = live.get(rc.norm(row["company"]))
+        if current and (set(row.get("candidateJobIds", []))
+                        & set(current.get("candidateJobIds", []))
+                        - set(current.get("reviewedJobIds", []))):
+            ready.append(row)
+    summary = dict(snapshot.get("summary") or {})
+    summary["reviewQueue"] = len(ready)
+    summary["queueByStatus"] = {}
+    summary["queueBySource"] = {}
+    for row in ready:
+        status = row.get("investigationStatus", "not_started")
+        summary["queueByStatus"][status] = summary["queueByStatus"].get(status, 0) + 1
+        for source in row.get("sourceStatuses", []):
+            summary["queueBySource"][source] = summary["queueBySource"].get(source, 0) + 1
+    for key in ("stagingNotCanonical", "indexNotCanonical"):
+        summary[key] = sum(bool(row.get(key)) for row in ready)
+    return dict(snapshot, reviewQueue=ready, summary=summary)
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     p.add_argument("--queue", required=True, type=Path)
@@ -249,7 +327,10 @@ def main():
     p.add_argument("--date", required=True)
     p.add_argument("--code-commit", required=True)
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--prepare", action="store_true", help="Internal report and checkpoint transaction")
     args = p.parse_args()
+    if args.prepare and (args.results or args.dry_run):
+        raise ValueError("Preparation cannot submit research results or dry-run")
     run = ROOT.parent
     if not run.name.startswith("run.") or args.queue.resolve() != run / "company-review-queue.json":
         raise ValueError("Use a fresh TRAE run's own review queue")
@@ -272,9 +353,22 @@ def main():
     if cfg.get("proxy"):
         handlers.append(urllib.request.ProxyHandler(dict.fromkeys(("http", "https"), cfg["proxy"])))
     repo = rc.Repo(cfg["github_token"], REPO, "main", urllib.request.build_opener(*handlers))
-    repo.transact(lambda read: plan_review(read, snapshot, results, args.date),
-                  ("Apply verified company review" if args.results else "Checkpoint company review queue") + " " + run.name,
-                  args.dry_run, head_guard=guard)
+    jobs = json.loads((ROOT / "jobs.json").read_text(encoding="utf-8")) if args.prepare else None
+    committed_state = {}
+
+    def build(read):
+        changes = (plan_prepare(read, snapshot, jobs, args.date) if args.prepare
+                   else plan_review(read, snapshot, results, args.date))
+        state = changes.get(queue.STATUS_PATH)
+        committed_state["value"] = json.loads(state if state is not None else read(queue.STATUS_PATH))
+        return changes
+
+    message = ("Prepare company review" if args.prepare else
+               "Apply verified company review" if args.results else "Checkpoint company review queue")
+    repo.transact(build, message + " " + run.name, args.dry_run, head_guard=guard)
+    if not args.dry_run:
+        from trae_company_review import save
+        save(args.queue, remaining_snapshot(snapshot, committed_state["value"]))
 
 
 if __name__ == "__main__":
