@@ -6,7 +6,7 @@
   "branch": "main",
   "startedAt": "2026-11-27T05:03:55.344431+00:00",
   "codeCommit": "30d999585124e2b74c2c21a8ba63b80c9a5e8d64",
-  "dataCommit": "8d7d79d545a6cc6a97e0bd2f128cdfd780123c1c",
+  "dataCommit": "3c026f17fcc0efb20d83048504c63a7342ed1600",
   "checkout": "/workspace/next-journey-runs/run.i5jfbpvg/repo",
   "pythonExecutable": "/root/.pyenv/versions/3.14.8/bin/python3",
   "events": [
@@ -38,6 +38,22 @@
       "argumentsSha256": "2d7f449324903e7f4dad3cd1d487937d85861d14eb6a856e97d139e559eb828c",
       "exitCode": 0,
       "finishedAt": "2026-11-27T05:04:10.238950+00:00"
+    },
+    {
+      "step": "apply-review",
+      "startedAt": "2026-11-27T05:06:49.937429+00:00",
+      "dataCommit": "8d7d79d545a6cc6a97e0bd2f128cdfd780123c1c",
+      "executable": "/root/.pyenv/versions/3.14.8/bin/python3",
+      "script": "/workspace/next-journey-runs/run.i5jfbpvg/repo/scripts/apply_company_review.py",
+      "argumentFlags": [
+        "--queue",
+        "--code-commit",
+        "--date",
+        "--results"
+      ],
+      "argumentsSha256": "c94fcbaeb1a89de1d13c6a2e48021a28d0dfe898bb277fc6b2fb8fa8c5e87dfc",
+      "exitCode": 0,
+      "finishedAt": "2026-11-27T05:07:03.501945+00:00"
     }
   ],
   "scripts": [
@@ -87,5 +103,7 @@
     }
   ],
   "preparedAt": "2026-11-27T05:04:12.690722+00:00",
-  "auditPublishedAt": "2026-11-27T05:04:12.804247+00:00"
+  "auditPublishedAt": "2026-11-27T05:07:16.294701+00:00",
+  "publicationState": "pending",
+  "finishedAt": "2026-11-27T05:07:16.226001+00:00"
 }
