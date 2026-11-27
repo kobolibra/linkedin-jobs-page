@@ -68,30 +68,17 @@ commits verified decisions, historical ledgers and investigation progress togeth
 The legacy commands below describe manual compatibility workflows, not scheduled
 TRAE writes.
 
-Refresh both `auto-daily-companies.py` and `reclassify.py` together in any
-external Agent checkout (including persistent copies under `/workspace`)
-before enabling writes against the migrated branch. Continue using
-`auto-daily-companies.py` for daily reports and `reclassify.py --finalize`
-for verified company reports. For a new protected name pass
-`--blacklist-records` with a JSON array of typed records. For example:
+For scheduled operation follow the single task contract in
+[trae-company-review.md](trae-company-review.md). It is the only scheduler
+write procedure. Do not run legacy commands in TRAE, maintain local script
+copies, or use an independent company classification registry.
 
-```sh
-python reclassify.py --date 2026-11-26 --finalize \
-  --blacklist-records '[{"company":"New verified protected name","employerType":"unknown"}]'
-```
-
-The older `--blacklist NAME ...` argument still records new names as
-`unknown` for compatibility. Routine Agent operation must use typed additions
-with evidence (or an explicit inconclusive review) and the current writer for
-the complete atomic transaction. A protected name is added only when it
-qualifies under the existing protection rules, independent of its employer type.
-Keep existing records and their evidence intact. Do not regenerate the
-file from a list of company strings or reconstructed reports. Submit evidence
-or type corrections to existing rows for review. Readers accept the legacy
-string array when replaying older checkouts; the schema check rejects a
-string array on pull requests and reports a downgrade if an external writer
-pushes directly to `main`. A required check and rules against bypass on
-`main` are needed to prevent direct writers from bypassing this check.
+The standalone reclassify CLI exists for reviewed maintenance and historical
+compatibility only. Preserve existing protected rows and their evidence;
+never regenerate the protection list from report names. Existing type or
+evidence corrections require a reviewed PR. The schema and publication gates
+reject invalid records and accidental loss or downgrade of verified history.
+Do not bypass these gates.
 
 ## Single classification source
 
