@@ -68,6 +68,16 @@ class AtomicReviewTests(unittest.TestCase):
         self.assertEqual(status["summary"]["deferredCompanies"], 1)
         self.assertFalse(self.plan([self.retail, self.bank, self.unknown]))
 
+    def test_verified_crypto_company_is_target_not_protected(self):
+        crypto = dict(self.retail, industry="加密货币交易所",
+                      industryEvidence=[{"url": "https://example.com/about",
+                                         "note": "Confirmed cryptocurrency exchange"}])
+        changes = self.plan([crypto])
+        self.assertIn("Retail Co\t加密货币交易所\t", changes[rc.TARGET])
+        self.assertNotIn(rc.norm("Retail Co"), rc.protected_names(
+            json.loads(changes.get(rc.BLACKLIST, self.files[rc.BLACKLIST]))))
+        self.assertEqual(json.loads(changes[rc.INDUSTRIES])["Retail Co"], "加密货币交易所")
+
     def test_reject_unobserved_duplicate_and_unverified_delete(self):
         for bad in ([dict(self.retail, company="Other")],
                     [self.retail, dict(self.retail, company="Ｒｅｔａｉｌ Co")],

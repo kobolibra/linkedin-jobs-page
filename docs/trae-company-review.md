@@ -77,9 +77,11 @@ and report unfinished items honestly.
 
 ### 2. Research and classification
 
-Apply the current financial-blacklist.md policy, retaining financial and
-financial-technology institutions, cryptocurrency/blockchain businesses,
-and recruitment businesses within the project scope. Respect existing
+Apply the current financial-blacklist.md policy. Retain financial and
+financial-technology institutions and recruitment businesses within the project
+scope. Cryptocurrency/blockchain companies belong in the target company list
+for deletion, not the financial protection list. Record their verified actual
+industry and use the existing target-list transaction. Respect existing
 requester-confirmed classifications and exact normalized company names.
 
 Confirm the actual job publisher's identity, primary business and relationship

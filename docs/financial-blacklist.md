@@ -5,6 +5,14 @@ source and the protection list for the company analysis and RSS publication path
 `employerType`. The RSS effective deletion set is the cumulative target list
 minus the protection list. The n8n blocklist has its own inputs.
 
+Cryptocurrency and blockchain companies are target companies, not protected
+financial institutions. Once their identity and business are established, add
+them to the cumulative target ledger with the actual industry and filter their
+jobs through the existing publication mechanism. Do not assign a protected
+employerType to such a company. A keyword-only crypto tag in an initial daily
+report is not verified industry evidence. Preserve explicit requester decisions;
+classify an actual recruitment publisher by its own business, not a job's sector.
+
 Each entry preserves the original `company` string. Matching continues to
 apply Unicode NFKC, case folding and whitespace normalization. Keep original
 spellings and order during the migration. Spelling variants that normalize to
