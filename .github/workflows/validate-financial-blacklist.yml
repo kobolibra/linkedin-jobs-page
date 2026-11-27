@@ -28,5 +28,36 @@ jobs:
         run: |
           python -I -B scripts/company_review_queue.py > /tmp/company-review-queue.json
           python -I -B scripts/audit_employer_types.py
+      - name: Verify preparation and worklist receipt against repository data (read only)
+        run: |
+          python -I -B - <<'PY'
+          import json, sys
+          from datetime import datetime
+          from pathlib import Path
+          sys.path.insert(0, '.')
+          from scripts import apply_company_review as apply
+          import reclassify as rc
+          root = Path.cwd()
+          def read(path):
+              p = root / path
+              return p.read_text(encoding="utf-8") if p.is_file() else None
+          snapshot = json.loads(Path("/tmp/company-review-queue.json").read_text())
+          day = datetime.now(rc.BEIJING).date().isoformat()
+          receipt = {}
+          changes = apply.plan_prepare(read, snapshot, json.loads(read("jobs.json")), day, worklist=receipt)
+          before = rc.read_ledger(read(rc.TARGET), "备注")
+          after = rc.read_ledger(changes.get(rc.TARGET, read(rc.TARGET)), "备注")
+          assert set(after) == set(before), "Preparation must not add or remove target companies"
+          assert all(after[k][1] == before[k][1] and after[k][2] <= before[k][2]
+                     and after[k][3] >= before[k][3] for k in before)
+          assert rc.BLACKLIST not in changes and rc.INDUSTRIES not in changes
+          assert rc.daily_paths(day)[0] in changes
+          result = apply.remaining_snapshot(snapshot, receipt)
+          assert len(result["reviewQueue"]) == result["summary"]["reviewQueue"]
+          assert len(result["deferredObservations"]) == result["summary"]["deferredCompanies"]
+          assert not ({rc.norm(r["company"]) for r in result["reviewQueue"]}
+                      & {rc.norm(r["company"]) for r in result["deferredObservations"]})
+          print("Real-data preparation:", json.dumps(result["summary"], ensure_ascii=False))
+          PY
       - name: Run isolated company review regression suite
         run: python -I -B -c "import sys, unittest; sys.path.insert(0, '.'); unittest.main(module=None, argv=['unittest', 'scripts.test_company_review_queue', 'scripts.test_apply_company_review', 'scripts.test_trae_company_review', 'scripts.test_agent_reclassification'])"

@@ -52,6 +52,9 @@ The authenticated API download and process-local HTTPS Git authentication suppor
 查明准确的招聘发布主体、实际主营业务及服务模式，一次调查同时完成
 行业、保留/删除及必要的雇主类型判断。优先采用官网、监管机构、企业
 LinkedIn 主页及原始职位证据，不凭公司名称或职位名称猜测。
+若一个可靠来源已经同时确认主体、主营业务和服务模式，即可完成判断，
+不要求固定来源数量，不为 Direct / Agency 再开展独立调查。
+直接访问可靠的已知页面也算实际查询，可在 queries 记录其 URL，无需另搜一次。
 
 - 金融、金融科技及符合项目范围的招聘服务公司：protect。
   自营业务招聘用 direct_employer；核心业务为代招聘、猎头、人才派遣、
@@ -105,6 +108,7 @@ company-review-queue.json，继续剩余待办。无需重复 dry-run（仍支�
 python3 -I -B "$ENTRYPOINT" finish
 ```
 
+读取本次更新后的 company-review-queue.json 获取剩余待办和等待数量；
 读取刷新后的 REPO_DIR/reports 目录，以 execution-manifest.json 的 reviewDay
 选择当日 today-target-companies-YYYY-MM-DD.tsv 和
 today-excluded-companies-YYYY-MM-DD.tsv。中文简明输出实际核验数量、
