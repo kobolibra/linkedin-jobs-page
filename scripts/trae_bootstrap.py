@@ -14,7 +14,7 @@ SPARSE = (
     "/auto-daily-companies.py", "/reclassify.py", "/financial_blacklist.json",
     "/company_industries.json", "/jobs.json", "/jobs-index.json", "/scripts/",
     "/reports/", "/docs/financial-blacklist.md", "/docs/trae-company-review.md",
-    "/.github/workflows/", "/data/n8n/rss-latest.json", "/data/jobspy/incremental/latest.json",
+    "/.github/workflows/", "/data/n8n/rss-latest.json",
     "/data/publication-state.json", "/data/target-filter-quarantine.json",
 )
 

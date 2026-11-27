@@ -141,14 +141,14 @@ def discover(root: Path) -> tuple[list[dict], dict]:
 
     canonical_names = {norm(job["company"]) for job in jobs if job.get("company")}
     index_names = {norm(job["company"]): job["company"] for job in index if job.get("company")}
-    for path, source in (("data/n8n/rss-latest.json", "staging_not_canonical"),
-                         ("data/jobspy/incremental/latest.json", "jobspy_not_canonical")):
-        for job in jobs_from(root, path):
-            job_dates(job)
-            name = job.get("company")
-            if name and norm(name) not in canonical_names:
-                observe(name, source)
-                observed[norm(name)]["stagingNotCanonical"] = True
+    # JobSpy searches a fixed, already verified company universe. Only the
+    # open-ended RSS input needs pre-publication company discovery.
+    for job in jobs_from(root, "data/n8n/rss-latest.json"):
+        job_dates(job)
+        name = job.get("company")
+        if name and norm(name) not in canonical_names:
+            observe(name, "staging_not_canonical")
+            observed[norm(name)]["stagingNotCanonical"] = True
     for key in index_names.keys() - canonical_names:
         observe(index_names[key], "index_not_canonical")
         observed[key]["indexNotCanonical"] = True

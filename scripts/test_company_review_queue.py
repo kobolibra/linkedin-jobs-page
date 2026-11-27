@@ -50,6 +50,27 @@ class CompanyReviewQueueTest(unittest.TestCase):
         self.assertEqual(report["reviewQueue"][0]["websiteJobsForKey"], 2)
         self.assertEqual(report["summary"]["queueByStatus"], {"not_started": 4})
 
+    def test_fixed_jobspy_snapshot_is_not_a_review_source(self):
+        self.write("data/jobspy/incremental/latest.json", {"jobs": [
+            {"company": "JobSpy Fixed Company", "jobStatus": "active"}]})
+        self.write("data/n8n/rss-latest.json", {"jobs": [
+            {"company": "RSS New Company", "jobStatus": "active"}]})
+        _, report = queue.discover(self.root)
+        names = {row["company"] for row in report["reviewQueue"]}
+        self.assertIn("RSS New Company", names)
+        self.assertNotIn("JobSpy Fixed Company", names)
+
+    def test_confirmed_protected_employer_is_not_reopened_by_rss_staging(self):
+        self.write("financial_blacklist.json", [{
+            "company": "Confirmed Bank", "employerType": "direct_employer",
+            "evidence": {"url": "https://example.com", "reviewedOn": "2026-11-26",
+                         "note": "Confirmed bank"}}])
+        self.write("data/n8n/rss-latest.json", {"jobs": [
+            {"company": "Ｃｏｎｆｉｒｍｅｄ Bank", "jobStatus": "active"}]})
+        _, report = queue.discover(self.root)
+        self.assertNotIn("Ｃｏｎｆｉｒｍｅｄ Bank",
+                         {row["company"] for row in report["reviewQueue"]})
+
     def test_unresolved_progress_survives_job_expiry(self):
         self.write(queue.STATUS_PATH, {"companies": [{
             "company": "Old Investigation", "investigationStatus": "not_started",

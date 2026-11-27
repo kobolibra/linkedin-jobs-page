@@ -34,7 +34,9 @@ The authenticated API download and process-local HTTPS Git authentication suppor
 
 Do not use a previous run folder or old workspace scripts. The printed ENTRYPOINT
 is absolute; use it on every subsequent call. Read the current checkout's policy
-and RUN_DIR/company-review-queue.json. Preparation publishes a startup audit
+and RUN_DIR/company-review-queue.json. New-company discovery uses canonical
+jobs and open-ended RSS staging; JobSpy's fixed, already verified company
+universe is not separately scanned for new companies. Preparation publishes a startup audit
 and checkpoints unresolved observations to GitHub before AI research begins.
 
 ## AI task contract
