@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "runId": "run.zvphcd4m",
+  "repository": "kobolibra/linkedin-jobs-page",
+  "reviewDay": "2026-11-27",
+  "branch": "main",
+  "startedAt": "2026-11-27T04:08:52.052966+00:00",
+  "codeCommit": "681ea0fe07c8042c8486cfeb4050e9634aa7af1a",
+  "dataCommit": "681ea0fe07c8042c8486cfeb4050e9634aa7af1a",
+  "checkout": "/workspace/next-journey-runs/run.zvphcd4m/repo",
+  "pythonExecutable": "/root/.pyenv/versions/3.14.8/bin/python3",
+  "events": [],
+  "scripts": [
+    {
+      "path": "auto-daily-companies.py",
+      "sha256": "cb885106ca5ddf629693a426951c1370bcf7894364420786d6afff5020ce9d0c"
+    },
+    {
+      "path": "reclassify.py",
+      "sha256": "a696053c57ab35e5eaf55dbb96afe100afa5f97fc529411d640edc18a2f84c2d"
+    },
+    {
+      "path": "scripts/trae_bootstrap.py",
+      "sha256": "8e62d12e4405ead0c5f45938d3ccf0dcacf795c3e39fcfe4e2bd2727224be3be"
+    },
+    {
+      "path": "scripts/trae_company_review.py",
+      "sha256": "0c2a25906c318e1a318134fbf3faa565d363169b96444cb04a43c16eeb62c8a6"
+    },
+    {
+      "path": "scripts/company_review_queue.py",
+      "sha256": "d6d61387c4b4c816127094f7cc5c64cd9348d8bb3deb45e57cfc07b4255bcbfa"
+    },
+    {
+      "path": "scripts/audit_employer_types.py",
+      "sha256": "c4e8d16cdbac2fe99575980469759fe06ff452776629006a7db4f1ec45eab669"
+    },
+    {
+      "path": "scripts/publication_state.py",
+      "sha256": "d2d49681ba4ecb379e92119cd07742f0bdb9f33df431780dab2b3b1b66b0bd2b"
+    },
+    {
+      "path": "scripts/apply_company_review.py",
+      "sha256": "bdd31b8f48006fb0c8f123cb1eeedb3ec98f28bc8e66586c91695860dbb996d5"
+    },
+    {
+      "path": "docs/financial-blacklist.md",
+      "sha256": "4eb046ac2dbc27bc20c9399606dbca9b3af1ba28b5dd2808860e0cedc97239a8"
+    },
+    {
+      "path": "docs/trae-company-review.md",
+      "sha256": "b108202e058f58b0d5ad93c3e5830323b1661d3c17633722e2ec51b1dfb5691c"
+    }
+  ],
+  "auditPublishedAt": "2026-11-27T04:08:52.230545+00:00"
+}
