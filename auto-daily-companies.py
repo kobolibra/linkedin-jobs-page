@@ -25,7 +25,7 @@ from pathlib import Path
 # Isolated Python (-I) deliberately excludes the script directory.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import reclassify as classification
-from datetime import datetime, timezone, timedelta
+from datetime import date, datetime, timezone, timedelta
 
 # ============================================================
 # CONFIGURATION
@@ -116,6 +116,11 @@ def push_daily_report_to_github(jobs, today):
 
 
 def get_beijing_today():
+    # A scheduled run's report and atomic review must use the same pinned
+    # Beijing date, even if bootstrap/test preparation crosses midnight.
+    pinned = os.environ.get("NEXT_JOURNEY_REVIEW_DAY")
+    if pinned:
+        return date.fromisoformat(pinned).isoformat()
     return datetime.now(BEIJING_TZ).strftime("%Y-%m-%d")
 
 

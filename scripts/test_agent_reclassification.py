@@ -1,6 +1,7 @@
 import base64
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -29,6 +30,13 @@ class ClassificationTests(unittest.TestCase):
             JSON: json.dumps({"target_companies": [{"company": n, "reason": "待查证"}
                               for n in ("Fano", "Pending", "Bank")], "excluded_companies": []})
         }
+
+    def test_scheduled_daily_report_uses_pinned_beijing_date(self):
+        with patch.dict(os.environ, {"NEXT_JOURNEY_REVIEW_DAY": "2026-11-26"}):
+            self.assertEqual(daily.get_beijing_today(), "2026-11-26")
+        with patch.dict(os.environ, {"NEXT_JOURNEY_REVIEW_DAY": "invalid"}):
+            with self.assertRaises(ValueError):
+                daily.get_beijing_today()
 
     def test_partial_verification_backfill_and_idempotency(self):
         args = dict(additions=["Bank"], industries={"Fano": "Software"}, finalize=True)

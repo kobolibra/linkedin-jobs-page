@@ -25,8 +25,11 @@ def load_config(path=None):
         cfg = json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
         cfg = {"repo": REPO, "branch": "main"}
-    if cfg.get("repo") != REPO or cfg.get("branch") != "main":
+    # Match the outer scheduler's defaults when config supplies only credentials.
+    if cfg.get("repo", REPO) != REPO or cfg.get("branch", "main") != "main":
         raise ValueError("Wrong GitHub repository/branch in external config")
+    cfg.setdefault("repo", REPO)
+    cfg.setdefault("branch", "main")
     token = cfg.get("github_token") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if not isinstance(token, str) or not token.strip():
         raise ValueError("Missing GitHub credential; configure GITHUB_TOKEN or /workspace/config.json")

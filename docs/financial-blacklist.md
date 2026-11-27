@@ -68,30 +68,17 @@ commits verified decisions, historical ledgers and investigation progress togeth
 The legacy commands below describe manual compatibility workflows, not scheduled
 TRAE writes.
 
-Refresh both `auto-daily-companies.py` and `reclassify.py` together in any
-external Agent checkout (including persistent copies under `/workspace`)
-before enabling writes against the migrated branch. Continue using
-`auto-daily-companies.py` for daily reports and `reclassify.py --finalize`
-for verified company reports. For a new protected name pass
-`--blacklist-records` with a JSON array of typed records. For example:
+For scheduled operation follow the single task contract in
+[trae-company-review.md](trae-company-review.md). It is the only scheduler
+write procedure. Do not run legacy commands in TRAE, maintain local script
+copies, or use an independent company classification registry.
 
-```sh
-python reclassify.py --date 2026-11-26 --finalize \
-  --blacklist-records '[{"company":"New verified protected name","employerType":"unknown"}]'
-```
-
-The older `--blacklist NAME ...` argument still records new names as
-`unknown` for compatibility. Routine Agent operation must use typed additions
-with evidence (or an explicit inconclusive review) and the current writer for
-the complete atomic transaction. A protected name is added only when it
-qualifies under the existing protection rules, independent of its employer type.
-Keep existing records and their evidence intact. Do not regenerate the
-file from a list of company strings or reconstructed reports. Submit evidence
-or type corrections to existing rows for review. Readers accept the legacy
-string array when replaying older checkouts; the schema check rejects a
-string array on pull requests and reports a downgrade if an external writer
-pushes directly to `main`. A required check and rules against bypass on
-`main` are needed to prevent direct writers from bypassing this check.
+The standalone reclassify CLI exists for reviewed maintenance and historical
+compatibility only. Preserve existing protected rows and their evidence;
+never regenerate the protection list from report names. Existing type or
+evidence corrections require a reviewed PR. The schema and publication gates
+reject invalid records and accidental loss or downgrade of verified history.
+Do not bypass these gates.
 
 ## Single classification source
 
@@ -119,7 +106,7 @@ Build it after the daily company report:
 python scripts/company_review_queue.py --write
 ```
 
-Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. Merge actual research with `--apply-results`; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. Applying a research result does not itself change runtime classification.
+Each queue row must distinguish `verified`, `inconclusive` (actual research completed but evidence remains insufficient), and `not_started`. In scheduled runs submit actual research only through the atomic `apply-review` command in the scheduler contract; a verified delete decision requires industry evidence, and a verified protection decision requires a typed record with evidence. The older local `--apply-results` command is a maintenance diagnostic, not a scheduled write procedure.
 
 For scheduled TRAE research, use `apply-review --results FILE` to atomically persist both classification and investigation progress, including historical or staging-only companies. Existing protected type corrections require the reviewed PR process. Manual legacy commands are not a complete transaction for research progress. Never reconstruct `company_employer_types.json` from this progress file.
 
