@@ -122,11 +122,14 @@ def merge_observation(old, observation):
 def plan_review(read, snapshot, results, day):
     """Recompute against a single current Git head on every CAS retry."""
     day = iso_day(day)
+    manual = rc.requester_excluded_names(read)
     current = json.loads(read(queue.STATUS_PATH) or "{}")
-    rows = {rc.norm(row["company"]): copy.deepcopy(row) for row in current.get("companies", [])}
+    rows = {rc.norm(row["company"]): copy.deepcopy(row) for row in current.get("companies", []) if rc.norm(row["company"]) not in manual}
     allowed = {}
     for observation in snapshot["reviewQueue"]:
         key = rc.norm(rc.field(observation["company"]))
+        if key in manual:
+            continue
         if key in allowed:
             raise ValueError("Duplicate normalized company in queue")
         allowed[key] = observation
@@ -168,6 +171,7 @@ def plan_review(read, snapshot, results, day):
     new_records, new_industries = rc.classifications(get)
     record_map = {rc.norm(row["company"]): row for row in new_records}
     normalized_industries = rc.verified_industries(new_industries)
+    normalized_industries.update({key: rc.REQUESTER_EXCLUSION for key in manual})
     targets = rc.read_ledger(get(rc.TARGET), "备注")
     excluded = rc.read_ledger(get(rc.EXCLUDED), "排除原因")
     historical_days = set()

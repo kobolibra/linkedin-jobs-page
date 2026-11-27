@@ -50,6 +50,19 @@ class CompanyReviewQueueTest(unittest.TestCase):
         self.assertEqual(report["reviewQueue"][0]["websiteJobsForKey"], 2)
         self.assertEqual(report["summary"]["queueByStatus"], {"not_started": 4})
 
+    def test_requester_excluded_company_not_reopened(self):
+        (self.root / "reports/cumulative-target-companies.tsv").write_text(
+            "公司名\t备注\t首次出现\t最近出现\nHigh Impact\t用户指定排除（不再核验）\t2026-11-27\t2026-11-27\n",
+            encoding="utf-8")
+        self.write("data/n8n/rss-latest.json", {"jobs": [{"company": "HIGH IMPACT"}]})
+        self.write(queue.STATUS_PATH, {"companies": [
+            {"company": "High Impact", "investigationStatus": "inconclusive"}]})
+        self.write("reports/today-companies-2026-11-20.json", {
+            "target_companies": [{"company": "High Impact", "reason": "待查证"}]})
+        companies, report = queue.discover(self.root)
+        self.assertNotIn("High Impact", {r["company"] for r in companies})
+        self.assertNotIn("High Impact", {r["company"] for r in report["reviewQueue"]})
+
     def test_fixed_jobspy_snapshot_is_not_a_review_source(self):
         self.write("data/jobspy/incremental/latest.json", {"jobs": [
             {"company": "JobSpy Fixed Company", "jobStatus": "active"}]})

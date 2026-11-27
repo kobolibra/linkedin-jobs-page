@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from reclassify import BEIJING, BLACKLIST, EXCLUDED, INDUSTRIES, TARGET, blacklist_records, norm, read_ledger
+from reclassify import BEIJING, BLACKLIST, EXCLUDED, INDUSTRIES, TARGET, blacklist_records, norm, read_ledger, requester_excluded_names
 
 STATUS_PATH = "reports/employer-review-status.json"
 PENDING = "待查证"
@@ -86,7 +86,8 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     website = website_jobs(index)
     active_counts = Counter(norm(job["company"]) for job in active if job.get("company"))
     website_counts = Counter(norm(job["company"]) for job in website)
-    previous = previous_rows(root)
+    manual = requester_excluded_names(lambda path: (root / path).read_text(encoding="utf-8") if (root / path).is_file() else None)
+    previous = {key: row for key, row in previous_rows(root).items() if key not in manual}
     observed: dict[str, dict] = {}
     dates: dict[str, set[str]] = {}
 
@@ -111,6 +112,8 @@ def discover(root: Path) -> tuple[list[dict], dict]:
 
     def observe(name: str, source: str, date: str | None = None):
         key = norm(name)
+        if key in manual:
+            return
         row = observed.setdefault(key, {
             "company": name,
             "sourceStatuses": set(),
@@ -146,10 +149,10 @@ def discover(root: Path) -> tuple[list[dict], dict]:
     for job in jobs_from(root, "data/n8n/rss-latest.json"):
         job_dates(job)
         name = job.get("company")
-        if name and norm(name) not in canonical_names:
+        if name and norm(name) not in canonical_names and norm(name) not in manual:
             observe(name, "staging_not_canonical")
             observed[norm(name)]["stagingNotCanonical"] = True
-    for key in index_names.keys() - canonical_names:
+    for key in index_names.keys() - canonical_names - manual:
         observe(index_names[key], "index_not_canonical")
         observed[key]["indexNotCanonical"] = True
 

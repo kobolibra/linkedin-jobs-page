@@ -50,6 +50,16 @@ a classification confirmed by the project requester,
 `evidence.basis` is `requester_confirmation`. The note states which part
 is supplied by that confirmation and what the linked source supports.
 
+## Explicit requester exclusions
+
+An exact company name in the cumulative target ledger with reason
+`用户指定排除（不再核验）` is an explicit requester decision, not an AI
+industry determination. Remove any conflicting unresolved protection record
+through a reviewed PR. Publication continues to use the normal cumulative
+target filter. Discovery and atomic review skip these companies, and the
+agent may not overwrite their requester decision. Confirmed protection
+records cannot be removed by this exception.
+
 ## Agent write contract
 
 Scheduled TRAE runs must use the canonical atomic `apply-review` entrypoint in

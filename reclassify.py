@@ -24,6 +24,7 @@ EXCLUDED = "reports/cumulative-excluded-companies.tsv"
 BLACKLIST = "financial_blacklist.json"
 INDUSTRIES = "company_industries.json"
 PENDING = "待查证"
+REQUESTER_EXCLUSION = "用户指定排除（不再核验）"
 EMPLOYER_TYPES = {"direct_employer", "recruitment_agency", "recruitment_platform", "mixed", "unknown"}
 
 
@@ -99,17 +100,25 @@ def blacklist_records(values, *, allow_legacy=True):
     return values
 
 
-def validate_blacklist_transition(previous, proposed):
+def validate_blacklist_transition(previous, proposed, *, requester_exclusions=()):
     """Fail closed on accidental loss or downgrade of protected classifications."""
     old = blacklist_records(previous, allow_legacy=False)
     new = blacklist_records(proposed, allow_legacy=False)
     names = {record["company"]: record for record in new}
     if not names or len(names) != len(new):
         raise ValueError("Empty blacklist or duplicate original names")
-    missing = sorted(set(record["company"] for record in old) - names.keys())
+    # Only an explicit requester decision in the cumulative target ledger
+    # can retire an unresolved protection record during reviewed publication.
+    if any(norm(name) in requester_exclusions for name in names):
+        raise ValueError("Requester-excluded company cannot remain protected")
+    retired = {record["company"] for record in old
+               if record["employerType"] == "unknown" and norm(record["company"]) in requester_exclusions}
+    missing = sorted(set(record["company"] for record in old) - names.keys() - retired)
     if missing:
         raise ValueError(f"Protected company records removed: {missing[:10]} ({len(missing)} total)")
     for record in old:
+        if record["company"] in retired:
+            continue
         updated = names[record["company"]]
         if record["employerType"] not in {"unknown", "mixed"} and updated["employerType"] in {"unknown", "mixed"}:
             raise ValueError(f"Confirmed employer classification downgraded: {record['company']}")
@@ -176,6 +185,11 @@ def read_ledger(text, label):
     return rows
 
 
+def requester_excluded_names(read):
+    return {key for key, row in read_ledger(read(TARGET), "备注").items()
+            if row[1] == REQUESTER_EXCLUSION}
+
+
 def upsert(rows, name, reason, first, last):
     key = norm(field(name))
     old = rows.get(key)
@@ -190,13 +204,18 @@ def verified_industries(industries):
 def plan(read, day, additions=(), industries=None, finalize=False, require_daily=False, *,
          typed_additions=()):
     records, known = classifications(read)
+    manual = requester_excluded_names(read)
     blocked = protected_names(records)
+    if manual & blocked:
+        raise ValueError("Requester-excluded company remains protected")
     changes = {}
     added = False
     candidates = blacklist_records(list(typed_additions), allow_legacy=False)
     candidates += blacklist_records(list(additions))
     for record in candidates:
         key = norm(record["company"])
+        if key in manual:
+            raise ValueError("Requester-excluded company must not be reclassified")
         if key not in blocked:
             records.append(record)
             blocked.add(key)
@@ -210,6 +229,8 @@ def plan(read, day, additions=(), industries=None, finalize=False, require_daily
     spelling = {norm(k): k for k in known}
     for name, reason in (industries or {}).items():
         key = norm(field(name))
+        if key in manual:
+            raise ValueError("Requester-excluded company must not be reclassified")
         reason = field(reason)
         if reason == PENDING:
             raise ValueError("A verified industry cannot be 待查证")
@@ -218,6 +239,7 @@ def plan(read, day, additions=(), industries=None, finalize=False, require_daily
             known[original] = reason
             changes[INDUSTRIES] = json_text(known)
     verified = verified_industries(known)
+    verified.update({key: REQUESTER_EXCLUSION for key in manual})
     targets = read_ledger(read(TARGET), "备注")
     excluded = read_ledger(read(EXCLUDED), "排除原因")
     for key, (name, reason, first, last) in list(targets.items()):

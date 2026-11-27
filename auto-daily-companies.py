@@ -94,15 +94,20 @@ def push_daily_report_to_github(jobs, today):
 
     def build(read):
         blacklist, industries = classification.classifications(read)
+        manual = classification.requester_excluded_names(read)
         results = process_jobs(jobs, today, blacklist, industries)
+        for row in results["target_companies"]:
+            if classification.norm(row["company"]) in manual:
+                row["reason"] = classification.REQUESTER_EXCLUSION
         current = read(path)
         previous = json.loads(current) if current is not None else None
         merged = dict(results)
         if previous is not None:
             for key in ("target_companies", "excluded_companies"):
                 merged[key] = previous[key] + results[key]
-        report = classification.classify(merged, classification.protected_names(blacklist),
-                                         classification.verified_industries(industries))
+        verified = classification.verified_industries(industries)
+        verified.update({key: classification.REQUESTER_EXCLUSION for key in manual})
+        report = classification.classify(merged, classification.protected_names(blacklist), verified)
         return classification.daily_files(today, report)
 
     files = repo.transact(build, f"Publish daily company report for {today}")

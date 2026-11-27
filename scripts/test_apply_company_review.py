@@ -33,6 +33,14 @@ class AtomicReviewTests(unittest.TestCase):
     def plan(self, results):
         return apply.plan_review(self.files.get, self.snapshot, results, DAY)
 
+    def test_requester_exclusion_blocks_stale_queue_results(self):
+        self.files[rc.TARGET] += "Retail Co\t用户指定排除（不再核验）\t2026-11-27\t2026-11-27\n"
+        with self.assertRaisesRegex(ValueError, "not in this run"):
+            self.plan([self.retail])
+        self.files.update(self.plan([]))
+        status = json.loads(self.files[apply.queue.STATUS_PATH])
+        self.assertNotIn("Retail Co", {r["company"] for r in status["companies"]})
+
     def test_checkpoint_preserves_new_observation_before_research(self):
         self.files.update(self.plan([]))
         status = json.loads(self.files[apply.queue.STATUS_PATH])
