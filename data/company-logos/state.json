@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-27T03:48:02.050030+00:00",
+    "checkedAt": "2026-11-27T04:03:22.448363+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-27T03:48:00.722975+00:00",
+    "checkedAt": "2026-11-27T04:03:19.553013+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -13008,5 +13008,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D4D0BAQHRtj-PrkO-xA/company-logo_100_100/B4DZXtWv90HAAU-/0/1743443919176/higgsfield_logo?e=2147483647&v=beta&t=nUNa9okG1Gr5Wm4icdmpvW5n0Cn9qleQUKdUD1QsYDI",
     "companyUrl": "https://www.linkedin.com/company/higgsfield",
     "sourceJobId": "4487584224"
+  },
+  "高济医药(四川)有限公司": {
+    "name": "高济医药(四川)有限公司",
+    "checkedAt": "2026-11-27T04:03:18.191783+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E9%AB%98%E6%B5%8E%E5%8C%BB%E8%8D%AF-%E5%9B%9B%E5%B7%9D-%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4492326650"
   }
 }
