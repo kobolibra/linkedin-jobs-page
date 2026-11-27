@@ -290,7 +290,7 @@ jobsEl.addEventListener("click",e=>{
   if(e.target.closest(".job-jd-toggle")){hydrateJd(card);return;}
   if(e.target.closest(".job-title")){reads.add(id);saveReads();card.classList.add("read");return;}
   const star=e.target.closest(".star");
-  if(star){e.preventDefault();const isFavorite=!favs.has(id);if(isFavorite)favs.add(id);else favs.delete(id);card.classList.toggle("is-favorite",isFavorite);card.querySelectorAll(".star").forEach(button=>{button.classList.toggle("on",isFavorite);button.classList.toggle("is-favorite",isFavorite);button.title=isFavorite?"取消收藏":"收藏";button.setAttribute("aria-pressed",String(isFavorite));button.setAttribute("aria-label",button.title);});const section=card.closest(".day");if(section?._favoriteCards){if(isFavorite)section._favoriteCards.add(card);else section._favoriteCards.delete(card);}saveFavs();if(favOnly)refreshFavoriteFilterView();return;}
+  if(star){e.preventDefault();const account=window.AccountPreferences;const isFavorite=account?account.toggleFavorite(id):!favs.has(id);if(isFavorite)favs.add(id);else favs.delete(id);card.classList.toggle("is-favorite",isFavorite);card.querySelectorAll(".star").forEach(button=>{button.classList.toggle("on",isFavorite);button.classList.toggle("is-favorite",isFavorite);button.title=isFavorite?"取消收藏":"收藏";button.setAttribute("aria-pressed",String(isFavorite));button.setAttribute("aria-label",button.title);});const section=card.closest(".day");if(section?._favoriteCards){if(isFavorite)section._favoriteCards.add(card);else section._favoriteCards.delete(card);}if(!account)saveFavs();if(favOnly)refreshFavoriteFilterView();return;}
   const ban=e.target.closest(".ban");
   if(ban){e.preventDefault();const c=card.dataset.comp;if(c){if(blocked.has(c))blocked.delete(c);else blocked.add(c);saveBlocked();renderBlocked();apply();}return;}
   const sub=e.target.closest(".job-sub-link");
@@ -542,7 +542,13 @@ jobsEl.innerHTML=Array.from({length:6}).map(()=>'<div class="sk"><div class="sk-
 // Keep immutable publication-event totals separate from mutable job records.
 let postingHistoryDaily=null,snapshotUpdatedAt='';
 // Keep conditional cache validation so repeat visits can reuse the browser's copy.
-const jobsIndexDocument=window.__jobsIndexDocument||window.JobIndexStore.load();
+const jobsIndexDocument=(window.__jobsIndexDocument||window.JobIndexStore.load()).then(doc=>{
+  const account=window.AccountPreferences;
+  if(account&&doc?.linkedinJobReplacements){
+    favs.clear();for(const id of account.snapshot().favs)favs.add(id);
+  }
+  return doc;
+});
 window.__jobsFullDataPromise=jobsIndexDocument.then(doc=>Array.isArray(doc)?doc:(Array.isArray(doc?.jobs)?doc.jobs:[]));
 window.__jobsFullDataPromise.catch(()=>{});
 let masterJobsDocument=null,jobsDataReceived=false,jobsCoreReady=false,scopeHistoryUi=null,scopeRevision=0,committedMode=null;

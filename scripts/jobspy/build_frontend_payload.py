@@ -163,6 +163,10 @@ def build(source: Path, index_out: Path, details_out: Path, boilerplate_out: Pat
             if isinstance(state,dict):
                 fallback=next((logos[name] for name,entry in state.items() if name in logos and isinstance(entry,dict) and entry.get('status')=='ready' and entry.get('imageKind')=='placeholder'),'')
     index_doc = {"schemaVersion": "1.1", "source": "jobs.json", "jobs": index_rows,"companyLogos":logos,"companyLogoFallback":fallback}
+    if isinstance(doc, dict) and (replacements := doc.get("linkedinJobReplacements")):
+        index_doc["linkedinJobReplacements"] = {
+            f"ln:{old}": f"ln:{new}" for old, new in sorted(replacements.items())
+        }
     if employer_types is not None:
         index_doc["employerModeSchema"] = 1
     observed_at = latest_pipeline_update(doc)
@@ -216,11 +220,12 @@ def self_test() -> None:
             {"link": "https://x/jobs/view/123457/", "title": "B", "firstSeen": "2026-09-01", "postingLastDate": "2026-09-09", "expiredAt": "2026-09-11", "expiredReason": "linkedin_closed", "jobStatus": "expired"},
             {"link": "https://x/jobs/view/123458/", "title": "C", "firstSeen": "2026-09-09",
              "rolePostDate": "2026-09-01", "crossIdRepost": {"rootId": "123455", "pending": False}},
-        ]}), encoding="utf-8")
+        ], "linkedinJobReplacements": {"123455": "123458"}}), encoding="utf-8")
         index, details = root / "jobs-index.json", root / "jobs-details.json"
         assert build(source, index, details) == (3, 1)
         index_doc = json.loads(index.read_text(encoding="utf-8"))
         detail_doc = json.loads(details.read_text(encoding="utf-8"))
+        assert index_doc["linkedinJobReplacements"] == {"ln:123455": "ln:123458"}
         assert index_doc["jobs"][0]["hasJd"] is True
         for key in ("firstSeen", "postingLastDate", "expiredAt", "expiredReason", "jobStatus"):
             assert index_doc["jobs"][1][key] == json.loads(source.read_text())["jobs"][1][key]

@@ -25,7 +25,7 @@
   const storeSource=sources.find(src=>src.split('?')[0]==='job-store.js');
   // The server marks anonymous HTML. Prepare the protected sync module only
   // for a signed-in page; its request retains the existing server auth gate.
-  const syncScript=document.documentElement.dataset.authState==='guest'?null:loadScript('/account-sync.js?v=journey-types-1');
+  const syncScript=document.documentElement.dataset.authState==='guest'?null:loadScript('/account-sync.js?v=job-replacements-2');
   syncScript?.catch(()=>{});
   // This module defines the loader only; no protected data is read before auth.
   const [r]=await Promise.all([api('/auth/session'),storeSource?loadScript(storeSource):Promise.resolve()]);
@@ -34,9 +34,13 @@
   }else if(r.status===401){expired();return;}
   if(!r.ok&&r.status!==401)throw Error();
   const data=r.ok?await r.json():{enabled:false};
-  if(data.enabled){await (syncScript||loadScript('/account-sync.js?v=journey-types-1'));install(data);}
+  if(data.enabled){await (syncScript||loadScript('/account-sync.js?v=job-replacements-2'));install(data);}
   // Download the index while the UI scripts execute, after identity is installed.
-  if(storeSource){window.__jobsIndexDocument=window.JobIndexStore.load();window.__jobsIndexDocument.catch(()=>{});}
+  if(storeSource){
+   const index=window.JobIndexStore.load();
+   window.__jobsIndexDocument=window.AccountPreferences?.connectJobIndex(index)||index;
+   window.__jobsIndexDocument.catch(()=>{});
+  }
   const loads=sources.filter(src=>src!==storeSource).map(src=>({src,ready:loadScript(src)}));
   const core=new Set(['calendar-date.js','company-logos.js','list-query.js','list-view.js','app.js','job-applications.js','row-fixes.js','row-hover.js','top30-layout.js','market-width.js']);
   window.__appCoreReady=Promise.all(loads.filter(({src})=>core.has(src.split('?')[0])).map(({ready})=>ready));

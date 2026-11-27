@@ -90,3 +90,102 @@ test('favorite employer observations synchronize privately without altering favo
  const send=operation=>preferences(new Request('https://site.test/auth/preferences',{method:'POST',headers:{origin:'https://site.test','x-csrf-token':'csrf-alpha','content-type':'application/json'},body:JSON.stringify({operations:[operation]})}),{AUTH_ORIGIN:'https://site.test',AUTH_DB:f.db},{user_id:'alpha',csrf:'csrf-alpha'});
  for(const [bad,present] of [[JSON.stringify({v:1,j:'ln:123',k:'fake',t:100}),true],[item,false]])assert.equal((await send({id:'favorite_test_op_1234',kind:'favoriteTypes',item:bad,present})).status,400);
 });
+
+test('a confirmed replacement inherits one favorite and its journey from every ID in the chain',async()=>{
+ const f=fixture(),a=f.client(),b=f.client(),other=f.client('beta');
+ const old='ln:1234567',middle='ln:1234568',current='ln:1234569',unrelated='ln:1234570';
+ const stage={v:1,id:'before_replacement_123',j:middle,s:'first',p:['applied','first'],t:100,r:'HK'};
+ const type={v:1,j:old,k:'direct_employer',t:100};
+ a.sync.set('favs',JSON.stringify([old,middle,unrelated]));
+ a.sync.set('applications',JSON.stringify([JSON.stringify(stage)]));
+ a.sync.set('favoriteTypes',JSON.stringify([JSON.stringify(type)]));
+ a.sync.set('reads',JSON.stringify([old]));
+ await a.sync.flush();await b.sync.flush();
+ const replacements={[old]:middle,[middle]:current};
+ for(const client of [a,b,other])client.sync.setJobReplacements(replacements);
+ for(const client of [a,b]){
+  const lists=JSON.parse(JSON.stringify(client.sync.snapshot()));
+  assert.deepEqual(lists.favs,[current,unrelated]);
+  assert.deepEqual(lists.applications.map(JSON.parse),[{...stage,j:current}]);
+  assert.deepEqual(lists.favoriteTypes.map(JSON.parse),[{...type,j:current}]);
+  assert.deepEqual(lists.reads,[old]);
+  assert.equal(client.sync.pending().length,0);
+ }
+ await other.sync.flush();
+ assert.equal(other.sync.snapshot().favs.length,0);
+
+ const nextStage={...stage,id:'after_replacement_1234',j:current,s:'offer',p:['applied','first','offer'],t:200};
+ b.sync.set('applications',JSON.stringify([...b.sync.snapshot().applications,JSON.stringify(nextStage)]));
+ assert.equal(b.sync.pending().length,1);
+ await b.sync.flush();await a.sync.flush();
+ assert.equal(a.sync.snapshot().applications.length,2);
+ assert.equal(JSON.parse(f.sql.prepare("SELECT item FROM account_sync_items WHERE kind='applications' ORDER BY revision LIMIT 1").get().item).j,middle);
+});
+
+test('an offline unstar follows further replacements and stays removed across devices and retries',async()=>{
+ const f=fixture(),a=f.client(),b=f.client(),stale=f.client();
+ const old='ln:1234567',middle='ln:1234568',current='ln:1234569';
+ a.sync.set('favs',JSON.stringify([old]));
+ await a.sync.flush();await b.sync.flush();await stale.sync.flush();
+ const initial={[old]:middle},next={...initial,[middle]:current};
+ a.sync.setJobReplacements(initial);
+ a.offline(true);
+ assert.equal(a.sync.toggleFavorite(middle),false);
+ assert.equal(await a.sync.flush(),false);
+ a.sync.stop();
+
+ const reloaded=f.client('alpha',a.store);
+ for(const client of [reloaded,b])client.sync.setJobReplacements(next);
+ assert.equal(reloaded.sync.snapshot().favs.length,0);
+ reloaded.loseAck();
+ assert.equal(await reloaded.sync.flush(),false);
+ await b.sync.flush();
+ assert.equal(b.sync.snapshot().favs.length,0);
+ assert.equal(await reloaded.sync.flush(),true);
+
+ assert.equal(stale.sync.toggleFavorite(old),false);
+ await stale.sync.flush();await b.sync.flush();
+ assert.equal(b.sync.snapshot().favs.length,0);
+ assert.equal(b.sync.toggleFavorite(current),true);
+ await b.sync.flush();await reloaded.sync.flush();
+ assert.deepEqual(JSON.parse(reloaded.sync.get('favs')),[current]);
+});
+
+test('a delayed job index preserves an account unstar when the browser imports an old ID',async()=>{
+ const f=fixture(),a=f.client(),b=f.client('beta');
+ const old='ln:1234567',current='ln:1234568',unrelated='ln:1234569';
+ for(const client of [a,b]){
+  client.sync.set('favs',JSON.stringify([old]));
+  await client.sync.flush();
+  client.sync.setJobReplacements({[old]:current});
+ }
+ assert.equal(a.sync.toggleFavorite(current),false);
+ await a.sync.flush();
+ const legacy=f.client('alpha',f.storage({favs:JSON.stringify([old,unrelated])}));
+ let provideIndex;
+ const index=new Promise(resolve=>{provideIndex=resolve;});
+ legacy.sync.connectJobIndex(index);
+ const syncing=legacy.sync.flush();
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(legacy.sync.pending().length,0);
+ provideIndex({linkedinJobReplacements:{[old]:current}});
+ assert.equal(await syncing,true);
+ assert.deepEqual(JSON.parse(legacy.sync.get('favs')),[unrelated]);
+ await b.sync.flush();
+ assert.deepEqual(JSON.parse(b.sync.get('favs')),[current]);
+});
+
+test('a failed index keeps browser legacy favorites available for the next successful load',async()=>{
+ const f=fixture(),old='ln:1234567',current='ln:1234568';
+ const store=f.storage({favs:JSON.stringify([old]),blocked:JSON.stringify(['Acme'])});
+ const a=f.client('alpha',store);
+ await assert.rejects(a.sync.connectJobIndex(Promise.reject(Error('offline index'))));
+ assert.equal(await a.sync.flush(),true);
+ assert.deepEqual(JSON.parse(a.sync.get('blocked')),['Acme']);
+ assert.deepEqual(JSON.parse(a.sync.get('favs')),[]);
+ a.sync.stop();
+ const reload=f.client('alpha',store);
+ await reload.sync.connectJobIndex(Promise.resolve({linkedinJobReplacements:{[old]:current}}));
+ assert.equal(await reload.sync.flush(),true);
+ assert.deepEqual(JSON.parse(reload.sync.get('favs')),[current]);
+});
