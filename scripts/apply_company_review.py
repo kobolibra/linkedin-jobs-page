@@ -84,7 +84,7 @@ def validate_result(result, allowed, records, day):
         if result.get("protectedRecord") or result.get("employerType") is not None:
             raise ValueError("Non-target employers must not receive a protected employer type")
         if industry.startswith("crypto/blockchain (always included)"):
-            raise ValueError("Crypto protection must be investigated, not deleted by a tag")
+            raise ValueError("Use the verified actual crypto/blockchain industry, not the keyword-only daily-report tag")
     elif decision == "protect":
         record = result.get("protectedRecord")
         if not isinstance(record, dict) or rc.norm(rc.field(record.get("company"))) != key:
