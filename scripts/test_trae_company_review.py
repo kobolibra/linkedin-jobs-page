@@ -137,6 +137,24 @@ class TraeEntrypointTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "GitHub business code changed"):
             entry.refresh(clone, other, self.manifest)
 
+    def test_prepare_runs_only_queue_and_atomic_checkpoint(self):
+        with patch.object(entry, "git", side_effect=[self.sha, "", self.sha, ""]), \
+                patch.object(entry, "check_code"), patch.object(entry, "build_queue") as build, \
+                patch.object(entry, "apply_review") as apply, patch.object(entry, "publish_audit") as audit:
+            entry.prepare(self.root, self.run)
+            build.assert_called_once()
+            apply.assert_called_once()
+            self.assertTrue(apply.call_args.kwargs["preparing"])
+            audit.assert_called_once()
+            manifest = json.loads((self.run / "execution-manifest.json").read_text())
+            self.assertIn("preparedAt", manifest)
+
+    def test_build_queue_only_scans_one_worklist(self):
+        with patch.object(entry, "execute") as execute:
+            entry.build_queue(self.root, self.run, self.manifest)
+            execute.assert_called_once()
+            self.assertEqual(execute.call_args.args[3], "review-queue")
+
     def test_data_only_refresh_preserves_pinned_code(self):
         self.manifest["scripts"] = []
         with patch.object(entry, "check_code"), patch.object(entry, "git",

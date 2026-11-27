@@ -68,6 +68,48 @@ class AtomicReviewTests(unittest.TestCase):
         self.assertEqual(status["summary"]["deferredCompanies"], 1)
         self.assertFalse(self.plan([self.retail, self.bank, self.unknown]))
 
+    def test_compact_results_match_existing_schema(self):
+        compact = [
+            {"company": "Retail Co", "decision": "delete", "industry": "Retail",
+             "evidence": self.retail["industryEvidence"], "queries": ["Retail Co official"]},
+            {"company": "Bank Co", "decision": "protect", "industry": "Banking",
+             "employerType": "direct_employer", "evidence": self.bank["industryEvidence"],
+             "queries": ["Bank Co official"]},
+            {"company": "Unknown Co", "decision": "inconclusive",
+             "queries": ["Unknown Co official"], "remainingQuestion": "Exact publisher unconfirmed"},
+        ]
+        self.assertEqual(self.plan(compact)[rc.TARGET], self.plan([self.retail, self.bank, self.unknown])[rc.TARGET])
+        self.assertEqual(self.plan(compact)[rc.BLACKLIST], self.plan([self.retail, self.bank, self.unknown])[rc.BLACKLIST])
+        with self.assertRaises(ValueError):
+            self.plan([dict(compact[0], employerType="direct_employer")])
+        with self.assertRaises(ValueError):
+            self.plan([dict(compact[1], evidence=[])])
+
+    def test_old_industry_note_does_not_authorize_unrelated_deletion(self):
+        self.files[rc.INDUSTRIES] = json.dumps({"Old Fintech": "Financial technology"})
+        self.files[rc.daily_paths(DAY)[0]] = json.dumps({
+            "target_companies": [{"company": "Old Fintech", "reason": "Financial technology"}],
+            "excluded_companies": []})
+        changes = self.plan([self.retail])
+        self.assertNotIn("Old Fintech", changes[rc.TARGET])
+        self.assertIn("Retail Co", changes[rc.TARGET])
+
+    def test_prepare_combines_report_and_checkpoint_without_deletion(self):
+        changes = apply.plan_prepare(self.files.get, self.snapshot, [], DAY)
+        self.assertIn(rc.daily_paths(DAY)[0], changes)
+        self.assertIn(apply.queue.STATUS_PATH, changes)
+        self.assertNotIn(rc.TARGET, changes)
+        self.assertNotIn(rc.BLACKLIST, changes)
+
+    def test_remaining_snapshot_only_keeps_original_unreviewed_listings(self):
+        from copy import deepcopy
+        state = {"reviewQueue": deepcopy(self.snapshot["reviewQueue"])}
+        state["reviewQueue"][0]["reviewedJobIds"] = ["100000001"]
+        state["reviewQueue"][1]["candidateJobIds"] = ["999999999"]
+        result = apply.remaining_snapshot(self.snapshot, state)
+        self.assertEqual([row["company"] for row in result["reviewQueue"]], ["Unknown Co"])
+        self.assertEqual(result["summary"]["reviewQueue"], 1)
+
     def test_verified_crypto_company_is_target_not_protected(self):
         crypto = dict(self.retail, industry="加密货币交易所",
                       industryEvidence=[{"url": "https://example.com/about",

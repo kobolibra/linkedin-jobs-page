@@ -24,18 +24,16 @@ REMOTE = "https://github.com/" + REPO + ".git"
 CONFIG = Path("/workspace/config.json")
 sys.path.insert(0, str(ROOT / "scripts"))
 from trae_bootstrap import git_env, load_config as bootstrap_config
-CODE_PATHS = (
-    "auto-daily-companies.py", "reclassify.py", "scripts/",
-    "docs/financial-blacklist.md", "docs/trae-company-review.md",
-    ".github/workflows/",
-)
 KEY_FILES = (
     "auto-daily-companies.py", "reclassify.py",
     "scripts/trae_bootstrap.py", "scripts/trae_company_review.py", "scripts/company_review_queue.py",
     "scripts/audit_employer_types.py", "scripts/publication_state.py",
-    "scripts/apply_company_review.py",
+    "scripts/apply_company_review.py", "scripts/jobspy/linkedin_ids.py",
     "docs/financial-blacklist.md", "docs/trae-company-review.md",
 )
+CODE_PATHS = (*KEY_FILES, "scripts/__init__.py", "scripts/jobspy/__init__.py")
+LOCAL_CODE_PATHS = ("auto-daily-companies.py", "reclassify.py", "scripts/",
+                    "docs/financial-blacklist.md", "docs/trae-company-review.md")
 ALLOWED = {
     "reclassify": "reclassify.py",
     "queue": "scripts/company_review_queue.py",
@@ -111,7 +109,7 @@ def check_code(root, manifest):
     head = git(root, "rev-parse", "HEAD")
     if git(root, "diff", "--name-only", commit, head, "--", *CODE_PATHS):
         raise RuntimeError("Pinned business code changed; restart from latest main")
-    if git(root, "status", "--porcelain", "--untracked-files=all", "--", *CODE_PATHS):
+    if git(root, "status", "--porcelain", "--untracked-files=all", "--", *LOCAL_CODE_PATHS):
         raise RuntimeError("Local business code is modified or untracked; refuse execution")
     for item in manifest["scripts"]:
         if digest(root / item["path"]) != item["sha256"]:
@@ -136,14 +134,6 @@ def refresh(root, run_dir, manifest):
 
 def script_command(root, relative, args):
     return [sys.executable, "-I", "-B", str(root / relative), *args]
-
-
-def queue_regression_command():
-    """The exact isolated startup self-test, shared with CI."""
-    return [sys.executable, "-I", "-B", "-c",
-            "import sys, unittest; sys.path.insert(0, '.'); "
-            "unittest.main(module=None, argv=['unittest', 'scripts.test_company_review_queue', "
-            "'scripts.test_apply_company_review'])"]
 
 
 def execute(root, run_dir, manifest, name, command, *, output=None, credentials=False):
@@ -202,16 +192,11 @@ def prepare(root, run_dir):
                             for path in KEY_FILES]}
     save(manifest_path, manifest)
     check_code(root, manifest)
-    # Publish startup evidence before any potentially failing business step.
-    publish_audit(root, run_dir, manifest)
     try:
-        refresh(root, run_dir, manifest)
-        execute(root, run_dir, manifest, "queue-regressions", queue_regression_command())
-        execute(root, run_dir, manifest, "daily-report",
-                script_command(root, "auto-daily-companies.py", []), credentials=True)
-        refresh(root, run_dir, manifest)
+        # One worklist and one atomic report/checkpoint write. Regression tests
+        # and whole-universe diagnostic audits belong in GitHub CI, not here.
         build_queue(root, run_dir, manifest)
-        apply_review(root, run_dir, manifest, [])
+        apply_review(root, run_dir, manifest, [], preparing=True)
         manifest["preparedAt"] = utc()
     except Exception as error:
         manifest["preparationFailedAt"] = utc()
@@ -227,37 +212,33 @@ def prepare(root, run_dir):
 
 
 def build_queue(root, run_dir, manifest):
-    execute(root, run_dir, manifest, "pending-audit",
-            script_command(root, ALLOWED["audit"], ["--pending"]),
-            output=run_dir / "employer-pending.json")
-    execute(root, run_dir, manifest, "ranked-audit",
-            script_command(root, ALLOWED["audit"], ["--ranked"]),
-            output=run_dir / "employer-ranked.tsv")
     execute(root, run_dir, manifest, "review-queue",
             script_command(root, ALLOWED["queue"], ["--root", str(root)]),
             output=run_dir / "company-review-queue.json")
 
 
-def apply_review(root, run_dir, manifest, args):
+def apply_review(root, run_dir, manifest, args, *, preparing=False):
     parser = argparse.ArgumentParser(prog="apply-review", allow_abbrev=False)
     parser.add_argument("--results", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     opts = parser.parse_args(args)
     command = ["--queue", str(run_dir / "company-review-queue.json"),
                "--code-commit", manifest["codeCommit"], "--date", manifest["reviewDay"]]
+    if preparing:
+        command.append("--prepare")
     if opts.results:
         if not opts.results.is_absolute() or not opts.results.resolve().is_relative_to(run_dir):
             raise ValueError("Results must be an absolute file inside this run")
         command += ["--results", str(opts.results.resolve())]
     if opts.dry_run:
         command.append("--dry-run")
-    execute(root, run_dir, manifest, "apply-review" if opts.results else "checkpoint-queue",
+    execute(root, run_dir, manifest,
+            "prepare-review" if preparing else ("apply-review" if opts.results else "checkpoint-queue"),
             script_command(root, "scripts/apply_company_review.py", command), credentials=True)
-    refresh(root, run_dir, manifest)
-    if opts.results and not opts.dry_run:
-        # Replace the task worklist after a committed batch, so completed
-        # investigations cannot be selected again within the same run.
-        build_queue(root, run_dir, manifest)
+    if not opts.dry_run:
+        refresh(root, run_dir, manifest)
+        # The atomic writer updates this run's worklist from the committed
+        # checkpoint. No repeated scan of all jobs is required after a batch.
 
 
 def checked_arguments(action, args, root, run_dir):
@@ -304,9 +285,27 @@ def publish_audit(root, run_dir, manifest):
     print("AUDIT_PATH=" + path)
 
 
+def finish(root, run_dir, manifest):
+    """Refresh the reports once, check publication, and record the final audit."""
+    try:
+        refresh(root, run_dir, manifest)
+        from publication_state import current
+        manifest["publicationState"] = "current" if current(root) else "pending"
+    except Exception as error:
+        manifest["publicationState"] = "error"
+        manifest["publicationErrorType"] = type(error).__name__
+        print("Final publication verification failed: " + type(error).__name__, file=sys.stderr)
+    manifest["finishedAt"] = utc()
+    save(run_dir / "execution-manifest.json", manifest)
+    publish_audit(root, run_dir, manifest)
+    print("PUBLICATION_STATE=" + manifest["publicationState"])
+    if manifest["publicationState"] == "error":
+        raise RuntimeError("Final publication verification failed; inspect the manifest")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
-    parser.add_argument("action", choices=["prepare", "refresh", "publish-audit", "apply-review", *ALLOWED])
+    parser.add_argument("action", choices=["prepare", "finish", "refresh", "publish-audit", "apply-review", *ALLOWED])
     parser.add_argument("args", nargs=argparse.REMAINDER)
     opts = parser.parse_args()
     root = ROOT
@@ -328,16 +327,22 @@ def main():
         else:
             if not manifest.get("preparedAt"):
                 raise RuntimeError("Run preparation did not complete")
-            refresh(root, run_dir, manifest)
-            if opts.action == "refresh":
+            if opts.action == "finish":
+                if opts.args:
+                    raise ValueError("finish accepts no additional arguments")
+                finish(root, run_dir, manifest)
+            elif opts.action == "refresh":
+                refresh(root, run_dir, manifest)
                 if opts.args:
                     raise ValueError("refresh accepts no additional arguments")
                 build_queue(root, run_dir, manifest)
                 apply_review(root, run_dir, manifest, [])
             elif opts.action == "apply-review":
+                # The atomic writer guards the current remote code and state;
+                # one refresh after a successful write is sufficient.
                 apply_review(root, run_dir, manifest, opts.args)
-                publish_audit(root, run_dir, manifest)
             else:
+                refresh(root, run_dir, manifest)
                 args = checked_arguments(opts.action, opts.args, root, run_dir)
                 # Legacy split writes would bypass the evidence and atomicity gate.
                 # Keep read-only diagnostics and the old dry-run command available.

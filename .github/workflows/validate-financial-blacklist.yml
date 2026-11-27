@@ -2,10 +2,10 @@ name: Financial blacklist schema
 
 on:
   pull_request:
-    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, scripts/apply_company_review.py, scripts/test_apply_company_review.py, scripts/test_agent_reclassification.py, reports/cumulative-target-companies.tsv, reports/cumulative-excluded-companies.tsv, company_industries.json, docs/trae-company-review.md, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, scripts/apply_company_review.py, scripts/test_apply_company_review.py, scripts/test_agent_reclassification.py, reports/cumulative-target-companies.tsv, reports/cumulative-excluded-companies.tsv, company_industries.json, docs/trae-company-review.md, docs/financial-blacklist.md, scripts/jobspy/linkedin_ids.py, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
   push:
     branches: [main]
-    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, scripts/apply_company_review.py, scripts/test_apply_company_review.py, scripts/test_agent_reclassification.py, reports/cumulative-target-companies.tsv, reports/cumulative-excluded-companies.tsv, company_industries.json, docs/trae-company-review.md, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
+    paths: [financial_blacklist.json, company_employer_types.json, auto-daily-companies.py, reclassify.py, scripts/trae_bootstrap.py, scripts/trae_company_review.py, scripts/test_trae_company_review.py, scripts/apply_company_review.py, scripts/test_apply_company_review.py, scripts/test_agent_reclassification.py, reports/cumulative-target-companies.tsv, reports/cumulative-excluded-companies.tsv, company_industries.json, docs/trae-company-review.md, docs/financial-blacklist.md, scripts/jobspy/linkedin_ids.py, scripts/audit_employer_types.py, scripts/company_review_queue.py, scripts/test_company_review_queue.py, scripts/publication_state.py, reports/employer-review-status.json, data/publication-state.json, .github/workflows/validate-financial-blacklist.yml]
 
 permissions:
   contents: read
@@ -24,17 +24,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Require typed company records and preserve verified history
         run: python scripts/publication_state.py --validate
-      - name: Audit employer coverage from the protection list only
+      - name: Review queue and employer coverage on canonical data
         run: |
-          python scripts/audit_employer_types.py
-          python scripts/audit_employer_types.py --pending > /tmp/employer-review-queue.json
-      - name: Rank every employer by current homepage job count
-        run: python scripts/audit_employer_types.py --ranked
-      - name: Test and rebuild the persistent company investigation queue
-        run: |
-          python -m unittest scripts.test_company_review_queue
-          python scripts/company_review_queue.py > /tmp/company-review-queue.json
-      - name: Run the exact isolated TRAE startup self-test
-        run: python -I -B -c "import sys, subprocess; sys.path.insert(0, '.'); from scripts.trae_company_review import queue_regression_command; subprocess.run(queue_regression_command(), check=True)"
-      - name: Test pinned TRAE scheduler entrypoint and workspace isolation
-        run: python -m unittest scripts.test_trae_company_review scripts.test_apply_company_review scripts.test_agent_reclassification
+          python -I -B scripts/company_review_queue.py > /tmp/company-review-queue.json
+          python -I -B scripts/audit_employer_types.py
+      - name: Run isolated company review regression suite
+        run: python -I -B -c "import sys, unittest; sys.path.insert(0, '.'); unittest.main(module=None, argv=['unittest', 'scripts.test_company_review_queue', 'scripts.test_apply_company_review', 'scripts.test_trae_company_review', 'scripts.test_agent_reclassification'])"
