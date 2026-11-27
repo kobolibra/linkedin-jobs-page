@@ -138,6 +138,14 @@ def script_command(root, relative, args):
     return [sys.executable, "-I", "-B", str(root / relative), *args]
 
 
+def queue_regression_command():
+    """The exact isolated startup self-test, shared with CI."""
+    return [sys.executable, "-I", "-B", "-c",
+            "import sys, unittest; sys.path.insert(0, '.'); "
+            "unittest.main(module=None, argv=['unittest', 'scripts.test_company_review_queue', "
+            "'scripts.test_apply_company_review'])"]
+
+
 def execute(root, run_dir, manifest, name, command, *, output=None, credentials=False):
     check_code(root, manifest)
     # Do not persist arbitrary argument values, which might contain secrets.
@@ -198,11 +206,7 @@ def prepare(root, run_dir):
     publish_audit(root, run_dir, manifest)
     try:
         refresh(root, run_dir, manifest)
-        execute(root, run_dir, manifest, "queue-regressions",
-                [sys.executable, "-I", "-B", "-c",
-                 "import sys, unittest; sys.path.insert(0, '.'); "
-                 "unittest.main(argv=['unittest', 'scripts.test_company_review_queue', "
-                 "'scripts.test_apply_company_review'])"])
+        execute(root, run_dir, manifest, "queue-regressions", queue_regression_command())
         execute(root, run_dir, manifest, "daily-report",
                 script_command(root, "auto-daily-companies.py", []), credentials=True)
         refresh(root, run_dir, manifest)

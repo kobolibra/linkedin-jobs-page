@@ -13,11 +13,15 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.14']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
       - name: Require typed company records and preserve verified history
         run: python scripts/publication_state.py --validate
       - name: Audit employer coverage from the protection list only
@@ -30,5 +34,7 @@ jobs:
         run: |
           python -m unittest scripts.test_company_review_queue
           python scripts/company_review_queue.py > /tmp/company-review-queue.json
+      - name: Run the exact isolated TRAE startup self-test
+        run: python -I -B -c "import sys, subprocess; sys.path.insert(0, '.'); from scripts.trae_company_review import queue_regression_command; subprocess.run(queue_regression_command(), check=True)"
       - name: Test pinned TRAE scheduler entrypoint and workspace isolation
         run: python -m unittest scripts.test_trae_company_review scripts.test_apply_company_review scripts.test_agent_reclassification
