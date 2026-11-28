@@ -1,20 +1,181 @@
 {
   "version": 1,
-  "sourceCommit": "30d999585124e2b74c2c21a8ba63b80c9a5e8d64",
+  "sourceCommit": "f5708a35fa63eeb7314f5d54aea23f5207df25d8",
   "summary": {
-    "canonicalJobs": 15089,
-    "indexJobs": 15089,
-    "websiteJobs": 6278,
-    "trackedCompanies": 283,
-    "reviewQueue": 0,
+    "canonicalJobs": 15167,
+    "indexJobs": 15167,
+    "websiteJobs": 6199,
+    "trackedCompanies": 289,
+    "reviewQueue": 6,
     "deferredCompanies": 0,
     "deferredByStatus": {},
-    "queueByStatus": {},
-    "queueBySource": {},
+    "queueByStatus": {
+      "not_started": 6
+    },
+    "queueBySource": {
+      "unlisted": 6
+    },
     "stagingNotCanonical": 0,
     "indexNotCanonical": 0
   },
-  "reviewQueue": [],
+  "reviewQueue": [
+    {
+      "company": "ELSA, Corp",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495097100"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495097100"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "INEOS",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495579318"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495579318"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "INEOS Aromatics",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4493865576"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4493865576"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "Sitecore",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-28",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4495093536"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495093536"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "TÜV Rheinland Group",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-28",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4495591300"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495591300"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "UX Group Holding Limited",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-28",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4494481685"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4494481685"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    }
+  ],
   "companies": [
     {
       "company": "129Knots",
@@ -4961,6 +5122,32 @@
       }
     },
     {
+      "company": "ELSA, Corp",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495097100"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495097100"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
       "company": "Emmes Group",
       "sourceStatuses": [
         "resolved_observation",
@@ -7700,6 +7887,58 @@
           "note": "Official site identifies retained third-party search mandates."
         }
       }
+    },
+    {
+      "company": "INEOS",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-27",
+      "observedJobIds": [
+        "4495579318"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495579318"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "INEOS Aromatics",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-27",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4493865576"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4493865576"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
     },
     {
       "company": "Inex One",
@@ -13045,6 +13284,32 @@
       }
     },
     {
+      "company": "Sitecore",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-28",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4495093536"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495093536"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
       "company": "Skyworks Consulting",
       "sourceStatuses": [
         "resolved_observation",
@@ -14347,6 +14612,58 @@
       }
     },
     {
+      "company": "TÜV Rheinland Group",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-28",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4495591300"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4495591300"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
+      "company": "UX Group Holding Limited",
+      "sourceStatuses": [
+        "unlisted"
+      ],
+      "activeJobsForKey": 1,
+      "websiteJobsForKey": 1,
+      "historicalPendingDates": [],
+      "stagingNotCanonical": false,
+      "indexNotCanonical": false,
+      "existingRecord": null,
+      "existingIndustry": null,
+      "investigationStatus": "not_started",
+      "protectionDecision": "undetermined",
+      "firstQueuedOn": "2026-11-28",
+      "observedFirstOn": "2026-11-28",
+      "observedLastOn": "2026-11-28",
+      "observedJobIds": [
+        "4494481685"
+      ],
+      "reviewedJobIds": [],
+      "candidateJobIds": [
+        "4494481685"
+      ],
+      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+    },
+    {
       "company": "Validus Risk Management",
       "firstQueuedOn": "2026-11-26",
       "sourceStatuses": [
@@ -15328,5 +15645,5 @@
       ]
     }
   ],
-  "generatedAt": "2026-11-27T05:06:57.427586+00:00"
+  "generatedAt": "2026-11-28T04:05:39.437130+00:00"
 }
