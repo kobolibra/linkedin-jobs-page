@@ -6,176 +6,17 @@
     "indexJobs": 15167,
     "websiteJobs": 6199,
     "trackedCompanies": 289,
-    "reviewQueue": 6,
-    "deferredCompanies": 0,
-    "deferredByStatus": {},
-    "queueByStatus": {
-      "not_started": 6
+    "reviewQueue": 0,
+    "deferredCompanies": 1,
+    "deferredByStatus": {
+      "inconclusive": 1
     },
-    "queueBySource": {
-      "unlisted": 6
-    },
+    "queueByStatus": {},
+    "queueBySource": {},
     "stagingNotCanonical": 0,
     "indexNotCanonical": 0
   },
-  "reviewQueue": [
-    {
-      "company": "ELSA, Corp",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-28",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4495097100"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4495097100"
-      ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
-    },
-    {
-      "company": "INEOS",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-28",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-27",
-      "observedJobIds": [
-        "4495579318"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4495579318"
-      ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
-    },
-    {
-      "company": "INEOS Aromatics",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-28",
-      "observedFirstOn": "2026-11-27",
-      "observedLastOn": "2026-11-28",
-      "observedJobIds": [
-        "4493865576"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4493865576"
-      ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
-    },
-    {
-      "company": "Sitecore",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-28",
-      "observedFirstOn": "2026-11-28",
-      "observedLastOn": "2026-11-28",
-      "observedJobIds": [
-        "4495093536"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4495093536"
-      ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
-    },
-    {
-      "company": "TÜV Rheinland Group",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-28",
-      "observedFirstOn": "2026-11-28",
-      "observedLastOn": "2026-11-28",
-      "observedJobIds": [
-        "4495591300"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4495591300"
-      ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
-    },
-    {
-      "company": "UX Group Holding Limited",
-      "sourceStatuses": [
-        "unlisted"
-      ],
-      "activeJobsForKey": 1,
-      "websiteJobsForKey": 1,
-      "historicalPendingDates": [],
-      "stagingNotCanonical": false,
-      "indexNotCanonical": false,
-      "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
-      "firstQueuedOn": "2026-11-28",
-      "observedFirstOn": "2026-11-28",
-      "observedLastOn": "2026-11-28",
-      "observedJobIds": [
-        "4494481685"
-      ],
-      "reviewedJobIds": [],
-      "candidateJobIds": [
-        "4494481685"
-      ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
-    }
-  ],
+  "reviewQueue": [],
   "companies": [
     {
       "company": "129Knots",
@@ -5132,20 +4973,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "教育科技（AI英语学习）",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-28",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4495097100"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4495097100"
+      ],
       "candidateJobIds": [
         "4495097100"
       ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+      "observationAt": "2026-11-28T04:05:30.879392+00:00",
+      "queries": [
+        "https://elsaspeak.com/en"
+      ],
+      "lastReviewedOn": "2026-11-28",
+      "identityStatus": "confirmed",
+      "industry": "教育科技（AI英语学习）",
+      "industryEvidence": [
+        {
+          "url": "https://elsaspeak.com/en",
+          "note": "官网确认 ELSA（English Language Speech Assistant）主营 AI 英语口语学习应用，面向个人、企业与学校提供英语口语训练，属教育科技，非金融/招聘目标行业。"
+        }
+      ]
     },
     {
       "company": "Emmes Group",
@@ -7899,20 +7754,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "化工/石油天然气",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-28",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-27",
       "observedJobIds": [
         "4495579318"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4495579318"
+      ],
       "candidateJobIds": [
         "4495579318"
       ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+      "observationAt": "2026-11-28T04:05:30.879392+00:00",
+      "queries": [
+        "https://www.ineos.com/"
+      ],
+      "lastReviewedOn": "2026-11-28",
+      "identityStatus": "confirmed",
+      "industry": "化工/石油天然气",
+      "industryEvidence": [
+        {
+          "url": "https://www.ineos.com/",
+          "note": "官网确认 INEOS 是全球最大化学品生产商之一，同时是油气市场重要参与者，主营化工与油气，非金融/招聘目标行业。"
+        }
+      ]
     },
     {
       "company": "INEOS Aromatics",
@@ -7925,20 +7794,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "石化/化工",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-28",
       "observedFirstOn": "2026-11-27",
       "observedLastOn": "2026-11-28",
       "observedJobIds": [
         "4493865576"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4493865576"
+      ],
       "candidateJobIds": [
         "4493865576"
       ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+      "observationAt": "2026-11-28T04:05:30.879392+00:00",
+      "queries": [
+        "https://www.ineos.com/businesses/ineos-aromatics/"
+      ],
+      "lastReviewedOn": "2026-11-28",
+      "identityStatus": "confirmed",
+      "industry": "石化/化工",
+      "industryEvidence": [
+        {
+          "url": "https://www.ineos.com/businesses/ineos-aromatics/",
+          "note": "官网确认 INEOS Aromatics 为 INEOS 旗下业务单元，主营 PTA（精对苯二甲酸）与 PX（对二甲苯）石化产品，非金融/招聘目标行业。"
+        }
+      ]
     },
     {
       "company": "Inex One",
@@ -13294,20 +13177,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "软件/数字体验平台",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-28",
       "observedFirstOn": "2026-11-28",
       "observedLastOn": "2026-11-28",
       "observedJobIds": [
         "4495093536"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4495093536"
+      ],
       "candidateJobIds": [
         "4495093536"
       ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+      "observationAt": "2026-11-28T04:05:30.879392+00:00",
+      "queries": [
+        "https://www.sitecore.com/"
+      ],
+      "lastReviewedOn": "2026-11-28",
+      "identityStatus": "confirmed",
+      "industry": "软件/数字体验平台",
+      "industryEvidence": [
+        {
+          "url": "https://www.sitecore.com/",
+          "note": "官网确认 Sitecore 主营数字体验平台、内容管理系统与营销软件（SaaS），属软件科技行业，非金融/招聘目标行业。"
+        }
+      ]
     },
     {
       "company": "Skyworks Consulting",
@@ -14622,20 +14519,34 @@
       "stagingNotCanonical": false,
       "indexNotCanonical": false,
       "existingRecord": null,
-      "existingIndustry": null,
-      "investigationStatus": "not_started",
-      "protectionDecision": "undetermined",
+      "existingIndustry": "检验检测认证",
+      "investigationStatus": "verified",
+      "protectionDecision": "delete",
       "firstQueuedOn": "2026-11-28",
       "observedFirstOn": "2026-11-28",
       "observedLastOn": "2026-11-28",
       "observedJobIds": [
         "4495591300"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4495591300"
+      ],
       "candidateJobIds": [
         "4495591300"
       ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+      "observationAt": "2026-11-28T04:05:30.879392+00:00",
+      "queries": [
+        "https://www.tuv.com/"
+      ],
+      "lastReviewedOn": "2026-11-28",
+      "identityStatus": "confirmed",
+      "industry": "检验检测认证",
+      "industryEvidence": [
+        {
+          "url": "https://www.tuv.com/",
+          "note": "官网确认 TÜV Rheinland 主营检测、认证与审核等检验检测认证（TIC）服务，属第三方检验检测认证行业，非金融/招聘目标行业。"
+        }
+      ]
     },
     {
       "company": "UX Group Holding Limited",
@@ -14649,7 +14560,7 @@
       "indexNotCanonical": false,
       "existingRecord": null,
       "existingIndustry": null,
-      "investigationStatus": "not_started",
+      "investigationStatus": "inconclusive",
       "protectionDecision": "undetermined",
       "firstQueuedOn": "2026-11-28",
       "observedFirstOn": "2026-11-28",
@@ -14657,11 +14568,20 @@
       "observedJobIds": [
         "4494481685"
       ],
-      "reviewedJobIds": [],
+      "reviewedJobIds": [
+        "4494481685"
+      ],
       "candidateJobIds": [
         "4494481685"
       ],
-      "observationAt": "2026-11-28T04:05:30.879392+00:00"
+      "observationAt": "2026-11-28T04:05:30.879392+00:00",
+      "queries": [
+        "WebSearch: UX Group Holding Limited Hong Kong company business",
+        "WebSearch: \"UX Group Holding Limited\" linkedin",
+        "https://ux.group/"
+      ],
+      "lastReviewedOn": "2026-11-28",
+      "remainingQuestion": "无法通过可靠来源确认香港「UX Group Holding Limited」的准确招聘发布主体与主营业务。仅找到巴西同名 'UX Group'（官网 ux.group，主营在线体育博彩与赌场，运营 Reals Bet / UX Bet 品牌，运营主体为 UX Entertainment），但无法确认香港该「UX Group Holding Limited」与巴西博彩集团为同一主体。"
     },
     {
       "company": "Validus Risk Management",
@@ -15645,5 +15565,5 @@
       ]
     }
   ],
-  "generatedAt": "2026-11-28T04:05:39.437130+00:00"
+  "generatedAt": "2026-11-28T04:10:13.198145+00:00"
 }
