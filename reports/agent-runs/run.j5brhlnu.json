@@ -1,0 +1,91 @@
+{
+  "version": 2,
+  "runId": "run.j5brhlnu",
+  "repository": "kobolibra/linkedin-jobs-page",
+  "reviewDay": "2026-11-28",
+  "branch": "main",
+  "startedAt": "2026-11-28T04:05:29.305970+00:00",
+  "codeCommit": "f5708a35fa63eeb7314f5d54aea23f5207df25d8",
+  "dataCommit": "98924d114597d43a1ee7a703ec59ddd4358252ec",
+  "checkout": "/workspace/next-journey-runs/run.j5brhlnu/repo",
+  "pythonExecutable": "/root/.pyenv/versions/3.14.8/bin/python3",
+  "events": [
+    {
+      "step": "review-queue",
+      "startedAt": "2026-11-28T04:05:29.333429+00:00",
+      "dataCommit": "f5708a35fa63eeb7314f5d54aea23f5207df25d8",
+      "executable": "/root/.pyenv/versions/3.14.8/bin/python3",
+      "script": "/workspace/next-journey-runs/run.j5brhlnu/repo/scripts/company_review_queue.py",
+      "argumentFlags": [
+        "--root"
+      ],
+      "argumentsSha256": "fcbad1a4c8d5ac152970c12d1e970815814ce4c7f7c541cd8f4482ffc32ff369",
+      "exitCode": 0,
+      "finishedAt": "2026-11-28T04:05:31.194914+00:00"
+    },
+    {
+      "step": "prepare-review",
+      "startedAt": "2026-11-28T04:05:31.209500+00:00",
+      "dataCommit": "f5708a35fa63eeb7314f5d54aea23f5207df25d8",
+      "executable": "/root/.pyenv/versions/3.14.8/bin/python3",
+      "script": "/workspace/next-journey-runs/run.j5brhlnu/repo/scripts/apply_company_review.py",
+      "argumentFlags": [
+        "--queue",
+        "--code-commit",
+        "--date",
+        "--prepare"
+      ],
+      "argumentsSha256": "2e8a28e171de3d6c3195a33503da821056f345966e0e1bbe012b2e7ac8f2fe66",
+      "exitCode": 0,
+      "finishedAt": "2026-11-28T04:05:45.382565+00:00"
+    }
+  ],
+  "scripts": [
+    {
+      "path": "auto-daily-companies.py",
+      "sha256": "213b02c7405b11e2980f3cda81fad9cb3f38553bfff0f3041b13a919b0839bda"
+    },
+    {
+      "path": "reclassify.py",
+      "sha256": "a696053c57ab35e5eaf55dbb96afe100afa5f97fc529411d640edc18a2f84c2d"
+    },
+    {
+      "path": "scripts/trae_bootstrap.py",
+      "sha256": "4f9209911d54888d57026897ae06732c398b606d2d8d39959a67f6b054c953b3"
+    },
+    {
+      "path": "scripts/trae_company_review.py",
+      "sha256": "7451f341387d138da099c4be25940721a7fb6771b2d3f2df1f34d02d49f34375"
+    },
+    {
+      "path": "scripts/company_review_queue.py",
+      "sha256": "d6d61387c4b4c816127094f7cc5c64cd9348d8bb3deb45e57cfc07b4255bcbfa"
+    },
+    {
+      "path": "scripts/audit_employer_types.py",
+      "sha256": "c4e8d16cdbac2fe99575980469759fe06ff452776629006a7db4f1ec45eab669"
+    },
+    {
+      "path": "scripts/publication_state.py",
+      "sha256": "d2d49681ba4ecb379e92119cd07742f0bdb9f33df431780dab2b3b1b66b0bd2b"
+    },
+    {
+      "path": "scripts/apply_company_review.py",
+      "sha256": "47dc385e752c18a3b8f1a9510d7b23e73d9004320866709776737fec1887677d"
+    },
+    {
+      "path": "scripts/jobspy/linkedin_ids.py",
+      "sha256": "e60df039a44a1d7c3663466f1ebf63636223fa48ec0e88f7cefaabcdf391651e"
+    },
+    {
+      "path": "docs/financial-blacklist.md",
+      "sha256": "8f67d4ec6366db62ca4ef2e83d19e7a9cbe2047cd0efd967667de0d399f6840a"
+    },
+    {
+      "path": "docs/trae-company-review.md",
+      "sha256": "6d9f29ffa359765c332da6379a2ec9f740783f5adb8c9de5f63b178f55e21593"
+    }
+  ],
+  "preparedAt": "2026-11-28T04:05:47.556277+00:00",
+  "auditPublishedAt": "2026-11-28T04:05:47.688188+00:00"
+}
