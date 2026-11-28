@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-27T05:07:36.841883+00:00",
+    "checkedAt": "2026-11-28T04:02:38.739148+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-27T05:07:35.422711+00:00",
+    "checkedAt": "2026-11-28T04:02:36.216686+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -13023,32 +13023,15 @@
   },
   "elsa, corp": {
     "name": "ELSA, Corp",
-    "checkedAt": "2026-11-27T10:02:17.755430+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-28T04:02:44.666515+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495097100",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495097100",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4495097100",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495097100",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495097100",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.50073839703071,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "15a9a771a5cafa96083a2ce8.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQH32METQSxDUw/company-logo_100_100/B56Z79pCqYKUAM-/0/1782371855230/elsa_corp_logo?e=2147483647&v=beta&t=HJzNE15RH5-FAvhB1Kpi1wV9HnGx3kzwPP86mrMLUAA",
+    "companyUrl": "https://www.linkedin.com/company/elsa-corp",
+    "sourceJobId": "4495097100"
   },
   "ineos": {
     "name": "INEOS",
@@ -13076,60 +13059,38 @@
   },
   "sitecore": {
     "name": "Sitecore",
-    "checkedAt": "2026-11-27T16:02:23.852189+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-28T04:02:45.684188+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4495093536",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495093536",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 61.35775966864232,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "201370250f4afb763728047f.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQEuc-Uj3PcXAA/company-logo_100_100/B4EZ3PzuI2IoAQ-/0/1777307935693/sitecore_logo?e=2147483647&v=beta&t=tAJT7qXskezXXQ6NEwkW2GTxfA_f9hsmBWlIC0N5jdE",
+    "companyUrl": "https://www.linkedin.com/company/sitecore",
+    "sourceJobId": "4495093536"
   },
   "tüv rheinland group": {
     "name": "TÜV Rheinland Group",
-    "checkedAt": "2026-11-27T22:02:12.571872+00:00",
-    "status": "missing",
+    "checkedAt": "2026-11-28T04:02:48.740171+00:00",
+    "status": "ready",
     "parserVersion": 6,
-    "attempts": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "jobId": "4495591300",
-        "reason": "rate_limited",
-        "stage": "job"
-      }
-    ],
-    "httpRetries": [
-      {
-        "requestUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
-        "finalUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4495591300",
-        "status": 429,
-        "contentType": "text/html",
-        "attempt": 1,
-        "waitSeconds": 62.165703688104266,
-        "deferred": true
-      }
-    ]
+    "attempts": [],
+    "asset": "8a10affa3dc102395d822267.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D4E0BAQFdahJQNMdaUw/company-logo_100_100/B4EaHQUQfOKwAI-/0/1794496334000/tuv_rheinland_group_logo?e=2147483647&v=beta&t=esrSD4JeBRPWvL72fEItdw9Yhp2SFhvAqLg0BBShR_0",
+    "companyUrl": "https://de.linkedin.com/company/tuv-rheinland-group",
+    "sourceJobId": "4495591300"
+  },
+  "ux group holding limited": {
+    "name": "UX Group Holding Limited",
+    "checkedAt": "2026-11-28T04:02:34.560023+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "9d29c822f1acb44e66306499.webp",
+    "imageKind": "company",
+    "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFiBca1fYXRcg/company-logo_100_100/B56aGpexBuIUAM-/0/1793844777285?e=2147483647&v=beta&t=shDExK0M_UJUSRlyGm-llFxiTTu77PSoqr9V9mvq0pQ",
+    "companyUrl": "https://www.linkedin.com/company/ux-group-holding-limited",
+    "sourceJobId": "4494481685"
   }
 }
