@@ -2688,7 +2688,7 @@
   },
   "hire feed": {
     "name": "Hire Feed",
-    "checkedAt": "2026-11-28T04:10:57.499602+00:00",
+    "checkedAt": "2026-11-28T10:02:27.995363+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -5398,7 +5398,7 @@
   },
   "sun union family office limited": {
     "name": "Sun Union Family Office Limited",
-    "checkedAt": "2026-11-28T04:10:56.091915+00:00",
+    "checkedAt": "2026-11-28T10:02:25.037842+00:00",
     "status": "missing",
     "parserVersion": 6,
     "attempts": [
@@ -13092,5 +13092,17 @@
     "sourceUrl": "https://media.licdn.com/dms/image/v2/D560BAQFiBca1fYXRcg/company-logo_100_100/B56aGpexBuIUAM-/0/1793844777285?e=2147483647&v=beta&t=shDExK0M_UJUSRlyGm-llFxiTTu77PSoqr9V9mvq0pQ",
     "companyUrl": "https://www.linkedin.com/company/ux-group-holding-limited",
     "sourceJobId": "4494481685"
+  },
+  "北京中科晶上科技股份有限公司": {
+    "name": "北京中科晶上科技股份有限公司",
+    "checkedAt": "2026-11-28T10:02:23.707394+00:00",
+    "status": "ready",
+    "parserVersion": 6,
+    "attempts": [],
+    "asset": "daf22b8e5d0fce84b55b93df.svg",
+    "imageKind": "placeholder",
+    "sourceUrl": "https://static.licdn.com/aero-v1/sc/h/aajlclc14rr2scznz5qm2rj9u",
+    "companyUrl": "https://www.linkedin.com/company/%E5%8C%97%E4%BA%AC%E4%B8%AD%E7%A7%91%E6%99%B6%E4%B8%8A%E7%A7%91%E6%8A%80%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+    "sourceJobId": "4494220709"
   }
 }
